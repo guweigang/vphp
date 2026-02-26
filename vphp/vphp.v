@@ -23,6 +23,13 @@ pub enum PHPType {
 	reference = 10
 }
 
+pub struct ExtensionConfig {
+pub:
+	name        string
+	version     string
+	description string
+}
+
 // 声明我们在 v_bridge.c 里写的代理函数
 fn C.vphp_get_num_args(ex &C.zend_execute_data) u32
 fn C.vphp_get_arg_ptr(ex &C.zend_execute_data, index u32) &C.zval
@@ -55,6 +62,8 @@ fn C.vphp_array_get_index(z &C.zval, index u32) &C.zval
 fn C.vphp_array_init(z &C.zval)
 fn C.vphp_array_add_assoc_string(z &C.zval, key &char, val &char)
 fn C.vphp_array_push_string(z &C.zval, val &char)
+fn C.vphp_array_push_double(z &C.zval, val f64)
+fn C.vphp_array_push_long(z &C.zval, val long)
 fn C.vphp_array_each(z &C.zval, ctx voidptr, cb voidptr)
 fn C.vphp_array_get_key(z &C.zval, key &char, len int) &C.zval
 fn C.vphp_array_foreach(z &C.zval, ctx voidptr, cb voidptr)
@@ -70,6 +79,7 @@ fn C.vphp_read_property(obj &C.zval, name &char, len int) &C.zval
 fn C.vphp_call_method(obj &C.zval, method &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 fn C.vphp_new_zval() &C.zval
 fn C.vphp_call_callable(callable &C.zval, retval &C.zval, p_count int, params &&C.zval) int
+
 
 // 错误级别常量映射
 pub const e_error = 1     // E_ERROR (会导致 PHP 脚本中止)
@@ -241,7 +251,18 @@ pub fn (v Val) call(method string, args []Val) Val {
 
 // 框架初始化
 pub fn init_framework(module_number int) {
+  unsafe {
     C.vphp_init_resource_system(module_number)
+  }
+}
+
+@[export: 'vphp_framework_init']
+fn vphp_framework_init(module_number int) {
+    // 自动初始化资源系统
+    init_framework(module_number)
+
+    // 这里的并发任务注册逻辑也可以放在这里
+    println('VPHP Framework initialized.')
 }
 
 // 获取原始 zval 包装对象
@@ -592,4 +613,102 @@ pub fn (v Val) get_prop_int(name string) int {
     prop := v.get_prop(name)
     if prop.raw == 0 { return 0 }
     return int(C.vphp_get_int(prop.raw))
+}
+
+// Spawn 支持
+// 1. 定义通用任务接口
+pub interface ITask {
+	run() []f64 // 目前以 []f64 为通用返回类型，后续可扩展
+}
+
+// 2. 异步结果包装器（已存在）
+pub struct AsyncResult {
+pub mut:
+	handle thread []f64
+}
+
+// 3. 框架级导出：v_spawn
+// 这里的挑战是：PHP 层调用 v_spawn 时，如何指定运行哪个 Task？
+// 我们可以通过一个简单的“任务注册表”来实现。
+type TaskCreator = fn () ITask
+
+// 使用 __global (需要编译时加 -enable-globals) 或者使用单例指针
+// 这里我们用一个更符合 V 规范的方式：定义一个结构体来持有 map
+struct TaskRegistry {
+pub mut:
+	tasks map[string]TaskCreator
+}
+
+// 获取单例注册表
+// 修复：定义一个全局指针 (需要 build.v 开启 -enable-globals)
+__global (
+	g_registry &TaskRegistry
+)
+
+fn get_registry() &TaskRegistry {
+	unsafe {
+		// 如果指针为空，则初始化
+		if g_registry == 0 {
+			g_registry = &TaskRegistry{
+				tasks: map[string]TaskCreator{}
+			}
+		}
+		return g_registry
+	}
+}
+
+pub fn ITask.register(name string, creator TaskCreator) {
+	mut r := get_registry()
+	r.tasks[name] = creator
+}
+
+pub fn ITask.get_creator(name string) ?TaskCreator {
+	r := get_registry()
+	if name in r.tasks {
+		return r.tasks[name]
+	}
+	return none
+}
+
+
+@[export: 'v_spawn']
+fn framework_v_spawn(ex &C.zend_execute_data, retval &C.zval) {
+	ctx := new_context(ex, retval)
+	task_name := ctx.arg[string](0)
+
+	// 使用新的 get_creator 逻辑
+	creator := ITask.get_creator(task_name) or {
+		throw_exception('Task $task_name not registered', 0)
+		return
+	}
+
+	task_inst := creator()
+	// 注意：spawn 接口方法时，V 有时需要明确返回值类型
+	t := spawn task_inst.run()
+
+	unsafe {
+		mut res := &AsyncResult(malloc(int(sizeof(AsyncResult))))
+		res.handle = t
+		ctx.return_res(res, 'v_task')
+	}
+}
+
+@[export: 'v_wait']
+fn framework_v_wait(ex &C.zend_execute_data, retval &C.zval) {
+	ctx := new_context(ex, retval)
+	res_val := ctx.arg_raw(0)
+
+	unsafe {
+		ptr := res_val.to_res()
+		if ptr == nil { return }
+
+		mut task := &AsyncResult(ptr)
+		results := task.handle.wait()
+
+		C.vphp_return_array_start(retval)
+		for r in results {
+			// 显式转换 f64 -> f64 (解决 double 报错)
+			C.vphp_array_push_double(retval, f64(r))
+		}
+	}
 }

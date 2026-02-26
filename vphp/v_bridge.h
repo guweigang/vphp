@@ -79,5 +79,6 @@ bool vphp_get_bool(zval* z);
 zval* vphp_read_property(zval* obj, const char* name, int name_len);
 int vphp_call_method(zval* obj, const char* method, int method_len, zval* retval, int param_count, zval** params_ptrs);
 int vphp_call_callable(zval* callable, zval* retval, int param_count, zval** params_ptrs);
-
+void vphp_array_push_double(zval* z, double val);
+void vphp_array_push_long(zval* z, long val);
 #endif

@@ -1,15 +1,22 @@
 import os
 
 fn main() {
-    println('🛠️  1. 运行 Codegen...')
-    gen_res := os.execute('v run tools/codegen.v')
+    // 假设你想编译 bullsoft_fitness.v
+    target_file := 'v_logic.v'
+
+    println('🛠️  1. 运行 Codegen，目标文件: $target_file ...')
+    // 将文件名作为参数传给 codegen.v
+    gen_res := os.execute('v run tools/codegen.v $target_file')
+
+    // 检查退出码是否不为 0 (表示执行失败)
     if gen_res.exit_code != 0 {
-          println('❌ Codegen 失败: ' + gen_res.output)
-          return
+        // 使用 $ 插值语法打印输出，比字符串相加更稳健
+        println('❌ Codegen 失败: ${gen_res.output}')
+        return
     }
 
     println('🛠️  2. 转译 V 逻辑...')
-    v_res := os.execute('v -gc none -path "@vlib:.:.." -shared -o v_logic.c .')
+    v_res := os.execute('v -enable-globals -gc none -path "@vlib:.:.." -shared -o v_logic.c .')
     if v_res.exit_code != 0 {
           println('❌ V 编译失败: ' + v_res.output)
           return

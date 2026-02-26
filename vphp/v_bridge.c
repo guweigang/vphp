@@ -80,6 +80,12 @@ void vphp_array_add_assoc_string(zval* z, const char* key, const char* val) {
 void vphp_array_push_string(zval* z, const char* val) {
     add_next_index_string(z, val);
 }
+void vphp_array_push_double(zval* z, double val) {
+    add_next_index_double(z, val);
+}
+void vphp_array_push_long(zval* z, long val) {
+    add_next_index_long(z, val);
+}
 
 void vphp_array_each(zval* array, void* ctx, void (*callback)(void*, char*, zval*)) {
     if (Z_TYPE_P(array) != IS_ARRAY) return;

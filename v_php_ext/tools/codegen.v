@@ -1,90 +1,149 @@
 import os
-import regex
+import v.parser
+import v.ast
+import v.pref
+
+struct ExtMeta {
+mut:
+	name    string   = 'vphp_ext'
+	version string   = '1.0.0'
+	exports []string
+	tasks   []string
+}
 
 fn main() {
-	println('🚀 正在自动生成 PHP 桥接层代码...')
-
-	mut functions := []string{}
-	content := os.read_file('v_logic.v') or {
-		println('❌ 无法读取 v_logic.v')
-		return
+	target_file := if os.args.len > 1 { os.args[1] } else { 'v_logic.v' }
+	if !os.exists(target_file) {
+		eprintln('❌ 找不到目标文件: $target_file')
+		exit(1)
 	}
 
-	// 修正正则匹配模式
-	mut re := regex.regex_opt(r"@\[export:\s*'(\w+)'\]") or { panic(err) }
+	// 修复 1: table 必须声明为 mut
+	mut table := ast.new_table()
+	pref_set := pref.new_preferences()
 
-	mut start := 0
-	for {
-		// find_from 返回 (start, end) 两个 int
-		s, e := re.find_from(content, start)
-		if s == -1 { break }
+	// 修复 2: 传入 mut table
+	file_ast := parser.parse_file(target_file, mut table, .parse_comments, pref_set)
 
-		// 获取捕获组的范围
-		groups := re.get_group_list()
-		if groups.len > 0 {
-			// group[0] 对应第一个 (\w+)
-			g_start := groups[0].start
-			g_end := groups[0].end
-			func_name := content[g_start..g_end]
-			functions << func_name
-			println('  found export: $func_name')
+	mut meta := ExtMeta{}
+
+	for stmt in file_ast.stmts {
+		if stmt is ast.ConstDecl {
+			for field in stmt.fields {
+				if field.name.ends_with('ext_config') {
+					// 修复 3: 使用智能类型转换处理 StructInit
+					expr := field.expr
+					if expr is ast.StructInit {
+						// 修复 4: 字段名已改为 init_fields
+						for f in expr.init_fields {
+							if f.name == 'name' {
+								val := f.expr
+								if val is ast.StringLiteral {
+									meta.name = val.val
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
-		start = e // 从上一个匹配的结尾继续找
+		if stmt is ast.FnDecl {
+      // 检测 ITask 实现
+      if stmt.is_method && stmt.name == 'run' {
+          // 修复：不要直接 .str()，要从 table 中查真实的类型名称
+          raw_name := table.get_type_name(stmt.receiver.typ)
+          // 去掉模块前缀（比如 main.FitnessTask -> FitnessTask）
+          task_name := raw_name.all_after('.')
+
+          if task_name !in meta.tasks {
+              meta.tasks << task_name
+          }
+      }
+
+			// 检测导出属性
+			for attr in stmt.attrs {
+				if attr.name == 'export' && attr.arg != '' {
+					if !attr.arg.starts_with('vphp_') && !attr.arg.starts_with('zm_') {
+						meta.exports << attr.arg
+					}
+				}
+			}
+		}
 	}
 
-	if functions.len == 0 {
-		println('⚠️  未在 v_logic.v 中发现导出函数')
+	generate_c_bridge(meta)
+	generate_v_glue(meta)
+
+	println('🚀 Codegen 修复成功!')
+	println('   - 扩展名: ${meta.name}')
+	println('   - 任务列表: ${meta.tasks}')
+}
+
+fn generate_c_bridge(meta ExtMeta) {
+	mut c := []string{}
+	c << '/* ⚠️ 自动生成，请勿修改 */'
+	c << '#include <php.h>'
+	c << '#include "php_bridge.h"'
+	c << ''
+	// --- 关键修复点：补上这两个 extern 声明 ---
+	c << 'extern void vphp_framework_init(int module_number);'
+	c << 'extern void vphp_task_auto_startup();'
+	c << ''
+
+	// 收集所有函数
+	mut all_funcs := meta.exports.clone()
+	all_funcs << 'v_spawn'
+	all_funcs << 'v_wait'
+
+	// 1. 生成 ArgInfo
+	for func in all_funcs {
+		c << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${func}, 0, 0, 0)'
+		c << 'ZEND_END_ARG_INFO()'
 	}
 
-	// 生成 C 代码
-	mut c_code := '#include <php.h>\n'
-	c_code += '#include "../vphp/v_bridge.h"\n\n'
-	c_code += 'void vphp_init_resource_system(int module_number);\n\n' // 新增这一行
-
-	for func in functions {
-		c_code += 'void ${func}(zend_execute_data *execute_data, zval *return_value);\n'
+	// 2. 声明并定义包装函数
+	for func in all_funcs {
+		c << 'void ${func}(zend_execute_data *execute_data, zval *return_value);'
+		c << 'PHP_FUNCTION(${func}) { ${func}(execute_data, return_value); }'
 	}
 
-	for func in functions {
-		c_code += '\nZEND_BEGIN_ARG_INFO_EX(arginfo_${func}, 0, 0, -1)\n'
-		c_code += '    ZEND_ARG_INFO(0, args)\n'
-		c_code += 'ZEND_END_ARG_INFO()\n\n'
-
-		c_code += 'PHP_FUNCTION(${func}) {\n'
-		c_code += '    ${func}(execute_data, return_value);\n'
-		c_code += '}\n'
+	// 3. 函数表
+	c << 'static const zend_function_entry v_ext_functions[] = {'
+	for func in all_funcs {
+		c << '    PHP_FE(${func}, arginfo_${func})'
 	}
+	c << '    PHP_FE_END'
+	c << '};'
 
-	c_code += '\nstatic const zend_function_entry v_ext_functions[] = {\n'
-	for func in functions {
-		c_code += '    PHP_FE(${func}, arginfo_${func})\n'
-	}
-	c_code += '    PHP_FE_END\n};\n'
+	// 4. MINIT (这里用到了上面 extern 的函数)
+	c << 'PHP_MINIT_FUNCTION(${meta.name}) {'
+	c << '    vphp_framework_init(module_number);'
+	c << '    vphp_task_auto_startup();'
+	c << '    return SUCCESS;'
+	c << '}'
 
-	// 2. 显式定义 PHP_MINIT_FUNCTION
-  c_code += '\nPHP_MINIT_FUNCTION(v_php_ext) {\n'
-  c_code += '    vphp_init_resource_system(module_number);\n' // 调用 C 桥接层的初始化
-  c_code += '    return SUCCESS;\n'
-  c_code += '}\n'
+	c << 'zend_module_entry ${meta.name}_module_entry = {'
+	c << '    STANDARD_MODULE_HEADER, "${meta.name}", v_ext_functions,'
+	c << '    PHP_MINIT(${meta.name}), NULL, NULL, NULL, NULL, "1.0.0",'
+	c << '    STANDARD_MODULE_PROPERTIES'
+	c << '};'
+	c << 'ZEND_GET_MODULE(${meta.name})'
 
-  // 3. 修改 zend_module_entry 结构体
-  // 将原来的第 4 个参数 NULL 改为 PHP_MINIT(v_php_ext)
-  c_code += '\nzend_module_entry v_php_ext_module_entry = {
-      STANDARD_MODULE_HEADER,
-      "v_php_ext",
-      v_ext_functions,
-      PHP_MINIT(v_php_ext), // 这里从 NULL 改为初始化入口
-      NULL,
-      NULL,
-      NULL,
-      NULL,
-      "0.1.0",
-      STANDARD_MODULE_PROPERTIES
-  };\n'
+	os.write_file('php_bridge.c', c.join('\n')) or { panic(err) }
+}
 
-  c_code += '#ifdef COMPILE_DL_V_PHP_EXT\nZEND_GET_MODULE(v_php_ext)\n#endif\n'
-
-	os.write_file('php_bridge.c', c_code) or { panic(err) }
-	println('✅ php_bridge.c 已成功更新 (共 ${functions.len} 个函数)')
+fn generate_v_glue(meta ExtMeta) {
+    mut v := []string{}
+    v << 'module main'
+    v << 'import vphp'
+    v << ''
+    v << '@[export: "vphp_task_auto_startup"]'
+    v << 'fn vphp_task_auto_startup() {'
+    for task in meta.tasks {
+        // 修改这里：改用 ITask.register
+        v << "    vphp.ITask.register('$task', fn() vphp.ITask { return $task{} })"
+    }
+    v << '}'
+    os.write_file('_task_glue.v', v.join('\n')) or { panic(err) }
 }

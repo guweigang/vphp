@@ -6,6 +6,12 @@ import vphp
 #include <php.h>
 #include "../vphp/v_bridge.h"
 
+const ext_config = vphp.ExtensionConfig{
+    name: 'bullsoft_fitness'
+    version: '0.1.0'
+    description: 'Bullsoft 健身数据分析引擎'
+}
+
 @[export: 'v_reverse_string']
 fn v_reverse_string(z_in &C.zval, z_out &C.zval) {
 	unsafe {
@@ -371,4 +377,15 @@ fn v_call_php_closure(ex &C.zend_execute_data, retval &C.zval) {
 	if ctx.has_exception() { return }
 
 	ctx.return_string('Closure executed, PHP said: ' + res.to_string())
+}
+
+// 1. 定义你的业务任务
+struct AnalyzeTask {
+	data []f64
+}
+
+// 2. 实现 ITask 接口
+fn (t AnalyzeTask) run() []f64 {
+	// 复杂的 Bullsoft 计算逻辑...
+	return [1.1, 2.2, 3.3]
 }

@@ -11,9 +11,11 @@
 //     Turned ON custom defines: macos
 #define CUSTOM_DEFINE_macos
 
+#define __VTHREADS__ (1)
 
 // V typedefs:
 typedef struct IError IError;
+typedef struct vphp__ITask vphp__ITask;
 typedef struct none none;
 
 // BEGIN_multi_return_typedefs
@@ -35,6 +37,8 @@ typedef struct multi_return_f64_int multi_return_f64_int;
 // END_multi_return_typedefs
 
 typedef struct strings__IndentParam strings__IndentParam;
+typedef struct builtin__closure__Closure builtin__closure__Closure;
+typedef struct builtin__closure__ClosureMutex builtin__closure__ClosureMutex;
 typedef struct strconv__AtoF64Param strconv__AtoF64Param;
 typedef struct strconv__BF_param strconv__BF_param;
 typedef struct strconv__PrepNumber strconv__PrepNumber;
@@ -66,11 +70,13 @@ typedef struct RunesIterator RunesIterator;
 typedef union StrIntpMem StrIntpMem;
 typedef struct StrIntpData StrIntpData;
 typedef struct ToWideConfig ToWideConfig;
+typedef struct strings__textscanner__TextScanner strings__textscanner__TextScanner;
+typedef struct term__termios__Termios term__termios__Termios;
 typedef struct vphp__Val vphp__Val;
 typedef struct vphp__Context vphp__Context;
 typedef struct vphp__MapContext vphp__MapContext;
-typedef struct strings__textscanner__TextScanner strings__textscanner__TextScanner;
-typedef struct term__termios__Termios term__termios__Termios;
+typedef struct vphp__AsyncResult vphp__AsyncResult;
+typedef struct vphp__TaskRegistry vphp__TaskRegistry;
 typedef struct os__Command os__Command;
 typedef struct os__Eof os__Eof;
 typedef struct os__NotExpected os__NotExpected;
@@ -98,6 +104,7 @@ typedef struct main__Coach main__Coach;
 typedef struct main__Database main__Database;
 typedef struct main__MotionReport main__MotionReport;
 typedef struct main__HeartPoint main__HeartPoint;
+typedef struct main__AnalyzeTask main__AnalyzeTask;
 typedef struct _result_int _result_int;
 typedef struct _result_f64 _result_f64;
 typedef struct _result_u64 _result_u64;
@@ -128,6 +135,7 @@ typedef struct _result_anon_fn_os__signal _result_anon_fn_os__signal;
 typedef struct _option_rune _option_rune;
 typedef struct _option_multi_return_string_string _option_multi_return_string_string;
 typedef struct _option_int _option_int;
+typedef struct _option_anon_fn___vphp__ITask _option_anon_fn___vphp__ITask;
 typedef struct _option_string _option_string;
 
  // V preincludes:
@@ -740,32 +748,6 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 
 #endif
 
-// added by module `vphp`, file: vphp.v:3:
-
-#if defined(__has_include)
-#if __has_include(<php.h>)
-#include <php.h>
-#else
-#error VERROR_MESSAGE Header file <php.h>, needed for module `vphp` was not found. Please install the corresponding development headers.
-#endif
-#else
-#include <php.h>
-#endif
-
-
-// added by module `vphp`, file: vphp.v:4:
-
-#if defined(__has_include)
-#if __has_include("v_bridge.h")
-#include "v_bridge.h"
-#else
-#error VERROR_MESSAGE Header file "v_bridge.h", needed for module `vphp` was not found. Please install the corresponding development headers.
-#endif
-#else
-#include "v_bridge.h"
-#endif
-
-
 // added by module `term.termios`, file: termios_darwin.c.v:10:
 
 #if defined(__has_include)
@@ -789,6 +771,32 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 #else
 #include <sys/ioctl.h>
+#endif
+
+
+// added by module `vphp`, file: vphp.v:3:
+
+#if defined(__has_include)
+#if __has_include(<php.h>)
+#include <php.h>
+#else
+#error VERROR_MESSAGE Header file <php.h>, needed for module `vphp` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <php.h>
+#endif
+
+
+// added by module `vphp`, file: vphp.v:4:
+
+#if defined(__has_include)
+#if __has_include("v_bridge.h")
+#include "v_bridge.h"
+#else
+#error VERROR_MESSAGE Header file "v_bridge.h", needed for module `vphp` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include "v_bridge.h"
 #endif
 
 
@@ -1007,6 +1015,7 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 
 
 // V global/const #define ... :
+#define _const_builtin__closure__assumed_page_size 16384
 #define _const_strconv__digits 18
 #define _const_strconv__c_dpoint '.'
 #define _const_strconv__c_plus '+'
@@ -1260,6 +1269,9 @@ typedef enum {
 	os__Signal__sys = 31, // 31
 }  os__Signal;
 
+// Thread definitions:
+typedef pthread_t __v_thread_Array_f64;
+
 // V type definitions:
 struct IError {
 	union {
@@ -1346,16 +1358,18 @@ typedef array Array_f64;
 typedef array Array_main__HeartPoint;
 typedef map Map_string_int;
 typedef array Array_bool;
+typedef array Array_vphp__Val;
+typedef map Map_string_f64;
+typedef array Array_i64;
+typedef map Map_string_vphp__TaskCreator;
 typedef array Array_char_ptr;
 typedef int Array_fixed_int_3 [3];
 typedef array Array_os__Signal;
 typedef char Array_fixed_char_256 [256];
-typedef array Array_vphp__Val;
-typedef map Map_string_f64;
-typedef array Array_i64;
 typedef u8 Array_fixed_u8_5 [5];
 typedef u8 Array_fixed_u8_25 [25];
 typedef u8 Array_fixed_u8_12 [12];
+typedef u8 Array_fixed_u8_8 [8];
 typedef u8 Array_fixed_u8_32 [32];
 typedef u8 Array_fixed_u8_64 [64];
 typedef u8 Array_fixed_u8_256 [256];
@@ -1389,9 +1403,19 @@ typedef int (*anon_fn_voidptr_voidptr__int)(voidptr,voidptr);
 typedef void (*FnExitCb)();
 typedef void (*FnGC_WarnCB)(char*,usize);
 typedef int (*FnSortCB)(voidptr,voidptr);
+typedef voidptr (*anon_fn___voidptr)();
+typedef vphp__ITask (*vphp__TaskCreator)();
 typedef void (*anon_fn_string)(string);
 typedef void (*os__FnWalkContextCB)(voidptr,string);
 typedef void (*os__SignalHandler)(os__Signal);
+struct vphp__ITask {
+	union {
+		void* _object;
+		main__AnalyzeTask* _main__AnalyzeTask;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
 // #start sorted_symbols
 struct none {
 	E_STRUCT_DECL;
@@ -1411,6 +1435,11 @@ struct vphp__Val {
 
 struct main__Coach {
 	string name;
+};
+
+struct vphp__Context {
+	zend_execute_data* ex;
+	zval* ret;
 };
 
 struct os__Eof {
@@ -1435,11 +1464,6 @@ struct os__Uname {
 	string release;
 	string version;
 	string machine;
-};
-
-struct vphp__Context {
-	zend_execute_data* ex;
-	zval* ret;
 };
 
 struct GCHeapUsage {
@@ -1552,6 +1576,10 @@ struct ToWideConfig {
 	bool from_ansi;
 };
 
+struct main__AnalyzeTask {
+	Array_f64 data;
+};
+
 struct main__Database {
 	bool connected;
 };
@@ -1576,6 +1604,10 @@ struct strings__IndentParam {
 	rune indent_char;
 	int indent_count;
 	int starting_level;
+};
+
+struct builtin__closure__ClosureMutex {
+	pthread_mutex_t closure_mtx;
 };
 
 struct strconv__PrepNumber {
@@ -1611,6 +1643,18 @@ struct strconv__Uint128 {
 union strconv__Uf64 {
 	f64 f;
 	u64 u;
+};
+
+struct vphp__MapContext {
+	Map_string_string m;
+};
+
+struct vphp__AsyncResult {
+	__v_thread_Array_f64 handle;
+};
+
+struct vphp__TaskRegistry {
+	Map_string_vphp__TaskCreator tasks;
 };
 
 struct os__Command {
@@ -1695,10 +1739,6 @@ struct os__Pipe {
 	int write_fd;
 };
 
-struct vphp__MapContext {
-	Map_string_string m;
-};
-
 struct strings__textscanner__TextScanner {
 	string input;
 	int ilen;
@@ -1717,6 +1757,14 @@ struct StrIntpData {
 	string str;
 	u32 fmt;
 	StrIntpMem d;
+};
+
+struct builtin__closure__Closure {
+	builtin__closure__ClosureMutex ClosureMutex;
+	voidptr closure_ptr;
+	anon_fn___voidptr closure_get_data;
+	int closure_cap;
+	int v_page_size;
 };
 
 struct os__FileMode {
@@ -1847,6 +1895,11 @@ struct multi_return_f64_int {
 
 // END_multi_return_structs
 
+
+typedef struct thread_arg_vphp__ITask_run {
+	Array_f64 (*fn) (vphp__ITask);
+	vphp__ITask arg0;
+} thread_arg_vphp__ITask_run;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
 
@@ -1867,6 +1920,12 @@ struct _option_int {
 	byte state;
 	IError err;
 	byte data[sizeof(int) > 1 ? sizeof(int) : 1];
+};
+
+struct _option_anon_fn___vphp__ITask {
+	byte state;
+	IError err;
+	byte data[sizeof(void*) > 1 ? sizeof(void*) : 1];
 };
 
 struct _option_string {
@@ -2043,6 +2102,8 @@ struct _result_anon_fn_os__signal {
 // V definitions:
 static char * v_typeof_interface_IError(u32 sidx);
 u32 v_typeof_interface_idx_IError(u32 sidx);
+static char * v_typeof_interface_vphp__ITask(u32 sidx);
+u32 v_typeof_interface_idx_vphp__ITask(u32 sidx);
 // end of definitions #endif
 strings__Builder strings__new_builder(int initial_size);
 Array_u8 strings__Builder_reuse_as_plain_u8_array(strings__Builder* b);
@@ -2089,6 +2150,15 @@ string strings__find_between_pair_u8(string input, u8 start, u8 end);
 string strings__find_between_pair_rune(string input, rune start, rune end);
 string strings__find_between_pair_string(string input, string start, string end);
 Array_string strings__split_capital(string s);
+VV_LOC void builtin__closure__closure_alloc(void);
+VV_LOC void builtin__closure__closure_init(void);
+VV_LOC voidptr builtin__closure__closure_create(voidptr func, voidptr data);
+VV_LOC u8* builtin__closure__closure_alloc_platform(void);
+VV_LOC void builtin__closure__closure_memory_protect_platform(voidptr ptr, isize size, builtin__closure__MemoryProtectAtrr attr);
+VV_LOC int builtin__closure__get_page_size_platform(void);
+VV_LOC void builtin__closure__closure_mtx_lock_init_platform(void);
+VV_LOC void builtin__closure__closure_mtx_lock_platform(void);
+VV_LOC void builtin__closure__closure_mtx_unlock_platform(void);
 multi_return_u64_u64 math__bits__mul_64(u64 x, u64 y);
 multi_return_u64_u64 math__bits__mul_add_64(u64 x, u64 y, u64 z);
 int math__bits__leading_zeros_8(u8 x);
@@ -2742,55 +2812,6 @@ void builtin__ArrayFlags_clear(ArrayFlags* e, ArrayFlags flag_);
 void builtin__ArrayFlags_clear_all(ArrayFlags* e);
 void builtin__ArrayFlags_toggle(ArrayFlags* e, ArrayFlags flag_);
 ArrayFlags builtin__ArrayFlags__static__zero(void);
-int vphp__Val_type_id(vphp__Val v);
-bool vphp__Val_is_array(vphp__Val v);
-bool vphp__Val_is_string(vphp__Val v);
-bool vphp__Val_is_long(vphp__Val v);
-bool vphp__Val_is_double(vphp__Val v);
-bool vphp__Val_is_bool(vphp__Val v);
-bool vphp__Val_is_null(vphp__Val v);
-bool vphp__Val_is_object(vphp__Val v);
-vphp__Val vphp__Val_invoke(vphp__Val v, Array_vphp__Val args);
-void vphp__Context_return_res(vphp__Context ctx, voidptr ptr, string label);
-void vphp__Context_return_map(vphp__Context ctx, Map_string_string m);
-void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__MotionReport s);
-void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main__HeartPoint list);
-voidptr vphp__Val_to_res(vphp__Val v);
-bool vphp__Val_to_bool(vphp__Val v);
-string vphp__Val_type_name(vphp__Val v);
-vphp__Val vphp__Val_call(vphp__Val v, string method, Array_vphp__Val args);
-void vphp__init_framework(int module_number);
-vphp__Val vphp__Context_arg_raw(vphp__Context ctx, int index);
-void vphp__Context_return_object(vphp__Context ctx, Map_string_string props);
-_result_vphp__Val vphp__Val_get(vphp__Val v, string key);
-void vphp__report_error(int level, string msg);
-string vphp__Val_to_string(vphp__Val v);
-void vphp__Val_set_string(vphp__Val v, string s);
-i64 vphp__Val_as_int(vphp__Val v);
-Array_vphp__Val vphp__get_args(zend_execute_data* ex);
-void vphp__throw_exception(string msg, int code);
-void vphp__Val_set_int(vphp__Val v, i64 val);
-void vphp__Context_return_int(vphp__Context ctx, i64 val);
-void vphp__Context_return_string(vphp__Context ctx, string val);
-void vphp__Context_return_map_f64(vphp__Context ctx, Map_string_f64 m);
-void vphp__Context_return_map_int(vphp__Context ctx, Map_string_int m);
-int vphp__Context_num_args(vphp__Context ctx);
-i64 vphp__Context_arg_T_i64(vphp__Context ctx, int index);
-string vphp__Context_arg_T_string(vphp__Context ctx, int index);
-Array_string vphp__Context_arg_T_Array_string(vphp__Context ctx, int index);
-Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int index);
-Array_f64 vphp__Context_arg_T_Array_f64(vphp__Context ctx, int index);
-int vphp__Context_arg_T_int(vphp__Context ctx, int index);
-bool vphp__Context_arg_T_bool(vphp__Context ctx, int index);
-void vphp__return_val_T_i64(vphp__Context ctx, i64 val);
-void vphp__return_val_T_string(vphp__Context ctx, string val);
-vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
-VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val);
-vphp__Val vphp__call_php(string name, Array_vphp__Val args);
-bool vphp__Context_has_exception(vphp__Context ctx);
-vphp__Val vphp__Val_get_prop(vphp__Val v, string name);
-string vphp__Val_get_prop_string(vphp__Val v, string name);
-int vphp__Val_get_prop_int(vphp__Val v, string name);
 strings__textscanner__TextScanner strings__textscanner__new(string input);
 void strings__textscanner__TextScanner_free(strings__textscanner__TextScanner* ss);
 int strings__textscanner__TextScanner_remaining(strings__textscanner__TextScanner* ss);
@@ -2816,6 +2837,64 @@ int term__termios__tcsetattr(int fd, int optional_actions, term__termios__Termio
 int term__termios__ioctl(int fd, u64 request, voidptr arg);
 int term__termios__set_state(int fd, term__termios__Termios new_state);
 void term__termios__Termios_disable_echo(term__termios__Termios* t);
+int vphp__Val_type_id(vphp__Val v);
+bool vphp__Val_is_array(vphp__Val v);
+bool vphp__Val_is_string(vphp__Val v);
+bool vphp__Val_is_long(vphp__Val v);
+bool vphp__Val_is_double(vphp__Val v);
+bool vphp__Val_is_bool(vphp__Val v);
+bool vphp__Val_is_null(vphp__Val v);
+bool vphp__Val_is_object(vphp__Val v);
+vphp__Val vphp__Val_invoke(vphp__Val v, Array_vphp__Val args);
+void vphp__Context_return_res(vphp__Context ctx, voidptr ptr, string label);
+void vphp__Context_return_map(vphp__Context ctx, Map_string_string m);
+void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__MotionReport s);
+void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main__HeartPoint list);
+voidptr vphp__Val_to_res(vphp__Val v);
+bool vphp__Val_to_bool(vphp__Val v);
+string vphp__Val_type_name(vphp__Val v);
+vphp__Val vphp__Val_call(vphp__Val v, string method, Array_vphp__Val args);
+void vphp__init_framework(int module_number);
+VV_LOC void vphp__vphp_framework_init(int module_number);
+VV_EXP void vphp_framework_init(int module_number); // exported fn vphp.vphp_framework_init
+vphp__Val vphp__Context_arg_raw(vphp__Context ctx, int index);
+void vphp__Context_return_object(vphp__Context ctx, Map_string_string props);
+_result_vphp__Val vphp__Val_get(vphp__Val v, string key);
+void vphp__report_error(int level, string msg);
+string vphp__Val_to_string(vphp__Val v);
+void vphp__Val_set_string(vphp__Val v, string s);
+i64 vphp__Val_as_int(vphp__Val v);
+Array_vphp__Val vphp__get_args(zend_execute_data* ex);
+void vphp__throw_exception(string msg, int code);
+void vphp__Val_set_int(vphp__Val v, i64 val);
+void vphp__Context_return_int(vphp__Context ctx, i64 val);
+void vphp__Context_return_string(vphp__Context ctx, string val);
+void vphp__Context_return_map_f64(vphp__Context ctx, Map_string_f64 m);
+void vphp__Context_return_map_int(vphp__Context ctx, Map_string_int m);
+int vphp__Context_num_args(vphp__Context ctx);
+string vphp__Context_arg_T_string(vphp__Context ctx, int index);
+i64 vphp__Context_arg_T_i64(vphp__Context ctx, int index);
+Array_string vphp__Context_arg_T_Array_string(vphp__Context ctx, int index);
+Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int index);
+Array_f64 vphp__Context_arg_T_Array_f64(vphp__Context ctx, int index);
+int vphp__Context_arg_T_int(vphp__Context ctx, int index);
+bool vphp__Context_arg_T_bool(vphp__Context ctx, int index);
+void vphp__return_val_T_i64(vphp__Context ctx, i64 val);
+void vphp__return_val_T_string(vphp__Context ctx, string val);
+vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
+VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val);
+vphp__Val vphp__call_php(string name, Array_vphp__Val args);
+bool vphp__Context_has_exception(vphp__Context ctx);
+vphp__Val vphp__Val_get_prop(vphp__Val v, string name);
+string vphp__Val_get_prop_string(vphp__Val v, string name);
+int vphp__Val_get_prop_int(vphp__Val v, string name);
+VV_LOC vphp__TaskRegistry* vphp__get_registry(void);
+void vphp__ITask__static__register(string name, vphp__ITask (*creator)());
+_option_anon_fn___vphp__ITask vphp__ITask__static__get_creator(string name);
+VV_LOC void vphp__framework_v_spawn(zend_execute_data* ex, zval* retval);
+VV_EXP void v_spawn(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_spawn
+VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval);
+VV_EXP void v_wait(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_wait
 Array_string os__args_after(string cut_word);
 Array_string os__args_before(string cut_word);
 _result_os__Command os__start_new_command(string cmd);
@@ -3090,6 +3169,9 @@ os__FileMode os__Stat_get_mode(os__Stat st);
 bool os__is_dir(string path);
 bool os__is_link(string path);
 VV_LOC os__PathKind os__kind_of_existing_path(string path);
+VV_LOC void main__vphp_task_auto_startup(void);
+VV_LOC vphp__ITask anon_fn_e0873e5963f3179a_40___vphp__ITask_146(void);
+VV_EXP void vphp_task_auto_startup(void); // exported fn main.vphp_task_auto_startup
 VV_LOC void main__main(void);
 VV_LOC void main__v_reverse_string(zval* z_in, zval* z_out);
 VV_EXP void v_reverse_string(zval* z_in, zval* z_out); // exported fn main.v_reverse_string
@@ -3127,6 +3209,7 @@ VV_LOC void main__v_trigger_user_action(zend_execute_data* ex, zval* retval);
 VV_EXP void v_trigger_user_action(zend_execute_data* ex, zval* retval); // exported fn main.v_trigger_user_action
 VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval);
 VV_EXP void v_call_php_closure(zend_execute_data* ex, zval* retval); // exported fn main.v_call_php_closure
+VV_LOC Array_f64 main__AnalyzeTask_run(main__AnalyzeTask t);
 bool Array_rune_arr_eq(Array_rune a, Array_rune b);
 
 // V global/const non-precomputed definitions:
@@ -3144,7 +3227,10 @@ string _const_os__dot_str; // a string literal, inited later
 string _const_os__path_separator; // a string literal, inited later
 string _const_os__path_delimiter; // a string literal, inited later
 string _const_os__path_devnull; // a string literal, inited later
+builtin__closure__Closure g_closure; // global 6
+
 Array_fixed_u8_12 _const_builtin__closure__closure_thunk; // inited later
+Array_fixed_u8_8 _const_builtin__closure__closure_get_data_bytes; // inited later
 const u32 _const_math__bits__de_bruijn32 = 125613361; // precomputed2
 Array_fixed_u8_32 _const_math__bits__de_bruijn32tab = {((u8)(0)), 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 
 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9}; // fixed array const
@@ -3474,6 +3560,8 @@ Array_fixed_i32_1264 _const_rune_maps = {((i32)(0xB5)), 0xB5, 743, 0, 0xC0, 0xD6
 0x10597, 0x105A1, -39, 0, 0x105A3, 0x105B1, -39, 0, 0x105B3, 0x105B9, -39, 0, 0x105BB, 0x105BC, -39, 0, 
 0x10C80, 0x10CB2, 0, 64, 0x10CC0, 0x10CF2, -64, 0, 0x118A0, 0x118BF, 0, 32, 0x118C0, 0x118DF, -32, 0, 
 0x16E40, 0x16E5F, 0, 32, 0x16E60, 0x16E7F, -32, 0, 0x1E900, 0x1E921, 0, 34, 0x1E922, 0x1E943, -34, 0}; // fixed array const
+vphp__TaskRegistry* g_registry; // global 6
+
 int _const_os__o_rdonly; // inited later
 int _const_os__o_wronly; // inited later
 int _const_os__o_rdwr; // inited later
@@ -3489,7 +3577,9 @@ int _const_os__fd_stdout; // inited later
 int _const_os__fd_stderr; // inited later
 u64 g_main_thread_id; // global 6
 
+u32 _const_builtin__closure__closure_size_1; // inited later
 Array_string _const_os__args; // inited later
+int _const_builtin__closure__closure_size; // inited later
 
 // V interface table:
 static IError I_None___to_Interface_IError(None__* x);
@@ -3688,6 +3778,49 @@ return (IError) {
 	};
 }
 
+static vphp__ITask I_main__AnalyzeTask_to_Interface_vphp__ITask(main__AnalyzeTask* x);
+const u32 _vphp__ITask_main__AnalyzeTask_index = 0;
+static vphp__ITask I_voidptr_to_Interface_vphp__ITask(voidptr* x);
+const u32 _vphp__ITask_voidptr_index = 1;
+// ^^^ number of types for interface vphp__ITask: 2
+
+// Methods wrapper for interface "vphp__ITask"
+static inline Array_f64 main__AnalyzeTask_run_Interface_vphp__ITask_method_wrapper(main__AnalyzeTask* t) {
+	return main__AnalyzeTask_run(*t);
+}
+
+struct _vphp__ITask_interface_methods {
+	Array_f64 (*_method_run)(void* _);
+};
+
+struct _vphp__ITask_interface_methods vphp__ITask_name_table[2] = {
+	{
+		._method_run = (void*) main__AnalyzeTask_run_Interface_vphp__ITask_method_wrapper,
+	},
+	{
+		._method_run = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "main__AnalyzeTask" to interface "vphp__ITask"
+
+static inline vphp__ITask I_main__AnalyzeTask_to_Interface_vphp__ITask(main__AnalyzeTask* x) {
+return (vphp__ITask) {
+		._main__AnalyzeTask = x,
+		._typ = _vphp__ITask_main__AnalyzeTask_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "vphp__ITask"
+
+static inline vphp__ITask I_voidptr_to_Interface_vphp__ITask(voidptr* x) {
+return (vphp__ITask) {
+		._voidptr = x,
+		._typ = _vphp__ITask_voidptr_index,
+	};
+}
+
 
 // V sort fn definitions:
 VV_LOC  int compare_11835712493692648452_RepIndex_by_idx(RepIndex* a, RepIndex* b) {
@@ -3702,6 +3835,10 @@ VV_LOC  int compare_1065768667300548517_string(string* a, string* b) {
 
 
 // end of V out (header)
+
+// V gowrappers waiter fns:
+Array_f64 __v_thread_Array_f64_wait(__v_thread_Array_f64 thread);
+void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
 
 // V auto functions:
 static bool Array_u8_contains(Array_u8 a, u8 v) {
@@ -3735,6 +3872,30 @@ inline bool Array_rune_arr_eq(Array_rune a, Array_rune b) {
 }
 
 
+// V gowrappers:
+
+Array_f64 __v_thread_Array_f64_wait(__v_thread_Array_f64 thread) {
+	Array_f64* ret_ptr;
+	if ((unsigned long int)thread == 0) { builtin___v_panic(_S("unable to join thread")); }
+	int stat = pthread_join(thread, (void **)&ret_ptr);
+	if (stat != 0) { builtin___v_panic(_S("unable to join thread")); }
+	Array_f64 ret = *ret_ptr;
+	builtin___v_free(ret_ptr);
+	return ret;
+}
+void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
+	Array_f64* ret_ptr = (Array_f64*) builtin___v_malloc(sizeof(Array_f64));
+	*ret_ptr = vphp__ITask_name_table[arg->arg0._typ]._method_run(arg->arg0._object);
+	builtin___v_free(arg);
+	return ret_ptr;
+}
+
+// V anon functions:
+VV_LOC vphp__ITask anon_fn_e0873e5963f3179a_40___vphp__ITask_146(void) {
+	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.data = builtin____new_array(0, 0, sizeof(f64)),}, sizeof(main__AnalyzeTask))));
+}
+
+
 // >> typeof() support for sum types / interfaces
 static char * v_typeof_interface_IError(u32 sidx) {
 	if (sidx == _IError_None___index) return "None__";
@@ -3754,12 +3915,23 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_voidptr_index) return 2;
 	if (sidx == _IError_Error_index) return 63;
 	if (sidx == _IError_MessageError_index) return 64;
-	if (sidx == _IError_os__Eof_index) return 147;
-	if (sidx == _IError_os__NotExpected_index) return 148;
-	if (sidx == _IError_os__FileNotOpenedError_index) return 150;
-	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 151;
-	if (sidx == _IError_os__ExecutableNotFoundError_index) return 171;
+	if (sidx == _IError_os__Eof_index) return 167;
+	if (sidx == _IError_os__NotExpected_index) return 168;
+	if (sidx == _IError_os__FileNotOpenedError_index) return 170;
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 171;
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return 189;
 	return 30;
+}
+static char * v_typeof_interface_vphp__ITask(u32 sidx) {
+	if (sidx == _vphp__ITask_main__AnalyzeTask_index) return "AnalyzeTask";
+	if (sidx == _vphp__ITask_voidptr_index) return "voidptr";
+	return "unknown vphp.ITask";
+}
+
+u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
+	if (sidx == _vphp__ITask_main__AnalyzeTask_index) return 109;
+	if (sidx == _vphp__ITask_voidptr_index) return 2;
+	return 108;
 }
 // << typeof() support for sum types
 
@@ -4376,8 +4548,121 @@ Array_string strings__split_capital(string s) {
 	}
 	return res;
 }
+VV_LOC void builtin__closure__closure_alloc(void) {
+	u8* p = builtin__closure__closure_alloc_platform();
+	if (builtin__isnil(p)) {
+		return;
+	}
+	u8* x = p + g_closure.v_page_size;
+	int remaining = (int)(g_closure.v_page_size / _const_builtin__closure__closure_size);
+	g_closure.closure_ptr = x;
+	g_closure.closure_cap = remaining;
+	for (;;) {
+		if (!(remaining > 0)) break;
+		builtin__vmemcpy(x, &_const_builtin__closure__closure_thunk[0], 12);
+		remaining--;
+		{ // Unsafe block
+			x += _const_builtin__closure__closure_size;
+		}
+	}
+	builtin__closure__closure_memory_protect_platform(g_closure.closure_ptr, g_closure.v_page_size, builtin__closure__MemoryProtectAtrr__read_exec);
+}
+VV_LOC void builtin__closure__closure_init(void) {
+	int page_size = builtin__closure__get_page_size_platform();
+	g_closure.v_page_size = page_size;
+	builtin__closure__closure_mtx_lock_init_platform();
+	builtin__closure__closure_alloc();
+	{ // Unsafe block
+		builtin__closure__closure_memory_protect_platform(g_closure.closure_ptr, page_size, builtin__closure__MemoryProtectAtrr__read_write);
+		builtin__vmemcpy(g_closure.closure_ptr, &_const_builtin__closure__closure_get_data_bytes[0], 8);
+		builtin__closure__closure_memory_protect_platform(g_closure.closure_ptr, page_size, builtin__closure__MemoryProtectAtrr__read_exec);
+	}
+	g_closure.closure_get_data = (voidptr)g_closure.closure_ptr;
+	{ // Unsafe block
+		g_closure.closure_ptr = ((u8*)(g_closure.closure_ptr)) + _const_builtin__closure__closure_size;
+	}
+	g_closure.closure_cap--;
+}
+VV_LOC voidptr builtin__closure__closure_create(voidptr func, voidptr data) {
+	builtin__closure__closure_mtx_lock_platform();
+	if (g_closure.closure_cap == 0) {
+		builtin__closure__closure_alloc();
+	}
+	g_closure.closure_cap--;
+	voidptr curr_closure = g_closure.closure_ptr;
+	{ // Unsafe block
+		g_closure.closure_ptr = ((u8*)(g_closure.closure_ptr)) + _const_builtin__closure__closure_size;
+		voidptr* p = ((voidptr*)(((u8*)(curr_closure)) - _const_builtin__closure__assumed_page_size));
+		p[0] = data;
+		p[1] = func;
+	}
+	builtin__closure__closure_mtx_unlock_platform();
+	return curr_closure;
+}
 #if !defined(_VFREESTANDING) && !defined(__vinix__)
 #endif
+inline VV_LOC u8* builtin__closure__closure_alloc_platform(void) {
+	u8* p = ((u8*)(((void*)0)));
+	#if defined(_VFREESTANDING)
+	{
+	}
+	#else
+	{
+		p = mmap(0, (int)(g_closure.v_page_size * 2), (PROT_READ | PROT_WRITE), (MAP_ANONYMOUS | MAP_PRIVATE), -1, 0);
+		if (p == ((u8*)(MAP_FAILED))) {
+			return ((void*)0);
+		}
+	}
+	#endif
+	return p;
+}
+inline VV_LOC void builtin__closure__closure_memory_protect_platform(voidptr ptr, isize size, builtin__closure__MemoryProtectAtrr attr) {
+	#if defined(_VFREESTANDING)
+	{
+	}
+	#else
+	{
+
+		if (attr == (builtin__closure__MemoryProtectAtrr__read_exec)) {
+			mprotect(ptr, size, (PROT_READ | PROT_EXEC));
+		}
+		else if (attr == (builtin__closure__MemoryProtectAtrr__read_write)) {
+			mprotect(ptr, size, (PROT_READ | PROT_WRITE));
+		}
+	}
+	#endif
+}
+inline VV_LOC int builtin__closure__get_page_size_platform(void) {
+	int page_size = 0x4000;
+	#if !defined(_VFREESTANDING)
+	{
+		page_size = ((int)(sysconf(_SC_PAGESIZE)));
+	}
+	#endif
+	page_size = (int)(page_size * ((int)(((int)(((int)(_const_builtin__closure__assumed_page_size - 1)) / page_size)) + 1)));
+	return page_size;
+}
+inline VV_LOC void builtin__closure__closure_mtx_lock_init_platform(void) {
+	#if !defined(_VFREESTANDING) || defined(__vinix__)
+	{
+		pthread_mutex_init(&g_closure.ClosureMutex.closure_mtx, 0);
+	}
+	#endif
+}
+inline VV_LOC void builtin__closure__closure_mtx_lock_platform(void) {
+	#if !defined(_VFREESTANDING) || defined(__vinix__)
+	{
+		pthread_mutex_lock(&g_closure.ClosureMutex.closure_mtx);
+	}
+	#endif
+}
+inline VV_LOC void builtin__closure__closure_mtx_unlock_platform(void) {
+	#if !defined(_VFREESTANDING) || defined(__vinix__)
+	{
+		pthread_mutex_unlock(&g_closure.ClosureMutex.closure_mtx);
+	}
+	#endif
+}
 inline multi_return_u64_u64 math__bits__mul_64(u64 x, u64 y) {
 	u64 hi = ((u64)(0));
 	u64 lo = ((u64)(0));
@@ -9142,10 +9427,10 @@ u64 builtin__v_gettid(void) {
 	}
 	#elif defined(__VTHREADS__)
 	{
+		return ((u64)(pthread_self()));
 	}
 	#else
 	{
-		return builtin__v_getpid();
 	}
 	#endif
 	return 0;
@@ -14466,6 +14751,133 @@ inline void builtin__ArrayFlags_toggle(ArrayFlags* e, ArrayFlags flag_) {
 inline ArrayFlags builtin__ArrayFlags__static__zero(void) {
 	return ((ArrayFlags)(0));
 }
+#if !defined(_WIN32) && !defined(__ANDROID__)
+#endif
+strings__textscanner__TextScanner strings__textscanner__new(string input) {
+	return ((strings__textscanner__TextScanner){.input = input,.ilen = input.len,.pos = 0,});
+}
+void strings__textscanner__TextScanner_free(strings__textscanner__TextScanner* ss) {
+	builtin__string_free(&ss->input);
+}
+inline int strings__textscanner__TextScanner_remaining(strings__textscanner__TextScanner* ss) {
+	return (int)(ss->ilen - ss->pos);
+}
+inline int strings__textscanner__TextScanner_next(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		int opos = ss->pos;
+		ss->pos++;
+		return ss->input.str[ opos];
+	}
+	return -1;
+}
+inline void strings__textscanner__TextScanner_skip(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		ss->pos++;
+	}
+}
+inline void strings__textscanner__TextScanner_skip_n(strings__textscanner__TextScanner* ss, int n) {
+	ss->pos += n;
+	if (ss->pos > ss->ilen) {
+		ss->pos = ss->ilen;
+	}
+}
+inline int strings__textscanner__TextScanner_peek(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		return ss->input.str[ ss->pos];
+	}
+	return -1;
+}
+inline u8 strings__textscanner__TextScanner_peek_u8(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		return ss->input.str[ ss->pos];
+	}
+	return 0;
+}
+inline int strings__textscanner__TextScanner_peek_n(strings__textscanner__TextScanner* ss, int n) {
+	if ((int)(ss->pos + n) < ss->ilen) {
+		return ss->input.str[ (int)(ss->pos + n)];
+	}
+	return -1;
+}
+inline u8 strings__textscanner__TextScanner_peek_n_u8(strings__textscanner__TextScanner* ss, int n) {
+	if ((int)(ss->pos + n) < ss->ilen) {
+		return ss->input.str[ (int)(ss->pos + n)];
+	}
+	return 0;
+}
+inline void strings__textscanner__TextScanner_back(strings__textscanner__TextScanner* ss) {
+	if (ss->pos > 0) {
+		ss->pos--;
+	}
+}
+void strings__textscanner__TextScanner_back_n(strings__textscanner__TextScanner* ss, int n) {
+	ss->pos -= n;
+	if (ss->pos < 0) {
+		ss->pos = 0;
+	}
+	if (ss->pos > ss->ilen) {
+		ss->pos = ss->ilen;
+	}
+}
+inline int strings__textscanner__TextScanner_peek_back(strings__textscanner__TextScanner* ss) {
+	return strings__textscanner__TextScanner_peek_back_n(ss, 1);
+}
+inline int strings__textscanner__TextScanner_peek_back_n(strings__textscanner__TextScanner* ss, int n) {
+	int offset = (int)(n + 1);
+	if (ss->pos >= offset) {
+		return ss->input.str[ (int)(ss->pos - offset)];
+	}
+	return -1;
+}
+inline int strings__textscanner__TextScanner_current(strings__textscanner__TextScanner* ss) {
+	if (ss->pos > 0) {
+		return ss->input.str[ (int)(ss->pos - 1)];
+	}
+	return -1;
+}
+void strings__textscanner__TextScanner_reset(strings__textscanner__TextScanner* ss) {
+	ss->pos = 0;
+}
+void strings__textscanner__TextScanner_goto_end(strings__textscanner__TextScanner* ss) {
+	ss->pos = ss->ilen;
+}
+void strings__textscanner__TextScanner_skip_whitespace(strings__textscanner__TextScanner* ss) {
+	for (;;) {
+		if (!((int)(ss->ilen - ss->pos) > 0 && builtin__u8_is_space(strings__textscanner__TextScanner_peek_u8(ss)))) break;
+		strings__textscanner__TextScanner_next(ss);
+	}
+}
+inline term__termios__TcFlag term__termios__flag(int value) {
+	return ((usize)(value));
+}
+inline term__termios__TcFlag term__termios__invert(term__termios__TcFlag value) {
+	return ~((usize)(value));
+}
+inline int term__termios__tcgetattr(int fd, term__termios__Termios* termios_p) {
+	{ // Unsafe block
+		return tcgetattr(fd, ((struct termios*)(termios_p)));
+	}
+	return 0;
+}
+inline int term__termios__tcsetattr(int fd, int optional_actions, term__termios__Termios* termios_p) {
+	{ // Unsafe block
+		return tcsetattr(fd, optional_actions, ((struct termios*)(termios_p)));
+	}
+	return 0;
+}
+inline int term__termios__ioctl(int fd, u64 request, voidptr arg) {
+	{ // Unsafe block
+		return ioctl(fd, request, arg);
+	}
+	return 0;
+}
+int term__termios__set_state(int fd, term__termios__Termios new_state) {
+	term__termios__Termios x = new_state;
+	return term__termios__tcsetattr(0, TCSANOW, (voidptr)&x);
+}
+void term__termios__Termios_disable_echo(term__termios__Termios* t) {
+	t->c_lflag &= term__termios__invert(((usize)(ECHO)));
+}
 int vphp__Val_type_id(vphp__Val v) {
 	return vphp_get_type(v.raw);
 }
@@ -14861,6 +15273,14 @@ vphp__Val vphp__Val_call(vphp__Val v, string method, Array_vphp__Val args) {
 void vphp__init_framework(int module_number) {
 	vphp_init_resource_system(module_number);
 }
+VV_LOC void vphp__vphp_framework_init(int module_number) {
+	vphp__init_framework(module_number);
+	builtin__println(_S("VPHP Framework initialized."));
+}
+// export alias: vphp_framework_init -> vphp__vphp_framework_init
+void vphp_framework_init(int module_number) {
+	return vphp__vphp_framework_init(module_number);
+}
 vphp__Val vphp__Context_arg_raw(vphp__Context ctx, int index) {
 	Array_vphp__Val args = vphp__get_args(ctx.ex);
 	if (index >= args.len || index < 0) {
@@ -14986,6 +15406,46 @@ void vphp__Context_return_map_int(vphp__Context ctx, Map_string_int m) {
 int vphp__Context_num_args(vphp__Context ctx) {
 	return ((int)(vphp_get_num_args(ctx.ex)));
 }
+string vphp__Context_arg_T_string(vphp__Context ctx, int index) {
+	Array_vphp__Val args = vphp__get_args(ctx.ex);
+	if (index >= args.len) {
+		return (string){.str=(byteptr)"", .is_lit=1};
+	}
+	vphp__Val val = (*(vphp__Val*)builtin__array_get(args, index));
+	zval* raw_zval = val.raw;
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if true
+	{
+		int len = 0;
+		voidptr ptr = ((voidptr)(vphp_get_string_ptr(val.raw, &len)));
+		return (ptr != 0 ? (builtin__char_vstring_with_len((((char*)(ptr))), len)) : (_S("")));
+	}
+	#endif
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
 i64 vphp__Context_arg_T_i64(vphp__Context ctx, int index) {
 	Array_vphp__Val args = vphp__get_args(ctx.ex);
 	if (index >= args.len) {
@@ -15027,46 +15487,6 @@ i64 vphp__Context_arg_T_i64(vphp__Context ctx, int index) {
 	}
 	#endif
 	return 0;
-}
-string vphp__Context_arg_T_string(vphp__Context ctx, int index) {
-	Array_vphp__Val args = vphp__get_args(ctx.ex);
-	if (index >= args.len) {
-		return (string){.str=(byteptr)"", .is_lit=1};
-	}
-	vphp__Val val = (*(vphp__Val*)builtin__array_get(args, index));
-	zval* raw_zval = val.raw;
-	#if false
-	{
-	}
-	#endif
-	#if false
-	{
-	}
-	#endif
-	#if false
-	{
-	}
-	#endif
-	#if false
-	{
-	}
-	#endif
-	#if false
-	{
-	}
-	#endif
-	#if false
-	{
-	}
-	#endif
-	#if true
-	{
-		int len = 0;
-		voidptr ptr = ((voidptr)(vphp_get_string_ptr(val.raw, &len)));
-		return (ptr != 0 ? (builtin__char_vstring_with_len((((char*)(ptr))), len)) : (_S("")));
-	}
-	#endif
-	return (string){.str=(byteptr)"", .is_lit=1};
 }
 Array_string vphp__Context_arg_T_Array_string(vphp__Context ctx, int index) {
 	Array_vphp__Val args = vphp__get_args(ctx.ex);
@@ -15398,130 +15818,83 @@ int vphp__Val_get_prop_int(vphp__Val v, string name) {
 	}
 	return ((int)(vphp_get_int(prop.raw)));
 }
-strings__textscanner__TextScanner strings__textscanner__new(string input) {
-	return ((strings__textscanner__TextScanner){.input = input,.ilen = input.len,.pos = 0,});
-}
-void strings__textscanner__TextScanner_free(strings__textscanner__TextScanner* ss) {
-	builtin__string_free(&ss->input);
-}
-inline int strings__textscanner__TextScanner_remaining(strings__textscanner__TextScanner* ss) {
-	return (int)(ss->ilen - ss->pos);
-}
-inline int strings__textscanner__TextScanner_next(strings__textscanner__TextScanner* ss) {
-	if (ss->pos < ss->ilen) {
-		int opos = ss->pos;
-		ss->pos++;
-		return ss->input.str[ opos];
-	}
-	return -1;
-}
-inline void strings__textscanner__TextScanner_skip(strings__textscanner__TextScanner* ss) {
-	if (ss->pos < ss->ilen) {
-		ss->pos++;
-	}
-}
-inline void strings__textscanner__TextScanner_skip_n(strings__textscanner__TextScanner* ss, int n) {
-	ss->pos += n;
-	if (ss->pos > ss->ilen) {
-		ss->pos = ss->ilen;
-	}
-}
-inline int strings__textscanner__TextScanner_peek(strings__textscanner__TextScanner* ss) {
-	if (ss->pos < ss->ilen) {
-		return ss->input.str[ ss->pos];
-	}
-	return -1;
-}
-inline u8 strings__textscanner__TextScanner_peek_u8(strings__textscanner__TextScanner* ss) {
-	if (ss->pos < ss->ilen) {
-		return ss->input.str[ ss->pos];
-	}
-	return 0;
-}
-inline int strings__textscanner__TextScanner_peek_n(strings__textscanner__TextScanner* ss, int n) {
-	if ((int)(ss->pos + n) < ss->ilen) {
-		return ss->input.str[ (int)(ss->pos + n)];
-	}
-	return -1;
-}
-inline u8 strings__textscanner__TextScanner_peek_n_u8(strings__textscanner__TextScanner* ss, int n) {
-	if ((int)(ss->pos + n) < ss->ilen) {
-		return ss->input.str[ (int)(ss->pos + n)];
-	}
-	return 0;
-}
-inline void strings__textscanner__TextScanner_back(strings__textscanner__TextScanner* ss) {
-	if (ss->pos > 0) {
-		ss->pos--;
-	}
-}
-void strings__textscanner__TextScanner_back_n(strings__textscanner__TextScanner* ss, int n) {
-	ss->pos -= n;
-	if (ss->pos < 0) {
-		ss->pos = 0;
-	}
-	if (ss->pos > ss->ilen) {
-		ss->pos = ss->ilen;
-	}
-}
-inline int strings__textscanner__TextScanner_peek_back(strings__textscanner__TextScanner* ss) {
-	return strings__textscanner__TextScanner_peek_back_n(ss, 1);
-}
-inline int strings__textscanner__TextScanner_peek_back_n(strings__textscanner__TextScanner* ss, int n) {
-	int offset = (int)(n + 1);
-	if (ss->pos >= offset) {
-		return ss->input.str[ (int)(ss->pos - offset)];
-	}
-	return -1;
-}
-inline int strings__textscanner__TextScanner_current(strings__textscanner__TextScanner* ss) {
-	if (ss->pos > 0) {
-		return ss->input.str[ (int)(ss->pos - 1)];
-	}
-	return -1;
-}
-void strings__textscanner__TextScanner_reset(strings__textscanner__TextScanner* ss) {
-	ss->pos = 0;
-}
-void strings__textscanner__TextScanner_goto_end(strings__textscanner__TextScanner* ss) {
-	ss->pos = ss->ilen;
-}
-void strings__textscanner__TextScanner_skip_whitespace(strings__textscanner__TextScanner* ss) {
-	for (;;) {
-		if (!((int)(ss->ilen - ss->pos) > 0 && builtin__u8_is_space(strings__textscanner__TextScanner_peek_u8(ss)))) break;
-		strings__textscanner__TextScanner_next(ss);
-	}
-}
-inline term__termios__TcFlag term__termios__flag(int value) {
-	return ((usize)(value));
-}
-inline term__termios__TcFlag term__termios__invert(term__termios__TcFlag value) {
-	return ~((usize)(value));
-}
-inline int term__termios__tcgetattr(int fd, term__termios__Termios* termios_p) {
+VV_LOC vphp__TaskRegistry* vphp__get_registry(void) {
 	{ // Unsafe block
-		return tcgetattr(fd, ((struct termios*)(termios_p)));
+		if (g_registry == 0) {
+			g_registry = ((vphp__TaskRegistry*)builtin__memdup(&(vphp__TaskRegistry){.tasks = builtin__new_map(sizeof(string), sizeof(vphp__TaskCreator), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+			,}, sizeof(vphp__TaskRegistry)));
+		}
+		return g_registry;
 	}
 	return 0;
 }
-inline int term__termios__tcsetattr(int fd, int optional_actions, term__termios__Termios* termios_p) {
+void vphp__ITask__static__register(string name, vphp__ITask (*creator)(void)) {
+	vphp__TaskRegistry* r = vphp__get_registry();
+	builtin__map_set(&r->tasks, &(string[]){name}, &(voidptr[]) { (voidptr)creator });
+}
+_option_anon_fn___vphp__ITask vphp__ITask__static__get_creator(string name) {
+	vphp__TaskRegistry* r = vphp__get_registry();
+	if (_IN_MAP(ADDR(string, name), ADDR(map, r->tasks))) {
+		_option_anon_fn___vphp__ITask _t1;
+		builtin___option_ok(&(vphp__TaskCreator[]) { (vphp__ITask (*) ())(*(voidptr*)builtin__map_get(ADDR(map, r->tasks), &(string[]){name}, &(voidptr[]){ 0 })) }, (_option*)(&_t1), sizeof(vphp__TaskCreator));
+		 
+		return _t1;
+	}
+	return (_option_anon_fn___vphp__ITask){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+}
+VV_LOC void vphp__framework_v_spawn(zend_execute_data* ex, zval* retval) {
+	vphp__Context ctx = vphp__new_context(ex, retval);
+	string task_name = vphp__Context_arg_T_string(ctx, 0);
+	_option_anon_fn___vphp__ITask _t1 = vphp__ITask__static__get_creator(task_name);
+	if (_t1.state != 0) {
+		vphp__throw_exception(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Task "), 0xfe10, {.d_s = task_name}}, {_S(" not registered"), 0, { .d_c = 0 }}})), 0);
+		return;
+	}
+	
+ 	vphp__ITask (*creator) (void) = (*(vphp__TaskCreator*)_t1.data);
+	vphp__ITask task_inst = creator();
+	// start go
+	thread_arg_vphp__ITask_run *arg__t2 = (thread_arg_vphp__ITask_run *) builtin___v_malloc(sizeof(thread_arg_vphp__ITask_run));
+	arg__t2->arg0 = task_inst;
+	pthread_t thread__t2;
+	pthread_attr_t thread__t2_attributes;
+	pthread_attr_init(&thread__t2_attributes);
+	pthread_attr_setstacksize(&thread__t2_attributes, 8388608); // fn: run
+	int _t2_thr_res = pthread_create(&thread__t2, &thread__t2_attributes, (void*)vphp__ITask_run_thread_wrapper, arg__t2);
+	if (_t2_thr_res) builtin__panic_error_number(builtin__tos3("`go vphp__ITask_run()`: "), _t2_thr_res);
+	// end go
+	__v_thread_Array_f64 t = /*spawn (thread) */
+thread__t2;
 	{ // Unsafe block
-		return tcsetattr(fd, optional_actions, ((struct termios*)(termios_p)));
+		vphp__AsyncResult* res = ((vphp__AsyncResult*)(builtin___v_malloc(((int)(sizeof(vphp__AsyncResult))))));
+		res->handle = t;
+		vphp__Context_return_res(ctx, res, _S("v_task"));
 	}
-	return 0;
 }
-inline int term__termios__ioctl(int fd, u64 request, voidptr arg) {
+// export alias: v_spawn -> vphp__framework_v_spawn
+void v_spawn(zend_execute_data* ex, zval* retval) {
+	return vphp__framework_v_spawn(ex, retval);
+}
+VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval) {
+	vphp__Context ctx = vphp__new_context(ex, retval);
+	vphp__Val res_val = vphp__Context_arg_raw(ctx, 0);
 	{ // Unsafe block
-		return ioctl(fd, request, arg);
+		voidptr ptr = vphp__Val_to_res(res_val);
+		if (ptr == ((void*)0)) {
+			return;
+		}
+		vphp__AsyncResult* task = ((vphp__AsyncResult*)(ptr));
+		Array_f64 results = __v_thread_Array_f64_wait(task->handle);
+		vphp_return_array_start(retval);
+		for (int _t1 = 0; _t1 < results.len; ++_t1) {
+			f64 r = ((f64*)results.data)[_t1];
+			vphp_array_push_double(retval, ((f64)(r)));
+		}
 	}
-	return 0;
 }
-int term__termios__set_state(int fd, term__termios__Termios new_state) {
-	term__termios__Termios x = new_state;
-	return term__termios__tcsetattr(0, TCSANOW, (voidptr)&x);
-}
-void term__termios__Termios_disable_echo(term__termios__Termios* t) {
-	t->c_lflag &= term__termios__invert(((usize)(ECHO)));
+// export alias: v_wait -> vphp__framework_v_wait
+void v_wait(zend_execute_data* ex, zval* retval) {
+	return vphp__framework_v_wait(ex, retval);
 }
 Array_string os__args_after(string cut_word) {
 	if (_const_os__args.len == 0) {
@@ -19682,15 +20055,23 @@ VV_LOC os__PathKind os__kind_of_existing_path(string path) {
 	res.is_link = os__Stat_get_filetype(attr) == os__FileType__symbolic_link;
 	return res;
 }
+VV_LOC void main__vphp_task_auto_startup(void) {
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_e0873e5963f3179a_40___vphp__ITask_146);
+}
+// export alias: vphp_task_auto_startup -> main__vphp_task_auto_startup
+void vphp_task_auto_startup(void) {
+	return main__vphp_task_auto_startup();
+}
 VV_LOC void main__main(void) {
-	builtin__println(_S("\360\237\233\240\357\270\217  1. \350\277\220\350\241\214 Codegen..."));
-	os__Result gen_res = os__execute(_S("v run tools/codegen.v"));
+	string target_file = _S("v_logic.v");
+	builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\360\237\233\240\357\270\217  1. \350\277\220\350\241\214 Codegen\357\274\214\347\233\256\346\240\207\346\226\207\344\273\266: "), 0xfe10, {.d_s = target_file}}, {_S(" ..."), 0, { .d_c = 0 }}})));
+	os__Result gen_res = os__execute(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("v run tools/codegen.v "), 0xfe10, {.d_s = target_file}}, {_SLIT0, 0, { .d_c = 0 }}})));
 	if (gen_res.exit_code != 0) {
-		builtin__println(builtin__string__plus(_S("\342\235\214 Codegen \345\244\261\350\264\245: "), gen_res.output));
+		builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\342\235\214 Codegen \345\244\261\350\264\245: "), 0xfe10, {.d_s = gen_res.output}}, {_SLIT0, 0, { .d_c = 0 }}})));
 		return;
 	}
 	builtin__println(_S("\360\237\233\240\357\270\217  2. \350\275\254\350\257\221 V \351\200\273\350\276\221..."));
-	os__Result v_res = os__execute(_S("v -gc none -path \"@vlib:.:..\" -shared -o v_logic.c ."));
+	os__Result v_res = os__execute(_S("v -enable-globals -gc none -path \"@vlib:.:..\" -shared -o v_logic.c ."));
 	if (v_res.exit_code != 0) {
 		builtin__println(builtin__string__plus(_S("\342\235\214 V \347\274\226\350\257\221\345\244\261\350\264\245: "), v_res.output));
 		return;
@@ -20017,8 +20398,12 @@ VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval) {
 void v_call_php_closure(zend_execute_data* ex, zval* retval) {
 	return main__v_call_php_closure(ex, retval);
 }
+VV_LOC Array_f64 main__AnalyzeTask_run(main__AnalyzeTask t) {
+	return builtin__new_array_from_c_array(3, 3, sizeof(f64), _MOV((f64[3]){1.1, 2.2, 3.3}));
+}
 void _vinit(int ___argc, voidptr ___argv) {
 	// Initializations of consts for module builtin.closure
+	g_closure = ((builtin__closure__Closure){.ClosureMutex = ((builtin__closure__ClosureMutex){E_STRUCT}),.closure_ptr = 0,.closure_get_data = ((void*)0),.closure_cap = 0,.v_page_size = ((int)(0x4000)),}); // global 3
 {
 {
 Array_fixed_u8_12 _t1;
@@ -20040,6 +20425,33 @@ Array_fixed_u8_12 _t1;
 	memcpy(&_const_builtin__closure__closure_thunk, &_t1, sizeof(Array_fixed_u8_12));
 }
 }
+{
+{
+Array_fixed_u8_8 _t3;
+#if defined(__V_amd64)
+#elif defined(__V_x86)
+#elif defined(__V_arm64)
+	{ Array_fixed_u8_8 _t4 = {((u8)(0x20)), 0x02, 0x66, 0x9E, 0xC0, 0x03, 0x5F, 0xD6}	;
+	memcpy(&_t3, &_t4, sizeof(Array_fixed_u8_8));
+	}
+	;
+#elif defined(__V_arm32)
+#elif defined(__V_rv64)
+#elif defined(__V_rv32)
+#elif defined(__V_s390x)
+#elif defined(__V_ppc64le)
+#elif defined(__V_loongarch64)
+#else
+#endif
+	memcpy(&_const_builtin__closure__closure_get_data_bytes, &_t3, sizeof(Array_fixed_u8_8));
+}
+}
+{
+{
+	_const_builtin__closure__closure_size_1 = ((u32)(2 * ((u32)(sizeof(voidptr)))) > ((u32)(12)) ? ((u32)(2 * ((u32)(sizeof(voidptr))))) : ((u32)((u32)(((u32)(12)) + ((u32)(sizeof(voidptr)))) - 1)));
+}
+}
+	_const_builtin__closure__closure_size = ((int)((_const_builtin__closure__closure_size_1 & ~((u32)(((u32)(sizeof(voidptr))) - 1)))));
 	// Initializations of consts for module math.bits
 	_const_math__bits__overflow_error = _S("Overflow Error");
 	// Initializations of consts for module strconv
@@ -20056,6 +20468,8 @@ Array_fixed_u8_12 _t1;
 	_const_none__ = I_None___to_Interface_IError(((None__*)builtin__memdup(&(None__){.Error = ((Error){E_STRUCT}),}, sizeof(None__))));
 	_const_min_i64 = ((i64)((int_literal)(-9223372036854775807LL - 1)));
 	_const_max_i64 = ((i64)(9223372036854775807LL));
+	// Initializations of consts for module vphp
+	g_registry = *(vphp__TaskRegistry**)&((vphp__TaskRegistry*[]){0}[0]); // global 5
 	// Initializations of consts for module os
 	_const_os__fslash_str = _S("/");
 	_const_os__dot_dot = _S("..");
