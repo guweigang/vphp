@@ -1,32 +1,50 @@
 module main
 
 import vphp
+import vphp.zend
+import json
 
 // 只有这一行，因为我们要用 C.zval 这个类型定义
 #include <php.h>
 #include "../vphp/v_bridge.h"
 
 const ext_config = vphp.ExtensionConfig{
-    name: 'bullsoft_fitness'
+    name: 'vphptest'
     version: '0.1.0'
-    description: 'Bullsoft 健身数据分析引擎'
+    description: 'PHP Bindings for V'
 }
 
 @[export: 'v_reverse_string']
-fn v_reverse_string(z_in &C.zval, z_out &C.zval) {
-	unsafe {
-		in_val := vphp.Val{ raw: z_in }
-		out_val := vphp.Val{ raw: z_out }
+fn v_reverse_string(ex &C.zend_execute_data, retval &C.zval) {
+    // 1. 使用 Context 包装，统一参数获取入口
+    ctx := vphp.new_context(ex, retval)
 
-		s := in_val.to_string()
+    unsafe {
+        // 2. 安全获取第一个参数
+        raw_in := C.vphp_get_arg_ptr(ex, 1)
+        if raw_in == 0 { return }
 
-		if s == '' {
-			vphp.throw_exception('String is empty!', 400)
-			return
-		}
+        in_val := vphp.Val{ raw: raw_in }
 
-		out_val.set_string(s.reverse())
-	}
+        // 3. 严格类型检查：如果不是字符串则报错
+        if !in_val.is_string() {
+            vphp.throw_exception('Expected string input', 401)
+            return
+        }
+
+        s := in_val.to_string()
+
+        // 4. 逻辑检查
+        if s == '' {
+            vphp.throw_exception('String is empty!', 400)
+            return
+        }
+
+        // 5. 使用专用的返回方法
+        // 注意：不要手动操作 z_out，使用包装好的 set_string 或 return_string
+        mut out := vphp.Val{ raw: retval }
+        out.set_string(s.reverse())
+    }
 }
 
 @[export: 'v_logic_main']
@@ -379,13 +397,19 @@ fn v_call_php_closure(ex &C.zend_execute_data, retval &C.zval) {
 	ctx.return_string('Closure executed, PHP said: ' + res.to_string())
 }
 
-// 1. 定义你的业务任务
-struct AnalyzeTask {
-	data []f64
+struct StockParams {
+    symbol string
+    count  int
 }
 
-// 2. 实现 ITask 接口
+struct AnalyzeTask {
+pub mut:
+    json_data string
+}
+
 fn (t AnalyzeTask) run() []f64 {
-	// 复杂的 Bullsoft 计算逻辑...
-	return [1.1, 2.2, 3.3]
+    // 业务层按需反序列化
+    params := json.decode(StockParams, t.json_data) or { return []f64{} }
+    println('V: 正在处理 ${params.symbol}')
+    return [1.0, 2.0]
 }

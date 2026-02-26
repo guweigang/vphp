@@ -72,6 +72,8 @@ fn main() {
 		}
 	}
 
+	// 新增：动态生成 php_bridge.h
+  generate_php_bridge_h(meta)
 	generate_c_bridge(meta)
 	generate_v_glue(meta)
 
@@ -109,7 +111,7 @@ fn generate_c_bridge(meta ExtMeta) {
 	}
 
 	// 3. 函数表
-	c << 'static const zend_function_entry v_ext_functions[] = {'
+	c << 'static const zend_function_entry ${meta.name}_functions[] = {'
 	for func in all_funcs {
 		c << '    PHP_FE(${func}, arginfo_${func})'
 	}
@@ -124,7 +126,7 @@ fn generate_c_bridge(meta ExtMeta) {
 	c << '}'
 
 	c << 'zend_module_entry ${meta.name}_module_entry = {'
-	c << '    STANDARD_MODULE_HEADER, "${meta.name}", v_ext_functions,'
+	c << '    STANDARD_MODULE_HEADER, "${meta.name}", ${meta.name}_functions,'
 	c << '    PHP_MINIT(${meta.name}), NULL, NULL, NULL, NULL, "1.0.0",'
 	c << '    STANDARD_MODULE_PROPERTIES'
 	c << '};'
@@ -142,8 +144,38 @@ fn generate_v_glue(meta ExtMeta) {
     v << 'fn vphp_task_auto_startup() {'
     for task in meta.tasks {
         // 修改这里：改用 ITask.register
-        v << "    vphp.ITask.register('$task', fn() vphp.ITask { return $task{} })"
+        v << "    vphp.ITask.register('$task', fn(s string) vphp.ITask { return $task{ json_data: s } })"
     }
     v << '}'
     os.write_file('_task_glue.v', v.join('\n')) or { panic(err) }
+}
+
+fn generate_php_bridge_h(meta ExtMeta) {
+    mut h := []string{}
+    h << '/* ⚠️ 自动生成，请勿修改 */'
+    h << '#ifndef PHP_BRIDGE_H'
+    h << '#define PHP_BRIDGE_H'
+    h << ''
+    h << '#include <php.h>'
+    h << ''
+    h << '// 动态扩展名映射'
+    h << 'extern zend_module_entry ${meta.name}_module_entry;'
+    h << '#define phpext_${meta.name}_ptr &${meta.name}_module_entry'
+    h << ''
+
+    // 自动为 AST 识别的所有导出函数生成 PHP_FUNCTION 宏声明
+    // 包含核心框架函数
+    mut all_funcs := meta.exports.clone()
+    all_funcs << 'v_spawn'
+    all_funcs << 'v_wait'
+
+    for func in all_funcs {
+        h << 'PHP_FUNCTION($func);'
+    }
+
+    h << ''
+    h << '#endif'
+
+    os.write_file('php_bridge.h', h.join('\n')) or { panic(err) }
+    println('   - 已生成头文件: php_bridge.h (包含 ${all_funcs.len} 个导出)')
 }

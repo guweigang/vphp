@@ -14,7 +14,6 @@ pub struct C.zval_u1 {
 pub mut:
     type_info u32
 }
-// ... 剩下的 zend_string, zend_array 定义保持不变
 
 @[typedef]
 pub struct C.zend_string {
@@ -30,3 +29,6 @@ pub struct C.zend_array {
 pub mut:
     nNumOfElements u32
 }
+
+@[typedef]
+pub struct C.zend_execute_data {}
