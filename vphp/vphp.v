@@ -69,6 +69,7 @@ fn C.vphp_get_bool(z &C.zval) bool
 fn C.vphp_read_property(obj &C.zval, name &char, len int) &C.zval
 fn C.vphp_call_method(obj &C.zval, method &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 fn C.vphp_new_zval() &C.zval
+fn C.vphp_call_callable(callable &C.zval, retval &C.zval, p_count int, params &&C.zval) int
 
 // 错误级别常量映射
 pub const e_error = 1     // E_ERROR (会导致 PHP 脚本中止)
@@ -97,6 +98,25 @@ pub fn (v Val) is_object() bool { return v.type_id() == int(PHPType.object) }
 // pub fn (v Val) is_null() bool {
 // 	return C.vphp_is_null(v.raw)
 // }
+
+pub fn (v Val) invoke(args []Val) Val {
+	if v.raw == 0 { return unsafe { Val{ raw: 0 } } }
+
+	unsafe {
+		// 堆分配保证稳定性
+		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut p_args := &&C.zval(nil)
+		if args.len > 0 {
+			p_args = &args[0].raw
+		}
+
+		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
+		if res == -1 {
+			return Val{ raw: 0 }
+		}
+		return Val{ raw: retval }
+	}
+}
 
 // 给业务层使用的 Context 方法
 pub fn (ctx Context) return_res(ptr voidptr, label string) {

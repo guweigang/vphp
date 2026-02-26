@@ -2750,6 +2750,7 @@ bool vphp__Val_is_double(vphp__Val v);
 bool vphp__Val_is_bool(vphp__Val v);
 bool vphp__Val_is_null(vphp__Val v);
 bool vphp__Val_is_object(vphp__Val v);
+vphp__Val vphp__Val_invoke(vphp__Val v, Array_vphp__Val args);
 void vphp__Context_return_res(vphp__Context ctx, voidptr ptr, string label);
 void vphp__Context_return_map(vphp__Context ctx, Map_string_string m);
 void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__MotionReport s);
@@ -3124,6 +3125,8 @@ VV_LOC void main__v_analyze_user_object(zend_execute_data* ex, zval* retval);
 VV_EXP void v_analyze_user_object(zend_execute_data* ex, zval* retval); // exported fn main.v_analyze_user_object
 VV_LOC void main__v_trigger_user_action(zend_execute_data* ex, zval* retval);
 VV_EXP void v_trigger_user_action(zend_execute_data* ex, zval* retval); // exported fn main.v_trigger_user_action
+VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval);
+VV_EXP void v_call_php_closure(zend_execute_data* ex, zval* retval); // exported fn main.v_call_php_closure
 bool Array_rune_arr_eq(Array_rune a, Array_rune b);
 
 // V global/const non-precomputed definitions:
@@ -14488,6 +14491,24 @@ bool vphp__Val_is_null(vphp__Val v) {
 bool vphp__Val_is_object(vphp__Val v) {
 	return vphp__Val_type_id(v) == ((int)(vphp__PHPType__object));
 }
+vphp__Val vphp__Val_invoke(vphp__Val v, Array_vphp__Val args) {
+	if (v.raw == 0) {
+		return ((vphp__Val){.raw = 0,});
+	}
+	{ // Unsafe block
+		zval* retval = ((zval*)(builtin___v_malloc(((int)(sizeof(zval))))));
+		zval** p_args = ((zval**)(((void*)0)));
+		if (args.len > 0) {
+			p_args = &(*(vphp__Val*)builtin__array_get(args, 0)).raw;
+		}
+		int res = vphp_call_callable(v.raw, retval, args.len, p_args);
+		if (res == -1) {
+			return ((vphp__Val){.raw = 0,});
+		}
+		return ((vphp__Val){.raw = retval,});
+	}
+	return (vphp__Val){.raw = 0,};
+}
 void vphp__Context_return_res(vphp__Context ctx, voidptr ptr, string label) {
 	vphp_make_res(ctx.ret, ptr, ((char*)(label.str)));
 }
@@ -19980,6 +20001,21 @@ VV_LOC void main__v_trigger_user_action(zend_execute_data* ex, zval* retval) {
 // export alias: v_trigger_user_action -> main__v_trigger_user_action
 void v_trigger_user_action(zend_execute_data* ex, zval* retval) {
 	return main__v_trigger_user_action(ex, retval);
+}
+VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval) {
+	vphp__Context ctx = vphp__new_context(ex, retval);
+	vphp__Val cb = vphp__Context_arg_raw(ctx, 0);
+	vphp__Val msg = ((vphp__Val){.raw = vphp_new_zval(),});
+	vphp__Val_set_string(msg, _S("Message from V Engine"));
+	vphp__Val res = vphp__Val_invoke(cb, builtin__new_array_from_c_array(1, 1, sizeof(vphp__Val), _MOV((vphp__Val[1]){msg})));
+	if (vphp__Context_has_exception(ctx)) {
+		return;
+	}
+	vphp__Context_return_string(ctx, builtin__string__plus(_S("Closure executed, PHP said: "), vphp__Val_to_string(res)));
+}
+// export alias: v_call_php_closure -> main__v_call_php_closure
+void v_call_php_closure(zend_execute_data* ex, zval* retval) {
+	return main__v_call_php_closure(ex, retval);
 }
 void _vinit(int ___argc, voidptr ___argv) {
 	// Initializations of consts for module builtin.closure

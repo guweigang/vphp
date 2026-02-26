@@ -353,3 +353,22 @@ fn v_trigger_user_action(ex &C.zend_execute_data, retval &C.zval) {
 
 	ctx.return_string('Action triggered, PHP returned: ' + res.to_string())
 }
+
+@[export: 'v_call_php_closure']
+fn v_call_php_closure(ex &C.zend_execute_data, retval &C.zval) {
+	ctx := vphp.new_context(ex, retval)
+
+	// 获取 PHP 传来的闭包
+	cb := ctx.arg_raw(0)
+
+	// 准备传递给闭包的参数
+	mut msg := vphp.Val{ raw: C.vphp_new_zval() }
+	msg.set_string('Message from V Engine')
+
+	// 执行回调 $cb('Message from V Engine')
+	res := cb.invoke([msg])
+
+	if ctx.has_exception() { return }
+
+	ctx.return_string('Closure executed, PHP said: ' + res.to_string())
+}

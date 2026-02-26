@@ -310,3 +310,32 @@ int vphp_call_method(zval* obj, const char* method, int method_len, zval* retval
 
     return result;
 }
+
+// 通用调用：支持闭包、匿名函数或任何 Callable 对象
+int vphp_call_callable(zval* callable, zval* retval, int param_count, zval** params_ptrs) {
+    // 修复点：将 IS_CALLABLE_CHECK_SYNTAXONLY 替换为 0
+    // 在 PHP 8 中，0 表示标准检查
+    if (callable == NULL || !zend_is_callable(callable, 0, NULL)) {
+        return -1;
+    }
+
+    ZVAL_UNDEF(retval);
+
+    zval* params = NULL;
+    if (param_count > 0) {
+        params = (zval*)safe_emalloc(param_count, sizeof(zval), 0);
+        for (int i = 0; i < param_count; i++) {
+            if (params_ptrs[i]) {
+                ZVAL_COPY_VALUE(&params[i], params_ptrs[i]);
+            } else {
+                ZVAL_NULL(&params[i]);
+            }
+        }
+    }
+
+    // 执行调用
+    int result = call_user_function(EG(function_table), NULL, callable, retval, param_count, params);
+
+    if (params) efree(params);
+    return result;
+}

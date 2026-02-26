@@ -20,6 +20,7 @@ void v_get_alerts(zend_execute_data *execute_data, zval *return_value);
 void v_complex_test(zend_execute_data *execute_data, zval *return_value);
 void v_analyze_user_object(zend_execute_data *execute_data, zval *return_value);
 void v_trigger_user_action(zend_execute_data *execute_data, zval *return_value);
+void v_call_php_closure(zend_execute_data *execute_data, zval *return_value);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, -1)
     ZEND_ARG_INFO(0, args)
@@ -157,6 +158,14 @@ PHP_FUNCTION(v_trigger_user_action) {
     v_trigger_user_action(execute_data, return_value);
 }
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_call_php_closure, 0, 0, -1)
+    ZEND_ARG_INFO(0, args)
+ZEND_END_ARG_INFO()
+
+PHP_FUNCTION(v_call_php_closure) {
+    v_call_php_closure(execute_data, return_value);
+}
+
 static const zend_function_entry v_ext_functions[] = {
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
@@ -175,6 +184,7 @@ static const zend_function_entry v_ext_functions[] = {
     PHP_FE(v_complex_test, arginfo_v_complex_test)
     PHP_FE(v_analyze_user_object, arginfo_v_analyze_user_object)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
+    PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
     PHP_FE_END
 };
 
