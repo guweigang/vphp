@@ -37,9 +37,8 @@ pub const (
 fn vphp_framework_init(module_number int) {
     // 自动初始化资源系统
     init_framework(module_number)
-
     // 这里的并发任务注册逻辑也可以放在这里
-    println('VPHP Framework initialized.')
+    // println('VPHP Framework initialized.')
 }
 
 pub fn init_framework(module_number int) {

@@ -4,10 +4,6 @@ import vphp
 import vphp.zend
 import json
 
-// 只有这一行，因为我们要用 C.zval 这个类型定义
-#include <php.h>
-#include "../vphp/v_bridge.h"
-
 const ext_config = vphp.ExtensionConfig{
     name: 'vphptest'
     version: '0.1.0'

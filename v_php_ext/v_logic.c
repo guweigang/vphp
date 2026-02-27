@@ -1045,32 +1045,6 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 
 
-// added by module `main`, file: v_logic.v:8:
-
-#if defined(__has_include)
-#if __has_include(<php.h>)
-#include <php.h>
-#else
-#error VERROR_MESSAGE Header file <php.h>, needed for module `main` was not found. Please install the corresponding development headers.
-#endif
-#else
-#include <php.h>
-#endif
-
-
-// added by module `main`, file: v_logic.v:9:
-
-#if defined(__has_include)
-#if __has_include("../vphp/v_bridge.h")
-#include "../vphp/v_bridge.h"
-#else
-#error VERROR_MESSAGE Header file "../vphp/v_bridge.h", needed for module `main` was not found. Please install the corresponding development headers.
-#endif
-#else
-#include "../vphp/v_bridge.h"
-#endif
-
-
 // V global/const #define ... :
 #define _const_builtin__closure__assumed_page_size 16384
 #define _const_strconv__digits 18
