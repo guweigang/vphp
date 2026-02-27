@@ -9139,6 +9139,9 @@ string vphp__Val_get_prop_string(vphp__Val v, string name);
 int vphp__Val_get_prop_int(vphp__Val v, string name);
 void vphp__Val_set_int(vphp__Val v, i64 val);
 void vphp__Val_set_bool(vphp__Val* v, bool b);
+i64 vphp__Val_get_int(vphp__Val v);
+bool vphp__Val_get_bool(vphp__Val v);
+string vphp__Val_get_string(vphp__Val v);
 void vphp__report_error(int level, string msg);
 Array_vphp__Val vphp__get_args(zend_execute_data* ex);
 vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
@@ -10585,6 +10588,7 @@ void vphp__compiler__PhpClassRepr_add_method(vphp__compiler__PhpClassRepr* r, v_
 void vphp__compiler__PhpClassRepr_add_static_method(vphp__compiler__PhpClassRepr* r, v__ast__FnDecl stmt, v__ast__Table* table, string method_name);
 string vphp__compiler__PhpClassRepr_gen_v_property_mapper(vphp__compiler__PhpClassRepr r);
 string vphp__compiler__PhpClassRepr_gen_v_sync_mapper(vphp__compiler__PhpClassRepr r);
+string vphp__compiler__PhpClassRepr_gen_v_write_mapper(vphp__compiler__PhpClassRepr r);
 VV_LOC vphp__compiler__PhpConstRepr* vphp__compiler__new_const_repr(void);
 VV_LOC bool vphp__compiler__PhpConstRepr_parse(vphp__compiler__PhpConstRepr* r, v__ast__Stmt stmt, v__ast__Table* table);
 VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_h(vphp__compiler__PhpConstRepr r);
@@ -10611,6 +10615,8 @@ void main__article_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv)
 VV_EXP void Article_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.article_get_prop
 void main__article_sync_props(voidptr ptr, zval* zv);
 VV_EXP void Article_sync_props(voidptr ptr, zval* zv); // exported fn main.article_sync_props
+void main__article_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
+VV_EXP void Article_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value); // exported fn main.article_set_prop
 VV_LOC void main__main(void);
 VV_LOC void main__v_reverse_string(zend_execute_data* ex, zval* retval);
 VV_EXP void v_reverse_string(zend_execute_data* ex, zval* retval); // exported fn main.v_reverse_string
@@ -34792,7 +34798,7 @@ void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* 
 				field.typ = 8;	// int
 				field.unaliased_typ = 8;	// int
 				field.is_pub = true;
-				field.is_mut = false;
+				field.is_mut = true;
 				field.is_embed = false;
 				field.is_shared = false;
 				field.is_atomic = false;
@@ -34824,7 +34830,7 @@ void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* 
 				field.typ = 21;	// string
 				field.unaliased_typ = 21;	// string
 				field.is_pub = true;
-				field.is_mut = false;
+				field.is_mut = true;
 				field.is_embed = false;
 				field.is_shared = false;
 				field.is_atomic = false;
@@ -34856,7 +34862,7 @@ void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* 
 				field.typ = 19;	// bool
 				field.unaliased_typ = 19;	// bool
 				field.is_pub = true;
-				field.is_mut = false;
+				field.is_mut = true;
 				field.is_embed = false;
 				field.is_shared = false;
 				field.is_atomic = false;
@@ -35106,6 +35112,23 @@ void vphp__Val_set_int(vphp__Val v, i64 val) {
 }
 void vphp__Val_set_bool(vphp__Val* v, bool b) {
 	ZVAL_BOOL(v->raw, b);
+}
+i64 vphp__Val_get_int(vphp__Val v) {
+	return zval_get_long(v.raw);
+}
+bool vphp__Val_get_bool(vphp__Val v) {
+	return zval_get_long(v.raw) != 0;
+}
+string vphp__Val_get_string(vphp__Val v) {
+	{ // Unsafe block
+		char* ptr = VPHP_Z_STRVAL(v.raw);
+		int len = VPHP_Z_STRLEN(v.raw);
+		if (ptr == 0) {
+			return _S("");
+		}
+		return builtin__char_vstring_with_len(ptr, len);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
 }
 void vphp__report_error(int level, string msg) {
 	vphp_error(level, ((char*)(msg.str)));
@@ -75218,23 +75241,18 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_v_glue(vphp__compiler__Com
 	for (int _t3 = 0; _t3 < c->elements.len; ++_t3) {
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t3;
 		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpTaskRepr_index) {
-			vphp__compiler__PhpTaskRepr* t = (el->_vphp__compiler__PhpTaskRepr);
-			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpTaskRepr_gen_v_glue(*t) }));
+			vphp__compiler__PhpTaskRepr* task = (el->_vphp__compiler__PhpTaskRepr);
+			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpTaskRepr_gen_v_glue(*task) }));
 		}
 	}
 	builtin__array_push((array*)&v, _MOV((string[]){ _S("}") }));
 	for (int _t6 = 0; _t6 < c->elements.len; ++_t6) {
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t6;
 		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) {
-			vphp__compiler__PhpClassRepr* p = (el->_vphp__compiler__PhpClassRepr);
-			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpClassRepr_gen_v_property_mapper(*p) }));
-		}
-	}
-	for (int _t8 = 0; _t8 < c->elements.len; ++_t8) {
-		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t8;
-		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) {
-			vphp__compiler__PhpClassRepr* s = (el->_vphp__compiler__PhpClassRepr);
-			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpClassRepr_gen_v_sync_mapper(*s) }));
+			vphp__compiler__PhpClassRepr* cls = (el->_vphp__compiler__PhpClassRepr);
+			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpClassRepr_gen_v_property_mapper(*cls) }));
+			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpClassRepr_gen_v_sync_mapper(*cls) }));
+			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpClassRepr_gen_v_write_mapper(*cls) }));
 		}
 	}
 	_result_void _t10 = os__write_file(_S("_task_glue.v"), Array_string_join(v, _S("\n")));
@@ -75344,7 +75362,6 @@ VV_LOC Array_string vphp__compiler__PhpClassRepr_gen_c(vphp__compiler__PhpClassR
 	for (int _t5 = 0; _t5 < r.methods.len; ++_t5) {
 		vphp__compiler__PhpMethodRepr m = ((vphp__compiler__PhpMethodRepr*)r.methods.data)[_t5];
 		string v_c_func = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = r.name}}, {_S("_"), 0xfe10, {.d_s = m.name}}, {_SLIT0, 0, { .d_c = 0 }}}));
-		string lower_class = builtin__string_to_lower(r.name);
 		builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("    PHP_METHOD("), 0xfe10, {.d_s = r.name}}, {_S(", "), 0xfe10, {.d_s = m.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&c, _MOV((string[]){ _S("        typedef struct { void* ex; void* ret; } vphp_context_internal;") }));
 		builtin__array_push((array*)&c, _MOV((string[]){ _S("        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
@@ -75352,13 +75369,15 @@ VV_LOC Array_string vphp__compiler__PhpClassRepr_gen_c(vphp__compiler__PhpClassR
 			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        extern void* "), 0xfe10, {.d_s = v_c_func}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
 			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        void* v_instance = "), 0xfe10, {.d_s = v_c_func}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
 			builtin__array_push((array*)&c, _MOV((string[]){ _S("        if (!v_instance) RETURN_NULL();") }));
-			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        object_init_ex(return_value, "), 0xfe10, {.d_s = lower_class}}, {_S("_ce);"), 0, { .d_c = 0 }}})) }));
+			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        object_init_ex(return_value, "), 0xfe10, {.d_s = lower_name}}, {_S("_ce);"), 0, { .d_c = 0 }}})) }));
 			builtin__array_push((array*)&c, _MOV((string[]){ _S("        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));") }));
 			builtin__array_push((array*)&c, _MOV((string[]){ _S("        wrapper->v_ptr = v_instance;") }));
-			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        extern void "), 0xfe10, {.d_s = r.name}}, {_S("_get_prop(void*, const char*, zval*);"), 0, { .d_c = 0 }}})) }));
+			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        extern void "), 0xfe10, {.d_s = r.name}}, {_S("_get_prop(void*, const char*, int, zval*);"), 0, { .d_c = 0 }}})) }));
 			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        wrapper->prop_handler = "), 0xfe10, {.d_s = r.name}}, {_S("_get_prop;"), 0, { .d_c = 0 }}})) }));
-			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("            extern void "), 0xfe10, {.d_s = r.name}}, {_S("_sync_props(void*, zval*);"), 0, { .d_c = 0 }}})) }));
-			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("            wrapper->sync_handler = "), 0xfe10, {.d_s = r.name}}, {_S("_sync_props;"), 0, { .d_c = 0 }}})) }));
+			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        extern void "), 0xfe10, {.d_s = r.name}}, {_S("_set_prop(void*, const char*, int, zval*);"), 0, { .d_c = 0 }}})) }));
+			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        wrapper->write_handler = "), 0xfe10, {.d_s = r.name}}, {_S("_set_prop;"), 0, { .d_c = 0 }}})) }));
+			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        extern void "), 0xfe10, {.d_s = r.name}}, {_S("_sync_props(void*, zval*);"), 0, { .d_c = 0 }}})) }));
+			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        wrapper->sync_handler = "), 0xfe10, {.d_s = r.name}}, {_S("_sync_props;"), 0, { .d_c = 0 }}})) }));
 		} else {
 			builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        extern bool "), 0xfe10, {.d_s = v_c_func}}, {_S("(void* v_ptr, vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
 			builtin__array_push((array*)&c, _MOV((string[]){ _S("        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));") }));
@@ -75369,8 +75388,8 @@ VV_LOC Array_string vphp__compiler__PhpClassRepr_gen_c(vphp__compiler__PhpClassR
 		builtin__array_push((array*)&c, _MOV((string[]){ _S("    }") }));
 	}
 	builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("static const zend_function_entry "), 0xfe10, {.d_s = lower_name}}, {_S("_methods[] = {"), 0, { .d_c = 0 }}})) }));
-	for (int _t26 = 0; _t26 < r.methods.len; ++_t26) {
-		vphp__compiler__PhpMethodRepr m = ((vphp__compiler__PhpMethodRepr*)r.methods.data)[_t26];
+	for (int _t28 = 0; _t28 < r.methods.len; ++_t28) {
+		vphp__compiler__PhpMethodRepr m = ((vphp__compiler__PhpMethodRepr*)r.methods.data)[_t28];
 		string flags = (m.is_static ? (_S("ZEND_ACC_PUBLIC | ZEND_ACC_STATIC")) : (_S("ZEND_ACC_PUBLIC")));
 		builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(6, _MOV((StrIntpData[]){{_S("    PHP_ME("), 0xfe10, {.d_s = r.name}}, {_S(", "), 0xfe10, {.d_s = m.name}}, {_S(", arginfo_"), 0xfe10, {.d_s = lower_name}}, {_S("_"), 0xfe10, {.d_s = m.name}}, {_S(", "), 0xfe10, {.d_s = flags}}, {_S(")"), 0, { .d_c = 0 }}})) }));
 	}
@@ -75495,6 +75514,44 @@ string vphp__compiler__PhpClassRepr_gen_v_sync_mapper(vphp__compiler__PhpClassRe
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("        // \345\214\205\350\243\205\344\270\200\344\270\252\344\270\264\346\227\266\347\232\204 context\357\274\214\345\210\251\347\224\250\347\216\260\346\234\211\347\232\204\345\217\215\345\260\204\345\220\214\346\255\245\351\200\273\350\276\221") }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("        ctx := vphp.Context{ ex: 0, ret: zv }") }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("        ctx.sync_props(a)") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("    }") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("}") }));
+	return Array_string_join(out, _S("\n"));
+}
+string vphp__compiler__PhpClassRepr_gen_v_write_mapper(vphp__compiler__PhpClassRepr r) {
+	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	string lower_name = builtin__string_to_lower(r.name);
+	builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("@[export: '"), 0xfe10, {.d_s = r.name}}, {_S("_set_prop']"), 0, { .d_c = 0 }}})) }));
+	builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("pub fn "), 0xfe10, {.d_s = lower_name}}, {_S("_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {"), 0, { .d_c = 0 }}})) }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("    unsafe {") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("        name := name_ptr.vstring_with_len(name_len)") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        mut a := &"), 0xfe10, {.d_s = r.name}}, {_S("(ptr)"), 0, { .d_c = 0 }}})) }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("        // \345\214\205\350\243\205 zval \346\226\271\344\276\277\350\257\273\345\217\226") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("        arg := vphp.Val{ raw: value }") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("        ") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("        match name {") }));
+	for (int _t10 = 0; _t10 < r.properties.len; ++_t10) {
+		vphp__compiler__PhpClassProp prop = ((vphp__compiler__PhpClassProp*)r.properties.data)[_t10];
+		builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("            '"), 0xfe10, {.d_s = prop.name}}, {_S("' { "), 0, { .d_c = 0 }}})) }));
+
+		if (_SLIT_EQ(prop.v_type.str, prop.v_type.len, "string")) {
+			builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("                a."), 0xfe10, {.d_s = prop.name}}, {_S(" = arg.get_string()"), 0, { .d_c = 0 }}})) }));
+		}
+		else if (_SLIT_EQ(prop.v_type.str, prop.v_type.len, "int")) {
+			builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("                a."), 0xfe10, {.d_s = prop.name}}, {_S(" = int(arg.get_int())"), 0, { .d_c = 0 }}})) }));
+		}
+		else if (_SLIT_EQ(prop.v_type.str, prop.v_type.len, "i64")) {
+			builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("                a."), 0xfe10, {.d_s = prop.name}}, {_S(" = arg.get_int()"), 0, { .d_c = 0 }}})) }));
+		}
+		else if (_SLIT_EQ(prop.v_type.str, prop.v_type.len, "bool")) {
+			builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("                a."), 0xfe10, {.d_s = prop.name}}, {_S(" = arg.get_bool()"), 0, { .d_c = 0 }}})) }));
+		}
+		else {
+		}
+		builtin__array_push((array*)&out, _MOV((string[]){ _S("            }") }));
+	}
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("            else { }") }));
+	builtin__array_push((array*)&out, _MOV((string[]){ _S("        }") }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("    }") }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("}") }));
 	return Array_string_join(out, _S("\n"));
@@ -75718,6 +75775,29 @@ void main__article_sync_props(voidptr ptr, zval* zv) {
 // export alias: Article_sync_props -> main__article_sync_props
 void Article_sync_props(voidptr ptr, zval* zv) {
 	return main__article_sync_props(ptr, zv);
+}
+void main__article_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value) {
+	{ // Unsafe block
+		string name = builtin__char_vstring_with_len(name_ptr, name_len);
+		main__Article* a = ((main__Article*)(ptr));
+		vphp__Val arg = ((vphp__Val){.raw = value,});
+
+		if (_SLIT_EQ(name.str, name.len, "id")) {
+			a->id = ((int)(vphp__Val_get_int(arg)));
+		}
+		else if (_SLIT_EQ(name.str, name.len, "title")) {
+			a->title = vphp__Val_get_string(arg);
+		}
+		else if (_SLIT_EQ(name.str, name.len, "is_top")) {
+			a->is_top = vphp__Val_get_bool(arg);
+		}
+		else {
+		}
+	}
+}
+// export alias: Article_set_prop -> main__article_set_prop
+void Article_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value) {
+	return main__article_set_prop(ptr, name_ptr, name_len, value);
 }
 VV_LOC void main__main(void) {
 	string target_file = _S("v_logic.v");

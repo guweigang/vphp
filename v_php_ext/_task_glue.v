@@ -35,3 +35,25 @@ pub fn article_sync_props(ptr voidptr, zv &C.zval) {
         ctx.sync_props(a)
     }
 }
+@[export: 'Article_set_prop']
+pub fn article_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len)
+        mut a := &Article(ptr)
+        // 包装 zval 方便读取
+        arg := vphp.Val{ raw: value }
+        
+        match name {
+            'id' { 
+                a.id = int(arg.get_int())
+            }
+            'title' { 
+                a.title = arg.get_string()
+            }
+            'is_top' { 
+                a.is_top = arg.get_bool()
+            }
+            else { }
+        }
+    }
+}

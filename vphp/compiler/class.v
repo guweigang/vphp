@@ -76,69 +76,70 @@ fn (r PhpClassRepr) gen_h() []string {
 }
 
 fn (r PhpClassRepr) gen_c() []string {
-    mut c := []string{}
-    lower_name := r.name.to_lower()
+	mut c := []string{}
+	lower_name := r.name.to_lower()
 
-    c << 'zend_class_entry *${lower_name}_ce = NULL;'
+	c << 'zend_class_entry *${lower_name}_ce = NULL;'
 
-    // 1. 生成每个方法的 ArgInfo (PHP 要求每个方法都要有参数描述)
-    for m in r.methods {
-        c << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${lower_name}_${m.name}, 0, 0, 0)'
-        c << 'ZEND_END_ARG_INFO()'
-    }
+	// 1. 生成参数信息
+	for m in r.methods {
+		c << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${lower_name}_${m.name}, 0, 0, 0)'
+		c << 'ZEND_END_ARG_INFO()'
+	}
 
-    // 2. 生成方法包装器 (调用 V 导出的 C 函数)
-    for m in r.methods {
-        v_c_func := '${r.name}_${m.name}'
-        lower_class := r.name.to_lower()
+	// 2. 生成方法包装器
+	for m in r.methods {
+		v_c_func := '${r.name}_${m.name}'
 
-        c << '    PHP_METHOD(${r.name}, ${m.name}) {'
-        // 定义一个与 V 侧 vphp.Context 内存布局一致的 C 结构体
-        // 注意：顺序必须与 vphp/context.v 中的 ex, ret 一致
-        c << '        typedef struct { void* ex; void* ret; } vphp_context_internal;'
-        c << '        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+		c << '    PHP_METHOD(${r.name}, ${m.name}) {'
+		c << '        typedef struct { void* ex; void* ret; } vphp_context_internal;'
+		c << '        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
 
-        if m.is_static {
-            // 静态方法：V 侧定义为 fn Article.create(ctx vphp.Context) &Article
-            c << '        extern void* ${v_c_func}(vphp_context_internal ctx);'
-            c << '        void* v_instance = ${v_c_func}(ctx);'
-            c << '        if (!v_instance) RETURN_NULL();'
+		if m.is_static {
+		  c << '        extern void* ${v_c_func}(vphp_context_internal ctx);'
+      // 1. 调用 V 函数创建实例
+      c << '        void* v_instance = ${v_c_func}(ctx);'
+      c << '        if (!v_instance) RETURN_NULL();'
 
-            c << '        object_init_ex(return_value, ${lower_class}_ce);'
-            c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));'
-            c << '        wrapper->v_ptr = v_instance;'
+      // 2. 初始化 PHP 对象
+      c << '        object_init_ex(return_value, ${lower_name}_ce);'
 
-            // 💡 关键：在这里由编译器自动插入 Handler 绑定，开发者完全无感
-            c << '        extern void ${r.name}_get_prop(void*, const char*, zval*);'
-            c << '        wrapper->prop_handler = ${r.name}_get_prop;'
+      // 3. 拿到 wrapper 指针
+      c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));'
 
-            // 💡 绑定同步句柄
-            c << '            extern void ${r.name}_sync_props(void*, zval*);'
-            c << '            wrapper->sync_handler = ${r.name}_sync_props;'
+      // 4. 接通“三条线”：内存、读取器、写入器、同步器
+      c << '        wrapper->v_ptr = v_instance;'  // 线 A：V 内存地址
 
-        } else {
-            // 实例方法：V 侧定义为 fn (a &Article) save(ctx vphp.Context) bool
-            c << '        extern bool ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
-            c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));'
-            c << '        if (!wrapper->v_ptr) RETURN_FALSE;'
+      c << '        extern void ${r.name}_get_prop(void*, const char*, int, zval*);'
+      c << '        wrapper->prop_handler = ${r.name}_get_prop;' // 线 B：读取劫持
 
-            c << '        bool res = ${v_c_func}(wrapper->v_ptr, ctx);'
-            c << '        RETURN_BOOL(res);'
-        }
-        c << '    }'
-    }
+      c << '        extern void ${r.name}_set_prop(void*, const char*, int, zval*);'
+      c << '        wrapper->write_handler = ${r.name}_set_prop;' // 线 C：写入劫持
 
-    // 3. 生成核心方法表
-    c << 'static const zend_function_entry ${lower_name}_methods[] = {'
-    for m in r.methods {
-        // 关键：静态方法使用 ZEND_ACC_STATIC，动态方法默认 0 (Public)
-        flags := if m.is_static { 'ZEND_ACC_PUBLIC | ZEND_ACC_STATIC' } else { 'ZEND_ACC_PUBLIC' }
-        c << '    PHP_ME(${r.name}, ${m.name}, arginfo_${lower_name}_${m.name}, $flags)'
-    }
-    c << '    PHP_FE_END'
-    c << '};'
+      c << '        extern void ${r.name}_sync_props(void*, zval*);'
+      c << '        wrapper->sync_handler = ${r.name}_sync_props;' // 线 D：var_dump 同步
+  } else {
+			// 实例方法流程 (例如 $a->save())
+			c << '        extern bool ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
+			c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));'
+			c << '        if (!wrapper->v_ptr) RETURN_FALSE;'
 
-    return c
+			c << '        bool res = ${v_c_func}(wrapper->v_ptr, ctx);'
+			c << '        RETURN_BOOL(res);'
+		}
+		c << '    }'
+	}
+
+	// 3. 生成方法表
+	c << 'static const zend_function_entry ${lower_name}_methods[] = {'
+	for m in r.methods {
+		flags := if m.is_static { 'ZEND_ACC_PUBLIC | ZEND_ACC_STATIC' } else { 'ZEND_ACC_PUBLIC' }
+		c << '    PHP_ME(${r.name}, ${m.name}, arginfo_${lower_name}_${m.name}, $flags)'
+	}
+	c << '    PHP_FE_END'
+	c << '};'
+
+	return c
 }
 
 fn (r PhpClassRepr) gen_minit() []string {
@@ -280,5 +281,44 @@ pub fn (r PhpClassRepr) gen_v_sync_mapper() string {
     out << "    }"
     out << "}"
 
+    return out.join('\n')
+}
+
+
+pub fn (r PhpClassRepr) gen_v_write_mapper() string {
+    mut out := []string{}
+    lower_name := r.name.to_lower()
+
+    out << "@[export: '${r.name}_set_prop']"
+    out << "pub fn ${lower_name}_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {"
+    out << "    unsafe {"
+    out << "        name := name_ptr.vstring_with_len(name_len)"
+    out << "        mut a := &${r.name}(ptr)"
+    out << "        // 包装 zval 方便读取"
+    out << "        arg := vphp.Val{ raw: value }"
+    out << "        "
+    out << "        match name {"
+
+    for prop in r.properties {
+        out << "            '${prop.name}' { "
+        match prop.v_type {
+            'string' { out << "                a.${prop.name} = arg.get_string()" }
+            'int' {
+                  // 💡 重点：这里显式写死转 int，因为 arg.get_int() 返回 i64
+                  out << "                a.${prop.name} = int(arg.get_int())"
+            }
+            'i64' {
+                // i64 不需要强转
+                out << "                a.${prop.name} = arg.get_int()"
+            }
+            'bool' { out << "                a.${prop.name} = arg.get_bool()" }
+            else { }
+        }
+        out << "            }"
+    }
+    out << "            else { }"
+    out << "        }"
+    out << "    }"
+    out << "}"
     return out.join('\n')
 }

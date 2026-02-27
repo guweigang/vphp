@@ -60,3 +60,7 @@ fn C.add_property_zval(obj &C.zval, name &char, val &C.zval)
 fn C.add_property_long(arg &C.zval, key &char, n i64)
 fn C.add_property_bool(arg &C.zval, key &char, b bool)
 fn C.add_property_stringl(arg &C.zval, key &char, value &char, length usize)
+fn C.zval_get_long(v &C.zval) i64
+
+fn C.VPHP_Z_STRVAL(v &C.zval) &char
+fn C.VPHP_Z_STRLEN(v &C.zval) int

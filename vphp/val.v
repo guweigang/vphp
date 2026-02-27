@@ -173,3 +173,26 @@ pub fn (mut v Val) set_bool(b bool) {
         C.ZVAL_BOOL(v.raw, b)
     }
 }
+
+
+pub fn (v Val) get_int() i64 {
+	return unsafe { C.zval_get_long(v.raw) }
+}
+
+pub fn (v Val) get_bool() bool {
+	// PHP 逻辑中 0 为 false，非 0 为 true
+	return unsafe { C.zval_get_long(v.raw) != 0 }
+}
+
+pub fn (v Val) get_string() string {
+	unsafe {
+		// 这里调用我们稍后在 C 桥接层定义的包装函数
+		ptr := C.VPHP_Z_STRVAL(v.raw)
+		len := C.VPHP_Z_STRLEN(v.raw)
+		if ptr == 0 {
+			return ''
+		}
+		// 从 C 指针构造 V 字符串，V 会自动拷贝一份内存
+		return ptr.vstring_with_len(len)
+	}
+}

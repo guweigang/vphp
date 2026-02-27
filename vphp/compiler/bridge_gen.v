@@ -85,8 +85,8 @@ fn (mut c Compiler) generate_v_glue() ! {
     v << '@[export: "vphp_task_auto_startup"]\nfn vphp_task_auto_startup() {'
     for mut el in c.elements {
         if mut el is PhpTaskRepr { // 只有任务 Repr 贡献 ITask.register
-          t := el
-          v << t.gen_v_glue()
+          task := el
+          v << task.gen_v_glue()
         }
     }
     v << '}'
@@ -94,16 +94,10 @@ fn (mut c Compiler) generate_v_glue() ! {
     for mut el in c.elements {
       if mut el is PhpClassRepr {
           // 为每个标记了 @[php_class] 的结构体生成映射器
-          p := el
-          v << p.gen_v_property_mapper()
-      }
-    }
-
-    for mut el in c.elements {
-      if mut el is PhpClassRepr {
-          // 为每个标记了 @[php_class] 的结构体生成映射器
-          s := el
-          v << s.gen_v_sync_mapper()
+          cls := el
+          v << cls.gen_v_property_mapper()
+          v << cls.gen_v_sync_mapper()
+          v << cls.gen_v_write_mapper()
       }
     }
     os.write_file('_task_glue.v', v.join('\n'))!

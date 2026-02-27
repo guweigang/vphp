@@ -20,10 +20,12 @@ ZEND_END_ARG_INFO()
         object_init_ex(return_value, article_ce);
         vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
         wrapper->v_ptr = v_instance;
-        extern void Article_get_prop(void*, const char*, zval*);
+        extern void Article_get_prop(void*, const char*, int, zval*);
         wrapper->prop_handler = Article_get_prop;
-            extern void Article_sync_props(void*, zval*);
-            wrapper->sync_handler = Article_sync_props;
+        extern void Article_set_prop(void*, const char*, int, zval*);
+        wrapper->write_handler = Article_set_prop;
+        extern void Article_sync_props(void*, zval*);
+        wrapper->sync_handler = Article_sync_props;
     }
     PHP_METHOD(Article, save) {
         typedef struct { void* ex; void* ret; } vphp_context_internal;

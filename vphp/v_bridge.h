@@ -88,12 +88,15 @@ void vphp_array_push_long(zval* z, long val);
 typedef void (*vphp_prop_handler_t)(void* v_ptr, const char* name, int name_len, zval *rv);
 // 增加同步函数的签名定义
 typedef void (*vphp_sync_handler_t)(void* v_ptr, zval* object_zv);
+// 增加写入处理函数的签名定义
+typedef void (*vphp_write_handler_t)(void* v_ptr, const char* name, int name_len, zval *value);
 
 // 1. 定义包装器：把 V 指针和 PHP 对象捆绑在一起
 typedef struct {
     void *v_ptr;         // 指向 V 侧分配的结构体内存
     vphp_prop_handler_t prop_handler; // 核心指针
     vphp_sync_handler_t sync_handler; // 👈 专门用于全量同步
+    vphp_write_handler_t write_handler; // 👈 增加写入回调
     zend_object std;     // PHP 标准对象（必须放在最后，以便偏移量计算）
 } vphp_object_wrapper;
 
@@ -126,5 +129,19 @@ static inline zend_object* vphp_get_obj_from_zval(zval *zv) {
 // 声明刚才提到的兼容层函数
 zval* vphp_read_property_compat(zend_object *obj, const char *name, int name_len, zval *rv);
 
+
+// 获取 zval 字符串指针
+static inline char* VPHP_Z_STRVAL(zval *z) {
+    if (Z_TYPE_P(z) != IS_STRING) {
+        // 如果不是字符串，尝试强制转换（可选，但更稳健）
+        // convert_to_string(z);
+    }
+    return Z_STRVAL_P(z);
+}
+
+// 获取 zval 字符串长度
+static inline int VPHP_Z_STRLEN(zval *z) {
+    return (int)Z_STRLEN_P(z);
+}
 
 #endif

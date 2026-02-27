@@ -373,22 +373,24 @@ zval *vphp_read_property(zend_object *object, zend_string *member, int type, voi
 // 拦截写入操作
 void vphp_write_property(zend_object *object, zend_string *member, zval *value, void **cache_slot) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
-    const char *name = ZSTR_VAL(member);
 
-    if (wrapper->v_ptr) {
-        // 💡 同理，调用 V 侧生成的类名_set_property
+    if (wrapper->v_ptr && wrapper->write_handler) {
+        // 调用 V 侧生成的 Setter 逻辑
+        wrapper->write_handler(wrapper->v_ptr, ZSTR_VAL(member), (int)ZSTR_LEN(member), value);
     }
 
+    // 依然调用标准写入，保持 PHP 侧属性表同步（可选，建议保留以支持 var_dump）
     zend_get_std_object_handlers()->write_property(object, member, value, cache_slot);
 }
 
 // 在初始化时克隆标准句柄并覆盖
 void vphp_init_handlers() {
     memcpy(&vphp_obj_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    vphp_obj_handlers.offset = offsetof(vphp_object_wrapper, std);
+    vphp_obj_handlers.offset = offsetof(vphp_object_wrapper, std); // 这里用 std
+    vphp_obj_handlers.free_obj = vphp_free_object_handler;
     vphp_obj_handlers.read_property = vphp_read_property;
+    vphp_obj_handlers.get_properties = vphp_get_properties; // 👈 挂载劫持
     vphp_obj_handlers.write_property = vphp_write_property;
-    vphp_obj_handlers.free_obj = vphp_free_object_handler; // 确保使用之前的析构
 }
 
 zend_object* vphp_create_object_handler(zend_class_entry *ce) {
@@ -398,6 +400,7 @@ zend_object* vphp_create_object_handler(zend_class_entry *ce) {
         vphp_obj_handlers.free_obj = vphp_free_object_handler;
         vphp_obj_handlers.read_property = vphp_read_property;
         vphp_obj_handlers.get_properties = vphp_get_properties; // 👈 挂载劫持
+        vphp_obj_handlers.write_property = vphp_write_property;
     }
 
     vphp_object_wrapper *obj = zend_object_alloc(sizeof(vphp_object_wrapper), ce);

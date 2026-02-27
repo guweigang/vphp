@@ -411,7 +411,7 @@ fn (t AnalyzeTask) run() []f64 {
 
 @[php_class]
 struct Article {
-pub:
+pub mut:
 	id     int    // 自动映射为 long
 	title  string // 自动映射为 string
 	is_top bool   // 自动映射为 bool

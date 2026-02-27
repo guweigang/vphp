@@ -7,4 +7,10 @@ echo "Step 3: Calling method save...\n";
 $article->save();
 echo "Done.\n";
 
+echo "\nStep 4: Accessing property from PHP...\n";
 var_dump($article->title);
+
+echo "\nStep 5: Modifying property from PHP...\n";
+$article->title = "Updated in PHP";
+$article->is_top = false;
+$article->save(); // 观察 V 侧打印的结果
