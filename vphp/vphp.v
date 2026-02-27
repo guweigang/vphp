@@ -68,3 +68,17 @@ fn array_push_handler[T](mut res []T, val &C.zval) {
         res << C.vphp_get_string(val).v_str() // 假设你已有 zval 转 string 的封装
     }
 }
+
+pub fn return_val_raw[T](ret &C.zval, val T) {
+    unsafe {
+        mut out := Val{ raw: ret }
+        $if T is i64 {
+            out.set_int(val)
+        } $else $if T is string {
+            out.set_string(val)
+        } $else $if T is bool {
+            // PHP 内部 bool 通常用 long 表示或专用的 IS_FALSE/IS_TRUE
+            out.set_bool(val)
+        }
+    }
+}

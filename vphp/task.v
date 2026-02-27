@@ -1,5 +1,4 @@
 module vphp
-import json
 import vphp.zend
 
 // Spawn 支持

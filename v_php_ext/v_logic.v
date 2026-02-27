@@ -1,7 +1,6 @@
 module main
 
 import vphp
-import vphp.zend
 import json
 
 const ext_config = vphp.ExtensionConfig{
@@ -408,4 +407,34 @@ fn (t AnalyzeTask) run() []f64 {
     params := json.decode(StockParams, t.json_data) or { return []f64{} }
     println('V: 正在处理 ${params.symbol}')
     return [1.0, 2.0]
+}
+
+@[php_class]
+struct Article {
+pub:
+	id     int    // 自动映射为 long
+	title  string // 自动映射为 string
+	is_top bool   // 自动映射为 bool
+}
+
+// 动态方法：必须有接收者，自动映射为 PHP 实例方法 $article->save()
+@[php_method]
+@[export: 'Article_create']
+pub fn Article.create(ctx vphp.Context) &Article {
+    // 使用 ctx 获取参数，例如 title := ctx.arg[string](0)
+    title := ctx.arg[string](0)
+    mut a := &Article{
+        id: 1024
+        title: title
+        is_top: true
+    }
+    return a // 依然返回指针供 C 侧 Bridge 使用（如果需要）
+}
+
+@[php_method]
+@[export: 'Article_save']
+pub fn (a &Article) save(ctx vphp.Context) bool {
+    // 业务逻辑
+    println('Saving article: $a.title')
+    return true
 }

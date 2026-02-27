@@ -1,6 +1,7 @@
 #include <php.h>
 #include <Zend/zend_exceptions.h>
 #include <zend_errors.h>
+#include "v_bridge.h"
 
 // 把 PHP 的宏包装成 V 能认出的 C 函数
 uint32_t vphp_get_num_args(zend_execute_data* ex) {
@@ -270,18 +271,6 @@ bool vphp_has_exception() {
     return false;
 }
 
-// 从 PHP 对象中读取属性并返回 zval 指针
-zval* vphp_read_property(zval* obj, const char* name, int name_len) {
-    if (obj == NULL || Z_TYPE_P(obj) != IS_OBJECT) {
-        return NULL;
-    }
-
-    zval rv;
-    // silent 参数设为 1 表示如果属性不存在不抛出 Notice
-    zval* property = zend_read_property(Z_OBJCE_P(obj), Z_OBJ_P(obj), name, name_len, 1, &rv);
-    return property;
-}
-
 // 对象方法调用：obj 对象, method 方法名, param_count 参数数量, params 参数数组指针
 int vphp_call_method(zval* obj, const char* method, int method_len, zval* retval, int param_count, zval** params_ptrs) {
     if (obj == NULL || Z_TYPE_P(obj) != IS_OBJECT) return -1;
@@ -344,4 +333,110 @@ int vphp_call_callable(zval* callable, zval* retval, int param_count, zval** par
 
     if (params) efree(params);
     return result;
+}
+
+// 定义全局句柄表
+zend_object_handlers vphp_obj_handlers;
+
+void vphp_free_object_handler(zend_object *obj) {
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(obj);
+    if (wrapper->v_ptr) {
+        // 这里可以调用 V 侧导出的释放函数，或者简单地根据 GC 策略处理
+        // free(wrapper->v_ptr);
+    }
+    zend_object_std_dtor(obj);
+}
+
+// 拦截读取操作
+// 3. 实现标准的 5 参数版本
+zval *vphp_read_property(zend_object *object, zend_string *member, int type, void **cache_slot, zval *rv) {
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
+    if (wrapper->v_ptr && wrapper->prop_handler) {
+        // 重点：在这里打印一下 rv 的地址，确认它不是 NULL
+        // printf("Reading prop: %s, rv addr: %p\n", ZSTR_VAL(member), rv);
+
+        ZVAL_UNDEF(rv); // 必须先初始化为 UNDEF
+        wrapper->prop_handler(
+            wrapper->v_ptr,
+            ZSTR_VAL(member),
+            (int)ZSTR_LEN(member),
+            rv
+        );
+
+        if (Z_TYPE_P(rv) != IS_UNDEF) {
+            return rv;
+        }
+    }
+    return zend_get_std_object_handlers()->read_property(object, member, type, cache_slot, rv);
+}
+
+// 拦截写入操作
+void vphp_write_property(zend_object *object, zend_string *member, zval *value, void **cache_slot) {
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
+    const char *name = ZSTR_VAL(member);
+
+    if (wrapper->v_ptr) {
+        // 💡 同理，调用 V 侧生成的类名_set_property
+    }
+
+    zend_get_std_object_handlers()->write_property(object, member, value, cache_slot);
+}
+
+// 在初始化时克隆标准句柄并覆盖
+void vphp_init_handlers() {
+    memcpy(&vphp_obj_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    vphp_obj_handlers.offset = offsetof(vphp_object_wrapper, std);
+    vphp_obj_handlers.read_property = vphp_read_property;
+    vphp_obj_handlers.write_property = vphp_write_property;
+    vphp_obj_handlers.free_obj = vphp_free_object_handler; // 确保使用之前的析构
+}
+
+zend_object* vphp_create_object_handler(zend_class_entry *ce) {
+    if (vphp_obj_handlers.read_property == NULL) {
+        memcpy(&vphp_obj_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+        vphp_obj_handlers.offset = offsetof(vphp_object_wrapper, std); // 这里用 std
+        vphp_obj_handlers.free_obj = vphp_free_object_handler;
+        vphp_obj_handlers.read_property = vphp_read_property;
+        vphp_obj_handlers.get_properties = vphp_get_properties; // 👈 挂载劫持
+    }
+
+    vphp_object_wrapper *obj = zend_object_alloc(sizeof(vphp_object_wrapper), ce);
+    zend_object_std_init(&obj->std, ce);
+    object_properties_init(&obj->std, ce);
+    obj->std.handlers = &vphp_obj_handlers;
+
+    return &obj->std;
+}
+
+// 专门给 V 调用的 3 参数版本，内部转发给标准的 5 参数 Handler
+zval* vphp_read_property_compat(zend_object *obj, const char *name, int name_len, zval *rv) {
+    // 构造 zend_string
+    zend_string *member = zend_string_init(name, name_len, 0);
+
+    // 调用我们之前定义的 5 参数劫持函数
+    // type 传 BP_VAR_R (只读)，cache_slot 传 NULL
+    zval *res = vphp_read_property(obj, member, BP_VAR_R, NULL, rv);
+
+    // 释放临时字符串
+    zend_string_release(member);
+    return res;
+}
+
+
+HashTable* vphp_get_properties(zend_object *object) {
+    // 1. 获取默认属性表（PHP 的标准行为）
+    HashTable *props = zend_std_get_properties(object);
+
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
+
+    if (wrapper->v_ptr && wrapper->sync_handler) {
+        // 2. 构造一个临时的 zval 指向当前对象
+        zval obj_zv;
+        ZVAL_OBJ(&obj_zv, object);
+
+        // 3. 调用 V 侧生成的同步函数，把 V 内存刷进这个 props 表
+        wrapper->sync_handler(wrapper->v_ptr, &obj_zv);
+    }
+
+    return props;
 }

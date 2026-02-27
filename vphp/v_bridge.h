@@ -3,6 +3,9 @@
 
 #include <php.h>
 #include <Zend/zend_exceptions.h>
+#include <zend_objects.h>
+#include <zend_API.h>
+#include <stddef.h> // 必须包含，为了 offsetof
 
 // 显式声明所有代理函数，供 GCC 参考
 uint32_t vphp_get_num_args(zend_execute_data* ex);
@@ -76,9 +79,52 @@ bool vphp_is_type(zval* z, int type);
 bool vphp_has_exception();
 bool vphp_get_bool(zval* z);
 
-zval* vphp_read_property(zval* obj, const char* name, int name_len);
 int vphp_call_method(zval* obj, const char* method, int method_len, zval* retval, int param_count, zval** params_ptrs);
 int vphp_call_callable(zval* callable, zval* retval, int param_count, zval** params_ptrs);
 void vphp_array_push_double(zval* z, double val);
 void vphp_array_push_long(zval* z, long val);
+
+
+typedef void (*vphp_prop_handler_t)(void* v_ptr, const char* name, int name_len, zval *rv);
+// 增加同步函数的签名定义
+typedef void (*vphp_sync_handler_t)(void* v_ptr, zval* object_zv);
+
+// 1. 定义包装器：把 V 指针和 PHP 对象捆绑在一起
+typedef struct {
+    void *v_ptr;         // 指向 V 侧分配的结构体内存
+    vphp_prop_handler_t prop_handler; // 核心指针
+    vphp_sync_handler_t sync_handler; // 👈 专门用于全量同步
+    zend_object std;     // PHP 标准对象（必须放在最后，以便偏移量计算）
+} vphp_object_wrapper;
+
+// 句柄声明
+HashTable* vphp_get_properties(zend_object *object);
+
+// 3. 声明通用的对象创建处理器
+void vphp_init_object_handlers();
+zend_object* vphp_create_object_handler(zend_class_entry *ce);
+void vphp_free_object_handler(zend_object *obj);
+
+
+// 声明自定义句柄
+zval *vphp_read_property(zend_object *object, zend_string *member, int type, void **cache_slot, zval *rv);
+void vphp_write_property(zend_object *object, zend_string *member, zval *value, void **cache_slot);
+
+// 声明全局句柄表（用于保存默认行为并覆盖）
+extern zend_object_handlers vphp_obj_handlers;
+
+// 修正 offsetof
+static inline vphp_object_wrapper* vphp_obj_from_obj(zend_object* obj) {
+    return (vphp_object_wrapper*)((char*)(obj) - offsetof(vphp_object_wrapper, std));
+}
+
+// 包装 PHP 的 Z_OBJ_P 宏
+static inline zend_object* vphp_get_obj_from_zval(zval *zv) {
+    return Z_OBJ_P(zv);
+}
+
+// 声明刚才提到的兼容层函数
+zval* vphp_read_property_compat(zend_object *obj, const char *name, int name_len, zval *rv);
+
+
 #endif

@@ -278,3 +278,21 @@ pub fn (ctx Context) return_object(props map[string]string) {
         }
     }
 }
+
+pub fn (ctx Context) sync_props[T](obj &T) {
+    unsafe {
+        $for field in T.fields {
+            name := field.name
+            val := obj.$(field.name)
+
+            $if field.typ is string {
+                C.add_property_stringl(ctx.ret, &char(name.str), &char(val.str), val.len)
+            } $else $if field.typ is int || field.typ is i64 {
+                // 使用专门的整型设置函数，更稳健
+                C.add_property_long(ctx.ret, &char(name.str), i64(val))
+            } $else $if field.typ is bool {
+                C.add_property_bool(ctx.ret, &char(name.str), val)
+            }
+        }
+    }
+}

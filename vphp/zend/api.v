@@ -6,6 +6,7 @@ pub fn C.vphp_get_arg_ptr(ex &C.zend_execute_data, index u32) &C.zval
 pub fn C.vphp_throw(msg &char, code int)
 pub fn C.vphp_get_strval(z &C.zval) &char
 pub fn C.vphp_get_strlen(z &C.zval) int
+pub fn C.vphp_set_strval(z &C.zval, str &char, len int)
 pub fn C.vphp_get_lval(z &C.zval) i64
 pub fn C.zend_string_init(str &char, len usize, p int) voidptr
 pub fn C.ZVAL_STR(z &C.zval, s voidptr)
@@ -45,8 +46,17 @@ pub fn C.vphp_array_add_assoc_bool(res &C.zval, key &char, val int)
 pub fn C.vphp_array_add_next_zval(main_array &C.zval, sub_item &C.zval)
 pub fn C.vphp_has_exception() bool
 pub fn C.vphp_get_bool(z &C.zval) bool
-pub fn C.vphp_read_property(obj &C.zval, name &char, len int) &C.zval
 pub fn C.vphp_call_method(obj &C.zval, method &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 pub fn C.vphp_new_zval() &C.zval
 pub fn C.vphp_call_callable(callable &C.zval, retval &C.zval, p_count int, params &&C.zval) int
 pub fn C.vphp_set_lval(z &C.zval, val i64)
+
+
+// 声明 C 包装函数
+fn C.vphp_get_obj_from_zval(zv &C.zval) &C.zend_object
+fn C.vphp_read_property_compat(obj &C.zend_object, name &char, name_len int, rv &C.zval) &C.zval
+
+fn C.add_property_zval(obj &C.zval, name &char, val &C.zval)
+fn C.add_property_long(arg &C.zval, key &char, n i64)
+fn C.add_property_bool(arg &C.zval, key &char, b bool)
+fn C.add_property_stringl(arg &C.zval, key &char, value &char, length usize)

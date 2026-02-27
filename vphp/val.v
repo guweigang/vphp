@@ -119,10 +119,9 @@ pub fn (v Val) to_string() string {
 
 pub fn (v Val) set_string(s string) {
     unsafe {
-        // 使用我们之前在 v_bridge.c 里可能用到的 zend_string_init
-        // 或者直接在 vphp.v 声明并调用
-        zs := C.zend_string_init(&char(s.str), usize(s.len), 0)
-        C.ZVAL_STR(v.raw, zs)
+        // 💡 关键：使用 C.ZVAL_STRINGL 告诉 PHP 拷贝这份字符串
+        // 最后一个参数 1 表示让 PHP 复制内容 (duplicate)
+        C.vphp_set_strval(v.raw, &char(s.str), s.len)
     }
 }
 
@@ -135,8 +134,14 @@ pub fn (v Val) get_prop(name string) Val {
     if !v.is_object() {
         return unsafe { Val{ raw: 0 } }
     }
-    res := C.vphp_read_property(v.raw, &char(name.str), name.len)
-    return Val{ raw: res }
+    obj := C.vphp_get_obj_from_zval(v.raw)
+		// 2. 准备一个临时 zval 接收返回值
+		// 注意：这里需要确保 zval 内存是合法的，通常建议从堆分配或使用局部变量
+		mut rv := C.zval{}
+		// 3. 调用 C 侧实现的兼容层逻辑
+		res := C.vphp_read_property_compat(obj, &char(name.str), name.len, &rv)
+
+		return Val{ raw: res }
 }
 
 // 快捷方式：直接读取对象属性并转为 string
@@ -157,4 +162,14 @@ pub fn (v Val) set_int(val i64) {
 	unsafe {
 		C.vphp_set_lval(v.raw, val)
 	}
+}
+
+// 声明 PHP 内核宏
+fn C.ZVAL_BOOL(z &C.zval, b bool)
+
+// 为 Val 结构体添加 set_bool
+pub fn (mut v Val) set_bool(b bool) {
+    unsafe {
+        C.ZVAL_BOOL(v.raw, b)
+    }
 }
