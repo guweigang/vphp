@@ -1,5 +1,45 @@
 ## vphp
 Bindings for the Zend API to build PHP extensions natively in V lang.
+```mermaid
+graph TB
+    subgraph "用户编写 (v_logic.v)"
+        UF["@[export] 函数"]
+        UC["@[php_class] 结构体"]
+        UM["@[php_method] 方法"]
+    end
+
+    subgraph "编译器 (vphp/compiler/)"
+        C["Compiler AST 扫描"]
+        CR["PhpRepr 接口"]
+        CC["PhpClassRepr"]
+        CF["PhpFuncRepr"]
+        CT["PhpTaskRepr"]
+    end
+
+    subgraph "生成物 (v_php_ext/)"
+        GH["php_bridge.h (C 头文件)"]
+        GC["php_bridge.c (C 胶水)"]
+        GV["_task_glue.v (V 侧胶水)"]  
+    end
+
+    subgraph "运行时 (vphp/)"
+        RT["Context, Val"]
+        RB["v_bridge.c / v_bridge.h"]
+    end
+
+    UF --> C
+    UC --> C
+    UM --> C
+    C --> CR
+    CR --> CC
+    CR --> CF
+    CR --> CT
+    CC --> GH & GC & GV
+    CF --> GH & GC
+    CT --> GV
+    GC --> RB
+    GV --> RT
+```
 
 ## Example
 ```v

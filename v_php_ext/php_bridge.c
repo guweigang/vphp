@@ -18,16 +18,12 @@ ZEND_END_ARG_INFO()
     PHP_METHOD(Article, __construct) {
         typedef struct { void* ex; void* ret; } vphp_context_internal;
         vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern void Article_init(void* v_ptr, vphp_context_internal ctx);
+        extern vphp_class_handlers* Article_handlers();
+        vphp_class_handlers *h = Article_handlers();
         vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        extern void* Article_new_raw();
-        wrapper->v_ptr = Article_new_raw();
-        extern void Article_get_prop(void*, const char*, int, zval*);
-        extern void Article_set_prop(void*, const char*, int, zval*);
-        extern void Article_sync_props(void*, zval*);
-        wrapper->prop_handler = Article_get_prop;
-        wrapper->write_handler = Article_set_prop;
-        wrapper->sync_handler = Article_sync_props;
+        wrapper->v_ptr = h->new_raw();
+        vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+        extern void Article_init(void* v_ptr, vphp_context_internal ctx);
         Article_init(wrapper->v_ptr, ctx);
     }
     PHP_METHOD(Article, create) {
@@ -37,14 +33,11 @@ ZEND_END_ARG_INFO()
         void* v_instance = Article_create(ctx);
         if (!v_instance) RETURN_NULL();
         object_init_ex(return_value, article_ce);
+        extern vphp_class_handlers* Article_handlers();
+        vphp_class_handlers *h = Article_handlers();
         vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
         wrapper->v_ptr = v_instance;
-        extern void Article_get_prop(void*, const char*, int, zval*);
-        wrapper->prop_handler = Article_get_prop;
-        extern void Article_set_prop(void*, const char*, int, zval*);
-        wrapper->write_handler = Article_set_prop;
-        extern void Article_sync_props(void*, zval*);
-        wrapper->sync_handler = Article_sync_props;
+        vphp_bind_handlers(Z_OBJ_P(return_value), h);
     }
     PHP_METHOD(Article, is_top) {
         typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -53,7 +46,7 @@ ZEND_END_ARG_INFO()
         vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
         if (!wrapper->v_ptr) RETURN_FALSE;
         bool res = Article_is_top(wrapper->v_ptr, ctx);
-        RETURN_BOOL(res); // 比如 RETURN_LONG(res) 或 RETURN_BOOL(res)
+        RETURN_BOOL(res);
     }
     PHP_METHOD(Article, save) {
         typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -62,7 +55,7 @@ ZEND_END_ARG_INFO()
         vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
         if (!wrapper->v_ptr) RETURN_FALSE;
         bool res = Article_save(wrapper->v_ptr, ctx);
-        RETURN_BOOL(res); // 比如 RETURN_LONG(res) 或 RETURN_BOOL(res)
+        RETURN_BOOL(res);
     }
 static const zend_function_entry article_methods[] = {
     PHP_ME(Article, __construct, arginfo_article_init, ZEND_ACC_PUBLIC)
@@ -223,7 +216,6 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_long(article_ce, "id", sizeof("id")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_bool(article_ce, "is_top", sizeof("is_top")-1, 0, ZEND_ACC_PUBLIC);
-        article_ce->create_object = vphp_create_object_handler;
     }
 
 

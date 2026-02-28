@@ -1,5 +1,11 @@
 module vphp
-import vphp.zend
+import vphp.zend as _
+
+// 并发任务的异步结果包装器（从 zend/mod.v 迁移至此）
+pub struct AsyncResult {
+pub mut:
+	handle thread []f64
+}
 
 // Spawn 支持
 // 1. 定义通用任务接口
@@ -65,7 +71,7 @@ fn framework_v_spawn(ex &C.zend_execute_data, retval &C.zval) {
 	t := spawn task_inst.run()
 
 	unsafe {
-		mut res := &zend.AsyncResult(malloc(int(sizeof(zend.AsyncResult))))
+		mut res := &AsyncResult(malloc(int(sizeof(AsyncResult))))
 		res.handle = t
 		ctx.return_res(res, 'v_task')
 	}
@@ -80,7 +86,7 @@ fn framework_v_wait(ex &C.zend_execute_data, retval &C.zval) {
 		ptr := res_val.to_res()
 		if ptr == nil { return }
 
-		mut task := &zend.AsyncResult(ptr)
+		mut task := &AsyncResult(ptr)
 		results := task.handle.wait()
 
 		C.vphp_return_array_start(retval)
