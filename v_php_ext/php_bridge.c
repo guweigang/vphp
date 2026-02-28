@@ -70,6 +70,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_wait, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_list, 0, 0, 0)
+ZEND_END_ARG_INFO()
 PHP_METHOD(VPhp__Task, spawn) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -82,9 +84,16 @@ PHP_METHOD(VPhp__Task, wait) {
     extern void vphp_wrap_VPhpTask_wait(vphp_context_internal ctx);
     vphp_wrap_VPhpTask_wait(ctx);
 }
+PHP_METHOD(VPhp__Task, list) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VPhpTask_list(vphp_context_internal ctx);
+    vphp_wrap_VPhpTask_list(ctx);
+}
 static const zend_function_entry vphp__task_methods[] = {
     PHP_ME(VPhp__Task, spawn, arginfo_vphp__task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(VPhp__Task, wait, arginfo_vphp__task_wait, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(VPhp__Task, list, arginfo_vphp__task_list, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)

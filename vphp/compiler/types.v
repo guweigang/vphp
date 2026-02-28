@@ -26,7 +26,7 @@ pub fn TypeMap.get_type(v_type string) TypeMap {
 		// 默认处理 (void 或未知类型)
 		'void',''   { TypeMap{'void', 'void', 'RETURN_NULL', false} }
 		else     {
-		  // 💡 关键：如果是类名（如 Article），在 C 侧统一视为 void*
+			// 💡 关键：如果是类名（如 Article），在 C 侧统一视为 void*
 			TypeMap{v_type, 'void*', 'RETURN_NULL', false}
 		}
 	}

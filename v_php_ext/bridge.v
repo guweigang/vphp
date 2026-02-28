@@ -82,6 +82,11 @@ pub fn vphp_wrap_vphptask_wait(ctx vphp.Context)  {
     arg_0 := ctx
     VPhpTask.wait(arg_0)
 }
+@[export: 'vphp_wrap_VPhpTask_list']
+pub fn vphp_wrap_vphptask_list(ctx vphp.Context)  {
+    arg_0 := ctx
+    VPhpTask.list(arg_0)
+}
 @[export: 'VPhpTask_handlers']
 pub fn vphptask_handlers() voidptr {
     return unsafe { &C.vphp_class_handlers{
@@ -211,3 +216,12 @@ fn vphp_wrap_v_call_php_closure(ctx vphp.Context) {
     v_call_php_closure(arg_0)
 }
 
+@[export: 'vphp_ext_startup']
+fn vphp_ext_startup() {
+    vphp.ITask.register('AnalyzeTask', fn (ctx vphp.Context) vphp.ITask {
+        return AnalyzeTask{
+            symbol: ctx.arg[string](1)
+            count: ctx.arg[int](2)
+        }
+    })
+}

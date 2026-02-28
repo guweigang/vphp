@@ -369,20 +369,16 @@ pub fn (a &Article) save() bool {
 }
 
 // === 新增：利用 @[php_class] 机制定义的 VPhp\Task ===
-struct StockParams {
+@[php_task: 'AnalyzeTask']
+struct AnalyzeTask {
+pub mut:
     symbol string
     count  int
 }
 
-struct AnalyzeTask {
-pub mut:
-    json_data string
-}
-
-fn (t AnalyzeTask) run() []f64 {
-    params := json.decode(StockParams, t.json_data) or { return []f64{} }
-    println('V: 正在处理 ${params.symbol}')
-    return [1.0, 2.0]
+fn (t AnalyzeTask) run() vphp.TaskResult {
+    println('V: 正在处理 ${t.symbol}, count: ${t.count}')
+    return [1.0, 2.0] // 隐式转换为 TaskResult (Sum Type中的 []f64)
 }
 
 @[php_class: 'VPhp\\Task']
@@ -398,12 +394,7 @@ pub fn VPhpTask.wait(ctx vphp.Context) {
 	vphp.task_wait(ctx)
 }
 
-// 扩展初始化入口：在这里注册所有的异步任务
-@[export: 'vphp_ext_startup']
-fn vphp_ext_startup() {
-	vphp.ITask.register('AnalyzeTask', fn (json_data string) vphp.ITask {
-		return AnalyzeTask{
-			json_data: json_data
-		}
-	})
+@[php_method]
+pub fn VPhpTask.list(ctx vphp.Context) {
+	vphp.task_list(ctx)
 }

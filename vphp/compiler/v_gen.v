@@ -11,13 +11,24 @@ fn (g VGenerator) generate(mut elements []PhpRepr) string {
     mut out := strings.new_builder(2048)
     out.write_string('module main\n\nimport vphp\nimport time\nimport json\n\n')
     
+    mut task_registrations := []string{}
     // 生成每个 repr 的 V 胶水
     for mut el in elements {
         if mut el is PhpFuncRepr {
             out.write_string(g.gen_func_glue(el).join('\n') + '\n\n')
         } else if mut el is PhpClassRepr {
             out.write_string(g.gen_class_glue(el).join('\n') + '\n\n')
+        } else if mut el is PhpTaskRepr {
+            task_registrations << g.gen_task_registration(el)
         }
+    }
+
+    // 如果捕获到任何 Task，自动生成全局初始化注册函数
+    if task_registrations.len > 0 {
+        out.write_string("@[export: 'vphp_ext_startup']\n")
+        out.write_string("fn vphp_ext_startup() {\n")
+        out.write_string(task_registrations.join('\n\n'))
+        out.write_string("\n}\n")
     }
     
     return out.str()
@@ -170,4 +181,22 @@ fn is_v_keyword(name string) bool {
 		'union', 'unsafe', 'volatile', '__global', '__offsetof', 'spawn'
 	]
 	return name in keywords
+}
+
+// ---- Task Auto-Registration Glue ----
+fn (g VGenerator) gen_task_registration(t &PhpTaskRepr) string {
+    mut out := []string{}
+    
+    out << "    vphp.ITask.register('${t.task_name}', fn (ctx vphp.Context) vphp.ITask {"
+    out << "        return ${t.v_name}{"
+    
+    for i, param in t.parameters {
+        // 参数索引从 1 开始，因为 ctx.arg[0] 被占用来传任务名称了
+        arg_index := i + 1
+        out << "            ${param.name}: ctx.arg[${param.v_type}](${arg_index})"
+    }
+    
+    out << "        }"
+    out << "    })"
+    return out.join('\n')
 }

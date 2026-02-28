@@ -2,19 +2,22 @@ module vphp
 
 import vphp.zend as _
 
+// 任务可能的返回结果，定义为 Sum Type（代数数据类型）
+pub type TaskResult = string | int | i64 | f64 | bool | []string | []int | []i64 | []f64
+
 // 并发任务的异步结果包装器
 pub struct AsyncResult {
 pub mut:
-	handle thread []f64
+	handle thread TaskResult
 }
 
 // 通用任务接口
 pub interface ITask {
-	json_data string // 通用参数容器
-	run() []f64      // 通用返回类型
+	run() TaskResult // 返回动态类型
 }
 
-type TaskCreator = fn (json_data string) ITask
+// Creator 现在直接接收 Context，可以自由提取需要的参数
+type TaskCreator = fn (ctx Context) ITask
 
 struct TaskRegistry {
 pub mut:
@@ -49,17 +52,26 @@ pub fn ITask.get_creator(name string) ?TaskCreator {
 	return none
 }
 
+// 暴露给 PHP：获取所有已注册的任务名称
+pub fn task_list(ctx Context) {
+	r := get_registry()
+	mut names := []string{}
+	for k, _ in r.tasks {
+		names << k
+	}
+	ctx.return_val(names)
+}
+
 // 内部实现：Spawn 逻辑
 pub fn task_spawn(ctx Context) {
 	task_name := ctx.arg[string](0)
-	json_params := ctx.arg[string](1)
 
 	creator := ITask.get_creator(task_name) or {
 		throw_exception('Task $task_name not registered', 0)
 		return
 	}
 
-	task_inst := creator(json_params)
+	task_inst := creator(ctx)
 	t := spawn task_inst.run()
 
 	unsafe {
@@ -81,6 +93,17 @@ pub fn task_wait(ctx Context) {
 
 		mut task := &AsyncResult(ptr)
 		results := task.handle.wait()
-		ctx.return_val(results)
+		
+		match results {
+			string   { ctx.return_val[string](results) }
+			int      { ctx.return_val[int](results) }
+			i64      { ctx.return_val[i64](results) }
+			f64      { ctx.return_val[f64](results) }
+			bool     { ctx.return_val[bool](results) }
+			[]string { ctx.return_val[[]string](results) }
+			[]int    { ctx.return_val[[]int](results) }
+			[]i64    { ctx.return_val[[]i64](results) }
+			[]f64    { ctx.return_val[[]f64](results) }
+		}
 	}
 }

@@ -4,20 +4,21 @@ test_spawn tests
 <?php if (!extension_loaded("vphptest")) print "skip"; ?>
 --FILE--
 <?php
-// PHP 侧直接传数组，扩展会自动（或手动 json_encode）接收
-$params = [
-    "symbol" => "SH600519",
-    "prices" => [1700.5, 1800.2],
-    "limit" => 5,
-];
+// 先看看可用什么任务
+print_r(VPhp\Task::list());
 
-$t = VPhp\Task::spawn("AnalyzeTask", json_encode($params));
+// PHP 侧直接传基础类型参数
+$t = VPhp\Task::spawn("AnalyzeTask", "SH600519", 100);
 $res = VPhp\Task::wait($t);
 print_r($res);
 --EXPECT--
 Array
 (
+    [0] => AnalyzeTask
+)
+Array
+(
     [0] => 1
     [1] => 2
 )
-V: 正在处理 SH600519
+V: 正在处理 SH600519, count: 100
