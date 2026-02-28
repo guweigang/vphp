@@ -298,6 +298,14 @@ pub fn return_val[T](ctx Context, val T) {
 			out.set_string(val)
 		} $else $if T is bool {
 			out.set_bool(val)
+		} $else $if T is map[string]string {
+			ctx.return_map(val)
+		} $else $if T is map[string]int {
+			ctx.return_map_int(val)
+		} $else $if T is map[string]f64 {
+			ctx.return_map_f64(val)
+		} $else $if T is map[string]bool {
+			ctx.return_map_bool(val)
 		}
 	}
 }

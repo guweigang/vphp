@@ -97,13 +97,12 @@ fn (mut c Compiler) generate_v_glue() ! {
     v << '}'
 
     for mut el in c.elements {
-      if mut el is PhpClassRepr {
-          // 为每个标记了 @[php_class] 的结构体生成映射器
-          cls := el
-          v << cls.gen_v_glue();
-      }
+        if el !is PhpTaskRepr {
+            // 为函数、类等生成顶层 V 胶水代码
+            v << el.gen_v_glue()
+        }
     }
-    os.write_file('bridge.v', v.join('\n'))!
+    os.write_file('bridge.v', v.join('\n\n'))!
 }
 
 // ==========================================

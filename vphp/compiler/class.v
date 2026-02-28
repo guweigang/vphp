@@ -35,7 +35,8 @@ mut:
     visibility    string
 }
 
-struct PhpArg {
+pub struct PhpArg {
+pub mut:
     name   string
     v_type string
 }
@@ -299,7 +300,7 @@ pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table,
 // 从 ~55 行 match 逻辑 → 薄转发 + 泛型调用
 // ============================================
 
-pub fn (r PhpClassRepr) gen_v_glue() string {
+pub fn (r PhpClassRepr) gen_v_glue() []string {
     mut out := []string{}
     lower_name := r.name.to_lower()
 
@@ -338,5 +339,5 @@ pub fn (r PhpClassRepr) gen_v_glue() string {
     out << "    } }"
     out << "}"
 
-    return out.join('\n')
+    return out
 }

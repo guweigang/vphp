@@ -181,8 +181,8 @@ pub fn (v Val) get_prop(name string) Val {
 		return unsafe { Val{ raw: 0 } }
 	}
 	obj := C.vphp_get_obj_from_zval(v.raw)
-	mut rv := C.zval{}
-	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, &rv)
+	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
+	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
 	return Val{ raw: res }
 }
 

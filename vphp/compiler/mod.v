@@ -16,6 +16,8 @@ mut:
 	gen_c() []string
     // 生成 MINIT：返回需要写入 PHP_MINIT_FUNCTION 内部的代码行
 	gen_minit() []string
+    // 生成 V 胶水：返回需要写入 bridge.v 的 V 包装代码
+	gen_v_glue() []string
 }
 
 pub struct Compiler {

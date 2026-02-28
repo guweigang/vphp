@@ -12,6 +12,7 @@ PHP_FUNCTION(v_reverse_string);
 PHP_FUNCTION(v_logic_main);
 PHP_FUNCTION(v_add);
 PHP_FUNCTION(v_greet);
+PHP_FUNCTION(v_pure_map_test);
 PHP_FUNCTION(v_process_list);
 PHP_FUNCTION(v_test_map);
 PHP_FUNCTION(v_get_config);

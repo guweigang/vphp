@@ -29,6 +29,6 @@ fn (r PhpTaskRepr) gen_c() []string     { return []string{} }
 fn (r PhpTaskRepr) gen_minit() []string { return []string{} }
 
 // 专门为任务增加一个生成胶水代码的方法
-pub fn (r PhpTaskRepr) gen_v_glue() string {
-	return "    vphp.ITask.register('${r.task_name}', fn(s string) vphp.ITask { return ${r.task_name}{ json_data: s } })"
+pub fn (r PhpTaskRepr) gen_v_glue() []string {
+	return ["    vphp.ITask.register('${r.task_name}', fn(s string) vphp.ITask { return ${r.task_name}{ json_data: s } })"]
 }

@@ -83,19 +83,24 @@ PHP_FUNCTION(v_logic_main) {
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_add, 0, 0, 0)
 ZEND_END_ARG_INFO()
-extern long long v_add(vphp_context_internal ctx);
+extern void vphp_wrap_v_add(vphp_context_internal ctx);
 PHP_FUNCTION(v_add) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    long long res = v_add(ctx);
-    RETURN_LONG(res);
+    vphp_wrap_v_add(ctx);
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_greet, 0, 0, 0)
 ZEND_END_ARG_INFO()
-extern v_string v_greet(vphp_context_internal ctx);
+extern void vphp_wrap_v_greet(vphp_context_internal ctx);
 PHP_FUNCTION(v_greet) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    v_string res = v_greet(ctx);
-    RETVAL_STRINGL((char*)res.str, res.len);
+    vphp_wrap_v_greet(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_pure_map_test, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_pure_map_test(vphp_context_internal ctx);
+PHP_FUNCTION(v_pure_map_test) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_pure_map_test(ctx);
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_process_list, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -211,6 +216,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_logic_main, arginfo_v_logic_main)
     PHP_FE(v_add, arginfo_v_add)
     PHP_FE(v_greet, arginfo_v_greet)
+    PHP_FE(v_pure_map_test, arginfo_v_pure_map_test)
     PHP_FE(v_process_list, arginfo_v_process_list)
     PHP_FE(v_test_map, arginfo_v_test_map)
     PHP_FE(v_get_config, arginfo_v_get_config)
@@ -240,6 +246,7 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_bool(article_ce, "is_top", sizeof("is_top")-1, 0, ZEND_ACC_PUBLIC);
     }
+
 
 
 

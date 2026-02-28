@@ -58,17 +58,19 @@ fn v_logic_main(ctx vphp.Context) {
 	}
 }
 
-@[export: 'v_add']
-fn v_add(ctx vphp.Context) i64 {
-	a := ctx.arg[i64](0)
-	b := ctx.arg[i64](1)
+@[php_function]
+fn v_add(a i64, b i64) i64 {
 	return a + b
 }
 
-@[export: 'v_greet']
-fn v_greet(ctx vphp.Context) string {
-	name := ctx.arg[string](0)
-	return 'Hello, $name from V!'
+@[php_function]
+fn v_greet(name string) string {
+	return 'Hello, $name from V pure wrapper!'
+}
+
+@[php_function]
+fn v_pure_map_test(k string, v string) map[string]string {
+	return { k: v }
 }
 
 

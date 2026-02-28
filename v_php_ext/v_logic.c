@@ -4589,17 +4589,11 @@ struct vphp__compiler__Compiler {
 
 struct vphp__compiler__PhpFuncRepr {
 	string name;
+	string original_name;
 	string return_type;
+	Array_vphp__compiler__PhpArg args;
 	bool is_internal;
-};
-
-struct vphp__compiler__PhpClassRepr {
-	string name;
-	string parent;
-	bool is_final;
-	Array_vphp__compiler__PhpClassConst constants;
-	Array_vphp__compiler__PhpClassProp properties;
-	Array_vphp__compiler__PhpMethodRepr methods;
+	bool uses_php_function;
 };
 
 struct vphp__compiler__PhpClassProp {
@@ -4616,6 +4610,15 @@ struct vphp__compiler__PhpMethodRepr {
 	string return_type;
 	Array_vphp__compiler__PhpArg args;
 	string visibility;
+};
+
+struct vphp__compiler__PhpClassRepr {
+	string name;
+	string parent;
+	bool is_final;
+	Array_vphp__compiler__PhpClassConst constants;
+	Array_vphp__compiler__PhpClassProp properties;
+	Array_vphp__compiler__PhpMethodRepr methods;
 };
 
 struct v__ast__Table {
@@ -9147,6 +9150,9 @@ void vphp__Context_return_map_bool(vphp__Context ctx, Map_string_bool m);
 void vphp__Context_return_object(vphp__Context ctx, Map_string_string props);
 void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__MotionReport s);
 void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main__HeartPoint list);
+void vphp__return_val_T_i64(vphp__Context ctx, i64 val);
+void vphp__return_val_T_string(vphp__Context ctx, string val);
+void vphp__return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val);
 void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* obj);
 void vphp__return_val_raw_T_i64(zval* ret, i64 val);
 void vphp__return_val_raw_T_string(zval* ret, string val);
@@ -10651,17 +10657,19 @@ VV_LOC Array_string vphp__compiler__PhpClassRepr_gen_c(vphp__compiler__PhpClassR
 VV_LOC Array_string vphp__compiler__PhpClassRepr_gen_minit(vphp__compiler__PhpClassRepr r);
 void vphp__compiler__PhpClassRepr_add_method(vphp__compiler__PhpClassRepr* r, v__ast__FnDecl stmt, v__ast__Table* table);
 void vphp__compiler__PhpClassRepr_add_static_method(vphp__compiler__PhpClassRepr* r, v__ast__FnDecl stmt, v__ast__Table* table, string method_name);
-string vphp__compiler__PhpClassRepr_gen_v_glue(vphp__compiler__PhpClassRepr r);
+Array_string vphp__compiler__PhpClassRepr_gen_v_glue(vphp__compiler__PhpClassRepr r);
 VV_LOC vphp__compiler__PhpConstRepr* vphp__compiler__new_const_repr(void);
 VV_LOC bool vphp__compiler__PhpConstRepr_parse(vphp__compiler__PhpConstRepr* r, v__ast__Stmt stmt, v__ast__Table* table);
 VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_h(vphp__compiler__PhpConstRepr r);
 VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_c(vphp__compiler__PhpConstRepr r);
 VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_minit(vphp__compiler__PhpConstRepr r);
+VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_v_glue(vphp__compiler__PhpConstRepr r);
 vphp__compiler__PhpFuncRepr* vphp__compiler__new_func_repr(void);
 VV_LOC bool vphp__compiler__PhpFuncRepr_parse(vphp__compiler__PhpFuncRepr* r, v__ast__Stmt stmt, v__ast__Table* table);
 VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_h(vphp__compiler__PhpFuncRepr r);
 VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_c(vphp__compiler__PhpFuncRepr f);
 VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_minit(vphp__compiler__PhpFuncRepr r);
+VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_v_glue(vphp__compiler__PhpFuncRepr f);
 vphp__compiler__Compiler vphp__compiler__new(string target_file);
 _result_void vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c);
 VV_LOC void vphp__compiler__Compiler_set_ext_name(vphp__compiler__Compiler* c, v__ast__File* file_ast);
@@ -10670,10 +10678,10 @@ VV_LOC bool vphp__compiler__PhpTaskRepr_parse(vphp__compiler__PhpTaskRepr* r, v_
 VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_h(vphp__compiler__PhpTaskRepr r);
 VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_c(vphp__compiler__PhpTaskRepr r);
 VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_minit(vphp__compiler__PhpTaskRepr r);
-string vphp__compiler__PhpTaskRepr_gen_v_glue(vphp__compiler__PhpTaskRepr r);
+Array_string vphp__compiler__PhpTaskRepr_gen_v_glue(vphp__compiler__PhpTaskRepr r);
 vphp__compiler__TypeMap vphp__compiler__TypeMap__static__get_type(string v_type);
 VV_LOC void main__vphp_task_auto_startup(void);
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154(string s);
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_156(string s);
 VV_EXP void vphp_task_auto_startup(void); // exported fn main.vphp_task_auto_startup
 voidptr main__article_new_raw(void);
 VV_EXP voidptr Article_new_raw(void); // exported fn main.article_new_raw
@@ -10685,15 +10693,20 @@ void main__article_sync_props(voidptr ptr, zval* zv);
 VV_EXP void Article_sync_props(voidptr ptr, zval* zv); // exported fn main.article_sync_props
 voidptr main__article_handlers(void);
 VV_EXP voidptr Article_handlers(void); // exported fn main.article_handlers
+VV_LOC void main__vphp_wrap_v_add(vphp__Context ctx);
+VV_EXP void vphp_wrap_v_add(vphp__Context ctx); // exported fn main.vphp_wrap_v_add
+VV_LOC void main__vphp_wrap_v_greet(vphp__Context ctx);
+VV_EXP void vphp_wrap_v_greet(vphp__Context ctx); // exported fn main.vphp_wrap_v_greet
+VV_LOC void main__vphp_wrap_v_pure_map_test(vphp__Context ctx);
+VV_EXP void vphp_wrap_v_pure_map_test(vphp__Context ctx); // exported fn main.vphp_wrap_v_pure_map_test
 VV_LOC void main__main(void);
 VV_LOC void main__v_reverse_string(vphp__Context ctx);
 VV_EXP void v_reverse_string(vphp__Context ctx); // exported fn main.v_reverse_string
 VV_LOC void main__v_logic_main(vphp__Context ctx);
 VV_EXP void v_logic_main(vphp__Context ctx); // exported fn main.v_logic_main
-VV_LOC i64 main__v_add(vphp__Context ctx);
-VV_EXP i64 v_add(vphp__Context ctx); // exported fn main.v_add
-VV_LOC string main__v_greet(vphp__Context ctx);
-VV_EXP string v_greet(vphp__Context ctx); // exported fn main.v_greet
+VV_LOC i64 main__v_add(i64 a, i64 b);
+VV_LOC string main__v_greet(string name);
+VV_LOC Map_string_string main__v_pure_map_test(string k, string v);
 VV_LOC void main__v_process_list(vphp__Context ctx);
 VV_EXP void v_process_list(vphp__Context ctx); // exported fn main.v_process_list
 VV_LOC void main__v_test_map(vphp__Context ctx);
@@ -12147,6 +12160,9 @@ static inline Array_string vphp__compiler__PhpFuncRepr_gen_h_Interface_vphp__com
 static inline Array_string vphp__compiler__PhpFuncRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpFuncRepr* r) {
 	return vphp__compiler__PhpFuncRepr_gen_minit(*r);
 }
+static inline Array_string vphp__compiler__PhpFuncRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpFuncRepr* f) {
+	return vphp__compiler__PhpFuncRepr_gen_v_glue(*f);
+}
 static inline Array_string vphp__compiler__PhpTaskRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpTaskRepr* r) {
 	return vphp__compiler__PhpTaskRepr_gen_c(*r);
 }
@@ -12155,6 +12171,9 @@ static inline Array_string vphp__compiler__PhpTaskRepr_gen_h_Interface_vphp__com
 }
 static inline Array_string vphp__compiler__PhpTaskRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpTaskRepr* r) {
 	return vphp__compiler__PhpTaskRepr_gen_minit(*r);
+}
+static inline Array_string vphp__compiler__PhpTaskRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpTaskRepr* r) {
+	return vphp__compiler__PhpTaskRepr_gen_v_glue(*r);
 }
 static inline Array_string vphp__compiler__PhpClassRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpClassRepr* r) {
 	return vphp__compiler__PhpClassRepr_gen_c(*r);
@@ -12165,6 +12184,9 @@ static inline Array_string vphp__compiler__PhpClassRepr_gen_h_Interface_vphp__co
 static inline Array_string vphp__compiler__PhpClassRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpClassRepr* r) {
 	return vphp__compiler__PhpClassRepr_gen_minit(*r);
 }
+static inline Array_string vphp__compiler__PhpClassRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpClassRepr* r) {
+	return vphp__compiler__PhpClassRepr_gen_v_glue(*r);
+}
 static inline Array_string vphp__compiler__PhpConstRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpConstRepr* r) {
 	return vphp__compiler__PhpConstRepr_gen_c(*r);
 }
@@ -12174,11 +12196,15 @@ static inline Array_string vphp__compiler__PhpConstRepr_gen_h_Interface_vphp__co
 static inline Array_string vphp__compiler__PhpConstRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpConstRepr* r) {
 	return vphp__compiler__PhpConstRepr_gen_minit(*r);
 }
+static inline Array_string vphp__compiler__PhpConstRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper(vphp__compiler__PhpConstRepr* r) {
+	return vphp__compiler__PhpConstRepr_gen_v_glue(*r);
+}
 
 struct _vphp__compiler__PhpRepr_interface_methods {
 	Array_string (*_method_gen_c)(void* _);
 	Array_string (*_method_gen_h)(void* _);
 	Array_string (*_method_gen_minit)(void* _);
+	Array_string (*_method_gen_v_glue)(void* _);
 	bool (*_method_parse)(void* _, v__ast__Stmt stmt, v__ast__Table* table);
 };
 
@@ -12187,30 +12213,35 @@ struct _vphp__compiler__PhpRepr_interface_methods vphp__compiler__PhpRepr_name_t
 		._method_gen_c = (void*) vphp__compiler__PhpFuncRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_h = (void*) vphp__compiler__PhpFuncRepr_gen_h_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_minit = (void*) vphp__compiler__PhpFuncRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper,
+		._method_gen_v_glue = (void*) vphp__compiler__PhpFuncRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_parse = (void*) vphp__compiler__PhpFuncRepr_parse,
 	},
 	{
 		._method_gen_c = (void*) 0,
 		._method_gen_h = (void*) 0,
 		._method_gen_minit = (void*) 0,
+		._method_gen_v_glue = (void*) 0,
 		._method_parse = (void*) 0,
 	},
 	{
 		._method_gen_c = (void*) vphp__compiler__PhpTaskRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_h = (void*) vphp__compiler__PhpTaskRepr_gen_h_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_minit = (void*) vphp__compiler__PhpTaskRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper,
+		._method_gen_v_glue = (void*) vphp__compiler__PhpTaskRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_parse = (void*) vphp__compiler__PhpTaskRepr_parse,
 	},
 	{
 		._method_gen_c = (void*) vphp__compiler__PhpClassRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_h = (void*) vphp__compiler__PhpClassRepr_gen_h_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_minit = (void*) vphp__compiler__PhpClassRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper,
+		._method_gen_v_glue = (void*) vphp__compiler__PhpClassRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_parse = (void*) vphp__compiler__PhpClassRepr_parse,
 	},
 	{
 		._method_gen_c = (void*) vphp__compiler__PhpConstRepr_gen_c_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_h = (void*) vphp__compiler__PhpConstRepr_gen_h_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_gen_minit = (void*) vphp__compiler__PhpConstRepr_gen_minit_Interface_vphp__compiler__PhpRepr_method_wrapper,
+		._method_gen_v_glue = (void*) vphp__compiler__PhpConstRepr_gen_v_glue_Interface_vphp__compiler__PhpRepr_method_wrapper,
 		._method_parse = (void*) vphp__compiler__PhpConstRepr_parse,
 	},
 };
@@ -17476,7 +17507,7 @@ cJSON* json__encode_main__StockParams(main__StockParams val) {
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154(string s) {
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_156(string s) {
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.json_data = s,}, sizeof(main__AnalyzeTask))));
 }
 
@@ -17616,7 +17647,7 @@ u32 v_typeof_interface_idx_vphp__compiler__PhpRepr(u32 sidx) {
 	if (sidx == _vphp__compiler__PhpRepr_vphp__compiler__PhpFuncRepr_index) return 228;
 	if (sidx == _vphp__compiler__PhpRepr_voidptr_index) return 2;
 	if (sidx == _vphp__compiler__PhpRepr_vphp__compiler__PhpTaskRepr_index) return 229;
-	if (sidx == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) return 230;
+	if (sidx == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) return 236;
 	if (sidx == _vphp__compiler__PhpRepr_vphp__compiler__PhpConstRepr_index) return 243;
 	return 245;
 }
@@ -35307,6 +35338,108 @@ void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main_
 		vphp_array_add_next_zval(ctx.ret, &sub_zv);
 	}
 }
+void vphp__return_val_T_i64(vphp__Context ctx, i64 val) {
+	{ // Unsafe block
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+		#if true
+		{
+			vphp__Val_set_int(out, val);
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#endif
+	}
+}
+void vphp__return_val_T_string(vphp__Context ctx, string val) {
+	{ // Unsafe block
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+		#if false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif true
+		{
+			vphp__Val_set_string(out, val);
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#endif
+	}
+}
+void vphp__return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val) {
+	{ // Unsafe block
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+		#if false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif true
+		{
+			vphp__Context_return_map(ctx, val);
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#endif
+	}
+}
 void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* obj) {
 	{ // Unsafe block
 		/* $for field in main.Article.fields */ {
@@ -35722,8 +35855,8 @@ vphp__Val vphp__Val_get_prop(vphp__Val v, string name) {
 		return ((vphp__Val){.raw = 0,});
 	}
 	zend_object* obj = vphp_get_obj_from_zval(v.raw);
-	zval rv = ((zval){.value = 0,.u1 = {0},});
-	zval* res = vphp_read_property_compat(obj, ((char*)(name.str)), name.len, &rv);
+	zval* rv = ((zval*)(malloc(sizeof(zval))));
+	zval* res = vphp_read_property_compat(obj, ((char*)(name.str)), name.len, rv);
 	return ((vphp__Val){.raw = res,});
 }
 string vphp__Val_get_prop_string(vphp__Val v, string name) {
@@ -75916,19 +76049,17 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_v_glue(vphp__compiler__Com
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t3;
 		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpTaskRepr_index) {
 			vphp__compiler__PhpTaskRepr* task = (el->_vphp__compiler__PhpTaskRepr);
-			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpTaskRepr_gen_v_glue(*task) }));
+			_PUSH_MANY(&v, (vphp__compiler__PhpTaskRepr_gen_v_glue(*task)), _t4, Array_string);
 		}
 	}
 	builtin__array_push((array*)&v, _MOV((string[]){ _S("}") }));
 	for (int _t6 = 0; _t6 < c->elements.len; ++_t6) {
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t6;
-		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) {
-			vphp__compiler__PhpClassRepr* cls = (el->_vphp__compiler__PhpClassRepr);
-			builtin__array_push((array*)&v, _MOV((string[]){ vphp__compiler__PhpClassRepr_gen_v_glue(*cls) }));
-			;
+		if ((el)->_typ != _vphp__compiler__PhpRepr_vphp__compiler__PhpTaskRepr_index) {
+			_PUSH_MANY(&v, (vphp__compiler__PhpRepr_name_table[el->_typ]._method_gen_v_glue(el->_object)), _t7, Array_string);
 		}
 	}
-	_result_void _t8 = os__write_file(_S("bridge.v"), Array_string_join(v, _S("\n")));
+	_result_void _t8 = os__write_file(_S("bridge.v"), Array_string_join(v, _S("\n\n")));
 	if (_t8.is_error) {
 		_result_void _t9 = {0};
 		_t9.is_error = true;
@@ -76176,7 +76307,7 @@ void vphp__compiler__PhpClassRepr_add_static_method(vphp__compiler__PhpClassRepr
 	string ret_type = v__ast__Table_type_to_str(table, stmt.return_type);
 	builtin__array_push((array*)&r->methods, _MOV((vphp__compiler__PhpMethodRepr[]){ ((vphp__compiler__PhpMethodRepr){.name = method_name,.v_c_func = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = r->name}}, {_S("_"), 0xfe10, {.d_s = method_name}}, {_SLIT0, 0, { .d_c = 0 }}})),.is_static = true,.return_type = ret_type,.args = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpArg)),.visibility = _S("public"),}) }));
 }
-string vphp__compiler__PhpClassRepr_gen_v_glue(vphp__compiler__PhpClassRepr r) {
+Array_string vphp__compiler__PhpClassRepr_gen_v_glue(vphp__compiler__PhpClassRepr r) {
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	string lower_name = builtin__string_to_lower(r.name);
 	builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("@[export: '"), 0xfe10, {.d_s = r.name}}, {_S("_new_raw']"), 0, { .d_c = 0 }}})) }));
@@ -76204,7 +76335,7 @@ string vphp__compiler__PhpClassRepr_gen_v_glue(vphp__compiler__PhpClassRepr r) {
 	builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("        new_raw:       voidptr("), 0xfe10, {.d_s = lower_name}}, {_S("_new_raw)"), 0, { .d_c = 0 }}})) }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("    } }") }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("}") }));
-	return Array_string_join(out, _S("\n"));
+	return out;
 }
 VV_LOC vphp__compiler__PhpConstRepr* vphp__compiler__new_const_repr(void) {
 	return ((vphp__compiler__PhpConstRepr*)builtin__memdup(&(vphp__compiler__PhpConstRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(vphp__compiler__PhpConstRepr)));
@@ -76231,32 +76362,54 @@ VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_c(vphp__compiler__PhpConstR
 VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_minit(vphp__compiler__PhpConstRepr r) {
 	return builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__str_intp(3, _MOV((StrIntpData[]){{_S("    REGISTER_LONG_CONSTANT(\""), 0xfe10, {.d_s = r.name}}, {_S("\", "), 0xfe10, {.d_s = r.value}}, {_S(", CONST_CS | CONST_PERSISTENT);"), 0, { .d_c = 0 }}}))}));
 }
+VV_LOC Array_string vphp__compiler__PhpConstRepr_gen_v_glue(vphp__compiler__PhpConstRepr r) {
+	return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+}
 vphp__compiler__PhpFuncRepr* vphp__compiler__new_func_repr(void) {
-	return ((vphp__compiler__PhpFuncRepr*)builtin__memdup(&(vphp__compiler__PhpFuncRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.return_type = (string){.str=(byteptr)"", .is_lit=1},.is_internal = 0,}, sizeof(vphp__compiler__PhpFuncRepr)));
+	return ((vphp__compiler__PhpFuncRepr*)builtin__memdup(&(vphp__compiler__PhpFuncRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.original_name = (string){.str=(byteptr)"", .is_lit=1},.return_type = (string){.str=(byteptr)"", .is_lit=1},.args = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpArg)),.is_internal = 0,.uses_php_function = 0,}, sizeof(vphp__compiler__PhpFuncRepr)));
 }
 VV_LOC bool vphp__compiler__PhpFuncRepr_parse(vphp__compiler__PhpFuncRepr* r, v__ast__Stmt stmt, v__ast__Table* table) {
 	if ((stmt)._typ == 242 /* v.ast.FnDecl */) {
 		if ((*stmt._v__ast__FnDecl).is_method) {
 			return false;
 		}
+		bool has_export = false;
+		string exp_name = _S("");
+		bool has_php_func = false;
 		for (int _t2 = 0; _t2 < (*stmt._v__ast__FnDecl).attrs.len; ++_t2) {
 			v__ast__Attr attr = ((v__ast__Attr*)(*stmt._v__ast__FnDecl).attrs.data)[_t2];
 			if (builtin__fast_string_eq(attr.name, _S("export")) && (attr.arg).len != 0) {
-				string exp_name = attr.arg;
-				if (builtin__string_starts_with(exp_name, _S("vphp_")) || builtin__string_starts_with(exp_name, _S("zm_"))) {
-					return false;
-				}
-				r->name = exp_name;
-				string ret_type = v__ast__Table_get_type_name(table, (*stmt._v__ast__FnDecl).return_type);
-				string clean = (builtin__string_contains(ret_type, _S(".")) ? (builtin__string_all_after(ret_type, _S("."))) : (ret_type));
-				if (_SLIT_EQ(clean.str, clean.len, "int") || _SLIT_EQ(clean.str, clean.len, "i64") || _SLIT_EQ(clean.str, clean.len, "bool") || _SLIT_EQ(clean.str, clean.len, "f64") || _SLIT_EQ(clean.str, clean.len, "string")) {
-					r->return_type = clean;
-				} else {
-					r->return_type = _S("void");
-				}
-				return true;
+				has_export = true;
+				exp_name = attr.arg;
+			} else if (builtin__fast_string_eq(attr.name, _S("php_function"))) {
+				has_php_func = true;
 			}
 		}
+		if (!has_export && !has_php_func) {
+			return false;
+		}
+		if (builtin__string_starts_with(exp_name, _S("vphp_")) || builtin__string_starts_with(exp_name, _S("zm_"))) {
+			return false;
+		}
+		r->name = ((exp_name).len != 0 ? (exp_name) : (builtin__string_all_after((*stmt._v__ast__FnDecl).name, _S("."))));
+		r->original_name = builtin__string_all_after((*stmt._v__ast__FnDecl).name, _S("."));
+		r->uses_php_function = has_php_func;
+		for (int _t5 = 0; _t5 < (*stmt._v__ast__FnDecl).params.len; ++_t5) {
+			v__ast__Param param = ((v__ast__Param*)(*stmt._v__ast__FnDecl).params.data)[_t5];
+			string typ_name = v__ast__Table_get_type_name(table, param.typ);
+			if (builtin__string_contains(typ_name, _S("."))) {
+				typ_name = builtin__string_all_after(typ_name, _S("."));
+			}
+			builtin__array_push((array*)&r->args, _MOV((vphp__compiler__PhpArg[]){ ((vphp__compiler__PhpArg){.name = param.name,.v_type = typ_name,}) }));
+		}
+		string ret_type = v__ast__Table_get_type_name(table, (*stmt._v__ast__FnDecl).return_type);
+		string clean = (builtin__string_contains(ret_type, _S(".")) ? (builtin__string_all_after(ret_type, _S("."))) : (ret_type));
+		if (_SLIT_EQ(clean.str, clean.len, "Context") || (clean).len == 0 || _SLIT_EQ(clean.str, clean.len, "void")) {
+			r->return_type = _S("void");
+		} else {
+			r->return_type = clean;
+		}
+		return true;
 	}
 	return false;
 }
@@ -76268,31 +76421,66 @@ VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_c(vphp__compiler__PhpFuncRep
 	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("ZEND_BEGIN_ARG_INFO_EX(arginfo_"), 0xfe10, {.d_s = f.name}}, {_S(", 0, 0, 0)"), 0, { .d_c = 0 }}})) }));
 	builtin__array_push((array*)&r, _MOV((string[]){ _S("ZEND_END_ARG_INFO()") }));
 	vphp__compiler__TypeMap tm = vphp__compiler__TypeMap__static__get_type(f.return_type);
+	string target_func = (f.uses_php_function ? (builtin__str_intp(2, _MOV((StrIntpData[]){{_S("vphp_wrap_"), 0xfe10, {.d_s = f.name}}, {_SLIT0, 0, { .d_c = 0 }}}))) : (f.name));
 	if (builtin__fast_string_eq(tm.v_type, _S("void"))) {
-		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern void "), 0xfe10, {.d_s = f.name}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern void "), 0xfe10, {.d_s = target_func}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
-		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = f.name}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = target_func}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
-	} else if (builtin__fast_string_eq(tm.v_type, _S("string"))) {
-		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern v_string "), 0xfe10, {.d_s = f.name}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
+	} else if (!f.uses_php_function && builtin__fast_string_eq(tm.v_type, _S("string"))) {
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern v_string "), 0xfe10, {.d_s = target_func}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
-		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    v_string res = "), 0xfe10, {.d_s = f.name}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    v_string res = "), 0xfe10, {.d_s = target_func}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("    RETVAL_STRINGL((char*)res.str, res.len);") }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
-	} else {
-		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("extern "), 0xfe10, {.d_s = tm.c_type}}, {_S(" "), 0xfe10, {.d_s = f.name}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
+	} else if (!f.uses_php_function) {
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("extern "), 0xfe10, {.d_s = tm.c_type}}, {_S(" "), 0xfe10, {.d_s = target_func}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
-		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = tm.c_type}}, {_S(" res = "), 0xfe10, {.d_s = f.name}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = tm.c_type}}, {_S(" res = "), 0xfe10, {.d_s = target_func}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = tm.php_return}}, {_S("(res);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
+	} else {
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern void "), 0xfe10, {.d_s = target_func}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = target_func}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
 	}
 	return r;
 }
 VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_minit(vphp__compiler__PhpFuncRepr r) {
 	return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+}
+VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_v_glue(vphp__compiler__PhpFuncRepr f) {
+	if (!f.uses_php_function) {
+		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	}
+	Array_string v = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("@[export: \"vphp_wrap_"), 0xfe10, {.d_s = f.name}}, {_S("\"]"), 0, { .d_c = 0 }}})) }));
+	builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("fn vphp_wrap_"), 0xfe10, {.d_s = f.name}}, {_S("(ctx vphp.Context) {"), 0, { .d_c = 0 }}})) }));
+	Array_string arg_names = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int i = 0; i < f.args.len; ++i) {
+		vphp__compiler__PhpArg arg = ((vphp__compiler__PhpArg*)f.args.data)[i];
+		string var_name = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("arg_"), 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		if (builtin__fast_string_eq(arg.v_type, _S("Context")) || builtin__fast_string_eq(arg.v_type, _S("vphp.Context"))) {
+			builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = var_name}}, {_S(" := ctx"), 0, { .d_c = 0 }}})) }));
+		} else {
+			builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(4, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = var_name}}, {_S(" := ctx.arg["), 0xfe10, {.d_s = arg.v_type}}, {_S("]("), 0xfe07, {.d_i32 = i}}, {_S(")"), 0, { .d_c = 0 }}})) }));
+		}
+		builtin__array_push((array*)&arg_names, _MOV((string[]){ builtin__string_clone(var_name) }));
+	}
+	string call_str = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = f.original_name}}, {_S("("), 0xfe10, {.d_s = Array_string_join(arg_names, _S(", "))}}, {_S(")"), 0, { .d_c = 0 }}}));
+	if (builtin__fast_string_eq(f.return_type, _S("void"))) {
+		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = call_str}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	} else {
+		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    res := "), 0xfe10, {.d_s = call_str}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    vphp.return_val["), 0xfe10, {.d_s = f.return_type}}, {_S("](ctx, res)"), 0, { .d_c = 0 }}})) }));
+	}
+	builtin__array_push((array*)&v, _MOV((string[]){ _S("}") }));
+	return v;
 }
 vphp__compiler__Compiler vphp__compiler__new(string target_file) {
 	return ((vphp__compiler__Compiler){.target_file = target_file,.ext_name = _S(""),.elements = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpRepr)),.table = v__ast__new_table(),.pref_set = v__pref__new_preferences(),.class_index = builtin__new_map(sizeof(string), sizeof(int), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),});
@@ -76408,15 +76596,15 @@ VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_c(vphp__compiler__PhpTaskRep
 VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_minit(vphp__compiler__PhpTaskRepr r) {
 	return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 }
-string vphp__compiler__PhpTaskRepr_gen_v_glue(vphp__compiler__PhpTaskRepr r) {
-	return builtin__str_intp(3, _MOV((StrIntpData[]){{_S("    vphp.ITask.register('"), 0xfe10, {.d_s = r.task_name}}, {_S("', fn(s string) vphp.ITask { return "), 0xfe10, {.d_s = r.task_name}}, {_S("{ json_data: s } })"), 0, { .d_c = 0 }}}));
+Array_string vphp__compiler__PhpTaskRepr_gen_v_glue(vphp__compiler__PhpTaskRepr r) {
+	return builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__str_intp(3, _MOV((StrIntpData[]){{_S("    vphp.ITask.register('"), 0xfe10, {.d_s = r.task_name}}, {_S("', fn(s string) vphp.ITask { return "), 0xfe10, {.d_s = r.task_name}}, {_S("{ json_data: s } })"), 0, { .d_c = 0 }}}))}));
 }
 vphp__compiler__TypeMap vphp__compiler__TypeMap__static__get_type(string v_type) {
 	string clean_type = (builtin__string_contains(v_type, _S(".")) ? (builtin__string_all_after(v_type, _S("."))) : (v_type));
 	return ((_SLIT_EQ(clean_type.str, clean_type.len, "int"))? (((vphp__compiler__TypeMap){.v_type = _S("int"),.c_type = _S("int"),.php_return = _S("RETURN_LONG"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "i64"))? (((vphp__compiler__TypeMap){.v_type = _S("i64"),.c_type = _S("long long"),.php_return = _S("RETURN_LONG"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "bool"))? (((vphp__compiler__TypeMap){.v_type = _S("bool"),.c_type = _S("bool"),.php_return = _S("RETURN_BOOL"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "string"))? (((vphp__compiler__TypeMap){.v_type = _S("string"),.c_type = _S("v_string"),.php_return = _S("VPHP_RETURN_STRING"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "!bool"))? (((vphp__compiler__TypeMap){.v_type = _S("!bool"),.c_type = _S("v_res_bool"),.php_return = _S("VPHP_RETURN_RESULT_BOOL"),.is_result = true,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "!int"))? (((vphp__compiler__TypeMap){.v_type = _S("!int"),.c_type = _S("v_res_int"),.php_return = _S("VPHP_RETURN_RESULT_LONG"),.is_result = true,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "void") || _SLIT_EQ(clean_type.str, clean_type.len, ""))? (((vphp__compiler__TypeMap){.v_type = _S("void"),.c_type = _S("void"),.php_return = _S("RETURN_NULL"),.is_result = false,})) : (((vphp__compiler__TypeMap){.v_type = v_type,.c_type = _S("void*"),.php_return = _S("RETURN_NULL"),.is_result = false,})));
 }
 VV_LOC void main__vphp_task_auto_startup(void) {
-	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154);
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_156);
 }
 // export alias: vphp_task_auto_startup -> main__vphp_task_auto_startup
 void vphp_task_auto_startup(void) {
@@ -76456,6 +76644,35 @@ voidptr main__article_handlers(void) {
 // export alias: Article_handlers -> main__article_handlers
 voidptr Article_handlers(void) {
 	return main__article_handlers();
+}
+VV_LOC void main__vphp_wrap_v_add(vphp__Context ctx) {
+	i64 arg_0 = vphp__Context_arg_T_i64(ctx, 0);
+	i64 arg_1 = vphp__Context_arg_T_i64(ctx, 1);
+	i64 res = main__v_add(arg_0, arg_1);
+	vphp__return_val_T_i64(ctx, res);
+}
+// export alias: vphp_wrap_v_add -> main__vphp_wrap_v_add
+void vphp_wrap_v_add(vphp__Context ctx) {
+	return main__vphp_wrap_v_add(ctx);
+}
+VV_LOC void main__vphp_wrap_v_greet(vphp__Context ctx) {
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string res = main__v_greet(arg_0);
+	vphp__return_val_T_string(ctx, res);
+}
+// export alias: vphp_wrap_v_greet -> main__vphp_wrap_v_greet
+void vphp_wrap_v_greet(vphp__Context ctx) {
+	return main__vphp_wrap_v_greet(ctx);
+}
+VV_LOC void main__vphp_wrap_v_pure_map_test(vphp__Context ctx) {
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	Map_string_string res = main__v_pure_map_test(arg_0, arg_1);
+	vphp__return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_v_pure_map_test -> main__vphp_wrap_v_pure_map_test
+void vphp_wrap_v_pure_map_test(vphp__Context ctx) {
+	return main__vphp_wrap_v_pure_map_test(ctx);
 }
 VV_LOC void main__main(void) {
 	string target_file = _S("v_logic.v");
@@ -76542,22 +76759,22 @@ VV_LOC void main__v_logic_main(vphp__Context ctx) {
 void v_logic_main(vphp__Context ctx) {
 	return main__v_logic_main(ctx);
 }
-VV_LOC i64 main__v_add(vphp__Context ctx) {
-	i64 a = vphp__Context_arg_T_i64(ctx, 0);
-	i64 b = vphp__Context_arg_T_i64(ctx, 1);
+VV_LOC i64 main__v_add(i64 a, i64 b) {
 	return (i64)(a + b);
 }
-// export alias: v_add -> main__v_add
-i64 v_add(vphp__Context ctx) {
-	return main__v_add(ctx);
+VV_LOC string main__v_greet(string name) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Hello, "), 0xfe10, {.d_s = name}}, {_S(" from V pure wrapper!"), 0, { .d_c = 0 }}}));
 }
-VV_LOC string main__v_greet(vphp__Context ctx) {
-	string name = vphp__Context_arg_T_string(ctx, 0);
-	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Hello, "), 0xfe10, {.d_s = name}}, {_S(" from V!"), 0, { .d_c = 0 }}}));
-}
-// export alias: v_greet -> main__v_greet
-string v_greet(vphp__Context ctx) {
-	return main__v_greet(ctx);
+VV_LOC Map_string_string main__v_pure_map_test(string k, string v) {
+	return builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
+		_MOV((string[1]){
+			k,
+		}),
+		_MOV((string[1]){
+			v, 
+		})
+	)
+	;
 }
 VV_LOC void main__v_process_list(vphp__Context ctx) {
 	Array_string input_list = vphp__Context_arg_T_Array_string(ctx, 0);
