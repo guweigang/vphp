@@ -31,8 +31,9 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('extern void vphp_task_auto_startup();\n\n')
 
 	// 2. 写入每个元素的实现 (Wrapper / ArgInfo)
-	for mut el in c.elements {
-		res.write_string(el.gen_c().join('\n') + '\n')
+	c_gen := CGenerator{ ext_name: c.ext_name }
+	for line in c_gen.gen_c_code(mut c.elements) {
+		res.write_string(line + '\n')
 	}
 
 	// 3. 写入框架内置函数的 Wrapper
@@ -59,11 +60,8 @@ fn (mut c Compiler) generate_c() ! {
 	// 5. MINIT
 	res.write_string('PHP_MINIT_FUNCTION(${c.ext_name}) {\n')
 	res.write_string('    vphp_framework_init(module_number);\n')
-	for mut el in c.elements {
-		minit_lines := el.gen_minit()
-		if minit_lines.len > 0 {
-			res.write_string(minit_lines.join('\n') + '\n')
-		}
+	for line in c_gen.gen_minit_lines(mut c.elements) {
+		res.write_string(line + '\n')
 	}
 	res.write_string('    vphp_task_auto_startup();\n')
 	res.write_string('    return SUCCESS;\n}\n\n')
@@ -88,28 +86,9 @@ fn (mut c Compiler) generate_c() ! {
 // 3. 生成 V 胶水代码 (_task_glue.v)
 // ==========================================
 fn (mut c Compiler) generate_v_glue() ! {
-    mut v := []string{}
-    v << 'module main\nimport vphp\n'
-    v << '@[export: "vphp_task_auto_startup"]\nfn vphp_task_auto_startup() {'
-    for mut el in c.elements {
-        if mut el is PhpTaskRepr { // 只有任务 Repr 贡献 ITask.register
-          task := el
-          v << task.gen_v_glue()
-        }
-    }
-    v << '}'
-
-    for mut el in c.elements {
-        if el !is PhpTaskRepr {
-            // 为函数、类等生成顶层 V 胶水代码
-            glue_lines := el.gen_v_glue()
-            if glue_lines.len > 0 {
-                v << glue_lines
-                v << '' // 空行分隔
-            }
-        }
-    }
-    os.write_file('bridge.v', v.join('\n'))!
+    v_gen := VGenerator{ ext_name: c.ext_name }
+    v_code := v_gen.generate(mut c.elements)
+    os.write_file('bridge.v', v_code)!
 }
 
 // ==========================================
@@ -131,13 +110,9 @@ fn (mut c Compiler) generate_h() ! {
 	res.write_string('extern zend_module_entry ${c.ext_name}_module_entry;\n')
 	res.write_string('#define phpext_${c.ext_name}_ptr &${c.ext_name}_module_entry\n\n')
 
-	// 4. 核心：遍历所有 Repr 元素，收集它们的头文件声明
-	for mut el in c.elements {
-		// 调用接口定义的 gen_h() 方法
-		lines := el.gen_h()
-		if lines.len > 0 {
-			res.write_string(lines.join('\n') + '\n')
-		}
+	c_gen := CGenerator{ ext_name: c.ext_name }
+	for line in c_gen.gen_h_defs(mut c.elements) {
+		res.write_string(line + '\n')
 	}
 
 	// 5. 补充框架内置函数的声明 (这些不走 Repr 扫描)

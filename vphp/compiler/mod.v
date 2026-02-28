@@ -10,14 +10,6 @@ pub interface PhpRepr {
 mut:
     // 匹配并解析：告诉编译器这个 AST 语句是否归你管，如果是，请自行提取数据
 	parse(stmt ast.Stmt, table &ast.Table) bool
-    // 生成 H：返回需要写入 php_bridge.h 的代码行
-	gen_h() []string
-    // 生成 C：返回需要写入 php_bridge.c（全局作用域）的代码行
-	gen_c() []string
-    // 生成 MINIT：返回需要写入 PHP_MINIT_FUNCTION 内部的代码行
-	gen_minit() []string
-    // 生成 V 胶水：返回需要写入 bridge.v 的 V 包装代码
-	gen_v_glue() []string
 }
 
 pub struct Compiler {

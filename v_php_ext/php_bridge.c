@@ -198,7 +198,6 @@ PHP_FUNCTION(v_call_php_closure) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_call_php_closure(ctx);
 }
-
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_spawn, 0, 0, 0)
 ZEND_END_ARG_INFO()
 void v_spawn(zend_execute_data *execute_data, zval *return_value);

@@ -23,12 +23,4 @@ fn (mut r PhpConstRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 	return false
 }
 
-fn (r PhpConstRepr) gen_h() []string { return []string{} }
-fn (r PhpConstRepr) gen_c() []string { return []string{} }
-fn (r PhpConstRepr) gen_minit() []string {
-	return ['    REGISTER_LONG_CONSTANT("${r.name}", ${r.value}, CONST_CS | CONST_PERSISTENT);']
-}
 
-fn (r PhpConstRepr) gen_v_glue() []string {
-	return []string{}
-}
