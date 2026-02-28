@@ -10683,7 +10683,7 @@ VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_minit(vphp__compiler__PhpTas
 Array_string vphp__compiler__PhpTaskRepr_gen_v_glue(vphp__compiler__PhpTaskRepr r);
 vphp__compiler__TypeMap vphp__compiler__TypeMap__static__get_type(string v_type);
 VV_LOC void main__vphp_task_auto_startup(void);
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_156(string s);
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154(string s);
 VV_EXP void vphp_task_auto_startup(void); // exported fn main.vphp_task_auto_startup
 voidptr main__article_new_raw(void);
 VV_EXP voidptr Article_new_raw(void); // exported fn main.article_new_raw
@@ -17513,7 +17513,7 @@ cJSON* json__encode_main__StockParams(main__StockParams val) {
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_156(string s) {
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154(string s) {
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.json_data = s,}, sizeof(main__AnalyzeTask))));
 }
 
@@ -76099,15 +76099,19 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_v_glue(vphp__compiler__Com
 	for (int _t6 = 0; _t6 < c->elements.len; ++_t6) {
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t6;
 		if ((el)->_typ != _vphp__compiler__PhpRepr_vphp__compiler__PhpTaskRepr_index) {
-			_PUSH_MANY(&v, (vphp__compiler__PhpRepr_name_table[el->_typ]._method_gen_v_glue(el->_object)), _t7, Array_string);
+			Array_string glue_lines = vphp__compiler__PhpRepr_name_table[el->_typ]._method_gen_v_glue(el->_object);
+			if (glue_lines.len > 0) {
+				_PUSH_MANY(&v, (glue_lines), _t7, Array_string);
+				builtin__array_push((array*)&v, _MOV((string[]){ _S("") }));
+			}
 		}
 	}
-	_result_void _t8 = os__write_file(_S("bridge.v"), Array_string_join(v, _S("\n\n")));
-	if (_t8.is_error) {
-		_result_void _t9 = {0};
-		_t9.is_error = true;
-		_t9.err = _t8.err;
-		return _t9;
+	_result_void _t9 = os__write_file(_S("bridge.v"), Array_string_join(v, _S("\n")));
+	if (_t9.is_error) {
+		_result_void _t10 = {0};
+		_t10.is_error = true;
+		_t10.err = _t9.err;
+		return _t10;
 	}
 	
  ;
@@ -76746,7 +76750,7 @@ vphp__compiler__TypeMap vphp__compiler__TypeMap__static__get_type(string v_type)
 	return ((_SLIT_EQ(clean_type.str, clean_type.len, "int"))? (((vphp__compiler__TypeMap){.v_type = _S("int"),.c_type = _S("int"),.php_return = _S("RETURN_LONG"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "i64"))? (((vphp__compiler__TypeMap){.v_type = _S("i64"),.c_type = _S("long long"),.php_return = _S("RETURN_LONG"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "bool"))? (((vphp__compiler__TypeMap){.v_type = _S("bool"),.c_type = _S("bool"),.php_return = _S("RETURN_BOOL"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "string"))? (((vphp__compiler__TypeMap){.v_type = _S("string"),.c_type = _S("v_string"),.php_return = _S("VPHP_RETURN_STRING"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "!bool"))? (((vphp__compiler__TypeMap){.v_type = _S("!bool"),.c_type = _S("v_res_bool"),.php_return = _S("VPHP_RETURN_RESULT_BOOL"),.is_result = true,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "!int"))? (((vphp__compiler__TypeMap){.v_type = _S("!int"),.c_type = _S("v_res_int"),.php_return = _S("VPHP_RETURN_RESULT_LONG"),.is_result = true,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "void") || _SLIT_EQ(clean_type.str, clean_type.len, ""))? (((vphp__compiler__TypeMap){.v_type = _S("void"),.c_type = _S("void"),.php_return = _S("RETURN_NULL"),.is_result = false,})) : (((vphp__compiler__TypeMap){.v_type = v_type,.c_type = _S("void*"),.php_return = _S("RETURN_NULL"),.is_result = false,})));
 }
 VV_LOC void main__vphp_task_auto_startup(void) {
-	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_156);
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154);
 }
 // export alias: vphp_task_auto_startup -> main__vphp_task_auto_startup
 void vphp_task_auto_startup(void) {

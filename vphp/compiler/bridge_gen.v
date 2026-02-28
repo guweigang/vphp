@@ -102,10 +102,14 @@ fn (mut c Compiler) generate_v_glue() ! {
     for mut el in c.elements {
         if el !is PhpTaskRepr {
             // 为函数、类等生成顶层 V 胶水代码
-            v << el.gen_v_glue()
+            glue_lines := el.gen_v_glue()
+            if glue_lines.len > 0 {
+                v << glue_lines
+                v << '' // 空行分隔
+            }
         }
     }
-    os.write_file('bridge.v', v.join('\n\n'))!
+    os.write_file('bridge.v', v.join('\n'))!
 }
 
 // ==========================================
