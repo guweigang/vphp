@@ -140,6 +140,34 @@ pub fn (v Val) set_string(s string) {
 
 // ======== 数组操作 ========
 
+// 初始化为数组
+pub fn (v Val) array_init() {
+	unsafe { C.vphp_return_array_start(v.raw) }
+}
+
+pub fn (v Val) add_assoc_string(key string, val string) {
+	unsafe { C.vphp_array_add_assoc_string(v.raw, &char(key.str), &char(val.str)) }
+}
+
+pub fn (v Val) add_assoc_long(key string, val i64) {
+	unsafe { C.vphp_array_add_assoc_long(v.raw, &char(key.str), val) }
+}
+
+pub fn (v Val) add_assoc_double(key string, val f64) {
+	unsafe { C.vphp_array_add_assoc_double(v.raw, &char(key.str), val) }
+}
+
+pub fn (v Val) add_assoc_bool(key string, val bool) {
+	unsafe {
+		b_val := if val { 1 } else { 0 }
+		C.vphp_array_add_assoc_bool(v.raw, &char(key.str), b_val)
+	}
+}
+
+pub fn (v Val) add_next_val(val Val) {
+	unsafe { C.vphp_array_add_next_zval(v.raw, val.raw) }
+}
+
 // 获取数组长度
 pub fn (v Val) array_count() int {
 	if !v.is_array() { return 0 }
@@ -174,6 +202,22 @@ pub fn (v Val) get_or(key string, default_val string) string {
 }
 
 // ======== 对象属性操作 ========
+
+pub fn (v Val) add_property_string(key string, val string) {
+	unsafe { C.add_property_stringl(v.raw, &char(key.str), &char(val.str), val.len) }
+}
+
+pub fn (v Val) add_property_long(key string, val i64) {
+	unsafe { C.add_property_long(v.raw, &char(key.str), val) }
+}
+
+pub fn (v Val) add_property_double(key string, val f64) {
+	unsafe { C.vphp_add_property_double(v.raw, &char(key.str), val) }
+}
+
+pub fn (v Val) add_property_bool(key string, val bool) {
+	unsafe { C.add_property_bool(v.raw, &char(key.str), val) }
+}
 
 // 通用属性获取：返回一个新的 Val
 pub fn (v Val) get_prop(name string) Val {

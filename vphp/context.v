@@ -195,31 +195,34 @@ pub fn (ctx Context) return_res(ptr voidptr, label string) {
 // ======== 返回值 — 数组 / Map ========
 
 pub fn (ctx Context) return_map(m map[string]string) {
-	C.vphp_return_array_start(ctx.ret)
+	out := Val{ raw: ctx.ret }
+	out.array_init()
 	for k, v in m {
-		C.vphp_array_add_assoc_string(ctx.ret, &char(k.str), &char(v.str))
+		out.add_assoc_string(k, v)
 	}
 }
 
 pub fn (ctx Context) return_map_f64(m map[string]f64) {
-	C.vphp_return_array_start(ctx.ret)
+	out := Val{ raw: ctx.ret }
+	out.array_init()
 	for k, v in m {
-		C.vphp_array_add_assoc_double(ctx.ret, &char(k.str), v)
+		out.add_assoc_double(k, v)
 	}
 }
 
 pub fn (ctx Context) return_map_int(m map[string]int) {
-	C.vphp_return_array_start(ctx.ret)
+	out := Val{ raw: ctx.ret }
+	out.array_init()
 	for k, v in m {
-		C.vphp_array_add_assoc_long(ctx.ret, &char(k.str), i64(v))
+		out.add_assoc_long(k, i64(v))
 	}
 }
 
 pub fn (ctx Context) return_map_bool(m map[string]bool) {
-	C.vphp_return_array_start(ctx.ret)
+	out := Val{ raw: ctx.ret }
+	out.array_init()
 	for k, v in m {
-		b := if v { 1 } else { 0 }
-		C.vphp_array_add_assoc_bool(ctx.ret, &char(k.str), b)
+		out.add_assoc_bool(k, v)
 	}
 }
 
@@ -237,19 +240,19 @@ pub fn (ctx Context) return_object(props map[string]string) {
 // ======== 返回值 — 结构体 → PHP 关联数组 ========
 
 pub fn (ctx Context) return_struct[T](s T) {
-	C.vphp_return_array_start(ctx.ret)
+	out := Val{ raw: ctx.ret }
+	out.array_init()
 	$for field in T.fields {
 		key := field.name
 		val := s.$(field.name)
 		$if field.typ is string {
-			C.vphp_array_add_assoc_string(ctx.ret, &char(key.str), &char(val.str))
+			out.add_assoc_string(key, val)
 		} $else $if field.typ is f64 {
-			C.vphp_array_add_assoc_double(ctx.ret, &char(key.str), val)
+			out.add_assoc_double(key, val)
 		} $else $if field.typ is int || field.typ is i64 {
-			C.vphp_array_add_assoc_long(ctx.ret, &char(key.str), i64(val))
+			out.add_assoc_long(key, i64(val))
 		} $else $if field.typ is bool {
-			b_val := if val { 1 } else { 0 }
-			C.vphp_array_add_assoc_bool(ctx.ret, &char(key.str), b_val)
+			out.add_assoc_bool(key, val)
 		}
 	}
 }
@@ -257,29 +260,30 @@ pub fn (ctx Context) return_struct[T](s T) {
 // ======== 返回值 — 结构体数组 → PHP 索引数组 ========
 
 pub fn (ctx Context) return_list[T](list []T) {
-	C.vphp_return_array_start(ctx.ret)
+	out := Val{ raw: ctx.ret }
+	out.array_init()
 	if list.len == 0 { return }
 
 	for item in list {
 		sub_zv := C.zval{}
-		C.vphp_return_array_start(&sub_zv)
+		sub_val := Val{ raw: &sub_zv }
+		sub_val.array_init()
 
 		$for field in T.fields {
 			key := field.name
 			val := item.$(field.name)
 			$if field.typ is string {
-				C.vphp_array_add_assoc_string(&sub_zv, &char(key.str), &char(val.str))
+				sub_val.add_assoc_string(key, val)
 			} $else $if field.typ is f64 {
-				C.vphp_array_add_assoc_double(&sub_zv, &char(key.str), val)
+				sub_val.add_assoc_double(key, val)
 			} $else $if field.typ is int || field.typ is i64 {
-				C.vphp_array_add_assoc_long(&sub_zv, &char(key.str), i64(val))
+				sub_val.add_assoc_long(key, i64(val))
 			} $else $if field.typ is bool {
-				b_val := if val { 1 } else { 0 }
-				C.vphp_array_add_assoc_bool(&sub_zv, &char(key.str), b_val)
+				sub_val.add_assoc_bool(key, val)
 			}
 		}
 
-		C.vphp_array_add_next_zval(ctx.ret, &sub_zv)
+		out.add_next_val(sub_val)
 	}
 }
 
@@ -324,19 +328,18 @@ pub fn (ctx Context) return_val[T](val T) {
 // ======== 属性同步 (用于 var_dump) ========
 
 pub fn (ctx Context) sync_props[T](obj &T) {
-	unsafe {
-		$for field in T.fields {
-			name := field.name
-			val := obj.$(field.name)
-			$if field.typ is string {
-				C.add_property_stringl(ctx.ret, &char(name.str), &char(val.str), val.len)
-			} $else $if field.typ is int || field.typ is i64 {
-				C.add_property_long(ctx.ret, &char(name.str), i64(val))
-			} $else $if field.typ is f64 {
-				C.vphp_add_property_double(ctx.ret, &char(name.str), val)
-			} $else $if field.typ is bool {
-				C.add_property_bool(ctx.ret, &char(name.str), val)
-			}
+	out := Val{ raw: ctx.ret }
+	$for field in T.fields {
+		name := field.name
+		val := obj.$(field.name)
+		$if field.typ is string {
+			out.add_property_string(name, val)
+		} $else $if field.typ is int || field.typ is i64 {
+			out.add_property_long(name, i64(val))
+		} $else $if field.typ is f64 {
+			out.add_property_double(name, val)
+		} $else $if field.typ is bool {
+			out.add_property_bool(name, val)
 		}
 	}
 }

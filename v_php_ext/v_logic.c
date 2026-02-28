@@ -9193,10 +9193,20 @@ void vphp__Val_set_int(vphp__Val v, i64 val);
 void vphp__Val_set_double(vphp__Val v, f64 val);
 void vphp__Val_set_float(vphp__Val v, f64 val);
 void vphp__Val_set_string(vphp__Val v, string s);
+void vphp__Val_array_init(vphp__Val v);
+void vphp__Val_add_assoc_string(vphp__Val v, string key, string val);
+void vphp__Val_add_assoc_long(vphp__Val v, string key, i64 val);
+void vphp__Val_add_assoc_double(vphp__Val v, string key, f64 val);
+void vphp__Val_add_assoc_bool(vphp__Val v, string key, bool val);
+void vphp__Val_add_next_val(vphp__Val v, vphp__Val val);
 int vphp__Val_array_count(vphp__Val v);
 vphp__Val vphp__Val_array_get(vphp__Val v, int index);
 _result_vphp__Val vphp__Val_get(vphp__Val v, string key);
 string vphp__Val_get_or(vphp__Val v, string key, string default_val);
+void vphp__Val_add_property_string(vphp__Val v, string key, string val);
+void vphp__Val_add_property_long(vphp__Val v, string key, i64 val);
+void vphp__Val_add_property_double(vphp__Val v, string key, f64 val);
+void vphp__Val_add_property_bool(vphp__Val v, string key, bool val);
 vphp__Val vphp__Val_get_prop(vphp__Val v, string name);
 string vphp__Val_get_prop_string(vphp__Val v, string name);
 int vphp__Val_get_prop_int(vphp__Val v, string name);
@@ -34947,7 +34957,8 @@ void vphp__Context_return_res(vphp__Context ctx, voidptr ptr, string label) {
 	vphp_make_res(ctx.ret, ptr, ((char*)(label.str)));
 }
 void vphp__Context_return_map(vphp__Context ctx, Map_string_string m) {
-	vphp_return_array_start(ctx.ret);
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	vphp__Val_array_init(out);
 	int _t2 = m.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
 		int _t3 = m.key_values.len - _t2;
@@ -34960,11 +34971,12 @@ void vphp__Context_return_map(vphp__Context ctx, Map_string_string m) {
 		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
 		k = builtin__string_clone(k);
 		string v = (*(string*)builtin__DenseArray_value(&m.key_values, _t1));
-		vphp_array_add_assoc_string(ctx.ret, ((char*)(k.str)), ((char*)(v.str)));
+		vphp__Val_add_assoc_string(out, k, v);
 	}
 }
 void vphp__Context_return_map_f64(vphp__Context ctx, Map_string_f64 m) {
-	vphp_return_array_start(ctx.ret);
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	vphp__Val_array_init(out);
 	int _t2 = m.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
 		int _t3 = m.key_values.len - _t2;
@@ -34977,11 +34989,12 @@ void vphp__Context_return_map_f64(vphp__Context ctx, Map_string_f64 m) {
 		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
 		k = builtin__string_clone(k);
 		f64 v = (*(f64*)builtin__DenseArray_value(&m.key_values, _t1));
-		vphp_array_add_assoc_double(ctx.ret, ((char*)(k.str)), v);
+		vphp__Val_add_assoc_double(out, k, v);
 	}
 }
 void vphp__Context_return_map_int(vphp__Context ctx, Map_string_int m) {
-	vphp_return_array_start(ctx.ret);
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	vphp__Val_array_init(out);
 	int _t2 = m.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
 		int _t3 = m.key_values.len - _t2;
@@ -34994,11 +35007,12 @@ void vphp__Context_return_map_int(vphp__Context ctx, Map_string_int m) {
 		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
 		k = builtin__string_clone(k);
 		int v = (*(int*)builtin__DenseArray_value(&m.key_values, _t1));
-		vphp_array_add_assoc_long(ctx.ret, ((char*)(k.str)), ((i64)(v)));
+		vphp__Val_add_assoc_long(out, k, ((i64)(v)));
 	}
 }
 void vphp__Context_return_map_bool(vphp__Context ctx, Map_string_bool m) {
-	vphp_return_array_start(ctx.ret);
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	vphp__Val_array_init(out);
 	int _t2 = m.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
 		int _t3 = m.key_values.len - _t2;
@@ -35011,8 +35025,7 @@ void vphp__Context_return_map_bool(vphp__Context ctx, Map_string_bool m) {
 		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
 		k = builtin__string_clone(k);
 		bool v = (*(bool*)builtin__DenseArray_value(&m.key_values, _t1));
-		int b = (v ? (1) : (0));
-		vphp_array_add_assoc_bool(ctx.ret, ((char*)(k.str)), b);
+		vphp__Val_add_assoc_bool(out, k, v);
 	}
 }
 void vphp__Context_return_object(vphp__Context ctx, Map_string_string props) {
@@ -35035,7 +35048,8 @@ void vphp__Context_return_object(vphp__Context ctx, Map_string_string props) {
 	}
 }
 void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__MotionReport s) {
-	vphp_return_array_start(ctx.ret);
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	vphp__Val_array_init(out);
 	/* $for field in main.MotionReport.fields */ {
 			FieldData field = {0};
 		/* field 0 : user_name */ {
@@ -35060,7 +35074,7 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 			string val = s.user_name;
 			#if true
 			{
-				vphp_array_add_assoc_string(ctx.ret, ((char*)(key.str)), ((char*)(val.str)));
+				vphp__Val_add_assoc_string(out, key, val);
 			}
 			#elif false
 			{
@@ -35098,7 +35112,7 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 			}
 			#elif true
 			{
-				vphp_array_add_assoc_double(ctx.ret, ((char*)(key.str)), val);
+				vphp__Val_add_assoc_double(out, key, val);
 			}
 			#elif false || false
 			{
@@ -35133,7 +35147,7 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 			}
 			#elif true
 			{
-				vphp_array_add_assoc_double(ctx.ret, ((char*)(key.str)), val);
+				vphp__Val_add_assoc_double(out, key, val);
 			}
 			#elif false || false
 			{
@@ -35168,7 +35182,7 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 			}
 			#elif true
 			{
-				vphp_array_add_assoc_double(ctx.ret, ((char*)(key.str)), val);
+				vphp__Val_add_assoc_double(out, key, val);
 			}
 			#elif false || false
 			{
@@ -35200,7 +35214,7 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 			string val = s.risk_level;
 			#if true
 			{
-				vphp_array_add_assoc_string(ctx.ret, ((char*)(key.str)), ((char*)(val.str)));
+				vphp__Val_add_assoc_string(out, key, val);
 			}
 			#elif false
 			{
@@ -35235,7 +35249,7 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 			string val = s.device_mode;
 			#if true
 			{
-				vphp_array_add_assoc_string(ctx.ret, ((char*)(key.str)), ((char*)(val.str)));
+				vphp__Val_add_assoc_string(out, key, val);
 			}
 			#elif false
 			{
@@ -35251,14 +35265,16 @@ void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__M
 	}// $for
 }
 void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main__HeartPoint list) {
-	vphp_return_array_start(ctx.ret);
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	vphp__Val_array_init(out);
 	if (list.len == 0) {
 		return;
 	}
 	for (int _t1 = 0; _t1 < list.len; ++_t1) {
 		main__HeartPoint item = ((main__HeartPoint*)list.data)[_t1];
-		zval sub_zv = ((zval){.value = 0,.u1 = {0},});
-		vphp_return_array_start(&sub_zv);
+		zval *sub_zv = HEAP(zval, (((zval){.value = 0,.u1 = {0},})));
+		vphp__Val sub_val = ((vphp__Val){.raw = &(*(sub_zv)),});
+		vphp__Val_array_init(sub_val);
 		/* $for field in main.HeartPoint.fields */ {
 				FieldData field = {0};
 			/* field 0 : timestamp */ {
@@ -35289,7 +35305,7 @@ void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main_
 				}
 				#elif true || false
 				{
-					vphp_array_add_assoc_long(&sub_zv, ((char*)(key.str)), ((i64)(val)));
+					vphp__Val_add_assoc_long(sub_val, key, ((i64)(val)));
 				}
 				#elif false
 				{
@@ -35321,7 +35337,7 @@ void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main_
 				}
 				#elif true
 				{
-					vphp_array_add_assoc_double(&sub_zv, ((char*)(key.str)), val);
+					vphp__Val_add_assoc_double(sub_val, key, val);
 				}
 				#elif false || false
 				{
@@ -35332,7 +35348,7 @@ void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main_
 				#endif
 			}
 		}// $for
-		vphp_array_add_next_zval(ctx.ret, &sub_zv);
+		vphp__Val_add_next_val(out, sub_val);
 	}
 }
 void vphp__Context_return_val_T_bool(vphp__Context ctx, bool val) {
@@ -35532,116 +35548,115 @@ void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_
 	}
 }
 void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* obj) {
-	{ // Unsafe block
-		/* $for field in main.Article.fields */ {
-				FieldData field = {0};
-			/* field 0 : id */ {
-				field.name = _S("id");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 8;	// int
-				field.unaliased_typ = 8;	// int
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				string name = field.name;
-				int val = obj->id;
-				#if false
-				{
-				}
-				#elif true || false
-				{
-					add_property_long(ctx.ret, ((char*)(name.str)), ((i64)(val)));
-				}
-				#elif false
-				{
-				}
-				#elif false
-				{
-				}
-				#endif
+	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+	/* $for field in main.Article.fields */ {
+			FieldData field = {0};
+		/* field 0 : id */ {
+			field.name = _S("id");
+			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+			field.typ = 8;	// int
+			field.unaliased_typ = 8;	// int
+			field.is_pub = true;
+			field.is_mut = true;
+			field.is_embed = false;
+			field.is_shared = false;
+			field.is_atomic = false;
+			field.is_option = false;
+			field.is_array = false;
+			field.is_map = false;
+			field.is_chan = false;
+			field.is_struct = false;
+			field.is_alias = false;
+			field.is_enum = false;
+			field.indirections = 0;
+			string name = field.name;
+			int val = obj->id;
+			#if false
+			{
 			}
-			/* field 1 : title */ {
-				field.name = _S("title");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 21;	// string
-				field.unaliased_typ = 21;	// string
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				string name = field.name;
-				string val = obj->title;
-				#if true
-				{
-					add_property_stringl(ctx.ret, ((char*)(name.str)), ((char*)(val.str)), val.len);
-				}
-				#elif false || false
-				{
-				}
-				#elif false
-				{
-				}
-				#elif false
-				{
-				}
-				#endif
+			#elif true || false
+			{
+				vphp__Val_add_property_long(out, name, ((i64)(val)));
 			}
-			/* field 2 : is_top */ {
-				field.name = _S("is_top");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 19;	// bool
-				field.unaliased_typ = 19;	// bool
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				string name = field.name;
-				bool val = obj->is_top;
-				#if false
-				{
-				}
-				#elif false || false
-				{
-				}
-				#elif false
-				{
-				}
-				#elif true
-				{
-					add_property_bool(ctx.ret, ((char*)(name.str)), val);
-				}
-				#endif
+			#elif false
+			{
 			}
-		}// $for
-	}
+			#elif false
+			{
+			}
+			#endif
+		}
+		/* field 1 : title */ {
+			field.name = _S("title");
+			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+			field.typ = 21;	// string
+			field.unaliased_typ = 21;	// string
+			field.is_pub = true;
+			field.is_mut = true;
+			field.is_embed = false;
+			field.is_shared = false;
+			field.is_atomic = false;
+			field.is_option = false;
+			field.is_array = false;
+			field.is_map = false;
+			field.is_chan = false;
+			field.is_struct = false;
+			field.is_alias = false;
+			field.is_enum = false;
+			field.indirections = 0;
+			string name = field.name;
+			string val = obj->title;
+			#if true
+			{
+				vphp__Val_add_property_string(out, name, val);
+			}
+			#elif false || false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+		}
+		/* field 2 : is_top */ {
+			field.name = _S("is_top");
+			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+			field.typ = 19;	// bool
+			field.unaliased_typ = 19;	// bool
+			field.is_pub = true;
+			field.is_mut = true;
+			field.is_embed = false;
+			field.is_shared = false;
+			field.is_atomic = false;
+			field.is_option = false;
+			field.is_array = false;
+			field.is_map = false;
+			field.is_chan = false;
+			field.is_struct = false;
+			field.is_alias = false;
+			field.is_enum = false;
+			field.indirections = 0;
+			string name = field.name;
+			bool val = obj->is_top;
+			#if false
+			{
+			}
+			#elif false || false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif true
+			{
+				vphp__Val_add_property_bool(out, name, val);
+			}
+			#endif
+		}
+	}// $for
 }
 void vphp__return_val_raw_T_i64(zval* ret, i64 val) {
 	{ // Unsafe block
@@ -35915,6 +35930,27 @@ void vphp__Val_set_float(vphp__Val v, f64 val) {
 void vphp__Val_set_string(vphp__Val v, string s) {
 	vphp_set_strval(v.raw, ((char*)(s.str)), s.len);
 }
+void vphp__Val_array_init(vphp__Val v) {
+	vphp_return_array_start(v.raw);
+}
+void vphp__Val_add_assoc_string(vphp__Val v, string key, string val) {
+	vphp_array_add_assoc_string(v.raw, ((char*)(key.str)), ((char*)(val.str)));
+}
+void vphp__Val_add_assoc_long(vphp__Val v, string key, i64 val) {
+	vphp_array_add_assoc_long(v.raw, ((char*)(key.str)), val);
+}
+void vphp__Val_add_assoc_double(vphp__Val v, string key, f64 val) {
+	vphp_array_add_assoc_double(v.raw, ((char*)(key.str)), val);
+}
+void vphp__Val_add_assoc_bool(vphp__Val v, string key, bool val) {
+	{ // Unsafe block
+		int b_val = (val ? (1) : (0));
+		vphp_array_add_assoc_bool(v.raw, ((char*)(key.str)), b_val);
+	}
+}
+void vphp__Val_add_next_val(vphp__Val v, vphp__Val val) {
+	vphp_array_add_next_zval(v.raw, val.raw);
+}
 int vphp__Val_array_count(vphp__Val v) {
 	if (!vphp__Val_is_array(v)) {
 		return 0;
@@ -35952,6 +35988,18 @@ string vphp__Val_get_or(vphp__Val v, string key, string default_val) {
 	
  	vphp__Val val = (*(vphp__Val*)_t1.data);
 	return vphp__Val_to_string(val);
+}
+void vphp__Val_add_property_string(vphp__Val v, string key, string val) {
+	add_property_stringl(v.raw, ((char*)(key.str)), ((char*)(val.str)), val.len);
+}
+void vphp__Val_add_property_long(vphp__Val v, string key, i64 val) {
+	add_property_long(v.raw, ((char*)(key.str)), val);
+}
+void vphp__Val_add_property_double(vphp__Val v, string key, f64 val) {
+	vphp_add_property_double(v.raw, ((char*)(key.str)), val);
+}
+void vphp__Val_add_property_bool(vphp__Val v, string key, bool val) {
+	add_property_bool(v.raw, ((char*)(key.str)), val);
 }
 vphp__Val vphp__Val_get_prop(vphp__Val v, string name) {
 	if (!vphp__Val_is_object(v)) {
