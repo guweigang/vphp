@@ -144,4 +144,19 @@ static inline int VPHP_Z_STRLEN(zval *z) {
     return (int)Z_STRLEN_P(z);
 }
 
+// 处理普通字符串
+#define VPHP_RETURN_STRING(v_str) do { \
+    RETVAL_STRINGL(v_str.str, v_str.len); \
+    return; \
+} while(0)
+
+// 处理带错误的 Result 类型
+#define VPHP_RETURN_RESULT_BOOL(res) do { \
+    if (res._error.code != 0) { \
+        zend_throw_exception(NULL, (char*)res._error.msg.str, 0); \
+        return; \
+    } \
+    RETURN_BOOL(res.data); \
+} while(0)
+
 #endif

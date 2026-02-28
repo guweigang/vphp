@@ -19,3 +19,10 @@ echo "\nStep 6: new class from PHP...\n";
 $b = new Article("Weigang", 1234);
 var_dump($b);
 $b->save();
+
+echo "\nStep 7: Call is_top from PHP...\n";
+$c = new Article("is_top_test", 1234567);
+var_dump($c->is_top());
+$c->is_top = false;
+var_dump($c->is_top());
+$b->save();

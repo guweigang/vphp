@@ -92,6 +92,7 @@ fn (r PhpClassRepr) gen_c() []string {
 	  // 💡 关键 1: 映射方法名。V 侧叫 init，PHP 侧叫 __construct
     php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		v_c_func := '${r.name}_${m.name}'
+		tm := TypeMap.get_type(m.return_type)
 
 		c << '    PHP_METHOD(${r.name}, ${php_method_name}) {'
 		c << '        typedef struct { void* ex; void* ret; } vphp_context_internal;'
@@ -115,39 +116,56 @@ fn (r PhpClassRepr) gen_c() []string {
 
       // 3. 调用 V 的 init 方法进行参数初始化
       // 这里需要解析 PHP 传来的参数并传给 V
-      c << '        extern void ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
       c << '        ${v_c_func}(wrapper->v_ptr, ctx);'
 		} else if m.is_static {
-		  c << '        extern void* ${v_c_func}(vphp_context_internal ctx);'
+      c << '        extern ${tm.c_type} ${v_c_func}(vphp_context_internal ctx);'
       // 1. 调用 V 函数创建实例
-      c << '        void* v_instance = ${v_c_func}(ctx);'
-      c << '        if (!v_instance) RETURN_NULL();'
+      // 💡 如果返回的是对象指针 (void*)
+      if tm.c_type == 'void*' {
+          c << '        ${tm.c_type} v_instance = ${v_c_func}(ctx);'
+          c << '        if (!v_instance) RETURN_NULL();'
 
-      // 2. 初始化 PHP 对象
-      c << '        object_init_ex(return_value, ${lower_name}_ce);'
+          // 2. 初始化 PHP 对象
+          c << '        object_init_ex(return_value, ${lower_name}_ce);'
 
-      // 3. 拿到 wrapper 指针
-      c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));'
+          // 3. 拿到 wrapper 指针
+          c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));'
 
-      // 4. 接通“三条线”：内存、读取器、写入器、同步器
-      c << '        wrapper->v_ptr = v_instance;'  // 线 A：V 内存地址
+          // 4. 接通“三条线”：内存、读取器、写入器、同步器
+          c << '        wrapper->v_ptr = v_instance;'  // 线 A：V 内存地址
 
-      c << '        extern void ${r.name}_get_prop(void*, const char*, int, zval*);'
-      c << '        wrapper->prop_handler = ${r.name}_get_prop;' // 线 B：读取劫持
+          c << '        extern void ${r.name}_get_prop(void*, const char*, int, zval*);'
+          c << '        wrapper->prop_handler = ${r.name}_get_prop;' // 线 B：读取劫持
 
-      c << '        extern void ${r.name}_set_prop(void*, const char*, int, zval*);'
-      c << '        wrapper->write_handler = ${r.name}_set_prop;' // 线 C：写入劫持
+          c << '        extern void ${r.name}_set_prop(void*, const char*, int, zval*);'
+          c << '        wrapper->write_handler = ${r.name}_set_prop;' // 线 C：写入劫持
 
-      c << '        extern void ${r.name}_sync_props(void*, zval*);'
-      c << '        wrapper->sync_handler = ${r.name}_sync_props;' // 线 D：var_dump 同步
+          c << '        extern void ${r.name}_sync_props(void*, zval*);'
+          c << '        wrapper->sync_handler = ${r.name}_sync_props;' // 线 D：var_dump 同步
+      } else {
+          // 如果返回的是基本类型，直接返回值
+          c << '        ${tm.c_type} v_instance = ${v_c_func}(ctx);'
+          c << '        if (!v_instance) RETURN_NULL();'
+          c << '        ${tm.php_return}(v_instance);'
+      }
   } else {
-			// 实例方法流程 (例如 $a->save())
-			c << '        extern bool ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
-			c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));'
-			c << '        if (!wrapper->v_ptr) RETURN_FALSE;'
+      // 💡 动态生成 extern，不再死守 bool
+      c << '        extern ${tm.c_type} ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
+      c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));'
+      c << '        if (!wrapper->v_ptr) RETURN_FALSE;'
 
-			c << '        bool res = ${v_c_func}(wrapper->v_ptr, ctx);'
-			c << '        RETURN_BOOL(res);'
+      // 💡 动态处理调用逻辑
+      if tm.is_result {
+          // 如果是 !bool 这种带错误的
+          c << '        ${tm.c_type} res = ${v_c_func}(wrapper->v_ptr, ctx);'
+          c << '        ${tm.php_return}(res); // 在 v_bridge.h 里实现这个宏，处理异常抛出'
+      } else if tm.v_type == 'void' {
+          c << '        ${v_c_func}(wrapper->v_ptr, ctx);'
+      } else {
+          // 普通类型返回
+          c << '        ${tm.c_type} res = ${v_c_func}(wrapper->v_ptr, ctx);'
+          c << '        ${tm.php_return}(res); // 比如 RETURN_LONG(res) 或 RETURN_BOOL(res)'
+      }
 		}
 		c << '    }'
 	}
@@ -226,25 +244,34 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 		return
 	}
 
+	// 💡 关键：从 AST 中提取返回类型
+	ret_type := table.type_to_str(stmt.return_type)
+
 	r.methods << PhpMethodRepr{
 		name: stmt.name
+		v_c_func: '${r.name}_${stmt.name}'
 		is_static: false
+		return_type: ret_type // 👈 存入解析出的 "!bool" 等
 		visibility: if stmt.is_pub { 'public' } else { 'protected' }
+		// 如果需要处理参数，可以在这里遍历 stmt.params 填充 args
 	}
 }
 
 // 为类增加静态方法
 pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table, method_name string) {
-    // 别忘了检查属性标签
-    if !stmt.attrs.any(it.name == 'php_method') {
-        return
-    }
+	if !stmt.attrs.any(it.name == 'php_method') {
+		return
+	}
 
-    r.methods << PhpMethodRepr{
-        name: method_name
-        is_static: true
-        visibility: 'public'
-    }
+	ret_type := table.type_to_str(stmt.return_type)
+
+	r.methods << PhpMethodRepr{
+		name: method_name
+		v_c_func: '${r.name}_${method_name}'
+		is_static: true
+		return_type: ret_type // 👈 存入解析出的返回类型
+		visibility: 'public'
+	}
 }
 
 // vphp/compiler/class.v

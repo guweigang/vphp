@@ -11,6 +11,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_article_init, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_create, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_is_top, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_save, 0, 0, 0)
 ZEND_END_ARG_INFO()
     PHP_METHOD(Article, __construct) {
@@ -26,7 +28,6 @@ ZEND_END_ARG_INFO()
         wrapper->prop_handler = Article_get_prop;
         wrapper->write_handler = Article_set_prop;
         wrapper->sync_handler = Article_sync_props;
-        extern void Article_init(void* v_ptr, vphp_context_internal ctx);
         Article_init(wrapper->v_ptr, ctx);
     }
     PHP_METHOD(Article, create) {
@@ -45,6 +46,15 @@ ZEND_END_ARG_INFO()
         extern void Article_sync_props(void*, zval*);
         wrapper->sync_handler = Article_sync_props;
     }
+    PHP_METHOD(Article, is_top) {
+        typedef struct { void* ex; void* ret; } vphp_context_internal;
+        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+        extern bool Article_is_top(void* v_ptr, vphp_context_internal ctx);
+        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+        if (!wrapper->v_ptr) RETURN_FALSE;
+        bool res = Article_is_top(wrapper->v_ptr, ctx);
+        RETURN_BOOL(res); // 比如 RETURN_LONG(res) 或 RETURN_BOOL(res)
+    }
     PHP_METHOD(Article, save) {
         typedef struct { void* ex; void* ret; } vphp_context_internal;
         vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -52,11 +62,12 @@ ZEND_END_ARG_INFO()
         vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
         if (!wrapper->v_ptr) RETURN_FALSE;
         bool res = Article_save(wrapper->v_ptr, ctx);
-        RETURN_BOOL(res);
+        RETURN_BOOL(res); // 比如 RETURN_LONG(res) 或 RETURN_BOOL(res)
     }
 static const zend_function_entry article_methods[] = {
     PHP_ME(Article, __construct, arginfo_article_init, ZEND_ACC_PUBLIC)
     PHP_ME(Article, create, arginfo_article_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Article, is_top, arginfo_article_is_top, ZEND_ACC_PUBLIC)
     PHP_ME(Article, save, arginfo_article_save, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };

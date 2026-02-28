@@ -444,6 +444,12 @@ pub fn Article.create(ctx vphp.Context) &Article {
 }
 
 @[php_method]
+@[export: 'Article_is_top']
+pub fn (a &Article) is_top(ctx vphp.Context) bool {
+    return a.is_top
+}
+
+@[php_method]
 @[export: 'Article_save']
 pub fn (a &Article) save(ctx vphp.Context) bool {
     // 业务逻辑
