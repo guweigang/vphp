@@ -21,10 +21,10 @@ pub mut:
 	globals       PhpGlobalsRepr
 }
 
-pub fn new_module_builder(ext_name string) &ModuleBuilder {
+pub fn new_module_builder(ext_name string, version string) &ModuleBuilder {
 	return &ModuleBuilder{
 		ext_name: ext_name
-		version: '1.0.0'
+		version: if version != '' { version } else { '1.0.0' }
 	}
 }
 

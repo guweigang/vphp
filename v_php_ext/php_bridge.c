@@ -399,7 +399,7 @@ void* vphp_get_active_globals() {
 }
 zend_module_entry vphptest_module_entry = {
     STANDARD_MODULE_HEADER, "vphptest", vphptest_functions,
-    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, NULL, "1.0.0",
+    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, NULL, "0.1.0",
     PHP_MODULE_GLOBALS(vphptest),
     (void (*)(void*)) php_vphptest_init_globals,
     NULL,

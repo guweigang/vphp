@@ -22,7 +22,7 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('#include "../vphp/v_bridge.h"\n\n')
 
 	// 2. 模块层：初始化 ModuleBuilder 并收集功能点
-	mut mod_builder := new_module_builder(c.ext_name)
+	mut mod_builder := new_module_builder(c.ext_name, c.ext_version)
 	for k, v in c.ini_entries {
 		mod_builder.add_ini_entry(k, v)
 	}
