@@ -454,15 +454,19 @@ zend_object *vphp_create_object_handler(zend_class_entry *ce) {
   return &obj->std;
 }
 
-// 专门给 V 调用的 3 参数版本，内部转发给标准的 5 参数 Handler
+// 专门给 V 调用的 3 参数版本，内部转发给标准的 5 参数 Handler 或对象自身的
+// Handler
 zval *vphp_read_property_compat(zend_object *obj, const char *name,
                                 int name_len, zval *rv) {
   // 构造 zend_string
   zend_string *member = zend_string_init(name, name_len, 0);
 
-  // 调用我们之前定义的 5 参数劫持函数
-  // type 传 BP_VAR_R (只读)，cache_slot 传 NULL
-  zval *res = vphp_read_property(obj, member, BP_VAR_R, NULL, rv);
+  zval *res = NULL;
+  if (obj->handlers && obj->handlers->read_property) {
+    res = obj->handlers->read_property(obj, member, BP_VAR_R, NULL, rv);
+  } else {
+    res = zend_std_read_property(obj, member, BP_VAR_R, NULL, rv);
+  }
 
   // 释放临时字符串
   zend_string_release(member);
