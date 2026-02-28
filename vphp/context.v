@@ -325,24 +325,7 @@ pub fn (ctx Context) return_val[T](val T) {
 	}
 }
 
-// ======== 属性同步 (用于 var_dump) ========
 
-pub fn (ctx Context) sync_props[T](obj &T) {
-	out := Val{ raw: ctx.ret }
-	$for field in T.fields {
-		name := field.name
-		val := obj.$(field.name)
-		$if field.typ is string {
-			out.add_property_string(name, val)
-		} $else $if field.typ is int || field.typ is i64 {
-			out.add_property_long(name, i64(val))
-		} $else $if field.typ is f64 {
-			out.add_property_double(name, val)
-		} $else $if field.typ is bool {
-			out.add_property_bool(name, val)
-		}
-	}
-}
 
 // ======== 泛型返回（低级 API，直接操作 retval） ========
 

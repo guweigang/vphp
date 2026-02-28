@@ -9156,7 +9156,6 @@ void vphp__Context_return_val_T_bool(vphp__Context ctx, bool val);
 void vphp__Context_return_val_T_i64(vphp__Context ctx, i64 val);
 void vphp__Context_return_val_T_string(vphp__Context ctx, string val);
 void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val);
-void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* obj);
 void vphp__return_val_raw_T_i64(zval* ret, i64 val);
 void vphp__return_val_raw_T_string(zval* ret, string val);
 void vphp__return_val_raw_T_bool(zval* ret, bool val);
@@ -34437,8 +34436,115 @@ void vphp__generic_set_prop_T_main__Article(voidptr ptr, char* name_ptr, int nam
 void vphp__generic_sync_props_T_main__Article(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__Article* obj = ((main__Article*)(ptr));
-		vphp__Context ctx = ((vphp__Context){.ex = 0,.ret = zv,});
-		vphp__Context_sync_props_T_main__Article(ctx, obj);
+		vphp__Val out = ((vphp__Val){.raw = zv,});
+		/* $for field in main.Article.fields */ {
+				FieldData field = {0};
+			/* field 0 : id */ {
+				field.name = _S("id");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				string name = field.name;
+				int val = obj->id;
+				#if false
+				{
+				}
+				#elif true || false
+				{
+					vphp__Val_add_property_long(out, name, ((i64)(val)));
+				}
+				#elif false
+				{
+				}
+				#elif false
+				{
+				}
+				#endif
+			}
+			/* field 1 : title */ {
+				field.name = _S("title");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 21;	// string
+				field.unaliased_typ = 21;	// string
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				string name = field.name;
+				string val = obj->title;
+				#if true
+				{
+					vphp__Val_add_property_string(out, name, val);
+				}
+				#elif false || false
+				{
+				}
+				#elif false
+				{
+				}
+				#elif false
+				{
+				}
+				#endif
+			}
+			/* field 2 : is_top */ {
+				field.name = _S("is_top");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 19;	// bool
+				field.unaliased_typ = 19;	// bool
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				string name = field.name;
+				bool val = obj->is_top;
+				#if false
+				{
+				}
+				#elif false || false
+				{
+				}
+				#elif false
+				{
+				}
+				#elif true
+				{
+					vphp__Val_add_property_bool(out, name, val);
+				}
+				#endif
+			}
+		}// $for
 	}
 }
 voidptr vphp__generic_new_raw_T_main__Article(void) {
@@ -35477,117 +35583,6 @@ void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_
 		}
 		#endif
 	}
-}
-void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* obj) {
-	vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
-	/* $for field in main.Article.fields */ {
-			FieldData field = {0};
-		/* field 0 : id */ {
-			field.name = _S("id");
-			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-			field.typ = 8;	// int
-			field.unaliased_typ = 8;	// int
-			field.is_pub = true;
-			field.is_mut = true;
-			field.is_embed = false;
-			field.is_shared = false;
-			field.is_atomic = false;
-			field.is_option = false;
-			field.is_array = false;
-			field.is_map = false;
-			field.is_chan = false;
-			field.is_struct = false;
-			field.is_alias = false;
-			field.is_enum = false;
-			field.indirections = 0;
-			string name = field.name;
-			int val = obj->id;
-			#if false
-			{
-			}
-			#elif true || false
-			{
-				vphp__Val_add_property_long(out, name, ((i64)(val)));
-			}
-			#elif false
-			{
-			}
-			#elif false
-			{
-			}
-			#endif
-		}
-		/* field 1 : title */ {
-			field.name = _S("title");
-			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-			field.typ = 21;	// string
-			field.unaliased_typ = 21;	// string
-			field.is_pub = true;
-			field.is_mut = true;
-			field.is_embed = false;
-			field.is_shared = false;
-			field.is_atomic = false;
-			field.is_option = false;
-			field.is_array = false;
-			field.is_map = false;
-			field.is_chan = false;
-			field.is_struct = false;
-			field.is_alias = false;
-			field.is_enum = false;
-			field.indirections = 0;
-			string name = field.name;
-			string val = obj->title;
-			#if true
-			{
-				vphp__Val_add_property_string(out, name, val);
-			}
-			#elif false || false
-			{
-			}
-			#elif false
-			{
-			}
-			#elif false
-			{
-			}
-			#endif
-		}
-		/* field 2 : is_top */ {
-			field.name = _S("is_top");
-			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-			field.typ = 19;	// bool
-			field.unaliased_typ = 19;	// bool
-			field.is_pub = true;
-			field.is_mut = true;
-			field.is_embed = false;
-			field.is_shared = false;
-			field.is_atomic = false;
-			field.is_option = false;
-			field.is_array = false;
-			field.is_map = false;
-			field.is_chan = false;
-			field.is_struct = false;
-			field.is_alias = false;
-			field.is_enum = false;
-			field.indirections = 0;
-			string name = field.name;
-			bool val = obj->is_top;
-			#if false
-			{
-			}
-			#elif false || false
-			{
-			}
-			#elif false
-			{
-			}
-			#elif true
-			{
-				vphp__Val_add_property_bool(out, name, val);
-			}
-			#endif
-		}
-	}// $for
 }
 void vphp__return_val_raw_T_i64(zval* ret, i64 val) {
 	{ // Unsafe block

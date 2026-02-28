@@ -59,9 +59,21 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 // 泛型同步器 — 用于 var_dump() 时将 V 内存同步到 PHP 属性表
 pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 	unsafe {
-		mut obj := &T(ptr)
-		ctx := Context{ ex: 0, ret: zv }
-		ctx.sync_props(obj)
+		obj := &T(ptr)
+		out := Val{ raw: zv }
+		$for field in T.fields {
+			name := field.name
+			val := obj.$(field.name)
+			$if field.typ is string {
+				out.add_property_string(name, val)
+			} $else $if field.typ is int || field.typ is i64 {
+				out.add_property_long(name, i64(val))
+			} $else $if field.typ is f64 {
+				out.add_property_double(name, val)
+			} $else $if field.typ is bool {
+				out.add_property_bool(name, val)
+			}
+		}
 	}
 }
 
