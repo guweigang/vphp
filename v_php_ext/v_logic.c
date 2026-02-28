@@ -7423,11 +7423,11 @@ typedef struct thread_arg_vphp__ITask_run {
 	vphp__ITask arg0;
 } thread_arg_vphp__ITask_run;
 
-typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731 {
+typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 {
 	void (*fn) (sync__WaitGroup*, void (*) ());
 	sync__WaitGroup* arg1;
 	void (*arg2) ();
-} thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731;
+} thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
 static bool Array_v__token__Kind_contains(Array_v__token__Kind a, v__token__Kind v);
@@ -9118,6 +9118,10 @@ VV_LOC _result_semver__Version semver__coerce_version(string input);
 VV_LOC semver__Version semver__increment_version(semver__Version ver, semver__Increment typ);
 VV_LOC bool semver__is_valid_string(string input);
 VV_LOC bool semver__is_valid_number(string input);
+void vphp__generic_get_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* rv);
+void vphp__generic_set_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* value);
+void vphp__generic_sync_props_T_main__Article(voidptr ptr, zval* zv);
+voidptr vphp__generic_new_raw_T_main__Article(void);
 int vphp__Context_num_args(vphp__Context ctx);
 bool vphp__Context_has_exception(vphp__Context ctx);
 vphp__Val vphp__Context_arg_raw(vphp__Context ctx, int index);
@@ -9148,10 +9152,6 @@ void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* 
 void vphp__return_val_raw_T_i64(zval* ret, i64 val);
 void vphp__return_val_raw_T_string(zval* ret, string val);
 void vphp__return_val_raw_T_bool(zval* ret, bool val);
-void vphp__generic_get_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* rv);
-void vphp__generic_set_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* value);
-void vphp__generic_sync_props_T_main__Article(voidptr ptr, zval* zv);
-voidptr vphp__generic_new_raw_T_main__Article(void);
 VV_LOC void vphp__vphp_framework_init(int module_number);
 VV_EXP void vphp_framework_init(int module_number); // exported fn vphp.vphp_framework_init
 void vphp__init_framework(int module_number);
@@ -9902,7 +9902,7 @@ void sync__WaitGroup_add(sync__WaitGroup* wg, int delta);
 void sync__WaitGroup_done(sync__WaitGroup* wg);
 void sync__WaitGroup_wait(sync__WaitGroup* wg);
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)());
-VV_LOC void anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
+VV_LOC void anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
 u64 sync__thread_id(void);
 _result_string v__util__resolve_d_value(Map_string_string compile_values, string str);
 _result_string v__util__resolve_env_value(string str, bool check_for_presence);
@@ -10674,7 +10674,7 @@ VV_LOC Array_string vphp__compiler__PhpTaskRepr_gen_minit(vphp__compiler__PhpTas
 string vphp__compiler__PhpTaskRepr_gen_v_glue(vphp__compiler__PhpTaskRepr r);
 vphp__compiler__TypeMap vphp__compiler__TypeMap__static__get_type(string v_type);
 VV_LOC void main__vphp_task_auto_startup(void);
-VV_LOC vphp__ITask anon_fn_e0873e5963f3179a_40_string__vphp__ITask_154(string s);
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154(string s);
 VV_EXP void vphp_task_auto_startup(void); // exported fn main.vphp_task_auto_startup
 voidptr main__article_new_raw(void);
 VV_EXP voidptr Article_new_raw(void); // exported fn main.article_new_raw
@@ -12438,7 +12438,7 @@ static inline void __chan_bool_pushval(chan_bool ch, bool val) {
 // V gowrappers waiter fns:
 Array_f64 __v_thread_Array_f64_wait(__v_thread_Array_f64 thread);
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
-void* anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731 *arg);
+void* anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *arg);
 
 // V auto str functions:
 static string time__FormatTime_str(time__FormatTime it) { /* gen_str_for_enum */
@@ -17399,7 +17399,7 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 	builtin___v_free(arg);
 	return ret_ptr;
 }
-void* anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731 *arg) {
+void* anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *arg) {
 	arg->fn(arg->arg1, arg->arg2);
 	builtin___v_free(arg);
 	return 0;
@@ -17472,12 +17472,12 @@ cJSON* json__encode_main__StockParams(main__StockParams val) {
 
 
 // V anon functions:
-	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
+	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
 	f();
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC vphp__ITask anon_fn_e0873e5963f3179a_40_string__vphp__ITask_154(string s) {
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154(string s) {
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.json_data = s,}, sizeof(main__AnalyzeTask))));
 }
 
@@ -34210,6 +34210,272 @@ VV_LOC bool semver__is_valid_number(string input) {
 	}
 	return true;
 }
+void vphp__generic_get_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
+	{ // Unsafe block
+		string name = builtin__char_vstring_with_len(name_ptr, name_len);
+		main__Article* obj = ((main__Article*)(ptr));
+		/* $for field in main.Article.fields */ {
+				FieldData field = {0};
+			/* field 0 : id */ {
+				field.name = _S("id");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				if (builtin__string__eq(name, field.name)) {
+					int val = obj->id;
+					#if false
+					{
+					}
+					#elif true
+					{
+						vphp__return_val_raw_T_i64(rv, ((i64)(val)));
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+					return;
+				}
+			}
+			/* field 1 : title */ {
+				field.name = _S("title");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 21;	// string
+				field.unaliased_typ = 21;	// string
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				if (builtin__string__eq(name, field.name)) {
+					string val = obj->title;
+					#if true
+					{
+						vphp__return_val_raw_T_string(rv, val);
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+					return;
+				}
+			}
+			/* field 2 : is_top */ {
+				field.name = _S("is_top");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 19;	// bool
+				field.unaliased_typ = 19;	// bool
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				if (builtin__string__eq(name, field.name)) {
+					bool val = obj->is_top;
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif true
+					{
+						vphp__return_val_raw_T_bool(rv, val);
+					}
+					#elif false
+					{
+					}
+					#endif
+					return;
+				}
+			}
+		}// $for
+	}
+}
+void vphp__generic_set_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* value) {
+	{ // Unsafe block
+		string name = builtin__char_vstring_with_len(name_ptr, name_len);
+		main__Article* obj = ((main__Article*)(ptr));
+		vphp__Val arg = ((vphp__Val){.raw = value,});
+		/* $for field in main.Article.fields */ {
+				FieldData field = {0};
+			/* field 0 : id */ {
+				field.name = _S("id");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				if (builtin__string__eq(name, field.name)) {
+					#if false
+					{
+					}
+					#elif true
+					{
+						obj->id = ((int)(vphp__Val_get_int(arg)));
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+					return;
+				}
+			}
+			/* field 1 : title */ {
+				field.name = _S("title");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 21;	// string
+				field.unaliased_typ = 21;	// string
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				if (builtin__string__eq(name, field.name)) {
+					#if true
+					{
+						obj->title = vphp__Val_get_string(arg);
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+					return;
+				}
+			}
+			/* field 2 : is_top */ {
+				field.name = _S("is_top");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 19;	// bool
+				field.unaliased_typ = 19;	// bool
+				field.is_pub = true;
+				field.is_mut = true;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				if (builtin__string__eq(name, field.name)) {
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif true
+					{
+						obj->is_top = vphp__Val_get_bool(arg);
+					}
+					#elif false
+					{
+					}
+					#endif
+					return;
+				}
+			}
+		}// $for
+	}
+}
+void vphp__generic_sync_props_T_main__Article(voidptr ptr, zval* zv) {
+	{ // Unsafe block
+		main__Article* obj = ((main__Article*)(ptr));
+		vphp__Context ctx = ((vphp__Context){.ex = 0,.ret = zv,});
+		vphp__Context_sync_props_T_main__Article(ctx, obj);
+	}
+}
+voidptr vphp__generic_new_raw_T_main__Article(void) {
+	return ((main__Article*)builtin__memdup(&(main__Article){.id = 0,.title = (string){.str=(byteptr)"", .is_lit=1},.is_top = 0,}, sizeof(main__Article)));
+}
 int vphp__Context_num_args(vphp__Context ctx) {
 	return ((int)(vphp_get_num_args(ctx.ex)));
 }
@@ -35264,272 +35530,6 @@ void vphp__return_val_raw_T_bool(zval* ret, bool val) {
 		#endif
 	}
 }
-void vphp__generic_get_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
-	{ // Unsafe block
-		string name = builtin__char_vstring_with_len(name_ptr, name_len);
-		main__Article* obj = ((main__Article*)(ptr));
-		/* $for field in main.Article.fields */ {
-				FieldData field = {0};
-			/* field 0 : id */ {
-				field.name = _S("id");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 8;	// int
-				field.unaliased_typ = 8;	// int
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				if (builtin__string__eq(name, field.name)) {
-					int val = obj->id;
-					#if false
-					{
-					}
-					#elif true
-					{
-						vphp__return_val_raw_T_i64(rv, ((i64)(val)));
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#endif
-					return;
-				}
-			}
-			/* field 1 : title */ {
-				field.name = _S("title");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 21;	// string
-				field.unaliased_typ = 21;	// string
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				if (builtin__string__eq(name, field.name)) {
-					string val = obj->title;
-					#if true
-					{
-						vphp__return_val_raw_T_string(rv, val);
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#endif
-					return;
-				}
-			}
-			/* field 2 : is_top */ {
-				field.name = _S("is_top");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 19;	// bool
-				field.unaliased_typ = 19;	// bool
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				if (builtin__string__eq(name, field.name)) {
-					bool val = obj->is_top;
-					#if false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif true
-					{
-						vphp__return_val_raw_T_bool(rv, val);
-					}
-					#elif false
-					{
-					}
-					#endif
-					return;
-				}
-			}
-		}// $for
-	}
-}
-void vphp__generic_set_prop_T_main__Article(voidptr ptr, char* name_ptr, int name_len, zval* value) {
-	{ // Unsafe block
-		string name = builtin__char_vstring_with_len(name_ptr, name_len);
-		main__Article* obj = ((main__Article*)(ptr));
-		vphp__Val arg = ((vphp__Val){.raw = value,});
-		/* $for field in main.Article.fields */ {
-				FieldData field = {0};
-			/* field 0 : id */ {
-				field.name = _S("id");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 8;	// int
-				field.unaliased_typ = 8;	// int
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				if (builtin__string__eq(name, field.name)) {
-					#if false
-					{
-					}
-					#elif true
-					{
-						obj->id = ((int)(vphp__Val_get_int(arg)));
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#endif
-					return;
-				}
-			}
-			/* field 1 : title */ {
-				field.name = _S("title");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 21;	// string
-				field.unaliased_typ = 21;	// string
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				if (builtin__string__eq(name, field.name)) {
-					#if true
-					{
-						obj->title = vphp__Val_get_string(arg);
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#endif
-					return;
-				}
-			}
-			/* field 2 : is_top */ {
-				field.name = _S("is_top");
-				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-				field.typ = 19;	// bool
-				field.unaliased_typ = 19;	// bool
-				field.is_pub = true;
-				field.is_mut = true;
-				field.is_embed = false;
-				field.is_shared = false;
-				field.is_atomic = false;
-				field.is_option = false;
-				field.is_array = false;
-				field.is_map = false;
-				field.is_chan = false;
-				field.is_struct = false;
-				field.is_alias = false;
-				field.is_enum = false;
-				field.indirections = 0;
-				if (builtin__string__eq(name, field.name)) {
-					#if false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif false
-					{
-					}
-					#elif true
-					{
-						obj->is_top = vphp__Val_get_bool(arg);
-					}
-					#elif false
-					{
-					}
-					#endif
-					return;
-				}
-			}
-		}// $for
-	}
-}
-void vphp__generic_sync_props_T_main__Article(voidptr ptr, zval* zv) {
-	{ // Unsafe block
-		main__Article* obj = ((main__Article*)(ptr));
-		vphp__Context ctx = ((vphp__Context){.ex = 0,.ret = zv,});
-		vphp__Context_sync_props_T_main__Article(ctx, obj);
-	}
-}
-voidptr vphp__generic_new_raw_T_main__Article(void) {
-	return ((main__Article*)builtin__memdup(&(main__Article){.id = 0,.title = (string){.str=(byteptr)"", .is_lit=1},.is_top = 0,}, sizeof(main__Article)));
-}
 VV_LOC void vphp__vphp_framework_init(int module_number) {
 	vphp__init_framework(module_number);
 }
@@ -35876,7 +35876,7 @@ vphp__Val vphp__new_val_bool(bool b) {
 }
 vphp__Val vphp__new_val_string(string s) {
 	{ // Unsafe block
-		return ((vphp__Val){.raw = vphp_new_str(s.str),});
+		return ((vphp__Val){.raw = vphp_new_str(((char*)(s.str))),});
 	}
 	return (vphp__Val){.raw = 0,};
 }
@@ -46606,16 +46606,16 @@ void sync__WaitGroup_wait(sync__WaitGroup* wg) {
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)(void)) {
 	sync__WaitGroup_add(wg, 1);
 	// start go
-	thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731));
-	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731;
+	thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731));
+	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731;
 	arg__t1->arg1 = wg;
 	arg__t1->arg2 = f;
 	pthread_t thread__t1;
 	pthread_attr_t thread__t1_attributes;
 	pthread_attr_init(&thread__t1_attributes);
 	pthread_attr_setstacksize(&thread__t1_attributes, 8388608); // fn: 
-	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
-	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_194_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
+	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
+	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
 	pthread_detach(thread__t1);
 	// end go
 	;
@@ -75971,7 +75971,7 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_v_glue(vphp__compiler__Com
 			;
 		}
 	}
-	_result_void _t8 = os__write_file(_S("_task_glue.v"), Array_string_join(v, _S("\n")));
+	_result_void _t8 = os__write_file(_S("bridge.v"), Array_string_join(v, _S("\n")));
 	if (_t8.is_error) {
 		_result_void _t9 = {0};
 		_t9.is_error = true;
@@ -76434,7 +76434,7 @@ vphp__compiler__TypeMap vphp__compiler__TypeMap__static__get_type(string v_type)
 	return ((_SLIT_EQ(clean_type.str, clean_type.len, "int"))? (((vphp__compiler__TypeMap){.v_type = _S("int"),.c_type = _S("int"),.php_return = _S("RETURN_LONG"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "i64"))? (((vphp__compiler__TypeMap){.v_type = _S("i64"),.c_type = _S("long long"),.php_return = _S("RETURN_LONG"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "bool"))? (((vphp__compiler__TypeMap){.v_type = _S("bool"),.c_type = _S("bool"),.php_return = _S("RETURN_BOOL"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "string"))? (((vphp__compiler__TypeMap){.v_type = _S("string"),.c_type = _S("v_string"),.php_return = _S("VPHP_RETURN_STRING"),.is_result = false,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "!bool"))? (((vphp__compiler__TypeMap){.v_type = _S("!bool"),.c_type = _S("v_res_bool"),.php_return = _S("VPHP_RETURN_RESULT_BOOL"),.is_result = true,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "!int"))? (((vphp__compiler__TypeMap){.v_type = _S("!int"),.c_type = _S("v_res_int"),.php_return = _S("VPHP_RETURN_RESULT_LONG"),.is_result = true,})) : (_SLIT_EQ(clean_type.str, clean_type.len, "void") || _SLIT_EQ(clean_type.str, clean_type.len, ""))? (((vphp__compiler__TypeMap){.v_type = _S("void"),.c_type = _S("void"),.php_return = _S("RETURN_NULL"),.is_result = false,})) : (((vphp__compiler__TypeMap){.v_type = v_type,.c_type = _S("void*"),.php_return = _S("RETURN_NULL"),.is_result = false,})));
 }
 VV_LOC void main__vphp_task_auto_startup(void) {
-	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_e0873e5963f3179a_40_string__vphp__ITask_154);
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_40_string__vphp__ITask_154);
 }
 // export alias: vphp_task_auto_startup -> main__vphp_task_auto_startup
 void vphp_task_auto_startup(void) {

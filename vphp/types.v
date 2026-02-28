@@ -11,5 +11,5 @@ pub type ValMethod[T]  = fn (obj T, ctx Context) Val
 // 用于传递给 C 层的结构体
 pub struct MethodDef {
 	name    &char
-	handler ZifHandler
+	handler ZifHandler = unsafe { nil }
 }

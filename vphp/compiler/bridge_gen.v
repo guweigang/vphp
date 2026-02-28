@@ -98,7 +98,7 @@ fn (mut c Compiler) generate_v_glue() ! {
           v << cls.gen_v_glue();
       }
     }
-    os.write_file('_task_glue.v', v.join('\n'))!
+    os.write_file('bridge.v', v.join('\n'))!
 }
 
 // ==========================================

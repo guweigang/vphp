@@ -304,6 +304,6 @@ pub fn new_val_bool(b bool) Val {
 // 创建一个 string Val
 pub fn new_val_string(s string) Val {
 	unsafe {
-		return Val{ raw: C.vphp_new_str(s.str) }
+		return Val{ raw: C.vphp_new_str(&char(s.str)) }
 	}
 }
