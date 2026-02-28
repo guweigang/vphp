@@ -59,18 +59,16 @@ fn v_logic_main(ctx vphp.Context) {
 }
 
 @[export: 'v_add']
-fn v_add(ctx vphp.Context) {
+fn v_add(ctx vphp.Context) i64 {
 	a := ctx.arg[i64](0)
 	b := ctx.arg[i64](1)
-
-	vphp.return_val[i64](ctx, a + b)
+	return a + b
 }
 
 @[export: 'v_greet']
 fn v_greet(ctx vphp.Context) {
 	name := ctx.arg[string](0)
-
-	vphp.return_val[string](ctx, 'Hello, $name from V!')
+	ctx.return_string('Hello, $name from V!')
 }
 
 

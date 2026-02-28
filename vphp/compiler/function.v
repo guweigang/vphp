@@ -5,7 +5,8 @@ import v.ast
 pub struct PhpFuncRepr {
 pub mut:
 	name        string
-	is_internal bool // 标记如 v_spawn, v_wait 这种内置函数
+	return_type string // V 返回类型：'void', 'int', 'i64', 'bool', 'string', 'f64'
+	is_internal bool   // 标记如 v_spawn, v_wait 这种内置函数
 }
 
 pub fn new_func_repr() &PhpFuncRepr {
@@ -29,8 +30,19 @@ fn (mut r PhpFuncRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 					return false
 				}
 
-				// 3. 这里的关键：r.name 必须是 PHP 侧看到的函数名
 				r.name = exp_name
+
+				// 3. 解析返回类型
+				ret_type := table.get_type_name(stmt.return_type)
+				clean := if ret_type.contains('.') { ret_type.all_after('.') } else { ret_type }
+				// 只有纯 C 标量类型支持直接 return
+				// string 等复合类型仍需 ctx.return_xxx()，因为跨 C ABI 传递结构体不安全
+				if clean in ['int', 'i64', 'bool', 'f64'] {
+					r.return_type = clean
+				} else {
+					r.return_type = 'void'
+				}
+
 				return true
 			}
 		}
@@ -49,12 +61,25 @@ fn (f PhpFuncRepr) gen_c() []string {
     // 生成 ArgInfo
     r << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${f.name}, 0, 0, 0)'
     r << 'ZEND_END_ARG_INFO()'
-    // 生成包装器 — 将 (execute_data, return_value) 打包为 Context 传给 V 函数
-    r << 'extern void ${f.name}(vphp_context_internal ctx);'
-    r << 'PHP_FUNCTION(${f.name}) {'
-    r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
-    r << '    ${f.name}(ctx);'
-    r << '}'
+
+    tm := TypeMap.get_type(f.return_type)
+
+    if tm.v_type == 'void' {
+        // void 函数：用户通过 ctx.return_xxx() 手动设置返回值
+        r << 'extern void ${f.name}(vphp_context_internal ctx);'
+        r << 'PHP_FUNCTION(${f.name}) {'
+        r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+        r << '    ${f.name}(ctx);'
+        r << '}'
+    } else {
+        // 有返回值的函数：C 包装器接收 V 返回值并自动转换
+        r << 'extern ${tm.c_type} ${f.name}(vphp_context_internal ctx);'
+        r << 'PHP_FUNCTION(${f.name}) {'
+        r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+        r << '    ${tm.c_type} res = ${f.name}(ctx);'
+        r << '    ${tm.php_return}(res);'
+        r << '}'
+    }
     return r
 }
 

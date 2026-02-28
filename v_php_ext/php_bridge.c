@@ -82,10 +82,11 @@ PHP_FUNCTION(v_logic_main) {
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_add, 0, 0, 0)
 ZEND_END_ARG_INFO()
-extern void v_add(vphp_context_internal ctx);
+extern long long v_add(vphp_context_internal ctx);
 PHP_FUNCTION(v_add) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    v_add(ctx);
+    long long res = v_add(ctx);
+    RETURN_LONG(res);
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_greet, 0, 0, 0)
 ZEND_END_ARG_INFO()
