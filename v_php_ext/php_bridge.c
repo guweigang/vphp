@@ -65,6 +65,28 @@ static const zend_function_entry article_methods[] = {
     PHP_ME(Article, save, arginfo_article_save, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
+zend_class_entry *vphp__task_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_wait, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(VPhp__Task, spawn) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VPhpTask_spawn(vphp_context_internal ctx);
+    vphp_wrap_VPhpTask_spawn(ctx);
+}
+PHP_METHOD(VPhp__Task, wait) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VPhpTask_wait(vphp_context_internal ctx);
+    vphp_wrap_VPhpTask_wait(ctx);
+}
+static const zend_function_entry vphp__task_methods[] = {
+    PHP_ME(VPhp__Task, spawn, arginfo_vphp__task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(VPhp__Task, wait, arginfo_vphp__task_wait, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_FE_END
+};
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_reverse_string(vphp_context_internal ctx);
@@ -198,24 +220,6 @@ PHP_FUNCTION(v_call_php_closure) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_call_php_closure(ctx);
 }
-/* === VPhp\\Task built-in class === */
-extern void vphp_task_spawn(zend_execute_data *execute_data, zval *return_value);
-extern void vphp_task_wait(zend_execute_data *execute_data, zval *return_value);
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_spawn, 0, 0, 2)
-ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_wait, 0, 0, 1)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(VPhp_Task, spawn) { vphp_task_spawn(execute_data, return_value); }
-PHP_METHOD(VPhp_Task, wait)  { vphp_task_wait(execute_data, return_value); }
-
-static const zend_function_entry vphp_task_methods[] = {
-    PHP_ME(VPhp_Task, spawn, arginfo_vphp_task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(VPhp_Task, wait,  arginfo_vphp_task_wait,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_FE_END
-};
-
 static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
@@ -241,6 +245,8 @@ static const zend_function_entry vphptest_functions[] = {
 
 PHP_MINIT_FUNCTION(vphptest) {
     vphp_framework_init(module_number);
+    extern void vphp_ext_startup() __attribute__((weak));
+    if (vphp_ext_startup) vphp_ext_startup();
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
         article_ce = zend_register_internal_class(&ce);
@@ -249,16 +255,15 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_bool(article_ce, "is_top", sizeof("is_top")-1, 0, ZEND_ACC_PUBLIC);
     }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
+        vphp__task_ce = zend_register_internal_class(&ce);
+        vphp__task_ce->create_object = vphp_create_object_handler;
+    }
     REGISTER_STRING_CONSTANT("APP_VERSION", "1.0.0", CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("MAX_RETRY", 3, CONST_CS | CONST_PERSISTENT);
     REGISTER_DOUBLE_CONSTANT("PI_VALUE", 3.14159, CONST_CS | CONST_PERSISTENT);
     REGISTER_BOOL_CONSTANT("DEBUG_MODE", 0, CONST_CS | CONST_PERSISTENT);
-    {
-        zend_class_entry ce_task;
-        INIT_CLASS_ENTRY(ce_task, "VPhp\\Task", vphp_task_methods);
-        zend_register_internal_class(&ce_task);
-    }
-    vphp_task_auto_startup();
     return SUCCESS;
 }
 

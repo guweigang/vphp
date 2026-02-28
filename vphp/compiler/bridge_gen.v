@@ -36,22 +36,6 @@ fn (mut c Compiler) generate_c() ! {
 		res.write_string(line + '\n')
 	}
 
-	// 3. VPhp\Task 类 — 框架内置
-	c_ns := '\\\\' // V '\\\\' → 输出到 C 文件为 '\\' → C 运行时为单个 '\'
-	res.write_string('/* === VPhp' + c_ns + 'Task built-in class === */\n')
-	res.write_string('extern void vphp_task_spawn(zend_execute_data *execute_data, zval *return_value);\n')
-	res.write_string('extern void vphp_task_wait(zend_execute_data *execute_data, zval *return_value);\n\n')
-	res.write_string('ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_spawn, 0, 0, 2)\n')
-	res.write_string('ZEND_END_ARG_INFO()\n')
-	res.write_string('ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_wait, 0, 0, 1)\n')
-	res.write_string('ZEND_END_ARG_INFO()\n\n')
-	res.write_string('PHP_METHOD(VPhp_Task, spawn) { vphp_task_spawn(execute_data, return_value); }\n')
-	res.write_string('PHP_METHOD(VPhp_Task, wait)  { vphp_task_wait(execute_data, return_value); }\n\n')
-	res.write_string('static const zend_function_entry vphp_task_methods[] = {\n')
-	res.write_string('    PHP_ME(VPhp_Task, spawn, arginfo_vphp_task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)\n')
-	res.write_string('    PHP_ME(VPhp_Task, wait,  arginfo_vphp_task_wait,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)\n')
-	res.write_string('    PHP_FE_END\n')
-	res.write_string('};\n\n')
 
 	// 4. 函数表 (使用 ${c.ext_name}_functions) — 不再包含 v_spawn/v_wait
 	res.write_string('static const zend_function_entry ${c.ext_name}_functions[] = {\n')
@@ -66,16 +50,11 @@ fn (mut c Compiler) generate_c() ! {
 	// 5. MINIT
 	res.write_string('PHP_MINIT_FUNCTION(${c.ext_name}) {\n')
 	res.write_string('    vphp_framework_init(module_number);\n')
+	res.write_string('    extern void vphp_ext_startup() __attribute__((weak));\n')
+	res.write_string('    if (vphp_ext_startup) vphp_ext_startup();\n')
 	for line in c_gen.gen_minit_lines(mut c.elements) {
 		res.write_string(line + '\n')
 	}
-	// 注册 VPhp\Task 类
-	res.write_string('    {\n')
-	res.write_string('        zend_class_entry ce_task;\n')
-	res.write_string('        INIT_CLASS_ENTRY(ce_task, "VPhp' + c_ns + 'Task", vphp_task_methods);\n')
-	res.write_string('        zend_register_internal_class(&ce_task);\n')
-	res.write_string('    }\n')
-	res.write_string('    vphp_task_auto_startup();\n')
 	res.write_string('    return SUCCESS;\n}\n\n')
 
 	// 6. 模块入口

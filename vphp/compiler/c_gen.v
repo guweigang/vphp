@@ -14,6 +14,11 @@ fn render_tpl(tpl string, vars map[string]string) string {
 	return out
 }
 
+// 将 V 字符串中的 \ 转义为 C 字符串字面量的 \\
+fn c_string_escape(s string) string {
+	return s.replace('\\', '\\\\')
+}
+
 // C 代码模板：构造函数
 const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -49,6 +54,14 @@ const tpl_static_scalar = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     extern {{C_TYPE}} {{V_FUNC}}(vphp_context_internal ctx);
     {{C_TYPE}} res = {{V_FUNC}}(ctx);
     {{PHP_RETURN}}(res);
+}'
+
+// C 代码模板：静态方法 (void 返回)
+const tpl_static_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void {{V_FUNC}}(vphp_context_internal ctx);
+    {{V_FUNC}}(ctx);
 }'
 
 // C 代码模板：实例方法（带返回值）
@@ -89,7 +102,7 @@ pub fn (g CGenerator) gen_h_defs(mut elements []PhpRepr) []string {
 		if mut el is PhpFuncRepr {
 			res << 'PHP_FUNCTION(${el.name});'
 		} else if mut el is PhpClassRepr {
-			res << 'extern zend_class_entry *${el.name.to_lower()}_ce;'
+			res << 'extern zend_class_entry *${el.c_name().to_lower()}_ce;'
 		}
 	}
 	return res
@@ -115,11 +128,11 @@ pub fn (g CGenerator) gen_minit_lines(mut elements []PhpRepr) []string {
 				}
 			}
 		} else if mut el is PhpClassRepr {
-			lower_name := el.name.to_lower()
+			c_class := el.c_name()  // VPhp\Task -> VPhp_Task
+			lower_name := c_class.to_lower()
 			ce_ptr := '${lower_name}_ce'
-
 			res << '    {   zend_class_entry ce;'
-			res << '        INIT_CLASS_ENTRY(ce, "${el.name}", ${lower_name}_methods);'
+			res << '        INIT_CLASS_ENTRY(ce, "${el.php_name}", ${lower_name}_methods);'
 
 			if el.parent != "" {
 				res << '        ${lower_name}_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "${el.parent}", sizeof("${el.parent}")-1));'
@@ -214,7 +227,8 @@ fn (g CGenerator) gen_func_c(f &PhpFuncRepr) []string {
 
 fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 	mut c := []string{}
-	lower_name := r.name.to_lower()
+	c_class := r.c_name()        // C macro safe: VPhp_Task
+	lower_name := c_class.to_lower()
 
 	c << 'zend_class_entry *${lower_name}_ce = NULL;'
 
@@ -233,7 +247,7 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 		tm := TypeMap.get_type(m.return_type)
 
 		vars := {
-			'CLASS':       r.name
+			'CLASS':       c_class
 			'LOWER_CLASS': lower_name
 			'PHP_METHOD':  php_method_name
 			'V_FUNC':      v_c_func
@@ -248,8 +262,8 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 				c << render_tpl(tpl_static_factory, vars)
 			} else if !m.has_export && tm.c_type == 'void*' {
 				c << render_tpl(tpl_static_factory, vars)
-			} else if !m.has_export {
-				c << render_tpl(tpl_static_scalar, vars)
+			} else if tm.v_type == 'void' {
+				c << render_tpl(tpl_static_void, vars)
 			} else {
 				c << render_tpl(tpl_static_scalar, vars)
 			}
@@ -271,7 +285,7 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 	for m in r.methods {
 	  php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		flags := if m.is_static { 'ZEND_ACC_PUBLIC | ZEND_ACC_STATIC' } else { 'ZEND_ACC_PUBLIC' }
-		c << '    PHP_ME(${r.name}, ${php_method_name}, arginfo_${lower_name}_${m.name}, $flags)'
+		c << '    PHP_ME(${c_class}, ${php_method_name}, arginfo_${lower_name}_${m.name}, $flags)'
 	}
 	c << '    PHP_FE_END'
 	c << '};'

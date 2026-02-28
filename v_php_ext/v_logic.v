@@ -328,22 +328,6 @@ fn v_call_php_closure(ctx vphp.Context) {
 	ctx.return_string('Closure executed, PHP said: ' + res.to_string())
 }
 
-struct StockParams {
-    symbol string
-    count  int
-}
-
-struct AnalyzeTask {
-pub mut:
-    json_data string
-}
-
-fn (t AnalyzeTask) run() []f64 {
-    params := json.decode(StockParams, t.json_data) or { return []f64{} }
-    println('V: 正在处理 ${params.symbol}')
-    return [1.0, 2.0]
-}
-
 @[php_class]
 struct Article {
 pub mut:
@@ -382,4 +366,44 @@ pub fn (a &Article) is_top() bool {
 pub fn (a &Article) save() bool {
     println('Saving article: $a.title')
     return true
+}
+
+// === 新增：利用 @[php_class] 机制定义的 VPhp\Task ===
+struct StockParams {
+    symbol string
+    count  int
+}
+
+struct AnalyzeTask {
+pub mut:
+    json_data string
+}
+
+fn (t AnalyzeTask) run() []f64 {
+    params := json.decode(StockParams, t.json_data) or { return []f64{} }
+    println('V: 正在处理 ${params.symbol}')
+    return [1.0, 2.0]
+}
+
+@[php_class: 'VPhp\\Task']
+struct VPhpTask {}
+
+@[php_method]
+pub fn VPhpTask.spawn(ctx vphp.Context) {
+	vphp.task_spawn(ctx)
+}
+
+@[php_method]
+pub fn VPhpTask.wait(ctx vphp.Context) {
+	vphp.task_wait(ctx)
+}
+
+// 扩展初始化入口：在这里注册所有的异步任务
+@[export: 'vphp_ext_startup']
+fn vphp_ext_startup() {
+	vphp.ITask.register('AnalyzeTask', fn (json_data string) vphp.ITask {
+		return AnalyzeTask{
+			json_data: json_data
+		}
+	})
 }

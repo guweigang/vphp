@@ -325,6 +325,38 @@ pub fn (ctx Context) return_val[T](val T) {
 	}
 }
 
+pub fn (ctx Context) return_list_int(val []int) {
+	out := Val{ raw: ctx.ret }
+	out.array_init()
+	for v in val {
+		C.vphp_array_push_long(ctx.ret, i64(v))
+	}
+}
+
+pub fn (ctx Context) return_list_i64(val []i64) {
+	out := Val{ raw: ctx.ret }
+	out.array_init()
+	for v in val {
+		C.vphp_array_push_long(ctx.ret, v)
+	}
+}
+
+pub fn (ctx Context) return_list_f64(val []f64) {
+	out := Val{ raw: ctx.ret }
+	out.array_init()
+	for v in val {
+		C.vphp_array_push_double(ctx.ret, v)
+	}
+}
+
+pub fn (ctx Context) return_list_string(val []string) {
+	out := Val{ raw: ctx.ret }
+	out.array_init()
+	for v in val {
+		C.vphp_array_push_string(ctx.ret, v.str)
+	}
+}
+
 
 
 // ======== 泛型返回（低级 API，直接操作 retval） ========
