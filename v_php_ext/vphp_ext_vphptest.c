@@ -4478,14 +4478,14 @@ struct main__Post {
 	string author;
 };
 
-struct main__ExtGlobals {
-	int request_count;
-	string last_user;
-};
-
 struct main__AnalyzeTask {
 	string symbol;
 	int count;
+};
+
+struct main__ExtGlobals {
+	int request_count;
+	string last_user;
 };
 
 struct main__MotionReport {
@@ -9267,7 +9267,8 @@ void vphp__return_val_raw_T_string(zval* ret, string val);
 void vphp__return_val_raw_T_bool(zval* ret, bool val);
 void vphp__throw_exception(string msg, int code);
 void vphp__report_error(int level, string msg);
-VV_LOC void vphp__vphp_framework_init(int module_number);
+main__ExtGlobals* vphp__get_globals_T_main__ExtGlobals(void);
+void vphp__vphp_framework_init(int module_number);
 VV_EXP void vphp_framework_init(int module_number); // exported fn vphp.vphp_framework_init
 void vphp__init_framework(int module_number);
 VV_LOC vphp__TaskRegistry* vphp__get_registry(void);
@@ -10930,9 +10931,8 @@ VV_LOC void main__vphp_wrap_v_analyze_fitness_data(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_analyze_fitness_data(vphp__Context ctx); // exported fn main.vphp_wrap_v_analyze_fitness_data
 VV_LOC void main__vphp_wrap_v_get_alerts(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_get_alerts(vphp__Context ctx); // exported fn main.vphp_wrap_v_get_alerts
-main__ExtGlobals* main__get_globals(void);
 VV_LOC void main__vphp_ext_startup(void);
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_9119(vphp__Context ctx);
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_8974(vphp__Context ctx);
 VV_EXP void vphp_ext_startup(void); // exported fn main.vphp_ext_startup
 VV_LOC void main__main(void);
 VV_LOC void main__v_reverse_string(vphp__Context ctx);
@@ -17616,7 +17616,7 @@ void* anon_fn_aa8c1b3ce4c55ec6_203_mut_sync__waitgroup_anon_fn__2731_thread_wrap
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_9119(vphp__Context ctx) {
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_8974(vphp__Context ctx) {
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.symbol = vphp__Context_arg_T_string(ctx, 1),.count = vphp__Context_arg_T_int(ctx, 2),}, sizeof(main__AnalyzeTask))));
 }
 
@@ -17668,9 +17668,9 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	if (sidx == _vphp__ITask_main__AnalyzeTask_index) return 118;
+	if (sidx == _vphp__ITask_main__AnalyzeTask_index) return 117;
 	if (sidx == _vphp__ITask_voidptr_index) return 2;
-	return 117;
+	return 116;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
@@ -37018,7 +37018,10 @@ void vphp__throw_exception(string msg, int code) {
 void vphp__report_error(int level, string msg) {
 	vphp_error(level, ((char*)(msg.str)));
 }
-VV_LOC void vphp__vphp_framework_init(int module_number) {
+main__ExtGlobals* vphp__get_globals_T_main__ExtGlobals(void) {
+	return ((main__ExtGlobals*)(vphp_get_active_globals()));
+}
+void vphp__vphp_framework_init(int module_number) {
 	vphp__init_framework(module_number);
 }
 // export alias: vphp_framework_init -> vphp__vphp_framework_init
@@ -77480,11 +77483,7 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_h(vphp__compiler__Compiler
 		strings__Builder_write_string(&res, c->ext_name);
 		strings__Builder_write_string(&res, _S("_module_entry\n\n"));
 	}
-	{
-		strings__Builder_write_string(&res, _S("extern void* vphp_get_"));
-		strings__Builder_write_string(&res, c->ext_name);
-		strings__Builder_write_string(&res, _S("_globals();\n\n"));
-	}
+	strings__Builder_write_string(&res, _S("extern void* vphp_get_active_globals();\n\n"));
 	vphp__compiler__CGenerator c_gen = ((vphp__compiler__CGenerator){.ext_name = c->ext_name,});
 	Array_string _t1 = vphp__compiler__CGenerator_gen_h_defs(c_gen, &c->elements);
 	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
@@ -78383,7 +78382,7 @@ string vphp__compiler__ModuleBuilder_render_globals_getter(vphp__compiler__Modul
 	if ((b->globals.name).len == 0) {
 		return _S("");
 	}
-	return builtin__str_intp(5, _MOV((StrIntpData[]){{_S("\nvoid* vphp_get_"), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals() {\n#ifdef ZTS\n    return TSRMG("), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals_id, zend_"), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals *, 0);\n#else\n    return &"), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals;\n#endif\n}\n"), 0, { .d_c = 0 }}}));
+	return builtin__str_intp(4, _MOV((StrIntpData[]){{_S("\nvoid* vphp_get_active_globals() {\n#ifdef ZTS\n    return TSRMG("), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals_id, zend_"), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals *, 0);\n#else\n    return &"), 0xfe10, {.d_s = b->ext_name}}, {_S("_globals;\n#endif\n}\n"), 0, { .d_c = 0 }}}));
 }
 string vphp__compiler__ModuleBuilder_render_declarations(vphp__compiler__ModuleBuilder* b) {
 	return _S("\ntypedef struct { void* ex; void* ret; } vphp_context_internal;\ntypedef struct { void* str; int len; int is_lit; } v_string;\n\nextern void vphp_framework_init(int module_number);\n");
@@ -78446,26 +78445,6 @@ VV_LOC string vphp__compiler__VGenerator_generate(vphp__compiler__VGenerator g, 
 			builtin__array_push((array*)&task_registrations, _MOV((string[]){ vphp__compiler__VGenerator_gen_task_registration(g, (el->_vphp__compiler__PhpTaskRepr)) }));
 		} else if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpGlobalsRepr_index) {
 		}
-	}
-	if ((g.globals_repr.name).len != 0) {
-		{
-			strings__Builder_write_string(&out, _S("fn C.vphp_get_"));
-			strings__Builder_write_string(&out, g.ext_name);
-			strings__Builder_write_string(&out, _S("_globals() voidptr\n\n"));
-		}
-		{
-			strings__Builder_write_string(&out, _S("pub fn get_globals() &"));
-			strings__Builder_write_string(&out, g.globals_repr.name);
-			strings__Builder_write_string(&out, _S(" {\n"));
-		}
-		{
-			strings__Builder_write_string(&out, _S("    return unsafe { &"));
-			strings__Builder_write_string(&out, g.globals_repr.name);
-			strings__Builder_write_string(&out, _S("(C.vphp_get_"));
-			strings__Builder_write_string(&out, g.ext_name);
-			strings__Builder_write_string(&out, _S("_globals()) }\n"));
-		}
-		strings__Builder_write_string(&out, _S("}\n\n"));
 	}
 	if (task_registrations.len > 0) {
 		strings__Builder_write_string(&out, _S("@[export: 'vphp_ext_startup']\n"));
@@ -79050,11 +79029,8 @@ VV_LOC void main__vphp_wrap_v_get_alerts(vphp__Context ctx) {
 void vphp_wrap_v_get_alerts(vphp__Context ctx) {
 	return main__vphp_wrap_v_get_alerts(ctx);
 }
-main__ExtGlobals* main__get_globals(void) {
-	return ((main__ExtGlobals*)(vphp_get_vphptest_globals()));
-}
 VV_LOC void main__vphp_ext_startup(void) {
-	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_9119);
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_8974);
 }
 // export alias: vphp_ext_startup -> main__vphp_ext_startup
 void vphp_ext_startup(void) {
@@ -79386,7 +79362,7 @@ void v_call_php_closure(vphp__Context ctx) {
 	return main__v_call_php_closure(ctx);
 }
 VV_LOC void main__v_test_globals(vphp__Context ctx) {
-	main__ExtGlobals* g = main__get_globals();
+	main__ExtGlobals* g = vphp__get_globals_T_main__ExtGlobals();
 	g->request_count++;
 	g->last_user = _S("VPHP_USER");
 	vphp__Context_return_map(ctx, builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 2, sizeof(string), sizeof(string),

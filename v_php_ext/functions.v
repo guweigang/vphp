@@ -151,7 +151,7 @@ fn v_call_php_closure(ctx vphp.Context) {
 }
 @[export: 'v_test_globals']
 fn v_test_globals(ctx vphp.Context) {
-    mut g := get_globals()
+    mut g := vphp.get_globals[ExtGlobals]()
     g.request_count++
     g.last_user = 'VPHP_USER'
     

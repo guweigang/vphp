@@ -27,15 +27,8 @@ fn (g VGenerator) generate(mut elements []PhpRepr) string {
         }
     }
 
-    // A. 模块全局变量定义
-    if g.globals_repr.name != '' {
-        out.write_string("fn C.vphp_get_${g.ext_name}_globals() voidptr\n\n")
-        out.write_string("pub fn get_globals() &${g.globals_repr.name} {\n")
-        out.write_string("    return unsafe { &${g.globals_repr.name}(C.vphp_get_${g.ext_name}_globals()) }\n")
-        out.write_string("}\n\n")
-    }
+    // A. 如果捕获到任何 Task，自动生成全局初始化注册函数
 
-    // B. 如果捕获到任何 Task，自动生成全局初始化注册函数
     if task_registrations.len > 0 {
         out.write_string("@[export: 'vphp_ext_startup']\n")
         out.write_string("fn vphp_ext_startup() {\n")

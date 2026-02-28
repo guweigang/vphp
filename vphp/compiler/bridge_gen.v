@@ -89,7 +89,7 @@ fn (mut c Compiler) generate_h() ! {
 	// 3. 写入扩展模块入口声明
 	res.write_string('extern zend_module_entry ${c.ext_name}_module_entry;\n')
 	res.write_string('#define phpext_${c.ext_name}_ptr &${c.ext_name}_module_entry\n\n')
-	res.write_string('extern void* vphp_get_${c.ext_name}_globals();\n\n')
+	res.write_string('extern void* vphp_get_active_globals();\n\n')
 
 	c_gen := CGenerator{ ext_name: c.ext_name }
 	for line in c_gen.gen_h_defs(mut c.elements) {

@@ -305,12 +305,6 @@ fn vphp_wrap_v_get_alerts(ctx vphp.Context) {
     v_get_alerts(arg_0)
 }
 
-fn C.vphp_get_vphptest_globals() voidptr
-
-pub fn get_globals() &ExtGlobals {
-    return unsafe { &ExtGlobals(C.vphp_get_vphptest_globals()) }
-}
-
 @[export: 'vphp_ext_startup']
 fn vphp_ext_startup() {
     vphp.ITask.register('AnalyzeTask', fn (ctx vphp.Context) vphp.ITask {

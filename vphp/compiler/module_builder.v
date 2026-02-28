@@ -165,7 +165,7 @@ ZEND_GET_MODULE(${b.ext_name})
 pub fn (b &ModuleBuilder) render_globals_getter() string {
     if b.globals.name == '' { return '' }
     return '
-void* vphp_get_${b.ext_name}_globals() {
+void* vphp_get_active_globals() {
 #ifdef ZTS
     return TSRMG(${b.ext_name}_globals_id, zend_${b.ext_name}_globals *, 0);
 #else

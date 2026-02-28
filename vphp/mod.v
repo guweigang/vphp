@@ -28,14 +28,26 @@ pub enum PHPType {
     reference = zend.is_reference
 }
 
+// ==========================================
+// 1. Zend Globals 核心访问
+// ==========================================
+
+// 底层 C 实现，由编译器在各个扩展中生成
+fn C.vphp_get_active_globals() voidptr
+
+// 泛型入口：mut g := vphp.get_globals[ExtGlobals]()
+pub fn get_globals[T]() &T {
+    return unsafe { &T(C.vphp_get_active_globals()) }
+}
 
 
-@[export: 'vphp_framework_init']
-fn vphp_framework_init(module_number int) {
-    // 自动初始化资源系统
-    init_framework(module_number)
-    // 这里的并发任务注册逻辑也可以放在这里
-    // println('VPHP Framework initialized.')
+@[export: 'vphp_framework_init']// 框架核心入口
+pub fn vphp_framework_init(module_number int) {
+	// ... 目前占位
+  // 自动初始化资源系统
+  init_framework(module_number)
+  // 这里的并发任务注册逻辑也可以放在这里
+  // println('VPHP Framework initialized.')
 }
 
 pub fn init_framework(module_number int) {

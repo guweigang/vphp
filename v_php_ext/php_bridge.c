@@ -390,7 +390,7 @@ PHP_MSHUTDOWN_FUNCTION(vphptest) {
     return SUCCESS;
 }
 
-void* vphp_get_vphptest_globals() {
+void* vphp_get_active_globals() {
 #ifdef ZTS
     return TSRMG(vphptest_globals_id, zend_vphptest_globals *, 0);
 #else
