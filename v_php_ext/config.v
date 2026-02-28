@@ -12,6 +12,13 @@ const ext_config = vphp.ExtensionConfig{
     }
 }
 
+@[php_globals]
+pub struct ExtGlobals {
+pub mut:
+    request_count int
+    last_user     string
+}
+
 @[php_const]
 const app_version = '1.0.0'
 

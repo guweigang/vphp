@@ -251,6 +251,13 @@ PHP_FUNCTION(v_call_php_closure) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_call_php_closure(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_test_globals, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_test_globals(vphp_context_internal ctx);
+PHP_FUNCTION(v_test_globals) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_test_globals(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_reverse_string(vphp_context_internal ctx);
@@ -300,6 +307,17 @@ PHP_FUNCTION(v_get_alerts) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_get_alerts(ctx);
 }
+ZEND_BEGIN_MODULE_GLOBALS(vphptest)
+    zend_long request_count;
+    v_string last_user;
+ZEND_END_MODULE_GLOBALS(vphptest)
+
+ZEND_DECLARE_MODULE_GLOBALS(vphptest)
+#define VPHP_G(v) ZEND_MODULE_GLOBALS_ACCESSOR(vphptest, v)
+static void php_vphptest_init_globals(zend_vphptest_globals *globals) {
+    globals->request_count = 0;
+    globals->last_user = (v_string){0};
+}
 PHP_INI_BEGIN()
     PHP_INI_ENTRY("vphptest.enable_cache", "1", PHP_INI_ALL, NULL)
     PHP_INI_ENTRY("vphptest.max_threads", "4", PHP_INI_ALL, NULL)
@@ -317,6 +335,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_analyze_user_object, arginfo_v_analyze_user_object)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
+    PHP_FE(v_test_globals, arginfo_v_test_globals)
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
     PHP_FE(v_new_coach, arginfo_v_new_coach)
@@ -331,14 +350,14 @@ PHP_MINIT_FUNCTION(vphptest) {
     extern void vphp_ext_startup() __attribute__((weak));
     if (vphp_ext_startup) vphp_ext_startup();
     REGISTER_INI_ENTRIES();
-        {   zend_class_entry ce;
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Post", post_methods);
         post_ce = zend_register_internal_class(&ce);
         post_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(post_ce, "post_id", sizeof("post_id")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(post_ce, "author", sizeof("author")-1, "", ZEND_ACC_PUBLIC);
     }
-        {   zend_class_entry ce;
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
         article_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         article_ce->create_object = vphp_create_object_handler;
@@ -349,13 +368,13 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_string(article_ce, "content", sizeof("content")-1, "", ZEND_ACC_PROTECTED);
         zend_declare_property_long(article_ce, "total_count", sizeof("total_count")-1, 0, ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
     }
-        {   zend_class_entry ce;
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Story", story_methods);
         story_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         story_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(story_ce, "chapter_count", sizeof("chapter_count")-1, 0, ZEND_ACC_PUBLIC);
     }
-        {   zend_class_entry ce;
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
         vphp__task_ce = zend_register_internal_class(&ce);
         vphp__task_ce->create_object = vphp_create_object_handler;
@@ -370,10 +389,22 @@ PHP_MSHUTDOWN_FUNCTION(vphptest) {
     UNREGISTER_INI_ENTRIES();
     return SUCCESS;
 }
+
+void* vphp_get_vphptest_globals() {
+#ifdef ZTS
+    return TSRMG(vphptest_globals_id, zend_vphptest_globals *, 0);
+#else
+    return &vphptest_globals;
+#endif
+}
 zend_module_entry vphptest_module_entry = {
     STANDARD_MODULE_HEADER, "vphptest", vphptest_functions,
     PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, NULL, "1.0.0",
-    STANDARD_MODULE_PROPERTIES
+    PHP_MODULE_GLOBALS(vphptest),
+    (void (*)(void*)) php_vphptest_init_globals,
+    NULL,
+    NULL,
+    STANDARD_MODULE_PROPERTIES_EX
 };
 
 #ifdef COMPILE_DL_VPHPTEST

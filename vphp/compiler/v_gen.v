@@ -5,11 +5,13 @@ import strings
 pub struct VGenerator {
 pub:
     ext_name string
+    globals_repr PhpGlobalsRepr
 }
 
 fn (g VGenerator) generate(mut elements []PhpRepr) string {
     mut out := strings.new_builder(2048)
     out.write_string('module main\n\nimport vphp\n\n')
+    out.write_string('#include "php_bridge.h"\n\n')
     
     mut task_registrations := []string{}
     // 生成每个 repr 的 V 胶水
@@ -20,10 +22,20 @@ fn (g VGenerator) generate(mut elements []PhpRepr) string {
             out.write_string(g.gen_class_glue(el).join('\n') + '\n\n')
         } else if mut el is PhpTaskRepr {
             task_registrations << g.gen_task_registration(el)
+        } else if mut el is PhpGlobalsRepr {
+            // Already handled by standalone logic above for now, but good to mark as handled
         }
     }
 
-    // 如果捕获到任何 Task，自动生成全局初始化注册函数
+    // A. 模块全局变量定义
+    if g.globals_repr.name != '' {
+        out.write_string("fn C.vphp_get_${g.ext_name}_globals() voidptr\n\n")
+        out.write_string("pub fn get_globals() &${g.globals_repr.name} {\n")
+        out.write_string("    return unsafe { &${g.globals_repr.name}(C.vphp_get_${g.ext_name}_globals()) }\n")
+        out.write_string("}\n\n")
+    }
+
+    // B. 如果捕获到任何 Task，自动生成全局初始化注册函数
     if task_registrations.len > 0 {
         out.write_string("@[export: 'vphp_ext_startup']\n")
         out.write_string("fn vphp_ext_startup() {\n")

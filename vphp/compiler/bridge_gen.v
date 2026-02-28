@@ -26,6 +26,8 @@ fn (mut c Compiler) generate_c() ! {
 	for k, v in c.ini_entries {
 		mod_builder.add_ini_entry(k, v)
 	}
+	mod_builder.globals = c.globals_repr
+
 
 	res.write_string(mod_builder.render_declarations())
 
@@ -47,10 +49,13 @@ fn (mut c Compiler) generate_c() ! {
 	}
 
 	// 3. 渲染各个 C 块
+	res.write_string(mod_builder.render_globals_struct())
+	res.write_string(mod_builder.render_ginit())
 	res.write_string(mod_builder.render_ini_entries())
 	res.write_string(mod_builder.render_functions_table())
 	res.write_string(mod_builder.render_minit())
 	res.write_string(mod_builder.render_mshutdown())
+	res.write_string(mod_builder.render_globals_getter())
 	res.write_string(mod_builder.render_module_entry())
 	res.write_string(mod_builder.render_get_module())
 
@@ -61,7 +66,7 @@ fn (mut c Compiler) generate_c() ! {
 // 3. 生成 V 胶水代码 (_task_glue.v)
 // ==========================================
 fn (mut c Compiler) generate_v_glue() ! {
-    v_gen := VGenerator{ ext_name: c.ext_name }
+    v_gen := VGenerator{ ext_name: c.ext_name, globals_repr: c.globals_repr }
     v_code := v_gen.generate(mut c.elements)
     os.write_file('bridge.v', v_code)!
 }
@@ -84,6 +89,7 @@ fn (mut c Compiler) generate_h() ! {
 	// 3. 写入扩展模块入口声明
 	res.write_string('extern zend_module_entry ${c.ext_name}_module_entry;\n')
 	res.write_string('#define phpext_${c.ext_name}_ptr &${c.ext_name}_module_entry\n\n')
+	res.write_string('extern void* vphp_get_${c.ext_name}_globals();\n\n')
 
 	c_gen := CGenerator{ ext_name: c.ext_name }
 	for line in c_gen.gen_h_defs(mut c.elements) {

@@ -16,9 +16,10 @@ pub struct Compiler {
 pub:
 	target_files []string
 pub mut:
-	ext_name    string
-	ini_entries map[string]string
-	elements    []PhpRepr
+	ext_name     string
+	ini_entries  map[string]string
+	globals_repr PhpGlobalsRepr
+	elements     []PhpRepr
 mut:
 	table       &ast.Table
 	pref_set    &pref.Preferences
@@ -55,16 +56,24 @@ pub fn (mut c Compiler) compile() !string {
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
 
 	// --- 第一阶段：扫描所有 Struct 定义 ---
-		for stmt in all_stmts {
-			if stmt is ast.StructDecl {
-				mut cls := new_class_repr()
-				if cls.parse(stmt, c.table) {
-					// 记录该类在 elements 数组中的位置
-					c.class_index[cls.name] = c.elements.len
-					c.elements << cls
+	for stmt in all_stmts {
+		if stmt is ast.StructDecl {
+			// A. 探测是否是 Zend Globals 定义
+			if c.globals_repr.name == '' {
+				if c.globals_repr.parse(stmt, c.table) {
+					continue
 				}
 			}
+
+			// B. 或者是普通类定义
+			mut cls := new_class_repr()
+			if cls.parse(stmt, c.table) {
+				// 记录该类在 elements 数组中的位置
+				c.class_index[cls.name] = c.elements.len
+				c.elements << cls
+			}
 		}
+	}
 
 	// --- 第二阶段：扫描所有 Fn 定义 ---
 	for stmt in all_stmts {

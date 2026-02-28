@@ -18,6 +18,7 @@ pub mut:
 	functions     []string // 全局函数名列表
 	minit_content []string // 注入到 MINIT 中的代码行
 	ini_entries   []IniEntry
+	globals       PhpGlobalsRepr
 }
 
 pub fn new_module_builder(ext_name string) &ModuleBuilder {
@@ -63,6 +64,46 @@ pub fn (b &ModuleBuilder) render_ini_entries() string {
 	return res.str()
 }
 
+// 渲染 Zend Globals 结构体
+pub fn (b &ModuleBuilder) render_globals_struct() string {
+	if b.globals.name == '' { return '' }
+	mut res := strings.new_builder(256)
+	res.write_string('ZEND_BEGIN_MODULE_GLOBALS(${b.ext_name})\n')
+	for field in b.globals.fields {
+		c_type := match field.v_type {
+			'int' { 'zend_long' }
+			'string' { 'v_string' }
+			'i64' { 'zend_long' }
+			'f64' { 'double' }
+			'bool' { 'zend_bool' }
+			else { 'void*' }
+		}
+		res.write_string('    ${c_type} ${field.name};\n')
+	}
+	res.write_string('ZEND_END_MODULE_GLOBALS(${b.ext_name})\n\n')
+	
+	res.write_string('ZEND_DECLARE_MODULE_GLOBALS(${b.ext_name})\n')
+	res.write_string('#define VPHP_G(v) ZEND_MODULE_GLOBALS_ACCESSOR(${b.ext_name}, v)\n')
+	return res.str()
+}
+
+// 渲染 GINIT (Globals Initialization)
+pub fn (b &ModuleBuilder) render_ginit() string {
+	if b.globals.name == '' { return '' }
+	mut res := strings.new_builder(256)
+	res.write_string('static void php_${b.ext_name}_init_globals(zend_${b.ext_name}_globals *globals) {\n')
+	for field in b.globals.fields {
+		// 默认初始化为 0 或空
+		if field.v_type == 'string' {
+			res.write_string('    globals->${field.name} = (v_string){0};\n')
+		} else {
+			res.write_string('    globals->${field.name} = 0;\n')
+		}
+	}
+	res.write_string('}\n')
+	return res.str()
+}
+
 // 渲染 MINIT 函数
 pub fn (b &ModuleBuilder) render_minit() string {
 	mut res := strings.new_builder(1024)
@@ -97,11 +138,16 @@ pub fn (b &ModuleBuilder) render_mshutdown() string {
 pub fn (b &ModuleBuilder) render_module_entry() string {
 	mut res := strings.new_builder(512)
 	mshutdown := if b.ini_entries.len > 0 { 'PHP_MSHUTDOWN(${b.ext_name})' } else { 'NULL' }
+	ginit := if b.globals.name != '' { 'php_${b.ext_name}_init_globals' } else { 'NULL' }
 	
 	res.write_string('zend_module_entry ${b.ext_name}_module_entry = {\n')
 	res.write_string('    STANDARD_MODULE_HEADER, "${b.ext_name}", ${b.ext_name}_functions,\n')
 	res.write_string('    PHP_MINIT(${b.ext_name}), ${mshutdown}, NULL, NULL, NULL, "${b.version}",\n')
-	res.write_string('    STANDARD_MODULE_PROPERTIES\n};\n')
+	res.write_string('    PHP_MODULE_GLOBALS(${b.ext_name}),\n')
+	res.write_string('    (void (*)(void*)) ${ginit},\n')
+	res.write_string('    NULL,\n') // GSHUTDOWN
+	res.write_string('    NULL,\n') // post_deactivate
+	res.write_string('    STANDARD_MODULE_PROPERTIES_EX\n};\n')
 	return res.str()
 }
 
@@ -113,6 +159,20 @@ ZEND_GET_MODULE(${b.ext_name})
 #endif
 '
 	return res
+}
+
+// 渲染供 V 调用的全局变量获取器
+pub fn (b &ModuleBuilder) render_globals_getter() string {
+    if b.globals.name == '' { return '' }
+    return '
+void* vphp_get_${b.ext_name}_globals() {
+#ifdef ZTS
+    return TSRMG(${b.ext_name}_globals_id, zend_${b.ext_name}_globals *, 0);
+#else
+    return &${b.ext_name}_globals;
+#endif
+}
+'
 }
 
 // 渲染所需的显示声明，防止编译器警告

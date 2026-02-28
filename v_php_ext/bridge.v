@@ -2,6 +2,8 @@ module main
 
 import vphp
 
+#include "php_bridge.h"
+
 @[export: 'Post_new_raw']
 pub fn post_new_raw() voidptr {
     return vphp.generic_new_raw[Post]()
@@ -255,6 +257,12 @@ fn vphp_wrap_v_call_php_closure(ctx vphp.Context) {
     v_call_php_closure(arg_0)
 }
 
+@[export: 'vphp_wrap_v_test_globals']
+fn vphp_wrap_v_test_globals(ctx vphp.Context) {
+    arg_0 := ctx
+    v_test_globals(arg_0)
+}
+
 @[export: 'vphp_wrap_v_reverse_string']
 fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
     arg_0 := ctx
@@ -295,6 +303,12 @@ fn vphp_wrap_v_analyze_fitness_data(ctx vphp.Context) {
 fn vphp_wrap_v_get_alerts(ctx vphp.Context) {
     arg_0 := ctx
     v_get_alerts(arg_0)
+}
+
+fn C.vphp_get_vphptest_globals() voidptr
+
+pub fn get_globals() &ExtGlobals {
+    return unsafe { &ExtGlobals(C.vphp_get_vphptest_globals()) }
 }
 
 @[export: 'vphp_ext_startup']

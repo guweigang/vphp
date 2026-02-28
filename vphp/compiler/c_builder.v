@@ -87,7 +87,7 @@ pub fn (b &ClassBuilder) render_minit() string {
 	lower_name := b.c_name.to_lower()
 	ce_ptr := '${lower_name}_ce'
 
-	res << '    {   zend_class_entry ce;'
+	res << '{   zend_class_entry ce;'
 	res << '        INIT_CLASS_ENTRY(ce, "${b.php_name}", ${lower_name}_methods);'
 
 	// 1. 继承或普通注册

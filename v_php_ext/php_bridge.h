@@ -7,6 +7,8 @@
 extern zend_module_entry vphptest_module_entry;
 #define phpext_vphptest_ptr &vphptest_module_entry
 
+extern void* vphp_get_vphptest_globals();
+
 extern zend_class_entry *post_ce;
 extern zend_class_entry *article_ce;
 extern zend_class_entry *story_ce;
@@ -23,6 +25,7 @@ PHP_FUNCTION(v_complex_test);
 PHP_FUNCTION(v_analyze_user_object);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
+PHP_FUNCTION(v_test_globals);
 PHP_FUNCTION(v_reverse_string);
 PHP_FUNCTION(v_logic_main);
 PHP_FUNCTION(v_new_coach);

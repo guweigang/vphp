@@ -149,3 +149,14 @@ fn v_call_php_closure(ctx vphp.Context) {
 
 	ctx.return_string('Closure executed, PHP said: ' + res.to_string())
 }
+@[export: 'v_test_globals']
+fn v_test_globals(ctx vphp.Context) {
+    mut g := get_globals()
+    g.request_count++
+    g.last_user = 'VPHP_USER'
+    
+    ctx.return_map({
+        'count': g.request_count.str()
+        'user': g.last_user
+    })
+}
