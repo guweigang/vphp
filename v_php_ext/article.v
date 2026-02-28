@@ -1,0 +1,54 @@
+module main
+
+@[php_class]
+struct Article {
+pub mut:
+	id            int    // public
+	title         string // public
+	is_top        bool   // public
+	max_title_len int    // [static] public static
+
+mut:
+	content       string // protected
+	total_count   int    // [static] protected static
+}
+
+@[php_method]
+pub fn (mut a Article) init(title string, id int) &Article {
+    a.title = title
+    a.id = id
+    a.is_top = true
+    a.content = 'Default Content'
+    println('V Article initialized with title: ${a.title}')
+    return a
+}
+
+// 动态方法（受保护）：前面没有 pub 关键字，将被自动映射为 PHP 的 protected
+@[php_method]
+fn (a &Article) internal_format() string {
+    return '[Protected] ' + a.title
+}
+
+// 静态公开方法：V中没有接收者
+@[php_method]
+pub fn Article.create(title string) &Article {
+    mut a := &Article{
+        id: 1024
+        title: title
+        is_top: true
+        content: 'Created via static'
+    }
+    return a
+}
+
+@[php_method]
+pub fn (a &Article) get_formatted_title() string {
+    // 内部类方法可以调用内部的其它方法或访问属性
+    return a.internal_format()
+}
+
+@[php_method]
+pub fn (a &Article) save() bool {
+    println('Saving article: $a.title')
+    return true
+}

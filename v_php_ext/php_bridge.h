@@ -19,13 +19,13 @@ PHP_FUNCTION(v_test_map);
 PHP_FUNCTION(v_get_config);
 PHP_FUNCTION(v_get_user);
 PHP_FUNCTION(v_call_back);
+PHP_FUNCTION(v_complex_test);
+PHP_FUNCTION(v_analyze_user_object);
+PHP_FUNCTION(v_trigger_user_action);
+PHP_FUNCTION(v_call_php_closure);
 PHP_FUNCTION(v_new_coach);
 PHP_FUNCTION(v_new_db);
 PHP_FUNCTION(v_check_res);
 PHP_FUNCTION(v_analyze_fitness_data);
 PHP_FUNCTION(v_get_alerts);
-PHP_FUNCTION(v_complex_test);
-PHP_FUNCTION(v_analyze_user_object);
-PHP_FUNCTION(v_trigger_user_action);
-PHP_FUNCTION(v_call_php_closure);
 #endif

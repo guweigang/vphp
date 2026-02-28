@@ -166,6 +166,30 @@ fn vphp_wrap_v_call_back(ctx vphp.Context) {
     v_call_back(arg_0)
 }
 
+@[export: 'vphp_wrap_v_complex_test']
+fn vphp_wrap_v_complex_test(ctx vphp.Context) {
+    arg_0 := ctx
+    v_complex_test(arg_0)
+}
+
+@[export: 'vphp_wrap_v_analyze_user_object']
+fn vphp_wrap_v_analyze_user_object(ctx vphp.Context) {
+    arg_0 := ctx
+    v_analyze_user_object(arg_0)
+}
+
+@[export: 'vphp_wrap_v_trigger_user_action']
+fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
+    arg_0 := ctx
+    v_trigger_user_action(arg_0)
+}
+
+@[export: 'vphp_wrap_v_call_php_closure']
+fn vphp_wrap_v_call_php_closure(ctx vphp.Context) {
+    arg_0 := ctx
+    v_call_php_closure(arg_0)
+}
+
 @[export: 'vphp_wrap_v_new_coach']
 fn vphp_wrap_v_new_coach(ctx vphp.Context) {
     arg_0 := ctx
@@ -194,30 +218,6 @@ fn vphp_wrap_v_analyze_fitness_data(ctx vphp.Context) {
 fn vphp_wrap_v_get_alerts(ctx vphp.Context) {
     arg_0 := ctx
     v_get_alerts(arg_0)
-}
-
-@[export: 'vphp_wrap_v_complex_test']
-fn vphp_wrap_v_complex_test(ctx vphp.Context) {
-    arg_0 := ctx
-    v_complex_test(arg_0)
-}
-
-@[export: 'vphp_wrap_v_analyze_user_object']
-fn vphp_wrap_v_analyze_user_object(ctx vphp.Context) {
-    arg_0 := ctx
-    v_analyze_user_object(arg_0)
-}
-
-@[export: 'vphp_wrap_v_trigger_user_action']
-fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
-    arg_0 := ctx
-    v_trigger_user_action(arg_0)
-}
-
-@[export: 'vphp_wrap_v_call_php_closure']
-fn vphp_wrap_v_call_php_closure(ctx vphp.Context) {
-    arg_0 := ctx
-    v_call_php_closure(arg_0)
 }
 
 @[export: 'vphp_ext_startup']

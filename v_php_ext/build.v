@@ -2,13 +2,31 @@ import os
 import vphp.compiler // 现在这行可以被识别了
 
 fn main() {
-    target_file := 'v_logic.v'
+    mut target_files := []string{}
+    
+    // 如果命令行带了参数，优先用命令行指定的，否则扫描当前目录
+    if os.args.len > 1 && os.args[1].ends_with('.v') {
+        target_files = os.args[1..].clone()
+    } else {
+        files := os.ls('.') or { []string{} } // os 也是可以直接 ls
+        for f in files {
+            // bridge.v 是接下来生成给 V 编译器内联的生成物，build.v 是自身，排除掉。
+            // 同样排除通常作为包声明的 mod.v 以及所有的单元测试文件
+            if f.ends_with('.v') && f != 'build.v' && f != 'bridge.v' && f != 'mod.v' && !f.ends_with('_test.v') {
+                target_files << f
+            }
+        }
+    }
 
-    println('🛠️  1. 启动 VPHP Compiler 流程...')
+    if target_files.len == 0 {
+        eprintln('❌ 未找到任何 V 源文件进行编译！')
+        return
+    }
+    
+    println('🛠️  1. 启动 VPHP Compiler 流程... 解析文件: $target_files')
 
     // 实例化并运行编译器
-    // 注意：new 内部会自动从 v_logic.v 的 ext_config 中解析 ext_name
-    mut vphp_c := compiler.new(target_file)
+    mut vphp_c := compiler.new(target_files)
 
     vphp_c.compile() or {
         eprintln('❌ 编译阶段失败: $err')
