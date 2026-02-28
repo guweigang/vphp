@@ -244,26 +244,6 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_bool(article_ce, "is_top", sizeof("is_top")-1, 0, ZEND_ACC_PUBLIC);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     vphp_task_auto_startup();
     return SUCCESS;
 }

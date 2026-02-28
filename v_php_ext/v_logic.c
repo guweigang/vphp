@@ -76032,7 +76032,10 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	strings__Builder_write_string(&res, _S("    vphp_framework_init(module_number);\n"));
 	for (int _t5 = 0; _t5 < c->elements.len; ++_t5) {
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t5;
-		strings__Builder_write_string(&res, builtin__string__plus(Array_string_join(vphp__compiler__PhpRepr_name_table[el->_typ]._method_gen_minit(el->_object), _S("\n")), _S("\n")));
+		Array_string minit_lines = vphp__compiler__PhpRepr_name_table[el->_typ]._method_gen_minit(el->_object);
+		if (minit_lines.len > 0) {
+			strings__Builder_write_string(&res, builtin__string__plus(Array_string_join(minit_lines, _S("\n")), _S("\n")));
+		}
 	}
 	strings__Builder_write_string(&res, _S("    vphp_task_auto_startup();\n"));
 	strings__Builder_write_string(&res, _S("    return SUCCESS;\n}\n\n"));

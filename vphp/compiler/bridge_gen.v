@@ -60,7 +60,10 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('PHP_MINIT_FUNCTION(${c.ext_name}) {\n')
 	res.write_string('    vphp_framework_init(module_number);\n')
 	for mut el in c.elements {
-		res.write_string(el.gen_minit().join('\n') + '\n')
+		minit_lines := el.gen_minit()
+		if minit_lines.len > 0 {
+			res.write_string(minit_lines.join('\n') + '\n')
+		}
 	}
 	res.write_string('    vphp_task_auto_startup();\n')
 	res.write_string('    return SUCCESS;\n}\n\n')
