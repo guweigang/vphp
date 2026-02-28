@@ -7,10 +7,28 @@ extern void vphp_framework_init(int module_number);
 extern void vphp_task_auto_startup();
 
 zend_class_entry *article_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_init, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_create, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_save, 0, 0, 0)
 ZEND_END_ARG_INFO()
+    PHP_METHOD(Article, __construct) {
+        typedef struct { void* ex; void* ret; } vphp_context_internal;
+        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+        extern void Article_init(void* v_ptr, vphp_context_internal ctx);
+        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+        extern void* Article_new_raw();
+        wrapper->v_ptr = Article_new_raw();
+        extern void Article_get_prop(void*, const char*, int, zval*);
+        extern void Article_set_prop(void*, const char*, int, zval*);
+        extern void Article_sync_props(void*, zval*);
+        wrapper->prop_handler = Article_get_prop;
+        wrapper->write_handler = Article_set_prop;
+        wrapper->sync_handler = Article_sync_props;
+        extern void Article_init(void* v_ptr, vphp_context_internal ctx);
+        Article_init(wrapper->v_ptr, ctx);
+    }
     PHP_METHOD(Article, create) {
         typedef struct { void* ex; void* ret; } vphp_context_internal;
         vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -37,6 +55,7 @@ ZEND_END_ARG_INFO()
         RETURN_BOOL(res);
     }
 static const zend_function_entry article_methods[] = {
+    PHP_ME(Article, __construct, arginfo_article_init, ZEND_ACC_PUBLIC)
     PHP_ME(Article, create, arginfo_article_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(Article, save, arginfo_article_save, ZEND_ACC_PUBLIC)
     PHP_FE_END

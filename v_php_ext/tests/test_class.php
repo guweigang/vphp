@@ -14,3 +14,8 @@ echo "\nStep 5: Modifying property from PHP...\n";
 $article->title = "Updated in PHP";
 $article->is_top = false;
 $article->save(); // 观察 V 侧打印的结果
+
+echo "\nStep 6: new class from PHP...\n";
+$b = new Article("Weigang", 1234);
+var_dump($b);
+$b->save();

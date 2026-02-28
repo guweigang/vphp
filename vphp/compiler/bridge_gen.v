@@ -95,9 +95,7 @@ fn (mut c Compiler) generate_v_glue() ! {
       if mut el is PhpClassRepr {
           // 为每个标记了 @[php_class] 的结构体生成映射器
           cls := el
-          v << cls.gen_v_property_mapper()
-          v << cls.gen_v_sync_mapper()
-          v << cls.gen_v_write_mapper()
+          v << cls.gen_v_glue();
       }
     }
     os.write_file('_task_glue.v', v.join('\n'))!

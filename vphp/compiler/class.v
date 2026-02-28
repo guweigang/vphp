@@ -89,13 +89,35 @@ fn (r PhpClassRepr) gen_c() []string {
 
 	// 2. 生成方法包装器
 	for m in r.methods {
+	  // 💡 关键 1: 映射方法名。V 侧叫 init，PHP 侧叫 __construct
+    php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		v_c_func := '${r.name}_${m.name}'
 
-		c << '    PHP_METHOD(${r.name}, ${m.name}) {'
+		c << '    PHP_METHOD(${r.name}, ${php_method_name}) {'
 		c << '        typedef struct { void* ex; void* ret; } vphp_context_internal;'
 		c << '        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+		if m.name == 'init' {
+		  c << '        extern void ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
+      // --- 构造函数逻辑 ---
+      c << '        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));'
 
-		if m.is_static {
+      // 1. 在 V 侧分配一个新的结构体实例
+      c << '        extern void* ${r.name}_new_raw();'
+      c << '        wrapper->v_ptr = ${r.name}_new_raw();'
+
+      // 2. 绑定所有的 Handler (和 static create 逻辑一致)
+      c << '        extern void ${r.name}_get_prop(void*, const char*, int, zval*);'
+      c << '        extern void ${r.name}_set_prop(void*, const char*, int, zval*);'
+      c << '        extern void ${r.name}_sync_props(void*, zval*);'
+      c << '        wrapper->prop_handler = ${r.name}_get_prop;'
+      c << '        wrapper->write_handler = ${r.name}_set_prop;'
+      c << '        wrapper->sync_handler = ${r.name}_sync_props;'
+
+      // 3. 调用 V 的 init 方法进行参数初始化
+      // 这里需要解析 PHP 传来的参数并传给 V
+      c << '        extern void ${v_c_func}(void* v_ptr, vphp_context_internal ctx);'
+      c << '        ${v_c_func}(wrapper->v_ptr, ctx);'
+		} else if m.is_static {
 		  c << '        extern void* ${v_c_func}(vphp_context_internal ctx);'
       // 1. 调用 V 函数创建实例
       c << '        void* v_instance = ${v_c_func}(ctx);'
@@ -133,8 +155,9 @@ fn (r PhpClassRepr) gen_c() []string {
 	// 3. 生成方法表
 	c << 'static const zend_function_entry ${lower_name}_methods[] = {'
 	for m in r.methods {
+	  php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		flags := if m.is_static { 'ZEND_ACC_PUBLIC | ZEND_ACC_STATIC' } else { 'ZEND_ACC_PUBLIC' }
-		c << '    PHP_ME(${r.name}, ${m.name}, arginfo_${lower_name}_${m.name}, $flags)'
+		c << '    PHP_ME(${r.name}, ${php_method_name}, arginfo_${lower_name}_${m.name}, $flags)'
 	}
 	c << '    PHP_FE_END'
 	c << '};'
@@ -320,5 +343,28 @@ pub fn (r PhpClassRepr) gen_v_write_mapper() string {
     out << "        }"
     out << "    }"
     out << "}"
+    return out.join('\n')
+}
+
+pub fn (r PhpClassRepr) gen_v_glue() string {
+    mut out := []string{}
+    lower_name := r.name.to_lower()
+
+    // --- A. 生成基础分配器 (针对 __construct) ---
+    // 这个函数供 C 侧的 PHP_METHOD(__construct) 调用
+    out << "// 自动分配堆内存的分配器"
+    out << "@[export: '${r.name}_new_raw']"
+    out << "pub fn ${lower_name}_new_raw() voidptr {"
+    out << "    return unsafe { &${r.name}{} }"
+    out << "}"
+
+    // --- B. 生成原本的属性映射器 (read/write/sync) ---
+    out << r.gen_v_property_mapper()
+    out << r.gen_v_write_mapper()
+    out << r.gen_v_sync_mapper()
+
+    // --- C. 生成方法导出 (对应 Article_save 等) ---
+    // ... 原有的方法导出逻辑 ...
+
     return out.join('\n')
 }

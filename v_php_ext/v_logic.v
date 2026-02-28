@@ -417,6 +417,18 @@ pub mut:
 	is_top bool   // 自动映射为 bool
 }
 
+@[php_method]
+@[export: 'Article_init']
+pub fn (mut a Article) init(ctx vphp.Context) &Article {
+    // 假设我们封装了获取参数的快捷方法
+    a.title = ctx.arg[string](0)
+    a.id = ctx.arg[int](1)
+
+    a.is_top = true
+    println('V Article initialized with title: ${a.title}')
+    return a
+}
+
 // 动态方法：必须有接收者，自动映射为 PHP 实例方法 $article->save()
 @[php_method]
 @[export: 'Article_create']
