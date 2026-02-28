@@ -3,12 +3,11 @@
 
 #include "../vphp/v_bridge.h"
 
+
 typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
-extern void vphp_task_auto_startup();
-
 zend_class_entry *post_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_post_set_author, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -301,6 +300,10 @@ PHP_FUNCTION(v_get_alerts) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_get_alerts(ctx);
 }
+PHP_INI_BEGIN()
+    PHP_INI_ENTRY("vphptest.enable_cache", "1", PHP_INI_ALL, NULL)
+    PHP_INI_ENTRY("vphptest.max_threads", "4", PHP_INI_ALL, NULL)
+PHP_INI_END()
 static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_add, arginfo_v_add)
     PHP_FE(v_greet, arginfo_v_greet)
@@ -323,19 +326,19 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_get_alerts, arginfo_v_get_alerts)
     PHP_FE_END
 };
-
 PHP_MINIT_FUNCTION(vphptest) {
     vphp_framework_init(module_number);
     extern void vphp_ext_startup() __attribute__((weak));
     if (vphp_ext_startup) vphp_ext_startup();
-    {   zend_class_entry ce;
+    REGISTER_INI_ENTRIES();
+        {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Post", post_methods);
         post_ce = zend_register_internal_class(&ce);
         post_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(post_ce, "post_id", sizeof("post_id")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(post_ce, "author", sizeof("author")-1, "", ZEND_ACC_PUBLIC);
     }
-    {   zend_class_entry ce;
+        {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
         article_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         article_ce->create_object = vphp_create_object_handler;
@@ -346,32 +349,33 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_string(article_ce, "content", sizeof("content")-1, "", ZEND_ACC_PROTECTED);
         zend_declare_property_long(article_ce, "total_count", sizeof("total_count")-1, 0, ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
     }
-    {   zend_class_entry ce;
+        {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Story", story_methods);
         story_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         story_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(story_ce, "chapter_count", sizeof("chapter_count")-1, 0, ZEND_ACC_PUBLIC);
     }
-    {   zend_class_entry ce;
+        {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
         vphp__task_ce = zend_register_internal_class(&ce);
         vphp__task_ce->create_object = vphp_create_object_handler;
     }
-    REGISTER_STRING_CONSTANT("APP_VERSION", "1.0.0", CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("MAX_RETRY", 3, CONST_CS | CONST_PERSISTENT);
-    REGISTER_DOUBLE_CONSTANT("PI_VALUE", 3.14159, CONST_CS | CONST_PERSISTENT);
-    REGISTER_BOOL_CONSTANT("DEBUG_MODE", 0, CONST_CS | CONST_PERSISTENT);
+        REGISTER_STRING_CONSTANT("APP_VERSION", "1.0.0", CONST_CS | CONST_PERSISTENT);
+        REGISTER_LONG_CONSTANT("MAX_RETRY", 3, CONST_CS | CONST_PERSISTENT);
+        REGISTER_DOUBLE_CONSTANT("PI_VALUE", 3.14159, CONST_CS | CONST_PERSISTENT);
+        REGISTER_BOOL_CONSTANT("DEBUG_MODE", 0, CONST_CS | CONST_PERSISTENT);
     return SUCCESS;
 }
-
+PHP_MSHUTDOWN_FUNCTION(vphptest) {
+    UNREGISTER_INI_ENTRIES();
+    return SUCCESS;
+}
 zend_module_entry vphptest_module_entry = {
     STANDARD_MODULE_HEADER, "vphptest", vphptest_functions,
-    PHP_MINIT(vphptest), NULL, NULL, NULL, NULL, "1.0.0",
+    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, NULL, "1.0.0",
     STANDARD_MODULE_PROPERTIES
 };
 
-#ifndef COMPILE_DL_VPHPTEST
-#define COMPILE_DL_VPHPTEST
-
+#ifdef COMPILE_DL_VPHPTEST
 ZEND_GET_MODULE(vphptest)
 #endif

@@ -6,6 +6,10 @@ const ext_config = vphp.ExtensionConfig{
     name: 'vphptest'
     version: '0.1.0'
     description: 'PHP Bindings for V'
+    ini_entries: {
+        'vphptest.enable_cache': '1'
+        'vphptest.max_threads': '4'
+    }
 }
 
 @[php_const]

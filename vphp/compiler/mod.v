@@ -17,6 +17,7 @@ pub:
 	target_files []string
 pub mut:
 	ext_name    string
+	ini_entries map[string]string
 	elements    []PhpRepr
 mut:
 	table       &ast.Table
@@ -43,7 +44,7 @@ pub fn (mut c Compiler) compile() !string {
 		    return error('AST 解析失败: ${file_ast.errors[0].message} in $file')
 	    }
         if c.ext_name == '' {
-            c.set_ext_name(file_ast)
+            c.set_extension_meta(file_ast)
         }
         all_stmts << file_ast.stmts
     }
@@ -129,7 +130,7 @@ pub fn (mut c Compiler) compile() !string {
 	return c.ext_name
 }
 
-fn (mut c Compiler) set_ext_name(file_ast &ast.File) {
+fn (mut c Compiler) set_extension_meta(file_ast &ast.File) {
 	for stmt in file_ast.stmts {
 		if stmt is ast.ConstDecl {
 			for field in stmt.fields {
@@ -138,9 +139,19 @@ fn (mut c Compiler) set_ext_name(file_ast &ast.File) {
 					for f in expr.init_fields {
 						if f.name == 'name' && f.expr is ast.StringLiteral {
 							c.ext_name = (f.expr as ast.StringLiteral).val
-							return
+						} else if f.name == 'ini_entries' && f.expr is ast.MapInit {
+							m_expr := f.expr as ast.MapInit
+							for i, key in m_expr.keys {
+								val := m_expr.vals[i]
+								if key is ast.StringLiteral && val is ast.StringLiteral {
+									k := (key as ast.StringLiteral).val
+									v := (val as ast.StringLiteral).val
+									c.ini_entries[k] = v
+								}
+							}
 						}
 					}
+					if c.ext_name != '' { return }
 				}
 			}
 		}

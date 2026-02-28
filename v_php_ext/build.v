@@ -60,7 +60,7 @@ fn main() {
   	php_ldflags := os.execute('php-config --ldflags').output.trim_space()
   	php_libs := os.execute('php-config --libs').output.replace('-lzip', '').trim_space()
 
-  	gcc_cmd := 'gcc -shared -fPIC ${disabled_warnings} -DCOMPILE_DL_V_PHP_EXT=1 ' +
+  	gcc_cmd := 'gcc -shared -fPIC ${disabled_warnings} -DCOMPILE_DL_${ext_name.to_upper()}=1 ' +
            '-I${brew_path}/include -L${brew_path}/lib -lcjson ' +  // cJson library
            '-DcJSON_GetErrorPos=cJSON_GetErrorPtr ' + // cJson version compatible
   			   '$php_inc ${transpiled_c} php_bridge.c ../vphp/v_bridge.c -o v_php_ext.so ' +

@@ -11,6 +11,7 @@ pub:
 	name        string
 	version     string
 	description string
+	ini_entries map[string]string
 }
 
 pub enum PHPType {

@@ -21,56 +21,40 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('#include "php_bridge.h"\n\n')
 	res.write_string('#include "../vphp/v_bridge.h"\n\n')
 
-	// 0. 全局类型定义
-	res.write_string('typedef struct { void* ex; void* ret; } vphp_context_internal;\n')
-	// V 的 string ABI: { u8* str; int len; int is_lit; }
-	res.write_string('typedef struct { void* str; int len; int is_lit; } v_string;\n\n')
+	// 2. 模块层：初始化 ModuleBuilder 并收集功能点
+	mut mod_builder := new_module_builder(c.ext_name)
+	for k, v in c.ini_entries {
+		mod_builder.add_ini_entry(k, v)
+	}
 
-	// 1. 显式声明，解决 -Wimplicit-function-declaration
-	res.write_string('extern void vphp_framework_init(int module_number);\n')
-	res.write_string('extern void vphp_task_auto_startup();\n\n')
+	res.write_string(mod_builder.render_declarations())
 
-	// 2. 写入每个元素的实现 (Wrapper / ArgInfo)
+	// 1. 业务逻辑层：写入每个元素的实例实现 (Wrapper / ArgInfo)
 	c_gen := CGenerator{ ext_name: c.ext_name }
 	for line in c_gen.gen_c_code(mut c.elements) {
 		res.write_string(line + '\n')
 	}
 
-
-	// 4. 函数表 (使用 ${c.ext_name}_functions) — 不再包含 v_spawn/v_wait
-	res.write_string('static const zend_function_entry ${c.ext_name}_functions[] = {\n')
 	for mut el in c.elements {
 		if mut el is PhpFuncRepr {
-			f := el
-			mut builder := new_func_builder(f.name, f.name)
-			res.write_string(builder.render_fe() + '\n')
+			mod_builder.add_function(el.name)
 		}
 	}
-	res.write_string('    PHP_FE_END\n};\n\n')
 
-	// 5. MINIT
-	res.write_string('PHP_MINIT_FUNCTION(${c.ext_name}) {\n')
-	res.write_string('    vphp_framework_init(module_number);\n')
-	res.write_string('    extern void vphp_ext_startup() __attribute__((weak));\n')
-	res.write_string('    if (vphp_ext_startup) vphp_ext_startup();\n')
+	// 注入 MINIT 内容
 	for line in c_gen.gen_minit_lines(mut c.elements) {
-		res.write_string(line + '\n')
+		mod_builder.add_minit_line(line)
 	}
-	res.write_string('    return SUCCESS;\n}\n\n')
 
-	// 6. 模块入口
-	res.write_string('zend_module_entry ${c.ext_name}_module_entry = {\n')
-	res.write_string('    STANDARD_MODULE_HEADER, "${c.ext_name}", ${c.ext_name}_functions,\n')
-	res.write_string('    PHP_MINIT(${c.ext_name}), NULL, NULL, NULL, NULL, "1.0.0",\n')
-	res.write_string('    STANDARD_MODULE_PROPERTIES\n};\n\n')
+	// 3. 渲染各个 C 块
+	res.write_string(mod_builder.render_ini_entries())
+	res.write_string(mod_builder.render_functions_table())
+	res.write_string(mod_builder.render_minit())
+	res.write_string(mod_builder.render_mshutdown())
+	res.write_string(mod_builder.render_module_entry())
+	res.write_string(mod_builder.render_get_module())
 
-  // 7. 核心：写入 ZEND_GET_MODULE 宏
-  res.write_string('#ifndef COMPILE_DL_${c.ext_name.to_upper()}\n')
-	res.write_string('#define COMPILE_DL_${c.ext_name.to_upper()}\n\n')
-  res.write_string('ZEND_GET_MODULE(${c.ext_name})\n')
-  res.write_string('#endif\n')
-
-  os.write_file('php_bridge.c', res.str())!
+	os.write_file('php_bridge.c', res.str())!
 }
 
 // ==========================================
