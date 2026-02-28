@@ -3801,17 +3801,17 @@ struct main__AnalyzeTask {
 	string json_data;
 };
 
+struct vphp__Context {
+	zend_execute_data* ex;
+	zval* ret;
+};
+
 struct vphp__Val {
 	zval* raw;
 };
 
 struct main__Coach {
 	string name;
-};
-
-struct vphp__Context {
-	zend_execute_data* ex;
-	zval* ret;
 };
 
 struct os__Eof {
@@ -10687,42 +10687,42 @@ VV_EXP void Article_sync_props(voidptr ptr, zval* zv); // exported fn main.artic
 voidptr main__article_handlers(void);
 VV_EXP voidptr Article_handlers(void); // exported fn main.article_handlers
 VV_LOC void main__main(void);
-VV_LOC void main__v_reverse_string(zend_execute_data* ex, zval* retval);
-VV_EXP void v_reverse_string(zend_execute_data* ex, zval* retval); // exported fn main.v_reverse_string
-VV_LOC void main__v_logic_main(zend_execute_data* ex, zval* retval);
-VV_EXP void v_logic_main(zend_execute_data* ex, zval* retval); // exported fn main.v_logic_main
-VV_LOC void main__v_add(zend_execute_data* ex, zval* retval);
-VV_EXP void v_add(zend_execute_data* ex, zval* retval); // exported fn main.v_add
-VV_LOC void main__v_greet(zend_execute_data* ex, zval* retval);
-VV_EXP void v_greet(zend_execute_data* ex, zval* retval); // exported fn main.v_greet
-VV_LOC void main__v_process_list(zend_execute_data* ex, zval* retval);
-VV_EXP void v_process_list(zend_execute_data* ex, zval* retval); // exported fn main.v_process_list
-VV_LOC void main__v_test_map(zend_execute_data* ex, zval* retval);
-VV_EXP void v_test_map(zend_execute_data* ex, zval* retval); // exported fn main.v_test_map
-VV_LOC void main__v_get_config(zend_execute_data* ex, zval* retval);
-VV_EXP void v_get_config(zend_execute_data* ex, zval* retval); // exported fn main.v_get_config
-VV_LOC void main__v_get_user(zend_execute_data* ex, zval* retval);
-VV_EXP void v_get_user(zend_execute_data* ex, zval* retval); // exported fn main.v_get_user
-VV_LOC void main__v_call_back(zend_execute_data* ex, zval* retval);
-VV_EXP void v_call_back(zend_execute_data* ex, zval* retval); // exported fn main.v_call_back
-VV_LOC void main__v_new_coach(zend_execute_data* ex, zval* retval);
-VV_EXP void v_new_coach(zend_execute_data* ex, zval* retval); // exported fn main.v_new_coach
-VV_LOC void main__v_new_db(zend_execute_data* ex, zval* retval);
-VV_EXP void v_new_db(zend_execute_data* ex, zval* retval); // exported fn main.v_new_db
-VV_LOC void main__v_check_res(zend_execute_data* ex, zval* retval);
-VV_EXP void v_check_res(zend_execute_data* ex, zval* retval); // exported fn main.v_check_res
-VV_LOC void main__v_analyze_fitness_data(zend_execute_data* ex, zval* retval);
-VV_EXP void v_analyze_fitness_data(zend_execute_data* ex, zval* retval); // exported fn main.v_analyze_fitness_data
-VV_LOC void main__v_get_alerts(zend_execute_data* ex, zval* retval);
-VV_EXP void v_get_alerts(zend_execute_data* ex, zval* retval); // exported fn main.v_get_alerts
-VV_LOC void main__v_complex_test(zend_execute_data* ex, zval* retval);
-VV_EXP void v_complex_test(zend_execute_data* ex, zval* retval); // exported fn main.v_complex_test
-VV_LOC void main__v_analyze_user_object(zend_execute_data* ex, zval* retval);
-VV_EXP void v_analyze_user_object(zend_execute_data* ex, zval* retval); // exported fn main.v_analyze_user_object
-VV_LOC void main__v_trigger_user_action(zend_execute_data* ex, zval* retval);
-VV_EXP void v_trigger_user_action(zend_execute_data* ex, zval* retval); // exported fn main.v_trigger_user_action
-VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval);
-VV_EXP void v_call_php_closure(zend_execute_data* ex, zval* retval); // exported fn main.v_call_php_closure
+VV_LOC void main__v_reverse_string(vphp__Context ctx);
+VV_EXP void v_reverse_string(vphp__Context ctx); // exported fn main.v_reverse_string
+VV_LOC void main__v_logic_main(vphp__Context ctx);
+VV_EXP void v_logic_main(vphp__Context ctx); // exported fn main.v_logic_main
+VV_LOC void main__v_add(vphp__Context ctx);
+VV_EXP void v_add(vphp__Context ctx); // exported fn main.v_add
+VV_LOC void main__v_greet(vphp__Context ctx);
+VV_EXP void v_greet(vphp__Context ctx); // exported fn main.v_greet
+VV_LOC void main__v_process_list(vphp__Context ctx);
+VV_EXP void v_process_list(vphp__Context ctx); // exported fn main.v_process_list
+VV_LOC void main__v_test_map(vphp__Context ctx);
+VV_EXP void v_test_map(vphp__Context ctx); // exported fn main.v_test_map
+VV_LOC void main__v_get_config(vphp__Context ctx);
+VV_EXP void v_get_config(vphp__Context ctx); // exported fn main.v_get_config
+VV_LOC void main__v_get_user(vphp__Context ctx);
+VV_EXP void v_get_user(vphp__Context ctx); // exported fn main.v_get_user
+VV_LOC void main__v_call_back(vphp__Context ctx);
+VV_EXP void v_call_back(vphp__Context ctx); // exported fn main.v_call_back
+VV_LOC void main__v_new_coach(vphp__Context ctx);
+VV_EXP void v_new_coach(vphp__Context ctx); // exported fn main.v_new_coach
+VV_LOC void main__v_new_db(vphp__Context ctx);
+VV_EXP void v_new_db(vphp__Context ctx); // exported fn main.v_new_db
+VV_LOC void main__v_check_res(vphp__Context ctx);
+VV_EXP void v_check_res(vphp__Context ctx); // exported fn main.v_check_res
+VV_LOC void main__v_analyze_fitness_data(vphp__Context ctx);
+VV_EXP void v_analyze_fitness_data(vphp__Context ctx); // exported fn main.v_analyze_fitness_data
+VV_LOC void main__v_get_alerts(vphp__Context ctx);
+VV_EXP void v_get_alerts(vphp__Context ctx); // exported fn main.v_get_alerts
+VV_LOC void main__v_complex_test(vphp__Context ctx);
+VV_EXP void v_complex_test(vphp__Context ctx); // exported fn main.v_complex_test
+VV_LOC void main__v_analyze_user_object(vphp__Context ctx);
+VV_EXP void v_analyze_user_object(vphp__Context ctx); // exported fn main.v_analyze_user_object
+VV_LOC void main__v_trigger_user_action(vphp__Context ctx);
+VV_EXP void v_trigger_user_action(vphp__Context ctx); // exported fn main.v_trigger_user_action
+VV_LOC void main__v_call_php_closure(vphp__Context ctx);
+VV_EXP void v_call_php_closure(vphp__Context ctx); // exported fn main.v_call_php_closure
 VV_LOC Array_f64 main__AnalyzeTask_run(main__AnalyzeTask t);
 main__Article* main__Article_init(main__Article* a, vphp__Context ctx);
 VV_EXP main__Article* Article_init(main__Article* a, vphp__Context ctx); // exported fn init
@@ -75838,6 +75838,7 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	}
 	strings__Builder_write_string(&res, _S("#include \"php_bridge.h\"\n\n"));
 	strings__Builder_write_string(&res, _S("#include \"../vphp/v_bridge.h\"\n\n"));
+	strings__Builder_write_string(&res, _S("typedef struct { void* ex; void* ret; } vphp_context_internal;\n\n"));
 	strings__Builder_write_string(&res, _S("extern void vphp_framework_init(int module_number);\n"));
 	strings__Builder_write_string(&res, _S("extern void vphp_task_auto_startup();\n\n"));
 	for (int _t1 = 0; _t1 < c->elements.len; ++_t1) {
@@ -76303,9 +76304,10 @@ VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_c(vphp__compiler__PhpFuncRep
 	Array_string r = builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("ZEND_BEGIN_ARG_INFO_EX(arginfo_"), 0xfe10, {.d_s = f.name}}, {_S(", 0, 0, 0)"), 0, { .d_c = 0 }}})) }));
 	builtin__array_push((array*)&r, _MOV((string[]){ _S("ZEND_END_ARG_INFO()") }));
-	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern void "), 0xfe10, {.d_s = f.name}}, {_S("(zend_execute_data *execute_data, zval *return_value);"), 0, { .d_c = 0 }}})) }));
+	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern void "), 0xfe10, {.d_s = f.name}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
 	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
-	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = f.name}}, {_S("(execute_data, return_value);"), 0, { .d_c = 0 }}})) }));
+	builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
+	builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = f.name}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
 	builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
 	return r;
 }
@@ -76515,10 +76517,9 @@ VV_LOC void main__main(void) {
 	}
 	builtin__println(_S("\342\234\205 \346\236\204\345\273\272\346\210\220\345\212\237\357\274\201v_php_ext.so \345\267\262\345\260\261\347\273\252\343\200\202"));
 }
-VV_LOC void main__v_reverse_string(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_reverse_string(vphp__Context ctx) {
 	{ // Unsafe block
-		zval* raw_in = vphp_get_arg_ptr(ex, 1);
+		zval* raw_in = vphp_get_arg_ptr(ctx.ex, 1);
 		if (raw_in == 0) {
 			return;
 		}
@@ -76532,17 +76533,17 @@ VV_LOC void main__v_reverse_string(zend_execute_data* ex, zval* retval) {
 			vphp__throw_exception(_S("String is empty!"), 400);
 			return;
 		}
-		vphp__Val out = ((vphp__Val){.raw = retval,});
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
 		vphp__Val_set_string(out, builtin__string_reverse(s));
 	}
 }
 // export alias: v_reverse_string -> main__v_reverse_string
-void v_reverse_string(zend_execute_data* ex, zval* retval) {
-	return main__v_reverse_string(ex, retval);
+void v_reverse_string(vphp__Context ctx) {
+	return main__v_reverse_string(ctx);
 }
-VV_LOC void main__v_logic_main(zend_execute_data* ex, zval* retval) {
+VV_LOC void main__v_logic_main(vphp__Context ctx) {
 	{ // Unsafe block
-		Array_vphp__Val args = vphp__get_args(ex);
+		Array_vphp__Val args = vphp__get_args(ctx.ex);
 		if (args.len < 1) {
 			vphp__throw_exception(_S("\350\207\263\345\260\221\351\234\200\350\246\201\344\270\200\344\270\252\345\217\202\346\225\260"), 400);
 			return;
@@ -76553,50 +76554,46 @@ VV_LOC void main__v_logic_main(zend_execute_data* ex, zval* retval) {
 			repeat_count = ((int)(vphp__Val_as_int((*(vphp__Val*)builtin__array_get(args, 1)))));
 		}
 		string res = builtin__string_reverse(builtin__string_repeat(main_str, repeat_count));
-		vphp__Val out = ((vphp__Val){.raw = retval,});
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
 		vphp__Val_set_string(out, res);
 	}
 }
 // export alias: v_logic_main -> main__v_logic_main
-void v_logic_main(zend_execute_data* ex, zval* retval) {
-	return main__v_logic_main(ex, retval);
+void v_logic_main(vphp__Context ctx) {
+	return main__v_logic_main(ctx);
 }
-VV_LOC void main__v_add(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_add(vphp__Context ctx) {
 	i64 a = vphp__Context_arg_T_i64(ctx, 0);
 	i64 b = vphp__Context_arg_T_i64(ctx, 1);
 	vphp__return_val_T_i64(ctx, (i64)(a + b));
 }
 // export alias: v_add -> main__v_add
-void v_add(zend_execute_data* ex, zval* retval) {
-	return main__v_add(ex, retval);
+void v_add(vphp__Context ctx) {
+	return main__v_add(ctx);
 }
-VV_LOC void main__v_greet(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_greet(vphp__Context ctx) {
 	string name = vphp__Context_arg_T_string(ctx, 0);
 	vphp__return_val_T_string(ctx, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Hello, "), 0xfe10, {.d_s = name}}, {_S(" from V!"), 0, { .d_c = 0 }}})));
 }
 // export alias: v_greet -> main__v_greet
-void v_greet(zend_execute_data* ex, zval* retval) {
-	return main__v_greet(ex, retval);
+void v_greet(vphp__Context ctx) {
+	return main__v_greet(ctx);
 }
-VV_LOC void main__v_process_list(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_process_list(vphp__Context ctx) {
 	Array_string input_list = vphp__Context_arg_T_Array_string(ctx, 0);
 	{ // Unsafe block
-		vphp_array_init(retval);
+		vphp_array_init(ctx.ret);
 		for (int i = (int)(input_list.len - 1); i >= 0; i--) {
 			string val = (*(string*)builtin__array_get(input_list, i));
-			vphp_array_push_string(retval, ((char*)(val.str)));
+			vphp_array_push_string(ctx.ret, ((char*)(val.str)));
 		}
 	}
 }
 // export alias: v_process_list -> main__v_process_list
-void v_process_list(zend_execute_data* ex, zval* retval) {
-	return main__v_process_list(ex, retval);
+void v_process_list(vphp__Context ctx) {
+	return main__v_process_list(ctx);
 }
-VV_LOC void main__v_test_map(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_test_map(vphp__Context ctx) {
 	Map_string_string config = vphp__Context_arg_T_Map_string_string(ctx, 0);
 	if (_IN_MAP(ADDR(string, _S("name")), ADDR(map, config))) {
 		builtin__println(builtin__string__plus(_S("Received name: "), (*(string*)builtin__map_get(ADDR(map, config), &(string[]){_S("name")}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} }))));
@@ -76604,11 +76601,10 @@ VV_LOC void main__v_test_map(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_string(ctx, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Map processed, keys: "), 0xfe10, {.d_s = Array_string_str(builtin__map_keys(&config))}}, {_SLIT0, 0, { .d_c = 0 }}})));
 }
 // export alias: v_test_map -> main__v_test_map
-void v_test_map(zend_execute_data* ex, zval* retval) {
-	return main__v_test_map(ex, retval);
+void v_test_map(vphp__Context ctx) {
+	return main__v_test_map(ctx);
 }
-VV_LOC void main__v_get_config(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_get_config(vphp__Context ctx) {
 	vphp__Val input = vphp__Context_arg_raw(ctx, 0);
 	_result_vphp__Val _t1 = vphp__Val_get(input, _S("db_name"));
 	if (_t1.is_error) {
@@ -76621,11 +76617,10 @@ VV_LOC void main__v_get_config(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_string(ctx, vphp__Val_to_string(db_val));
 }
 // export alias: v_get_config -> main__v_get_config
-void v_get_config(zend_execute_data* ex, zval* retval) {
-	return main__v_get_config(ex, retval);
+void v_get_config(vphp__Context ctx) {
+	return main__v_get_config(ctx);
 }
-VV_LOC void main__v_get_user(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_get_user(vphp__Context ctx) {
 	vphp__Val raw_id = vphp__Context_arg_raw(ctx, 0);
 	builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("DEBUG: PHP ID Type: "), 0xfe07, {.d_i32 = vphp__Val_type_id(raw_id)}}, {_SLIT0, 0, { .d_c = 0 }}})));
 	i64 user_id = vphp__Context_arg_T_i64(ctx, 0);
@@ -76638,20 +76633,18 @@ VV_LOC void main__v_get_user(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_object(ctx, user_data);
 }
 // export alias: v_get_user -> main__v_get_user
-void v_get_user(zend_execute_data* ex, zval* retval) {
-	return main__v_get_user(ex, retval);
+void v_get_user(vphp__Context ctx) {
+	return main__v_get_user(ctx);
 }
-VV_LOC void main__v_call_back(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_call_back(vphp__Context ctx) {
 	vphp__Val php_version = vphp__call_php(_S("phpversion"), builtin____new_array_with_default(0, 0, sizeof(vphp__Val), 0));
 	vphp__Context_return_string(ctx, builtin__string__plus(_S("V knows PHP version is: "), vphp__Val_to_string(php_version)));
 }
 // export alias: v_call_back -> main__v_call_back
-void v_call_back(zend_execute_data* ex, zval* retval) {
-	return main__v_call_back(ex, retval);
+void v_call_back(vphp__Context ctx) {
+	return main__v_call_back(ctx);
 }
-VV_LOC void main__v_new_coach(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_new_coach(vphp__Context ctx) {
 	{ // Unsafe block
 		u8* p = builtin___v_malloc(sizeof(main__Coach));
 		main__Coach* c = ((main__Coach*)(p));
@@ -76660,11 +76653,10 @@ VV_LOC void main__v_new_coach(zend_execute_data* ex, zval* retval) {
 	}
 }
 // export alias: v_new_coach -> main__v_new_coach
-void v_new_coach(zend_execute_data* ex, zval* retval) {
-	return main__v_new_coach(ex, retval);
+void v_new_coach(vphp__Context ctx) {
+	return main__v_new_coach(ctx);
 }
-VV_LOC void main__v_new_db(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_new_db(vphp__Context ctx) {
 	{ // Unsafe block
 		u8* p = builtin___v_malloc(sizeof(main__Database));
 		main__Database* db = ((main__Database*)(p));
@@ -76673,11 +76665,10 @@ VV_LOC void main__v_new_db(zend_execute_data* ex, zval* retval) {
 	}
 }
 // export alias: v_new_db -> main__v_new_db
-void v_new_db(zend_execute_data* ex, zval* retval) {
-	return main__v_new_db(ex, retval);
+void v_new_db(vphp__Context ctx) {
+	return main__v_new_db(ctx);
 }
-VV_LOC void main__v_check_res(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_check_res(vphp__Context ctx) {
 	vphp__Val res_val = vphp__Context_arg_raw(ctx, 0);
 	{ // Unsafe block
 		voidptr ptr = vphp__Val_to_res(res_val);
@@ -76690,11 +76681,10 @@ VV_LOC void main__v_check_res(zend_execute_data* ex, zval* retval) {
 	}
 }
 // export alias: v_check_res -> main__v_check_res
-void v_check_res(zend_execute_data* ex, zval* retval) {
-	return main__v_check_res(ex, retval);
+void v_check_res(vphp__Context ctx) {
+	return main__v_check_res(ctx);
 }
-VV_LOC void main__v_analyze_fitness_data(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_analyze_fitness_data(vphp__Context ctx) {
 	string name = vphp__Context_arg_T_string(ctx, 0);
 	Array_f64 hr_data = vphp__Context_arg_T_Array_f64(ctx, 1);
 	Map_string_string config = vphp__Context_arg_T_Map_string_string(ctx, 2);
@@ -76747,22 +76737,20 @@ VV_LOC void main__v_analyze_fitness_data(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_struct_T_main__MotionReport(ctx, report);
 }
 // export alias: v_analyze_fitness_data -> main__v_analyze_fitness_data
-void v_analyze_fitness_data(zend_execute_data* ex, zval* retval) {
-	return main__v_analyze_fitness_data(ex, retval);
+void v_analyze_fitness_data(vphp__Context ctx) {
+	return main__v_analyze_fitness_data(ctx);
 }
-VV_LOC void main__v_get_alerts(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_get_alerts(vphp__Context ctx) {
 	Array_main__HeartPoint alerts = builtin____new_array_with_default(0, 0, sizeof(main__HeartPoint), 0);
 	builtin__array_push((array*)&alerts, _MOV((main__HeartPoint[]){ ((main__HeartPoint){.timestamp = 1677481200,.hr = 155.0,}) }));
 	builtin__array_push((array*)&alerts, _MOV((main__HeartPoint[]){ ((main__HeartPoint){.timestamp = 1677481260,.hr = 162.5,}) }));
 	vphp__Context_return_list_T_main__HeartPoint(ctx, alerts);
 }
 // export alias: v_get_alerts -> main__v_get_alerts
-void v_get_alerts(zend_execute_data* ex, zval* retval) {
-	return main__v_get_alerts(ex, retval);
+void v_get_alerts(vphp__Context ctx) {
+	return main__v_get_alerts(ctx);
 }
-VV_LOC void main__v_complex_test(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_complex_test(vphp__Context ctx) {
 	string s = vphp__Context_arg_T_string(ctx, 0);
 	int i = vphp__Context_arg_T_int(ctx, 1);
 	bool b = vphp__Context_arg_T_bool(ctx, 2);
@@ -76779,11 +76767,10 @@ VV_LOC void main__v_complex_test(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_map(ctx, res);
 }
 // export alias: v_complex_test -> main__v_complex_test
-void v_complex_test(zend_execute_data* ex, zval* retval) {
-	return main__v_complex_test(ex, retval);
+void v_complex_test(vphp__Context ctx) {
+	return main__v_complex_test(ctx);
 }
-VV_LOC void main__v_analyze_user_object(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_analyze_user_object(vphp__Context ctx) {
 	vphp__Val user_obj = vphp__Context_arg_raw(ctx, 0);
 	if (!vphp__Val_is_object(user_obj)) {
 		vphp__throw_exception(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected object, got "), 0xfe10, {.d_s = vphp__Val_type_name(user_obj)}}, {_SLIT0, 0, { .d_c = 0 }}})), 0);
@@ -76798,11 +76785,10 @@ VV_LOC void main__v_analyze_user_object(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_string(ctx, res_msg);
 }
 // export alias: v_analyze_user_object -> main__v_analyze_user_object
-void v_analyze_user_object(zend_execute_data* ex, zval* retval) {
-	return main__v_analyze_user_object(ex, retval);
+void v_analyze_user_object(vphp__Context ctx) {
+	return main__v_analyze_user_object(ctx);
 }
-VV_LOC void main__v_trigger_user_action(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_trigger_user_action(vphp__Context ctx) {
 	vphp__Val user_obj = vphp__Context_arg_raw(ctx, 0);
 	if (!vphp__Val_is_object(user_obj)) {
 		vphp__throw_exception(_S("\351\234\200\350\246\201 User \345\257\271\350\261\241"), 0);
@@ -76817,11 +76803,10 @@ VV_LOC void main__v_trigger_user_action(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_string(ctx, builtin__string__plus(_S("Action triggered, PHP returned: "), vphp__Val_to_string(res)));
 }
 // export alias: v_trigger_user_action -> main__v_trigger_user_action
-void v_trigger_user_action(zend_execute_data* ex, zval* retval) {
-	return main__v_trigger_user_action(ex, retval);
+void v_trigger_user_action(vphp__Context ctx) {
+	return main__v_trigger_user_action(ctx);
 }
-VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval) {
-	vphp__Context ctx = vphp__new_context(ex, retval);
+VV_LOC void main__v_call_php_closure(vphp__Context ctx) {
 	vphp__Val cb = vphp__Context_arg_raw(ctx, 0);
 	vphp__Val msg = ((vphp__Val){.raw = vphp_new_zval(),});
 	vphp__Val_set_string(msg, _S("Message from V Engine"));
@@ -76832,8 +76817,8 @@ VV_LOC void main__v_call_php_closure(zend_execute_data* ex, zval* retval) {
 	vphp__Context_return_string(ctx, builtin__string__plus(_S("Closure executed, PHP said: "), vphp__Val_to_string(res)));
 }
 // export alias: v_call_php_closure -> main__v_call_php_closure
-void v_call_php_closure(zend_execute_data* ex, zval* retval) {
-	return main__v_call_php_closure(ex, retval);
+void v_call_php_closure(vphp__Context ctx) {
+	return main__v_call_php_closure(ctx);
 }
 VV_LOC Array_f64 main__AnalyzeTask_run(main__AnalyzeTask t) {
 	// json.decode

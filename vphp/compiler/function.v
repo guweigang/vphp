@@ -39,7 +39,6 @@ fn (mut r PhpFuncRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 }
 
 fn (r PhpFuncRepr) gen_h() []string {
-    // 生成标准 PHP 函数声明宏
     return [
         'PHP_FUNCTION(${r.name});'
     ]
@@ -50,16 +49,15 @@ fn (f PhpFuncRepr) gen_c() []string {
     // 生成 ArgInfo
     r << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${f.name}, 0, 0, 0)'
     r << 'ZEND_END_ARG_INFO()'
-    // 生成包装器
-    // 注意：这里假设业务逻辑编译后的 C 函数名就是 f.name
-    r << 'extern void ${f.name}(zend_execute_data *execute_data, zval *return_value);'
+    // 生成包装器 — 将 (execute_data, return_value) 打包为 Context 传给 V 函数
+    r << 'extern void ${f.name}(vphp_context_internal ctx);'
     r << 'PHP_FUNCTION(${f.name}) {'
-    r << '    ${f.name}(execute_data, return_value);'
+    r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+    r << '    ${f.name}(ctx);'
     r << '}'
     return r
 }
+
 fn (r PhpFuncRepr) gen_minit() []string {
-	// 全局函数不在 MINIT 注册，而是在模块的函数表里。
-	// 但为了保持接口一致性，这里返回空，生成逻辑在 bridge_gen.v 遍历函数表时处理。
 	return []string{}
 }
