@@ -9,8 +9,6 @@ extern zend_module_entry vphptest_module_entry;
 
 extern zend_class_entry *article_ce;
 extern zend_class_entry *vphp__task_ce;
-PHP_FUNCTION(v_reverse_string);
-PHP_FUNCTION(v_logic_main);
 PHP_FUNCTION(v_add);
 PHP_FUNCTION(v_greet);
 PHP_FUNCTION(v_pure_map_test);
@@ -23,6 +21,8 @@ PHP_FUNCTION(v_complex_test);
 PHP_FUNCTION(v_analyze_user_object);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
+PHP_FUNCTION(v_reverse_string);
+PHP_FUNCTION(v_logic_main);
 PHP_FUNCTION(v_new_coach);
 PHP_FUNCTION(v_new_db);
 PHP_FUNCTION(v_check_res);

@@ -101,18 +101,6 @@ pub fn vphptask_handlers() voidptr {
     } }
 }
 
-@[export: 'vphp_wrap_v_reverse_string']
-fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
-    arg_0 := ctx
-    v_reverse_string(arg_0)
-}
-
-@[export: 'vphp_wrap_v_logic_main']
-fn vphp_wrap_v_logic_main(ctx vphp.Context) {
-    arg_0 := ctx
-    v_logic_main(arg_0)
-}
-
 @[export: 'vphp_wrap_v_add']
 fn vphp_wrap_v_add(ctx vphp.Context) {
     arg_0 := ctx.arg[i64](0)
@@ -188,6 +176,18 @@ fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
 fn vphp_wrap_v_call_php_closure(ctx vphp.Context) {
     arg_0 := ctx
     v_call_php_closure(arg_0)
+}
+
+@[export: 'vphp_wrap_v_reverse_string']
+fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
+    arg_0 := ctx
+    v_reverse_string(arg_0)
+}
+
+@[export: 'vphp_wrap_v_logic_main']
+fn vphp_wrap_v_logic_main(ctx vphp.Context) {
+    arg_0 := ctx
+    v_logic_main(arg_0)
 }
 
 @[export: 'vphp_wrap_v_new_coach']

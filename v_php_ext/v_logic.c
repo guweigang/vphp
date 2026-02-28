@@ -3814,7 +3814,7 @@ struct main__Coach {
 //          |   37 = Array_string
 //          |   47 = Array_int
 //          |  154 = Array_i64
-//          |  119 = Array_f64
+//          |  120 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -7492,11 +7492,11 @@ typedef struct thread_arg_vphp__ITask_run {
 	vphp__ITask arg0;
 } thread_arg_vphp__ITask_run;
 
-typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731 {
+typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731 {
 	void (*fn) (sync__WaitGroup*, void (*) ());
 	sync__WaitGroup* arg1;
 	void (*arg2) ();
-} thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731;
+} thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
 static bool Array_v__token__Kind_contains(Array_v__token__Kind a, v__token__Kind v);
@@ -9950,7 +9950,7 @@ void sync__WaitGroup_add(sync__WaitGroup* wg, int delta);
 void sync__WaitGroup_done(sync__WaitGroup* wg);
 void sync__WaitGroup_wait(sync__WaitGroup* wg);
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)());
-VV_LOC void anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
+VV_LOC void anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
 u64 sync__thread_id(void);
 _result_string v__util__resolve_d_value(Map_string_string compile_values, string str);
 _result_string v__util__resolve_env_value(string str, bool check_for_presence);
@@ -10769,10 +10769,6 @@ void main__vphp_wrap_vphptask_list(vphp__Context ctx);
 VV_EXP void vphp_wrap_VPhpTask_list(vphp__Context ctx); // exported fn main.vphp_wrap_vphptask_list
 voidptr main__vphptask_handlers(void);
 VV_EXP voidptr VPhpTask_handlers(void); // exported fn main.vphptask_handlers
-VV_LOC void main__vphp_wrap_v_reverse_string(vphp__Context ctx);
-VV_EXP void vphp_wrap_v_reverse_string(vphp__Context ctx); // exported fn main.vphp_wrap_v_reverse_string
-VV_LOC void main__vphp_wrap_v_logic_main(vphp__Context ctx);
-VV_EXP void vphp_wrap_v_logic_main(vphp__Context ctx); // exported fn main.vphp_wrap_v_logic_main
 VV_LOC void main__vphp_wrap_v_add(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_add(vphp__Context ctx); // exported fn main.vphp_wrap_v_add
 VV_LOC void main__vphp_wrap_v_greet(vphp__Context ctx);
@@ -10797,6 +10793,10 @@ VV_LOC void main__vphp_wrap_v_trigger_user_action(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_trigger_user_action(vphp__Context ctx); // exported fn main.vphp_wrap_v_trigger_user_action
 VV_LOC void main__vphp_wrap_v_call_php_closure(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_call_php_closure(vphp__Context ctx); // exported fn main.vphp_wrap_v_call_php_closure
+VV_LOC void main__vphp_wrap_v_reverse_string(vphp__Context ctx);
+VV_EXP void vphp_wrap_v_reverse_string(vphp__Context ctx); // exported fn main.vphp_wrap_v_reverse_string
+VV_LOC void main__vphp_wrap_v_logic_main(vphp__Context ctx);
+VV_EXP void vphp_wrap_v_logic_main(vphp__Context ctx); // exported fn main.vphp_wrap_v_logic_main
 VV_LOC void main__vphp_wrap_v_new_coach(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_new_coach(vphp__Context ctx); // exported fn main.vphp_wrap_v_new_coach
 VV_LOC void main__vphp_wrap_v_new_db(vphp__Context ctx);
@@ -10811,14 +10811,14 @@ VV_LOC void main__vphp_ext_startup(void);
 VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_6244(vphp__Context ctx);
 VV_EXP void vphp_ext_startup(void); // exported fn main.vphp_ext_startup
 VV_LOC void main__main(void);
-VV_LOC void main__v_analyze_fitness_data(vphp__Context ctx);
-VV_EXP void v_analyze_fitness_data(vphp__Context ctx); // exported fn main.v_analyze_fitness_data
-VV_LOC void main__v_get_alerts(vphp__Context ctx);
-VV_EXP void v_get_alerts(vphp__Context ctx); // exported fn main.v_get_alerts
 VV_LOC void main__v_reverse_string(vphp__Context ctx);
 VV_EXP void v_reverse_string(vphp__Context ctx); // exported fn main.v_reverse_string
 VV_LOC void main__v_logic_main(vphp__Context ctx);
 VV_EXP void v_logic_main(vphp__Context ctx); // exported fn main.v_logic_main
+VV_LOC void main__v_analyze_fitness_data(vphp__Context ctx);
+VV_EXP void v_analyze_fitness_data(vphp__Context ctx); // exported fn main.v_analyze_fitness_data
+VV_LOC void main__v_get_alerts(vphp__Context ctx);
+VV_EXP void v_get_alerts(vphp__Context ctx); // exported fn main.v_get_alerts
 VV_LOC i64 main__v_add(i64 a, i64 b);
 VV_LOC string main__v_greet(string name);
 VV_LOC Map_string_string main__v_pure_map_test(string k, string v);
@@ -12502,7 +12502,7 @@ static inline void __chan_bool_pushval(chan_bool ch, bool val) {
 // V gowrappers waiter fns:
 vphp__TaskResult __v_thread_vphp__TaskResult_wait(__v_thread_vphp__TaskResult thread);
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
-void* anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731 *arg);
+void* anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731 *arg);
 
 // V auto str functions:
 static string time__FormatTime_str(time__FormatTime it) { /* gen_str_for_enum */
@@ -14909,7 +14909,7 @@ v__ast__TypeInfo v__ast__Alias_to_sumtype_v__ast__TypeInfo(v__ast__Alias* x, boo
 vphp__TaskResult Array_f64_to_sumtype_vphp__TaskResult(Array_f64* x, bool is_mut) {
 	Array_f64* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Array_f64)); }
-	return (vphp__TaskResult){ ._Array_f64 = ptr, ._typ = 119};
+	return (vphp__TaskResult){ ._Array_f64 = ptr, ._typ = 120};
 }
 
 static bool Array_u8_contains(Array_u8 a, u8 v) {
@@ -17464,14 +17464,14 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 	builtin___v_free(arg);
 	return ret_ptr;
 }
-void* anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731 *arg) {
+void* anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731 *arg) {
 	arg->fn(arg->arg1, arg->arg2);
 	builtin___v_free(arg);
 	return 0;
 }
 
 // V anon functions:
-	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
+	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
 	f();
 	sync__WaitGroup_done(wg);
 }
@@ -17543,7 +17543,7 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 37: return "[]string";
 		case 47: return "[]int";
 		case 154: return "[]i64";
-		case 119: return "[]f64";
+		case 120: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
@@ -17559,7 +17559,7 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 37: return 37;
 		case 47: return 47;
 		case 154: return 154;
-		case 119: return 119;
+		case 120: return 120;
 		default: return 126;
 	}
 }
@@ -36364,7 +36364,7 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 154 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 119 /* []f64 */) {
+		else if (results._typ == 120 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -47384,16 +47384,16 @@ void sync__WaitGroup_wait(sync__WaitGroup* wg) {
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)(void)) {
 	sync__WaitGroup_add(wg, 1);
 	// start go
-	thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731));
-	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731;
+	thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731));
+	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731;
 	arg__t1->arg1 = wg;
 	arg__t1->arg2 = f;
 	pthread_t thread__t1;
 	pthread_attr_t thread__t1_attributes;
 	pthread_attr_init(&thread__t1_attributes);
 	pthread_attr_setstacksize(&thread__t1_attributes, 8388608); // fn: 
-	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
-	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_200_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
+	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
+	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_201_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
 	pthread_detach(thread__t1);
 	// end go
 	;
@@ -77728,22 +77728,6 @@ voidptr main__vphptask_handlers(void) {
 voidptr VPhpTask_handlers(void) {
 	return main__vphptask_handlers();
 }
-VV_LOC void main__vphp_wrap_v_reverse_string(vphp__Context ctx) {
-	vphp__Context arg_0 = ctx;
-	main__v_reverse_string(arg_0);
-}
-// export alias: vphp_wrap_v_reverse_string -> main__vphp_wrap_v_reverse_string
-void vphp_wrap_v_reverse_string(vphp__Context ctx) {
-	return main__vphp_wrap_v_reverse_string(ctx);
-}
-VV_LOC void main__vphp_wrap_v_logic_main(vphp__Context ctx) {
-	vphp__Context arg_0 = ctx;
-	main__v_logic_main(arg_0);
-}
-// export alias: vphp_wrap_v_logic_main -> main__vphp_wrap_v_logic_main
-void vphp_wrap_v_logic_main(vphp__Context ctx) {
-	return main__vphp_wrap_v_logic_main(ctx);
-}
 VV_LOC void main__vphp_wrap_v_add(vphp__Context ctx) {
 	i64 arg_0 = vphp__Context_arg_T_i64(ctx, 0);
 	i64 arg_1 = vphp__Context_arg_T_i64(ctx, 1);
@@ -77844,6 +77828,22 @@ VV_LOC void main__vphp_wrap_v_call_php_closure(vphp__Context ctx) {
 // export alias: vphp_wrap_v_call_php_closure -> main__vphp_wrap_v_call_php_closure
 void vphp_wrap_v_call_php_closure(vphp__Context ctx) {
 	return main__vphp_wrap_v_call_php_closure(ctx);
+}
+VV_LOC void main__vphp_wrap_v_reverse_string(vphp__Context ctx) {
+	vphp__Context arg_0 = ctx;
+	main__v_reverse_string(arg_0);
+}
+// export alias: vphp_wrap_v_reverse_string -> main__vphp_wrap_v_reverse_string
+void vphp_wrap_v_reverse_string(vphp__Context ctx) {
+	return main__vphp_wrap_v_reverse_string(ctx);
+}
+VV_LOC void main__vphp_wrap_v_logic_main(vphp__Context ctx) {
+	vphp__Context arg_0 = ctx;
+	main__v_logic_main(arg_0);
+}
+// export alias: vphp_wrap_v_logic_main -> main__vphp_wrap_v_logic_main
+void vphp_wrap_v_logic_main(vphp__Context ctx) {
+	return main__vphp_wrap_v_logic_main(ctx);
 }
 VV_LOC void main__vphp_wrap_v_new_coach(vphp__Context ctx) {
 	vphp__Context arg_0 = ctx;
@@ -77953,6 +77953,51 @@ VV_LOC void main__main(void) {
 	}
 	builtin__println(_S("\342\234\205 \346\236\204\345\273\272\346\210\220\345\212\237\357\274\201v_php_ext.so \345\267\262\345\260\261\347\273\252\343\200\202"));
 }
+VV_LOC void main__v_reverse_string(vphp__Context ctx) {
+	{ // Unsafe block
+		zval* raw_in = vphp_get_arg_ptr(ctx.ex, 1);
+		if (raw_in == 0) {
+			return;
+		}
+		vphp__Val in_val = ((vphp__Val){.raw = raw_in,});
+		if (!vphp__Val_is_string(in_val)) {
+			vphp__throw_exception(_S("Expected string input"), 401);
+			return;
+		}
+		string s = vphp__Val_to_string(in_val);
+		if ((s).len == 0) {
+			vphp__throw_exception(_S("String is empty!"), 400);
+			return;
+		}
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+		vphp__Val_set_string(out, builtin__string_reverse(s));
+	}
+}
+// export alias: v_reverse_string -> main__v_reverse_string
+void v_reverse_string(vphp__Context ctx) {
+	return main__v_reverse_string(ctx);
+}
+VV_LOC void main__v_logic_main(vphp__Context ctx) {
+	{ // Unsafe block
+		Array_vphp__Val args = vphp__get_args(ctx.ex);
+		if (args.len < 1) {
+			vphp__throw_exception(_S("\350\207\263\345\260\221\351\234\200\350\246\201\344\270\200\344\270\252\345\217\202\346\225\260"), 400);
+			return;
+		}
+		string main_str = vphp__Val_to_string((*(vphp__Val*)builtin__array_get(args, 0)));
+		int repeat_count = 1;
+		if (args.len >= 2) {
+			repeat_count = ((int)(vphp__Val_as_int((*(vphp__Val*)builtin__array_get(args, 1)))));
+		}
+		string res = builtin__string_reverse(builtin__string_repeat(main_str, repeat_count));
+		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
+		vphp__Val_set_string(out, res);
+	}
+}
+// export alias: v_logic_main -> main__v_logic_main
+void v_logic_main(vphp__Context ctx) {
+	return main__v_logic_main(ctx);
+}
 VV_LOC void main__v_analyze_fitness_data(vphp__Context ctx) {
 	string name = vphp__Context_arg_T_string(ctx, 0);
 	Array_f64 hr_data = vphp__Context_arg_T_Array_f64(ctx, 1);
@@ -78018,51 +78063,6 @@ VV_LOC void main__v_get_alerts(vphp__Context ctx) {
 // export alias: v_get_alerts -> main__v_get_alerts
 void v_get_alerts(vphp__Context ctx) {
 	return main__v_get_alerts(ctx);
-}
-VV_LOC void main__v_reverse_string(vphp__Context ctx) {
-	{ // Unsafe block
-		zval* raw_in = vphp_get_arg_ptr(ctx.ex, 1);
-		if (raw_in == 0) {
-			return;
-		}
-		vphp__Val in_val = ((vphp__Val){.raw = raw_in,});
-		if (!vphp__Val_is_string(in_val)) {
-			vphp__throw_exception(_S("Expected string input"), 401);
-			return;
-		}
-		string s = vphp__Val_to_string(in_val);
-		if ((s).len == 0) {
-			vphp__throw_exception(_S("String is empty!"), 400);
-			return;
-		}
-		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
-		vphp__Val_set_string(out, builtin__string_reverse(s));
-	}
-}
-// export alias: v_reverse_string -> main__v_reverse_string
-void v_reverse_string(vphp__Context ctx) {
-	return main__v_reverse_string(ctx);
-}
-VV_LOC void main__v_logic_main(vphp__Context ctx) {
-	{ // Unsafe block
-		Array_vphp__Val args = vphp__get_args(ctx.ex);
-		if (args.len < 1) {
-			vphp__throw_exception(_S("\350\207\263\345\260\221\351\234\200\350\246\201\344\270\200\344\270\252\345\217\202\346\225\260"), 400);
-			return;
-		}
-		string main_str = vphp__Val_to_string((*(vphp__Val*)builtin__array_get(args, 0)));
-		int repeat_count = 1;
-		if (args.len >= 2) {
-			repeat_count = ((int)(vphp__Val_as_int((*(vphp__Val*)builtin__array_get(args, 1)))));
-		}
-		string res = builtin__string_reverse(builtin__string_repeat(main_str, repeat_count));
-		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
-		vphp__Val_set_string(out, res);
-	}
-}
-// export alias: v_logic_main -> main__v_logic_main
-void v_logic_main(vphp__Context ctx) {
-	return main__v_logic_main(ctx);
 }
 VV_LOC i64 main__v_add(i64 a, i64 b) {
 	return (i64)(a + b);

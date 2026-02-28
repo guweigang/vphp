@@ -109,20 +109,6 @@ static const zend_function_entry vphp__task_methods[] = {
     PHP_FE_END
 };
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
-ZEND_END_ARG_INFO()
-extern void v_reverse_string(vphp_context_internal ctx);
-PHP_FUNCTION(v_reverse_string) {
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    v_reverse_string(ctx);
-}
-ZEND_BEGIN_ARG_INFO_EX(arginfo_v_logic_main, 0, 0, 0)
-ZEND_END_ARG_INFO()
-extern void v_logic_main(vphp_context_internal ctx);
-PHP_FUNCTION(v_logic_main) {
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    v_logic_main(ctx);
-}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_add, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_add(vphp_context_internal ctx);
@@ -207,6 +193,20 @@ PHP_FUNCTION(v_call_php_closure) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_call_php_closure(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_reverse_string(vphp_context_internal ctx);
+PHP_FUNCTION(v_reverse_string) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_reverse_string(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_logic_main, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_logic_main(vphp_context_internal ctx);
+PHP_FUNCTION(v_logic_main) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_logic_main(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_new_coach, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_new_coach(vphp_context_internal ctx);
@@ -243,8 +243,6 @@ PHP_FUNCTION(v_get_alerts) {
     v_get_alerts(ctx);
 }
 static const zend_function_entry vphptest_functions[] = {
-    PHP_FE(v_reverse_string, arginfo_v_reverse_string)
-    PHP_FE(v_logic_main, arginfo_v_logic_main)
     PHP_FE(v_add, arginfo_v_add)
     PHP_FE(v_greet, arginfo_v_greet)
     PHP_FE(v_pure_map_test, arginfo_v_pure_map_test)
@@ -257,6 +255,8 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_analyze_user_object, arginfo_v_analyze_user_object)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
+    PHP_FE(v_reverse_string, arginfo_v_reverse_string)
+    PHP_FE(v_logic_main, arginfo_v_logic_main)
     PHP_FE(v_new_coach, arginfo_v_new_coach)
     PHP_FE(v_new_db, arginfo_v_new_db)
     PHP_FE(v_check_res, arginfo_v_check_res)
