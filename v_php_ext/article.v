@@ -75,7 +75,7 @@ pub fn (a &Article) save() bool {
 // === 新增 Story 类：通过 Embed 自动识别 php_extends: 'Post' ===
 @[php_class]
 struct Story {
-    Post
+    Post	// PHP 自动识别为继承
 pub mut:
     chapter_count int
 }

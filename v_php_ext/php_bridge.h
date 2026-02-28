@@ -1,6 +1,6 @@
 /* ⚠️ VPHP Compiler Generated，请勿手动修改 */
-#ifndef VPHP_BRIDGE_H
-#define VPHP_BRIDGE_H
+#ifndef VPHP_EXT_VPHPTEST_BRIDGE_H
+#define VPHP_EXT_VPHPTEST_BRIDGE_H
 
 #include <php.h>
 

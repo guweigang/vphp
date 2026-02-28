@@ -13,4 +13,4 @@ test: build
 
 # 清理所有生成产物
 clean:
-	rm -f v_logic.c php_bridge.c php_bridge.h bridge.v v_php_ext.so
+	rm -f vphp_ext_*.c php_bridge.c php_bridge.h bridge.v v_php_ext.so

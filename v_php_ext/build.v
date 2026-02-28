@@ -28,7 +28,7 @@ fn main() {
     // 实例化并运行编译器
     mut vphp_c := compiler.new(target_files)
 
-    vphp_c.compile() or {
+    ext_name := vphp_c.compile() or {
         eprintln('❌ 编译阶段失败: $err')
         return
     }
@@ -46,9 +46,10 @@ fn main() {
     brew_path := '/opt/homebrew'
     os.setenv('C_INCLUDE_PATH', '${brew_path}/include/cjson', true)
 
-    println('🛠️  2. 转译 V 逻辑为 C...')
+    transpiled_c := 'vphp_ext_${ext_name}.c'
+    println('🛠️  2. 转译 V 逻辑为 C -> ${transpiled_c}')
     // 确保这里也带上路径，以便找到生成的 _task_glue.v 和 vphp 依赖
-    v_res := os.execute('v -enable-globals -gc none -path "@vlib:.:.." -shared -o v_logic.c .')
+    v_res := os.execute('v -enable-globals -gc none -path "@vlib:.:.." -shared -o ${transpiled_c} .')
     if v_res.exit_code != 0 {
         println('❌ V 编译失败: ${v_res.output}')
         return
@@ -62,7 +63,7 @@ fn main() {
   	gcc_cmd := 'gcc -shared -fPIC ${disabled_warnings} -DCOMPILE_DL_V_PHP_EXT=1 ' +
            '-I${brew_path}/include -L${brew_path}/lib -lcjson ' +  // cJson library
            '-DcJSON_GetErrorPos=cJSON_GetErrorPtr ' + // cJson version compatible
-  			   '$php_inc v_logic.c php_bridge.c ../vphp/v_bridge.c -o v_php_ext.so ' +
+  			   '$php_inc ${transpiled_c} php_bridge.c ../vphp/v_bridge.c -o v_php_ext.so ' +
   				 '-I../vphp ' +  // 👈 核心：让 GCC 找得到头文件
   			   '$php_ldflags $php_libs -undefined dynamic_lookup -fvisibility=default'
 
