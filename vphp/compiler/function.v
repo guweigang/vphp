@@ -157,7 +157,7 @@ fn (f PhpFuncRepr) gen_v_glue() []string {
     } else {
         v << '    res := ${call_str}'
         // 利用泛型装箱返回值
-        v << '    vphp.return_val[${f.return_type}](ctx, res)'
+        v << '    ctx.return_val[${f.return_type}](res)'
     }
     
     v << '}'

@@ -39,13 +39,13 @@ pub fn vphp_wrap_article_create(ctx vphp.Context) voidptr {
 pub fn vphp_wrap_article_is_top(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
     res := recv.is_top()
-    vphp.return_val[bool](ctx, res)
+    ctx.return_val[bool](res)
 }
 @[export: 'vphp_wrap_Article_save']
 pub fn vphp_wrap_article_save(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
     res := recv.save()
-    vphp.return_val[bool](ctx, res)
+    ctx.return_val[bool](res)
 }
 @[export: 'Article_handlers']
 pub fn article_handlers() voidptr {
@@ -62,14 +62,14 @@ fn vphp_wrap_v_add(ctx vphp.Context) {
     arg_0 := ctx.arg[i64](0)
     arg_1 := ctx.arg[i64](1)
     res := v_add(arg_0, arg_1)
-    vphp.return_val[i64](ctx, res)
+    ctx.return_val[i64](res)
 }
 
 @[export: "vphp_wrap_v_greet"]
 fn vphp_wrap_v_greet(ctx vphp.Context) {
     arg_0 := ctx.arg[string](0)
     res := v_greet(arg_0)
-    vphp.return_val[string](ctx, res)
+    ctx.return_val[string](res)
 }
 
 @[export: "vphp_wrap_v_pure_map_test"]
@@ -77,5 +77,5 @@ fn vphp_wrap_v_pure_map_test(ctx vphp.Context) {
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     res := v_pure_map_test(arg_0, arg_1)
-    vphp.return_val[map[string]string](ctx, res)
+    ctx.return_val[map[string]string](res)
 }

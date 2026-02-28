@@ -425,7 +425,7 @@ pub fn (r PhpClassRepr) gen_v_glue() []string {
         } else {
             out << "    res := ${call_str}"
             if !is_factory {
-                out << "    vphp.return_val[${m.return_type}](ctx, res)"
+                out << "    ctx.return_val[${m.return_type}](res)"
             }
         }
         

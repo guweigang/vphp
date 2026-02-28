@@ -285,7 +285,7 @@ pub fn (ctx Context) return_list[T](list []T) {
 
 // ======== 返回值 — 泛型 ========
 
-pub fn return_val[T](ctx Context, val T) {
+pub fn (ctx Context) return_val[T](val T) {
 	unsafe {
 		out := Val{ raw: ctx.ret }
 		$if T is i64 {
@@ -306,6 +306,17 @@ pub fn return_val[T](ctx Context, val T) {
 			ctx.return_map_f64(val)
 		} $else $if T is map[string]bool {
 			ctx.return_map_bool(val)
+		} $else $if T is []int {
+			ctx.return_list_int(val)
+		} $else $if T is []i64 {
+			ctx.return_list_i64(val)
+		} $else $if T is []f64 {
+			ctx.return_list_f64(val)
+		} $else $if T is []string {
+			ctx.return_list_string(val)
+		} $else {
+			// 对于不在枚举列表中的复杂类型（比如 map[string]Any 或 []MyStruct），触发异常
+			throw_exception('Unsupported generic return type', 0)
 		}
 	}
 }

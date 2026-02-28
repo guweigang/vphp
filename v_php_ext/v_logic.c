@@ -9142,10 +9142,10 @@ void vphp__Context_return_map_bool(vphp__Context ctx, Map_string_bool m);
 void vphp__Context_return_object(vphp__Context ctx, Map_string_string props);
 void vphp__Context_return_struct_T_main__MotionReport(vphp__Context ctx, main__MotionReport s);
 void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main__HeartPoint list);
-void vphp__return_val_T_bool(vphp__Context ctx, bool val);
-void vphp__return_val_T_i64(vphp__Context ctx, i64 val);
-void vphp__return_val_T_string(vphp__Context ctx, string val);
-void vphp__return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val);
+void vphp__Context_return_val_T_bool(vphp__Context ctx, bool val);
+void vphp__Context_return_val_T_i64(vphp__Context ctx, i64 val);
+void vphp__Context_return_val_T_string(vphp__Context ctx, string val);
+void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val);
 void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* obj);
 void vphp__return_val_raw_T_i64(zval* ret, i64 val);
 void vphp__return_val_raw_T_string(zval* ret, string val);
@@ -35335,7 +35335,7 @@ void vphp__Context_return_list_T_main__HeartPoint(vphp__Context ctx, Array_main_
 		vphp_array_add_next_zval(ctx.ret, &sub_zv);
 	}
 }
-void vphp__return_val_T_bool(vphp__Context ctx, bool val) {
+void vphp__Context_return_val_T_bool(vphp__Context ctx, bool val) {
 	{ // Unsafe block
 		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
 		#if false
@@ -35366,10 +35366,25 @@ void vphp__return_val_T_bool(vphp__Context ctx, bool val) {
 		#elif false
 		{
 		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#else
+		{
+		}
 		#endif
 	}
 }
-void vphp__return_val_T_i64(vphp__Context ctx, i64 val) {
+void vphp__Context_return_val_T_i64(vphp__Context ctx, i64 val) {
 	{ // Unsafe block
 		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
 		#if true
@@ -35400,10 +35415,25 @@ void vphp__return_val_T_i64(vphp__Context ctx, i64 val) {
 		#elif false
 		{
 		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#else
+		{
+		}
 		#endif
 	}
 }
-void vphp__return_val_T_string(vphp__Context ctx, string val) {
+void vphp__Context_return_val_T_string(vphp__Context ctx, string val) {
 	{ // Unsafe block
 		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
 		#if false
@@ -35434,10 +35464,25 @@ void vphp__return_val_T_string(vphp__Context ctx, string val) {
 		#elif false
 		{
 		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#else
+		{
+		}
 		#endif
 	}
 }
-void vphp__return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val) {
+void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val) {
 	{ // Unsafe block
 		vphp__Val out = ((vphp__Val){.raw = ctx.ret,});
 		#if false
@@ -35466,6 +35511,21 @@ void vphp__return_val_T_Map_string_string(vphp__Context ctx, Map_string_string v
 		{
 		}
 		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#elif false
+		{
+		}
+		#else
 		{
 		}
 		#endif
@@ -76451,7 +76511,7 @@ Array_string vphp__compiler__PhpClassRepr_gen_v_glue(vphp__compiler__PhpClassRep
 		} else {
 			builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    res := "), 0xfe10, {.d_s = call_str}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
 			if (!is_factory) {
-				builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    vphp.return_val["), 0xfe10, {.d_s = m.return_type}}, {_S("](ctx, res)"), 0, { .d_c = 0 }}})) }));
+				builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    ctx.return_val["), 0xfe10, {.d_s = m.return_type}}, {_S("](res)"), 0, { .d_c = 0 }}})) }));
 			}
 		}
 		if (is_factory) {
@@ -76614,7 +76674,7 @@ VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_v_glue(vphp__compiler__PhpFu
 		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = call_str}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
 	} else {
 		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    res := "), 0xfe10, {.d_s = call_str}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
-		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    vphp.return_val["), 0xfe10, {.d_s = f.return_type}}, {_S("](ctx, res)"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&v, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    ctx.return_val["), 0xfe10, {.d_s = f.return_type}}, {_S("](res)"), 0, { .d_c = 0 }}})) }));
 	}
 	builtin__array_push((array*)&v, _MOV((string[]){ _S("}") }));
 	return v;
@@ -76798,7 +76858,7 @@ voidptr vphp_wrap_Article_create(vphp__Context ctx) {
 void main__vphp_wrap_article_is_top(voidptr ptr, vphp__Context ctx) {
 	main__Article* recv = ((main__Article*)(ptr));
 	bool res = main__Article_is_top(recv);
-	vphp__return_val_T_bool(ctx, res);
+	vphp__Context_return_val_T_bool(ctx, res);
 }
 // export alias: vphp_wrap_Article_is_top -> main__vphp_wrap_article_is_top
 void vphp_wrap_Article_is_top(voidptr ptr, vphp__Context ctx) {
@@ -76807,7 +76867,7 @@ void vphp_wrap_Article_is_top(voidptr ptr, vphp__Context ctx) {
 void main__vphp_wrap_article_save(voidptr ptr, vphp__Context ctx) {
 	main__Article* recv = ((main__Article*)(ptr));
 	bool res = main__Article_save(recv);
-	vphp__return_val_T_bool(ctx, res);
+	vphp__Context_return_val_T_bool(ctx, res);
 }
 // export alias: vphp_wrap_Article_save -> main__vphp_wrap_article_save
 void vphp_wrap_Article_save(voidptr ptr, vphp__Context ctx) {
@@ -76824,7 +76884,7 @@ VV_LOC void main__vphp_wrap_v_add(vphp__Context ctx) {
 	i64 arg_0 = vphp__Context_arg_T_i64(ctx, 0);
 	i64 arg_1 = vphp__Context_arg_T_i64(ctx, 1);
 	i64 res = main__v_add(arg_0, arg_1);
-	vphp__return_val_T_i64(ctx, res);
+	vphp__Context_return_val_T_i64(ctx, res);
 }
 // export alias: vphp_wrap_v_add -> main__vphp_wrap_v_add
 void vphp_wrap_v_add(vphp__Context ctx) {
@@ -76833,7 +76893,7 @@ void vphp_wrap_v_add(vphp__Context ctx) {
 VV_LOC void main__vphp_wrap_v_greet(vphp__Context ctx) {
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__v_greet(arg_0);
-	vphp__return_val_T_string(ctx, res);
+	vphp__Context_return_val_T_string(ctx, res);
 }
 // export alias: vphp_wrap_v_greet -> main__vphp_wrap_v_greet
 void vphp_wrap_v_greet(vphp__Context ctx) {
@@ -76843,7 +76903,7 @@ VV_LOC void main__vphp_wrap_v_pure_map_test(vphp__Context ctx) {
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	Map_string_string res = main__v_pure_map_test(arg_0, arg_1);
-	vphp__return_val_T_Map_string_string(ctx, res);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
 // export alias: vphp_wrap_v_pure_map_test -> main__vphp_wrap_v_pure_map_test
 void vphp_wrap_v_pure_map_test(vphp__Context ctx) {
