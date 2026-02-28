@@ -151,10 +151,10 @@ typedef struct rand__buffer__PRNGBuffer rand__buffer__PRNGBuffer;
 typedef struct vphp__Context vphp__Context;
 typedef struct vphp__AsyncResult vphp__AsyncResult;
 typedef struct vphp__TaskRegistry vphp__TaskRegistry;
-typedef struct vphp__Val vphp__Val;
 typedef struct vphp__MapContext vphp__MapContext;
 typedef struct vphp__MapF64Context vphp__MapF64Context;
 typedef struct vphp__MapIntContext vphp__MapIntContext;
+typedef struct vphp__Val vphp__Val;
 typedef struct os__Command os__Command;
 typedef struct os__Eof os__Eof;
 typedef struct os__NotExpected os__NotExpected;
@@ -7419,11 +7419,11 @@ typedef struct thread_arg_vphp__ITask_run {
 	vphp__ITask arg0;
 } thread_arg_vphp__ITask_run;
 
-typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731 {
+typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 {
 	void (*fn) (sync__WaitGroup*, void (*) ());
 	sync__WaitGroup* arg1;
 	void (*arg2) ();
-} thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731;
+} thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
 static bool Array_v__token__Kind_contains(Array_v__token__Kind a, v__token__Kind v);
@@ -9150,6 +9150,8 @@ void vphp__Context_sync_props_T_main__Article(vphp__Context ctx, main__Article* 
 void vphp__return_val_raw_T_i64(zval* ret, i64 val);
 void vphp__return_val_raw_T_string(zval* ret, string val);
 void vphp__return_val_raw_T_bool(zval* ret, bool val);
+void vphp__throw_exception(string msg, int code);
+void vphp__report_error(int level, string msg);
 VV_LOC void vphp__vphp_framework_init(int module_number);
 VV_EXP void vphp_framework_init(int module_number); // exported fn vphp.vphp_framework_init
 void vphp__init_framework(int module_number);
@@ -9160,6 +9162,7 @@ VV_LOC void vphp__framework_v_spawn(zend_execute_data* ex, zval* retval);
 VV_EXP void v_spawn(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_spawn
 VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval);
 VV_EXP void v_wait(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_wait
+VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val);
 bool vphp__Val_is_valid(vphp__Val v);
 int vphp__Val_type_id(vphp__Val v);
 bool vphp__Val_is_undef(vphp__Val v);
@@ -9207,12 +9210,9 @@ vphp__Val vphp__new_val_int(i64 n);
 vphp__Val vphp__new_val_float(f64 f);
 vphp__Val vphp__new_val_bool(bool b);
 vphp__Val vphp__new_val_string(string s);
-void vphp__report_error(int level, string msg);
 Array_vphp__Val vphp__get_args(zend_execute_data* ex);
 vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
-void vphp__throw_exception(string msg, int code);
 vphp__Val vphp__call_php(string name, Array_vphp__Val args);
-VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val);
 Array_string os__args_after(string cut_word);
 Array_string os__args_before(string cut_word);
 _result_os__Command os__start_new_command(string cmd);
@@ -9900,7 +9900,7 @@ void sync__WaitGroup_add(sync__WaitGroup* wg, int delta);
 void sync__WaitGroup_done(sync__WaitGroup* wg);
 void sync__WaitGroup_wait(sync__WaitGroup* wg);
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)());
-VV_LOC void anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
+VV_LOC void anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
 u64 sync__thread_id(void);
 _result_string v__util__resolve_d_value(Map_string_string compile_values, string str);
 _result_string v__util__resolve_env_value(string str, bool check_for_presence);
@@ -12465,7 +12465,7 @@ static inline void __chan_bool_pushval(chan_bool ch, bool val) {
 // V gowrappers waiter fns:
 Array_f64 __v_thread_Array_f64_wait(__v_thread_Array_f64 thread);
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
-void* anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731 *arg);
+void* anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *arg);
 
 // V auto str functions:
 static string time__FormatTime_str(time__FormatTime it) { /* gen_str_for_enum */
@@ -17426,7 +17426,7 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 	builtin___v_free(arg);
 	return ret_ptr;
 }
-void* anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731 *arg) {
+void* anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *arg) {
 	arg->fn(arg->arg1, arg->arg2);
 	builtin___v_free(arg);
 	return 0;
@@ -17499,7 +17499,7 @@ cJSON* json__encode_main__StockParams(main__StockParams val) {
 
 
 // V anon functions:
-	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
+	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
 	f();
 	sync__WaitGroup_done(wg);
 }
@@ -35709,6 +35709,12 @@ void vphp__return_val_raw_T_bool(zval* ret, bool val) {
 		#endif
 	}
 }
+void vphp__throw_exception(string msg, int code) {
+	vphp_throw(((char*)(msg.str)), code);
+}
+void vphp__report_error(int level, string msg) {
+	vphp_error(level, ((char*)(msg.str)));
+}
 VV_LOC void vphp__vphp_framework_init(int module_number) {
 	vphp__init_framework(module_number);
 }
@@ -35797,6 +35803,12 @@ VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval) {
 // export alias: v_wait -> vphp__framework_v_wait
 void v_wait(zend_execute_data* ex, zval* retval) {
 	return vphp__framework_v_wait(ex, retval);
+}
+VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val) {
+	vphp__MapContext* ctx = ((vphp__MapContext*)(p_ctx));
+	string v_key = builtin__char_vstring(key);
+	string v_val = vphp__Val_to_string(((vphp__Val){.raw = val,}));
+	builtin__map_set(&ctx->m, &(string[]){v_key}, &(string[]) { v_val });
 }
 bool vphp__Val_is_valid(vphp__Val v) {
 	return v.raw != 0;
@@ -36059,9 +36071,6 @@ vphp__Val vphp__new_val_string(string s) {
 	}
 	return (vphp__Val){.raw = 0,};
 }
-void vphp__report_error(int level, string msg) {
-	vphp_error(level, ((char*)(msg.str)));
-}
 Array_vphp__Val vphp__get_args(zend_execute_data* ex) {
 	int num = ((int)(vphp_get_num_args(ex)));
 	Array_vphp__Val res = builtin____new_array_with_default(0, 0, sizeof(vphp__Val), 0);
@@ -36072,9 +36081,6 @@ Array_vphp__Val vphp__get_args(zend_execute_data* ex) {
 }
 vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret) {
 	return ((vphp__Context){.ex = ex,.ret = ret,});
-}
-void vphp__throw_exception(string msg, int code) {
-	vphp_throw(((char*)(msg.str)), code);
 }
 vphp__Val vphp__call_php(string name, Array_vphp__Val args) {
 	{ // Unsafe block
@@ -36087,12 +36093,6 @@ vphp__Val vphp__call_php(string name, Array_vphp__Val args) {
 		return ((vphp__Val){.raw = &retval,});
 	}
 	return (vphp__Val){.raw = 0,};
-}
-VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val) {
-	vphp__MapContext* ctx = ((vphp__MapContext*)(p_ctx));
-	string v_key = builtin__char_vstring(key);
-	string v_val = vphp__Val_to_string(((vphp__Val){.raw = val,}));
-	builtin__map_set(&ctx->m, &(string[]){v_key}, &(string[]) { v_val });
 }
 Array_string os__args_after(string cut_word) {
 	if (_const_os__args.len == 0) {
@@ -46785,16 +46785,16 @@ void sync__WaitGroup_wait(sync__WaitGroup* wg) {
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)(void)) {
 	sync__WaitGroup_add(wg, 1);
 	// start go
-	thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731));
-	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731;
+	thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731));
+	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731;
 	arg__t1->arg1 = wg;
 	arg__t1->arg2 = f;
 	pthread_t thread__t1;
 	pthread_attr_t thread__t1_attributes;
 	pthread_attr_init(&thread__t1_attributes);
 	pthread_attr_setstacksize(&thread__t1_attributes, 8388608); // fn: 
-	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
-	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_191_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
+	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
+	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_193_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
 	pthread_detach(thread__t1);
 	// end go
 	;

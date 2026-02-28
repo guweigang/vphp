@@ -27,9 +27,7 @@ pub enum PHPType {
     reference = zend.is_reference
 }
 
-// 统一映射 zend 常量到 vphp 命名空间
-pub const e_error   = zend.e_error
-pub const e_warning = zend.e_warning
+
 
 @[export: 'vphp_framework_init']
 fn vphp_framework_init(module_number int) {
