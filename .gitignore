@@ -1,5 +1,4 @@
 *.so
-run-tests.php
 tests/*.diff
 tests/*.exp
 tests/*.log
