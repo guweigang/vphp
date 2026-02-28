@@ -43,7 +43,7 @@ pub fn article_sync_props(ptr voidptr, zv &C.zval) {
 
 @[export: 'vphp_wrap_Article_init']
 
-pub fn vphp_wrap_Article_init(ptr voidptr, ctx vphp.Context) voidptr {
+pub fn vphp_wrap_article_init(ptr voidptr, ctx vphp.Context) voidptr {
 
     mut recv := unsafe { &Article(ptr) }
 
@@ -59,19 +59,19 @@ pub fn vphp_wrap_Article_init(ptr voidptr, ctx vphp.Context) voidptr {
 
 @[export: 'vphp_wrap_Article_create']
 
-pub fn vphp_wrap_Article_create(ctx vphp.Context)  {
+pub fn vphp_wrap_article_create(ctx vphp.Context) voidptr {
 
     arg_0 := ctx.arg[string](0)
 
     res := Article.create(arg_0)
 
-    vphp.return_val[&main.Article](ctx, res)
+    return voidptr(res)
 
 }
 
 @[export: 'vphp_wrap_Article_is_top']
 
-pub fn vphp_wrap_Article_is_top(ptr voidptr, ctx vphp.Context)  {
+pub fn vphp_wrap_article_is_top(ptr voidptr, ctx vphp.Context)  {
 
     mut recv := unsafe { &Article(ptr) }
 
@@ -83,7 +83,7 @@ pub fn vphp_wrap_Article_is_top(ptr voidptr, ctx vphp.Context)  {
 
 @[export: 'vphp_wrap_Article_save']
 
-pub fn vphp_wrap_Article_save(ptr voidptr, ctx vphp.Context)  {
+pub fn vphp_wrap_article_save(ptr voidptr, ctx vphp.Context)  {
 
     mut recv := unsafe { &Article(ptr) }
 

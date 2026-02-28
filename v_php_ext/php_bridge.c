@@ -29,35 +29,35 @@ PHP_METHOD(Article, __construct) {
     extern void vphp_wrap_Article_init(void* v_ptr, vphp_context_internal ctx);
     vphp_wrap_Article_init(wrapper->v_ptr, ctx);
 }
-    PHP_METHOD(Article, create) {
+PHP_METHOD(Article, create) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void* vphp_wrap_Article_create(vphp_context_internal ctx);
-        void* v_instance = vphp_wrap_Article_create(ctx);
-        if (!v_instance) RETURN_NULL();
-        object_init_ex(return_value, article_ce);
-        extern vphp_class_handlers* Article_handlers();
-        vphp_class_handlers *h = Article_handlers();
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
-        wrapper->v_ptr = v_instance;
-        vphp_bind_handlers(Z_OBJ_P(return_value), h);
-    }
-    PHP_METHOD(Article, is_top) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern void vphp_wrap_Article_is_top(void* v_ptr, vphp_context_internal ctx);
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        if (!wrapper->v_ptr) RETURN_NULL();
-        vphp_wrap_Article_is_top(wrapper->v_ptr, ctx);
-    }
-    PHP_METHOD(Article, save) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern void vphp_wrap_Article_save(void* v_ptr, vphp_context_internal ctx);
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        if (!wrapper->v_ptr) RETURN_NULL();
-        vphp_wrap_Article_save(wrapper->v_ptr, ctx);
-    }
+    void* v_instance = vphp_wrap_Article_create(ctx);
+    if (!v_instance) RETURN_NULL();
+    object_init_ex(return_value, article_ce);
+    extern vphp_class_handlers* Article_handlers();
+    vphp_class_handlers *h = Article_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
+    wrapper->v_ptr = v_instance;
+    vphp_bind_handlers(Z_OBJ_P(return_value), h);
+}
+PHP_METHOD(Article, is_top) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Article_is_top(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    vphp_wrap_Article_is_top(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(Article, save) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Article_save(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    vphp_wrap_Article_save(wrapper->v_ptr, ctx);
+}
 static const zend_function_entry article_methods[] = {
     PHP_ME(Article, __construct, arginfo_article_init, ZEND_ACC_PUBLIC)
     PHP_ME(Article, create, arginfo_article_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)

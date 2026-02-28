@@ -88,60 +88,60 @@ const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
 }'
 
 // C 代码模板：静态工厂方法（返回对象指针）
-const tpl_static_factory = '    PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+const tpl_static_factory = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void* {{V_FUNC}}(vphp_context_internal ctx);
-        void* v_instance = {{V_FUNC}}(ctx);
-        if (!v_instance) RETURN_NULL();
-        object_init_ex(return_value, {{LOWER_CLASS}}_ce);
-        extern vphp_class_handlers* {{CLASS}}_handlers();
-        vphp_class_handlers *h = {{CLASS}}_handlers();
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
-        wrapper->v_ptr = v_instance;
-        vphp_bind_handlers(Z_OBJ_P(return_value), h);
-    }'
+    void* v_instance = {{V_FUNC}}(ctx);
+    if (!v_instance) RETURN_NULL();
+    object_init_ex(return_value, {{LOWER_CLASS}}_ce);
+    extern vphp_class_handlers* {{CLASS}}_handlers();
+    vphp_class_handlers *h = {{CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
+    wrapper->v_ptr = v_instance;
+    vphp_bind_handlers(Z_OBJ_P(return_value), h);
+}'
 
 // C 代码模板：静态方法（返回基本类型）
-const tpl_static_scalar = '    PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern {{C_TYPE}} {{V_FUNC}}(vphp_context_internal ctx);
-        {{C_TYPE}} res = {{V_FUNC}}(ctx);
-        {{PHP_RETURN}}(res);
-    }'
+const tpl_static_scalar = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern {{C_TYPE}} {{V_FUNC}}(vphp_context_internal ctx);
+    {{C_TYPE}} res = {{V_FUNC}}(ctx);
+    {{PHP_RETURN}}(res);
+}'
 
 // C 代码模板：实例方法（带返回值）
-const tpl_instance_method = '    PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern {{C_TYPE}} {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        if (!wrapper->v_ptr) RETURN_FALSE;
-        {{C_TYPE}} res = {{V_FUNC}}(wrapper->v_ptr, ctx);
-        {{PHP_RETURN}}(res);
-    }'
+const tpl_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern {{C_TYPE}} {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    {{C_TYPE}} res = {{V_FUNC}}(wrapper->v_ptr, ctx);
+    {{PHP_RETURN}}(res);
+}'
 
 // C 代码模板：实例方法（void 返回）
-const tpl_instance_void = '    PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        if (!wrapper->v_ptr) RETURN_NULL();
-        {{V_FUNC}}(wrapper->v_ptr, ctx);
-    }'
+const tpl_instance_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    {{V_FUNC}}(wrapper->v_ptr, ctx);
+}'
 
 // C 代码模板：Result 类型实例方法
-const tpl_instance_result = '    PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern {{C_TYPE}} {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        if (!wrapper->v_ptr) RETURN_FALSE;
-        {{C_TYPE}} res = {{V_FUNC}}(wrapper->v_ptr, ctx);
-        {{PHP_RETURN}}(res);
-    }'
+const tpl_instance_result = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern {{C_TYPE}} {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    {{C_TYPE}} res = {{V_FUNC}}(wrapper->v_ptr, ctx);
+    {{PHP_RETURN}}(res);
+}'
 
 // 模板变量替换
 fn render_tpl(tpl string, vars map[string]string) string {
@@ -392,13 +392,13 @@ pub fn (r PhpClassRepr) gen_v_glue() []string {
 
         out << "@[export: 'vphp_wrap_${r.name}_${m.name}']"
         
-        is_factory := m.name == 'init' || (m.is_static && m.return_type == '&${r.name}')
+        is_factory := m.name == 'init' || (m.is_static && m.return_type.ends_with(r.name))
         ret_decl := if is_factory { "voidptr" } else { "" }
         
         if m.is_static {
-            out << "pub fn vphp_wrap_${r.name}_${m.name}(ctx vphp.Context) ${ret_decl} {"
+            out << "pub fn vphp_wrap_${lower_name}_${m.name}(ctx vphp.Context) ${ret_decl} {"
         } else {
-            out << "pub fn vphp_wrap_${r.name}_${m.name}(ptr voidptr, ctx vphp.Context) ${ret_decl} {"
+            out << "pub fn vphp_wrap_${lower_name}_${m.name}(ptr voidptr, ctx vphp.Context) ${ret_decl} {"
             out << "    mut recv := unsafe { &${r.name}(ptr) }"
         }
 
