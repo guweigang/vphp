@@ -1,8 +1,6 @@
 module main
 
 import vphp
-import time
-import json
 
 @[export: 'Article_new_raw']
 pub fn article_new_raw() voidptr {
@@ -28,17 +26,23 @@ pub fn vphp_wrap_article_init(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.init(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_Article_internal_format']
+pub fn vphp_wrap_article_internal_format(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &Article(ptr) }
+    res := recv.internal_format()
+    ctx.return_val[string](res)
+}
 @[export: 'vphp_wrap_Article_create']
 pub fn vphp_wrap_article_create(ctx vphp.Context) voidptr {
     arg_0 := ctx.arg[string](0)
     res := Article.create(arg_0)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_Article_is_top']
-pub fn vphp_wrap_article_is_top(ptr voidptr, ctx vphp.Context)  {
+@[export: 'vphp_wrap_Article_get_formatted_title']
+pub fn vphp_wrap_article_get_formatted_title(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
-    res := recv.is_top()
-    ctx.return_val[bool](res)
+    res := recv.get_formatted_title()
+    ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_Article_save']
 pub fn vphp_wrap_article_save(ptr voidptr, ctx vphp.Context)  {

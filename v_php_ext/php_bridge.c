@@ -12,9 +12,11 @@ extern void vphp_task_auto_startup();
 zend_class_entry *article_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_init, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_internal_format, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_create, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_is_top, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_get_formatted_title, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_save, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -29,6 +31,14 @@ PHP_METHOD(Article, __construct) {
     extern void vphp_wrap_Article_init(void* v_ptr, vphp_context_internal ctx);
     vphp_wrap_Article_init(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(Article, internal_format) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Article_internal_format(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    vphp_wrap_Article_internal_format(wrapper->v_ptr, ctx);
+}
 PHP_METHOD(Article, create) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -42,13 +52,13 @@ PHP_METHOD(Article, create) {
     wrapper->v_ptr = v_instance;
     vphp_bind_handlers(Z_OBJ_P(return_value), h);
 }
-PHP_METHOD(Article, is_top) {
+PHP_METHOD(Article, get_formatted_title) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern void vphp_wrap_Article_is_top(void* v_ptr, vphp_context_internal ctx);
+    extern void vphp_wrap_Article_get_formatted_title(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     if (!wrapper->v_ptr) RETURN_NULL();
-    vphp_wrap_Article_is_top(wrapper->v_ptr, ctx);
+    vphp_wrap_Article_get_formatted_title(wrapper->v_ptr, ctx);
 }
 PHP_METHOD(Article, save) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -60,11 +70,13 @@ PHP_METHOD(Article, save) {
 }
 static const zend_function_entry article_methods[] = {
     PHP_ME(Article, __construct, arginfo_article_init, ZEND_ACC_PUBLIC)
+    PHP_ME(Article, internal_format, arginfo_article_internal_format, ZEND_ACC_PROTECTED)
     PHP_ME(Article, create, arginfo_article_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(Article, is_top, arginfo_article_is_top, ZEND_ACC_PUBLIC)
+    PHP_ME(Article, get_formatted_title, arginfo_article_get_formatted_title, ZEND_ACC_PUBLIC)
     PHP_ME(Article, save, arginfo_article_save, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
+
 zend_class_entry *vphp__task_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -96,6 +108,7 @@ static const zend_function_entry vphp__task_methods[] = {
     PHP_ME(VPhp__Task, list, arginfo_vphp__task_list, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_reverse_string(vphp_context_internal ctx);
@@ -263,6 +276,9 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_long(article_ce, "id", sizeof("id")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_bool(article_ce, "is_top", sizeof("is_top")-1, 0, ZEND_ACC_PUBLIC);
+        zend_declare_property_long(article_ce, "max_title_len", sizeof("max_title_len")-1, 0, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC);
+        zend_declare_property_string(article_ce, "content", sizeof("content")-1, "", ZEND_ACC_PROTECTED);
+        zend_declare_property_long(article_ce, "total_count", sizeof("total_count")-1, 0, ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
