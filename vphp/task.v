@@ -54,7 +54,7 @@ pub fn ITask.get_creator(name string) ?TaskCreator {
 }
 
 
-@[export: 'v_spawn']
+@[export: 'vphp_task_spawn']
 fn framework_v_spawn(ex &C.zend_execute_data, retval &C.zval) {
 	ctx := new_context(ex, retval)
 	task_name := ctx.arg[string](0)
@@ -77,7 +77,7 @@ fn framework_v_spawn(ex &C.zend_execute_data, retval &C.zval) {
 	}
 }
 
-@[export: 'v_wait']
+@[export: 'vphp_task_wait']
 fn framework_v_wait(ex &C.zend_execute_data, retval &C.zval) {
 	ctx := new_context(ex, retval)
 	res_val := ctx.arg_raw(0)
@@ -89,9 +89,9 @@ fn framework_v_wait(ex &C.zend_execute_data, retval &C.zval) {
 		mut task := &AsyncResult(ptr)
 		results := task.handle.wait()
 
-		C.vphp_return_array_start(retval)
+		out := Val{ raw: retval }
+		out.array_init()
 		for r in results {
-			// 显式转换 f64 -> f64 (解决 double 报错)
 			C.vphp_array_push_double(retval, f64(r))
 		}
 	}

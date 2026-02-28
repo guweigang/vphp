@@ -36,24 +36,30 @@ fn (mut c Compiler) generate_c() ! {
 		res.write_string(line + '\n')
 	}
 
-	// 3. 写入框架内置函数的 Wrapper
-	internal_funcs := ['v_spawn', 'v_wait']
-	for f in internal_funcs {
-		res.write_string('ZEND_BEGIN_ARG_INFO_EX(arginfo_${f}, 0, 0, 0)\nZEND_END_ARG_INFO()\n')
-		res.write_string('void ${f}(zend_execute_data *execute_data, zval *return_value);\n')
-		res.write_string('PHP_FUNCTION(${f}) { ${f}(execute_data, return_value); }\n\n')
-	}
+	// 3. VPhp\Task 类 — 框架内置
+	c_ns := '\\\\' // V '\\\\' → 输出到 C 文件为 '\\' → C 运行时为单个 '\'
+	res.write_string('/* === VPhp' + c_ns + 'Task built-in class === */\n')
+	res.write_string('extern void vphp_task_spawn(zend_execute_data *execute_data, zval *return_value);\n')
+	res.write_string('extern void vphp_task_wait(zend_execute_data *execute_data, zval *return_value);\n\n')
+	res.write_string('ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_spawn, 0, 0, 2)\n')
+	res.write_string('ZEND_END_ARG_INFO()\n')
+	res.write_string('ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_wait, 0, 0, 1)\n')
+	res.write_string('ZEND_END_ARG_INFO()\n\n')
+	res.write_string('PHP_METHOD(VPhp_Task, spawn) { vphp_task_spawn(execute_data, return_value); }\n')
+	res.write_string('PHP_METHOD(VPhp_Task, wait)  { vphp_task_wait(execute_data, return_value); }\n\n')
+	res.write_string('static const zend_function_entry vphp_task_methods[] = {\n')
+	res.write_string('    PHP_ME(VPhp_Task, spawn, arginfo_vphp_task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)\n')
+	res.write_string('    PHP_ME(VPhp_Task, wait,  arginfo_vphp_task_wait,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)\n')
+	res.write_string('    PHP_FE_END\n')
+	res.write_string('};\n\n')
 
-	// 4. 函数表 (使用 ${c.ext_name}_functions)
+	// 4. 函数表 (使用 ${c.ext_name}_functions) — 不再包含 v_spawn/v_wait
 	res.write_string('static const zend_function_entry ${c.ext_name}_functions[] = {\n')
 	for mut el in c.elements {
 		if mut el is PhpFuncRepr {
 			f := el
 			res.write_string('    PHP_FE(${f.name}, arginfo_${f.name})\n')
 		}
-	}
-	for f in internal_funcs {
-		res.write_string('    PHP_FE(${f}, arginfo_${f})\n')
 	}
 	res.write_string('    PHP_FE_END\n};\n\n')
 
@@ -63,6 +69,12 @@ fn (mut c Compiler) generate_c() ! {
 	for line in c_gen.gen_minit_lines(mut c.elements) {
 		res.write_string(line + '\n')
 	}
+	// 注册 VPhp\Task 类
+	res.write_string('    {\n')
+	res.write_string('        zend_class_entry ce_task;\n')
+	res.write_string('        INIT_CLASS_ENTRY(ce_task, "VPhp' + c_ns + 'Task", vphp_task_methods);\n')
+	res.write_string('        zend_register_internal_class(&ce_task);\n')
+	res.write_string('    }\n')
 	res.write_string('    vphp_task_auto_startup();\n')
 	res.write_string('    return SUCCESS;\n}\n\n')
 
@@ -72,8 +84,7 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('    PHP_MINIT(${c.ext_name}), NULL, NULL, NULL, NULL, "1.0.0",\n')
 	res.write_string('    STANDARD_MODULE_PROPERTIES\n};\n\n')
 
-  // 7. 核心：写入 ZEND_GET_MODULE 宏 👈
-  // 这行代码会让 PHP 引擎识别并加载这个扩展
+  // 7. 核心：写入 ZEND_GET_MODULE 宏
   res.write_string('#ifndef COMPILE_DL_${c.ext_name.to_upper()}\n')
 	res.write_string('#define COMPILE_DL_${c.ext_name.to_upper()}\n\n')
   res.write_string('ZEND_GET_MODULE(${c.ext_name})\n')
@@ -106,7 +117,6 @@ fn (mut c Compiler) generate_h() ! {
 	res.write_string('#include <php.h>\n\n')
 
 	// 3. 写入扩展模块入口声明
-	// 这样 C 侧和 V 侧都能引用 &vphp_ext_module_entry
 	res.write_string('extern zend_module_entry ${c.ext_name}_module_entry;\n')
 	res.write_string('#define phpext_${c.ext_name}_ptr &${c.ext_name}_module_entry\n\n')
 
@@ -114,11 +124,6 @@ fn (mut c Compiler) generate_h() ! {
 	for line in c_gen.gen_h_defs(mut c.elements) {
 		res.write_string(line + '\n')
 	}
-
-	// 5. 补充框架内置函数的声明 (这些不走 Repr 扫描)
-	res.write_string('\n/* Framework Internal Functions */\n')
-	res.write_string('PHP_FUNCTION(v_spawn);\n')
-	res.write_string('PHP_FUNCTION(v_wait);\n\n')
 
 	// 6. 写入头文件保护结束
 	res.write_string('#endif\n')

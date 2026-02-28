@@ -27,9 +27,4 @@ PHP_FUNCTION(v_complex_test);
 PHP_FUNCTION(v_analyze_user_object);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
-
-/* Framework Internal Functions */
-PHP_FUNCTION(v_spawn);
-PHP_FUNCTION(v_wait);
-
 #endif

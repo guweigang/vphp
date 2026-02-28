@@ -11,8 +11,8 @@ $params = [
     "limit" => 5,
 ];
 
-$t = v_spawn("AnalyzeTask", json_encode($params));
-$res = v_wait($t);
+$t = VPhp\Task::spawn("AnalyzeTask", json_encode($params));
+$res = VPhp\Task::wait($t);
 print_r($res);
 --EXPECT--
 Array

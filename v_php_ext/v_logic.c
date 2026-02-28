@@ -9169,9 +9169,9 @@ VV_LOC vphp__TaskRegistry* vphp__get_registry(void);
 void vphp__ITask__static__register(string name, vphp__ITask (*creator)(string json_data));
 _option_anon_fn_string__vphp__ITask vphp__ITask__static__get_creator(string name);
 VV_LOC void vphp__framework_v_spawn(zend_execute_data* ex, zval* retval);
-VV_EXP void v_spawn(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_spawn
+VV_EXP void vphp_task_spawn(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_spawn
 VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval);
-VV_EXP void v_wait(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_wait
+VV_EXP void vphp_task_wait(zend_execute_data* ex, zval* retval); // exported fn vphp.framework_v_wait
 VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val);
 bool vphp__Val_is_valid(vphp__Val v);
 int vphp__Val_type_id(vphp__Val v);
@@ -35721,8 +35721,8 @@ thread__t2;
 		vphp__Context_return_res(ctx, res, _S("v_task"));
 	}
 }
-// export alias: v_spawn -> vphp__framework_v_spawn
-void v_spawn(zend_execute_data* ex, zval* retval) {
+// export alias: vphp_task_spawn -> vphp__framework_v_spawn
+void vphp_task_spawn(zend_execute_data* ex, zval* retval) {
 	return vphp__framework_v_spawn(ex, retval);
 }
 VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval) {
@@ -35735,15 +35735,16 @@ VV_LOC void vphp__framework_v_wait(zend_execute_data* ex, zval* retval) {
 		}
 		vphp__AsyncResult* task = ((vphp__AsyncResult*)(ptr));
 		Array_f64 results = __v_thread_Array_f64_wait(task->handle);
-		vphp_return_array_start(retval);
+		vphp__Val out = ((vphp__Val){.raw = retval,});
+		vphp__Val_array_init(out);
 		for (int _t1 = 0; _t1 < results.len; ++_t1) {
 			f64 r = ((f64*)results.data)[_t1];
 			vphp_array_push_double(retval, ((f64)(r)));
 		}
 	}
 }
-// export alias: v_wait -> vphp__framework_v_wait
-void v_wait(zend_execute_data* ex, zval* retval) {
+// export alias: vphp_task_wait -> vphp__framework_v_wait
+void vphp_task_wait(zend_execute_data* ex, zval* retval) {
 	return vphp__framework_v_wait(ex, retval);
 }
 VV_LOC void vphp__map_callback(voidptr p_ctx, char* key, zval* val) {
@@ -76002,34 +76003,28 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 		string line = ((string*)_t1.data)[_t2];
 		strings__Builder_write_string(&res, builtin__string__plus(line, _S("\n")));
 	}
-	Array_string internal_funcs = builtin__new_array_from_c_array(2, 2, sizeof(string), _MOV((string[2]){_S("v_spawn"), _S("v_wait")}));
-	for (int _t3 = 0; _t3 < internal_funcs.len; ++_t3) {
-		string f = ((string*)internal_funcs.data)[_t3];
-		{
-			strings__Builder_write_string(&res, _S("ZEND_BEGIN_ARG_INFO_EX(arginfo_"));
-			strings__Builder_write_string(&res, f);
-			strings__Builder_write_string(&res, _S(", 0, 0, 0)\nZEND_END_ARG_INFO()\n"));
-		}
-		{
-			strings__Builder_write_string(&res, _S("void "));
-			strings__Builder_write_string(&res, f);
-			strings__Builder_write_string(&res, _S("(zend_execute_data *execute_data, zval *return_value);\n"));
-		}
-		{
-			strings__Builder_write_string(&res, _S("PHP_FUNCTION("));
-			strings__Builder_write_string(&res, f);
-			strings__Builder_write_string(&res, _S(") { "));
-			strings__Builder_write_string(&res, f);
-			strings__Builder_write_string(&res, _S("(execute_data, return_value); }\n\n"));
-		}
-	}
+	string c_ns = _S("\\\\");
+	strings__Builder_write_string(&res, builtin__string__plus(builtin__string__plus(_S("/* === VPhp"), c_ns), _S("Task built-in class === */\n")));
+	strings__Builder_write_string(&res, _S("extern void vphp_task_spawn(zend_execute_data *execute_data, zval *return_value);\n"));
+	strings__Builder_write_string(&res, _S("extern void vphp_task_wait(zend_execute_data *execute_data, zval *return_value);\n\n"));
+	strings__Builder_write_string(&res, _S("ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_spawn, 0, 0, 2)\n"));
+	strings__Builder_write_string(&res, _S("ZEND_END_ARG_INFO()\n"));
+	strings__Builder_write_string(&res, _S("ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_wait, 0, 0, 1)\n"));
+	strings__Builder_write_string(&res, _S("ZEND_END_ARG_INFO()\n\n"));
+	strings__Builder_write_string(&res, _S("PHP_METHOD(VPhp_Task, spawn) { vphp_task_spawn(execute_data, return_value); }\n"));
+	strings__Builder_write_string(&res, _S("PHP_METHOD(VPhp_Task, wait)  { vphp_task_wait(execute_data, return_value); }\n\n"));
+	strings__Builder_write_string(&res, _S("static const zend_function_entry vphp_task_methods[] = {\n"));
+	strings__Builder_write_string(&res, _S("    PHP_ME(VPhp_Task, spawn, arginfo_vphp_task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)\n"));
+	strings__Builder_write_string(&res, _S("    PHP_ME(VPhp_Task, wait,  arginfo_vphp_task_wait,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)\n"));
+	strings__Builder_write_string(&res, _S("    PHP_FE_END\n"));
+	strings__Builder_write_string(&res, _S("};\n\n"));
 	{
 		strings__Builder_write_string(&res, _S("static const zend_function_entry "));
 		strings__Builder_write_string(&res, c->ext_name);
 		strings__Builder_write_string(&res, _S("_functions[] = {\n"));
 	}
-	for (int _t4 = 0; _t4 < c->elements.len; ++_t4) {
-		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t4;
+	for (int _t3 = 0; _t3 < c->elements.len; ++_t3) {
+		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)c->elements.data) + _t3;
 		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpFuncRepr_index) {
 			vphp__compiler__PhpFuncRepr* f = (el->_vphp__compiler__PhpFuncRepr);
 			{
@@ -76041,16 +76036,6 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 			}
 		}
 	}
-	for (int _t5 = 0; _t5 < internal_funcs.len; ++_t5) {
-		string f = ((string*)internal_funcs.data)[_t5];
-		{
-			strings__Builder_write_string(&res, _S("    PHP_FE("));
-			strings__Builder_write_string(&res, f);
-			strings__Builder_write_string(&res, _S(", arginfo_"));
-			strings__Builder_write_string(&res, f);
-			strings__Builder_write_string(&res, _S(")\n"));
-		}
-	}
 	strings__Builder_write_string(&res, _S("    PHP_FE_END\n};\n\n"));
 	{
 		strings__Builder_write_string(&res, _S("PHP_MINIT_FUNCTION("));
@@ -76058,11 +76043,16 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 		strings__Builder_write_string(&res, _S(") {\n"));
 	}
 	strings__Builder_write_string(&res, _S("    vphp_framework_init(module_number);\n"));
-	Array_string _t6 = vphp__compiler__CGenerator_gen_minit_lines(c_gen, &c->elements);
-	for (int _t7 = 0; _t7 < _t6.len; ++_t7) {
-		string line = ((string*)_t6.data)[_t7];
+	Array_string _t4 = vphp__compiler__CGenerator_gen_minit_lines(c_gen, &c->elements);
+	for (int _t5 = 0; _t5 < _t4.len; ++_t5) {
+		string line = ((string*)_t4.data)[_t5];
 		strings__Builder_write_string(&res, builtin__string__plus(line, _S("\n")));
 	}
+	strings__Builder_write_string(&res, _S("    {\n"));
+	strings__Builder_write_string(&res, _S("        zend_class_entry ce_task;\n"));
+	strings__Builder_write_string(&res, builtin__string__plus(builtin__string__plus(_S("        INIT_CLASS_ENTRY(ce_task, \"VPhp"), c_ns), _S("Task\", vphp_task_methods);\n")));
+	strings__Builder_write_string(&res, _S("        zend_register_internal_class(&ce_task);\n"));
+	strings__Builder_write_string(&res, _S("    }\n"));
 	strings__Builder_write_string(&res, _S("    vphp_task_auto_startup();\n"));
 	strings__Builder_write_string(&res, _S("    return SUCCESS;\n}\n\n"));
 	{
@@ -76099,12 +76089,12 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 		strings__Builder_write_string(&res, _S(")\n"));
 	}
 	strings__Builder_write_string(&res, _S("#endif\n"));
-	_result_void _t8 = os__write_file(_S("php_bridge.c"), strings__Builder_str(&res));
-	if (_t8.is_error) {
-		_result_void _t9 = {0};
-		_t9.is_error = true;
-		_t9.err = _t8.err;
-		return _t9;
+	_result_void _t6 = os__write_file(_S("php_bridge.c"), strings__Builder_str(&res));
+	if (_t6.is_error) {
+		_result_void _t7 = {0};
+		_t7.is_error = true;
+		_t7.err = _t6.err;
+		return _t7;
 	}
 	
  ;
@@ -76148,9 +76138,6 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_h(vphp__compiler__Compiler
 		string line = ((string*)_t1.data)[_t2];
 		strings__Builder_write_string(&res, builtin__string__plus(line, _S("\n")));
 	}
-	strings__Builder_write_string(&res, _S("\n/* Framework Internal Functions */\n"));
-	strings__Builder_write_string(&res, _S("PHP_FUNCTION(v_spawn);\n"));
-	strings__Builder_write_string(&res, _S("PHP_FUNCTION(v_wait);\n\n"));
 	strings__Builder_write_string(&res, _S("#endif\n"));
 	_result_void _t3 = os__write_file(_S("php_bridge.h"), strings__Builder_str(&res));
 	if (_t3.is_error) {

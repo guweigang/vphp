@@ -198,15 +198,23 @@ PHP_FUNCTION(v_call_php_closure) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_call_php_closure(ctx);
 }
-ZEND_BEGIN_ARG_INFO_EX(arginfo_v_spawn, 0, 0, 0)
-ZEND_END_ARG_INFO()
-void v_spawn(zend_execute_data *execute_data, zval *return_value);
-PHP_FUNCTION(v_spawn) { v_spawn(execute_data, return_value); }
+/* === VPhp\\Task built-in class === */
+extern void vphp_task_spawn(zend_execute_data *execute_data, zval *return_value);
+extern void vphp_task_wait(zend_execute_data *execute_data, zval *return_value);
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_v_wait, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_spawn, 0, 0, 2)
 ZEND_END_ARG_INFO()
-void v_wait(zend_execute_data *execute_data, zval *return_value);
-PHP_FUNCTION(v_wait) { v_wait(execute_data, return_value); }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp_task_wait, 0, 0, 1)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(VPhp_Task, spawn) { vphp_task_spawn(execute_data, return_value); }
+PHP_METHOD(VPhp_Task, wait)  { vphp_task_wait(execute_data, return_value); }
+
+static const zend_function_entry vphp_task_methods[] = {
+    PHP_ME(VPhp_Task, spawn, arginfo_vphp_task_spawn, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(VPhp_Task, wait,  arginfo_vphp_task_wait,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_FE_END
+};
 
 static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
@@ -228,8 +236,6 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_analyze_user_object, arginfo_v_analyze_user_object)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
-    PHP_FE(v_spawn, arginfo_v_spawn)
-    PHP_FE(v_wait, arginfo_v_wait)
     PHP_FE_END
 };
 
@@ -247,6 +253,11 @@ PHP_MINIT_FUNCTION(vphptest) {
     REGISTER_LONG_CONSTANT("MAX_RETRY", 3, CONST_CS | CONST_PERSISTENT);
     REGISTER_DOUBLE_CONSTANT("PI_VALUE", 3.14159, CONST_CS | CONST_PERSISTENT);
     REGISTER_BOOL_CONSTANT("DEBUG_MODE", 0, CONST_CS | CONST_PERSISTENT);
+    {
+        zend_class_entry ce_task;
+        INIT_CLASS_ENTRY(ce_task, "VPhp\\Task", vphp_task_methods);
+        zend_register_internal_class(&ce_task);
+    }
     vphp_task_auto_startup();
     return SUCCESS;
 }
