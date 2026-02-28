@@ -41,6 +41,58 @@ pub fn article_sync_props(ptr voidptr, zv &C.zval) {
 
 }
 
+@[export: 'vphp_wrap_Article_init']
+
+pub fn vphp_wrap_Article_init(ptr voidptr, ctx vphp.Context) voidptr {
+
+    mut recv := unsafe { &Article(ptr) }
+
+    arg_0 := ctx.arg[string](0)
+
+    arg_1 := ctx.arg[int](1)
+
+    res := recv.init(arg_0, arg_1)
+
+    return voidptr(res)
+
+}
+
+@[export: 'vphp_wrap_Article_create']
+
+pub fn vphp_wrap_Article_create(ctx vphp.Context)  {
+
+    arg_0 := ctx.arg[string](0)
+
+    res := Article.create(arg_0)
+
+    vphp.return_val[&main.Article](ctx, res)
+
+}
+
+@[export: 'vphp_wrap_Article_is_top']
+
+pub fn vphp_wrap_Article_is_top(ptr voidptr, ctx vphp.Context)  {
+
+    mut recv := unsafe { &Article(ptr) }
+
+    res := recv.is_top()
+
+    vphp.return_val[bool](ctx, res)
+
+}
+
+@[export: 'vphp_wrap_Article_save']
+
+pub fn vphp_wrap_Article_save(ptr voidptr, ctx vphp.Context)  {
+
+    mut recv := unsafe { &Article(ptr) }
+
+    res := recv.save()
+
+    vphp.return_val[bool](ctx, res)
+
+}
+
 @[export: 'Article_handlers']
 
 pub fn article_handlers() voidptr {

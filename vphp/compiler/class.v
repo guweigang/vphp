@@ -32,6 +32,7 @@ mut:
     is_static     bool     // 是否为静态方法
     return_type   string   // 返回类型，如 "bool" 或 "&Article"
     args          []PhpArg
+    has_export    bool
     visibility    string
 }
 
@@ -74,23 +75,23 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 // ============================================
 
 // C 代码模板：构造函数
-const tpl_construct = '    PHP_METHOD({{CLASS}}, __construct) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern vphp_class_handlers* {{CLASS}}_handlers();
-        vphp_class_handlers *h = {{CLASS}}_handlers();
-        vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-        wrapper->v_ptr = h->new_raw();
-        vphp_bind_handlers(Z_OBJ_P(getThis()), h);
-        extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-        {{V_FUNC}}(wrapper->v_ptr, ctx);
-    }'
+const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* {{CLASS}}_handlers();
+    vphp_class_handlers *h = {{CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    {{V_FUNC}}(wrapper->v_ptr, ctx);
+}'
 
 // C 代码模板：静态工厂方法（返回对象指针）
 const tpl_static_factory = '    PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
-        typedef struct { void* ex; void* ret; } vphp_context_internal;
-        vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-        extern void* {{V_FUNC}}(vphp_context_internal ctx);
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* {{V_FUNC}}(vphp_context_internal ctx);
         void* v_instance = {{V_FUNC}}(ctx);
         if (!v_instance) RETURN_NULL();
         object_init_ex(return_value, {{LOWER_CLASS}}_ce);
@@ -172,7 +173,10 @@ fn (r PhpClassRepr) gen_c() []string {
 	// 2. 生成方法包装器 — 使用模板
 	for m in r.methods {
 		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
-		v_c_func := '${r.name}_${m.name}'
+		
+		// 依据是否有 @[export: 'xxx'] 决定目标 C 符号
+		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
+		
 		tm := TypeMap.get_type(m.return_type)
 
 		vars := {
@@ -187,13 +191,24 @@ fn (r PhpClassRepr) gen_c() []string {
 		if m.name == 'init' {
 			c << render_tpl(tpl_construct, vars)
 		} else if m.is_static {
-			if tm.c_type == 'void*' {
+			if m.has_export && tm.c_type == 'void*' {
 				c << render_tpl(tpl_static_factory, vars)
+			} else if !m.has_export && tm.c_type == 'void*' {
+				// Pure factory returns Article, V wrapper puts it in ctx.ret directly?
+				// For factory, the original code returns a void*, but a pure V function returns &Article.
+				// Wait! If pure, we let the wrapper return the pointer.
+				c << render_tpl(tpl_static_factory, vars)
+			} else if !m.has_export {
+				// 纯业务的非工厂静态方法，统一走 void 返回，内部通过 ctx 返回
+				c << render_tpl(tpl_static_scalar, vars)
 			} else {
 				c << render_tpl(tpl_static_scalar, vars)
 			}
 		} else {
-			if tm.is_result {
+			if !m.has_export {
+				// 纯业务模式下，V 胶水层直接包含所有装箱逻辑，C 侧全视作 void 返回
+				c << render_tpl(tpl_instance_void, vars)
+			} else if tm.is_result {
 				c << render_tpl(tpl_instance_result, vars)
 			} else if tm.v_type == 'void' {
 				c << render_tpl(tpl_instance_void, vars)
@@ -271,6 +286,27 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 	if !stmt.attrs.any(it.name == 'php_method') {
 		return
 	}
+	
+	mut has_export := false
+	for attr in stmt.attrs {
+		if attr.name == 'export' && attr.arg != '' {
+			has_export = true
+		}
+	}
+
+	mut args := []PhpArg{}
+	start_idx := if stmt.is_method { 1 } else { 0 }
+	
+	for i := start_idx; i < stmt.params.len; i++ {
+	    param := stmt.params[i]
+		mut typ_name := table.get_type_name(param.typ)
+		if typ_name.contains('.') { typ_name = typ_name.all_after('.') }
+		args << PhpArg{
+			name: param.name
+			v_type: typ_name
+		}
+	}
+
 	ret_type := table.type_to_str(stmt.return_type)
 	r.methods << PhpMethodRepr{
 		name: stmt.name
@@ -278,6 +314,8 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 		is_static: false
 		return_type: ret_type
 		visibility: if stmt.is_pub { 'public' } else { 'protected' }
+		args: args
+		has_export: has_export
 	}
 }
 
@@ -285,6 +323,24 @@ pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table,
 	if !stmt.attrs.any(it.name == 'php_method') {
 		return
 	}
+
+	mut has_export := false
+	for attr in stmt.attrs {
+		if attr.name == 'export' && attr.arg != '' {
+			has_export = true
+		}
+	}
+
+	mut args := []PhpArg{}
+	for param in stmt.params {
+		mut typ_name := table.get_type_name(param.typ)
+		if typ_name.contains('.') { typ_name = typ_name.all_after('.') }
+		args << PhpArg{
+			name: param.name
+			v_type: typ_name
+		}
+	}
+
 	ret_type := table.type_to_str(stmt.return_type)
 	r.methods << PhpMethodRepr{
 		name: method_name
@@ -292,6 +348,8 @@ pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table,
 		is_static: true
 		return_type: ret_type
 		visibility: 'public'
+		args: args
+		has_export: has_export
 	}
 }
 
@@ -328,7 +386,62 @@ pub fn (r PhpClassRepr) gen_v_glue() []string {
     out << "    vphp.generic_sync_props[${r.name}](ptr, zv)"
     out << "}"
 
-    // E. Handler 聚合器 — 供 C 侧一次性获取所有 handler
+    // E. 方法的胶水包装 (纯业务方法)
+    for m in r.methods {
+        if m.has_export { continue } // 如果带了 export 走原始路线
+
+        out << "@[export: 'vphp_wrap_${r.name}_${m.name}']"
+        
+        is_factory := m.name == 'init' || (m.is_static && m.return_type == '&${r.name}')
+        ret_decl := if is_factory { "voidptr" } else { "" }
+        
+        if m.is_static {
+            out << "pub fn vphp_wrap_${r.name}_${m.name}(ctx vphp.Context) ${ret_decl} {"
+        } else {
+            out << "pub fn vphp_wrap_${r.name}_${m.name}(ptr voidptr, ctx vphp.Context) ${ret_decl} {"
+            out << "    mut recv := unsafe { &${r.name}(ptr) }"
+        }
+
+        mut arg_names := []string{}
+        for i, arg in m.args {
+            var_name := 'arg_${i}'
+            if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
+                out << "    ${var_name} := ctx"
+            } else {
+                out << "    ${var_name} := ctx.arg[${arg.v_type}](${i})"
+            }
+            arg_names << var_name
+        }
+
+        call_args := arg_names.join(', ')
+        call_str := if m.is_static {
+            "${r.name}.${m.name}(${call_args})"
+        } else {
+            "recv.${m.name}(${call_args})"
+        }
+
+        if m.return_type == 'void' {
+            out << "    ${call_str}"
+        } else {
+            out << "    res := ${call_str}"
+            if !is_factory {
+                out << "    vphp.return_val[${m.return_type}](ctx, res)"
+            }
+        }
+        
+        if is_factory {
+            if m.return_type == 'void' {
+                 // Technically init shouldn't be void if it's returning the instance, but let's assume it assigns to a ptr if res exists.
+                 out << "    return voidptr(recv)"
+            } else {
+                 out << "    return voidptr(res)"
+            }
+        }
+
+        out << "}"
+    }
+
+    // F. Handler 聚合器 — 供 C 侧一次性获取所有 handler
     out << "@[export: '${r.name}_handlers']"
     out << "pub fn ${lower_name}_handlers() voidptr {"
     out << "    return unsafe { &C.vphp_class_handlers{"

@@ -341,10 +341,9 @@ pub mut:
 }
 
 @[php_method]
-@[export: 'Article_init']
-pub fn (mut a Article) init(ctx vphp.Context) &Article {
-    a.title = ctx.arg[string](0)
-    a.id = ctx.arg[int](1)
+pub fn (mut a Article) init(title string, id int) &Article {
+    a.title = title
+    a.id = id
 
     a.is_top = true
     println('V Article initialized with title: ${a.title}')
@@ -353,9 +352,7 @@ pub fn (mut a Article) init(ctx vphp.Context) &Article {
 
 // 动态方法：必须有接收者，自动映射为 PHP 实例方法 $article->save()
 @[php_method]
-@[export: 'Article_create']
-pub fn Article.create(ctx vphp.Context) &Article {
-    title := ctx.arg[string](0)
+pub fn Article.create(title string) &Article {
     mut a := &Article{
         id: 1024
         title: title
@@ -365,14 +362,12 @@ pub fn Article.create(ctx vphp.Context) &Article {
 }
 
 @[php_method]
-@[export: 'Article_is_top']
-pub fn (a &Article) is_top(ctx vphp.Context) bool {
+pub fn (a &Article) is_top() bool {
     return a.is_top
 }
 
 @[php_method]
-@[export: 'Article_save']
-pub fn (a &Article) save(ctx vphp.Context) bool {
+pub fn (a &Article) save() bool {
     println('Saving article: $a.title')
     return true
 }
