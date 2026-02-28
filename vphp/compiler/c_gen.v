@@ -112,63 +112,31 @@ pub fn (g CGenerator) gen_minit_lines(mut elements []PhpRepr) []string {
 	mut res := []string{}
 	for mut el in elements {
 		if mut el is PhpConstRepr {
-			match el.const_type {
-				'string' {
-					res << '    REGISTER_STRING_CONSTANT("${el.name}", "${el.value}", CONST_CS | CONST_PERSISTENT);'
-				}
-				'f64' {
-					res << '    REGISTER_DOUBLE_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
-				}
-				'bool' {
-					res << '    REGISTER_BOOL_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
-				}
-				else {
-					// int (默认)
-					res << '    REGISTER_LONG_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
-				}
-			}
+			res << render_global_constant(el.name, el.const_type, el.value)
 		} else if mut el is PhpClassRepr {
-			c_class := el.c_name()  // VPhp\Task -> VPhp_Task
-			lower_name := c_class.to_lower()
-			ce_ptr := '${lower_name}_ce'
-			res << '    {   zend_class_entry ce;'
-			res << '        INIT_CLASS_ENTRY(ce, "${el.php_name}", ${lower_name}_methods);'
+			mut builder := new_class_builder(el.php_name, el.c_name())
+			builder.set_parent(el.parent)
 
-			if el.parent != "" {
-				res << '        ${lower_name}_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "${el.parent}", sizeof("${el.parent}")-1));'
-			} else {
-				res << '        ${lower_name}_ce = zend_register_internal_class(&ce);'
-			}
-
-			res << '        $ce_ptr->create_object = vphp_create_object_handler;'
-
-			// 注册常量
 			for con in el.constants {
-				res << '        zend_declare_class_constant_string(${lower_name}_ce, "${con.name}", sizeof("${con.name}")-1, "${con.value}");'
+				builder.add_constant(con.name, "string", con.value)
 			}
-
-			// 注册属性
+			
 			for prop in el.properties {
-				flags := if prop.is_static { 'ZEND_ACC_PUBLIC | ZEND_ACC_STATIC' } else { 'ZEND_ACC_PUBLIC' }
-				match prop.v_type {
-					'int', 'i64', 'isize' {
-						res << '        zend_declare_property_long($ce_ptr, "${prop.name}", sizeof("${prop.name}")-1, 0, $flags);'
-					}
-					'f64', 'f32' {
-						res << '        zend_declare_property_double($ce_ptr, "${prop.name}", sizeof("${prop.name}")-1, 0.0, $flags);'
-					}
-					'bool' {
-						res << '        zend_declare_property_bool($ce_ptr, "${prop.name}", sizeof("${prop.name}")-1, 0, $flags);'
-					}
-					'string' {
-						res << '        zend_declare_property_string($ce_ptr, "${prop.name}", sizeof("${prop.name}")-1, "", $flags);'
-					}
-					else {
-						res << '        zend_declare_property_null($ce_ptr, "${prop.name}", sizeof("${prop.name}")-1, $flags);'
-					}
+				// 获取可见性修饰符
+				mut flags := 'ZEND_ACC_PUBLIC'
+				if prop.visibility == 'protected' {
+					flags = 'ZEND_ACC_PROTECTED'
+				} else if prop.visibility == 'private' {
+					flags = 'ZEND_ACC_PRIVATE'
 				}
+
+				if prop.is_static { 
+					flags += ' | ZEND_ACC_STATIC' 
+				}
+				builder.add_property(prop.name, prop.v_type, flags)
 			}
-			res << '    }'
+			
+			res << builder.render_minit()
 		}
 	}
 	return res
@@ -280,15 +248,27 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 		}
 	}
 
-	// 3. 生成方法表
-	c << 'static const zend_function_entry ${lower_name}_methods[] = {'
+	// 3. 生成方法表 (zend_function_entry) 
+	mut builder := new_class_builder(r.php_name, c_class)
 	for m in r.methods {
-	  php_method_name := if m.name == 'init' { '__construct' } else { m.name }
-		flags := if m.is_static { 'ZEND_ACC_PUBLIC | ZEND_ACC_STATIC' } else { 'ZEND_ACC_PUBLIC' }
-		c << '    PHP_ME(${c_class}, ${php_method_name}, arginfo_${lower_name}_${m.name}, $flags)'
+		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
+		
+		mut flags := 'ZEND_ACC_PUBLIC'
+		if m.visibility == 'protected' {
+			flags = 'ZEND_ACC_PROTECTED'
+		} else if m.visibility == 'private' {
+			flags = 'ZEND_ACC_PRIVATE'
+		}
+
+		if m.is_static { 
+			flags += ' | ZEND_ACC_STATIC' 
+		}
+		
+		// 传递包含前缀的 C 函数参数信息名称，比如 arginfo_article_save
+		c_func := '${lower_name}_${m.name}' 
+		builder.add_method(php_method_name, c_func, flags)
 	}
-	c << '    PHP_FE_END'
-	c << '};'
+	c << builder.render_methods_array()
 
 	return c
 }

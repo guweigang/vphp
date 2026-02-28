@@ -72,11 +72,21 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 			}
 			for field in stmt.fields {
 			  type_name := table.get_type_name(field.typ)
+			  
+			  // Parse comments for [static] marker since V attributes on fields are picky
+			  mut is_static := false
+			  for comment in field.comments {
+				  if comment.text.contains('[static]') {
+					  is_static = true
+					  break
+				  }
+			  }
+
 				r.properties << PhpClassProp{
 					name: field.name
 					v_type: type_name
 					visibility: if field.is_pub { 'public' } else { 'protected' }
-					is_static: field.attrs.any(it.name == 'static')
+					is_static: is_static
 				}
 			}
 			return true
