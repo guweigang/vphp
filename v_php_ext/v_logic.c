@@ -77465,9 +77465,12 @@ VV_LOC bool vphp__compiler__PhpClassRepr_parse(vphp__compiler__PhpClassRepr* r, 
 				}
 			}
 			_option_v__ast__Attr _t4;
-			if (_t4 = Array_v__ast__Attr_find_first((*stmt._v__ast__StructDecl).attrs, _S("php_parent")), _t4.state == 0) {
+			if (_t4 = Array_v__ast__Attr_find_first((*stmt._v__ast__StructDecl).attrs, _S("php_extends")), _t4.state == 0) {
 				v__ast__Attr attr = *(v__ast__Attr*)_t4.data;
 				r->parent = attr.arg;
+			} else if ((*stmt._v__ast__StructDecl).embeds.len > 0) {
+				string parent_type_name = v__ast__Table_get_type_name(table, (*(v__ast__Embed*)builtin__array_get((*stmt._v__ast__StructDecl).embeds, 0)).typ);
+				r->parent = (builtin__string_contains(parent_type_name, _S(".")) ? (builtin__string_all_after(parent_type_name, _S("."))) : (parent_type_name));
 			}
 			for (int _t5 = 0; _t5 < (*stmt._v__ast__StructDecl).fields.len; ++_t5) {
 				v__ast__StructField field = ((v__ast__StructField*)(*stmt._v__ast__StructDecl).fields.data)[_t5];
@@ -77475,7 +77478,7 @@ VV_LOC bool vphp__compiler__PhpClassRepr_parse(vphp__compiler__PhpClassRepr* r, 
 				bool is_static = false;
 				for (int _t6 = 0; _t6 < field.comments.len; ++_t6) {
 					v__ast__Comment comment = ((v__ast__Comment*)field.comments.data)[_t6];
-					if (builtin__string_contains(comment.text, _S("[static]"))) {
+					if (builtin__string_contains(comment.text, _S("@[php_static]"))) {
 						is_static = true;
 						break;
 					}

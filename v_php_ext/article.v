@@ -18,18 +18,18 @@ pub fn (p &Post) get_author() string {
 }
 
 @[php_class]
-@[php_parent: 'Post']
+@[php_extends: 'Post']
 struct Article {
 	Post
 pub mut:
 	id            int    // public
 	title         string // public
 	is_top        bool   // public
-	max_title_len int    // @[static] public static
+	max_title_len int    // @[php_static] public static
 
 mut:
 	content       string // protected
-	total_count   int    // @[static] protected static
+	total_count   int    // @[php_static] protected static
 }
 
 @[php_method]

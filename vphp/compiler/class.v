@@ -67,16 +67,24 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 					r.php_name = r.name
 				}
 			}
-			if attr := stmt.attrs.find_first('php_parent') {
+			if attr := stmt.attrs.find_first('php_extends') {
 				r.parent = attr.arg
+			} else if stmt.embeds.len > 0 {
+				// 如果没有明确指定 php_extends，自动从第一个嵌入结构体中提取
+				parent_type_name := table.get_type_name(stmt.embeds[0].typ)
+				r.parent = if parent_type_name.contains('.') {
+					parent_type_name.all_after('.')
+				} else {
+					parent_type_name
+				}
 			}
 			for field in stmt.fields {
 			  type_name := table.get_type_name(field.typ)
 			  
-			  // Parse comments for [static] marker since V attributes on fields are picky
+			  // Parse comments for @[php_static] marker since V attributes on fields are picky
 			  mut is_static := false
 			  for comment in field.comments {
-				  if comment.text.contains('[static]') {
+				  if comment.text.contains('@[php_static]') {
 					  is_static = true
 					  break
 				  }

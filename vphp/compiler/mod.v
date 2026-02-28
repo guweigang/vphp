@@ -14,7 +14,7 @@ mut:
 
 pub struct Compiler {
 pub:
-	target_file string
+	target_files []string
 pub mut:
 	ext_name    string
 	elements    []PhpRepr
@@ -25,9 +25,9 @@ mut:
 	class_index map[string]int
 }
 
-pub fn new(target_file string) Compiler {
+pub fn new(target_files []string) Compiler {
 	return Compiler{
-		target_file: target_file
+		target_files: target_files
 		ext_name: ''
 		table: ast.new_table()
 		pref_set: pref.new_preferences()
@@ -35,20 +35,26 @@ pub fn new(target_file string) Compiler {
 }
 
 pub fn (mut c Compiler) compile() ! {
-	file_ast := parser.parse_file(c.target_file, mut c.table, .parse_comments, c.pref_set)
+    mut all_stmts := []ast.Stmt{}
 
-	if file_ast.errors.len > 0 {
-		return error('AST 解析失败: ${file_ast.errors[0].message}')
-	}
-	// 2. 第一步：填充 ext_name (从 const ext_config 提取)
-	c.set_ext_name(file_ast)
+    for file in c.target_files {
+	    file_ast := parser.parse_file(file, mut c.table, .parse_comments, c.pref_set)
+	    if file_ast.errors.len > 0 {
+		    return error('AST 解析失败: ${file_ast.errors[0].message} in $file')
+	    }
+        if c.ext_name == '' {
+            c.set_ext_name(file_ast)
+        }
+        all_stmts << file_ast.stmts
+    }
+
 	if c.ext_name == '' {
-		return error('无法在 ${c.target_file} 中找到 ext_config 配置，请确保定义了 ExtensionConfig')
+		return error('无法在输入的文件中找到 ext_config 配置，请确保定义了 ExtensionConfig')
 	}
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
 
 	// --- 第一阶段：扫描所有 Struct 定义 ---
-		for stmt in file_ast.stmts {
+		for stmt in all_stmts {
 			if stmt is ast.StructDecl {
 				mut cls := new_class_repr()
 				if cls.parse(stmt, c.table) {
@@ -60,7 +66,7 @@ pub fn (mut c Compiler) compile() ! {
 		}
 
 	// --- 第二阶段：扫描所有 Fn 定义 ---
-	for stmt in file_ast.stmts {
+	for stmt in all_stmts {
 		if stmt is ast.FnDecl {
 			// 1. 检查是否是类方法 (Method)
 			if stmt.is_method {

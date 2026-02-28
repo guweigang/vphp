@@ -92,7 +92,9 @@ pub fn (b &ClassBuilder) render_minit() string {
 
 	// 1. 继承或普通注册
 	if b.parent != '' {
-		res << '        ${ce_ptr} = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "${b.parent}", sizeof("${b.parent}")-1));'
+		lower_parent := b.parent.to_lower()
+		// 如果在同一扩展内作为前置声明出现的大写类，也能在 CG(class_table) 查到，因为 PHP 的类表 key 全是小写
+		res << '        ${ce_ptr} = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "${lower_parent}", sizeof("${lower_parent}")-1));'
 	} else {
 		res << '        ${ce_ptr} = zend_register_internal_class(&ce);'
 	}
