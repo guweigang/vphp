@@ -2,6 +2,44 @@ module main
 
 import vphp
 
+@[export: 'Post_new_raw']
+pub fn post_new_raw() voidptr {
+    return vphp.generic_new_raw[Post]()
+}
+@[export: 'Post_get_prop']
+pub fn post_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    vphp.generic_get_prop[Post](ptr, name_ptr, name_len, rv)
+}
+@[export: 'Post_set_prop']
+pub fn post_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    vphp.generic_set_prop[Post](ptr, name_ptr, name_len, value)
+}
+@[export: 'Post_sync_props']
+pub fn post_sync_props(ptr voidptr, zv &C.zval) {
+    vphp.generic_sync_props[Post](ptr, zv)
+}
+@[export: 'vphp_wrap_Post_set_author']
+pub fn vphp_wrap_post_set_author(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &Post(ptr) }
+    arg_0 := ctx.arg[string](0)
+    recv.set_author(arg_0)
+}
+@[export: 'vphp_wrap_Post_get_author']
+pub fn vphp_wrap_post_get_author(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &Post(ptr) }
+    res := recv.get_author()
+    ctx.return_val[string](res)
+}
+@[export: 'Post_handlers']
+pub fn post_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(post_get_prop)
+        write_handler: voidptr(post_set_prop)
+        sync_handler:  voidptr(post_sync_props)
+        new_raw:       voidptr(post_new_raw)
+    } }
+}
+
 @[export: 'Article_new_raw']
 pub fn article_new_raw() voidptr {
     return vphp.generic_new_raw[Article]()

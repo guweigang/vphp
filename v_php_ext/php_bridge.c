@@ -9,6 +9,33 @@ typedef struct { void* str; int len; int is_lit; } v_string;
 extern void vphp_framework_init(int module_number);
 extern void vphp_task_auto_startup();
 
+zend_class_entry *post_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_post_set_author, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_post_get_author, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(Post, set_author) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Post_set_author(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    vphp_wrap_Post_set_author(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(Post, get_author) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Post_get_author(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    vphp_wrap_Post_get_author(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry post_methods[] = {
+    PHP_ME(Post, set_author, arginfo_post_set_author, ZEND_ACC_PUBLIC)
+    PHP_ME(Post, get_author, arginfo_post_get_author, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 zend_class_entry *article_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_init, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -270,8 +297,15 @@ PHP_MINIT_FUNCTION(vphptest) {
     extern void vphp_ext_startup() __attribute__((weak));
     if (vphp_ext_startup) vphp_ext_startup();
     {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "Post", post_methods);
+        post_ce = zend_register_internal_class(&ce);
+        post_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_long(post_ce, "post_id", sizeof("post_id")-1, 0, ZEND_ACC_PUBLIC);
+        zend_declare_property_string(post_ce, "author", sizeof("author")-1, "", ZEND_ACC_PUBLIC);
+    }
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
-        article_ce = zend_register_internal_class(&ce);
+        article_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         article_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(article_ce, "id", sizeof("id")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);

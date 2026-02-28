@@ -7,6 +7,7 @@
 extern zend_module_entry vphptest_module_entry;
 #define phpext_vphptest_ptr &vphptest_module_entry
 
+extern zend_class_entry *post_ce;
 extern zend_class_entry *article_ce;
 extern zend_class_entry *vphp__task_ce;
 PHP_FUNCTION(v_add);

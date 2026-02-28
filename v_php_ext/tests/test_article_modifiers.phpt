@@ -45,6 +45,8 @@ try {
 ?>
 --EXPECT--
 1. Reflection checks:
+Property: post_id - public
+Property: author - public
 Property: id - public
 Property: title - public
 Property: is_top - public
@@ -56,6 +58,8 @@ Method: internal_format - protected
 Method: create - public static
 Method: get_formatted_title - public
 Method: save - public
+Method: set_author - public
+Method: get_author - public
 
 2. Runtime behavior:
 Title: Hello V!

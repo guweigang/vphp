@@ -1,16 +1,35 @@
 module main
 
 @[php_class]
+struct Post {
+pub mut:
+    post_id int
+    author  string
+}
+
+@[php_method]
+pub fn (mut p Post) set_author(name string) {
+    p.author = name
+}
+
+@[php_method]
+pub fn (p &Post) get_author() string {
+    return p.author
+}
+
+@[php_class]
+@[php_parent: 'Post']
 struct Article {
+	Post
 pub mut:
 	id            int    // public
 	title         string // public
 	is_top        bool   // public
-	max_title_len int    // [static] public static
+	max_title_len int    // @[static] public static
 
 mut:
 	content       string // protected
-	total_count   int    // [static] protected static
+	total_count   int    // @[static] protected static
 }
 
 @[php_method]
