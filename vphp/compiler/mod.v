@@ -34,7 +34,7 @@ pub fn new(target_files []string) Compiler {
 	}
 }
 
-pub fn (mut c Compiler) compile() ! {
+pub fn (mut c Compiler) compile() !string {
     mut all_stmts := []ast.Stmt{}
 
     for file in c.target_files {
@@ -126,6 +126,7 @@ pub fn (mut c Compiler) compile() ! {
 			continue
 		}
 	}
+	return c.ext_name
 }
 
 fn (mut c Compiler) set_ext_name(file_ast &ast.File) {

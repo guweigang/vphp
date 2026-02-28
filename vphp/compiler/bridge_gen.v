@@ -90,8 +90,9 @@ fn (mut c Compiler) generate_h() ! {
 
 	// 1. 写入文件头和头文件保护 (Header Guard)
 	res.write_string('/* ⚠️ VPHP Compiler Generated，请勿手动修改 */\n')
-	res.write_string('#ifndef VPHP_BRIDGE_H\n')
-	res.write_string('#define VPHP_BRIDGE_H\n\n')
+	guard := 'VPHP_EXT_${c.ext_name.to_upper()}_BRIDGE_H'
+	res.write_string('#ifndef ${guard}\n')
+	res.write_string('#define ${guard}\n\n')
 
 	// 2. 引入必要的 PHP 内核头文件
 	res.write_string('#include <php.h>\n\n')
