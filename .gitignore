@@ -1,4 +1,5 @@
 *.so
+build
 tests/*.diff
 tests/*.exp
 tests/*.log
