@@ -71,3 +71,25 @@ pub fn (a &Article) save() bool {
     println('Saving article: $a.title')
     return true
 }
+
+// === 新增 Story 类：通过 Embed 自动识别 php_extends: 'Post' ===
+@[php_class]
+struct Story {
+    Post
+pub mut:
+    chapter_count int
+}
+
+@[php_method]
+pub fn Story.create(author string, chapters int) &Story {
+    mut s := &Story{
+        chapter_count: chapters
+    }
+    s.author = author
+    return s
+}
+
+@[php_method]
+pub fn (s &Story) tell() string {
+    return 'Author ${s.author} is telling a story with ${s.chapter_count} chapters.'
+}

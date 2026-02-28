@@ -98,6 +98,45 @@ pub fn article_handlers() voidptr {
     } }
 }
 
+@[export: 'Story_new_raw']
+pub fn story_new_raw() voidptr {
+    return vphp.generic_new_raw[Story]()
+}
+@[export: 'Story_get_prop']
+pub fn story_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    vphp.generic_get_prop[Story](ptr, name_ptr, name_len, rv)
+}
+@[export: 'Story_set_prop']
+pub fn story_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    vphp.generic_set_prop[Story](ptr, name_ptr, name_len, value)
+}
+@[export: 'Story_sync_props']
+pub fn story_sync_props(ptr voidptr, zv &C.zval) {
+    vphp.generic_sync_props[Story](ptr, zv)
+}
+@[export: 'vphp_wrap_Story_create']
+pub fn vphp_wrap_story_create(ctx vphp.Context) voidptr {
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[int](1)
+    res := Story.create(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_Story_tell']
+pub fn vphp_wrap_story_tell(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &Story(ptr) }
+    res := recv.tell()
+    ctx.return_val[string](res)
+}
+@[export: 'Story_handlers']
+pub fn story_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(story_get_prop)
+        write_handler: voidptr(story_set_prop)
+        sync_handler:  voidptr(story_sync_props)
+        new_raw:       voidptr(story_new_raw)
+    } }
+}
+
 @[export: 'VPhpTask_new_raw']
 pub fn vphptask_new_raw() voidptr {
     return vphp.generic_new_raw[VPhpTask]()

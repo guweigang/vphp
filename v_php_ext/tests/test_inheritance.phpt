@@ -17,6 +17,15 @@ var_dump($article->get_author());
 echo "\nStep 3: Access inherited properties (if V exposed or via PHP)\n";
 $article->post_id = 12345;
 var_dump($article->post_id);
+
+echo "\nStep 4: Test Story (Auto inheritance via Embed)\n";
+$story = Story::create("Gu Weigang", 10);
+var_dump($story instanceof Post);
+var_dump($story instanceof Story);
+echo $story->tell() . "\n";
+$story->set_author("New Author");
+echo "Updated author: " . $story->get_author() . "\n";
+
 --EXPECTF--
 Step 1: Check instanceof
 bool(true)
@@ -27,3 +36,9 @@ string(10) "Weigang Gu"
 
 Step 3: Access inherited properties (if V exposed or via PHP)
 int(12345)
+
+Step 4: Test Story (Auto inheritance via Embed)
+bool(true)
+bool(true)
+Author Gu Weigang is telling a story with 10 chapters.
+Updated author: New Author

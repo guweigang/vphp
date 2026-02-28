@@ -104,6 +104,38 @@ static const zend_function_entry article_methods[] = {
     PHP_FE_END
 };
 
+zend_class_entry *story_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_story_create, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_story_tell, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(Story, create) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_Story_create(vphp_context_internal ctx);
+    void* v_instance = vphp_wrap_Story_create(ctx);
+    if (!v_instance) RETURN_NULL();
+    object_init_ex(return_value, story_ce);
+    extern vphp_class_handlers* Story_handlers();
+    vphp_class_handlers *h = Story_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
+    wrapper->v_ptr = v_instance;
+    vphp_bind_handlers(Z_OBJ_P(return_value), h);
+}
+PHP_METHOD(Story, tell) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Story_tell(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    vphp_wrap_Story_tell(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry story_methods[] = {
+    PHP_ME(Story, create, arginfo_story_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Story, tell, arginfo_story_tell, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 zend_class_entry *vphp__task_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -313,6 +345,12 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_long(article_ce, "max_title_len", sizeof("max_title_len")-1, 0, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC);
         zend_declare_property_string(article_ce, "content", sizeof("content")-1, "", ZEND_ACC_PROTECTED);
         zend_declare_property_long(article_ce, "total_count", sizeof("total_count")-1, 0, ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "Story", story_methods);
+        story_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
+        story_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_long(story_ce, "chapter_count", sizeof("chapter_count")-1, 0, ZEND_ACC_PUBLIC);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
