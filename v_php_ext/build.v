@@ -23,7 +23,7 @@ fn main() {
         return
     }
     
-    println('🛠️  1. 启动 VPHP Compiler 流程... 解析文件: $target_files')
+    println('🛠️  1. 启动 VPHP Compiler 流程... \n 解析文件: $target_files')
 
     // 实例化并运行编译器
     mut vphp_c := compiler.new(target_files)

@@ -79103,7 +79103,7 @@ VV_LOC void main__main(void) {
 		builtin__eprintln(_S("\342\235\214 \346\234\252\346\211\276\345\210\260\344\273\273\344\275\225 V \346\272\220\346\226\207\344\273\266\350\277\233\350\241\214\347\274\226\350\257\221\357\274\201"));
 		return;
 	}
-	builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\360\237\233\240\357\270\217  1. \345\220\257\345\212\250 VPHP Compiler \346\265\201\347\250\213... \350\247\243\346\236\220\346\226\207\344\273\266: "), 0xfe10, {.d_s = Array_string_str(target_files)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+	builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\360\237\233\240\357\270\217  1. \345\220\257\345\212\250 VPHP Compiler \346\265\201\347\250\213... \n \350\247\243\346\236\220\346\226\207\344\273\266: "), 0xfe10, {.d_s = Array_string_str(target_files)}}, {_SLIT0, 0, { .d_c = 0 }}})));
 	vphp__compiler__Compiler vphp_c = vphp__compiler__new(target_files);
 	_result_string _t4 = vphp__compiler__Compiler_compile(&vphp_c);
 	if (_t4.is_error) {
