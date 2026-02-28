@@ -16,9 +16,10 @@ pub struct Compiler {
 pub:
 	target_files []string
 pub mut:
-	ext_name     string
-	ext_version  string
-	ini_entries  map[string]string
+	ext_name        string
+	ext_version     string
+	ext_description string
+	ini_entries     map[string]string
 	globals_repr PhpGlobalsRepr
 	elements     []PhpRepr
 mut:
@@ -151,6 +152,8 @@ fn (mut c Compiler) set_extension_meta(file_ast &ast.File) {
 							c.ext_name = (f.expr as ast.StringLiteral).val
 						} else if f.name == 'version' && f.expr is ast.StringLiteral {
 							c.ext_version = (f.expr as ast.StringLiteral).val
+						} else if f.name == 'description' && f.expr is ast.StringLiteral {
+							c.ext_description = (f.expr as ast.StringLiteral).val
 						} else if f.name == 'ini_entries' && f.expr is ast.MapInit {
 							m_expr := f.expr as ast.MapInit
 							for i, key in m_expr.keys {

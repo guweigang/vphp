@@ -389,6 +389,14 @@ PHP_MSHUTDOWN_FUNCTION(vphptest) {
     UNREGISTER_INI_ENTRIES();
     return SUCCESS;
 }
+PHP_MINFO_FUNCTION(vphptest) {
+    php_info_print_table_start();
+    php_info_print_table_header(2, "vphptest support", "enabled");
+    php_info_print_table_row(2, "Version", "0.1.0");
+    php_info_print_table_row(2, "Description", "PHP Bindings for V");
+    php_info_print_table_end();
+    DISPLAY_INI_ENTRIES();
+}
 
 void* vphp_get_active_globals() {
 #ifdef ZTS
@@ -399,7 +407,7 @@ void* vphp_get_active_globals() {
 }
 zend_module_entry vphptest_module_entry = {
     STANDARD_MODULE_HEADER, "vphptest", vphptest_functions,
-    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, NULL, "0.1.0",
+    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, PHP_MINFO(vphptest), "0.1.0",
     PHP_MODULE_GLOBALS(vphptest),
     (void (*)(void*)) php_vphptest_init_globals,
     NULL,

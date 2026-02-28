@@ -3,6 +3,7 @@
 #define VPHP_EXT_VPHPTEST_BRIDGE_H
 
 #include <php.h>
+#include <ext/standard/info.h>
 
 extern zend_module_entry vphptest_module_entry;
 #define phpext_vphptest_ptr &vphptest_module_entry

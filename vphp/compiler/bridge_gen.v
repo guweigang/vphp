@@ -22,7 +22,7 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('#include "../vphp/v_bridge.h"\n\n')
 
 	// 2. 模块层：初始化 ModuleBuilder 并收集功能点
-	mut mod_builder := new_module_builder(c.ext_name, c.ext_version)
+	mut mod_builder := new_module_builder(c.ext_name, c.ext_version, c.ext_description)
 	for k, v in c.ini_entries {
 		mod_builder.add_ini_entry(k, v)
 	}
@@ -55,6 +55,7 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string(mod_builder.render_functions_table())
 	res.write_string(mod_builder.render_minit())
 	res.write_string(mod_builder.render_mshutdown())
+	res.write_string(mod_builder.render_minfo())
 	res.write_string(mod_builder.render_globals_getter())
 	res.write_string(mod_builder.render_module_entry())
 	res.write_string(mod_builder.render_get_module())
@@ -84,7 +85,8 @@ fn (mut c Compiler) generate_h() ! {
 	res.write_string('#define ${guard}\n\n')
 
 	// 2. 引入必要的 PHP 内核头文件
-	res.write_string('#include <php.h>\n\n')
+	res.write_string('#include <php.h>\n')
+	res.write_string('#include <ext/standard/info.h>\n\n')
 
 	// 3. 写入扩展模块入口声明
 	res.write_string('extern zend_module_entry ${c.ext_name}_module_entry;\n')

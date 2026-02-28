@@ -5502,6 +5502,7 @@ struct vphp__compiler__Compiler {
 	Array_string target_files;
 	string ext_name;
 	string ext_version;
+	string ext_description;
 	Map_string_string ini_entries;
 	vphp__compiler__PhpGlobalsRepr globals_repr;
 	Array_vphp__compiler__PhpRepr elements;
@@ -5767,6 +5768,7 @@ struct v__ast__MapInit {
 struct vphp__compiler__ModuleBuilder {
 	string ext_name;
 	string version;
+	string description;
 	Array_string functions;
 	Array_string minit_content;
 	Array_vphp__compiler__IniEntry ini_entries;
@@ -10797,7 +10799,7 @@ VV_LOC bool vphp__compiler__PhpGlobalsRepr_parse(vphp__compiler__PhpGlobalsRepr*
 vphp__compiler__Compiler vphp__compiler__new(Array_string target_files);
 _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c);
 VV_LOC void vphp__compiler__Compiler_set_extension_meta(vphp__compiler__Compiler* c, v__ast__File* file_ast);
-vphp__compiler__ModuleBuilder* vphp__compiler__new_module_builder(string ext_name, string version);
+vphp__compiler__ModuleBuilder* vphp__compiler__new_module_builder(string ext_name, string version, string description);
 void vphp__compiler__ModuleBuilder_add_function(vphp__compiler__ModuleBuilder* b, string name);
 void vphp__compiler__ModuleBuilder_add_minit_line(vphp__compiler__ModuleBuilder* b, string line);
 void vphp__compiler__ModuleBuilder_add_ini_entry(vphp__compiler__ModuleBuilder* b, string name, string def_val);
@@ -10807,6 +10809,7 @@ string vphp__compiler__ModuleBuilder_render_globals_struct(vphp__compiler__Modul
 string vphp__compiler__ModuleBuilder_render_ginit(vphp__compiler__ModuleBuilder* b);
 string vphp__compiler__ModuleBuilder_render_minit(vphp__compiler__ModuleBuilder* b);
 string vphp__compiler__ModuleBuilder_render_mshutdown(vphp__compiler__ModuleBuilder* b);
+string vphp__compiler__ModuleBuilder_render_minfo(vphp__compiler__ModuleBuilder* b);
 string vphp__compiler__ModuleBuilder_render_module_entry(vphp__compiler__ModuleBuilder* b);
 string vphp__compiler__ModuleBuilder_render_get_module(vphp__compiler__ModuleBuilder* b);
 string vphp__compiler__ModuleBuilder_render_globals_getter(vphp__compiler__ModuleBuilder* b);
@@ -77388,7 +77391,7 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	}
 	strings__Builder_write_string(&res, _S("#include \"php_bridge.h\"\n\n"));
 	strings__Builder_write_string(&res, _S("#include \"../vphp/v_bridge.h\"\n\n"));
-	vphp__compiler__ModuleBuilder* mod_builder = vphp__compiler__new_module_builder(c->ext_name, c->ext_version);
+	vphp__compiler__ModuleBuilder* mod_builder = vphp__compiler__new_module_builder(c->ext_name, c->ext_version, c->ext_description);
 	Map_string_string _t1 = c->ini_entries;
 	int _t3 = _t1.key_values.len;
 	for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
@@ -77429,6 +77432,7 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_functions_table(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_minit(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_mshutdown(mod_builder));
+	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_minfo(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_globals_getter(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_module_entry(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_get_module(mod_builder));
@@ -77471,7 +77475,8 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_h(vphp__compiler__Compiler
 		strings__Builder_write_string(&res, guard);
 		strings__Builder_write_string(&res, _S("\n\n"));
 	}
-	strings__Builder_write_string(&res, _S("#include <php.h>\n\n"));
+	strings__Builder_write_string(&res, _S("#include <php.h>\n"));
+	strings__Builder_write_string(&res, _S("#include <ext/standard/info.h>\n\n"));
 	{
 		strings__Builder_write_string(&res, _S("extern zend_module_entry "));
 		strings__Builder_write_string(&res, c->ext_name);
@@ -78058,7 +78063,7 @@ VV_LOC bool vphp__compiler__PhpGlobalsRepr_parse(vphp__compiler__PhpGlobalsRepr*
 	return false;
 }
 vphp__compiler__Compiler vphp__compiler__new(Array_string target_files) {
-	return ((vphp__compiler__Compiler){.target_files = target_files,.ext_name = _S(""),.ext_version = (string){.str=(byteptr)"", .is_lit=1},.ini_entries = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.globals_repr = ((vphp__compiler__PhpGlobalsRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.fields = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpGlobalField)),}),.elements = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpRepr)),.table = v__ast__new_table(),.pref_set = v__pref__new_preferences(),.class_index = builtin__new_map(sizeof(string), sizeof(int), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),});
+	return ((vphp__compiler__Compiler){.target_files = target_files,.ext_name = _S(""),.ext_version = (string){.str=(byteptr)"", .is_lit=1},.ext_description = (string){.str=(byteptr)"", .is_lit=1},.ini_entries = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.globals_repr = ((vphp__compiler__PhpGlobalsRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.fields = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpGlobalField)),}),.elements = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpRepr)),.table = v__ast__new_table(),.pref_set = v__pref__new_preferences(),.class_index = builtin__new_map(sizeof(string), sizeof(int), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),});
 }
 _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c) {
 	Array_v__ast__Stmt all_stmts = builtin____new_array_with_default(0, 0, sizeof(v__ast__Stmt), 0);
@@ -78158,6 +78163,8 @@ VV_LOC void vphp__compiler__Compiler_set_extension_meta(vphp__compiler__Compiler
 							c->ext_name = ((*f.expr._v__ast__StringLiteral)).val;
 						} else if (builtin__fast_string_eq(f.name, _S("version")) && (f.expr)._typ == 252 /* v.ast.StringLiteral */) {
 							c->ext_version = ((*f.expr._v__ast__StringLiteral)).val;
+						} else if (builtin__fast_string_eq(f.name, _S("description")) && (f.expr)._typ == 252 /* v.ast.StringLiteral */) {
+							c->ext_description = ((*f.expr._v__ast__StringLiteral)).val;
 						} else if (builtin__fast_string_eq(f.name, _S("ini_entries")) && (f.expr)._typ == 263 /* v.ast.MapInit */) {
 							v__ast__MapInit m_expr = (*f.expr._v__ast__MapInit);
 							for (int i = 0; i < m_expr.keys.len; ++i) {
@@ -78179,8 +78186,8 @@ VV_LOC void vphp__compiler__Compiler_set_extension_meta(vphp__compiler__Compiler
 		}
 	}
 }
-vphp__compiler__ModuleBuilder* vphp__compiler__new_module_builder(string ext_name, string version) {
-	return ((vphp__compiler__ModuleBuilder*)builtin__memdup(&(vphp__compiler__ModuleBuilder){.ext_name = ext_name,.version = ((version).len != 0 ? (version) : (_S("1.0.0"))),.functions = builtin____new_array(0, 0, sizeof(string)),.minit_content = builtin____new_array(0, 0, sizeof(string)),.ini_entries = builtin____new_array(0, 0, sizeof(vphp__compiler__IniEntry)),.globals = ((vphp__compiler__PhpGlobalsRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.fields = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpGlobalField)),}),}, sizeof(vphp__compiler__ModuleBuilder)));
+vphp__compiler__ModuleBuilder* vphp__compiler__new_module_builder(string ext_name, string version, string description) {
+	return ((vphp__compiler__ModuleBuilder*)builtin__memdup(&(vphp__compiler__ModuleBuilder){.ext_name = ext_name,.version = ((version).len != 0 ? (version) : (_S("1.0.0"))),.description = description,.functions = builtin____new_array(0, 0, sizeof(string)),.minit_content = builtin____new_array(0, 0, sizeof(string)),.ini_entries = builtin____new_array(0, 0, sizeof(vphp__compiler__IniEntry)),.globals = ((vphp__compiler__PhpGlobalsRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.fields = builtin____new_array(0, 0, sizeof(vphp__compiler__PhpGlobalField)),}),}, sizeof(vphp__compiler__ModuleBuilder)));
 }
 void vphp__compiler__ModuleBuilder_add_function(vphp__compiler__ModuleBuilder* b, string name) {
 	builtin__array_push((array*)&b->functions, _MOV((string[]){ builtin__string_clone(name) }));
@@ -78337,6 +78344,38 @@ string vphp__compiler__ModuleBuilder_render_mshutdown(vphp__compiler__ModuleBuil
 	strings__Builder_write_string(&res, _S("    return SUCCESS;\n}\n"));
 	return strings__Builder_str(&res);
 }
+string vphp__compiler__ModuleBuilder_render_minfo(vphp__compiler__ModuleBuilder* b) {
+	strings__Builder res = strings__new_builder(1024);
+	{
+		strings__Builder_write_string(&res, _S("PHP_MINFO_FUNCTION("));
+		strings__Builder_write_string(&res, b->ext_name);
+		strings__Builder_write_string(&res, _S(") {\n"));
+	}
+	strings__Builder_write_string(&res, _S("    php_info_print_table_start();\n"));
+	{
+		strings__Builder_write_string(&res, _S("    php_info_print_table_header(2, \""));
+		strings__Builder_write_string(&res, b->ext_name);
+		strings__Builder_write_string(&res, _S(" support\", \"enabled\");\n"));
+	}
+	{
+		strings__Builder_write_string(&res, _S("    php_info_print_table_row(2, \"Version\", \""));
+		strings__Builder_write_string(&res, b->version);
+		strings__Builder_write_string(&res, _S("\");\n"));
+	}
+	if ((b->description).len != 0) {
+		{
+			strings__Builder_write_string(&res, _S("    php_info_print_table_row(2, \"Description\", \""));
+			strings__Builder_write_string(&res, b->description);
+			strings__Builder_write_string(&res, _S("\");\n"));
+		}
+	}
+	strings__Builder_write_string(&res, _S("    php_info_print_table_end();\n"));
+	if (b->ini_entries.len > 0) {
+		strings__Builder_write_string(&res, _S("    DISPLAY_INI_ENTRIES();\n"));
+	}
+	strings__Builder_write_string(&res, _S("}\n"));
+	return strings__Builder_str(&res);
+}
 string vphp__compiler__ModuleBuilder_render_module_entry(vphp__compiler__ModuleBuilder* b) {
 	strings__Builder res = strings__new_builder(512);
 	string mshutdown = (b->ini_entries.len > 0 ? (builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_MSHUTDOWN("), 0xfe10, {.d_s = b->ext_name}}, {_S(")"), 0, { .d_c = 0 }}}))) : (_S("NULL")));
@@ -78358,7 +78397,9 @@ string vphp__compiler__ModuleBuilder_render_module_entry(vphp__compiler__ModuleB
 		strings__Builder_write_string(&res, b->ext_name);
 		strings__Builder_write_string(&res, _S("), "));
 		strings__Builder_write_string(&res, mshutdown);
-		strings__Builder_write_string(&res, _S(", NULL, NULL, NULL, \""));
+		strings__Builder_write_string(&res, _S(", NULL, NULL, PHP_MINFO("));
+		strings__Builder_write_string(&res, b->ext_name);
+		strings__Builder_write_string(&res, _S("), \""));
 		strings__Builder_write_string(&res, b->version);
 		strings__Builder_write_string(&res, _S("\",\n"));
 	}

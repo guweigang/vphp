@@ -15,16 +15,18 @@ pub struct ModuleBuilder {
 pub mut:
 	ext_name      string
 	version       string
+	description   string
 	functions     []string // 全局函数名列表
 	minit_content []string // 注入到 MINIT 中的代码行
 	ini_entries   []IniEntry
 	globals       PhpGlobalsRepr
 }
 
-pub fn new_module_builder(ext_name string, version string) &ModuleBuilder {
+pub fn new_module_builder(ext_name string, version string, description string) &ModuleBuilder {
 	return &ModuleBuilder{
 		ext_name: ext_name
 		version: if version != '' { version } else { '1.0.0' }
+		description: description
 	}
 }
 
@@ -134,6 +136,24 @@ pub fn (b &ModuleBuilder) render_mshutdown() string {
 	return res.str()
 }
 
+// 渲染 MINFO 函数
+pub fn (b &ModuleBuilder) render_minfo() string {
+	mut res := strings.new_builder(1024)
+	res.write_string('PHP_MINFO_FUNCTION(${b.ext_name}) {\n')
+	res.write_string('    php_info_print_table_start();\n')
+	res.write_string('    php_info_print_table_header(2, "${b.ext_name} support", "enabled");\n')
+	res.write_string('    php_info_print_table_row(2, "Version", "${b.version}");\n')
+	if b.description != '' {
+		res.write_string('    php_info_print_table_row(2, "Description", "${b.description}");\n')
+	}
+	res.write_string('    php_info_print_table_end();\n')
+	if b.ini_entries.len > 0 {
+		res.write_string('    DISPLAY_INI_ENTRIES();\n')
+	}
+	res.write_string('}\n')
+	return res.str()
+}
+
 // 渲染模块结构体定义
 pub fn (b &ModuleBuilder) render_module_entry() string {
 	mut res := strings.new_builder(512)
@@ -142,7 +162,7 @@ pub fn (b &ModuleBuilder) render_module_entry() string {
 	
 	res.write_string('zend_module_entry ${b.ext_name}_module_entry = {\n')
 	res.write_string('    STANDARD_MODULE_HEADER, "${b.ext_name}", ${b.ext_name}_functions,\n')
-	res.write_string('    PHP_MINIT(${b.ext_name}), ${mshutdown}, NULL, NULL, NULL, "${b.version}",\n')
+	res.write_string('    PHP_MINIT(${b.ext_name}), ${mshutdown}, NULL, NULL, PHP_MINFO(${b.ext_name}), "${b.version}",\n')
 	res.write_string('    PHP_MODULE_GLOBALS(${b.ext_name}),\n')
 	res.write_string('    (void (*)(void*)) ${ginit},\n')
 	res.write_string('    NULL,\n') // GSHUTDOWN
