@@ -10692,8 +10692,8 @@ VV_LOC void main__v_logic_main(vphp__Context ctx);
 VV_EXP void v_logic_main(vphp__Context ctx); // exported fn main.v_logic_main
 VV_LOC i64 main__v_add(vphp__Context ctx);
 VV_EXP i64 v_add(vphp__Context ctx); // exported fn main.v_add
-VV_LOC void main__v_greet(vphp__Context ctx);
-VV_EXP void v_greet(vphp__Context ctx); // exported fn main.v_greet
+VV_LOC string main__v_greet(vphp__Context ctx);
+VV_EXP string v_greet(vphp__Context ctx); // exported fn main.v_greet
 VV_LOC void main__v_process_list(vphp__Context ctx);
 VV_EXP void v_process_list(vphp__Context ctx); // exported fn main.v_process_list
 VV_LOC void main__v_test_map(vphp__Context ctx);
@@ -75793,7 +75793,8 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	}
 	strings__Builder_write_string(&res, _S("#include \"php_bridge.h\"\n\n"));
 	strings__Builder_write_string(&res, _S("#include \"../vphp/v_bridge.h\"\n\n"));
-	strings__Builder_write_string(&res, _S("typedef struct { void* ex; void* ret; } vphp_context_internal;\n\n"));
+	strings__Builder_write_string(&res, _S("typedef struct { void* ex; void* ret; } vphp_context_internal;\n"));
+	strings__Builder_write_string(&res, _S("typedef struct { void* str; int len; int is_lit; } v_string;\n\n"));
 	strings__Builder_write_string(&res, _S("extern void vphp_framework_init(int module_number);\n"));
 	strings__Builder_write_string(&res, _S("extern void vphp_task_auto_startup();\n\n"));
 	for (int _t1 = 0; _t1 < c->elements.len; ++_t1) {
@@ -76248,7 +76249,7 @@ VV_LOC bool vphp__compiler__PhpFuncRepr_parse(vphp__compiler__PhpFuncRepr* r, v_
 				r->name = exp_name;
 				string ret_type = v__ast__Table_get_type_name(table, (*stmt._v__ast__FnDecl).return_type);
 				string clean = (builtin__string_contains(ret_type, _S(".")) ? (builtin__string_all_after(ret_type, _S("."))) : (ret_type));
-				if (_SLIT_EQ(clean.str, clean.len, "int") || _SLIT_EQ(clean.str, clean.len, "i64") || _SLIT_EQ(clean.str, clean.len, "bool") || _SLIT_EQ(clean.str, clean.len, "f64")) {
+				if (_SLIT_EQ(clean.str, clean.len, "int") || _SLIT_EQ(clean.str, clean.len, "i64") || _SLIT_EQ(clean.str, clean.len, "bool") || _SLIT_EQ(clean.str, clean.len, "f64") || _SLIT_EQ(clean.str, clean.len, "string")) {
 					r->return_type = clean;
 				} else {
 					r->return_type = _S("void");
@@ -76272,6 +76273,13 @@ VV_LOC Array_string vphp__compiler__PhpFuncRepr_gen_c(vphp__compiler__PhpFuncRep
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    "), 0xfe10, {.d_s = f.name}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
+	} else if (builtin__fast_string_eq(tm.v_type, _S("string"))) {
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("extern v_string "), 0xfe10, {.d_s = f.name}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("PHP_FUNCTION("), 0xfe10, {.d_s = f.name}}, {_S(") {"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ _S("    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };") }));
+		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("    v_string res = "), 0xfe10, {.d_s = f.name}}, {_S("(ctx);"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&r, _MOV((string[]){ _S("    RETVAL_STRINGL((char*)res.str, res.len);") }));
 		builtin__array_push((array*)&r, _MOV((string[]){ _S("}") }));
 	} else {
 		builtin__array_push((array*)&r, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("extern "), 0xfe10, {.d_s = tm.c_type}}, {_S(" "), 0xfe10, {.d_s = f.name}}, {_S("(vphp_context_internal ctx);"), 0, { .d_c = 0 }}})) }));
@@ -76543,12 +76551,12 @@ VV_LOC i64 main__v_add(vphp__Context ctx) {
 i64 v_add(vphp__Context ctx) {
 	return main__v_add(ctx);
 }
-VV_LOC void main__v_greet(vphp__Context ctx) {
+VV_LOC string main__v_greet(vphp__Context ctx) {
 	string name = vphp__Context_arg_T_string(ctx, 0);
-	vphp__Context_return_string(ctx, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Hello, "), 0xfe10, {.d_s = name}}, {_S(" from V!"), 0, { .d_c = 0 }}})));
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Hello, "), 0xfe10, {.d_s = name}}, {_S(" from V!"), 0, { .d_c = 0 }}}));
 }
 // export alias: v_greet -> main__v_greet
-void v_greet(vphp__Context ctx) {
+string v_greet(vphp__Context ctx) {
 	return main__v_greet(ctx);
 }
 VV_LOC void main__v_process_list(vphp__Context ctx) {

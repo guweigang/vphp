@@ -4,6 +4,7 @@
 #include "../vphp/v_bridge.h"
 
 typedef struct { void* ex; void* ret; } vphp_context_internal;
+typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
 extern void vphp_task_auto_startup();
@@ -90,10 +91,11 @@ PHP_FUNCTION(v_add) {
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_greet, 0, 0, 0)
 ZEND_END_ARG_INFO()
-extern void v_greet(vphp_context_internal ctx);
+extern v_string v_greet(vphp_context_internal ctx);
 PHP_FUNCTION(v_greet) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    v_greet(ctx);
+    v_string res = v_greet(ctx);
+    RETVAL_STRINGL((char*)res.str, res.len);
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_process_list, 0, 0, 0)
 ZEND_END_ARG_INFO()

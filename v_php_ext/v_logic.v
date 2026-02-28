@@ -66,9 +66,9 @@ fn v_add(ctx vphp.Context) i64 {
 }
 
 @[export: 'v_greet']
-fn v_greet(ctx vphp.Context) {
+fn v_greet(ctx vphp.Context) string {
 	name := ctx.arg[string](0)
-	ctx.return_string('Hello, $name from V!')
+	return 'Hello, $name from V!'
 }
 
 

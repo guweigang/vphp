@@ -21,8 +21,10 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('#include "php_bridge.h"\n\n')
 	res.write_string('#include "../vphp/v_bridge.h"\n\n')
 
-	// 0. 全局类型定义 — Context 在 V 侧是 struct { &zend_execute_data; &zval }
-	res.write_string('typedef struct { void* ex; void* ret; } vphp_context_internal;\n\n')
+	// 0. 全局类型定义
+	res.write_string('typedef struct { void* ex; void* ret; } vphp_context_internal;\n')
+	// V 的 string ABI: { u8* str; int len; int is_lit; }
+	res.write_string('typedef struct { void* str; int len; int is_lit; } v_string;\n\n')
 
 	// 1. 显式声明，解决 -Wimplicit-function-declaration
 	res.write_string('extern void vphp_framework_init(int module_number);\n')
