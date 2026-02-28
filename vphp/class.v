@@ -1,48 +1,9 @@
 module vphp
 
 // ============================================
-// Class — PHP 类的 V 侧定义与运行时泛型 Handler
-// ============================================
-
-pub struct Class[T] {
-pub mut:
-	name    string
-	methods []MethodDef
-}
-
-pub fn new_class[T](name string) &Class[T] {
-	return &Class[T]{ name: name }
-}
-
-// 显式添加 Void 方法
-pub fn (mut c Class[T]) add_void(name string, method VoidMethod[T]) {
-	handler := wrap_void[T](method)
-	c.methods << MethodDef{
-		name: name.str
-		handler: handler
-	}
-}
-
-// 显式添加 Val 方法
-pub fn (mut c Class[T]) add_val(name string, method ValMethod[T]) {
-	handler := wrap_val[T](method)
-	c.methods << MethodDef{
-		name: name.str
-		handler: handler
-	}
-}
-
-// 最终注册
-pub fn (mut c Class[T]) register() {
-	unsafe {
-		C.vphp_register_internal_class(c.name.str, c.methods.data, c.methods.len)
-	}
-}
-
-// ============================================
 // 运行时泛型 Handler
 // 利用 V 的编译期反射 ($for field in T.fields)
-// 替代 codegen 生成的 glue 代码
+// 替代 codegen 生成的局部 getter/setter 代码
 // ============================================
 
 // 泛型属性读取器 — 替代生成的 Article_get_prop 等函数
