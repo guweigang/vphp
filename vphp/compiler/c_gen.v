@@ -99,7 +99,21 @@ pub fn (g CGenerator) gen_minit_lines(mut elements []PhpRepr) []string {
 	mut res := []string{}
 	for mut el in elements {
 		if mut el is PhpConstRepr {
-			res << '    REGISTER_LONG_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
+			match el.const_type {
+				'string' {
+					res << '    REGISTER_STRING_CONSTANT("${el.name}", "${el.value}", CONST_CS | CONST_PERSISTENT);'
+				}
+				'f64' {
+					res << '    REGISTER_DOUBLE_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
+				}
+				'bool' {
+					res << '    REGISTER_BOOL_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
+				}
+				else {
+					// int (默认)
+					res << '    REGISTER_LONG_CONSTANT("${el.name}", ${el.value}, CONST_CS | CONST_PERSISTENT);'
+				}
+			}
 		} else if mut el is PhpClassRepr {
 			lower_name := el.name.to_lower()
 			ce_ptr := '${lower_name}_ce'
