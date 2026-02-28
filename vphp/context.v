@@ -353,7 +353,7 @@ pub fn (ctx Context) return_list_string(val []string) {
 	out := Val{ raw: ctx.ret }
 	out.array_init()
 	for v in val {
-		C.vphp_array_push_string(ctx.ret, v.str)
+		C.vphp_array_push_string(ctx.ret, &char(v.str))
 	}
 }
 

@@ -42,7 +42,8 @@ fn (mut c Compiler) generate_c() ! {
 	for mut el in c.elements {
 		if mut el is PhpFuncRepr {
 			f := el
-			res.write_string('    PHP_FE(${f.name}, arginfo_${f.name})\n')
+			mut builder := new_func_builder(f.name, f.name)
+			res.write_string(builder.render_fe() + '\n')
 		}
 	}
 	res.write_string('    PHP_FE_END\n};\n\n')

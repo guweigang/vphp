@@ -9,7 +9,7 @@ pub:
 
 fn (g VGenerator) generate(mut elements []PhpRepr) string {
     mut out := strings.new_builder(2048)
-    out.write_string('module main\n\nimport vphp\nimport time\nimport json\n\n')
+    out.write_string('module main\n\nimport vphp\n\n')
     
     mut task_registrations := []string{}
     // 生成每个 repr 的 V 胶水

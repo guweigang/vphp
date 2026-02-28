@@ -60,9 +60,8 @@ pub fn (mut c Compiler) compile() ! {
 		}
 
 	// --- 第二阶段：扫描所有 Fn 定义 ---
-  for stmt in file_ast.stmts {
+	for stmt in file_ast.stmts {
 		if stmt is ast.FnDecl {
-		  // println('Scanning function: ${stmt.name} | is_method: ${stmt.is_method}')
 			// 1. 检查是否是类方法 (Method)
 			if stmt.is_method {
 				// 获取接收者的类型名 (例如 "User")
@@ -80,24 +79,24 @@ pub fn (mut c Compiler) compile() ! {
 			}
 
 			// 2. 核心修正：处理静态方法 (fn Article.create() ...)
-      if stmt.name.contains('__static__') {
-  			parts := stmt.name.split('__static__')
-  			if parts.len == 2 {
-  				// 获取类名：如果是 main.Article，取 Article
-  				raw_class := parts[0]
-  				class_name := if raw_class.contains('.') { raw_class.all_after('.') } else { raw_class }
-  				method_name := parts[1]
+			if stmt.name.contains('__static__') {
+				parts := stmt.name.split('__static__')
+				if parts.len == 2 {
+					// 获取类名：如果是 main.Article，取 Article
+					raw_class := parts[0]
+					class_name := if raw_class.contains('.') { raw_class.all_after('.') } else { raw_class }
+					method_name := parts[1]
 
-  				if class_name in c.class_index {
-  					idx := c.class_index[class_name]
-  					mut el := c.elements[idx]
-  					if mut el is PhpClassRepr {
-  						el.add_static_method(stmt, c.table, method_name)
-  					}
-  					continue
-  				}
-  			}
-  		}
+					if class_name in c.class_index {
+						idx := c.class_index[class_name]
+						mut el := c.elements[idx]
+						if mut el is PhpClassRepr {
+							el.add_static_method(stmt, c.table, method_name)
+						}
+						continue
+					}
+				}
+			}
 
 			// 3. 否则，作为普通全局函数处理
 			mut func := new_func_repr()
@@ -107,13 +106,6 @@ pub fn (mut c Compiler) compile() ! {
 			}
 		}
 
-		// 1. 尝试作为类解析
-		// mut cls := new_class_repr()
-		// if cls.parse(stmt, c.table) {
-		// 	c.elements << cls
-		// 	continue
-		// }
-
 		// 2. 尝试作为常量解析
 		mut con := new_const_repr()
 		if con.parse(stmt, c.table) {
@@ -121,16 +113,9 @@ pub fn (mut c Compiler) compile() ! {
 			continue
 		}
 
-		// 3. 尝试作为全局函数解析
-		// mut func := new_func_repr()
-		// if func.parse(stmt, c.table) {
-		// 	c.elements << func
-		// 	continue
-		// }
-
-    // 4. 任务识别逻辑
-    mut task := new_task_repr()
-    if task.parse(stmt, c.table) {
+		// 3. 任务识别逻辑
+		mut task := new_task_repr()
+		if task.parse(stmt, c.table) {
 			c.elements << task
 			continue
 		}
