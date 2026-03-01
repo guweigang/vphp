@@ -101,13 +101,21 @@ fn (g VGenerator) gen_class_glue(r &PhpClassRepr) []string {
     out << "    vphp.generic_set_prop[${r.name}](ptr, name_ptr, name_len, value)"
     out << "}"
 
-    // D. 同步器
+    // E. 同步器
     out << "@[export: '${r.name}_sync_props']"
     out << "pub fn ${lower_name}_sync_props(ptr voidptr, zv &C.zval) {"
     out << "    vphp.generic_sync_props[${r.name}](ptr, zv)"
     out << "}"
 
-    // E. 方法的胶水包装
+    // F. 影子常量访问器
+    if r.shadow_const_name != '' {
+        ret_type := if r.shadow_const_type != '' { r.shadow_const_type } else { 'voidptr' }
+        out << "pub fn ${r.name}.consts() ${ret_type} {"
+        out << "    return ${r.shadow_const_name}"
+        out << "}"
+    }
+
+    // G. 方法的胶水包装
     for m in r.methods {
         if m.has_export { continue }
 

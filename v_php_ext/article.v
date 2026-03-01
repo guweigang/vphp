@@ -43,16 +43,35 @@ pub fn (p &Post) get_author() &Author {
     return p.author
 }
 
+struct ArticleConsts {
+    max_title_len int
+    name          string
+    age           int
+}
+
+const article_consts = ArticleConsts{
+    max_title_len: 1024
+    name: 'Samantha Black'
+    age: 24
+}
+
+article_statics := struct {
+    total_count int = 0
+}
+
 @[heap]
 @[php_class]
 @[php_extends: 'Post']
+@[php_const: article_consts]
+@[php_static: article_statics]
 struct Article {
 	Post
+pub:
+    created_at    int   //  public readonly
 pub mut:
 	id            int    // public
 	title         string // public
 	is_top        bool   // public
-	max_title_len int    // @[php_static] public static
 
 mut:
 	content       string // protected

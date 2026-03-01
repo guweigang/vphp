@@ -8,6 +8,8 @@ pub mut:
 	php_name   string      // PHP 侧类名 (如 VPhp\Task)，可含命名空间
 	parent     string      // 继承关系
 	is_final   bool
+	shadow_const_name string  // 新增：绑定的影子常量名称，如 "article_consts"
+	shadow_const_type string  // 新增：绑定的影子常量的 V 侧类型
 	constants  []PhpClassConst
 	properties []PhpClassProp
 	methods    []PhpMethodRepr
@@ -19,8 +21,10 @@ pub fn (r PhpClassRepr) c_name() string {
 }
 
 pub struct PhpClassConst {
-	name  string
-	value string
+	name         string // PHP 侧大写名，如 "MAX_TITLE_LEN"
+	v_field_name string // V 侧原始名，如 "max_title_len"
+	value        string
+	const_type   string
 }
 
 pub struct PhpClassProp {
@@ -69,7 +73,11 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 			}
 			if attr := stmt.attrs.find_first('php_extends') {
 				r.parent = attr.arg
-			} else if stmt.embeds.len > 0 {
+			}
+			if attr := stmt.attrs.find_first('php_const') {
+				r.shadow_const_name = attr.arg
+			}
+			if stmt.embeds.len > 0 && r.parent == '' {
 				// 如果没有明确指定 php_extends，自动从第一个嵌入结构体中提取
 				parent_type_name := table.get_type_name(stmt.embeds[0].typ)
 				r.parent = if parent_type_name.contains('.') {

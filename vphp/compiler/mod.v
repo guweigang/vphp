@@ -138,6 +138,33 @@ pub fn (mut c Compiler) compile() !string {
 			continue
 		}
 	}
+
+	// --- 第三阶段：绑定映射影子常量 (Shadow Constants Linking) ---
+	for i in 0 .. c.elements.len {
+		mut el := c.elements[i]
+		if mut el is PhpClassRepr {
+			if el.shadow_const_name != '' {
+				for con_el in c.elements {
+					if con_el is PhpConstRepr {
+						if con_el.name == el.shadow_const_name && con_el.const_type == 'struct' {
+							// 找到了匹配的结构体常量，开始解包字段
+							el.shadow_const_type = con_el.v_type
+							for f_name, sub_con in con_el.fields {
+								el.constants << PhpClassConst{
+									name: sub_con.name
+									v_field_name: f_name
+									value: sub_con.value
+									const_type: sub_con.const_type
+								}
+							}
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+
 	return c.ext_name
 }
 
