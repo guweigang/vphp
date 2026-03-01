@@ -8,6 +8,38 @@ typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
+zend_class_entry *author_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_author_create, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_author_get_name, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(Author, create) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_Author_create(vphp_context_internal ctx);
+    void* v_instance = vphp_wrap_Author_create(ctx);
+    if (!v_instance) RETURN_NULL();
+    object_init_ex(return_value, author_ce);
+    extern vphp_class_handlers* Author_handlers();
+    vphp_class_handlers *h = Author_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
+    wrapper->v_ptr = v_instance;
+    vphp_bind_handlers(Z_OBJ_P(return_value), h);
+}
+PHP_METHOD(Author, get_name) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Author_get_name(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_Author_get_name(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry author_methods[] = {
+    PHP_ME(Author, create, arginfo_author_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Author, get_name, arginfo_author_get_name, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 zend_class_entry *post_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_post_set_author, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -24,10 +56,18 @@ PHP_METHOD(Post, set_author) {
 PHP_METHOD(Post, get_author) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern void vphp_wrap_Post_get_author(void* v_ptr, vphp_context_internal ctx);
+    extern void* vphp_wrap_Post_get_author(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     if (!wrapper->v_ptr) RETURN_NULL();
-    vphp_wrap_Post_get_author(wrapper->v_ptr, ctx);
+    void* v_instance = vphp_wrap_Post_get_author(wrapper->v_ptr, ctx);
+    if (!v_instance) RETURN_NULL();
+    
+    object_init_ex(return_value, author_ce);
+    extern vphp_class_handlers* Author_handlers();
+    vphp_class_handlers *h = Author_handlers();
+    vphp_object_wrapper *ret_wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
+    ret_wrapper->v_ptr = v_instance;
+    vphp_bind_handlers(Z_OBJ_P(return_value), h);
 }
 static const zend_function_entry post_methods[] = {
     PHP_ME(Post, set_author, arginfo_post_set_author, ZEND_ACC_PUBLIC)
@@ -62,7 +102,7 @@ PHP_METHOD(Article, internal_format) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void vphp_wrap_Article_internal_format(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    if (!wrapper->v_ptr) RETURN_NULL();
+    if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_Article_internal_format(wrapper->v_ptr, ctx);
 }
 PHP_METHOD(Article, create) {
@@ -83,7 +123,7 @@ PHP_METHOD(Article, get_formatted_title) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void vphp_wrap_Article_get_formatted_title(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    if (!wrapper->v_ptr) RETURN_NULL();
+    if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_Article_get_formatted_title(wrapper->v_ptr, ctx);
 }
 PHP_METHOD(Article, save) {
@@ -91,7 +131,7 @@ PHP_METHOD(Article, save) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void vphp_wrap_Article_save(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    if (!wrapper->v_ptr) RETURN_NULL();
+    if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_Article_save(wrapper->v_ptr, ctx);
 }
 static const zend_function_entry article_methods[] = {
@@ -126,7 +166,7 @@ PHP_METHOD(Story, tell) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void vphp_wrap_Story_tell(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    if (!wrapper->v_ptr) RETURN_NULL();
+    if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_Story_tell(wrapper->v_ptr, ctx);
 }
 static const zend_function_entry story_methods[] = {
@@ -351,11 +391,17 @@ PHP_MINIT_FUNCTION(vphptest) {
     if (vphp_ext_startup) vphp_ext_startup();
     REGISTER_INI_ENTRIES();
     {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "Author", author_methods);
+        author_ce = zend_register_internal_class(&ce);
+        author_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_string(author_ce, "name", sizeof("name")-1, "", ZEND_ACC_PUBLIC);
+    }
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Post", post_methods);
         post_ce = zend_register_internal_class(&ce);
         post_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(post_ce, "post_id", sizeof("post_id")-1, 0, ZEND_ACC_PUBLIC);
-        zend_declare_property_string(post_ce, "author", sizeof("author")-1, "", ZEND_ACC_PUBLIC);
+        zend_declare_property_null(post_ce, "author", sizeof("author")-1, ZEND_ACC_PUBLIC);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Article", article_methods);

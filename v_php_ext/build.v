@@ -49,7 +49,7 @@ fn main() {
     transpiled_c := 'vphp_ext_${ext_name}.c'
     println('🛠️  2. 转译 V 逻辑为 C -> ${transpiled_c}')
     // 确保这里也带上路径，以便找到生成的 _task_glue.v 和 vphp 依赖
-    v_res := os.execute('v -enable-globals -gc none -path "@vlib:.:.." -shared -o ${transpiled_c} .')
+    v_res := os.execute('v -nocache -enable-globals -gc none -path ".:..:@vlib" -shared -o ${transpiled_c} .')
     if v_res.exit_code != 0 {
         println('❌ V 编译失败: ${v_res.output}')
         return

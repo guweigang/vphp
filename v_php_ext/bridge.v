@@ -4,6 +4,44 @@ import vphp
 
 #include "php_bridge.h"
 
+@[export: 'Author_new_raw']
+pub fn author_new_raw() voidptr {
+    return vphp.generic_new_raw[Author]()
+}
+@[export: 'Author_get_prop']
+pub fn author_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    vphp.generic_get_prop[Author](ptr, name_ptr, name_len, rv)
+}
+@[export: 'Author_set_prop']
+pub fn author_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    vphp.generic_set_prop[Author](ptr, name_ptr, name_len, value)
+}
+@[export: 'Author_sync_props']
+pub fn author_sync_props(ptr voidptr, zv &C.zval) {
+    vphp.generic_sync_props[Author](ptr, zv)
+}
+@[export: 'vphp_wrap_Author_create']
+pub fn vphp_wrap_author_create(ctx vphp.Context) voidptr {
+    arg_0 := ctx.arg[string](0)
+    res := Author.create(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_Author_get_name']
+pub fn vphp_wrap_author_get_name(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &Author(ptr) }
+    res := recv.get_name()
+    ctx.return_val[string](res)
+}
+@[export: 'Author_handlers']
+pub fn author_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(author_get_prop)
+        write_handler: voidptr(author_set_prop)
+        sync_handler:  voidptr(author_sync_props)
+        new_raw:       voidptr(author_new_raw)
+    } }
+}
+
 @[export: 'Post_new_raw']
 pub fn post_new_raw() voidptr {
     return vphp.generic_new_raw[Post]()
@@ -23,14 +61,14 @@ pub fn post_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_Post_set_author']
 pub fn vphp_wrap_post_set_author(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Post(ptr) }
-    arg_0 := ctx.arg[string](0)
+    arg_0 := unsafe { &Author(ctx.arg_raw_obj(0)) }
     recv.set_author(arg_0)
 }
 @[export: 'vphp_wrap_Post_get_author']
-pub fn vphp_wrap_post_get_author(ptr voidptr, ctx vphp.Context)  {
+pub fn vphp_wrap_post_get_author(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &Post(ptr) }
     res := recv.get_author()
-    ctx.return_val[string](res)
+    return voidptr(res)
 }
 @[export: 'Post_handlers']
 pub fn post_handlers() voidptr {
@@ -118,7 +156,7 @@ pub fn story_sync_props(ptr voidptr, zv &C.zval) {
 }
 @[export: 'vphp_wrap_Story_create']
 pub fn vphp_wrap_story_create(ctx vphp.Context) voidptr {
-    arg_0 := ctx.arg[string](0)
+    arg_0 := unsafe { &Author(ctx.arg_raw_obj(0)) }
     arg_1 := ctx.arg[int](1)
     res := Story.create(arg_0, arg_1)
     return voidptr(res)

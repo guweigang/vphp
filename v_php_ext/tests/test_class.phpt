@@ -43,7 +43,6 @@ string(5) "Hello"
 bool(true)
 Step 3: Calling method save...
 Done.
-Saving article: Hello
 
 Step 4: Accessing property from PHP...
 string(5) "Hello"
@@ -51,15 +50,12 @@ string(5) "Hello"
 Step 5: Modifying property from PHP...
 
 Step 6: new class from PHP...
-Saving article: Updated in PHP
 int(1234)
 V Article initialized with title: Weigang
 string(7) "Weigang"
 bool(true)
 
 Step 7: Call is_top from PHP...
-Saving article: Weigang
 bool(true)
 V Article initialized with title: is_top_test
 bool(false)
-Saving article: Weigang

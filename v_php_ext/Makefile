@@ -5,7 +5,7 @@ all: build
 
 # 构建 .so 扩展
 build:
-	v -path "@vlib:.:..:" run build.v
+	v -path ".:..:@vlib" run build.v
 
 # 运行测试
 test: build

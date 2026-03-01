@@ -11,20 +11,23 @@ var_dump($article instanceof Post);
 var_dump($article instanceof Article);
 
 echo "\nStep 2: Use inherited methods\n";
-$article->set_author("Weigang Gu");
-var_dump($article->get_author());
+$author = Author::create("Weigang Gu");
+$article->set_author($author);
+var_dump($article->get_author()->get_name());
 
 echo "\nStep 3: Access inherited properties (if V exposed or via PHP)\n";
 $article->post_id = 12345;
 var_dump($article->post_id);
 
 echo "\nStep 4: Test Story (Auto inheritance via Embed)\n";
-$story = Story::create("Gu Weigang", 10);
+$author = Author::create("Gu Weigang");
+$story = Story::create($author, 10);
 var_dump($story instanceof Post);
 var_dump($story instanceof Story);
 echo $story->tell() . "\n";
-$story->set_author("New Author");
-echo "Updated author: " . $story->get_author() . "\n";
+$new_author = Author::create("New Author");
+$story->set_author($new_author);
+echo "Updated author: " . $story->get_author()->get_name() . "\n";
 
 --EXPECTF--
 Step 1: Check instanceof

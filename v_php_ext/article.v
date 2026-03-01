@@ -1,22 +1,44 @@
 module main
 
+@[heap]
+@[php_class]
+struct Author {
+pub mut:
+    name string
+}
+
+@[php_method]
+pub fn Author.create(name string) &Author {
+    mut a := &Author{
+        name: name.clone()
+    }
+    return a
+}
+
+@[php_method]
+pub fn (p &Author) get_name() string {
+    return p.name
+}
+
+@[heap]
 @[php_class]
 struct Post {
 pub mut:
     post_id int
-    author  string
+    author  &Author = unsafe { nil }
 }
 
 @[php_method]
-pub fn (mut p Post) set_author(name string) {
-    p.author = name
+pub fn (mut p Post) set_author(author &Author) {
+    p.author = author
 }
 
 @[php_method]
-pub fn (p &Post) get_author() string {
+pub fn (p &Post) get_author() &Author {
     return p.author
 }
 
+@[heap]
 @[php_class]
 @[php_extends: 'Post']
 struct Article {
@@ -34,10 +56,10 @@ mut:
 
 @[php_method]
 pub fn (mut a Article) init(title string, id int) &Article {
-    a.title = title
+    a.title = title.clone()
     a.id = id
     a.is_top = true
-    a.content = 'Default Content'
+    a.content = 'Default Content'.clone()
     println('V Article initialized with title: ${a.title}')
     return a
 }
@@ -53,9 +75,9 @@ fn (a &Article) internal_format() string {
 pub fn Article.create(title string) &Article {
     mut a := &Article{
         id: 1024
-        title: title
+        title: title.clone()
         is_top: true
-        content: 'Created via static'
+        content: 'Created via static'.clone()
     }
     return a
 }
@@ -68,11 +90,11 @@ pub fn (a &Article) get_formatted_title() string {
 
 @[php_method]
 pub fn (a &Article) save() bool {
-    println('Saving article: $a.title')
     return true
 }
 
 // === 新增 Story 类：通过 Embed 自动识别 php_extends: 'Post' ===
+@[heap]
 @[php_class]
 struct Story {
     Post	// PHP 自动识别为继承
@@ -81,15 +103,15 @@ pub mut:
 }
 
 @[php_method]
-pub fn Story.create(author string, chapters int) &Story {
+pub fn Story.create(author &Author, chapters int) &Story {
     mut s := &Story{
         chapter_count: chapters
+        author: author
     }
-    s.author = author
     return s
 }
 
 @[php_method]
 pub fn (s &Story) tell() string {
-    return 'Author ${s.author} is telling a story with ${s.chapter_count} chapters.'
+    return 'Author ${s.author.name} is telling a story with ${s.chapter_count} chapters.'
 }

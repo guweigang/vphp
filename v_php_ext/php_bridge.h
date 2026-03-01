@@ -10,6 +10,7 @@ extern zend_module_entry vphptest_module_entry;
 
 extern void* vphp_get_active_globals();
 
+extern zend_class_entry *author_ce;
 extern zend_class_entry *post_ce;
 extern zend_class_entry *article_ce;
 extern zend_class_entry *story_ce;
