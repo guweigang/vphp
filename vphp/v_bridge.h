@@ -213,4 +213,9 @@ void vphp_register_internal_class(char *class_name, vphp_method_def *methods,
                                   int count);
 zval *vphp_new_str(char *s); // 简单的工厂
 
+void *vphp_get_v_ptr_from_zval(zval *zv);
+
+typedef void (*vphp_foreach_cb)(zval *key, zval *val, void *ctx);
+void vphp_zval_foreach(zval *zv, vphp_foreach_cb cb, void *ctx);
+
 #endif

@@ -351,3 +351,37 @@ pub fn new_val_string(s string) Val {
 		return Val{ raw: C.vphp_new_str(&char(s.str)) }
 	}
 }
+
+// ======== 高级：对象转换 ========
+
+// 将 zval 对象转化为具体的 V 结构体指针
+pub fn (v Val) to_object[T]() ?&T {
+	if !v.is_object() {
+		return none
+	}
+	ptr := C.vphp_get_v_ptr_from_zval(v.raw)
+	if ptr == 0 {
+		return none
+	}
+	return unsafe { &T(ptr) }
+}
+
+// ======== 高级：迭代器 foreach ========
+
+pub type ForeachCb = fn (key Val, val Val)
+
+@[export: 'vphp_foreach_wrapper']
+fn vphp_foreach_wrapper(key &C.zval, val &C.zval, ctx voidptr) {
+	unsafe {
+		cb := *(&ForeachCb(ctx))
+		cb(Val{raw: key}, Val{raw: val})
+	}
+}
+
+// 遍历当前 Val (对 array 和 object 有效)
+pub fn (v Val) foreach(cb ForeachCb) {
+	if !v.is_array() && !v.is_object() {
+		return
+	}
+	C.vphp_zval_foreach(v.raw, vphp_foreach_wrapper, &cb)
+}

@@ -182,6 +182,15 @@ pub fn (ctx Context) arg_raw_obj(index int) voidptr {
 	return wrapper.v_ptr
 }
 
+// 获取任意 Val 类型参数
+pub fn (ctx Context) arg_val(index int) Val {
+	args := get_args(ctx.ex)
+	if index >= args.len {
+		return new_val_null()
+	}
+	return args[index]
+}
+
 // ======== 返回值 — 对象 ========
 
 pub fn (ctx Context) return_obj(v_ptr voidptr, ce voidptr) {

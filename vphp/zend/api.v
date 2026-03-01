@@ -80,6 +80,8 @@ pub fn C.vphp_array_foreach(z &C.zval, ctx voidptr, cb voidptr)
 // ===== 10. 对象操作 =====
 pub fn C.vphp_object_init(z &C.zval)
 pub fn C.vphp_get_obj_from_zval(zv &C.zval) &C.zend_object
+pub fn C.vphp_get_v_ptr_from_zval(zv &C.zval) voidptr
+pub fn C.vphp_zval_foreach(zv &C.zval, cb voidptr, ctx voidptr)
 
 @[typedef]
 pub struct C.vphp_object_wrapper {

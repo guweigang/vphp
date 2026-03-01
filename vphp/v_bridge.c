@@ -626,3 +626,36 @@ void vphp_bind_handlers(zend_object *obj, vphp_class_handlers *handlers) {
     wrapper->sync_handler = handlers->sync_handler;
   }
 }
+
+void *vphp_get_v_ptr_from_zval(zval *zv) {
+  if (!zv || Z_TYPE_P(zv) != IS_OBJECT)
+    return NULL;
+  vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(zv));
+  if (!wrapper)
+    return NULL;
+  return wrapper->v_ptr;
+}
+
+void vphp_zval_foreach(zval *zv, vphp_foreach_cb cb, void *ctx) {
+  if (!zv || (Z_TYPE_P(zv) != IS_ARRAY && Z_TYPE_P(zv) != IS_OBJECT))
+    return;
+
+  HashTable *ht = HASH_OF(zv);
+  if (!ht)
+    return;
+
+  zend_string *string_key;
+  zend_ulong num_key;
+  zval *val;
+
+  ZEND_HASH_FOREACH_KEY_VAL(ht, num_key, string_key, val) {
+    zval key_zv;
+    if (string_key) {
+      ZVAL_STR(&key_zv, string_key);
+    } else {
+      ZVAL_LONG(&key_zv, num_key);
+    }
+    cb(&key_zv, val, ctx);
+  }
+  ZEND_HASH_FOREACH_END();
+}
