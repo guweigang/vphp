@@ -27,9 +27,11 @@ const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
     vphp_class_handlers *h = {{CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
     vphp_bind_handlers(Z_OBJ_P(getThis()), h);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-    {{V_FUNC}}(wrapper->v_ptr, ctx);
+    void* v_ptr = wrapper->v_ptr;
+    {{V_FUNC}}(v_ptr, ctx);
 }'
 
 // C 代码模板：静态工厂方法（返回对象指针）
@@ -38,22 +40,19 @@ const tpl_static_factory = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void* {{V_FUNC}}(vphp_context_internal ctx);
     void* v_instance = {{V_FUNC}}(ctx);
-    if (!v_instance) RETURN_NULL();
-    object_init_ex(return_value, {{LOWER_CLASS}}_ce);
-    extern vphp_class_handlers* {{CLASS}}_handlers();
-    vphp_class_handlers *h = {{CLASS}}_handlers();
-    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));
-    wrapper->v_ptr = v_instance;
-    vphp_bind_handlers(Z_OBJ_P(return_value), h);
+    vphp_return_obj(return_value, v_instance, {{LOWER_CLASS}}_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* {{CLASS}}_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), {{CLASS}}_handlers());
+    }
 }'
 
 // C 代码模板：静态方法（返回基本类型）
 const tpl_static_scalar = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern {{C_TYPE}} {{V_FUNC}}(vphp_context_internal ctx);
-    {{C_TYPE}} res = {{V_FUNC}}(ctx);
-    {{PHP_RETURN}}(res);
+    extern void {{V_FUNC}}(vphp_context_internal ctx);
+    {{V_FUNC}}(ctx);
 }'
 
 // C 代码模板：静态方法 (void 返回)
@@ -68,11 +67,10 @@ const tpl_static_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
 const tpl_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern {{C_TYPE}} {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     if (!wrapper->v_ptr) RETURN_FALSE;
-    {{C_TYPE}} res = {{V_FUNC}}(wrapper->v_ptr, ctx);
-    {{PHP_RETURN}}(res);
+    {{V_FUNC}}(wrapper->v_ptr, ctx);
 }'
 
 // C 代码模板：实例方法（void 返回）
@@ -89,12 +87,42 @@ const tpl_instance_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
 const tpl_instance_result = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern {{C_TYPE}} {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     if (!wrapper->v_ptr) RETURN_FALSE;
-    {{C_TYPE}} res = {{V_FUNC}}(wrapper->v_ptr, ctx);
-    {{PHP_RETURN}}(res);
+    {{V_FUNC}}(wrapper->v_ptr, ctx);
 }'
+
+// C 代码模板：实例方法（返回对象指针）
+const tpl_instance_object = '
+PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD {{CLASS}}::{{PHP_METHOD}} called, wrapper->v_ptr=%p\\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = {{V_FUNC}}(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, {{LOWER_RET_CLASS}}_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* {{RET_CLASS}}_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), {{RET_CLASS}}_handlers());
+    }
+}
+'
+
+const tpl_default_construct = '
+PHP_METHOD({{CLASS}}, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* {{CLASS}}_handlers();
+    vphp_class_handlers *h = {{CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+}
+'
 
 pub fn (g CGenerator) gen_h_defs(mut elements []PhpRepr) []string {
 	mut res := []string{}
@@ -207,7 +235,9 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 	}
 
 	// 2. 生成方法包装器 — 使用模板
+	mut has_init := false
 	for m in r.methods {
+		if m.name == 'init' { has_init = true }
 		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		
 		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
@@ -236,8 +266,12 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 				c << render_tpl(tpl_static_scalar, vars)
 			}
 		} else {
-			if !m.has_export {
-				c << render_tpl(tpl_instance_void, vars)
+			if tm.c_type == 'void*' {
+				ret_class := tm.v_type.replace('&', '').replace('main.', '')
+				mut obj_vars := vars.clone()
+				obj_vars['RET_CLASS'] = ret_class
+				obj_vars['LOWER_RET_CLASS'] = ret_class.to_lower()
+				c << render_tpl(tpl_instance_object, obj_vars)
 			} else if tm.is_result {
 				c << render_tpl(tpl_instance_result, vars)
 			} else if tm.v_type == 'void' {
@@ -248,8 +282,21 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 		}
 	}
 
+	if !has_init {
+		vars := {
+			'CLASS':       c_class
+			'LOWER_CLASS': lower_name
+		}
+		c << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${lower_name}___construct, 0, 0, 0)'
+		c << 'ZEND_END_ARG_INFO()'
+		c << render_tpl(tpl_default_construct, vars)
+	}
+
 	// 3. 生成方法表 (zend_function_entry) 
 	mut builder := new_class_builder(r.php_name, c_class)
+	if !has_init {
+		builder.add_method('__construct', '${lower_name}___construct', 'ZEND_ACC_PUBLIC')
+	}
 	for m in r.methods {
 		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		

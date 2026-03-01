@@ -119,14 +119,31 @@ typedef struct {
 // 一次调用绑定所有 handler 到对象 wrapper
 void vphp_bind_handlers(zend_object *obj, vphp_class_handlers *handlers);
 
+#define VPHP_MAGIC 0x56504850 // 'VPHP'
+
 // 1. 定义包装器：把 V 指针和 PHP 对象捆绑在一起
 typedef struct {
+  uint32_t magic;                     // 用于身份识别
   void *v_ptr;                        // 指向 V 侧分配的结构体内存
-  vphp_prop_handler_t prop_handler;   // 核心指针
-  vphp_sync_handler_t sync_handler;   // 👈 专门用于全量同步
-  vphp_write_handler_t write_handler; // 👈 增加写入回调
-  zend_object std; // PHP 标准对象（必须放在最后，以便偏移量计算）
+  vphp_prop_handler_t prop_handler;   // 属性处理回调
+  vphp_sync_handler_t sync_handler;   // 同步回调
+  vphp_write_handler_t write_handler; // 写入回调
+  zend_object std;                    // PHP 标准对象
+  // 注意：如果是连体分配，V 的真实数据会紧跟在 std 后面
 } vphp_object_wrapper;
+
+// Identity Map 注册表
+void vphp_init_registry();
+void vphp_shutdown_registry();
+void vphp_register_object(void *v_ptr, zend_object *obj);
+
+// V 运行时分配器
+extern void *v_malloc(size_t size);
+
+// 连体分配器：一次性分配 Wrapper + V 结构体空间
+void *vphp_allocate_contiguous_object(zend_class_entry *ce, size_t v_size);
+// 将 V 对象包装成 zval 返回（自动识别是否有连体 Wrapper）
+void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce);
 
 // 句柄声明
 HashTable *vphp_get_properties(zend_object *object);
@@ -146,15 +163,8 @@ void vphp_write_property(zend_object *object, zend_string *member, zval *value,
 extern zend_object_handlers vphp_obj_handlers;
 
 // 修正 offsetof
-static inline vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj) {
-  return (
-      vphp_object_wrapper *)((char *)(obj)-offsetof(vphp_object_wrapper, std));
-}
-
-// 包装 PHP 的 Z_OBJ_P 宏
-static inline zend_object *vphp_get_obj_from_zval(zval *zv) {
-  return Z_OBJ_P(zv);
-}
+vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj);
+zend_object *vphp_get_obj_from_zval(zval *zv);
 
 // 声明刚才提到的兼容层函数
 zval *vphp_read_property_compat(zend_object *obj, const char *name,

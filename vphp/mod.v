@@ -32,14 +32,12 @@ pub enum PHPType {
 // 1. Zend Globals 核心访问
 // ==========================================
 
-// 底层 C 实现，由编译器在各个扩展中生成
+fn C.vphp_init_registry()
 fn C.vphp_get_active_globals() voidptr
 
-// 泛型入口：mut g := vphp.get_globals[ExtGlobals]()
 pub fn get_globals[T]() &T {
     return unsafe { &T(C.vphp_get_active_globals()) }
 }
-
 
 @[export: 'vphp_framework_init']// 框架核心入口
 pub fn vphp_framework_init(module_number int) {
@@ -52,6 +50,7 @@ pub fn vphp_framework_init(module_number int) {
 
 pub fn init_framework(module_number int) {
   unsafe {
+    C.vphp_init_registry()
     C.vphp_init_resource_system(module_number)
   }
 }

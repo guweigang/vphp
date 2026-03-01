@@ -9,7 +9,7 @@ module vphp
 // 泛型属性读取器 — 替代生成的 Article_get_prop 等函数
 pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
 	unsafe {
-		name := name_ptr.vstring_with_len(name_len)
+		name := name_ptr.vstring_with_len(name_len).clone()
 		obj := &T(ptr)
 		$for field in T.fields {
 			if name == field.name {
@@ -34,7 +34,7 @@ pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval
 // 泛型属性写入器 — 替代生成的 Article_set_prop 等函数
 pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
 	unsafe {
-		name := name_ptr.vstring_with_len(name_len)
+		name := name_ptr.vstring_with_len(name_len).clone()
 		mut obj := &T(ptr)
 		arg := Val{ raw: value }
 		$for field in T.fields {
@@ -77,7 +77,17 @@ pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 	}
 }
 
-// 泛型堆分配器
+// 连体分配器声明
+fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
+fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
+fn C.vphp_return_obj(return_val voidptr, v_ptr voidptr, ce voidptr)
+
+// 泛型堆分配器 (传统分配，将来会被劫持)
 pub fn generic_new_raw[T]() voidptr {
 	return unsafe { &T{} }
+}
+
+// 泛型连体分配器 (新：用于 @[php_class])
+pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
+    return unsafe { C.vphp_allocate_contiguous_object(ce, sizeof(T)) }
 }

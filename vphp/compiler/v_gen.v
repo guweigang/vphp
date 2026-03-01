@@ -53,6 +53,8 @@ fn (g VGenerator) gen_func_glue(f &PhpFuncRepr) []string {
         // 如果是 Context 类型，直接传递
         if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
             out << "    ${var_name} := ctx"
+        } else if arg.v_type.starts_with('&') {
+            out << "    ${var_name} := unsafe { ${arg.v_type}(ctx.arg_raw_obj(${i})) }"
         } else {
             out << "    ${var_name} := ctx.arg[${arg.v_type}](${i})"
         }
@@ -112,7 +114,8 @@ fn (g VGenerator) gen_class_glue(r &PhpClassRepr) []string {
         out << "@[export: 'vphp_wrap_${r.name}_${m.name}']"
         
         is_factory := m.name == 'init' || (m.is_static && m.return_type.ends_with(r.name))
-        ret_decl := if is_factory { "voidptr" } else { "" }
+        returns_object := is_factory || m.return_type.starts_with('&')
+        ret_decl := if returns_object { "voidptr" } else { "" }
         
         if m.is_static {
             out << "pub fn vphp_wrap_${lower_name}_${m.name}(ctx vphp.Context) ${ret_decl} {"
@@ -124,8 +127,12 @@ fn (g VGenerator) gen_class_glue(r &PhpClassRepr) []string {
         mut arg_names := []string{}
         for i, arg in m.args {
             var_name := 'arg_${i}'
+            tm := TypeMap.get_type(arg.v_type)
             if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
                 out << "    ${var_name} := ctx"
+            } else if tm.c_type == 'void*' {
+                v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }
+                out << "    ${var_name} := unsafe { ${v_type}(ctx.arg_raw_obj(${i})) }"
             } else {
                 out << "    ${var_name} := ctx.arg[${arg.v_type}](${i})"
             }
@@ -146,12 +153,12 @@ fn (g VGenerator) gen_class_glue(r &PhpClassRepr) []string {
             out << "    ${call_str}"
         } else {
             out << "    res := ${call_str}"
-            if !is_factory {
+            if !returns_object {
                 out << "    ctx.return_val[${m.return_type}](res)"
             }
         }
         
-        if is_factory {
+        if returns_object {
             if m.return_type == 'void' {
                  out << "    return voidptr(recv)"
             } else {

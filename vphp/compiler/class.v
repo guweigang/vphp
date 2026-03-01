@@ -124,15 +124,13 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 	
 	for i := start_idx; i < stmt.params.len; i++ {
 	    param := stmt.params[i]
-		mut typ_name := table.get_type_name(param.typ)
-		if typ_name.contains('.') { typ_name = typ_name.all_after('.') }
 		args << PhpArg{
 			name: param.name
-			v_type: typ_name
+			v_type: strip_module(table.get_type_name(param.typ))
 		}
 	}
 
-	ret_type := table.type_to_str(stmt.return_type)
+	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	r.methods << PhpMethodRepr{
 		name: php_name
 		v_name: stmt.name
@@ -143,6 +141,11 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 		args: args
 		has_export: has_export
 	}
+}
+
+// strip_module cleans "main.SomeType" to "SomeType" but preserves "&"
+fn strip_module(mut_typ_name string) string {
+    return mut_typ_name.replace('main.', '')
 }
 
 pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table, method_name string) {
@@ -163,15 +166,13 @@ pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table,
 
 	mut args := []PhpArg{}
 	for param in stmt.params {
-		mut typ_name := table.get_type_name(param.typ)
-		if typ_name.contains('.') { typ_name = typ_name.all_after('.') }
 		args << PhpArg{
 			name: param.name
-			v_type: typ_name
+			v_type: strip_module(table.get_type_name(param.typ))
 		}
 	}
 
-	ret_type := table.type_to_str(stmt.return_type)
+	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	r.methods << PhpMethodRepr{
 		name: php_name
 		v_name: method_name

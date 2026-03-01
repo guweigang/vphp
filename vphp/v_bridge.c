@@ -1,6 +1,7 @@
 #include "v_bridge.h"
 #include <Zend/zend_exceptions.h>
 #include <php.h>
+#include <stdio.h>
 #include <zend_errors.h>
 
 // 把 PHP 的宏包装成 V 能认出的 C 函数
@@ -15,6 +16,96 @@ zval *vphp_get_arg_ptr(zend_execute_data *ex, uint32_t index) {
 void vphp_throw(char *msg, int code) {
   zend_throw_exception(NULL, msg, (zend_long)code);
 }
+
+#define VPHP_MAGIC 0x56504850
+#include <stdbool.h>
+
+// 全局对象注册表
+static HashTable vphp_object_registry;
+static bool vphp_registry_initialized = false;
+
+void vphp_init_registry() {
+  if (vphp_registry_initialized)
+    return;
+  zend_hash_init(&vphp_object_registry, 16, NULL, NULL, 1);
+  vphp_registry_initialized = true;
+}
+
+void vphp_shutdown_registry() {
+  if (!vphp_registry_initialized)
+    return;
+  zend_hash_destroy(&vphp_object_registry);
+  vphp_registry_initialized = false;
+}
+
+// 注册 V 对象 and PHP 对象的映射
+void vphp_register_object(void *v_ptr, zend_object *obj) {
+  if (!v_ptr)
+    return;
+  vphp_init_registry();
+  // printf("V: Registering v_ptr=%p to obj=%p\\n", v_ptr, obj);
+  zend_hash_index_update_ptr(&vphp_object_registry, (zend_ulong)v_ptr, obj);
+}
+
+// 注销映射
+static void vphp_unregister_object(void *v_ptr) {
+  if (!v_ptr || !vphp_registry_initialized)
+    return;
+  // printf("V: Unregistering v_ptr=%p\n", v_ptr);
+  zend_hash_index_del(&vphp_object_registry, (zend_ulong)v_ptr);
+}
+
+vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj) {
+  vphp_object_wrapper *wrapper =
+      (vphp_object_wrapper *)((char *)(obj)-offsetof(vphp_object_wrapper, std));
+  return wrapper;
+}
+
+// 将 V 对象包装成 zval 返回（Identity Map 核心逻辑）
+void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
+  if (!v_ptr) {
+    ZVAL_NULL(return_value);
+    return;
+  }
+
+  vphp_init_registry();
+
+  // 1. 在注册表中查找已经存在的 PHP 对象
+  zend_object *existing_obj =
+      zend_hash_index_find_ptr(&vphp_object_registry, (zend_ulong)v_ptr);
+  // printf("V: return_obj v_ptr=%p, lookup_res=%p\\n", v_ptr, existing_obj);
+  if (existing_obj) {
+    GC_ADDREF(existing_obj);
+    ZVAL_OBJ(return_value, existing_obj);
+    return;
+  }
+
+  // 2. 如果没找到，创建一个新的
+  object_init_ex(return_value, ce);
+  zend_object *new_obj = Z_OBJ_P(return_value);
+  vphp_object_wrapper *wrapper = vphp_obj_from_obj(new_obj);
+  wrapper->v_ptr = v_ptr;
+
+  // 3. 存入注册表
+  vphp_register_object(v_ptr, new_obj);
+}
+
+// 已不再需要连体分配逻辑，按原样保留空壳或删除
+void *vphp_allocate_contiguous_object(zend_class_entry *ce, size_t v_size) {
+  // 回退到普通分配
+  return v_malloc(v_size);
+}
+
+vphp_object_wrapper *vphp_get_wrapper_from_vptr(void *v_ptr) {
+  zend_object *obj =
+      zend_hash_index_find_ptr(&vphp_object_registry, (zend_ulong)v_ptr);
+  if (obj)
+    return vphp_obj_from_obj(obj);
+  return NULL;
+}
+
+zend_object *vphp_get_obj_from_zval(zval *zv) { return Z_OBJ_P(zv); }
+
 long vphp_get_lval(zval *z) { return Z_LVAL_P(z); }
 void vphp_set_lval(zval *z, long val) { ZVAL_LONG(z, val); }
 
@@ -380,10 +471,8 @@ zend_object_handlers vphp_obj_handlers;
 
 void vphp_free_object_handler(zend_object *obj) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(obj);
-  if (wrapper->v_ptr) {
-    // 这里可以调用 V 侧导出的释放函数，或者简单地根据 GC 策略处理
-    // free(wrapper->v_ptr);
-  }
+  // 从注册表中注销，防止 V 指针重用时冲突
+  vphp_unregister_object(wrapper->v_ptr);
   zend_object_std_dtor(obj);
 }
 
@@ -442,11 +531,13 @@ zend_object *vphp_create_object_handler(zend_class_entry *ce) {
     vphp_obj_handlers.offset = offsetof(vphp_object_wrapper, std); // 这里用 std
     vphp_obj_handlers.free_obj = vphp_free_object_handler;
     vphp_obj_handlers.read_property = vphp_read_property;
-    vphp_obj_handlers.get_properties = vphp_get_properties; // 👈 挂载劫持
     vphp_obj_handlers.write_property = vphp_write_property;
+    vphp_obj_handlers.get_properties = vphp_get_properties;
   }
 
   vphp_object_wrapper *obj = zend_object_alloc(sizeof(vphp_object_wrapper), ce);
+  obj->magic = VPHP_MAGIC; // 设置魔数
+  obj->v_ptr = NULL;       // 稍后在 init 里设置
   zend_object_std_init(&obj->std, ce);
   object_properties_init(&obj->std, ce);
   obj->std.handlers = &vphp_obj_handlers;

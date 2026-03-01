@@ -80,6 +80,18 @@ pub fn C.vphp_array_foreach(z &C.zval, ctx voidptr, cb voidptr)
 // ===== 10. 对象操作 =====
 pub fn C.vphp_object_init(z &C.zval)
 pub fn C.vphp_get_obj_from_zval(zv &C.zval) &C.zend_object
+
+@[typedef]
+pub struct C.vphp_object_wrapper {
+pub:
+	v_ptr          voidptr
+	prop_handler   voidptr
+	sync_handler   voidptr
+	write_handler  voidptr
+	std            C.zend_object
+}
+pub fn C.vphp_obj_from_obj(obj &C.zend_object) &C.vphp_object_wrapper
+
 pub fn C.vphp_read_property_compat(obj &C.zend_object, name &char, name_len int, rv &C.zval) &C.zval
 // 属性写入
 pub fn C.vphp_update_property_string(obj &C.zval, name &char, name_len int, value &char)

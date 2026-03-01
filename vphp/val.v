@@ -92,7 +92,7 @@ pub fn (v Val) to_string() string {
 	unsafe {
 		p := C.vphp_get_strval(v.raw)
 		l := C.vphp_get_strlen(v.raw)
-		return p.vstring_with_len(l)
+		return p.vstring_with_len(l).clone()
 	}
 }
 
@@ -103,7 +103,7 @@ pub fn (v Val) get_string() string {
 		if ptr == 0 {
 			return ''
 		}
-		return ptr.vstring_with_len(len)
+		return ptr.vstring_with_len(len).clone()
 	}
 }
 

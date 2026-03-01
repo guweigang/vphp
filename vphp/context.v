@@ -30,7 +30,9 @@ pub fn (ctx Context) has_exception() bool {
 pub fn (ctx Context) arg_raw(index int) Val {
 	args := get_args(ctx.ex)
 	if index >= args.len || index < 0 {
-		return unsafe { Val{ raw: 0 } }
+		return unsafe { Val{
+			raw: 0
+		} }
 	}
 	return args[index]
 }
@@ -51,11 +53,13 @@ pub fn (ctx Context) arg[T](index int) T {
 	// --- 数组 / 切片 ---
 	$if T is $array {
 		if !val.is_array() {
-			C.vphp_throw(&char('Expected array at index $index'.str), 0)
+			C.vphp_throw(&char('Expected array at index ${index}'.str), 0)
 			return T{}
 		}
 		count := C.vphp_array_count(raw_zval)
-		mut res := T{cap: count}
+		mut res := T{
+			cap: count
+		}
 		for i in 0 .. count {
 			item_zval := C.vphp_array_get_index(raw_zval, u32(i))
 			if item_zval != 0 {
@@ -63,7 +67,7 @@ pub fn (ctx Context) arg[T](index int) T {
 					len := 0
 					ptr := voidptr(C.vphp_get_string_ptr(item_zval, &len))
 					if ptr != 0 {
-						res << unsafe { (&char(ptr)).vstring_with_len(len) }
+						res << unsafe { (&char(ptr)).vstring_with_len(len).clone() }
 					} else {
 						res << ''
 					}
@@ -84,7 +88,7 @@ pub fn (ctx Context) arg[T](index int) T {
 	// --- 布尔 ---
 	$if T is bool {
 		if !val.is_bool() {
-			C.vphp_throw(&char('Argument $index must be a boolean'.str), 0)
+			C.vphp_throw(&char('Argument ${index} must be a boolean'.str), 0)
 			return false
 		}
 		return val.to_bool()
@@ -93,7 +97,7 @@ pub fn (ctx Context) arg[T](index int) T {
 	// --- 浮点 ---
 	$if T is f64 {
 		if !val.is_double() && !val.is_long() {
-			C.vphp_throw(&char('Argument $index must be a number'.str), 0)
+			C.vphp_throw(&char('Argument ${index} must be a number'.str), 0)
 			return 0.0
 		}
 		return C.vphp_get_double(val.raw)
@@ -102,7 +106,8 @@ pub fn (ctx Context) arg[T](index int) T {
 	// --- 整型 int ---
 	$if T is int {
 		if !val.is_long() && !val.is_double() {
-			C.vphp_throw(&char('Argument $index: expected integer, got ${val.type_name()}'.str), 0)
+			C.vphp_throw(&char('Argument ${index}: expected integer, got ${val.type_name()}'.str),
+				0)
 			return 0
 		}
 		return int(C.vphp_get_int(val.raw))
@@ -111,7 +116,8 @@ pub fn (ctx Context) arg[T](index int) T {
 	// --- 整型 i64 ---
 	$if T is i64 {
 		if !val.is_long() && !val.is_double() {
-			C.vphp_throw(&char('Argument $index: expected integer, got ${val.type_name()}'.str), 0)
+			C.vphp_throw(&char('Argument ${index}: expected integer, got ${val.type_name()}'.str),
+				0)
 			return 0
 		}
 		return i64(C.vphp_get_int(val.raw))
@@ -119,7 +125,9 @@ pub fn (ctx Context) arg[T](index int) T {
 
 	// --- map[string]string ---
 	$if T is map[string]string {
-		mut m_ctx := MapContext{ m: map[string]string{} }
+		mut m_ctx := MapContext{
+			m: map[string]string{}
+		}
 		unsafe {
 			C.vphp_array_each(raw_zval, &m_ctx, voidptr(map_callback))
 		}
@@ -128,7 +136,9 @@ pub fn (ctx Context) arg[T](index int) T {
 
 	// --- map[string]f64 ---
 	$if T is map[string]f64 {
-		mut m_ctx := MapF64Context{ m: map[string]f64{} }
+		mut m_ctx := MapF64Context{
+			m: map[string]f64{}
+		}
 		unsafe {
 			C.vphp_array_each(raw_zval, &m_ctx, voidptr(map_f64_callback))
 		}
@@ -137,7 +147,9 @@ pub fn (ctx Context) arg[T](index int) T {
 
 	// --- map[string]int ---
 	$if T is map[string]int {
-		mut m_ctx := MapIntContext{ m: map[string]int{} }
+		mut m_ctx := MapIntContext{
+			m: map[string]int{}
+		}
 		unsafe {
 			C.vphp_array_each(raw_zval, &m_ctx, voidptr(map_int_callback))
 		}
@@ -148,10 +160,32 @@ pub fn (ctx Context) arg[T](index int) T {
 	$if T is string {
 		len := 0
 		ptr := voidptr(C.vphp_get_string_ptr(val.raw, &len))
-		return if ptr != 0 { unsafe { (&char(ptr)).vstring_with_len(len) } } else { '' }
+		return if ptr != 0 { unsafe { (&char(ptr)).vstring_with_len(len).clone() } } else { '' }
 	}
 
 	return T{}
+}
+
+// ======== 获取传入对象参数 ========
+pub fn (ctx Context) arg_raw_obj(index int) voidptr {
+	args := get_args(ctx.ex)
+	if index >= args.len {
+		return unsafe { nil }
+	}
+	val := args[index]
+	if !val.is_object() {
+		C.vphp_throw(&char('Argument ${index} must be an object'.str), 0)
+		return unsafe { nil }
+	}
+	obj := C.vphp_get_obj_from_zval(val.raw)
+	wrapper := C.vphp_obj_from_obj(obj)
+	return wrapper.v_ptr
+}
+
+// ======== 返回值 — 对象 ========
+
+pub fn (ctx Context) return_obj(v_ptr voidptr, ce voidptr) {
+    C.vphp_return_obj(ctx.ret, v_ptr, ce)
 }
 
 // ======== 返回值 — 标量 ========
@@ -166,7 +200,9 @@ pub fn (ctx Context) return_bool(val bool) {
 
 pub fn (ctx Context) return_int(val i64) {
 	unsafe {
-		out := Val{ raw: ctx.ret }
+		out := Val{
+			raw: ctx.ret
+		}
 		out.set_int(val)
 	}
 }
@@ -181,7 +217,9 @@ pub fn (ctx Context) return_double(val f64) {
 
 pub fn (ctx Context) return_string(val string) {
 	unsafe {
-		out := Val{ raw: ctx.ret }
+		out := Val{
+			raw: ctx.ret
+		}
 		out.set_string(val)
 	}
 }
@@ -195,7 +233,9 @@ pub fn (ctx Context) return_res(ptr voidptr, label string) {
 // ======== 返回值 — 数组 / Map ========
 
 pub fn (ctx Context) return_map(m map[string]string) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for k, v in m {
 		out.add_assoc_string(k, v)
@@ -203,7 +243,9 @@ pub fn (ctx Context) return_map(m map[string]string) {
 }
 
 pub fn (ctx Context) return_map_f64(m map[string]f64) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for k, v in m {
 		out.add_assoc_double(k, v)
@@ -211,7 +253,9 @@ pub fn (ctx Context) return_map_f64(m map[string]f64) {
 }
 
 pub fn (ctx Context) return_map_int(m map[string]int) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for k, v in m {
 		out.add_assoc_long(k, i64(v))
@@ -219,7 +263,9 @@ pub fn (ctx Context) return_map_int(m map[string]int) {
 }
 
 pub fn (ctx Context) return_map_bool(m map[string]bool) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for k, v in m {
 		out.add_assoc_bool(k, v)
@@ -240,7 +286,9 @@ pub fn (ctx Context) return_object(props map[string]string) {
 // ======== 返回值 — 结构体 → PHP 关联数组 ========
 
 pub fn (ctx Context) return_struct[T](s T) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	$for field in T.fields {
 		key := field.name
@@ -260,13 +308,19 @@ pub fn (ctx Context) return_struct[T](s T) {
 // ======== 返回值 — 结构体数组 → PHP 索引数组 ========
 
 pub fn (ctx Context) return_list[T](list []T) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
-	if list.len == 0 { return }
+	if list.len == 0 {
+		return
+	}
 
 	for item in list {
 		sub_zv := C.zval{}
-		sub_val := Val{ raw: &sub_zv }
+		sub_val := Val{
+			raw: &sub_zv
+		}
 		sub_val.array_init()
 
 		$for field in T.fields {
@@ -282,7 +336,6 @@ pub fn (ctx Context) return_list[T](list []T) {
 				sub_val.add_assoc_bool(key, val)
 			}
 		}
-
 		out.add_next_val(sub_val)
 	}
 }
@@ -291,7 +344,9 @@ pub fn (ctx Context) return_list[T](list []T) {
 
 pub fn (ctx Context) return_val[T](val T) {
 	unsafe {
-		out := Val{ raw: ctx.ret }
+		out := Val{
+			raw: ctx.ret
+		}
 		$if T is i64 {
 			out.set_int(val)
 		} $else $if T is int {
@@ -326,7 +381,9 @@ pub fn (ctx Context) return_val[T](val T) {
 }
 
 pub fn (ctx Context) return_list_int(val []int) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for v in val {
 		C.vphp_array_push_long(ctx.ret, i64(v))
@@ -334,7 +391,9 @@ pub fn (ctx Context) return_list_int(val []int) {
 }
 
 pub fn (ctx Context) return_list_i64(val []i64) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for v in val {
 		C.vphp_array_push_long(ctx.ret, v)
@@ -342,7 +401,9 @@ pub fn (ctx Context) return_list_i64(val []i64) {
 }
 
 pub fn (ctx Context) return_list_f64(val []f64) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for v in val {
 		C.vphp_array_push_double(ctx.ret, v)
@@ -350,20 +411,22 @@ pub fn (ctx Context) return_list_f64(val []f64) {
 }
 
 pub fn (ctx Context) return_list_string(val []string) {
-	out := Val{ raw: ctx.ret }
+	out := Val{
+		raw: ctx.ret
+	}
 	out.array_init()
 	for v in val {
 		C.vphp_array_push_string(ctx.ret, &char(v.str))
 	}
 }
 
-
-
 // ======== 泛型返回（低级 API，直接操作 retval） ========
 
 pub fn return_val_raw[T](ret &C.zval, val T) {
 	unsafe {
-		mut out := Val{ raw: ret }
+		mut out := Val{
+			raw: ret
+		}
 		$if T is i64 {
 			out.set_int(val)
 		} $else $if T is int {
@@ -400,9 +463,15 @@ pub fn parse2[T, U](ctx Context) (T, U) {
 	}
 	mut r1 := T{}
 	mut r2 := U{}
-	$if T is i64    { r1 = args[0].as_int() }
-	$else $if T is string { r1 = args[0].to_string() }
-	$if U is i64    { r2 = args[1].as_int() }
-	$else $if U is string { r2 = args[1].to_string() }
+	$if T is i64 {
+		r1 = args[0].as_int()
+	} $else $if T is string {
+		r1 = args[0].to_string()
+	}
+	$if U is i64 {
+		r2 = args[1].as_int()
+	} $else $if U is string {
+		r2 = args[1].to_string()
+	}
 	return r1, r2
 }
