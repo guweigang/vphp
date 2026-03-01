@@ -58,6 +58,9 @@ Method: internal_format - protected
 Method: create - public static
 Method: get_formatted_title - public
 Method: save - public
+Method: dump_properties - public
+Method: process_with_callback - public
+Method: restore_author - public static
 Method: set_author - public
 Method: get_author - public
 
