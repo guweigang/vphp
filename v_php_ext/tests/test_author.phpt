@@ -30,7 +30,7 @@ Step 2: Creating Article and setting Author
 
 Step 3: Getting Author back
 Returned Author name: Gu Weigang
-Are they the same object? No
+Are they the same object? Yes
 
 Step 4: Story create with Author
 Author Gu Weigang is telling a story with 5 chapters.

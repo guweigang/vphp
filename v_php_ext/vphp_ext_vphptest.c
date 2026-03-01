@@ -9247,6 +9247,7 @@ Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int i
 Array_string vphp__Context_arg_T_Array_string(vphp__Context ctx, int index);
 bool vphp__Context_arg_T_bool(vphp__Context ctx, int index);
 voidptr vphp__Context_arg_raw_obj(vphp__Context ctx, int index);
+void vphp__Context_return_obj(vphp__Context ctx, voidptr v_ptr, voidptr ce);
 void vphp__Context_return_null(vphp__Context ctx);
 void vphp__Context_return_bool(vphp__Context ctx, bool val);
 void vphp__Context_return_int(vphp__Context ctx, i64 val);
@@ -11491,6 +11492,7 @@ string _const_vphp__compiler__tpl_instance_method; // a string literal, inited l
 string _const_vphp__compiler__tpl_instance_void; // a string literal, inited later
 string _const_vphp__compiler__tpl_instance_result; // a string literal, inited later
 string _const_vphp__compiler__tpl_instance_object; // a string literal, inited later
+string _const_vphp__compiler__tpl_default_construct; // a string literal, inited later
 builtin__closure__Closure g_closure; // global 6
 
 Array_fixed_u8_12 _const_builtin__closure__closure_thunk; // inited later
@@ -36190,6 +36192,9 @@ voidptr vphp__Context_arg_raw_obj(vphp__Context ctx, int index) {
 	vphp_object_wrapper* wrapper = vphp_obj_from_obj(obj);
 	return wrapper->v_ptr;
 }
+void vphp__Context_return_obj(vphp__Context ctx, voidptr v_ptr, voidptr ce) {
+	vphp_return_obj(ctx.ret, v_ptr, ce);
+}
 void vphp__Context_return_null(vphp__Context ctx) {
 	vphp_set_null(ctx.ret);
 }
@@ -37217,7 +37222,10 @@ void vphp_framework_init(int module_number) {
 	return vphp__vphp_framework_init(module_number);
 }
 void vphp__init_framework(int module_number) {
-	vphp_init_resource_system(module_number);
+	{ // Unsafe block
+		vphp_init_registry();
+		vphp_init_resource_system(module_number);
+	}
 }
 VV_LOC vphp__TaskRegistry* vphp__get_registry(void) {
 	{ // Unsafe block
@@ -77914,8 +77922,12 @@ VV_LOC Array_string vphp__compiler__CGenerator_gen_class_c(vphp__compiler__CGene
 		builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_S("ZEND_BEGIN_ARG_INFO_EX(arginfo_"), 0xfe10, {.d_s = lower_name}}, {_S("_"), 0xfe10, {.d_s = m.name}}, {_S(", 0, 0, 0)"), 0, { .d_c = 0 }}})) }));
 		builtin__array_push((array*)&c, _MOV((string[]){ _S("ZEND_END_ARG_INFO()") }));
 	}
+	bool has_init = false;
 	for (int _t5 = 0; _t5 < r->methods.len; ++_t5) {
 		vphp__compiler__PhpMethodRepr m = ((vphp__compiler__PhpMethodRepr*)r->methods.data)[_t5];
+		if (builtin__fast_string_eq(m.name, _S("init"))) {
+			has_init = true;
+		}
 		string php_method_name = (builtin__fast_string_eq(m.name, _S("init")) ? (_S("__construct")) : (m.name));
 		string v_c_func = (m.has_export ? (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = r->name}}, {_S("_"), 0xfe10, {.d_s = m.name}}, {_SLIT0, 0, { .d_c = 0 }}}))) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_S("vphp_wrap_"), 0xfe10, {.d_s = r->name}}, {_S("_"), 0xfe10, {.d_s = m.name}}, {_SLIT0, 0, { .d_c = 0 }}}))));
 		vphp__compiler__TypeMap tm = vphp__compiler__TypeMap__static__get_type(m.return_type);
@@ -77966,9 +77978,28 @@ VV_LOC Array_string vphp__compiler__CGenerator_gen_class_c(vphp__compiler__CGene
 			}
 		}
 	}
+	if (!has_init) {
+		Map_string_string vars = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 2, sizeof(string), sizeof(string),
+			_MOV((string[2]){
+				_S("CLASS"),
+				_S("LOWER_CLASS"),
+			}),
+			_MOV((string[2]){
+				c_class, 
+				lower_name, 
+			})
+		)
+		;
+		builtin__array_push((array*)&c, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("ZEND_BEGIN_ARG_INFO_EX(arginfo_"), 0xfe10, {.d_s = lower_name}}, {_S("___construct, 0, 0, 0)"), 0, { .d_c = 0 }}})) }));
+		builtin__array_push((array*)&c, _MOV((string[]){ _S("ZEND_END_ARG_INFO()") }));
+		builtin__array_push((array*)&c, _MOV((string[]){ vphp__compiler__render_tpl(_const_vphp__compiler__tpl_default_construct, vars) }));
+	}
 	vphp__compiler__ClassBuilder* builder = vphp__compiler__new_class_builder(r->php_name, c_class);
-	for (int _t15 = 0; _t15 < r->methods.len; ++_t15) {
-		vphp__compiler__PhpMethodRepr m = ((vphp__compiler__PhpMethodRepr*)r->methods.data)[_t15];
+	if (!has_init) {
+		vphp__compiler__ClassBuilder_add_method(builder, _S("__construct"), builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = lower_name}}, {_S("___construct"), 0, { .d_c = 0 }}})), _S("ZEND_ACC_PUBLIC"));
+	}
+	for (int _t18 = 0; _t18 < r->methods.len; ++_t18) {
+		vphp__compiler__PhpMethodRepr m = ((vphp__compiler__PhpMethodRepr*)r->methods.data)[_t18];
 		string php_method_name = (builtin__fast_string_eq(m.name, _S("init")) ? (_S("__construct")) : (m.name));
 		string flags = _S("ZEND_ACC_PUBLIC");
 		if (builtin__fast_string_eq(m.visibility, _S("protected"))) {
@@ -80597,14 +80628,15 @@ int _t2;
 }
 	_const_v__parser__normalised_working_folder = builtin__string_replace((builtin__string__plus(os__real_path(os__getwd()), _S("/"))), _S("\\"), _S("/"));
 	// Initializations of consts for module vphp.compiler
-	_const_vphp__compiler__tpl_construct = _S("PHP_METHOD({{CLASS}}, __construct) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern vphp_class_handlers* {{CLASS}}_handlers();\n    vphp_class_handlers *h = {{CLASS}}_handlers();\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    wrapper->v_ptr = h->new_raw();\n    vphp_bind_handlers(Z_OBJ_P(getThis()), h);\n    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    {{V_FUNC}}(wrapper->v_ptr, ctx);\n}");
-	_const_vphp__compiler__tpl_static_factory = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void* {{V_FUNC}}(vphp_context_internal ctx);\n    void* v_instance = {{V_FUNC}}(ctx);\n    if (!v_instance) RETURN_NULL();\n    object_init_ex(return_value, {{LOWER_CLASS}}_ce);\n    extern vphp_class_handlers* {{CLASS}}_handlers();\n    vphp_class_handlers *h = {{CLASS}}_handlers();\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));\n    wrapper->v_ptr = v_instance;\n    vphp_bind_handlers(Z_OBJ_P(return_value), h);\n}");
+	_const_vphp__compiler__tpl_construct = _S("PHP_METHOD({{CLASS}}, __construct) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern vphp_class_handlers* {{CLASS}}_handlers();\n    vphp_class_handlers *h = {{CLASS}}_handlers();\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    wrapper->v_ptr = h->new_raw();\n    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));\n    vphp_bind_handlers(Z_OBJ_P(getThis()), h);\n    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    void* v_ptr = wrapper->v_ptr;\n    {{V_FUNC}}(v_ptr, ctx);\n}");
+	_const_vphp__compiler__tpl_static_factory = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void* {{V_FUNC}}(vphp_context_internal ctx);\n    void* v_instance = {{V_FUNC}}(ctx);\n    vphp_return_obj(return_value, v_instance, {{LOWER_CLASS}}_ce);\n    if (Z_TYPE_P(return_value) == IS_OBJECT) {\n        extern vphp_class_handlers* {{CLASS}}_handlers();\n        vphp_bind_handlers(Z_OBJ_P(return_value), {{CLASS}}_handlers());\n    }\n}");
 	_const_vphp__compiler__tpl_static_scalar = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void {{V_FUNC}}(vphp_context_internal ctx);\n    {{V_FUNC}}(ctx);\n}");
 	_const_vphp__compiler__tpl_static_void = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void {{V_FUNC}}(vphp_context_internal ctx);\n    {{V_FUNC}}(ctx);\n}");
 	_const_vphp__compiler__tpl_instance_method = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    if (!wrapper->v_ptr) RETURN_FALSE;\n    {{V_FUNC}}(wrapper->v_ptr, ctx);\n}");
 	_const_vphp__compiler__tpl_instance_void = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    if (!wrapper->v_ptr) RETURN_NULL();\n    {{V_FUNC}}(wrapper->v_ptr, ctx);\n}");
 	_const_vphp__compiler__tpl_instance_result = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    if (!wrapper->v_ptr) RETURN_FALSE;\n    {{V_FUNC}}(wrapper->v_ptr, ctx);\n}");
-	_const_vphp__compiler__tpl_instance_object = _S("PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void* {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    if (!wrapper->v_ptr) RETURN_NULL();\n    void* v_instance = {{V_FUNC}}(wrapper->v_ptr, ctx);\n    if (!v_instance) RETURN_NULL();\n    \n    object_init_ex(return_value, {{LOWER_RET_CLASS}}_ce);\n    extern vphp_class_handlers* {{RET_CLASS}}_handlers();\n    vphp_class_handlers *h = {{RET_CLASS}}_handlers();\n    vphp_object_wrapper *ret_wrapper = vphp_obj_from_obj(Z_OBJ_P(return_value));\n    ret_wrapper->v_ptr = v_instance;\n    vphp_bind_handlers(Z_OBJ_P(return_value), h);\n}");
+	_const_vphp__compiler__tpl_instance_object = _S("\nPHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern void* {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    // printf(\"PHP_METHOD {{CLASS}}::{{PHP_METHOD}} called, wrapper->v_ptr=%p\\n\", wrapper->v_ptr);\n    if (!wrapper->v_ptr) RETURN_NULL();\n    void* v_instance = {{V_FUNC}}(wrapper->v_ptr, ctx);\n    vphp_return_obj(return_value, v_instance, {{LOWER_RET_CLASS}}_ce);\n    if (Z_TYPE_P(return_value) == IS_OBJECT) {\n        extern vphp_class_handlers* {{RET_CLASS}}_handlers();\n        vphp_bind_handlers(Z_OBJ_P(return_value), {{RET_CLASS}}_handlers());\n    }\n}\n");
+	_const_vphp__compiler__tpl_default_construct = _S("\nPHP_METHOD({{CLASS}}, __construct) {\n    typedef struct { void* ex; void* ret; } vphp_context_internal;\n    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };\n    extern vphp_class_handlers* {{CLASS}}_handlers();\n    vphp_class_handlers *h = {{CLASS}}_handlers();\n    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));\n    wrapper->v_ptr = h->new_raw();\n    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));\n    vphp_bind_handlers(Z_OBJ_P(getThis()), h);\n}\n");
 }
 void _vcleanup(void) {
 }

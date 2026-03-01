@@ -30,11 +30,14 @@ pub mut:
 
 @[php_method]
 pub fn (mut p Post) set_author(author &Author) {
+    // println('V: Post.set_author called on ptr=${ptr_str(p)} with author_ptr=${ptr_str(author)}')
     p.author = author
 }
 
 @[php_method]
 pub fn (p &Post) get_author() &Author {
+    // println('V: Post.get_author called on ptr=${ptr_str(p)}')
+    // println('V: Post.get_author returning author_ptr=${ptr_str(p.author)}')
     return p.author
 }
 
