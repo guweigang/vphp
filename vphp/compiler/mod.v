@@ -87,10 +87,10 @@ pub fn (mut c Compiler) compile() !string {
 
 				if receiver_type in c.class_index {
 					idx := c.class_index[receiver_type]
-					// 必须通过索引获取 mut 引用
 					mut el := c.elements[idx]
 					if mut el is PhpClassRepr {
 						el.add_method(stmt, c.table)
+                        c.elements[idx] = el // 重要：写回修改后的对象！
 					}
 					continue
 				}
@@ -139,17 +139,50 @@ pub fn (mut c Compiler) compile() !string {
 		}
 	}
 
-	// --- 第三阶段：绑定映射影子常量 (Shadow Constants Linking) ---
+	// --- 第三阶段：绑定映射影子常量 & 静态属性 (Linking Phrase) ---
 	for i in 0 .. c.elements.len {
 		mut el := c.elements[i]
 		if mut el is PhpClassRepr {
+			// 1. 影子静态属性链接
+			if el.shadow_static_name != '' {
+				for s_el in c.elements {
+					if s_el is PhpConstRepr {
+						if s_el.name == el.shadow_static_name {
+							el.shadow_static_type = s_el.v_type
+							// 从 V 的类型表里把这个影子结构体拉出来
+							mut typ := c.table.find_type(el.shadow_static_type)
+							if typ == 0 {
+								// 尝试加上 main 模块前缀
+								typ = c.table.find_type('main.' + el.shadow_static_type)
+							}
+							
+							if typ != 0 {
+								sym := c.table.sym(typ)
+								sym_info := sym.info
+								if sym_info is ast.Struct {
+									for field in sym_info.fields {
+										el.properties << PhpClassProp{
+											name: field.name
+											v_type: c.table.get_type_name(field.typ)
+											visibility: 'public'
+											is_static: true
+										}
+									}
+								}
+							}
+							break
+						}
+					}
+				}
+			}
+
+			// 2. 影子常量链接
 			if el.shadow_const_name != '' {
-				for con_el in c.elements {
-					if con_el is PhpConstRepr {
-						if con_el.name == el.shadow_const_name && con_el.const_type == 'struct' {
-							// 找到了匹配的结构体常量，开始解包字段
-							el.shadow_const_type = con_el.v_type
-							for f_name, sub_con in con_el.fields {
+				for s_el in c.elements {
+					if s_el is PhpConstRepr {
+						if s_el.name == el.shadow_const_name {
+							el.shadow_const_type = s_el.v_type
+							for f_name, sub_con in s_el.fields {
 								el.constants << PhpClassConst{
 									name: sub_con.name
 									v_field_name: f_name
@@ -162,6 +195,7 @@ pub fn (mut c Compiler) compile() !string {
 					}
 				}
 			}
+			c.elements[i] = el
 		}
 	}
 

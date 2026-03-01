@@ -55,9 +55,12 @@ const article_consts = ArticleConsts{
     age: 24
 }
 
-article_statics := struct {
+struct ArticleStatics {
+pub mut:
     total_count int = 0
 }
+
+const article_statics = ArticleStatics{}
 
 @[heap]
 @[php_class]
@@ -75,7 +78,6 @@ pub mut:
 
 mut:
 	content       string // protected
-	total_count   int    // @[php_static] protected static
 }
 
 @[php_method]
@@ -83,8 +85,10 @@ pub fn (mut a Article) init(title string, id int) &Article {
     a.title = title.clone()
     a.id = id
     a.is_top = true
-    a.content = 'Default Content'.clone()
-    println('V Article initialized with title: ${a.title}')
+    // 增加计数器 (通过影子方法绕过 const 限制)
+    mut s := Article.statics()
+    s.total_count++
+    
     return a
 }
 

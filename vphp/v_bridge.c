@@ -665,3 +665,56 @@ void vphp_zval_foreach(zval *zv, vphp_foreach_cb cb, void *ctx) {
   }
   ZEND_HASH_FOREACH_END();
 }
+
+void *vphp_get_active_ce(zend_execute_data *ex) {
+  if (ex && ex->func && ex->func->common.scope) {
+    return (void *)ex->func->common.scope;
+  }
+  // Fallback for constructors where scope might be null but we have 'this'
+  if (ex && Z_TYPE(ex->This) == IS_OBJECT) {
+    return (void *)Z_OBJCE(ex->This);
+  }
+  return NULL;
+}
+
+void vphp_update_static_property_long(zend_class_entry *ce, char *name,
+                                      int name_len, long val) {
+  zend_update_static_property_long(ce, name, name_len, val);
+}
+
+void vphp_update_static_property_string(zend_class_entry *ce, char *name,
+                                        int name_len, char *val, int val_len) {
+  zend_update_static_property_stringl(ce, name, name_len, val, val_len);
+}
+
+void vphp_update_static_property_bool(zend_class_entry *ce, char *name,
+                                      int name_len, int val) {
+  zend_update_static_property_bool(ce, name, name_len, val);
+}
+long vphp_get_static_property_long(zend_class_entry *ce, char *name,
+                                   int name_len) {
+  zval *rv = zend_read_static_property(ce, name, name_len, 1);
+  if (rv) {
+    return zval_get_long(rv);
+  }
+  return 0;
+}
+
+char *vphp_get_static_property_string(zend_class_entry *ce, char *name,
+                                      int name_len) {
+  zval *rv = zend_read_static_property(ce, name, name_len, 1);
+  if (rv) {
+    zend_string *s = zval_get_string(rv);
+    return ZSTR_VAL(s);
+  }
+  return "";
+}
+
+int vphp_get_static_property_bool(zend_class_entry *ce, char *name,
+                                  int name_len) {
+  zval *rv = zend_read_static_property(ce, name, name_len, 1);
+  if (rv) {
+    return zval_is_true(rv);
+  }
+  return 0;
+}

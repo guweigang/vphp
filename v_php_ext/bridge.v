@@ -96,55 +96,88 @@ pub fn article_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval
 pub fn article_sync_props(ptr voidptr, zv &C.zval) {
     vphp.generic_sync_props[Article](ptr, zv)
 }
+pub fn Article.consts() ArticleConsts {
+    return article_consts
+}
+pub fn Article.statics() &ArticleStatics {
+    return &article_statics
+}
+pub fn Article.sync_statics_to_php(ctx vphp.Context) {
+    ce := ctx.get_ce()
+    if ce == voidptr(0) { return }
+    vphp.set_static_prop(ce, "total_count", article_statics.total_count)
+}
+pub fn Article.sync_statics_from_php(ctx vphp.Context) {
+    ce := ctx.get_ce()
+    if ce == voidptr(0) { return }
+    mut s := Article.statics()
+    s.total_count = vphp.get_static_prop[int](ce, "total_count")
+}
 @[export: 'vphp_wrap_Article_init']
 pub fn vphp_wrap_article_init(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &Article(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[int](1)
+    Article.sync_statics_from_php(ctx)
     res := recv.init(arg_0, arg_1)
+    Article.sync_statics_to_php(ctx)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_Article_internal_format']
 pub fn vphp_wrap_article_internal_format(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    Article.sync_statics_from_php(ctx)
     res := recv.internal_format()
+    Article.sync_statics_to_php(ctx)
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_Article_create']
 pub fn vphp_wrap_article_create(ctx vphp.Context) voidptr {
     arg_0 := ctx.arg[string](0)
+    Article.sync_statics_from_php(ctx)
     res := Article.create(arg_0)
+    Article.sync_statics_to_php(ctx)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_Article_get_formatted_title']
 pub fn vphp_wrap_article_get_formatted_title(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    Article.sync_statics_from_php(ctx)
     res := recv.get_formatted_title()
+    Article.sync_statics_to_php(ctx)
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_Article_save']
 pub fn vphp_wrap_article_save(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    Article.sync_statics_from_php(ctx)
     res := recv.save()
+    Article.sync_statics_to_php(ctx)
     ctx.return_val[bool](res)
 }
 @[export: 'vphp_wrap_Article_dump_properties']
 pub fn vphp_wrap_article_dump_properties(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
     arg_0 := ctx.arg_val(0)
+    Article.sync_statics_from_php(ctx)
     recv.dump_properties(arg_0)
+    Article.sync_statics_to_php(ctx)
 }
 @[export: 'vphp_wrap_Article_process_with_callback']
 pub fn vphp_wrap_article_process_with_callback(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
     arg_0 := ctx.arg_val(0)
+    Article.sync_statics_from_php(ctx)
     res := recv.process_with_callback(arg_0)
+    Article.sync_statics_to_php(ctx)
     ctx.return_val[bool](res)
 }
 @[export: 'vphp_wrap_Article_restore_author']
 pub fn vphp_wrap_article_restore_author(ctx vphp.Context) voidptr {
     arg_0 := ctx.arg_val(0)
+    Article.sync_statics_from_php(ctx)
     res := Article.restore_author(arg_0)
+    Article.sync_statics_to_php(ctx)
     return voidptr(res)
 }
 @[export: 'Article_handlers']

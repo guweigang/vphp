@@ -47,12 +47,12 @@ try {
 1. Reflection checks:
 Property: post_id - public
 Property: author - public
+Property: created_at - public
 Property: id - public
 Property: title - public
 Property: is_top - public
-Property: max_title_len - public static
 Property: content - protected
-Property: total_count - protected static
+Property: total_count - public static
 Method: __construct - public
 Method: internal_format - protected
 Method: create - public static
@@ -66,6 +66,5 @@ Method: get_author - public
 
 2. Runtime behavior:
 Title: Hello V!
-V Article initialized with title: Hello V!
 Formatted: [Protected] Hello V!
-Default ContentCaught protected method call: Call to protected method Article::internal_format() from global scope
+Caught protected method call: Call to protected method Article::internal_format() from global scope

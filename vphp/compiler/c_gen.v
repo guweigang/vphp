@@ -140,13 +140,16 @@ pub fn (g CGenerator) gen_minit_lines(mut elements []PhpRepr) []string {
 	mut res := []string{}
 	for mut el in elements {
 		if mut el is PhpConstRepr {
-			res << render_global_constant(el.name, el.const_type, el.value)
+			// 只有显式标注了 @[php_const] 且不是结构体的才导出为全局常量
+			if el.has_php_const && el.const_type != 'struct' {
+				res << render_global_constant(el.name, el.const_type, el.value)
+			}
 		} else if mut el is PhpClassRepr {
 			mut builder := new_class_builder(el.php_name, el.c_name())
 			builder.set_parent(el.parent)
 
 			for con in el.constants {
-				builder.add_constant(con.name, "string", con.value)
+				builder.add_constant(con.name, con.const_type, con.value)
 			}
 			
 			for prop in el.properties {
@@ -158,6 +161,7 @@ pub fn (g CGenerator) gen_minit_lines(mut elements []PhpRepr) []string {
 					flags = 'ZEND_ACC_PRIVATE'
 				}
 
+				// 这里的 prop.is_static 必须在 mod.v 链接阶段准确设置
 				if prop.is_static { 
 					flags += ' | ZEND_ACC_STATIC' 
 				}

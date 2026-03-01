@@ -8,8 +8,10 @@ pub mut:
 	php_name   string      // PHP 侧类名 (如 VPhp\Task)，可含命名空间
 	parent     string      // 继承关系
 	is_final   bool
-	shadow_const_name string  // 新增：绑定的影子常量名称，如 "article_consts"
-	shadow_const_type string  // 新增：绑定的影子常量的 V 侧类型
+	shadow_const_name string  // 绑定的影子常量名，如 "article_consts"
+	shadow_static_name string // 新增：绑定的影子静态属性名，如 "article_statics"
+	shadow_const_type string  // 绑定的影子常量的 V 侧类型
+	shadow_static_type string // 新增：绑定的影子静态属性的 V 侧类型
 	constants  []PhpClassConst
 	properties []PhpClassProp
 	methods    []PhpMethodRepr
@@ -74,8 +76,12 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 			if attr := stmt.attrs.find_first('php_extends') {
 				r.parent = attr.arg
 			}
-			if attr := stmt.attrs.find_first('php_const') {
-				r.shadow_const_name = attr.arg
+			for attr in stmt.attrs {
+				if attr.name == 'php_const' {
+					r.shadow_const_name = attr.arg
+				} else if attr.name == 'php_static' {
+					r.shadow_static_name = attr.arg
+				}
 			}
 			if stmt.embeds.len > 0 && r.parent == '' {
 				// 如果没有明确指定 php_extends，自动从第一个嵌入结构体中提取

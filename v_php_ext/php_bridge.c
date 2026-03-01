@@ -499,12 +499,15 @@ PHP_MINIT_FUNCTION(vphptest) {
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
         article_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         article_ce->create_object = vphp_create_object_handler;
+        zend_declare_class_constant_long(article_ce, "MAX_TITLE_LEN", sizeof("MAX_TITLE_LEN")-1, 1024);
+        zend_declare_class_constant_string(article_ce, "NAME", sizeof("NAME")-1, "Samantha Black");
+        zend_declare_class_constant_long(article_ce, "AGE", sizeof("AGE")-1, 24);
+        zend_declare_property_long(article_ce, "created_at", sizeof("created_at")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_long(article_ce, "id", sizeof("id")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(article_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_bool(article_ce, "is_top", sizeof("is_top")-1, 0, ZEND_ACC_PUBLIC);
-        zend_declare_property_long(article_ce, "max_title_len", sizeof("max_title_len")-1, 0, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC);
         zend_declare_property_string(article_ce, "content", sizeof("content")-1, "", ZEND_ACC_PROTECTED);
-        zend_declare_property_long(article_ce, "total_count", sizeof("total_count")-1, 0, ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
+        zend_declare_property_long(article_ce, "total_count", sizeof("total_count")-1, 0, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Story", story_methods);

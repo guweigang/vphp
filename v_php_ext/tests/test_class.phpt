@@ -51,11 +51,9 @@ Step 5: Modifying property from PHP...
 
 Step 6: new class from PHP...
 int(1234)
-V Article initialized with title: Weigang
 string(7) "Weigang"
 bool(true)
 
 Step 7: Call is_top from PHP...
 bool(true)
-V Article initialized with title: is_top_test
 bool(false)

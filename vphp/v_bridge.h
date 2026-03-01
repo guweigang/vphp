@@ -222,4 +222,18 @@ void *vphp_get_v_ptr_from_zval(zval *zv);
 typedef void (*vphp_foreach_cb)(zval *key, zval *val, void *ctx);
 void vphp_zval_foreach(zval *zv, vphp_foreach_cb cb, void *ctx);
 
+void vphp_update_static_property_long(zend_class_entry *ce, char *name,
+                                      int name_len, long val);
+void vphp_update_static_property_string(zend_class_entry *ce, char *name,
+                                        int name_len, char *val, int val_len);
+void vphp_update_static_property_bool(zend_class_entry *ce, char *name,
+                                      int name_len, int val);
+void *vphp_get_active_ce(zend_execute_data *ex);
 #endif
+
+long vphp_get_static_property_long(zend_class_entry *ce, char *name,
+                                 int name_len);
+char *vphp_get_static_property_string(zend_class_entry *ce, char *name,
+                                     int name_len);
+int vphp_get_static_property_bool(zend_class_entry *ce, char *name,
+                                   int name_len);
