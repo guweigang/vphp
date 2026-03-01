@@ -1,5 +1,7 @@
 module main
 
+import vphp
+
 @[heap]
 @[php_class]
 struct Author {
@@ -94,6 +96,30 @@ pub fn (a &Article) get_formatted_title() string {
 @[php_method]
 pub fn (a &Article) save() bool {
     return true
+}
+
+@[php_method]
+pub fn (a &Article) dump_properties(data vphp.Val) {
+    if data.is_array() || data.is_object() {
+        data.foreach(fn (key vphp.Val, val vphp.Val) {
+            println('V Foreach -> Key: ${key.to_string()}, Value Type: ${val.type_name()}')
+            if val.is_string() {
+                println('             Value: ${val.to_string()}')
+            }
+        })
+    } else {
+        println('V Foreach -> Data is not iterable')
+    }
+}
+
+@[php_method]
+pub fn Article.restore_author(author_val vphp.Val) &Author {
+    mut author := author_val.to_object[Author]() or {
+        println('V restore_author -> Failed to convert to Author')
+        return &Author{ name: 'Unknown' }
+    }
+    println('V restore_author -> Successfully restored Author: ${author.name}')
+    return author
 }
 
 // === 新增 Story 类：通过 Embed 自动识别 php_extends: 'Post' ===
