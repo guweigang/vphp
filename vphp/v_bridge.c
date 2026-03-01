@@ -435,6 +435,12 @@ int vphp_call_method(zval *obj, const char *method, int method_len,
 }
 
 // 通用调用：支持闭包、匿名函数或任何 Callable 对象
+int vphp_is_callable(zval *callable) {
+  if (callable == NULL)
+    return 0;
+  return zend_is_callable(callable, 0, NULL);
+}
+
 int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs) {
   // 修复点：将 IS_CALLABLE_CHECK_SYNTAXONLY 替换为 0

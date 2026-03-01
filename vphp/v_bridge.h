@@ -92,6 +92,10 @@ bool vphp_get_bool(zval *z);
 
 int vphp_call_method(zval *obj, const char *method, int method_len,
                      zval *retval, int param_count, zval **params_ptrs);
+// zval string manipulation
+int vphp_array_get_key_len(zend_string *s);
+char *vphp_array_get_key_str(zend_string *s);
+int vphp_is_callable(zval *callable);
 int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs);
 void vphp_array_push_double(zval *z, double val);

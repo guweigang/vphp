@@ -107,6 +107,7 @@ pub fn C.vphp_add_property_double(obj &C.zval, name &char, val f64)
 // ===== 11. 函数 & 方法调用 =====
 pub fn C.vphp_call_php_func(name &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 pub fn C.vphp_call_method(obj &C.zval, method &char, len int, retval &C.zval, p_count int, params &&C.zval) int
+pub fn C.vphp_is_callable(callable &C.zval) int
 pub fn C.vphp_call_callable(callable &C.zval, retval &C.zval, p_count int, params &&C.zval) int
 
 // ===== 12. 资源系统 =====

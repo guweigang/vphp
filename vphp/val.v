@@ -31,6 +31,7 @@ pub fn (v Val) is_string() bool   { return v.type_id() == int(PHPType.string) }
 pub fn (v Val) is_array() bool    { return v.type_id() == int(PHPType.array) }
 pub fn (v Val) is_object() bool   { return v.type_id() == int(PHPType.object) }
 pub fn (v Val) is_resource() bool { return v.type_id() == int(PHPType.resource) }
+pub fn (v Val) is_callable() bool { return C.vphp_is_callable(v.raw) == 1 }
 
 pub fn (v Val) type_name() string {
 	tid := v.type_id()
