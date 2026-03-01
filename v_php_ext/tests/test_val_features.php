@@ -14,4 +14,10 @@ $obj = new stdClass();
 $obj->prop1 = "hello obj";
 $obj->prop2 = 42;
 $article->dump_properties($obj);
+
+echo "\n--- Testing Val.is_callable and Val.invoke ---\n";
+$article->process_with_callback(function ($msg) {
+    echo "PHP Callback received: $msg\n";
+    return true;
+});
 ?>

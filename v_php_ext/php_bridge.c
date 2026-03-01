@@ -116,6 +116,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_article_save, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_dump_properties, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_process_with_callback, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_restore_author, 0, 0, 0)
 ZEND_END_ARG_INFO()
 PHP_METHOD(Article, __construct) {
@@ -174,6 +176,14 @@ PHP_METHOD(Article, dump_properties) {
     if (!wrapper->v_ptr) RETURN_NULL();
     vphp_wrap_Article_dump_properties(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(Article, process_with_callback) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_Article_process_with_callback(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_Article_process_with_callback(wrapper->v_ptr, ctx);
+}
 PHP_METHOD(Article, restore_author) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -192,6 +202,7 @@ static const zend_function_entry article_methods[] = {
     PHP_ME(Article, get_formatted_title, arginfo_article_get_formatted_title, ZEND_ACC_PUBLIC)
     PHP_ME(Article, save, arginfo_article_save, ZEND_ACC_PUBLIC)
     PHP_ME(Article, dump_properties, arginfo_article_dump_properties, ZEND_ACC_PUBLIC)
+    PHP_ME(Article, process_with_callback, arginfo_article_process_with_callback, ZEND_ACC_PUBLIC)
     PHP_ME(Article, restore_author, arginfo_article_restore_author, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };

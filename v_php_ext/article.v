@@ -113,6 +113,24 @@ pub fn (a &Article) dump_properties(data vphp.Val) {
 }
 
 @[php_method]
+pub fn (a &Article) process_with_callback(callback vphp.Val) bool {
+    if !callback.is_callable() {
+        println('V process_with_callback -> Argument is not callable!')
+        return false
+    }
+    
+    // Call the PHP closure with a parameter
+    mut args := []vphp.Val{}
+    args << vphp.new_val_string('Calling from V')
+    
+    res := callback.invoke(args)
+    if res.raw == 0 {
+        return false
+    }
+    return res.type_id() == int(vphp.PHPType.true_) || (res.is_numeric() && res.to_int() != 0)
+}
+
+@[php_method]
 pub fn Article.restore_author(author_val vphp.Val) &Author {
     mut author := author_val.to_object[Author]() or {
         println('V restore_author -> Failed to convert to Author')

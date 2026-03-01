@@ -134,6 +134,13 @@ pub fn vphp_wrap_article_dump_properties(ptr voidptr, ctx vphp.Context)  {
     arg_0 := ctx.arg_val(0)
     recv.dump_properties(arg_0)
 }
+@[export: 'vphp_wrap_Article_process_with_callback']
+pub fn vphp_wrap_article_process_with_callback(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &Article(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.process_with_callback(arg_0)
+    ctx.return_val[bool](res)
+}
 @[export: 'vphp_wrap_Article_restore_author']
 pub fn vphp_wrap_article_restore_author(ctx vphp.Context) voidptr {
     arg_0 := ctx.arg_val(0)

@@ -3571,6 +3571,7 @@ typedef array Array_rune;
 typedef string Array_fixed_string_11 [11];
 typedef voidptr Array_fixed_voidptr_11 [11];
 typedef array Array_RepIndex;
+typedef array Array_vphp__Val;
 typedef map Map_string_string;
 typedef array Array_f64;
 typedef array Array_main__HeartPoint;
@@ -3580,7 +3581,6 @@ typedef array Array_i64;
 typedef map Map_string_f64;
 typedef map Map_string_bool;
 typedef map Map_string_vphp__TaskCreator;
-typedef array Array_vphp__Val;
 typedef array Array_char_ptr;
 typedef int Array_fixed_int_3 [3];
 typedef array Array_os__Signal;
@@ -3843,8 +3843,8 @@ struct main__Coach {
 //          |   19 = bool
 //          |   37 = Array_string
 //          |   47 = Array_int
-//          |  159 = Array_i64
-//          |  125 = Array_f64
+//          |  160 = Array_i64
+//          |  126 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -9313,6 +9313,7 @@ bool vphp__Val_is_string(vphp__Val v);
 bool vphp__Val_is_array(vphp__Val v);
 bool vphp__Val_is_object(vphp__Val v);
 bool vphp__Val_is_resource(vphp__Val v);
+bool vphp__Val_is_callable(vphp__Val v);
 string vphp__Val_type_name(vphp__Val v);
 bool vphp__Val_to_bool(vphp__Val v);
 bool vphp__Val_get_bool(vphp__Val v);
@@ -10858,6 +10859,7 @@ string main__Article_get_formatted_title(main__Article* a);
 bool main__Article_save(main__Article* a);
 void main__Article_dump_properties(main__Article* a, vphp__Val data);
 VV_LOC void anon_fn_0457a5b1ba51b454_40_vphp__val_vphp__val_2246(vphp__Val key, vphp__Val val);
+bool main__Article_process_with_callback(main__Article* a, vphp__Val callback);
 main__Author* main__Article__static__restore_author(vphp__Val author_val);
 main__Story* main__Story__static__create(main__Author* author, int chapters);
 string main__Story_tell(main__Story* s);
@@ -10909,6 +10911,8 @@ void main__vphp_wrap_article_save(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_Article_save(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_article_save
 void main__vphp_wrap_article_dump_properties(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_Article_dump_properties(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_article_dump_properties
+void main__vphp_wrap_article_process_with_callback(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_Article_process_with_callback(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_article_process_with_callback
 voidptr main__vphp_wrap_article_restore_author(vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_Article_restore_author(vphp__Context ctx); // exported fn main.vphp_wrap_article_restore_author
 voidptr main__article_handlers(void);
@@ -10984,7 +10988,7 @@ VV_EXP void vphp_wrap_v_analyze_fitness_data(vphp__Context ctx); // exported fn 
 VV_LOC void main__vphp_wrap_v_get_alerts(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_get_alerts(vphp__Context ctx); // exported fn main.vphp_wrap_v_get_alerts
 VV_LOC void main__vphp_ext_startup(void);
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_10742(vphp__Context ctx);
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_11022(vphp__Context ctx);
 VV_EXP void vphp_ext_startup(void); // exported fn main.vphp_ext_startup
 VV_LOC void main__main(void);
 VV_LOC void main__v_reverse_string(vphp__Context ctx);
@@ -15103,7 +15107,7 @@ v__ast__TypeInfo v__ast__Alias_to_sumtype_v__ast__TypeInfo(v__ast__Alias* x, boo
 vphp__TaskResult Array_f64_to_sumtype_vphp__TaskResult(Array_f64* x, bool is_mut) {
 	Array_f64* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Array_f64)); }
-	return (vphp__TaskResult){ ._Array_f64 = ptr, ._typ = 125};
+	return (vphp__TaskResult){ ._Array_f64 = ptr, ._typ = 126};
 }
 
 static bool Array_u8_contains(Array_u8 a, u8 v) {
@@ -17677,7 +17681,7 @@ VV_LOC void anon_fn_0457a5b1ba51b454_40_vphp__val_vphp__val_2246(vphp__Val key, 
 	}
 }
 
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_10742(vphp__Context ctx) {
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_11022(vphp__Context ctx) {
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.symbol = vphp__Context_arg_T_string(ctx, 1),.count = vphp__Context_arg_T_int(ctx, 2),}, sizeof(main__AnalyzeTask))));
 }
 
@@ -17729,13 +17733,13 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	if (sidx == _vphp__ITask_main__AnalyzeTask_index) return 120;
+	if (sidx == _vphp__ITask_main__AnalyzeTask_index) return 121;
 	if (sidx == _vphp__ITask_voidptr_index) return 2;
-	return 119;
+	return 120;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 131: return "vphp.TaskResult";
+		case 132: return "vphp.TaskResult";
 		case 21: return "string";
 		case 8: return "int";
 		case 9: return "i64";
@@ -17743,15 +17747,15 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 19: return "bool";
 		case 37: return "[]string";
 		case 47: return "[]int";
-		case 159: return "[]i64";
-		case 125: return "[]f64";
+		case 160: return "[]i64";
+		case 126: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
 
 u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 131: return 131;
+		case 132: return 132;
 		case 21: return 21;
 		case 8: return 8;
 		case 9: return 9;
@@ -17759,9 +17763,9 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 19: return 19;
 		case 37: return 37;
 		case 47: return 47;
-		case 159: return 159;
-		case 125: return 125;
-		default: return 131;
+		case 160: return 160;
+		case 126: return 126;
+		default: return 132;
 	}
 }
 static char * v_typeof_interface_vphp__compiler__PhpRepr(u32 sidx) {
@@ -37362,10 +37366,10 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 47 /* []int */) {
 			vphp__Context_return_val_T_Array_int(ctx, (*results._Array_int));
 		}
-		else if (results._typ == 159 /* []i64 */) {
+		else if (results._typ == 160 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 125 /* []f64 */) {
+		else if (results._typ == 126 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -37413,6 +37417,9 @@ bool vphp__Val_is_object(vphp__Val v) {
 }
 bool vphp__Val_is_resource(vphp__Val v) {
 	return vphp__Val_type_id(v) == ((int)(vphp__PHPType__resource));
+}
+bool vphp__Val_is_callable(vphp__Val v) {
+	return vphp_is_callable(v.raw) == 1;
 }
 string vphp__Val_type_name(vphp__Val v) {
 	int tid = vphp__Val_type_id(v);
@@ -78951,6 +78958,19 @@ void main__Article_dump_properties(main__Article* a, vphp__Val data) {
 		builtin__println(_S("V Foreach -> Data is not iterable"));
 	}
 }
+bool main__Article_process_with_callback(main__Article* a, vphp__Val callback) {
+	if (!vphp__Val_is_callable(callback)) {
+		builtin__println(_S("V process_with_callback -> Argument is not callable!"));
+		return false;
+	}
+	Array_vphp__Val args = builtin____new_array_with_default(0, 0, sizeof(vphp__Val), 0);
+	builtin__array_push((array*)&args, _MOV((vphp__Val[]){ vphp__new_val_string(_S("Calling from V")) }));
+	vphp__Val res = vphp__Val_invoke(callback, args);
+	if (res.raw == 0) {
+		return false;
+	}
+	return vphp__Val_type_id(res) == ((int)(vphp__PHPType__true_)) || (vphp__Val_is_numeric(res) && vphp__Val_to_int(res) != 0);
+}
 main__Author* main__Article__static__restore_author(vphp__Val author_val) {
 	_option_main__Author_ptr _t1 = vphp__Val_to_object_T_main__Author(author_val);
 	if (_t1.state != 0) {
@@ -79158,6 +79178,16 @@ void main__vphp_wrap_article_dump_properties(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_Article_dump_properties -> main__vphp_wrap_article_dump_properties
 void vphp_wrap_Article_dump_properties(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_article_dump_properties(ptr, ctx);
+}
+void main__vphp_wrap_article_process_with_callback(voidptr ptr, vphp__Context ctx) {
+	main__Article* recv = ((main__Article*)(ptr));
+	vphp__Val arg_0 = vphp__Context_arg_val(ctx, 0);
+	bool res = main__Article_process_with_callback(recv, arg_0);
+	vphp__Context_return_val_T_bool(ctx, res);
+}
+// export alias: vphp_wrap_Article_process_with_callback -> main__vphp_wrap_article_process_with_callback
+void vphp_wrap_Article_process_with_callback(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_article_process_with_callback(ptr, ctx);
 }
 voidptr main__vphp_wrap_article_restore_author(vphp__Context ctx) {
 	vphp__Val arg_0 = vphp__Context_arg_val(ctx, 0);
@@ -79454,7 +79484,7 @@ void vphp_wrap_v_get_alerts(vphp__Context ctx) {
 	return main__vphp_wrap_v_get_alerts(ctx);
 }
 VV_LOC void main__vphp_ext_startup(void) {
-	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_10742);
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_41_vphp__context__vphp__ITask_11022);
 }
 // export alias: vphp_ext_startup -> main__vphp_ext_startup
 void vphp_ext_startup(void) {
