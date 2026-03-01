@@ -163,6 +163,15 @@ pub fn (ctx Context) arg[T](index int) T {
 		return if ptr != 0 { unsafe { (&char(ptr)).vstring_with_len(len).clone() } } else { '' }
 	}
 
+    // --- Val 和 对象指针处理 ---
+    $if T is Val {
+        return ctx.arg_val(index)
+    }
+
+    $if T is voidptr {
+        return ctx.arg_raw_obj(index)
+    }
+
 	return T{}
 }
 
@@ -241,43 +250,23 @@ pub fn (ctx Context) return_res(ptr voidptr, label string) {
 
 // ======== 返回值 — 数组 / Map ========
 
-pub fn (ctx Context) return_map(m map[string]string) {
+pub fn (ctx Context) return_map[T](m map[string]T) {
 	out := Val{
 		raw: ctx.ret
 	}
 	out.array_init()
 	for k, v in m {
-		out.add_assoc_string(k, v)
-	}
-}
-
-pub fn (ctx Context) return_map_f64(m map[string]f64) {
-	out := Val{
-		raw: ctx.ret
-	}
-	out.array_init()
-	for k, v in m {
-		out.add_assoc_double(k, v)
-	}
-}
-
-pub fn (ctx Context) return_map_int(m map[string]int) {
-	out := Val{
-		raw: ctx.ret
-	}
-	out.array_init()
-	for k, v in m {
-		out.add_assoc_long(k, i64(v))
-	}
-}
-
-pub fn (ctx Context) return_map_bool(m map[string]bool) {
-	out := Val{
-		raw: ctx.ret
-	}
-	out.array_init()
-	for k, v in m {
-		out.add_assoc_bool(k, v)
+		$if T is string {
+			out.add_assoc_string(k, v)
+		} $else $if T is int {
+			out.add_assoc_long(k, i64(v))
+		} $else $if T is i64 {
+			out.add_assoc_long(k, v)
+		} $else $if T is f64 {
+			out.add_assoc_double(k, v)
+		} $else $if T is bool {
+			out.add_assoc_bool(k, v)
+		}
 	}
 }
 
@@ -316,7 +305,7 @@ pub fn (ctx Context) return_struct[T](s T) {
 
 // ======== 返回值 — 结构体数组 → PHP 索引数组 ========
 
-pub fn (ctx Context) return_list[T](list []T) {
+pub fn (ctx Context) return_struct_list[T](list []T) {
 	out := Val{
 		raw: ctx.ret
 	}
@@ -367,21 +356,23 @@ pub fn (ctx Context) return_val[T](val T) {
 		} $else $if T is bool {
 			out.set_bool(val)
 		} $else $if T is map[string]string {
-			ctx.return_map(val)
+			ctx.return_map[string](val)
 		} $else $if T is map[string]int {
-			ctx.return_map_int(val)
+			ctx.return_map[int](val)
+		} $else $if T is map[string]i64 {
+			ctx.return_map[i64](val)
 		} $else $if T is map[string]f64 {
-			ctx.return_map_f64(val)
+			ctx.return_map[f64](val)
 		} $else $if T is map[string]bool {
-			ctx.return_map_bool(val)
+			ctx.return_map[bool](val)
 		} $else $if T is []int {
-			ctx.return_list_int(val)
+			ctx.return_list[int](val)
 		} $else $if T is []i64 {
-			ctx.return_list_i64(val)
+			ctx.return_list[i64](val)
 		} $else $if T is []f64 {
-			ctx.return_list_f64(val)
+			ctx.return_list[f64](val)
 		} $else $if T is []string {
-			ctx.return_list_string(val)
+			ctx.return_list[string](val)
 		} $else {
 			// 对于不在枚举列表中的复杂类型（比如 map[string]Any 或 []MyStruct），触发异常
 			throw_exception('Unsupported generic return type', 0)
@@ -389,43 +380,23 @@ pub fn (ctx Context) return_val[T](val T) {
 	}
 }
 
-pub fn (ctx Context) return_list_int(val []int) {
+pub fn (ctx Context) return_list[T](val []T) {
 	out := Val{
 		raw: ctx.ret
 	}
 	out.array_init()
 	for v in val {
-		C.vphp_array_push_long(ctx.ret, i64(v))
-	}
-}
-
-pub fn (ctx Context) return_list_i64(val []i64) {
-	out := Val{
-		raw: ctx.ret
-	}
-	out.array_init()
-	for v in val {
-		C.vphp_array_push_long(ctx.ret, v)
-	}
-}
-
-pub fn (ctx Context) return_list_f64(val []f64) {
-	out := Val{
-		raw: ctx.ret
-	}
-	out.array_init()
-	for v in val {
-		C.vphp_array_push_double(ctx.ret, v)
-	}
-}
-
-pub fn (ctx Context) return_list_string(val []string) {
-	out := Val{
-		raw: ctx.ret
-	}
-	out.array_init()
-	for v in val {
-		C.vphp_array_push_string(ctx.ret, &char(v.str))
+		$if T is string {
+			C.vphp_array_push_string(ctx.ret, &char(v.str))
+		} $else $if T is int {
+			C.vphp_array_push_long(ctx.ret, i64(v))
+		} $else $if T is i64 {
+			C.vphp_array_push_long(ctx.ret, v)
+		} $else $if T is f64 {
+			C.vphp_array_push_double(ctx.ret, v)
+		} $else $if T is bool {
+			// fallback check
+		}
 	}
 }
 
