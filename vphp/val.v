@@ -464,6 +464,222 @@ pub fn new_val_string(s string) Val {
 	}
 }
 
+// ======== 新版清晰转换 API ========
+// Zend Value -> V:   v.to_v[T]()
+// V -> Zend Value:   v.from_v[T](x), new_val_from[T](x)
+
+// 将 Zend Value 转换为明确的 V 类型（严格校验类型）
+pub fn (v Val) to_v[T]() !T {
+	$if T is Val {
+		return v
+	}
+	$if T is bool {
+		if !v.is_bool() {
+			return error('type mismatch: expected bool, got ${v.type_name()}')
+		}
+		return v.to_bool()
+	}
+	$if T is int {
+		if !v.is_numeric() {
+			return error('type mismatch: expected int, got ${v.type_name()}')
+		}
+		return v.to_int()
+	}
+	$if T is i64 {
+		if !v.is_numeric() {
+			return error('type mismatch: expected i64, got ${v.type_name()}')
+		}
+		return v.to_i64()
+	}
+	$if T is f64 {
+		if !v.is_numeric() {
+			return error('type mismatch: expected f64, got ${v.type_name()}')
+		}
+		return v.to_f64()
+	}
+	$if T is string {
+		if !v.is_string() {
+			return error('type mismatch: expected string, got ${v.type_name()}')
+		}
+		return v.to_string()
+	}
+	$if T is []string {
+		if !v.is_array() {
+			return error('type mismatch: expected array<string>, got ${v.type_name()}')
+		}
+		mut out := []string{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[string]()!
+		}
+		return out
+	}
+	$if T is []int {
+		if !v.is_array() {
+			return error('type mismatch: expected array<int>, got ${v.type_name()}')
+		}
+		mut out := []int{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[int]()!
+		}
+		return out
+	}
+	$if T is []i64 {
+		if !v.is_array() {
+			return error('type mismatch: expected array<i64>, got ${v.type_name()}')
+		}
+		mut out := []i64{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[i64]()!
+		}
+		return out
+	}
+	$if T is []f64 {
+		if !v.is_array() {
+			return error('type mismatch: expected array<f64>, got ${v.type_name()}')
+		}
+		mut out := []f64{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[f64]()!
+		}
+		return out
+	}
+	$if T is []bool {
+		if !v.is_array() {
+			return error('type mismatch: expected array<bool>, got ${v.type_name()}')
+		}
+		mut out := []bool{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[bool]()!
+		}
+		return out
+	}
+	$if T is map[string]string {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,string>, got ${v.type_name()}')
+		}
+		mut out := map[string]string{}
+		out = v.foreach_with_ctx[map[string]string](out, fn (key Val, val Val, mut m map[string]string) {
+			m[key.to_string()] = val.to_string()
+		})
+		return out
+	}
+	$if T is map[string]int {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,int>, got ${v.type_name()}')
+		}
+		mut out := map[string]int{}
+		out = v.foreach_with_ctx[map[string]int](out, fn (key Val, val Val, mut m map[string]int) {
+			m[key.to_string()] = val.to_int()
+		})
+		return out
+	}
+	$if T is map[string]f64 {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,f64>, got ${v.type_name()}')
+		}
+		mut out := map[string]f64{}
+		out = v.foreach_with_ctx[map[string]f64](out, fn (key Val, val Val, mut m map[string]f64) {
+			m[key.to_string()] = val.to_f64()
+		})
+		return out
+	}
+	return error('unsupported to_v conversion for requested type')
+}
+
+// 将 V 类型写入 Zend Value
+pub fn (v Val) from_v[T](value T) ! {
+	$if T is Val {
+		return error('from_v[Val] is not supported; convert to a concrete V type first')
+	}
+	$if T is bool {
+		v.set_bool(value)
+		return
+	}
+	$if T is int || T is i64 {
+		v.set_int(i64(value))
+		return
+	}
+	$if T is f64 {
+		v.set_double(value)
+		return
+	}
+	$if T is string {
+		v.set_string(value)
+		return
+	}
+	$if T is []string {
+		v.array_init()
+		for item in value {
+			v.push_string(item)
+		}
+		return
+	}
+	$if T is []int || T is []i64 {
+		v.array_init()
+		for item in value {
+			v.push_long(i64(item))
+		}
+		return
+	}
+	$if T is []f64 {
+		v.array_init()
+		for item in value {
+			v.push_double(item)
+		}
+		return
+	}
+	$if T is []bool {
+		v.array_init()
+		for item in value {
+			v.push_bool(item)
+		}
+		return
+	}
+	$if T is map[string]string {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_string(key, item)
+		}
+		return
+	}
+	$if T is map[string]int || T is map[string]i64 {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_long(key, i64(item))
+		}
+		return
+	}
+	$if T is map[string]f64 {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_double(key, item)
+		}
+		return
+	}
+	$if T is map[string]bool {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_bool(key, item)
+		}
+		return
+	}
+	return error('unsupported from_v conversion for source type')
+}
+
+// 便捷工厂：从 V 类型直接创建 Zend Value 包装
+pub fn new_val_from[T](value T) !Val {
+	mut out := Val{
+		raw: C.vphp_new_zval()
+	}
+	out.from_v[T](value)!
+	return out
+}
+
 // ======== 高级：对象转换 ========
 
 // 将 zval 对象转化为具体的 V 结构体指针
