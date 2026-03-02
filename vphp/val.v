@@ -13,40 +13,75 @@ pub mut:
 
 // ======== 空值检查 ========
 
-pub fn (v Val) is_valid() bool { return v.raw != 0 }
+pub fn (v Val) is_valid() bool {
+	return v.raw != 0
+}
 
 // ======== 类型判断 ========
 
-pub fn (v Val) type_id() int    { return C.vphp_get_type(v.raw) }
-pub fn (v Val) is_undef() bool  { return v.type_id() == int(PHPType.undef) }
-pub fn (v Val) is_null() bool   { return v.type_id() == int(PHPType.null) }
+pub fn (v Val) type_id() int {
+	return C.vphp_get_type(v.raw)
+}
+
+pub fn (v Val) is_undef() bool {
+	return v.type_id() == int(PHPType.undef)
+}
+
+pub fn (v Val) is_null() bool {
+	return v.type_id() == int(PHPType.null)
+}
+
 pub fn (v Val) is_bool() bool {
 	tid := v.type_id()
 	return tid == int(PHPType.false_) || tid == int(PHPType.true_)
 }
-pub fn (v Val) is_long() bool     { return v.type_id() == int(PHPType.long) }
-pub fn (v Val) is_double() bool   { return v.type_id() == int(PHPType.double) }
-pub fn (v Val) is_numeric() bool  { return v.is_long() || v.is_double() }
-pub fn (v Val) is_string() bool   { return v.type_id() == int(PHPType.string) }
-pub fn (v Val) is_array() bool    { return v.type_id() == int(PHPType.array) }
-pub fn (v Val) is_object() bool   { return v.type_id() == int(PHPType.object) }
-pub fn (v Val) is_resource() bool { return v.type_id() == int(PHPType.resource) }
-pub fn (v Val) is_callable() bool { return C.vphp_is_callable(v.raw) == 1 }
+
+pub fn (v Val) is_long() bool {
+	return v.type_id() == int(PHPType.long)
+}
+
+pub fn (v Val) is_double() bool {
+	return v.type_id() == int(PHPType.double)
+}
+
+pub fn (v Val) is_numeric() bool {
+	return v.is_long() || v.is_double()
+}
+
+pub fn (v Val) is_string() bool {
+	return v.type_id() == int(PHPType.string)
+}
+
+pub fn (v Val) is_array() bool {
+	return v.type_id() == int(PHPType.array)
+}
+
+pub fn (v Val) is_object() bool {
+	return v.type_id() == int(PHPType.object)
+}
+
+pub fn (v Val) is_resource() bool {
+	return v.type_id() == int(PHPType.resource)
+}
+
+pub fn (v Val) is_callable() bool {
+	return C.vphp_is_callable(v.raw) == 1
+}
 
 pub fn (v Val) type_name() string {
 	tid := v.type_id()
 	return match tid {
-		int(PHPType.undef)    { 'undefined' }
-		int(PHPType.null)     { 'null' }
-		int(PHPType.false_)   { 'boolean' }
-		int(PHPType.true_)    { 'boolean' }
-		int(PHPType.long)     { 'integer' }
-		int(PHPType.double)   { 'float' }
-		int(PHPType.string)   { 'string' }
-		int(PHPType.array)    { 'array' }
-		int(PHPType.object)   { 'object' }
+		int(PHPType.undef) { 'undefined' }
+		int(PHPType.null) { 'null' }
+		int(PHPType.false_) { 'boolean' }
+		int(PHPType.true_) { 'boolean' }
+		int(PHPType.long) { 'integer' }
+		int(PHPType.double) { 'float' }
+		int(PHPType.string) { 'string' }
+		int(PHPType.array) { 'array' }
+		int(PHPType.object) { 'object' }
 		int(PHPType.resource) { 'resource' }
-		else                  { 'unknown' }
+		else { 'unknown' }
 	}
 }
 
@@ -165,21 +200,50 @@ pub fn (v Val) add_assoc_bool(key string, val bool) {
 	}
 }
 
+pub fn (v Val) push_string(s string) {
+	unsafe { C.vphp_array_push_string(v.raw, &char(s.str)) }
+}
+
+pub fn (v Val) push_long(val i64) {
+	unsafe { C.vphp_array_push_long(v.raw, val) }
+}
+
+pub fn (v Val) push_double(val f64) {
+	unsafe { C.vphp_array_push_double(v.raw, val) }
+}
+
+pub fn (v Val) push_bool(val bool) {
+	unsafe {
+		b_val := if val { 1 } else { 0 }
+		C.vphp_array_push_long(v.raw, b_val)
+	}
+}
+
 pub fn (v Val) add_next_val(val Val) {
 	unsafe { C.vphp_array_add_next_zval(v.raw, val.raw) }
 }
 
 // 获取数组长度
 pub fn (v Val) array_count() int {
-	if !v.is_array() { return 0 }
+	if !v.is_array() {
+		return 0
+	}
 	return C.vphp_array_count(v.raw)
 }
 
 // 按数字索引取值
 pub fn (v Val) array_get(index int) Val {
-	if !v.is_array() { return unsafe { Val{ raw: 0 } } }
+	if !v.is_array() {
+		return unsafe {
+			Val{
+				raw: 0
+			}
+		}
+	}
 	res := C.vphp_array_get_index(v.raw, u32(index))
-	return Val{ raw: res }
+	return Val{
+		raw: res
+	}
 }
 
 // 按字符串 key 取值（带错误处理）
@@ -192,7 +256,9 @@ pub fn (v Val) get(key string) !Val {
 		if res == 0 || C.vphp_is_null(res) {
 			return error('key "${key}" not found')
 		}
-		return Val{ raw: res }
+		return Val{
+			raw: res
+		}
 	}
 }
 
@@ -223,46 +289,62 @@ pub fn (v Val) add_property_bool(key string, val bool) {
 // 通用属性获取：返回一个新的 Val
 pub fn (v Val) get_prop(name string) Val {
 	if !v.is_object() {
-		return unsafe { Val{ raw: 0 } }
+		return unsafe {
+			Val{
+				raw: 0
+			}
+		}
 	}
 	obj := C.vphp_get_obj_from_zval(v.raw)
 	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
 	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
-	return Val{ raw: res }
+	return Val{
+		raw: res
+	}
 }
 
 // 快捷方式：属性 → string
 pub fn (v Val) get_prop_string(name string) string {
 	prop := v.get_prop(name)
-	if prop.raw == 0 || prop.is_null() { return '' }
+	if prop.raw == 0 || prop.is_null() {
+		return ''
+	}
 	return prop.to_string()
 }
 
 // 快捷方式：属性 → int
 pub fn (v Val) get_prop_int(name string) int {
 	prop := v.get_prop(name)
-	if prop.raw == 0 { return 0 }
+	if prop.raw == 0 {
+		return 0
+	}
 	return int(C.vphp_get_int(prop.raw))
 }
 
 // 快捷方式：属性 → i64
 pub fn (v Val) get_prop_i64(name string) i64 {
 	prop := v.get_prop(name)
-	if prop.raw == 0 { return 0 }
+	if prop.raw == 0 {
+		return 0
+	}
 	return i64(C.vphp_get_int(prop.raw))
 }
 
 // 快捷方式：属性 → f64
 pub fn (v Val) get_prop_float(name string) f64 {
 	prop := v.get_prop(name)
-	if prop.raw == 0 { return 0.0 }
+	if prop.raw == 0 {
+		return 0.0
+	}
 	return C.vphp_get_double(prop.raw)
 }
 
 // 快捷方式：属性 → bool
 pub fn (v Val) get_prop_bool(name string) bool {
 	prop := v.get_prop(name)
-	if prop.raw == 0 { return false }
+	if prop.raw == 0 {
+		return false
+	}
 	return prop.to_bool()
 }
 
@@ -271,7 +353,11 @@ pub fn (v Val) get_prop_bool(name string) bool {
 // 调用对象方法 $obj->method(args...)
 pub fn (v Val) call(method string, args []Val) Val {
 	if v.raw == 0 || !v.is_object() {
-		return unsafe { Val{ raw: 0 } }
+		return unsafe {
+			Val{
+				raw: 0
+			}
+		}
 	}
 
 	unsafe {
@@ -281,17 +367,28 @@ pub fn (v Val) call(method string, args []Val) Val {
 			p_args = &args[0].raw
 		}
 
-		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len, p_args)
+		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len,
+			p_args)
 		if res == -1 {
-			return Val{ raw: 0 }
+			return Val{
+				raw: 0
+			}
 		}
-		return Val{ raw: retval }
+		return Val{
+			raw: retval
+		}
 	}
 }
 
 // 调用 callable（闭包、匿名函数等）
 pub fn (v Val) invoke(args []Val) Val {
-	if v.raw == 0 { return unsafe { Val{ raw: 0 } } }
+	if v.raw == 0 {
+		return unsafe {
+			Val{
+				raw: 0
+			}
+		}
+	}
 
 	unsafe {
 		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
@@ -302,9 +399,13 @@ pub fn (v Val) invoke(args []Val) Val {
 
 		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
 		if res == -1 {
-			return Val{ raw: 0 }
+			return Val{
+				raw: 0
+			}
 		}
-		return Val{ raw: retval }
+		return Val{
+			raw: retval
+		}
 	}
 }
 
@@ -315,7 +416,9 @@ pub fn new_val_null() Val {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_null(z)
-		return Val{ raw: z }
+		return Val{
+			raw: z
+		}
 	}
 }
 
@@ -324,7 +427,9 @@ pub fn new_val_int(n i64) Val {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_lval(z, n)
-		return Val{ raw: z }
+		return Val{
+			raw: z
+		}
 	}
 }
 
@@ -333,7 +438,9 @@ pub fn new_val_float(f f64) Val {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_double(z, f)
-		return Val{ raw: z }
+		return Val{
+			raw: z
+		}
 	}
 }
 
@@ -342,14 +449,18 @@ pub fn new_val_bool(b bool) Val {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_bool(z, b)
-		return Val{ raw: z }
+		return Val{
+			raw: z
+		}
 	}
 }
 
 // 创建一个 string Val
 pub fn new_val_string(s string) Val {
 	unsafe {
-		return Val{ raw: C.vphp_new_str(&char(s.str)) }
+		return Val{
+			raw: C.vphp_new_str(&char(s.str))
+		}
 	}
 }
 
@@ -371,11 +482,12 @@ pub fn (v Val) to_object[T]() ?&T {
 
 pub type ForeachCb = fn (key Val, val Val)
 
-@[export: 'vphp_foreach_wrapper']
-fn vphp_foreach_wrapper(key &C.zval, val &C.zval, ctx voidptr) {
+fn vphp_foreach_wrapper(ctx voidptr, key &C.zval, val &C.zval) {
 	unsafe {
 		cb := *(&ForeachCb(ctx))
-		cb(Val{raw: key}, Val{raw: val})
+		cb(Val{ raw: key }, Val{
+			raw: val
+		})
 	}
 }
 
@@ -384,5 +496,35 @@ pub fn (v Val) foreach(cb ForeachCb) {
 	if !v.is_array() && !v.is_object() {
 		return
 	}
-	C.vphp_zval_foreach(v.raw, vphp_foreach_wrapper, &cb)
+	C.vphp_zval_foreach(v.raw, &cb, vphp_foreach_wrapper)
+}
+
+pub type ForeachWithCtxCb[T] = fn (key Val, val Val, mut ctx T)
+
+fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
+	unsafe {
+		mut pack := &ForeachPack[T](ctx)
+		cb := pack.cb
+		cb(Val{ raw: key }, Val{
+			raw: val
+		}, mut pack.ctx)
+	}
+}
+
+struct ForeachPack[T] {
+	cb ForeachWithCtxCb[T] = unsafe { nil }
+mut:
+	ctx T
+}
+
+pub fn (v Val) foreach_with_ctx[T](ctx T, cb ForeachWithCtxCb[T]) T {
+	if !v.is_array() && !v.is_object() {
+		return ctx
+	}
+	mut pack := ForeachPack[T]{
+		cb:  cb
+		ctx: ctx
+	}
+	C.vphp_zval_foreach(v.raw, &pack, vphp_foreach_with_ctx_wrapper[T])
+	return pack.ctx
 }

@@ -28,6 +28,8 @@ PHP_FUNCTION(v_analyze_user_object);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
 PHP_FUNCTION(v_test_globals);
+PHP_FUNCTION(v_get_v_closure);
+PHP_FUNCTION(v_get_v_closure_auto);
 PHP_FUNCTION(v_reverse_string);
 PHP_FUNCTION(v_logic_main);
 PHP_FUNCTION(v_new_coach);

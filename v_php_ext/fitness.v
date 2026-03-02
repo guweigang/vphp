@@ -14,10 +14,12 @@ struct MotionReport {
 
 @[export: 'v_analyze_fitness_data']
 fn v_analyze_fitness_data(ctx vphp.Context) {
-	name    := ctx.arg[string](0)
+	name := ctx.arg[string](0)
 	hr_data := ctx.arg[[]f64](1)
-	config  := ctx.arg[map[string]string](2)
-  if ctx.has_exception() { return }
+	config := ctx.arg[map[string]string](2)
+	if ctx.has_exception() {
+		return
+	}
 
 	if hr_data.len == 0 {
 		ctx.return_string('Error: No heart rate data provided')
@@ -30,8 +32,12 @@ fn v_analyze_fitness_data(ctx vphp.Context) {
 
 	for hr in hr_data {
 		total += hr
-		if hr > max { max = hr }
-		if hr < min { min = hr }
+		if hr > max {
+			max = hr
+		}
+		if hr < min {
+			min = hr
+		}
 	}
 
 	avg := total / f64(hr_data.len)
@@ -66,8 +72,8 @@ struct FinalReport {
 @[export: 'v_get_alerts']
 fn v_get_alerts(ctx vphp.Context) {
 	mut alerts := []HeartPoint{}
-	alerts << HeartPoint{ 1677481200, 155.0 }
-	alerts << HeartPoint{ 1677481260, 162.5 }
+	alerts << HeartPoint{1677481200, 155.0}
+	alerts << HeartPoint{1677481260, 162.5}
 
 	ctx.return_list(alerts)
 }

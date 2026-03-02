@@ -353,6 +353,18 @@ fn vphp_wrap_v_test_globals(ctx vphp.Context) {
     v_test_globals(arg_0)
 }
 
+@[export: 'vphp_wrap_v_get_v_closure']
+fn vphp_wrap_v_get_v_closure(ctx vphp.Context) {
+    arg_0 := ctx
+    v_get_v_closure(arg_0)
+}
+
+@[export: 'vphp_wrap_v_get_v_closure_auto']
+fn vphp_wrap_v_get_v_closure_auto(ctx vphp.Context) {
+    arg_0 := ctx
+    v_get_v_closure_auto(arg_0)
+}
+
 @[export: 'vphp_wrap_v_reverse_string']
 fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
     arg_0 := ctx
