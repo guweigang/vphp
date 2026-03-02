@@ -436,38 +436,3 @@ void vphp_create_closure_FULL_AUTO_V2(zval *zv, void *v_thunk,
   // 注意：zend_create_closure 会拷贝 zf，但在持久化环境中，原本的 zf
   // 往往需要手动管理， 这里暂时保持 pecalloc，实际可能需要注册到 cleanup
 }
-
-typedef struct {
-  void *fp;
-  void *cp;
-} v_closure_struct;
-
-void *vphp_shuttle_v_closure_2(void *v_ptr, void *p0, void *p1) {
-  v_closure_struct *vc = (v_closure_struct *)v_ptr;
-  typedef vphp_vstring (*v_raw_fn)(void *, vphp_vstring, vphp_vstring);
-  vphp_vstring res =
-      ((v_raw_fn)vc->fp)(vc->cp, *(vphp_vstring *)p0, *(vphp_vstring *)p1);
-  printf("DEBUG Shuttle: res.str=%p, res.len=%d\n", res.str, res.len);
-  if (res.str && res.len > 0) {
-    printf("DEBUG Shuttle: content=%.*s\n", res.len, res.str);
-  }
-  vphp_vstring *ret = malloc(sizeof(vphp_vstring));
-  *ret = res;
-  return ret;
-}
-void *vphp_shuttle_v_closure_1(void *v_ptr, void *p0) {
-  v_closure_struct *vc = (v_closure_struct *)v_ptr;
-  typedef vphp_vstring (*v_raw_fn)(void *, vphp_vstring);
-  vphp_vstring res = ((v_raw_fn)vc->fp)(vc->cp, *(vphp_vstring *)p0);
-  vphp_vstring *ret = malloc(sizeof(vphp_vstring));
-  *ret = res;
-  return ret;
-}
-void *vphp_shuttle_v_closure_0(void *v_ptr) {
-  v_closure_struct *vc = (v_closure_struct *)v_ptr;
-  typedef vphp_vstring (*v_raw_fn)(void *);
-  vphp_vstring res = ((v_raw_fn)vc->fp)(vc->cp);
-  vphp_vstring *ret = malloc(sizeof(vphp_vstring));
-  *ret = res;
-  return ret;
-}

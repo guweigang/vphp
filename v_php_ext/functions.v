@@ -128,7 +128,7 @@ fn v_trigger_user_action(ctx vphp.Context) {
 		return
 	}
 
-	mut score_val := vphp.Val{
+	mut score_val := vphp.ZVal{
 		raw: C.vphp_new_zval()
 	}
 	score_val.set_int(100)
@@ -146,7 +146,7 @@ fn v_trigger_user_action(ctx vphp.Context) {
 fn v_call_php_closure(ctx vphp.Context) {
 	cb := ctx.arg_raw(0)
 
-	mut msg := vphp.Val{
+	mut msg := vphp.ZVal{
 		raw: C.vphp_new_zval()
 	}
 	msg.set_string('Message from V Engine')

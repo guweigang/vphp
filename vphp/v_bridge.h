@@ -4,13 +4,6 @@
 #include <php.h>
 #include <stdbool.h>
 
-// 兼容 V 0.5 的字符串结构定义，避免与 V 生成的 v_string 冲突
-typedef struct vphp_vstring {
-  char *str;
-  int len;
-  int is_lit;
-} vphp_vstring;
-
 // 对象包装器
 typedef struct {
   uint32_t magic;
@@ -48,11 +41,6 @@ zend_object *vphp_create_object_handler(zend_class_entry *ce);
 void vphp_init_resource_system(int module_number);
 HashTable *vphp_get_properties(zend_object *object);
 void vphp_bind_handlers(zend_object *obj, vphp_class_handlers *h);
-
-// 穿梭函数 (Shuttle)
-void *vphp_shuttle_v_closure_0(void *v_ptr);
-void *vphp_shuttle_v_closure_1(void *v_ptr, void *p0);
-void *vphp_shuttle_v_closure_2(void *v_ptr, void *p0, void *p1);
 
 // 参数、值与返回 (由 V 侧代码引用)
 uint32_t vphp_get_num_args(zend_execute_data *ex);

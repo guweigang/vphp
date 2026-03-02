@@ -12,6 +12,33 @@ pub:
 	ret &C.zval
 }
 
+// 获取当前 PHP 函数调用的所有参数
+pub fn (ctx Context) get_args() []ZVal {
+	num := ctx.num_args()
+	mut res := []ZVal{}
+	for i in 1 .. (num + 1) {
+		res << ZVal{
+			raw: C.vphp_get_arg_ptr(ctx.ex, u32(i))
+		}
+	}
+	return res
+}
+
+// 创建 Context 实例
+pub fn Context.new(ex &C.zend_execute_data, ret &C.zval) Context {
+	return unsafe {
+		Context{
+			ex:  ex
+			ret: ret
+		}
+	}
+}
+
+pub fn new_context(ex &C.zend_execute_data, ret &C.zval) Context {
+	// Backward-compat alias; prefer Context.new(...)
+	return Context.new(ex, ret)
+}
+
 // ======== 核心方法 (获取参数相关) ========
 
 pub fn (ctx Context) num_args() int {
@@ -22,125 +49,49 @@ pub fn (ctx Context) has_exception() bool {
 	return C.vphp_has_exception()
 }
 
-pub fn (ctx Context) arg_raw(index int) Val {
-	args := get_args(ctx.ex)
-	if index >= args.len || index < 0 {
+pub fn (ctx Context) arg_raw(index int) ZVal {
+	if index < 0 || index >= ctx.num_args() {
 		return unsafe {
-			Val{
+			ZVal{
 				raw: 0
 			}
 		}
 	}
-	return args[index]
+	raw := C.vphp_get_arg_ptr(ctx.ex, u32(index + 1))
+	if raw == 0 {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+	return ZVal{
+		raw: raw
+	}
 }
 
 pub fn (ctx Context) arg[T](index int) T {
-	args := get_args(ctx.ex)
-	if index >= args.len {
+	val := ctx.arg_raw(index)
+	if !val.is_valid() {
 		return T{}
 	}
-	val := args[index]
-	raw_zval := val.raw
-	$if T is $array {
-		if !val.is_array() {
-			return T{}
-		}
-		count := C.vphp_array_count(raw_zval)
-		mut res := T{
-			cap: count
-		}
-		for i in 0 .. count {
-			item_zval := C.vphp_array_get_index(raw_zval, u32(i))
-			if item_zval != 0 {
-				$if T is []string {
-					item := Val{
-						raw: item_zval
-					}
-					res << item.to_string()
-				} $else $if T is []f64 {
-					res << C.vphp_get_double(item_zval)
-				} $else $if T is []int {
-					res << int(C.vphp_get_int(item_zval))
-				} $else $if T is []i64 {
-					res << i64(C.vphp_get_int(item_zval))
-				} $else $if T is []bool {
-					item := Val{
-						raw: item_zval
-					}
-					res << item.to_bool()
-				}
-			}
-		}
-		return res
+	$if T is ZVal {
+		return val
 	}
-	$if T is string {
-		len := 0
-		ptr := voidptr(C.vphp_get_string_ptr(val.raw, &len))
-		return if ptr != 0 { unsafe { (&char(ptr)).vstring_with_len(len).clone() } } else { '' }
-	}
-	$if T is int {
-		return int(C.vphp_get_int(val.raw))
-	}
-	$if T is i64 {
-		return i64(C.vphp_get_int(val.raw))
-	}
-	$if T is bool {
-		return val.to_bool()
-	}
-	$if T is f64 {
-		return C.vphp_get_double(val.raw)
-	}
-	$if T is map[string]string {
-		if !val.is_array() {
-			return map[string]string{}
-		}
-		mut res := map[string]string{}
-		res = val.foreach_with_ctx[map[string]string](res, fn (key Val, v Val, mut r map[string]string) {
-			r[key.to_string()] = v.to_string()
-		})
-		return res
-	}
-	$if T is map[string]int {
-		if !val.is_array() {
-			return map[string]int{}
-		}
-		mut res := map[string]int{}
-		res = val.foreach_with_ctx[map[string]int](res, fn (key Val, v Val, mut r map[string]int) {
-			r[key.to_string()] = v.to_int()
-		})
-		return res
-	}
-	$if T is map[string]f64 {
-		if !val.is_array() {
-			return map[string]f64{}
-		}
-		mut res := map[string]f64{}
-		res = val.foreach_with_ctx[map[string]f64](res, fn (key Val, v Val, mut r map[string]f64) {
-			r[key.to_string()] = v.to_f64()
-		})
-		return res
-	}
-	$if T is Val {
-		return ctx.arg_val(index)
-	}
-	return T{}
+	return val.to_v[T]() or { T{} }
 }
 
-pub fn (ctx Context) arg_val(index int) Val {
-	args := get_args(ctx.ex)
-	if index >= args.len {
+pub fn (ctx Context) arg_val(index int) ZVal {
+	val := ctx.arg_raw(index)
+	if !val.is_valid() {
 		return new_val_null()
 	}
-	return args[index]
+	return val
 }
 
 pub fn (ctx Context) arg_raw_obj(index int) voidptr {
-	args := get_args(ctx.ex)
-	if index >= args.len {
-		return unsafe { nil }
-	}
-	val := args[index]
-	if !val.is_object() {
+	val := ctx.arg_raw(index)
+	if !val.is_valid() || !val.is_object() {
 		return unsafe { nil }
 	}
 	obj := C.vphp_get_obj_from_zval(val.raw)
@@ -160,7 +111,7 @@ pub fn (ctx Context) return_bool(val bool) {
 
 pub fn (ctx Context) return_int(val i64) {
 	unsafe {
-		Val{
+		ZVal{
 			raw: ctx.ret
 		}.set_int(val)
 	}
@@ -172,7 +123,7 @@ pub fn (ctx Context) return_double(val f64) {
 
 pub fn (ctx Context) return_string(val string) {
 	unsafe {
-		Val{
+		ZVal{
 			raw: ctx.ret
 		}.set_string(val)
 	}
@@ -187,33 +138,20 @@ pub fn (ctx Context) return_obj(v_ptr voidptr, ce voidptr) {
 }
 
 pub fn (ctx Context) return_val[T](val T) {
-	$if T is i64 || T is int {
-		ctx.return_int(i64(val))
-	} $else $if T is f64 {
-		ctx.return_double(val)
-	} $else $if T is string {
-		ctx.return_string(val)
-	} $else $if T is bool {
-		ctx.return_bool(val)
-	} $else $if T is map[string]string {
-		ctx.return_map(val)
-	} $else $if T is map[string]int {
-		ctx.return_map(val)
-	} $else $if T is map[string]f64 {
-		ctx.return_map(val)
-	} $else $if T is []string {
-		ctx.return_list(val)
-	} $else $if T is []int {
-		ctx.return_list(val)
-	} $else $if T is []i64 {
-		ctx.return_list(val)
-	} $else $if T is []f64 {
-		ctx.return_list(val)
+	mut out := ZVal{
+		raw: ctx.ret
+	}
+	out.from_v[T](val) or {
+		$if T is $struct {
+			ctx.return_struct(val)
+		} $else {
+			ctx.return_null()
+		}
 	}
 }
 
 pub fn (ctx Context) return_list[T](list []T) {
-	out := Val{
+	out := ZVal{
 		raw: ctx.ret
 	}
 	out.array_init()
@@ -225,7 +163,7 @@ pub fn (ctx Context) return_list[T](list []T) {
 		} $else $if T is int || T is i64 {
 			out.push_long(i64(item))
 		} $else {
-			mut sub := Val{
+			mut sub := ZVal{
 				raw: C.vphp_new_zval()
 			}
 			sub.array_init()
@@ -247,7 +185,7 @@ pub fn (ctx Context) return_list[T](list []T) {
 }
 
 pub fn (ctx Context) return_map[T](m map[string]T) {
-	out := Val{
+	out := ZVal{
 		raw: ctx.ret
 	}
 	out.array_init()
@@ -274,7 +212,7 @@ pub fn (ctx Context) return_object(props map[string]string) {
 }
 
 pub fn (ctx Context) return_struct[T](s T) {
-	out := Val{
+	out := ZVal{
 		raw: ctx.ret
 	}
 	out.array_init()
@@ -294,29 +232,14 @@ pub fn (ctx Context) return_struct[T](s T) {
 
 pub fn return_val_raw[T](ret &C.zval, val T) {
 	unsafe {
-		mut out := Val{
+		mut out := ZVal{
 			raw: ret
 		}
-		$if T is i64 || T is int {
-			out.set_int(i64(val))
-		} $else $if T is f64 {
-			out.set_double(val)
-		} $else $if T is string {
-			out.set_string(val)
-		} $else $if T is bool {
-			out.set_bool(val)
-		}
+		out.from_v[T](val) or { out.set_null() }
 	}
 }
 
-// ======== 自动化闭包桥接器 (穿梭版：解引针对性) ========
-
-// 内部桥接用的临时结构体，必须与 C 侧一致
-struct C.vphp_vstring {
-	str    &char
-	len    int
-	is_lit int
-}
+// ======== 自动化闭包桥接器 ========
 
 type ClosureArity0Void = fn ()
 
@@ -393,6 +316,7 @@ pub fn (ctx Context) wrap_closure[T](v_cb T) {
 // ======== C 声明 ========
 
 fn C.vphp_get_num_args(ex voidptr) u32
+fn C.vphp_get_arg_ptr(ex voidptr, i u32) voidptr
 fn C.vphp_has_exception() bool
 fn C.vphp_get_int(z voidptr) i64
 fn C.vphp_get_double(z voidptr) f64
@@ -419,10 +343,5 @@ fn C.vphp_create_closure_FULL_AUTO_V2(z voidptr, thunk voidptr, bridge voidptr)
 fn C.vphp_get_obj_from_zval(z voidptr) voidptr
 fn C.vphp_obj_from_obj(obj voidptr) voidptr
 fn C.malloc(size usize) voidptr
-
-// Shuttle 函数声明 (返回 voidptr 以匹配新的 C 侧指针策略)
-fn C.vphp_shuttle_v_closure_0(v_ptr voidptr) voidptr
-fn C.vphp_shuttle_v_closure_1(v_ptr voidptr, p0 voidptr) voidptr
-fn C.vphp_shuttle_v_closure_2(v_ptr voidptr, p0 voidptr, p1 voidptr) voidptr
 
 #include "v_bridge.h"

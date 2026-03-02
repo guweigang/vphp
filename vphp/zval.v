@@ -1,0 +1,751 @@
+module vphp
+
+// ============================================
+// ZVal — PHP zval 的 V 侧完整封装
+// 支持 PHP 的所有数据类型：
+// null, bool, int, float, string, array, object, resource, callable
+// ============================================
+
+pub struct ZVal {
+pub mut:
+	raw &C.zval
+}
+
+// ======== 空值检查 ========
+
+pub fn (v ZVal) is_valid() bool {
+	return v.raw != 0
+}
+
+// ======== 类型判断 ========
+
+pub fn (v ZVal) type_id() int {
+	return C.vphp_get_type(v.raw)
+}
+
+pub fn (v ZVal) is_undef() bool {
+	return v.type_id() == int(PHPType.undef)
+}
+
+pub fn (v ZVal) is_null() bool {
+	return v.type_id() == int(PHPType.null)
+}
+
+pub fn (v ZVal) is_bool() bool {
+	tid := v.type_id()
+	return tid == int(PHPType.false_) || tid == int(PHPType.true_)
+}
+
+pub fn (v ZVal) is_long() bool {
+	return v.type_id() == int(PHPType.long)
+}
+
+pub fn (v ZVal) is_double() bool {
+	return v.type_id() == int(PHPType.double)
+}
+
+pub fn (v ZVal) is_numeric() bool {
+	return v.is_long() || v.is_double()
+}
+
+pub fn (v ZVal) is_string() bool {
+	return v.type_id() == int(PHPType.string)
+}
+
+pub fn (v ZVal) is_array() bool {
+	return v.type_id() == int(PHPType.array)
+}
+
+pub fn (v ZVal) is_object() bool {
+	return v.type_id() == int(PHPType.object)
+}
+
+pub fn (v ZVal) is_resource() bool {
+	return v.type_id() == int(PHPType.resource)
+}
+
+pub fn (v ZVal) is_callable() bool {
+	return C.vphp_is_callable(v.raw) == 1
+}
+
+pub fn (v ZVal) type_name() string {
+	tid := v.type_id()
+	return match tid {
+		int(PHPType.undef) { 'undefined' }
+		int(PHPType.null) { 'null' }
+		int(PHPType.false_) { 'boolean' }
+		int(PHPType.true_) { 'boolean' }
+		int(PHPType.long) { 'integer' }
+		int(PHPType.double) { 'float' }
+		int(PHPType.string) { 'string' }
+		int(PHPType.array) { 'array' }
+		int(PHPType.object) { 'object' }
+		int(PHPType.resource) { 'resource' }
+		else { 'unknown' }
+	}
+}
+
+// ======== 读取 — 标量类型 ========
+
+// bool
+pub fn (v ZVal) to_bool() bool {
+	return v.type_id() == int(PHPType.true_)
+}
+
+pub fn (v ZVal) get_bool() bool {
+	return unsafe { C.zval_get_long(v.raw) != 0 }
+}
+
+// int / i64
+pub fn (v ZVal) to_int() int {
+	return int(C.vphp_get_int(v.raw))
+}
+
+pub fn (v ZVal) to_i64() i64 {
+	return i64(C.vphp_get_int(v.raw))
+}
+
+// 兼容旧 API
+pub fn (v ZVal) as_int() i64 {
+	return C.vphp_get_lval(v.raw)
+}
+
+pub fn (v ZVal) get_int() i64 {
+	return unsafe { C.zval_get_long(v.raw) }
+}
+
+// float / f64
+pub fn (v ZVal) to_f64() f64 {
+	return C.vphp_get_double(v.raw)
+}
+
+pub fn (v ZVal) to_float() f64 {
+	return C.vphp_get_double(v.raw)
+}
+
+// string
+pub fn (v ZVal) to_string() string {
+	unsafe {
+		p := C.vphp_get_strval(v.raw)
+		l := C.vphp_get_strlen(v.raw)
+		return p.vstring_with_len(l).clone()
+	}
+}
+
+pub fn (v ZVal) get_string() string {
+	unsafe {
+		ptr := C.VPHP_Z_STRVAL(v.raw)
+		len := C.VPHP_Z_STRLEN(v.raw)
+		if ptr == 0 {
+			return ''
+		}
+		return ptr.vstring_with_len(len).clone()
+	}
+}
+
+// resource
+pub fn (v ZVal) to_res() voidptr {
+	return C.vphp_fetch_res(v.raw)
+}
+
+// ======== 写入 — 标量类型 ========
+
+pub fn (v ZVal) set_null() {
+	unsafe { C.vphp_set_null(v.raw) }
+}
+
+pub fn (v ZVal) set_bool(b bool) {
+	unsafe { C.vphp_set_bool(v.raw, b) }
+}
+
+pub fn (v ZVal) set_int(val i64) {
+	unsafe { C.vphp_set_lval(v.raw, val) }
+}
+
+pub fn (v ZVal) set_double(val f64) {
+	unsafe { C.vphp_set_double(v.raw, val) }
+}
+
+pub fn (v ZVal) set_float(val f64) {
+	unsafe { C.vphp_set_double(v.raw, val) }
+}
+
+pub fn (v ZVal) set_string(s string) {
+	unsafe { C.vphp_set_strval(v.raw, &char(s.str), s.len) }
+}
+
+// ======== 数组操作 ========
+
+// 初始化为数组
+pub fn (v ZVal) array_init() {
+	unsafe { C.vphp_return_array_start(v.raw) }
+}
+
+pub fn (v ZVal) add_assoc_string(key string, val string) {
+	unsafe { C.vphp_array_add_assoc_string(v.raw, &char(key.str), &char(val.str)) }
+}
+
+pub fn (v ZVal) add_assoc_long(key string, val i64) {
+	unsafe { C.vphp_array_add_assoc_long(v.raw, &char(key.str), val) }
+}
+
+pub fn (v ZVal) add_assoc_double(key string, val f64) {
+	unsafe { C.vphp_array_add_assoc_double(v.raw, &char(key.str), val) }
+}
+
+pub fn (v ZVal) add_assoc_bool(key string, val bool) {
+	unsafe {
+		b_val := if val { 1 } else { 0 }
+		C.vphp_array_add_assoc_bool(v.raw, &char(key.str), b_val)
+	}
+}
+
+pub fn (v ZVal) push_string(s string) {
+	unsafe { C.vphp_array_push_string(v.raw, &char(s.str)) }
+}
+
+pub fn (v ZVal) push_long(val i64) {
+	unsafe { C.vphp_array_push_long(v.raw, val) }
+}
+
+pub fn (v ZVal) push_double(val f64) {
+	unsafe { C.vphp_array_push_double(v.raw, val) }
+}
+
+pub fn (v ZVal) push_bool(val bool) {
+	unsafe {
+		b_val := if val { 1 } else { 0 }
+		C.vphp_array_push_long(v.raw, b_val)
+	}
+}
+
+pub fn (v ZVal) add_next_val(val ZVal) {
+	unsafe { C.vphp_array_add_next_zval(v.raw, val.raw) }
+}
+
+// 获取数组长度
+pub fn (v ZVal) array_count() int {
+	if !v.is_array() {
+		return 0
+	}
+	return C.vphp_array_count(v.raw)
+}
+
+// 按数字索引取值
+pub fn (v ZVal) array_get(index int) ZVal {
+	if !v.is_array() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+	res := C.vphp_array_get_index(v.raw, u32(index))
+	return ZVal{
+		raw: res
+	}
+}
+
+// 按字符串 key 取值（带错误处理）
+pub fn (v ZVal) get(key string) !ZVal {
+	if v.raw == 0 || C.vphp_is_null(v.raw) {
+		return error('invalid zval or not an array')
+	}
+	unsafe {
+		res := C.vphp_array_get_key(v.raw, &char(key.str), key.len)
+		if res == 0 || C.vphp_is_null(res) {
+			return error('key "${key}" not found')
+		}
+		return ZVal{
+			raw: res
+		}
+	}
+}
+
+// 按字符串 key 取值（返回默认值）
+pub fn (v ZVal) get_or(key string, default_val string) string {
+	val := v.get(key) or { return default_val }
+	return val.to_string()
+}
+
+// ======== 对象属性操作 ========
+
+pub fn (v ZVal) add_property_string(key string, val string) {
+	unsafe { C.add_property_stringl(v.raw, &char(key.str), &char(val.str), val.len) }
+}
+
+pub fn (v ZVal) add_property_long(key string, val i64) {
+	unsafe { C.add_property_long(v.raw, &char(key.str), val) }
+}
+
+pub fn (v ZVal) add_property_double(key string, val f64) {
+	unsafe { C.vphp_add_property_double(v.raw, &char(key.str), val) }
+}
+
+pub fn (v ZVal) add_property_bool(key string, val bool) {
+	unsafe { C.add_property_bool(v.raw, &char(key.str), val) }
+}
+
+// 通用属性获取：返回一个新的 ZVal
+pub fn (v ZVal) get_prop(name string) ZVal {
+	if !v.is_object() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
+	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
+	return ZVal{
+		raw: res
+	}
+}
+
+// 快捷方式：属性 → string
+pub fn (v ZVal) get_prop_string(name string) string {
+	prop := v.get_prop(name)
+	if prop.raw == 0 || prop.is_null() {
+		return ''
+	}
+	return prop.to_string()
+}
+
+// 快捷方式：属性 → int
+pub fn (v ZVal) get_prop_int(name string) int {
+	prop := v.get_prop(name)
+	if prop.raw == 0 {
+		return 0
+	}
+	return int(C.vphp_get_int(prop.raw))
+}
+
+// 快捷方式：属性 → i64
+pub fn (v ZVal) get_prop_i64(name string) i64 {
+	prop := v.get_prop(name)
+	if prop.raw == 0 {
+		return 0
+	}
+	return i64(C.vphp_get_int(prop.raw))
+}
+
+// 快捷方式：属性 → f64
+pub fn (v ZVal) get_prop_float(name string) f64 {
+	prop := v.get_prop(name)
+	if prop.raw == 0 {
+		return 0.0
+	}
+	return C.vphp_get_double(prop.raw)
+}
+
+// 快捷方式：属性 → bool
+pub fn (v ZVal) get_prop_bool(name string) bool {
+	prop := v.get_prop(name)
+	if prop.raw == 0 {
+		return false
+	}
+	return prop.to_bool()
+}
+
+// ======== 方法调用 ========
+
+// 调用对象方法 $obj->method(args...)
+pub fn (v ZVal) call(method string, args []ZVal) ZVal {
+	if v.raw == 0 || !v.is_object() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+
+	unsafe {
+		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut p_args := &&C.zval(nil)
+		if args.len > 0 {
+			p_args = &args[0].raw
+		}
+
+		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len,
+			p_args)
+		if res == -1 {
+			return ZVal{
+				raw: 0
+			}
+		}
+		return ZVal{
+			raw: retval
+		}
+	}
+}
+
+// 调用 callable（闭包、匿名函数等）
+pub fn (v ZVal) invoke(args []ZVal) ZVal {
+	if v.raw == 0 {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+
+	unsafe {
+		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut p_args := &&C.zval(nil)
+		if args.len > 0 {
+			p_args = &args[0].raw
+		}
+
+		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
+		if res == -1 {
+			return ZVal{
+				raw: 0
+			}
+		}
+		return ZVal{
+			raw: retval
+		}
+	}
+}
+
+// ======== 工厂方法 ========
+
+// 创建一个 null ZVal
+pub fn new_val_null() ZVal {
+	unsafe {
+		z := C.vphp_new_zval()
+		C.vphp_set_null(z)
+		return ZVal{
+			raw: z
+		}
+	}
+}
+
+// 创建一个 int ZVal
+pub fn new_val_int(n i64) ZVal {
+	unsafe {
+		z := C.vphp_new_zval()
+		C.vphp_set_lval(z, n)
+		return ZVal{
+			raw: z
+		}
+	}
+}
+
+// 创建一个 float ZVal
+pub fn new_val_float(f f64) ZVal {
+	unsafe {
+		z := C.vphp_new_zval()
+		C.vphp_set_double(z, f)
+		return ZVal{
+			raw: z
+		}
+	}
+}
+
+// 创建一个 bool ZVal
+pub fn new_val_bool(b bool) ZVal {
+	unsafe {
+		z := C.vphp_new_zval()
+		C.vphp_set_bool(z, b)
+		return ZVal{
+			raw: z
+		}
+	}
+}
+
+// 创建一个 string ZVal
+pub fn new_val_string(s string) ZVal {
+	unsafe {
+		return ZVal{
+			raw: C.vphp_new_str(&char(s.str))
+		}
+	}
+}
+
+// ======== 新版清晰转换 API ========
+// Zend Value -> V:   v.to_v[T]()
+// V -> Zend Value:   v.from_v[T](x), new_zval_from[T](x)
+
+// 将 Zend Value 转换为明确的 V 类型（严格校验类型）
+pub fn (v ZVal) to_v[T]() !T {
+	$if T is ZVal {
+		return v
+	}
+	$if T is bool {
+		if !v.is_bool() {
+			return error('type mismatch: expected bool, got ${v.type_name()}')
+		}
+		return v.to_bool()
+	}
+	$if T is int {
+		if !v.is_numeric() {
+			return error('type mismatch: expected int, got ${v.type_name()}')
+		}
+		return v.to_int()
+	}
+	$if T is i64 {
+		if !v.is_numeric() {
+			return error('type mismatch: expected i64, got ${v.type_name()}')
+		}
+		return v.to_i64()
+	}
+	$if T is f64 {
+		if !v.is_numeric() {
+			return error('type mismatch: expected f64, got ${v.type_name()}')
+		}
+		return v.to_f64()
+	}
+	$if T is string {
+		if !v.is_string() {
+			return error('type mismatch: expected string, got ${v.type_name()}')
+		}
+		return v.to_string()
+	}
+	$if T is []string {
+		if !v.is_array() {
+			return error('type mismatch: expected array<string>, got ${v.type_name()}')
+		}
+		mut out := []string{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[string]()!
+		}
+		return out
+	}
+	$if T is []int {
+		if !v.is_array() {
+			return error('type mismatch: expected array<int>, got ${v.type_name()}')
+		}
+		mut out := []int{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[int]()!
+		}
+		return out
+	}
+	$if T is []i64 {
+		if !v.is_array() {
+			return error('type mismatch: expected array<i64>, got ${v.type_name()}')
+		}
+		mut out := []i64{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[i64]()!
+		}
+		return out
+	}
+	$if T is []f64 {
+		if !v.is_array() {
+			return error('type mismatch: expected array<f64>, got ${v.type_name()}')
+		}
+		mut out := []f64{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[f64]()!
+		}
+		return out
+	}
+	$if T is []bool {
+		if !v.is_array() {
+			return error('type mismatch: expected array<bool>, got ${v.type_name()}')
+		}
+		mut out := []bool{}
+		for i in 0 .. v.array_count() {
+			item := v.array_get(i)
+			out << item.to_v[bool]()!
+		}
+		return out
+	}
+	$if T is map[string]string {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,string>, got ${v.type_name()}')
+		}
+		mut out := map[string]string{}
+		out = v.foreach_with_ctx[map[string]string](out, fn (key ZVal, val ZVal, mut m map[string]string) {
+			m[key.to_string()] = val.to_string()
+		})
+		return out
+	}
+	$if T is map[string]int {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,int>, got ${v.type_name()}')
+		}
+		mut out := map[string]int{}
+		out = v.foreach_with_ctx[map[string]int](out, fn (key ZVal, val ZVal, mut m map[string]int) {
+			m[key.to_string()] = val.to_int()
+		})
+		return out
+	}
+	$if T is map[string]f64 {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,f64>, got ${v.type_name()}')
+		}
+		mut out := map[string]f64{}
+		out = v.foreach_with_ctx[map[string]f64](out, fn (key ZVal, val ZVal, mut m map[string]f64) {
+			m[key.to_string()] = val.to_f64()
+		})
+		return out
+	}
+	return error('unsupported to_v conversion for requested type')
+}
+
+// 将 V 类型写入 Zend Value
+pub fn (v ZVal) from_v[T](value T) ! {
+	$if T is ZVal {
+		return error('from_v[ZVal] is not supported; convert to a concrete V type first')
+	}
+	$if T is bool {
+		v.set_bool(value)
+		return
+	}
+	$if T is int || T is i64 {
+		v.set_int(i64(value))
+		return
+	}
+	$if T is f64 {
+		v.set_double(value)
+		return
+	}
+	$if T is string {
+		v.set_string(value)
+		return
+	}
+	$if T is []string {
+		v.array_init()
+		for item in value {
+			v.push_string(item)
+		}
+		return
+	}
+	$if T is []int || T is []i64 {
+		v.array_init()
+		for item in value {
+			v.push_long(i64(item))
+		}
+		return
+	}
+	$if T is []f64 {
+		v.array_init()
+		for item in value {
+			v.push_double(item)
+		}
+		return
+	}
+	$if T is []bool {
+		v.array_init()
+		for item in value {
+			v.push_bool(item)
+		}
+		return
+	}
+	$if T is map[string]string {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_string(key, item)
+		}
+		return
+	}
+	$if T is map[string]int || T is map[string]i64 {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_long(key, i64(item))
+		}
+		return
+	}
+	$if T is map[string]f64 {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_double(key, item)
+		}
+		return
+	}
+	$if T is map[string]bool {
+		v.array_init()
+		for key, item in value {
+			v.add_assoc_bool(key, item)
+		}
+		return
+	}
+	return error('unsupported from_v conversion for source type')
+}
+
+// 便捷工厂：从 V 类型直接创建 Zend Value 包装
+pub fn new_zval_from[T](value T) !ZVal {
+	mut out := ZVal{
+		raw: C.vphp_new_zval()
+	}
+	out.from_v[T](value)!
+	return out
+}
+
+// 兼容旧命名：建议改用 new_zval_from[T]
+pub fn new_val_from[T](value T) !ZVal {
+	return new_zval_from[T](value)
+}
+
+// ======== 高级：对象转换 ========
+
+// 将 zval 对象转化为具体的 V 结构体指针
+pub fn (v ZVal) to_object[T]() ?&T {
+	if !v.is_object() {
+		return none
+	}
+	ptr := C.vphp_get_v_ptr_from_zval(v.raw)
+	if ptr == 0 {
+		return none
+	}
+	return unsafe { &T(ptr) }
+}
+
+// ======== 高级：迭代器 foreach ========
+
+pub type ForeachCb = fn (key ZVal, val ZVal)
+
+fn vphp_foreach_wrapper(ctx voidptr, key &C.zval, val &C.zval) {
+	unsafe {
+		cb := *(&ForeachCb(ctx))
+		cb(ZVal{ raw: key }, ZVal{
+			raw: val
+		})
+	}
+}
+
+// 遍历当前 ZVal (对 array 和 object 有效)
+pub fn (v ZVal) foreach(cb ForeachCb) {
+	if !v.is_array() && !v.is_object() {
+		return
+	}
+	C.vphp_zval_foreach(v.raw, &cb, vphp_foreach_wrapper)
+}
+
+pub type ForeachWithCtxCb[T] = fn (key ZVal, val ZVal, mut ctx T)
+
+fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
+	unsafe {
+		mut pack := &ForeachPack[T](ctx)
+		cb := pack.cb
+		cb(ZVal{ raw: key }, ZVal{
+			raw: val
+		}, mut pack.ctx)
+	}
+}
+
+struct ForeachPack[T] {
+	cb ForeachWithCtxCb[T] = unsafe { nil }
+mut:
+	ctx T
+}
+
+pub fn (v ZVal) foreach_with_ctx[T](ctx T, cb ForeachWithCtxCb[T]) T {
+	if !v.is_array() && !v.is_object() {
+		return ctx
+	}
+	mut pack := ForeachPack[T]{
+		cb:  cb
+		ctx: ctx
+	}
+	C.vphp_zval_foreach(v.raw, &pack, vphp_foreach_with_ctx_wrapper[T])
+	return pack.ctx
+}

@@ -167,7 +167,7 @@ fn (g VGenerator) gen_class_glue(r &PhpClassRepr) []string {
             tm := TypeMap.get_type(arg.v_type)
             if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
                 out << "    ${var_name} := ctx"
-            } else if arg.v_type == 'vphp.Val' || arg.v_type == 'Val' {
+            } else if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {
                 out << "    ${var_name} := ctx.arg_val(${i})"
             } else if tm.c_type == 'void*' {
                 v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }

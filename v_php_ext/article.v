@@ -122,9 +122,9 @@ pub fn (a &Article) save() bool {
 }
 
 @[php_method]
-pub fn (a &Article) dump_properties(data vphp.Val) {
+pub fn (a &Article) dump_properties(data vphp.ZVal) {
     if data.is_array() || data.is_object() {
-        data.foreach(fn (key vphp.Val, val vphp.Val) {
+        data.foreach(fn (key vphp.ZVal, val vphp.ZVal) {
             println('V Foreach -> Key: ${key.to_string()}, Value Type: ${val.type_name()}')
             if val.is_string() {
                 println('             Value: ${val.to_string()}')
@@ -136,14 +136,14 @@ pub fn (a &Article) dump_properties(data vphp.Val) {
 }
 
 @[php_method]
-pub fn (a &Article) process_with_callback(callback vphp.Val) bool {
+pub fn (a &Article) process_with_callback(callback vphp.ZVal) bool {
     if !callback.is_callable() {
         println('V process_with_callback -> Argument is not callable!')
         return false
     }
     
     // Call the PHP closure with a parameter
-    mut args := []vphp.Val{}
+    mut args := []vphp.ZVal{}
     args << vphp.new_val_string('Calling from V')
     
     res := callback.invoke(args)
@@ -154,7 +154,7 @@ pub fn (a &Article) process_with_callback(callback vphp.Val) bool {
 }
 
 @[php_method]
-pub fn Article.restore_author(author_val vphp.Val) &Author {
+pub fn Article.restore_author(author_val vphp.ZVal) &Author {
     mut author := author_val.to_object[Author]() or {
         println('V restore_author -> Failed to convert to Author')
         return &Author{ name: 'Unknown' }

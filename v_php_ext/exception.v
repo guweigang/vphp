@@ -5,10 +5,8 @@ import vphp
 @[export: 'v_reverse_string']
 fn v_reverse_string(ctx vphp.Context) {
     unsafe {
-        raw_in := C.vphp_get_arg_ptr(ctx.ex, 1)
-        if raw_in == 0 { return }
-
-        in_val := vphp.Val{ raw: raw_in }
+        in_val := ctx.arg_raw(0)
+        if !in_val.is_valid() { return }
 
         if !in_val.is_string() {
             vphp.throw_exception('Expected string input', 401)
@@ -22,7 +20,7 @@ fn v_reverse_string(ctx vphp.Context) {
             return
         }
 
-        mut out := vphp.Val{ raw: ctx.ret }
+        mut out := vphp.ZVal{ raw: ctx.ret }
         out.set_string(s.reverse())
     }
 }
@@ -30,7 +28,7 @@ fn v_reverse_string(ctx vphp.Context) {
 @[export: 'v_logic_main']
 fn v_logic_main(ctx vphp.Context) {
 	unsafe {
-		args := vphp.get_args(ctx.ex)
+		args := ctx.get_args()
 
 		if args.len < 1 {
 			vphp.throw_exception('至少需要一个参数', 400)
@@ -46,7 +44,7 @@ fn v_logic_main(ctx vphp.Context) {
 
 		res := main_str.repeat(repeat_count).reverse()
 
-		out := vphp.Val{ raw: ctx.ret }
+		out := vphp.ZVal{ raw: ctx.ret }
 		out.set_string(res)
 	}
 }
