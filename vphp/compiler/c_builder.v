@@ -132,6 +132,14 @@ pub fn (b &PHPTypeBuilder) render_ce_extern_declaration() string {
 	return 'extern zend_class_entry *${b.ce_var_name()};'
 }
 
+pub fn (b &PHPTypeBuilder) render_impl_prelude() string {
+	return '${b.render_ce_declaration()}\n${b.render_arginfo_defs()}'
+}
+
+pub fn (b &PHPTypeBuilder) render_impl_postlude() string {
+	return b.render_methods_array()
+}
+
 pub fn (b &PHPTypeBuilder) render_arginfo_defs() string {
 	mut res := []string{}
 	for m in b.methods {

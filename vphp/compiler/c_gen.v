@@ -223,9 +223,8 @@ pub fn (g CGenerator) gen_c_code(mut elements []PhpRepr) []string {
 fn (g CGenerator) gen_interface_c(r &PhpInterfaceRepr) []string {
 	mut c := []string{}
 	builder := g.build_interface_type(r)
-	c << builder.render_ce_declaration()
-	c << builder.render_arginfo_defs()
-	c << builder.render_methods_array()
+	c << builder.render_impl_prelude()
+	c << builder.render_impl_postlude()
 	return c
 }
 
@@ -234,12 +233,11 @@ fn (g CGenerator) gen_enum_c(r &PhpEnumRepr) []string {
 	c_class := r.c_name()
 	builder := g.build_enum_type(r)
 
-	c << builder.render_ce_declaration()
-	c << builder.render_arginfo_defs()
+	c << builder.render_impl_prelude()
 	c << 'PHP_METHOD(${c_class}, __construct) {'
 	c << '    vphp_throw("${r.php_name} is an enum-style type and cannot be instantiated", 0);'
 	c << '}'
-	c << builder.render_methods_array()
+	c << builder.render_impl_postlude()
 
 	return c
 }
@@ -290,8 +288,7 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 	has_init := r.methods.any(it.name == 'init')
 	builder := g.build_class_type(r, has_init)
 
-	c << builder.render_ce_declaration()
-	c << builder.render_arginfo_defs()
+	c << builder.render_impl_prelude()
 
 	// 2. 生成方法包装器 — 使用模板
 	for m in r.methods {
@@ -351,7 +348,7 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 	}
 
 	// 3. 生成方法表 (zend_function_entry) 
-	c << builder.render_methods_array()
+	c << builder.render_impl_postlude()
 
 	return c
 }
