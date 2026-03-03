@@ -185,3 +185,120 @@ author := vphp.php_class('Author').static_method_object[Author]('create', [
 	vphp.ZVal.new_string('Typed Author'),
 ]) or { return }
 ```
+
+## 8. Error Handling Guidance
+
+There are two common styles in `vphp` interop code.
+
+### Style A: strict bridge, fail fast
+
+Use this when the PHP call is part of your core contract and failure should
+become a PHP exception immediately.
+
+```v
+fn v_do_work(ctx vphp.Context) {
+	length := vphp.php_fn('strlen').call_v[int]([
+		vphp.ZVal.new_string('codex'),
+	]) or {
+		vphp.throw_exception('strlen failed: ${err.msg()}', 0)
+		return
+	}
+	ctx.return_int(length)
+}
+```
+
+Use this style for:
+
+- required callbacks
+- required configuration/constants
+- object restoration that must succeed
+- framework/runtime control flow
+
+### Style B: tolerant bridge, fallback locally
+
+Use this when PHP interop is optional and you have a clear local default.
+
+```v
+mode := cfg.prop_v[string]('mode') or { 'default' }
+count := vphp.php_class('PhpCounter').static_prop_v[int]('count') or { 0 }
+```
+
+Use this style for:
+
+- optional metadata
+- diagnostics
+- best-effort enrichment
+
+### Suggested rule of thumb
+
+- if the result is required to continue safely: `throw_exception(...)`
+- if the result is optional and you know the fallback: `or { ... }`
+
+## 9. Mixing Value and Object Helpers
+
+In real code, interop usually mixes both styles.
+
+Example:
+
+```v
+author := vphp.php_class('Author').static_method_object[Author]('create', [
+	vphp.ZVal.new_string('Gu Weigang'),
+]) or {
+	vphp.throw_exception('create author failed', 0)
+	return
+}
+
+article := vphp.php_class('Article').construct_object[Article]([
+	vphp.ZVal.new_string('Bridge'),
+	vphp.ZVal.new_int(7),
+]) or {
+	vphp.throw_exception('construct article failed', 0)
+	return
+}
+
+label := vphp.php_class('Article').constant_v[string]('NAME') or {
+	'unknown'
+}
+
+println('${author.name} -> ${article.title} (${label})')
+```
+
+This pattern is usually the most readable:
+
+1. restore objects with `*_object[T]()`
+2. read scalars with `*_v[T]()`
+3. only drop down to raw `ZVal` when you need custom conversion or low-level control
+
+## 10. Choosing Between Raw and Typed APIs
+
+Prefer raw `ZVal` actions when:
+
+- you need to inspect PHP type at runtime
+- the target type is not known yet
+- you are building generic runtime helpers
+
+Prefer typed helpers when:
+
+- the result type is already known
+- you want shorter business logic
+- you want conversion failures to be explicit
+
+Example of raw-first flow:
+
+```v
+res := vphp.php_fn('phpversion').call([])
+if !res.is_string() {
+	vphp.throw_exception('phpversion must return string', 0)
+	return
+}
+version := res.to_string()
+```
+
+Example of typed-first flow:
+
+```v
+version := vphp.php_fn('phpversion').call_v[string]([]) or {
+	vphp.throw_exception('phpversion failed: ${err.msg()}', 0)
+	return
+}
+```
