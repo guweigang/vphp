@@ -141,6 +141,8 @@ zval *vphp_read_static_property_compat(const char *class_name, int class_name_le
                                        const char *name, int name_len, zval *rv);
 int vphp_write_static_property_compat(const char *class_name, int class_name_len,
                                       const char *name, int name_len, zval *value);
+zval *vphp_read_class_constant_compat(const char *class_name, int class_name_len,
+                                      const char *name, int name_len, zval *rv);
 
 // 数组与通用
 void vphp_return_array_start(zval *return_value);

@@ -443,6 +443,18 @@ fn vphp_wrap_v_mutate_php_static_prop(ctx vphp.Context) {
     v_mutate_php_static_prop(arg_0)
 }
 
+@[export: 'vphp_wrap_v_read_php_class_constant']
+fn vphp_wrap_v_read_php_class_constant(ctx vphp.Context) {
+    arg_0 := ctx
+    v_read_php_class_constant(arg_0)
+}
+
+@[export: 'vphp_wrap_v_typed_php_interop']
+fn vphp_wrap_v_typed_php_interop(ctx vphp.Context) {
+    arg_0 := ctx
+    v_typed_php_interop(arg_0)
+}
+
 @[export: 'vphp_wrap_v_trigger_user_action']
 fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
     arg_0 := ctx

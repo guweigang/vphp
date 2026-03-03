@@ -385,6 +385,21 @@ int vphp_write_static_property_compat(const char *class_name, int class_name_len
   zend_update_static_property(ce, name, name_len, value);
   return 0;
 }
+zval *vphp_read_class_constant_compat(const char *class_name, int class_name_len,
+                                      const char *name, int name_len, zval *rv) {
+  zend_string *class_name_str = zend_string_init(class_name, class_name_len, 0);
+  zend_string *const_name_str = zend_string_init(name, name_len, 0);
+  zval *constant =
+      zend_get_class_constant_ex(class_name_str, const_name_str, NULL, 0);
+  zend_string_release(class_name_str);
+  zend_string_release(const_name_str);
+  if (!constant) {
+    ZVAL_NULL(rv);
+    return rv;
+  }
+  ZVAL_COPY(rv, constant);
+  return rv;
+}
 int vphp_has_property_compat(zend_object *obj, const char *name, int name_len) {
   return zend_get_std_object_handlers()->has_property(
       obj, zend_string_init(name, name_len, 0), ZEND_PROPERTY_EXISTS, NULL);

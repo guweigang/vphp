@@ -114,6 +114,7 @@ pub fn C.vphp_get_static_property_string(ce voidptr, name &char, name_len int) &
 pub fn C.vphp_get_static_property_bool(ce voidptr, name &char, name_len int) int
 pub fn C.vphp_read_static_property_compat(class_name &char, class_name_len int, name &char, name_len int, rv &C.zval) &C.zval
 pub fn C.vphp_write_static_property_compat(class_name &char, class_name_len int, name &char, name_len int, value &C.zval) int
+pub fn C.vphp_read_class_constant_compat(class_name &char, class_name_len int, name &char, name_len int, rv &C.zval) &C.zval
 
 // ===== 11. 类注册与辅助 =====
 pub fn C.vphp_register_internal_class(name &char, methods voidptr, count int)

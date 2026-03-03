@@ -188,6 +188,51 @@ fn v_mutate_php_static_prop(ctx vphp.Context) {
 	ctx.return_string('static_prop=${before}->${after}')
 }
 
+@[export: 'v_read_php_class_constant']
+fn v_read_php_class_constant(ctx vphp.Context) {
+	article_max := vphp.php_class('Article').constant_v[int]('MAX_TITLE_LEN') or {
+		vphp.throw_exception('读取 Article::MAX_TITLE_LEN 失败: ${err.msg()}', 0)
+		return
+	}
+	php_version := vphp.php_class('PhpMeta').constant_v[string]('VERSION') or {
+		vphp.throw_exception('读取 PhpMeta::VERSION 失败: ${err.msg()}', 0)
+		return
+	}
+	ctx.return_string('consts=${article_max}:${php_version}')
+}
+
+@[export: 'v_typed_php_interop']
+fn v_typed_php_interop(ctx vphp.Context) {
+	obj := ctx.arg_raw(0)
+	if !obj.is_object() {
+		vphp.throw_exception('需要 PhpTypedBox 对象', 0)
+		return
+	}
+
+	length := vphp.php_fn('strlen').call_v[int]([vphp.new_val_string('codex')]) or {
+		vphp.throw_exception('调用 strlen 失败: ${err.msg()}', 0)
+		return
+	}
+	name := obj.prop_v[string]('name') or {
+		vphp.throw_exception('读取 name 属性失败: ${err.msg()}', 0)
+		return
+	}
+	score := obj.method_v[int]('doubleScore', []) or {
+		vphp.throw_exception('调用 doubleScore 失败: ${err.msg()}', 0)
+		return
+	}
+	count := vphp.php_class('PhpTypedBox').static_prop_v[int]('count') or {
+		vphp.throw_exception('读取静态属性 count 失败: ${err.msg()}', 0)
+		return
+	}
+	label := vphp.php_class('PhpTypedBox').constant_v[string]('LABEL') or {
+		vphp.throw_exception('读取类常量 LABEL 失败: ${err.msg()}', 0)
+		return
+	}
+
+	ctx.return_string('typed=${length}:${name}:${score}:${count}:${label}')
+}
+
 @[export: 'v_trigger_user_action']
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)

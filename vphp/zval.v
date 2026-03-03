@@ -520,6 +520,23 @@ pub fn (v ZVal) static_prop(name string) ZVal {
 	}
 }
 
+pub fn (v ZVal) constant(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+
+	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
+	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return ZVal{
+		raw: res
+	}
+}
+
 pub fn (v ZVal) set_static_prop(name string, value ZVal) {
 	if v.raw == 0 || !v.is_string() || value.raw == 0 {
 		return
@@ -536,6 +553,26 @@ pub fn (v ZVal) call_method(method string, args []ZVal) ZVal {
 // 兼容旧 API：callable 调用
 pub fn (v ZVal) invoke(args []ZVal) ZVal {
 	return v.call(args)
+}
+
+pub fn (v ZVal) call_v[T](args []ZVal) !T {
+	return v.call(args).to_v[T]()
+}
+
+pub fn (v ZVal) method_v[T](method string, args []ZVal) !T {
+	return v.method(method, args).to_v[T]()
+}
+
+pub fn (v ZVal) prop_v[T](name string) !T {
+	return v.prop(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_prop_v[T](name string) !T {
+	return v.static_prop(name).to_v[T]()
+}
+
+pub fn (v ZVal) constant_v[T](name string) !T {
+	return v.constant(name).to_v[T]()
 }
 
 // ======== 工厂方法 ========
