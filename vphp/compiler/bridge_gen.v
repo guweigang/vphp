@@ -2,10 +2,11 @@ module compiler
 
 import os
 import strings
+import compiler.builder
 import compiler.repr
 
-fn (c Compiler) collect_non_type_fragments() ExportFragments {
-	mut fragments := ExportFragments{}
+fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
+	mut fragments := builder.ExportFragments{}
 	c_gen := CGenerator{ ext_name: c.ext_name }
 
 	for el in c.elements {
@@ -21,8 +22,8 @@ fn (c Compiler) collect_non_type_fragments() ExportFragments {
 	return fragments
 }
 
-fn (c Compiler) collect_type_fragments() ExportFragments {
-	mut fragments := ExportFragments{}
+fn (c Compiler) collect_type_fragments() builder.ExportFragments {
+	mut fragments := builder.ExportFragments{}
 	c_gen := CGenerator{ ext_name: c.ext_name }
 
 	for el in c.elements {
@@ -61,7 +62,7 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string('#include "../vphp/v_bridge.h"\n\n')
 
 	// 2. 模块层：初始化 ModuleBuilder 并收集功能点
-	mut mod_builder := new_module_builder(c.ext_name, c.ext_version, c.ext_description)
+	mut mod_builder := builder.new_module_builder(c.ext_name, c.ext_version, c.ext_description)
 	fragments := c.collect_non_type_fragments()
 	type_fragments := c.collect_type_fragments()
 	for k, v in c.ini_entries {

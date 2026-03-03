@@ -1,5 +1,6 @@
 module compiler
 
+import compiler.builder
 import compiler.repr
 
 pub struct CGenerator {
@@ -7,36 +8,36 @@ pub:
 	ext_name string
 }
 
-fn (g CGenerator) build_func(f &repr.PhpFuncRepr) FuncBuilder {
-	return FuncBuilder{
+fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
+	return builder.FuncBuilder{
 		php_name: f.name
 		c_func: f.name
 	}
 }
 
-fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) ExportFragments {
+fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments {
 	mut fragments := g.build_func(f).export_fragments()
 	fragments.implementations = g.gen_func_c(f)
 	return fragments
 }
 
-fn (g CGenerator) build_global_constant(c &repr.PhpConstRepr) GlobalConstantBuilder {
-	return new_global_constant_builder(c.name, c.const_type, c.value)
+fn (g CGenerator) build_global_constant(c &repr.PhpConstRepr) builder.GlobalConstantBuilder {
+	return builder.new_global_constant_builder(c.name, c.const_type, c.value)
 }
 
-fn (g CGenerator) build_interface_export(r &repr.PhpInterfaceRepr) ExportFragments {
+fn (g CGenerator) build_interface_export(r &repr.PhpInterfaceRepr) builder.ExportFragments {
 	mut fragments := g.build_interface_type(r).export_fragments()
 	fragments.implementations = g.gen_interface_c(r)
 	return fragments
 }
 
-fn (g CGenerator) build_enum_export(r &repr.PhpEnumRepr) ExportFragments {
+fn (g CGenerator) build_enum_export(r &repr.PhpEnumRepr) builder.ExportFragments {
 	mut fragments := g.build_enum_type(r).export_fragments()
 	fragments.implementations = g.gen_enum_c(r)
 	return fragments
 }
 
-fn (g CGenerator) build_class_export(r &repr.PhpClassRepr) ExportFragments {
+fn (g CGenerator) build_class_export(r &repr.PhpClassRepr) builder.ExportFragments {
 	has_init := r.methods.any(it.name == 'init')
 	mut fragments := g.build_class_type(r, has_init).export_fragments()
 	fragments.implementations = g.gen_class_c(r)
@@ -59,42 +60,42 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 	return flags
 }
 
-fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &PHPTypeBuilder {
-	mut builder := new_interface_builder(r.php_name, r.c_name())
+fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.PHPTypeBuilder {
+	mut type_builder := builder.new_interface_builder(r.php_name, r.c_name())
 	for m in r.methods {
-		builder.add_abstract_method(m.name, '${r.c_name().to_lower()}_${m.name}',
+		type_builder.add_abstract_method(m.name, '${r.c_name().to_lower()}_${m.name}',
 			visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT')
 	}
-	return builder
+	return type_builder
 }
 
-fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &PHPTypeBuilder {
-	mut builder := new_enum_builder(r.php_name, r.c_name())
-	builder.add_class_flag('ZEND_ACC_FINAL')
-	builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PRIVATE')
+fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &builder.PHPTypeBuilder {
+	mut type_builder := builder.new_enum_builder(r.php_name, r.c_name())
+	type_builder.add_class_flag('ZEND_ACC_FINAL')
+	type_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PRIVATE')
 	for case_ in r.cases {
-		builder.add_constant(case_.name, 'int', case_.value)
+		type_builder.add_constant(case_.name, 'int', case_.value)
 	}
-	return builder
+	return type_builder
 }
 
-fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &PHPTypeBuilder {
-	mut builder := new_class_builder(r.php_name, r.c_name())
-	builder.set_parent(r.parent)
+fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder.PHPTypeBuilder {
+	mut type_builder := builder.new_class_builder(r.php_name, r.c_name())
+	type_builder.set_parent(r.parent)
 	if r.is_abstract {
-		builder.add_class_flag('ZEND_ACC_EXPLICIT_ABSTRACT_CLASS')
+		type_builder.add_class_flag('ZEND_ACC_EXPLICIT_ABSTRACT_CLASS')
 	}
 	for iface in r.implements {
-		builder.add_interface(iface)
+		type_builder.add_interface(iface)
 	}
 	for con in r.constants {
-		builder.add_constant(con.name, con.const_type, con.value)
+		type_builder.add_constant(con.name, con.const_type, con.value)
 	}
 	for prop in r.properties {
-		builder.add_property(prop.name, prop.v_type, visibility_to_property_flags(prop))
+		type_builder.add_property(prop.name, prop.v_type, visibility_to_property_flags(prop))
 	}
 	if !has_init {
-		builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC')
+		type_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC')
 	}
 	for m in r.methods {
 		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
@@ -104,12 +105,12 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &PHPType
 		}
 		c_func := '${r.c_name().to_lower()}_${m.name}'
 		if m.is_abstract {
-			builder.add_abstract_method(php_method_name, c_func, flags + ' | ZEND_ACC_ABSTRACT')
+			type_builder.add_abstract_method(php_method_name, c_func, flags + ' | ZEND_ACC_ABSTRACT')
 		} else {
-			builder.add_method(php_method_name, c_func, flags)
+			type_builder.add_method(php_method_name, c_func, flags)
 		}
 	}
-	return builder
+	return type_builder
 }
 
 // 模板变量替换
@@ -233,22 +234,22 @@ PHP_METHOD({{CLASS}}, __construct) {
 
 fn (g CGenerator) gen_interface_c(r &repr.PhpInterfaceRepr) []string {
 	mut c := []string{}
-	builder := g.build_interface_type(r)
-	c << builder.render_impl_prelude()
-	c << builder.render_impl_postlude()
+	type_builder := g.build_interface_type(r)
+	c << type_builder.render_impl_prelude()
+	c << type_builder.render_impl_postlude()
 	return c
 }
 
 fn (g CGenerator) gen_enum_c(r &repr.PhpEnumRepr) []string {
 	mut c := []string{}
 	c_class := r.c_name()
-	builder := g.build_enum_type(r)
+	type_builder := g.build_enum_type(r)
 
-	c << builder.render_impl_prelude()
+	c << type_builder.render_impl_prelude()
 	c << 'PHP_METHOD(${c_class}, __construct) {'
 	c << '    vphp_throw("${r.php_name} is an enum-style type and cannot be instantiated", 0);'
 	c << '}'
-	c << builder.render_impl_postlude()
+	c << type_builder.render_impl_postlude()
 
 	return c
 }
@@ -297,9 +298,9 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	c_class := r.c_name()        // C macro safe: VPhp_Task
 	lower_name := c_class.to_lower()
 	has_init := r.methods.any(it.name == 'init')
-	builder := g.build_class_type(r, has_init)
+	type_builder := g.build_class_type(r, has_init)
 
-	c << builder.render_impl_prelude()
+	c << type_builder.render_impl_prelude()
 
 	// 2. 生成方法包装器 — 使用模板
 	for m in r.methods {
@@ -359,7 +360,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	}
 
 	// 3. 生成方法表 (zend_function_entry) 
-	c << builder.render_impl_postlude()
+	c << type_builder.render_impl_postlude()
 
 	return c
 }

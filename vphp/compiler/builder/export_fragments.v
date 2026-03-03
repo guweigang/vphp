@@ -1,4 +1,4 @@
-module compiler
+module builder
 
 pub struct ExportFragments {
 pub mut:

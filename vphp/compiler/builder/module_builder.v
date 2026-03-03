@@ -1,4 +1,4 @@
-module compiler
+module builder
 
 import strings
 import compiler.repr
