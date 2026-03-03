@@ -24,7 +24,7 @@ pub fn (v ZVal) type_raw() int {
 }
 
 pub fn (v ZVal) type_id() PHPType {
-	return php_type_from_id(v.type_raw())
+	return PHPType.from_id(v.type_raw())
 }
 
 pub fn (v ZVal) is_undef() bool {

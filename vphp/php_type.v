@@ -17,7 +17,7 @@ pub enum PHPType {
 	reference = zend.is_reference
 }
 
-pub fn php_type_from_id(id int) PHPType {
+pub fn PHPType.from_id(id int) PHPType {
 	return match id {
 		zend.is_undef { .undef }
 		zend.is_null { .null }
