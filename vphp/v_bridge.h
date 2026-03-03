@@ -131,8 +131,16 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs);
 int vphp_call_php_func(const char *name, int name_len, zval *retval,
                        int param_count, zval **params_ptrs);
+int vphp_call_static_method(const char *class_name, int class_name_len,
+                            const char *method, int method_len, zval *retval,
+                            int param_count, zval **params_ptrs);
 int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
                       int param_count, zval **params_ptrs);
+
+zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
+                                       const char *name, int name_len, zval *rv);
+int vphp_write_static_property_compat(const char *class_name, int class_name_len,
+                                      const char *name, int name_len, zval *value);
 
 // 数组与通用
 void vphp_return_array_start(zval *return_value);

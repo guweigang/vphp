@@ -23,6 +23,8 @@ PHP_FUNCTION(v_analyze_user_object);
 PHP_FUNCTION(v_mutate_user_object);
 PHP_FUNCTION(v_check_user_object_props);
 PHP_FUNCTION(v_construct_php_object);
+PHP_FUNCTION(v_call_php_static_method);
+PHP_FUNCTION(v_mutate_php_static_prop);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
 PHP_FUNCTION(v_test_globals);

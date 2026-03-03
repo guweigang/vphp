@@ -474,6 +474,60 @@ pub fn (v ZVal) construct(args []ZVal) ZVal {
 	}
 }
 
+pub fn (v ZVal) static_method(method string, args []ZVal) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+
+	unsafe {
+		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut p_args := &&C.zval(nil)
+		if args.len > 0 {
+			p_args = &args[0].raw
+		}
+
+		res := C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+			&char(method.str), method.len, retval, args.len, p_args)
+		if res == -1 {
+			return ZVal{
+				raw: 0
+			}
+		}
+		return ZVal{
+			raw: retval
+		}
+	}
+}
+
+pub fn (v ZVal) static_prop(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+
+	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
+	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return ZVal{
+		raw: res
+	}
+}
+
+pub fn (v ZVal) set_static_prop(name string, value ZVal) {
+	if v.raw == 0 || !v.is_string() || value.raw == 0 {
+		return
+	}
+	C.vphp_write_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, value.raw)
+}
+
 // 兼容旧 API：对象方法调用
 pub fn (v ZVal) call_method(method string, args []ZVal) ZVal {
 	return v.method(method, args)

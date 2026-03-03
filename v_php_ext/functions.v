@@ -173,6 +173,21 @@ fn v_construct_php_object(ctx vphp.Context) {
 	ctx.return_string('constructed=${name}:${msg}')
 }
 
+@[export: 'v_call_php_static_method']
+fn v_call_php_static_method(ctx vphp.Context) {
+	res := vphp.php_class('PhpMath').static_method('triple', [vphp.new_val_int(7)])
+	ctx.return_string('static=' + res.to_int().str())
+}
+
+@[export: 'v_mutate_php_static_prop']
+fn v_mutate_php_static_prop(ctx vphp.Context) {
+	cls := vphp.php_class('PhpCounter')
+	before := cls.static_prop('count').to_int()
+	cls.set_static_prop('count', vphp.new_val_int(before + 5))
+	after := cls.static_prop('count').to_int()
+	ctx.return_string('static_prop=${before}->${after}')
+}
+
 @[export: 'v_trigger_user_action']
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)

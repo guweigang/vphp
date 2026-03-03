@@ -431,6 +431,18 @@ fn vphp_wrap_v_construct_php_object(ctx vphp.Context) {
     v_construct_php_object(arg_0)
 }
 
+@[export: 'vphp_wrap_v_call_php_static_method']
+fn vphp_wrap_v_call_php_static_method(ctx vphp.Context) {
+    arg_0 := ctx
+    v_call_php_static_method(arg_0)
+}
+
+@[export: 'vphp_wrap_v_mutate_php_static_prop']
+fn vphp_wrap_v_mutate_php_static_prop(ctx vphp.Context) {
+    arg_0 := ctx
+    v_mutate_php_static_prop(arg_0)
+}
+
 @[export: 'vphp_wrap_v_trigger_user_action']
 fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
     arg_0 := ctx

@@ -99,6 +99,20 @@ PHP_FUNCTION(v_construct_php_object) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_construct_php_object(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_call_php_static_method, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_call_php_static_method(vphp_context_internal ctx);
+PHP_FUNCTION(v_call_php_static_method) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_call_php_static_method(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_mutate_php_static_prop, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_mutate_php_static_prop(vphp_context_internal ctx);
+PHP_FUNCTION(v_mutate_php_static_prop) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_mutate_php_static_prop(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_trigger_user_action, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_trigger_user_action(vphp_context_internal ctx);
@@ -598,6 +612,8 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_mutate_user_object, arginfo_v_mutate_user_object)
     PHP_FE(v_check_user_object_props, arginfo_v_check_user_object_props)
     PHP_FE(v_construct_php_object, arginfo_v_construct_php_object)
+    PHP_FE(v_call_php_static_method, arginfo_v_call_php_static_method)
+    PHP_FE(v_mutate_php_static_prop, arginfo_v_mutate_php_static_prop)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
     PHP_FE(v_test_globals, arginfo_v_test_globals)

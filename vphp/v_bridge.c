@@ -207,6 +207,13 @@ zval *vphp_new_str(const char *s) {
   ZVAL_STRING(z, s);
   return z;
 }
+static zend_class_entry *vphp_lookup_class_by_name(const char *class_name,
+                                                   int class_name_len) {
+  zend_string *zs = zend_string_init(class_name, class_name_len, 0);
+  zend_class_entry *ce = zend_lookup_class(zs);
+  zend_string_release(zs);
+  return ce;
+}
 int vphp_call_php_func(const char *name, int name_len, zval *retval,
                        int param_count, zval **params_ptrs) {
   zval func_name;
@@ -228,11 +235,22 @@ int vphp_call_php_func(const char *name, int name_len, zval *retval,
     efree(params);
   return result;
 }
+int vphp_call_static_method(const char *class_name, int class_name_len,
+                            const char *method, int method_len, zval *retval,
+                            int param_count, zval **params_ptrs) {
+  zend_string *callable =
+      zend_strpprintf(0, "%.*s::%.*s", class_name_len, class_name, method_len,
+                      method);
+  zval callable_zv;
+  ZVAL_STR(&callable_zv, callable);
+  int result =
+      vphp_call_callable(&callable_zv, retval, param_count, params_ptrs);
+  zval_ptr_dtor(&callable_zv);
+  return result;
+}
 int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
                       int param_count, zval **params_ptrs) {
-  zend_string *zs = zend_string_init(class_name, class_name_len, 0);
-  zend_class_entry *ce = zend_lookup_class(zs);
-  zend_string_release(zs);
+  zend_class_entry *ce = vphp_lookup_class_by_name(class_name, class_name_len);
   if (!ce)
     return -1;
 
@@ -343,6 +361,29 @@ void vphp_write_property_compat(zend_object *obj, const char *name, int name_len
                                 zval *value) {
   zend_get_std_object_handlers()->write_property(
       obj, zend_string_init(name, name_len, 0), value, NULL);
+}
+zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
+                                       const char *name, int name_len, zval *rv) {
+  zend_class_entry *ce = vphp_lookup_class_by_name(class_name, class_name_len);
+  if (!ce) {
+    ZVAL_NULL(rv);
+    return rv;
+  }
+  zval *prop = zend_read_static_property(ce, name, name_len, 1);
+  if (!prop) {
+    ZVAL_NULL(rv);
+    return rv;
+  }
+  ZVAL_COPY(rv, prop);
+  return rv;
+}
+int vphp_write_static_property_compat(const char *class_name, int class_name_len,
+                                      const char *name, int name_len, zval *value) {
+  zend_class_entry *ce = vphp_lookup_class_by_name(class_name, class_name_len);
+  if (!ce)
+    return -1;
+  zend_update_static_property(ce, name, name_len, value);
+  return 0;
 }
 int vphp_has_property_compat(zend_object *obj, const char *name, int name_len) {
   return zend_get_std_object_handlers()->has_property(
