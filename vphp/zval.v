@@ -315,6 +315,30 @@ pub fn (v ZVal) set_prop(name string, value ZVal) {
 	C.vphp_write_property_compat(obj, &char(name.str), name.len, value.raw)
 }
 
+pub fn (v ZVal) has_prop(name string) bool {
+	if !v.is_object() {
+		return false
+	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	return C.vphp_has_property_compat(obj, &char(name.str), name.len) == 1
+}
+
+pub fn (v ZVal) isset_prop(name string) bool {
+	if !v.is_object() {
+		return false
+	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	return C.vphp_isset_property_compat(obj, &char(name.str), name.len) == 1
+}
+
+pub fn (v ZVal) unset_prop(name string) {
+	if !v.is_object() {
+		return
+	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	C.vphp_unset_property_compat(obj, &char(name.str), name.len)
+}
+
 // 快捷方式：属性 → string
 pub fn (v ZVal) get_prop_string(name string) string {
 	prop := v.get_prop(name)
@@ -410,6 +434,35 @@ pub fn (v ZVal) call(args []ZVal) ZVal {
 		}
 
 		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
+		if res == -1 {
+			return ZVal{
+				raw: 0
+			}
+		}
+		return ZVal{
+			raw: retval
+		}
+	}
+}
+
+pub fn (v ZVal) construct(args []ZVal) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+
+	unsafe {
+		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut p_args := &&C.zval(nil)
+		if args.len > 0 {
+			p_args = &args[0].raw
+		}
+
+		res := C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
+			args.len, p_args)
 		if res == -1 {
 			return ZVal{
 				raw: 0

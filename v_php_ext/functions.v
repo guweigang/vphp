@@ -136,6 +136,43 @@ fn v_mutate_user_object(ctx vphp.Context) {
 	ctx.return_string('updated=${name}:${age}')
 }
 
+@[export: 'v_check_user_object_props']
+fn v_check_user_object_props(ctx vphp.Context) {
+	user_obj := ctx.arg_raw(0)
+	if !user_obj.is_object() {
+		vphp.throw_exception('需要 User 对象', 0)
+		return
+	}
+
+	has_name := user_obj.has_prop('name')
+	isset_name := user_obj.isset_prop('name')
+	has_note := user_obj.has_prop('note')
+	isset_note := user_obj.isset_prop('note')
+	user_obj.unset_prop('age')
+	has_age_after_unset := user_obj.has_prop('age')
+
+	ctx.return_map({
+		'has_name':            has_name.str()
+		'isset_name':          isset_name.str()
+		'has_note':            has_note.str()
+		'isset_note':          isset_note.str()
+		'has_age_after_unset': has_age_after_unset.str()
+	})
+}
+
+@[export: 'v_construct_php_object']
+fn v_construct_php_object(ctx vphp.Context) {
+	obj := vphp.php_class('PhpGreeter').construct([vphp.new_val_string('Codex')])
+	if !obj.is_object() {
+		vphp.throw_exception('构造 PhpGreeter 失败', 0)
+		return
+	}
+
+	msg := obj.method('greet', []).to_string()
+	name := obj.prop('name').to_string()
+	ctx.return_string('constructed=${name}:${msg}')
+}
+
 @[export: 'v_trigger_user_action']
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)

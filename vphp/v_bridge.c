@@ -228,6 +228,41 @@ int vphp_call_php_func(const char *name, int name_len, zval *retval,
     efree(params);
   return result;
 }
+int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
+                      int param_count, zval **params_ptrs) {
+  zend_string *zs = zend_string_init(class_name, class_name_len, 0);
+  zend_class_entry *ce = zend_lookup_class(zs);
+  zend_string_release(zs);
+  if (!ce)
+    return -1;
+
+  object_init_ex(retval, ce);
+  if (!ce->constructor) {
+    return param_count == 0 ? SUCCESS : -1;
+  }
+
+  zval ctor_name;
+  ZVAL_STRINGL(&ctor_name, "__construct", sizeof("__construct") - 1);
+  zval *params = NULL;
+  if (param_count > 0) {
+    params = (zval *)safe_emalloc(param_count, sizeof(zval), 0);
+    for (int i = 0; i < param_count; i++) {
+      if (params_ptrs[i])
+        ZVAL_COPY_VALUE(&params[i], params_ptrs[i]);
+      else
+        ZVAL_NULL(&params[i]);
+    }
+  }
+  zval ctor_retval;
+  ZVAL_UNDEF(&ctor_retval);
+  int result = call_user_function(EG(function_table), retval, &ctor_name,
+                                  &ctor_retval, param_count, params);
+  zval_ptr_dtor(&ctor_name);
+  zval_ptr_dtor(&ctor_retval);
+  if (params)
+    efree(params);
+  return result;
+}
 bool vphp_has_exception() { return EG(exception) != NULL; }
 int vphp_call_method(zval *obj, const char *method, int method_len,
                      zval *retval, int param_count, zval **params_ptrs) {
@@ -308,6 +343,18 @@ void vphp_write_property_compat(zend_object *obj, const char *name, int name_len
                                 zval *value) {
   zend_get_std_object_handlers()->write_property(
       obj, zend_string_init(name, name_len, 0), value, NULL);
+}
+int vphp_has_property_compat(zend_object *obj, const char *name, int name_len) {
+  return zend_get_std_object_handlers()->has_property(
+      obj, zend_string_init(name, name_len, 0), ZEND_PROPERTY_EXISTS, NULL);
+}
+int vphp_isset_property_compat(zend_object *obj, const char *name, int name_len) {
+  return zend_get_std_object_handlers()->has_property(
+      obj, zend_string_init(name, name_len, 0), ZEND_PROPERTY_ISSET, NULL);
+}
+void vphp_unset_property_compat(zend_object *obj, const char *name, int name_len) {
+  zend_get_std_object_handlers()->unset_property(
+      obj, zend_string_init(name, name_len, 0), NULL);
 }
 void vphp_write_property(zend_object *object, zend_string *member, zval *value,
                          void **cache_slot) {

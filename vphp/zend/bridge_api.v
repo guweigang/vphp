@@ -69,6 +69,9 @@ pub fn C.vphp_get_v_ptr_from_zval(zv &C.zval) voidptr
 pub fn C.vphp_zval_foreach(zv &C.zval, cb voidptr, ctx voidptr)
 pub fn C.vphp_read_property_compat(obj &C.zend_object, name &char, name_len int, rv &C.zval) &C.zval
 pub fn C.vphp_write_property_compat(obj &C.zend_object, name &char, name_len int, value &C.zval)
+pub fn C.vphp_has_property_compat(obj &C.zend_object, name &char, name_len int) int
+pub fn C.vphp_isset_property_compat(obj &C.zend_object, name &char, name_len int) int
+pub fn C.vphp_unset_property_compat(obj &C.zend_object, name &char, name_len int)
 pub fn C.vphp_update_property_string(obj &C.zval, name &char, name_len int, value &char)
 pub fn C.vphp_update_property_long(obj &C.zval, name &char, name_len int, value i64)
 pub fn C.vphp_add_property_double(obj &C.zval, name &char, val f64)
@@ -93,6 +96,7 @@ pub fn C.vphp_call_php_func(name &char, len int, retval &C.zval, p_count int, pa
 pub fn C.vphp_call_method(obj &C.zval, method &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 pub fn C.vphp_is_callable(callable &C.zval) int
 pub fn C.vphp_call_callable(callable &C.zval, retval &C.zval, p_count int, params &&C.zval) int
+pub fn C.vphp_new_instance(class_name &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 pub fn C.vphp_create_closure_FULL_AUTO_V2(z &C.zval, thunk voidptr, bridge voidptr)
 
 // ===== 9. 资源系统 =====

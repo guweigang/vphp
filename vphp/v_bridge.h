@@ -94,6 +94,9 @@ zval *vphp_read_property_compat(zend_object *obj, const char *name,
                                 int name_len, zval *rv);
 void vphp_write_property_compat(zend_object *obj, const char *name, int name_len,
                                 zval *value);
+int vphp_has_property_compat(zend_object *obj, const char *name, int name_len);
+int vphp_isset_property_compat(zend_object *obj, const char *name, int name_len);
+void vphp_unset_property_compat(zend_object *obj, const char *name, int name_len);
 
 // 状态获取
 char *VPHP_Z_STRVAL(zval *z);
@@ -128,6 +131,8 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs);
 int vphp_call_php_func(const char *name, int name_len, zval *retval,
                        int param_count, zval **params_ptrs);
+int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
+                      int param_count, zval **params_ptrs);
 
 // 数组与通用
 void vphp_return_array_start(zval *return_value);
