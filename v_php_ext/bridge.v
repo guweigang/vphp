@@ -413,6 +413,24 @@ fn vphp_wrap_v_analyze_user_object(ctx vphp.Context) {
     v_analyze_user_object(arg_0)
 }
 
+@[export: 'vphp_wrap_v_mutate_user_object']
+fn vphp_wrap_v_mutate_user_object(ctx vphp.Context) {
+    arg_0 := ctx
+    v_mutate_user_object(arg_0)
+}
+
+@[export: 'vphp_wrap_v_check_user_object_props']
+fn vphp_wrap_v_check_user_object_props(ctx vphp.Context) {
+    arg_0 := ctx
+    v_check_user_object_props(arg_0)
+}
+
+@[export: 'vphp_wrap_v_construct_php_object']
+fn vphp_wrap_v_construct_php_object(ctx vphp.Context) {
+    arg_0 := ctx
+    v_construct_php_object(arg_0)
+}
+
 @[export: 'vphp_wrap_v_trigger_user_action']
 fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
     arg_0 := ctx
