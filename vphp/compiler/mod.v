@@ -4,13 +4,7 @@ module compiler
 import v.ast
 import v.pref
 import v.parser
-
-// 核心 Repr 接口
-pub interface PhpRepr {
-mut:
-    // 匹配并解析：告诉编译器这个 AST 语句是否归你管，如果是，请自行提取数据
-	parse(stmt ast.Stmt, table &ast.Table) bool
-}
+import compiler.repr
 
 pub struct Compiler {
 pub:
@@ -20,8 +14,8 @@ pub mut:
 	ext_version     string
 	ext_description string
 	ini_entries     map[string]string
-	globals_repr PhpGlobalsRepr
-	elements     []PhpRepr
+	globals_repr repr.PhpGlobalsRepr
+	elements     []repr.PhpRepr
 mut:
 	table       &ast.Table
 	pref_set    &pref.Preferences
@@ -60,7 +54,7 @@ pub fn (mut c Compiler) compile() !string {
 	// --- 第一阶段：扫描所有 Struct 定义 ---
 	for stmt in all_stmts {
 		if stmt is ast.InterfaceDecl {
-			mut iface := new_interface_repr()
+			mut iface := repr.new_interface_repr()
 			if iface.parse(stmt, c.table) {
 				c.elements << iface
 				continue
@@ -68,7 +62,7 @@ pub fn (mut c Compiler) compile() !string {
 		}
 
 		if stmt is ast.EnumDecl {
-			mut enum_repr := new_enum_repr()
+			mut enum_repr := repr.new_enum_repr()
 			if enum_repr.parse(stmt, c.table) {
 				if enum_repr.parse_err != '' {
 					return error(enum_repr.parse_err)
@@ -87,7 +81,7 @@ pub fn (mut c Compiler) compile() !string {
 			}
 
 			// B. 或者是普通类定义
-			mut cls := new_class_repr()
+			mut cls := repr.new_class_repr()
 			if cls.parse(stmt, c.table) {
 				// 记录该类在 elements 数组中的位置
 				c.class_index[cls.name] = c.elements.len
@@ -107,7 +101,7 @@ pub fn (mut c Compiler) compile() !string {
 				if receiver_type in c.class_index {
 					idx := c.class_index[receiver_type]
 					mut el := c.elements[idx]
-					if mut el is PhpClassRepr {
+					if mut el is repr.PhpClassRepr {
 						el.add_method(stmt, c.table)
                         c.elements[idx] = el // 重要：写回修改后的对象！
 					}
@@ -127,7 +121,7 @@ pub fn (mut c Compiler) compile() !string {
 					if class_name in c.class_index {
 						idx := c.class_index[class_name]
 						mut el := c.elements[idx]
-						if mut el is PhpClassRepr {
+						if mut el is repr.PhpClassRepr {
 							el.add_static_method(stmt, c.table, method_name)
 						}
 						continue
@@ -136,7 +130,7 @@ pub fn (mut c Compiler) compile() !string {
 			}
 
 			// 3. 否则，作为普通全局函数处理
-			mut func := new_func_repr()
+			mut func := repr.new_func_repr()
 			if func.parse(stmt, c.table) {
 				c.elements << func
 				continue
@@ -144,14 +138,14 @@ pub fn (mut c Compiler) compile() !string {
 		}
 
 		// 2. 尝试作为常量解析
-		mut con := new_const_repr()
+		mut con := repr.new_const_repr()
 		if con.parse(stmt, c.table) {
 			c.elements << con
 			continue
 		}
 
 		// 3. 任务识别逻辑
-		mut task := new_task_repr()
+		mut task := repr.new_task_repr()
 		if task.parse(stmt, c.table) {
 			c.elements << task
 			continue
@@ -161,11 +155,11 @@ pub fn (mut c Compiler) compile() !string {
 	// --- 第三阶段：绑定映射影子常量 & 静态属性 (Linking Phrase) ---
 	for i in 0 .. c.elements.len {
 		mut el := c.elements[i]
-		if mut el is PhpClassRepr {
+		if mut el is repr.PhpClassRepr {
 			// 1. 影子静态属性链接
 			if el.shadow_static_name != '' {
 				for s_el in c.elements {
-					if s_el is PhpConstRepr {
+					if s_el is repr.PhpConstRepr {
 						if s_el.name == el.shadow_static_name {
 							el.shadow_static_type = s_el.v_type
 							// 从 V 的类型表里把这个影子结构体拉出来
@@ -180,7 +174,7 @@ pub fn (mut c Compiler) compile() !string {
 								sym_info := sym.info
 								if sym_info is ast.Struct {
 									for field in sym_info.fields {
-										el.properties << PhpClassProp{
+										el.properties << repr.PhpClassProp{
 											name: field.name
 											v_type: c.table.get_type_name(field.typ)
 											visibility: 'public'
@@ -198,11 +192,11 @@ pub fn (mut c Compiler) compile() !string {
 			// 2. 影子常量链接
 			if el.shadow_const_name != '' {
 				for s_el in c.elements {
-					if s_el is PhpConstRepr {
+					if s_el is repr.PhpConstRepr {
 						if s_el.name == el.shadow_const_name {
 							el.shadow_const_type = s_el.v_type
 							for f_name, sub_con in s_el.fields {
-								el.constants << PhpClassConst{
+								el.constants << repr.PhpClassConst{
 									name: sub_con.name
 									v_field_name: f_name
 									value: sub_con.value

@@ -1,14 +1,15 @@
 module compiler
 
 import strings
+import compiler.repr
 
 pub struct VGenerator {
 pub:
     ext_name string
-    globals_repr PhpGlobalsRepr
+    globals_repr repr.PhpGlobalsRepr
 }
 
-fn (g VGenerator) generate(mut elements []PhpRepr) string {
+fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
     mut out := strings.new_builder(2048)
     out.write_string('module main\n\nimport vphp\n\n')
     out.write_string('#include "php_bridge.h"\n\n')
@@ -16,13 +17,13 @@ fn (g VGenerator) generate(mut elements []PhpRepr) string {
     mut task_registrations := []string{}
     // 生成每个 repr 的 V 胶水
     for mut el in elements {
-        if mut el is PhpFuncRepr {
+        if mut el is repr.PhpFuncRepr {
             out.write_string(g.gen_func_glue(el).join('\n') + '\n\n')
-        } else if mut el is PhpClassRepr {
+        } else if mut el is repr.PhpClassRepr {
             out.write_string(g.gen_class_glue(el).join('\n') + '\n\n')
-        } else if mut el is PhpTaskRepr {
+        } else if mut el is repr.PhpTaskRepr {
             task_registrations << g.gen_task_registration(el)
-        } else if mut el is PhpGlobalsRepr {
+        } else if mut el is repr.PhpGlobalsRepr {
             // Already handled by standalone logic above for now, but good to mark as handled
         }
     }
@@ -40,7 +41,7 @@ fn (g VGenerator) generate(mut elements []PhpRepr) string {
 }
 
 // ---- Func V Glue ----
-fn (g VGenerator) gen_func_glue(f &PhpFuncRepr) []string {
+fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
     mut out := []string{}
     
     // 基础包装器
@@ -79,7 +80,7 @@ fn (g VGenerator) gen_func_glue(f &PhpFuncRepr) []string {
 }
 
 // ---- Class V Glue ----
-fn (g VGenerator) gen_class_glue(r &PhpClassRepr) []string {
+fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     mut out := []string{}
     lower_name := r.name.to_lower()
 
@@ -240,7 +241,7 @@ fn is_v_keyword(name string) bool {
 }
 
 // ---- Task Auto-Registration Glue ----
-fn (g VGenerator) gen_task_registration(t &PhpTaskRepr) string {
+fn (g VGenerator) gen_task_registration(t &repr.PhpTaskRepr) string {
     mut out := []string{}
     
     out << "    vphp.ITask.register('${t.task_name}', fn (ctx vphp.Context) vphp.ITask {"

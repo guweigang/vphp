@@ -1,6 +1,7 @@
 module compiler
 
 import strings
+import compiler.repr
 
 // INI 配置项
 pub struct IniEntry {
@@ -19,7 +20,7 @@ pub mut:
 	functions     []FuncBuilder
 	minit_content []string // 注入到 MINIT 中的代码行
 	ini_entries   []IniEntry
-	globals       PhpGlobalsRepr
+	globals       repr.PhpGlobalsRepr
 }
 
 pub fn new_module_builder(ext_name string, version string, description string) &ModuleBuilder {

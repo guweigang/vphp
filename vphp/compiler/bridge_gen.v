@@ -2,15 +2,16 @@ module compiler
 
 import os
 import strings
+import compiler.repr
 
 fn (c Compiler) collect_non_type_fragments() ExportFragments {
 	mut fragments := ExportFragments{}
 	c_gen := CGenerator{ ext_name: c.ext_name }
 
 	for el in c.elements {
-		if el is PhpFuncRepr {
+		if el is repr.PhpFuncRepr {
 			fragments.merge(c_gen.build_func_export(el))
-		} else if el is PhpConstRepr {
+		} else if el is repr.PhpConstRepr {
 			if el.has_php_const && el.const_type != 'struct' {
 				fragments.merge(c_gen.build_global_constant(el).export_fragments())
 			}
@@ -25,15 +26,15 @@ fn (c Compiler) collect_type_fragments() ExportFragments {
 	c_gen := CGenerator{ ext_name: c.ext_name }
 
 	for el in c.elements {
-		if el is PhpInterfaceRepr {
+		if el is repr.PhpInterfaceRepr {
 			fragments.merge(c_gen.build_interface_export(el))
 		}
 	}
 
 	for el in c.elements {
-		if el is PhpClassRepr {
+		if el is repr.PhpClassRepr {
 			fragments.merge(c_gen.build_class_export(el))
-		} else if el is PhpEnumRepr {
+		} else if el is repr.PhpEnumRepr {
 			fragments.merge(c_gen.build_enum_export(el))
 		}
 	}
