@@ -29,12 +29,13 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 			cls.shadow_static_name = attr.arg
 		} else if attr.name == 'php_abstract' {
 			cls.is_abstract = true
-		} else if attr.name == 'php_implements' && attr.arg != '' {
-			for name in attr.arg.split(',') {
-				trimmed := name.trim_space()
-				if trimmed != '' {
-					cls.implements << trimmed
-				}
+		}
+	}
+	if struct_decl.is_implements {
+		for iface in struct_decl.implements_types {
+			name := strip_module(table.get_type_name(iface.typ))
+			if name != '' {
+				cls.implements_v << name
 			}
 		}
 	}

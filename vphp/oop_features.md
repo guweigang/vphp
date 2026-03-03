@@ -14,7 +14,7 @@ Current first-class OOP export features:
 - `@[php_interface]`
 - `@[php_abstract]`
 - `@[php_extends: 'ParentClass']`
-- `@[php_implements: 'IfaceA,IfaceB']`
+- V `implements`
 
 ## `@[php_class]`
 
@@ -223,12 +223,11 @@ interface ContentContract {
 }
 ```
 
-Then explicitly bind it to a class:
+Then explicitly bind it to a class with V's own `implements` syntax:
 
 ```v
 @[php_class]
-@[php_implements: 'ContentContract']
-struct Article {}
+struct Article implements ContentContract {}
 ```
 
 PHP behavior:
@@ -240,8 +239,8 @@ PHP behavior:
 
 Current limitation:
 
-- implementation is explicit via `@[php_implements: ...]`
-- automatic inference from V interface implementation is not done yet
+- implementation is explicit via V's `implements`
+- implicit structural satisfaction is not auto-exported as PHP `implements`
 - method signature validation is currently soft; Zend-side relationship is established, but compile-time semantic validation can still be improved
 
 ## `@[php_abstract]`
@@ -320,6 +319,6 @@ These parts are functional but still a little awkward:
 ## Recommended Next Improvements
 
 1. replace comment-based static field marking with a cleaner syntax
-2. add signature validation for `@[php_implements]`
+2. add signature validation for explicit V `implements`
 3. decide whether `@[php_enum]` should evolve into native PHP enum support
 4. document sum type / Result / Option mapping before implementation

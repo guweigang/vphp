@@ -75,9 +75,13 @@ Fields:
   - Whether the class should be emitted as abstract
   - Consumed by the builder/emitter layer to set Zend flags
 
+- `implements_v`
+  - Explicit V-side `implements` declarations as parsed from the struct
+  - This preserves the V-side source-of-truth relationship
+
 - `implements`
-  - Explicit PHP interfaces to attach to the class
-  - This is the nominal PHP-side relationship list
+  - Resolved PHP-visible interface names after linker reconciliation
+  - This is the nominal PHP-side relationship list used by emission
 
 - `shadow_const_name`
   - Name of the V-side shadow constant binding

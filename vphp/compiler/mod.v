@@ -150,6 +150,7 @@ pub fn (mut c Compiler) compile() !string {
 	}
 
 	linker.link_class_shadows(mut c.elements, c.table)
+	linker.link_class_interfaces(mut c.elements)!
 
 	return c.ext_name
 }

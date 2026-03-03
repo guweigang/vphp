@@ -333,7 +333,7 @@ Change:
 
 Examples:
 
-- auto `implements` inference
+- explicit V `implements` to PHP interface linking
 - trait flattening/linking
 - parent/child metadata reconciliation
 
@@ -370,7 +370,7 @@ These are known areas that can still improve:
 1. `export.v` still knows a fair amount about fragment grouping
 2. `c_emitter.v` still contains large template-heavy logic
 3. `v_glue.v` still mixes object glue, task glue, and function glue in one file
-4. shadow-linking is isolated now, but future auto-inference may want more linker files
+4. shadow-linking is isolated now, and future relationship passes may continue to grow `linker/`
 
 ## Recommended Near-Term Next Steps
 
@@ -379,7 +379,7 @@ These are known areas that can still improve:
    - function glue
    - class glue
    - task glue
-3. Consider a second linker file once auto-implements inference is introduced
+3. Continue splitting linker responsibilities by relationship type when new passes are added
 4. Keep resisting the urge to move `export/c_emitter/v_glue` into a `gen/` submodule until their boundaries are even more stable
 
 ## Summary

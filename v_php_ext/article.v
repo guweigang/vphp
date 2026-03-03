@@ -65,10 +65,9 @@ const article_statics = ArticleStatics{}
 @[heap]
 @[php_class]
 @[php_extends: Post]
-@[php_implements: ContentContract]
 @[php_const: article_consts]
 @[php_static: article_statics]
-struct Article {
+struct Article implements ContentContract {
 	Post
 pub:
     created_at    int   //  public readonly
