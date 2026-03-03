@@ -19,49 +19,52 @@ pub fn (v ZVal) is_valid() bool {
 
 // ======== 类型判断 ========
 
-pub fn (v ZVal) type_id() int {
+pub fn (v ZVal) type_raw() int {
 	return C.vphp_get_type(v.raw)
 }
 
+pub fn (v ZVal) type_id() PHPType {
+	return php_type_from_id(v.type_raw())
+}
+
 pub fn (v ZVal) is_undef() bool {
-	return v.type_id() == int(PHPType.undef)
+	return v.type_id() == .undef
 }
 
 pub fn (v ZVal) is_null() bool {
-	return v.type_id() == int(PHPType.null)
+	return v.type_id() == .null
 }
 
 pub fn (v ZVal) is_bool() bool {
-	tid := v.type_id()
-	return tid == int(PHPType.false_) || tid == int(PHPType.true_)
+	return v.type_id().is_bool()
 }
 
 pub fn (v ZVal) is_long() bool {
-	return v.type_id() == int(PHPType.long)
+	return v.type_id() == .long
 }
 
 pub fn (v ZVal) is_double() bool {
-	return v.type_id() == int(PHPType.double)
+	return v.type_id() == .double
 }
 
 pub fn (v ZVal) is_numeric() bool {
-	return v.is_long() || v.is_double()
+	return v.type_id().is_numeric()
 }
 
 pub fn (v ZVal) is_string() bool {
-	return v.type_id() == int(PHPType.string)
+	return v.type_id() == .string
 }
 
 pub fn (v ZVal) is_array() bool {
-	return v.type_id() == int(PHPType.array)
+	return v.type_id() == .array
 }
 
 pub fn (v ZVal) is_object() bool {
-	return v.type_id() == int(PHPType.object)
+	return v.type_id() == .object
 }
 
 pub fn (v ZVal) is_resource() bool {
-	return v.type_id() == int(PHPType.resource)
+	return v.type_id() == .resource
 }
 
 pub fn (v ZVal) is_callable() bool {
@@ -69,27 +72,14 @@ pub fn (v ZVal) is_callable() bool {
 }
 
 pub fn (v ZVal) type_name() string {
-	tid := v.type_id()
-	return match tid {
-		int(PHPType.undef) { 'undefined' }
-		int(PHPType.null) { 'null' }
-		int(PHPType.false_) { 'boolean' }
-		int(PHPType.true_) { 'boolean' }
-		int(PHPType.long) { 'integer' }
-		int(PHPType.double) { 'float' }
-		int(PHPType.string) { 'string' }
-		int(PHPType.array) { 'array' }
-		int(PHPType.object) { 'object' }
-		int(PHPType.resource) { 'resource' }
-		else { 'unknown' }
-	}
+	return v.type_id().name()
 }
 
 // ======== 读取 — 标量类型 ========
 
 // bool
 pub fn (v ZVal) to_bool() bool {
-	return v.type_id() == int(PHPType.true_)
+	return v.type_id() == .true_
 }
 
 pub fn (v ZVal) get_bool() bool {

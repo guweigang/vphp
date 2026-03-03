@@ -150,7 +150,7 @@ pub fn (a &Article) process_with_callback(callback vphp.ZVal) bool {
     if res.raw == 0 {
         return false
     }
-    return res.type_id() == int(vphp.PHPType.true_) || (res.is_numeric() && res.to_int() != 0)
+    return res.type_id() == .true_ || (res.is_numeric() && res.to_int() != 0)
 }
 
 @[php_method]
