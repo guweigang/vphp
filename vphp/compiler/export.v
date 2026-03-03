@@ -7,14 +7,14 @@ import compiler.repr
 
 fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 	mut fragments := builder.ExportFragments{}
-	c_gen := CGenerator{ ext_name: c.ext_name }
+	c_emitter := CGenerator{ ext_name: c.ext_name }
 
 	for el in c.elements {
 		if el is repr.PhpFuncRepr {
-			fragments.merge(c_gen.build_func_export(el))
+			fragments.merge(c_emitter.build_func_export(el))
 		} else if el is repr.PhpConstRepr {
 			if el.has_php_const && el.const_type != 'struct' {
-				fragments.merge(c_gen.build_global_constant(el).export_fragments())
+				fragments.merge(c_emitter.build_global_constant(el).export_fragments())
 			}
 		}
 	}
@@ -24,19 +24,19 @@ fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 
 fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	mut fragments := builder.ExportFragments{}
-	c_gen := CGenerator{ ext_name: c.ext_name }
+	c_emitter := CGenerator{ ext_name: c.ext_name }
 
 	for el in c.elements {
 		if el is repr.PhpInterfaceRepr {
-			fragments.merge(c_gen.build_interface_export(el))
+			fragments.merge(c_emitter.build_interface_export(el))
 		}
 	}
 
 	for el in c.elements {
 		if el is repr.PhpClassRepr {
-			fragments.merge(c_gen.build_class_export(el))
+			fragments.merge(c_emitter.build_class_export(el))
 		} else if el is repr.PhpEnumRepr {
-			fragments.merge(c_gen.build_enum_export(el))
+			fragments.merge(c_emitter.build_enum_export(el))
 		}
 	}
 
@@ -112,8 +112,8 @@ fn (mut c Compiler) generate_c() ! {
 // 3. 生成 V 胶水代码 (_task_glue.v)
 // ==========================================
 fn (mut c Compiler) generate_v_glue() ! {
-    v_gen := VGenerator{ ext_name: c.ext_name, globals_repr: c.globals_repr }
-    v_code := v_gen.generate(mut c.elements)
+    v_glue := VGenerator{ ext_name: c.ext_name, globals_repr: c.globals_repr }
+    v_code := v_glue.generate(mut c.elements)
     os.write_file('bridge.v', v_code)!
 }
 
