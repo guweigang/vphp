@@ -27,6 +27,7 @@ PHP_FUNCTION(v_call_php_static_method);
 PHP_FUNCTION(v_mutate_php_static_prop);
 PHP_FUNCTION(v_read_php_class_constant);
 PHP_FUNCTION(v_typed_php_interop);
+PHP_FUNCTION(v_typed_object_restore);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
 PHP_FUNCTION(v_test_globals);

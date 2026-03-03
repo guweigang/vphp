@@ -455,6 +455,12 @@ fn vphp_wrap_v_typed_php_interop(ctx vphp.Context) {
     v_typed_php_interop(arg_0)
 }
 
+@[export: 'vphp_wrap_v_typed_object_restore']
+fn vphp_wrap_v_typed_object_restore(ctx vphp.Context) {
+    arg_0 := ctx
+    v_typed_object_restore(arg_0)
+}
+
 @[export: 'vphp_wrap_v_trigger_user_action']
 fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
     arg_0 := ctx

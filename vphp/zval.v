@@ -559,16 +559,36 @@ pub fn (v ZVal) call_v[T](args []ZVal) !T {
 	return v.call(args).to_v[T]()
 }
 
+pub fn (v ZVal) call_object[T](args []ZVal) ?&T {
+	return v.call(args).to_object[T]()
+}
+
 pub fn (v ZVal) method_v[T](method string, args []ZVal) !T {
 	return v.method(method, args).to_v[T]()
+}
+
+pub fn (v ZVal) method_object[T](method string, args []ZVal) ?&T {
+	return v.method(method, args).to_object[T]()
 }
 
 pub fn (v ZVal) prop_v[T](name string) !T {
 	return v.prop(name).to_v[T]()
 }
 
+pub fn (v ZVal) prop_object[T](name string) ?&T {
+	return v.prop(name).to_object[T]()
+}
+
+pub fn (v ZVal) construct_object[T](args []ZVal) ?&T {
+	return v.construct(args).to_object[T]()
+}
+
 pub fn (v ZVal) static_prop_v[T](name string) !T {
 	return v.static_prop(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_method_object[T](method string, args []ZVal) ?&T {
+	return v.static_method(method, args).to_object[T]()
 }
 
 pub fn (v ZVal) constant_v[T](name string) !T {

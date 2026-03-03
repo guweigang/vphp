@@ -127,6 +127,13 @@ PHP_FUNCTION(v_typed_php_interop) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_typed_php_interop(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_typed_object_restore, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_typed_object_restore(vphp_context_internal ctx);
+PHP_FUNCTION(v_typed_object_restore) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_typed_object_restore(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_trigger_user_action, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_trigger_user_action(vphp_context_internal ctx);
@@ -630,6 +637,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_mutate_php_static_prop, arginfo_v_mutate_php_static_prop)
     PHP_FE(v_read_php_class_constant, arginfo_v_read_php_class_constant)
     PHP_FE(v_typed_php_interop, arginfo_v_typed_php_interop)
+    PHP_FE(v_typed_object_restore, arginfo_v_typed_object_restore)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
     PHP_FE(v_test_globals, arginfo_v_test_globals)

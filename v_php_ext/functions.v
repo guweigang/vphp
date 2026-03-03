@@ -233,6 +233,26 @@ fn v_typed_php_interop(ctx vphp.Context) {
 	ctx.return_string('typed=${length}:${name}:${score}:${count}:${label}')
 }
 
+@[export: 'v_typed_object_restore']
+fn v_typed_object_restore(ctx vphp.Context) {
+	mut author := vphp.php_class('Author').static_method_object[Author]('create', [
+		vphp.ZVal.new_string('Typed Author'),
+	]) or {
+		vphp.throw_exception('恢复 Author 对象失败', 0)
+		return
+	}
+
+	mut article := vphp.php_class('Article').construct_object[Article]([
+		vphp.ZVal.new_string('Typed Article'),
+		vphp.ZVal.new_int(77),
+	]) or {
+		vphp.throw_exception('构造 Article 对象失败', 0)
+		return
+	}
+
+	ctx.return_string('objects=${author.name}:${article.id}:${article.title}:${article.is_top}')
+}
+
 @[export: 'v_trigger_user_action']
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
