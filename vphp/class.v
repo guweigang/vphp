@@ -80,7 +80,6 @@ pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 // 连体分配器声明
 fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
 fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
-fn C.vphp_return_obj(return_val voidptr, v_ptr voidptr, ce voidptr)
 
 // 泛型堆分配器 (传统分配，将来会被劫持)
 pub fn generic_new_raw[T]() voidptr {

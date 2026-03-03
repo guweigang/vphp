@@ -14,13 +14,6 @@ pub:
 	ini_entries map[string]string
 }
 
-// ==========================================
-// 1. Zend Globals 核心访问
-// ==========================================
-
-fn C.vphp_init_registry()
-fn C.vphp_get_active_globals() voidptr
-
 pub fn get_globals[T]() &T {
     return unsafe { &T(C.vphp_get_active_globals()) }
 }

@@ -312,36 +312,4 @@ pub fn (ctx Context) wrap_closure[T](v_cb T) {
 }
 
 // ======== 类与静态属性支持 ========
-
-// ======== C 声明 ========
-
-fn C.vphp_get_num_args(ex voidptr) u32
-fn C.vphp_get_arg_ptr(ex voidptr, i u32) voidptr
-fn C.vphp_has_exception() bool
-fn C.vphp_get_int(z voidptr) i64
-fn C.vphp_get_double(z voidptr) f64
-fn C.vphp_get_string_ptr(z voidptr, len &int) &char
-fn C.vphp_set_bool(z voidptr, val bool)
-fn C.vphp_set_null(z voidptr)
-fn C.vphp_set_double(z voidptr, val f64)
-fn C.vphp_array_count(z voidptr) int
-fn C.vphp_array_get_index(z voidptr, i u32) voidptr
-fn C.vphp_new_zval() voidptr
-fn C.vphp_array_add_next_zval(main_array voidptr, sub_item voidptr)
-fn C.vphp_object_init(z voidptr)
-fn C.vphp_update_property_string(z voidptr, name &char, name_len int, val &char)
-fn C.vphp_make_res(z voidptr, p voidptr, l &char)
-fn C.vphp_return_obj(z voidptr, v voidptr, ce voidptr)
-fn C.vphp_get_active_ce(ex voidptr) voidptr
-fn C.vphp_update_static_property_long(ce voidptr, n &char, nl int, v i64)
-fn C.vphp_update_static_property_string(ce voidptr, n &char, nl int, v &char, vl int)
-fn C.vphp_update_static_property_bool(ce voidptr, n &char, nl int, v int)
-fn C.vphp_get_static_property_long(ce voidptr, n &char, nl int) i64
-fn C.vphp_get_static_property_string(ce voidptr, n &char, nl int) &char
-fn C.vphp_get_static_property_bool(ce voidptr, n &char, nl int) int
-fn C.vphp_create_closure_FULL_AUTO_V2(z voidptr, thunk voidptr, bridge voidptr)
-fn C.vphp_get_obj_from_zval(z voidptr) voidptr
-fn C.vphp_obj_from_obj(obj voidptr) voidptr
 fn C.malloc(size usize) voidptr
-
-#include "v_bridge.h"
