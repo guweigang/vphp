@@ -58,12 +58,12 @@ pub fn dailyreport_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.
 pub fn dailyreport_sync_props(ptr voidptr, zv &C.zval) {
     vphp.generic_sync_props[DailyReport](ptr, zv)
 }
-@[export: 'vphp_wrap_DailyReport_init']
-pub fn vphp_wrap_dailyreport_init(ptr voidptr, ctx vphp.Context) voidptr {
+@[export: 'vphp_wrap_DailyReport_construct']
+pub fn vphp_wrap_dailyreport_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &DailyReport(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
-    res := recv.init(arg_0, arg_1)
+    res := recv.construct(arg_0, arg_1)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_DailyReport_summarize']
@@ -191,13 +191,13 @@ pub fn Article.sync_statics_from_php(ctx vphp.Context) {
     mut s := Article.statics()
     s.total_count = vphp.get_static_prop[int](ce, "total_count")
 }
-@[export: 'vphp_wrap_Article_init']
-pub fn vphp_wrap_article_init(ptr voidptr, ctx vphp.Context) voidptr {
+@[export: 'vphp_wrap_Article_construct']
+pub fn vphp_wrap_article_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &Article(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[int](1)
     Article.sync_statics_from_php(ctx)
-    res := recv.init(arg_0, arg_1)
+    res := recv.construct(arg_0, arg_1)
     Article.sync_statics_to_php(ctx)
     return voidptr(res)
 }

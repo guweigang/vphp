@@ -29,7 +29,7 @@ pub mut:
 }
 
 @[php_method]
-pub fn (mut r DailyReport) init(title string, summary string) &DailyReport {
+pub fn (mut r DailyReport) construct(title string, summary string) &DailyReport {
 	r.title = title
 	r.summary = summary
 	return r

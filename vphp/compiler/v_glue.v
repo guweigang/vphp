@@ -151,7 +151,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 
         out << "@[export: 'vphp_wrap_${r.name}_${m.name}']"
         
-        is_factory := m.name == 'init' || (m.is_static && m.return_type.ends_with(r.name))
+        is_factory := (m.name == 'construct' || m.name == 'init') || (m.is_static && m.return_type.ends_with(r.name))
         returns_object := is_factory || m.return_type.starts_with('&')
         ret_decl := if returns_object { "voidptr" } else { "" }
         

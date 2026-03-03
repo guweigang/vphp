@@ -250,7 +250,7 @@ static const zend_function_entry abstractreport_methods[] = {
 };
 
 zend_class_entry *dailyreport_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_init, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_summarize, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -263,9 +263,9 @@ PHP_METHOD(DailyReport, __construct) {
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
     vphp_bind_handlers(Z_OBJ_P(getThis()), h);
-    extern void vphp_wrap_DailyReport_init(void* v_ptr, vphp_context_internal ctx);
+    extern void vphp_wrap_DailyReport_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
-    vphp_wrap_DailyReport_init(v_ptr, ctx);
+    vphp_wrap_DailyReport_construct(v_ptr, ctx);
 }
 PHP_METHOD(DailyReport, summarize) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -276,7 +276,7 @@ PHP_METHOD(DailyReport, summarize) {
     vphp_wrap_DailyReport_summarize(wrapper->v_ptr, ctx);
 }
 static const zend_function_entry dailyreport_methods[] = {
-    PHP_ME(DailyReport, __construct, arginfo_dailyreport_init, ZEND_ACC_PUBLIC)
+    PHP_ME(DailyReport, __construct, arginfo_dailyreport_construct, ZEND_ACC_PUBLIC)
     PHP_ME(DailyReport, summarize, arginfo_dailyreport_summarize, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
@@ -377,7 +377,7 @@ static const zend_function_entry post_methods[] = {
 };
 
 zend_class_entry *article_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_init, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_internal_format, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -402,9 +402,9 @@ PHP_METHOD(Article, __construct) {
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
     vphp_bind_handlers(Z_OBJ_P(getThis()), h);
-    extern void vphp_wrap_Article_init(void* v_ptr, vphp_context_internal ctx);
+    extern void vphp_wrap_Article_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
-    vphp_wrap_Article_init(v_ptr, ctx);
+    vphp_wrap_Article_construct(v_ptr, ctx);
 }
 PHP_METHOD(Article, internal_format) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -469,7 +469,7 @@ PHP_METHOD(Article, restore_author) {
     }
 }
 static const zend_function_entry article_methods[] = {
-    PHP_ME(Article, __construct, arginfo_article_init, ZEND_ACC_PUBLIC)
+    PHP_ME(Article, __construct, arginfo_article_construct, ZEND_ACC_PUBLIC)
     PHP_ME(Article, internal_format, arginfo_article_internal_format, ZEND_ACC_PROTECTED)
     PHP_ME(Article, create, arginfo_article_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(Article, get_formatted_title, arginfo_article_get_formatted_title, ZEND_ACC_PUBLIC)

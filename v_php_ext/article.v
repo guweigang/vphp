@@ -81,7 +81,7 @@ mut:
 }
 
 @[php_method]
-pub fn (mut a Article) init(title string, id int) &Article {
+pub fn (mut a Article) construct(title string, id int) &Article {
     a.title = title.clone()
     a.id = id
     a.is_top = true

@@ -8,6 +8,10 @@ pub:
 	ext_name string
 }
 
+fn is_constructor_method(name string) bool {
+	return name == 'construct' || name == 'init'
+}
+
 fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 	return *builder.new_func_builder(f.name, f.name)
 }
@@ -35,7 +39,7 @@ fn (g CGenerator) build_enum_export(r &repr.PhpEnumRepr) builder.ExportFragments
 }
 
 fn (g CGenerator) build_class_export(r &repr.PhpClassRepr) builder.ExportFragments {
-	has_init := r.methods.any(it.name == 'init')
+	has_init := r.methods.any(is_constructor_method(it.name))
 	mut fragments := g.build_class_type(r, has_init).export_fragments()
 	fragments.implementations = g.gen_class_c(r)
 	return fragments
@@ -95,7 +99,7 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC')
 	}
 	for m in r.methods {
-		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
+		php_method_name := if is_constructor_method(m.name) { '__construct' } else { m.name }
 		mut flags := visibility_to_method_flags(m.visibility)
 		if m.is_static {
 			flags += ' | ZEND_ACC_STATIC'
@@ -294,7 +298,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	mut c := []string{}
 	c_class := r.c_name()        // C macro safe: VPhp_Task
 	lower_name := c_class.to_lower()
-	has_init := r.methods.any(it.name == 'init')
+	has_init := r.methods.any(is_constructor_method(it.name))
 	class_builder := g.build_class_type(r, has_init)
 
 	c << class_builder.render_impl_prelude()
@@ -304,7 +308,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		if m.is_abstract {
 			continue
 		}
-		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
+		php_method_name := if is_constructor_method(m.name) { '__construct' } else { m.name }
 		
 		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
 		
@@ -319,7 +323,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 			'PHP_RETURN':  tm.php_return
 		}
 
-		if m.name == 'init' {
+		if is_constructor_method(m.name) {
 			c << render_tpl(tpl_construct, vars)
 		} else if m.is_static {
 			if m.has_export && tm.c_type == 'void*' {

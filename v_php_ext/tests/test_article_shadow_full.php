@@ -20,7 +20,7 @@ $a1 = new Article("First Post", 1);
 $a2 = new Article("Second Post", 2);
 $a3 = new Article("Third Post", 3);
 
-// 此时 V 的 init() 会运行 3 次
+// 此时 V 的 construct() 会运行 3 次
 echo "Current Article::\$total_count = " . Article::$total_count . "\n";
 assert(Article::$total_count === 3);
 echo "✅ State synchronized from V to PHP!\n\n";
