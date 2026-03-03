@@ -12,6 +12,12 @@ fn (g CGenerator) build_func(f &PhpFuncRepr) FuncBuilder {
 	}
 }
 
+fn (g CGenerator) build_func_export(f &PhpFuncRepr) ExportFragments {
+	mut fragments := g.build_func(f).export_fragments()
+	fragments.implementations = g.gen_func_c(f)
+	return fragments
+}
+
 fn (g CGenerator) build_global_constant(c &PhpConstRepr) GlobalConstantBuilder {
 	return new_global_constant_builder(c.name, c.const_type, c.value)
 }
@@ -222,16 +228,6 @@ PHP_METHOD({{CLASS}}, __construct) {
     vphp_bind_handlers(Z_OBJ_P(getThis()), h);
 }
 '
-
-pub fn (g CGenerator) gen_c_code(mut elements []PhpRepr) []string {
-    mut res := []string{}
-    for mut el in elements {
-        if mut el is PhpFuncRepr {
-            res << g.gen_func_c(el)
-        }
-    }
-    return res
-}
 
 fn (g CGenerator) gen_interface_c(r &PhpInterfaceRepr) []string {
 	mut c := []string{}

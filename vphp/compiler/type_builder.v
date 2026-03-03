@@ -6,44 +6,40 @@ pub enum PHPTypeKind {
 	enum_
 }
 
-// 定义类属性信息
 pub struct ClassProperty {
 pub:
 	name  string
-	type_ string // string, long, double, bool, null
-	flags string // ZEND_ACC_PUBLIC | ZEND_ACC_PROTECTED ...
+	type_ string
+	flags string
 }
 
-// 定义类常量信息
 pub struct ClassConstant {
 pub:
 	name  string
-	type_ string // string, long, double, bool
-	value string // C 代码字面量表达 (如 "1.0" 或 "true")
+	type_ string
+	value string
 }
 
-// 定义类方法信息
 pub struct ClassMethod {
 pub:
-	php_name string
-	c_func   string // 包装在 C 的函数名称
-	flags    string // ZEND_ACC_PUBLIC | ZEND_ACC_STATIC ...
+	php_name    string
+	c_func      string
+	flags       string
 	is_abstract bool
 }
 
-// 核心构建器：统一承载 class / interface / enum 的注册描述
 pub struct PHPTypeBuilder {
 pub mut:
-	kind       PHPTypeKind = .class_
-	php_name   string // PHP命名空间类名, 例如 "VPhp\\Task"
-	c_name     string // 转换为 C 的名字, 例如 "VPhp_Task"
-	parent     string // 父类名称, 默认为空
+	kind          PHPTypeKind = .class_
+	php_name      string
+	c_name        string
+	parent        string
 	create_object bool = true
-	class_flags []string
-	interfaces []string
-	properties []ClassProperty
-	constants  []ClassConstant
-	methods    []ClassMethod
+	class_flags   []string
+	interfaces    []string
+	properties    []ClassProperty
+	constants     []ClassConstant
+	methods       []ClassMethod
 }
 
 pub fn new_php_type_builder(kind PHPTypeKind, php_name string, c_name string) &PHPTypeBuilder {
@@ -149,16 +145,10 @@ pub fn (b &PHPTypeBuilder) render_arginfo_defs() string {
 	return res.join('\n')
 }
 
-// ---------------------------------------------------------------------
-// 渲染层代码
-// ---------------------------------------------------------------------
-
-// 渲染方法的 C 数组定义 (zend_function_entry)
 pub fn (b &PHPTypeBuilder) render_methods_array() string {
 	mut res := []string{}
 	lower_name := b.c_name.to_lower()
 	res << 'static const zend_function_entry ${lower_name}_methods[] = {'
-	
 	for m in b.methods {
 		if m.is_abstract {
 			res << '    ZEND_RAW_FENTRY("${m.php_name}", NULL, arginfo_${m.c_func}, ${m.flags}, NULL, NULL)'
@@ -166,12 +156,10 @@ pub fn (b &PHPTypeBuilder) render_methods_array() string {
 			res << '    PHP_ME(${b.c_name}, ${m.php_name}, arginfo_${m.c_func}, ${m.flags})'
 		}
 	}
-	
 	res << '    PHP_FE_END\n};\n'
 	return res.join('\n')
 }
 
-// 渲染 PHP_MINIT 中的类注册过程
 pub fn (b &PHPTypeBuilder) render_minit() string {
 	mut res := []string{}
 	lower_name := b.c_name.to_lower()
@@ -197,11 +185,9 @@ pub fn (b &PHPTypeBuilder) render_minit() string {
 	if b.class_flags.len > 0 {
 		res << '        ${ce_ptr}->ce_flags |= ${b.class_flags.join(' | ')};'
 	}
-
 	if b.create_object {
 		res << '        ${ce_ptr}->create_object = vphp_create_object_handler;'
 	}
-
 	if b.interfaces.len > 0 {
 		mut args := []string{}
 		for iface in b.interfaces {
@@ -211,7 +197,6 @@ pub fn (b &PHPTypeBuilder) render_minit() string {
 	}
 
 	if b.kind != .interface_ {
-		// 2. 渲染常量
 		for con in b.constants {
 			match con.type_ {
 				'string' {
@@ -229,8 +214,6 @@ pub fn (b &PHPTypeBuilder) render_minit() string {
 				else {}
 			}
 		}
-
-		// 3. 渲染属性
 		for prop in b.properties {
 			match prop.type_ {
 				'long', 'int' {
@@ -260,99 +243,5 @@ pub fn (b PHPTypeBuilder) export_fragments() ExportFragments {
 	return ExportFragments{
 		declarations: [b.render_ce_extern_declaration()]
 		minit_lines: [b.render_minit()]
-	}
-}
-
-// ---------------------------------------------------------------------
-// 函数 (Global Functions) 构建器
-// ---------------------------------------------------------------------
-
-pub struct FuncBuilder {
-pub mut:
-	php_name string
-	c_func   string
-}
-
-pub struct ExportFragments {
-pub mut:
-	declarations    []string
-	implementations []string
-	minit_lines     []string
-	function_table  []FuncBuilder
-}
-
-pub fn (mut f ExportFragments) merge(other ExportFragments) {
-	f.declarations << other.declarations
-	f.implementations << other.implementations
-	f.minit_lines << other.minit_lines
-	f.function_table << other.function_table
-}
-
-pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {
-	return &FuncBuilder{
-		php_name: php_name
-		c_func: c_func
-	}
-}
-
-// 生成 PHP_FE 宏
-pub fn (b &FuncBuilder) render_fe() string {
-	return '    PHP_FE(${b.php_name}, arginfo_${b.c_func})'
-}
-
-pub fn (b &FuncBuilder) render_declaration() string {
-	return 'PHP_FUNCTION(${b.php_name});'
-}
-
-pub fn (b &FuncBuilder) render_arginfo() string {
-	return 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${b.c_func}, 0, 0, 0)\nZEND_END_ARG_INFO()'
-}
-
-pub fn (b FuncBuilder) export_fragments() ExportFragments {
-	return ExportFragments{
-		declarations: [b.render_declaration()]
-		function_table: [b]
-	}
-}
-
-// ---------------------------------------------------------------------
-// 常量 (Global Constants) 渲染器
-// ---------------------------------------------------------------------
-
-pub struct GlobalConstantBuilder {
-pub:
-	name  string
-	type_ string
-	value string
-}
-
-pub fn new_global_constant_builder(name string, type_ string, value string) GlobalConstantBuilder {
-	return GlobalConstantBuilder{
-		name: name
-		type_: type_
-		value: value
-	}
-}
-
-pub fn (b GlobalConstantBuilder) render_register() string {
-	match b.type_ {
-		'string' {
-			return '    REGISTER_STRING_CONSTANT("${b.name}", "${b.value}", CONST_CS | CONST_PERSISTENT);'
-		}
-		'double', 'f64' {
-			return '    REGISTER_DOUBLE_CONSTANT("${b.name}", ${b.value}, CONST_CS | CONST_PERSISTENT);'
-		}
-		'bool' {
-			return '    REGISTER_BOOL_CONSTANT("${b.name}", ${b.value}, CONST_CS | CONST_PERSISTENT);'
-		}
-		else {
-			return '    REGISTER_LONG_CONSTANT("${b.name}", ${b.value}, CONST_CS | CONST_PERSISTENT);'
-		}
-	}
-}
-
-pub fn (b GlobalConstantBuilder) export_fragments() ExportFragments {
-	return ExportFragments{
-		minit_lines: [b.render_register()]
 	}
 }
