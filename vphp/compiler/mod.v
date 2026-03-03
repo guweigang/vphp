@@ -101,7 +101,7 @@ pub fn (mut c Compiler) compile() !string {
 					idx := c.class_index[receiver_type]
 					mut el := c.elements[idx]
 					if mut el is repr.PhpClassRepr {
-						el.add_method(stmt, c.table)
+						cparser.add_class_method(mut el, stmt, c.table)
                         c.elements[idx] = el // 重要：写回修改后的对象！
 					}
 					continue
@@ -121,7 +121,7 @@ pub fn (mut c Compiler) compile() !string {
 						idx := c.class_index[class_name]
 						mut el := c.elements[idx]
 						if mut el is repr.PhpClassRepr {
-							el.add_static_method(stmt, c.table, method_name)
+							cparser.add_class_static_method(mut el, stmt, c.table, method_name)
 						}
 						continue
 					}

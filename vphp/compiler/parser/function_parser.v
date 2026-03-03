@@ -4,9 +4,53 @@ import v.ast
 import compiler.repr
 
 pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpFuncRepr {
-	mut func := repr.new_func_repr()
-	if func.parse(stmt, table) {
-		return func
+	if stmt !is ast.FnDecl {
+		return none
 	}
-	return none
+	fn_decl := stmt as ast.FnDecl
+	mut func := repr.new_func_repr()
+	if fn_decl.is_method {
+		return none
+	}
+
+	mut has_export := false
+	mut exp_name := ''
+	mut has_php_func := false
+
+	for attr in fn_decl.attrs {
+		if attr.name == 'export' && attr.arg != '' {
+			has_export = true
+			exp_name = attr.arg
+		} else if attr.name == 'php_function' {
+			has_php_func = true
+		}
+	}
+
+	if !has_export && !has_php_func {
+		return none
+	}
+	if exp_name.starts_with('vphp_') || exp_name.starts_with('zm_') {
+		return none
+	}
+
+	func.name = if exp_name != '' { exp_name } else { fn_decl.name.all_after('.') }
+	func.original_name = fn_decl.name.all_after('.')
+	func.uses_php_function = has_php_func
+
+	for param in fn_decl.params {
+		mut typ_name := table.get_type_name(param.typ)
+		if typ_name.contains('.') {
+			typ_name = typ_name.all_after('.')
+		}
+		func.args << repr.PhpArg{
+			name: param.name
+			v_type: typ_name
+		}
+	}
+
+	ret_type := table.get_type_name(fn_decl.return_type)
+	clean := if ret_type.contains('.') { ret_type.all_after('.') } else { ret_type }
+	func.return_type = if clean == 'Context' || clean == '' || clean == 'void' { 'void' } else { clean }
+
+	return func
 }
