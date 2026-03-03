@@ -9,10 +9,7 @@ pub:
 }
 
 fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
-	return builder.FuncBuilder{
-		php_name: f.name
-		c_func: f.name
-	}
+	return *builder.new_func_builder(f.name, f.name)
 }
 
 fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments {
@@ -21,8 +18,8 @@ fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments
 	return fragments
 }
 
-fn (g CGenerator) build_global_constant(c &repr.PhpConstRepr) builder.GlobalConstantBuilder {
-	return builder.new_global_constant_builder(c.name, c.const_type, c.value)
+fn (g CGenerator) build_global_constant(c &repr.PhpConstRepr) builder.ConstantBuilder {
+	return builder.new_constant_builder(c.name, c.const_type, c.value)
 }
 
 fn (g CGenerator) build_interface_export(r &repr.PhpInterfaceRepr) builder.ExportFragments {
