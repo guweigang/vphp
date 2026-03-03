@@ -144,7 +144,7 @@ pub fn (a &Article) process_with_callback(callback vphp.ZVal) bool {
 
     // Call the PHP closure with a parameter
     mut args := []vphp.ZVal{}
-    args << vphp.new_val_string('Calling from V')
+    args << vphp.ZVal.new_string('Calling from V')
 
     res := callback.call(args)
     if res.raw == 0 {

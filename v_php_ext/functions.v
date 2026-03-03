@@ -128,8 +128,8 @@ fn v_mutate_user_object(ctx vphp.Context) {
 		return
 	}
 
-	user_obj.set_prop('name', vphp.new_val_string('Updated by V'))
-	user_obj.set_prop('age', vphp.new_val_int(20))
+	user_obj.set_prop('name', vphp.ZVal.new_string('Updated by V'))
+	user_obj.set_prop('age', vphp.ZVal.new_int(20))
 
 	name := user_obj.prop('name').to_string()
 	age := user_obj.prop('age').to_int()
@@ -162,7 +162,7 @@ fn v_check_user_object_props(ctx vphp.Context) {
 
 @[export: 'v_construct_php_object']
 fn v_construct_php_object(ctx vphp.Context) {
-	obj := vphp.php_class('PhpGreeter').construct([vphp.new_val_string('Codex')])
+	obj := vphp.php_class('PhpGreeter').construct([vphp.ZVal.new_string('Codex')])
 	if !obj.is_object() {
 		vphp.throw_exception('构造 PhpGreeter 失败', 0)
 		return
@@ -175,7 +175,7 @@ fn v_construct_php_object(ctx vphp.Context) {
 
 @[export: 'v_call_php_static_method']
 fn v_call_php_static_method(ctx vphp.Context) {
-	res := vphp.php_class('PhpMath').static_method('triple', [vphp.new_val_int(7)])
+	res := vphp.php_class('PhpMath').static_method('triple', [vphp.ZVal.new_int(7)])
 	ctx.return_string('static=' + res.to_int().str())
 }
 
@@ -183,7 +183,7 @@ fn v_call_php_static_method(ctx vphp.Context) {
 fn v_mutate_php_static_prop(ctx vphp.Context) {
 	cls := vphp.php_class('PhpCounter')
 	before := cls.static_prop('count').to_int()
-	cls.set_static_prop('count', vphp.new_val_int(before + 5))
+	cls.set_static_prop('count', vphp.ZVal.new_int(before + 5))
 	after := cls.static_prop('count').to_int()
 	ctx.return_string('static_prop=${before}->${after}')
 }
@@ -209,7 +209,7 @@ fn v_typed_php_interop(ctx vphp.Context) {
 		return
 	}
 
-	length := vphp.php_fn('strlen').call_v[int]([vphp.new_val_string('codex')]) or {
+	length := vphp.php_fn('strlen').call_v[int]([vphp.ZVal.new_string('codex')]) or {
 		vphp.throw_exception('调用 strlen 失败: ${err.msg()}', 0)
 		return
 	}

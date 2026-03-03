@@ -578,7 +578,7 @@ pub fn (v ZVal) constant_v[T](name string) !T {
 // ======== 工厂方法 ========
 
 // 创建一个 null ZVal
-pub fn new_val_null() ZVal {
+pub fn ZVal.new_null() ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_null(z)
@@ -589,7 +589,7 @@ pub fn new_val_null() ZVal {
 }
 
 // 创建一个 int ZVal
-pub fn new_val_int(n i64) ZVal {
+pub fn ZVal.new_int(n i64) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_lval(z, n)
@@ -600,7 +600,7 @@ pub fn new_val_int(n i64) ZVal {
 }
 
 // 创建一个 float ZVal
-pub fn new_val_float(f f64) ZVal {
+pub fn ZVal.new_float(f f64) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_double(z, f)
@@ -611,7 +611,7 @@ pub fn new_val_float(f f64) ZVal {
 }
 
 // 创建一个 bool ZVal
-pub fn new_val_bool(b bool) ZVal {
+pub fn ZVal.new_bool(b bool) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_bool(z, b)
@@ -622,12 +622,37 @@ pub fn new_val_bool(b bool) ZVal {
 }
 
 // 创建一个 string ZVal
-pub fn new_val_string(s string) ZVal {
+pub fn ZVal.new_string(s string) ZVal {
 	unsafe {
 		return ZVal{
 			raw: C.vphp_new_str(&char(s.str))
 		}
 	}
+}
+
+// 兼容旧命名：建议改用 ZVal.new_null()
+pub fn new_val_null() ZVal {
+	return ZVal.new_null()
+}
+
+// 兼容旧命名：建议改用 ZVal.new_int()
+pub fn new_val_int(n i64) ZVal {
+	return ZVal.new_int(n)
+}
+
+// 兼容旧命名：建议改用 ZVal.new_float()
+pub fn new_val_float(f f64) ZVal {
+	return ZVal.new_float(f)
+}
+
+// 兼容旧命名：建议改用 ZVal.new_bool()
+pub fn new_val_bool(b bool) ZVal {
+	return ZVal.new_bool(b)
+}
+
+// 兼容旧命名：建议改用 ZVal.new_string()
+pub fn new_val_string(s string) ZVal {
+	return ZVal.new_string(s)
 }
 
 // ======== 新版清晰转换 API ========

@@ -84,7 +84,7 @@ pub fn (ctx Context) arg[T](index int) T {
 pub fn (ctx Context) arg_val(index int) ZVal {
 	val := ctx.arg_raw(index)
 	if !val.is_valid() {
-		return new_val_null()
+		return ZVal.new_null()
 	}
 	return val
 }
