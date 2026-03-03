@@ -1,6 +1,6 @@
 module builder
 
-pub enum PHPTypeKind {
+pub enum ClassType {
 	class_
 	interface_
 	enum_
@@ -28,9 +28,9 @@ pub:
 	is_abstract bool
 }
 
-pub struct PHPTypeBuilder {
+pub struct ClassBuilder {
 pub mut:
-	kind          PHPTypeKind = .class_
+	type          ClassType = .class_
 	php_name      string
 	c_name        string
 	parent        string
@@ -42,61 +42,61 @@ pub mut:
 	methods       []ClassMethod
 }
 
-pub fn new_php_type_builder(kind PHPTypeKind, php_name string, c_name string) &PHPTypeBuilder {
-	return &PHPTypeBuilder{
-		kind: kind
+fn new_builder(type_ ClassType, php_name string, c_name string) &ClassBuilder {
+	return &ClassBuilder{
+		type: type_
 		php_name: php_name
 		c_name: c_name
 	}
 }
 
-pub fn new_class_builder(php_name string, c_name string) &PHPTypeBuilder {
-	return new_php_type_builder(.class_, php_name, c_name)
+pub fn new_class_builder(php_name string, c_name string) &ClassBuilder {
+	return new_builder(.class_, php_name, c_name)
 }
 
-pub fn new_interface_builder(php_name string, c_name string) &PHPTypeBuilder {
-	mut b := new_php_type_builder(.interface_, php_name, c_name)
+pub fn new_interface_builder(php_name string, c_name string) &ClassBuilder {
+	mut b := new_builder(.interface_, php_name, c_name)
 	b.create_object = false
 	return b
 }
 
-pub fn new_enum_builder(php_name string, c_name string) &PHPTypeBuilder {
-	mut b := new_php_type_builder(.enum_, php_name, c_name)
+pub fn new_enum_builder(php_name string, c_name string) &ClassBuilder {
+	mut b := new_builder(.enum_, php_name, c_name)
 	b.create_object = false
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) set_parent(parent_name string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) set_parent(parent_name string) &ClassBuilder {
 	b.parent = parent_name
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) set_create_object(enabled bool) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) set_create_object(enabled bool) &ClassBuilder {
 	b.create_object = enabled
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) add_class_flag(flag string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) add_class_flag(flag string) &ClassBuilder {
 	b.class_flags << flag
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) add_interface(interface_name string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) add_interface(interface_name string) &ClassBuilder {
 	b.interfaces << interface_name
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) add_property(name string, type_ string, flags string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) add_property(name string, type_ string, flags string) &ClassBuilder {
 	b.properties << ClassProperty{name, type_, flags}
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) add_constant(name string, type_ string, value string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) add_constant(name string, type_ string, value string) &ClassBuilder {
 	b.constants << ClassConstant{name, type_, value}
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) add_method(php_name string, c_func string, flags string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) add_method(php_name string, c_func string, flags string) &ClassBuilder {
 	b.methods << ClassMethod{
 		php_name: php_name
 		c_func: c_func
@@ -106,7 +106,7 @@ pub fn (mut b PHPTypeBuilder) add_method(php_name string, c_func string, flags s
 	return b
 }
 
-pub fn (mut b PHPTypeBuilder) add_abstract_method(php_name string, c_func string, flags string) &PHPTypeBuilder {
+pub fn (mut b ClassBuilder) add_abstract_method(php_name string, c_func string, flags string) &ClassBuilder {
 	b.methods << ClassMethod{
 		php_name: php_name
 		c_func: c_func
@@ -116,27 +116,27 @@ pub fn (mut b PHPTypeBuilder) add_abstract_method(php_name string, c_func string
 	return b
 }
 
-pub fn (b &PHPTypeBuilder) ce_var_name() string {
+pub fn (b &ClassBuilder) ce_var_name() string {
 	return '${b.c_name.to_lower()}_ce'
 }
 
-pub fn (b &PHPTypeBuilder) render_ce_declaration() string {
+pub fn (b &ClassBuilder) render_ce_declaration() string {
 	return 'zend_class_entry *${b.ce_var_name()} = NULL;'
 }
 
-pub fn (b &PHPTypeBuilder) render_ce_extern_declaration() string {
+pub fn (b &ClassBuilder) render_ce_extern_declaration() string {
 	return 'extern zend_class_entry *${b.ce_var_name()};'
 }
 
-pub fn (b &PHPTypeBuilder) render_impl_prelude() string {
+pub fn (b &ClassBuilder) render_impl_prelude() string {
 	return '${b.render_ce_declaration()}\n${b.render_arginfo_defs()}'
 }
 
-pub fn (b &PHPTypeBuilder) render_impl_postlude() string {
+pub fn (b &ClassBuilder) render_impl_postlude() string {
 	return b.render_methods_array()
 }
 
-pub fn (b &PHPTypeBuilder) render_arginfo_defs() string {
+pub fn (b &ClassBuilder) render_arginfo_defs() string {
 	mut res := []string{}
 	for m in b.methods {
 		res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, 0)'
@@ -145,7 +145,7 @@ pub fn (b &PHPTypeBuilder) render_arginfo_defs() string {
 	return res.join('\n')
 }
 
-pub fn (b &PHPTypeBuilder) render_methods_array() string {
+pub fn (b &ClassBuilder) render_methods_array() string {
 	mut res := []string{}
 	lower_name := b.c_name.to_lower()
 	res << 'static const zend_function_entry ${lower_name}_methods[] = {'
@@ -160,7 +160,7 @@ pub fn (b &PHPTypeBuilder) render_methods_array() string {
 	return res.join('\n')
 }
 
-pub fn (b &PHPTypeBuilder) render_minit() string {
+pub fn (b &ClassBuilder) render_minit() string {
 	mut res := []string{}
 	lower_name := b.c_name.to_lower()
 	ce_ptr := b.ce_var_name()
@@ -168,7 +168,7 @@ pub fn (b &PHPTypeBuilder) render_minit() string {
 	res << '{   zend_class_entry ce;'
 	res << '        INIT_CLASS_ENTRY(ce, "${b.php_name}", ${lower_name}_methods);'
 
-	match b.kind {
+	match b.type {
 		.interface_ {
 			res << '        ${ce_ptr} = zend_register_internal_interface(&ce);'
 		}
@@ -196,7 +196,7 @@ pub fn (b &PHPTypeBuilder) render_minit() string {
 		res << '        zend_class_implements(${ce_ptr}, ${b.interfaces.len}, ${args.join(', ')});'
 	}
 
-	if b.kind != .interface_ {
+	if b.type != .interface_ {
 		for con in b.constants {
 			match con.type_ {
 				'string' {
@@ -239,7 +239,7 @@ pub fn (b &PHPTypeBuilder) render_minit() string {
 	return res.join('\n')
 }
 
-pub fn (b PHPTypeBuilder) export_fragments() ExportFragments {
+pub fn (b ClassBuilder) export_fragments() ExportFragments {
 	return ExportFragments{
 		declarations: [b.render_ce_extern_declaration()]
 		minit_lines: [b.render_minit()]

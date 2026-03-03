@@ -3,6 +3,7 @@ module compiler
 
 import v.ast
 import v.pref
+import compiler.linker
 import compiler.parser as cparser
 import v.parser
 import compiler.repr
@@ -148,65 +149,7 @@ pub fn (mut c Compiler) compile() !string {
 		}
 	}
 
-	// --- 第三阶段：绑定映射影子常量 & 静态属性 (Linking Phrase) ---
-	for i in 0 .. c.elements.len {
-		mut el := c.elements[i]
-		if mut el is repr.PhpClassRepr {
-			// 1. 影子静态属性链接
-			if el.shadow_static_name != '' {
-				for s_el in c.elements {
-					if s_el is repr.PhpConstRepr {
-						if s_el.name == el.shadow_static_name {
-							el.shadow_static_type = s_el.v_type
-							// 从 V 的类型表里把这个影子结构体拉出来
-							mut typ := c.table.find_type(el.shadow_static_type)
-							if typ == 0 {
-								// 尝试加上 main 模块前缀
-								typ = c.table.find_type('main.' + el.shadow_static_type)
-							}
-							
-							if typ != 0 {
-								sym := c.table.sym(typ)
-								sym_info := sym.info
-								if sym_info is ast.Struct {
-									for field in sym_info.fields {
-										el.properties << repr.PhpClassProp{
-											name: field.name
-											v_type: c.table.get_type_name(field.typ)
-											visibility: 'public'
-											is_static: true
-										}
-									}
-								}
-							}
-							break
-						}
-					}
-				}
-			}
-
-			// 2. 影子常量链接
-			if el.shadow_const_name != '' {
-				for s_el in c.elements {
-					if s_el is repr.PhpConstRepr {
-						if s_el.name == el.shadow_const_name {
-							el.shadow_const_type = s_el.v_type
-							for f_name, sub_con in s_el.fields {
-								el.constants << repr.PhpClassConst{
-									name: sub_con.name
-									v_field_name: f_name
-									value: sub_con.value
-									const_type: sub_con.const_type
-								}
-							}
-							break
-						}
-					}
-				}
-			}
-			c.elements[i] = el
-		}
-	}
+	linker.link_class_shadows(mut c.elements, c.table)
 
 	return c.ext_name
 }
