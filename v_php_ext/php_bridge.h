@@ -10,11 +10,6 @@ extern zend_module_entry vphptest_module_entry;
 
 extern void* vphp_get_active_globals();
 
-extern zend_class_entry *author_ce;
-extern zend_class_entry *post_ce;
-extern zend_class_entry *article_ce;
-extern zend_class_entry *story_ce;
-extern zend_class_entry *vphp__task_ce;
 PHP_FUNCTION(v_add);
 PHP_FUNCTION(v_greet);
 PHP_FUNCTION(v_pure_map_test);
@@ -32,9 +27,19 @@ PHP_FUNCTION(v_get_v_closure);
 PHP_FUNCTION(v_get_v_closure_auto);
 PHP_FUNCTION(v_reverse_string);
 PHP_FUNCTION(v_logic_main);
+PHP_FUNCTION(v_slim_demo_dispatch);
 PHP_FUNCTION(v_new_coach);
 PHP_FUNCTION(v_new_db);
 PHP_FUNCTION(v_check_res);
 PHP_FUNCTION(v_analyze_fitness_data);
 PHP_FUNCTION(v_get_alerts);
+extern zend_class_entry *contentcontract_ce;
+extern zend_class_entry *abstractreport_ce;
+extern zend_class_entry *dailyreport_ce;
+extern zend_class_entry *author_ce;
+extern zend_class_entry *post_ce;
+extern zend_class_entry *article_ce;
+extern zend_class_entry *story_ce;
+extern zend_class_entry *articlestatus_ce;
+extern zend_class_entry *vphp__task_ce;
 #endif

@@ -64,7 +64,8 @@ const article_statics = ArticleStatics{}
 
 @[heap]
 @[php_class]
-@[php_extends: 'Post']
+@[php_extends: Post]
+@[php_implements: ContentContract]
 @[php_const: article_consts]
 @[php_static: article_statics]
 struct Article {
@@ -88,7 +89,7 @@ pub fn (mut a Article) init(title string, id int) &Article {
     // 增加计数器 (通过影子方法绕过 const 限制)
     mut s := Article.statics()
     s.total_count++
-    
+
     return a
 }
 
@@ -141,11 +142,11 @@ pub fn (a &Article) process_with_callback(callback vphp.ZVal) bool {
         println('V process_with_callback -> Argument is not callable!')
         return false
     }
-    
+
     // Call the PHP closure with a parameter
     mut args := []vphp.ZVal{}
     args << vphp.new_val_string('Calling from V')
-    
+
     res := callback.invoke(args)
     if res.raw == 0 {
         return false

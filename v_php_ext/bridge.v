@@ -4,6 +4,84 @@ import vphp
 
 #include "php_bridge.h"
 
+@[export: 'AbstractReport_new_raw']
+pub fn abstractreport_new_raw() voidptr {
+    return vphp.generic_new_raw[AbstractReport]()
+}
+@[export: 'AbstractReport_get_prop']
+pub fn abstractreport_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    vphp.generic_get_prop[AbstractReport](ptr, name_ptr, name_len, rv)
+}
+@[export: 'AbstractReport_set_prop']
+pub fn abstractreport_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    vphp.generic_set_prop[AbstractReport](ptr, name_ptr, name_len, value)
+}
+@[export: 'AbstractReport_sync_props']
+pub fn abstractreport_sync_props(ptr voidptr, zv &C.zval) {
+    vphp.generic_sync_props[AbstractReport](ptr, zv)
+}
+@[export: 'vphp_wrap_AbstractReport_label']
+pub fn vphp_wrap_abstractreport_label(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &AbstractReport(ptr) }
+    res := recv.label()
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_AbstractReport_summarize']
+pub fn vphp_wrap_abstractreport_summarize(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &AbstractReport(ptr) }
+    res := recv.summarize()
+    ctx.return_val[string](res)
+}
+@[export: 'AbstractReport_handlers']
+pub fn abstractreport_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(abstractreport_get_prop)
+        write_handler: voidptr(abstractreport_set_prop)
+        sync_handler:  voidptr(abstractreport_sync_props)
+        new_raw:       voidptr(abstractreport_new_raw)
+    } }
+}
+
+@[export: 'DailyReport_new_raw']
+pub fn dailyreport_new_raw() voidptr {
+    return vphp.generic_new_raw[DailyReport]()
+}
+@[export: 'DailyReport_get_prop']
+pub fn dailyreport_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    vphp.generic_get_prop[DailyReport](ptr, name_ptr, name_len, rv)
+}
+@[export: 'DailyReport_set_prop']
+pub fn dailyreport_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    vphp.generic_set_prop[DailyReport](ptr, name_ptr, name_len, value)
+}
+@[export: 'DailyReport_sync_props']
+pub fn dailyreport_sync_props(ptr voidptr, zv &C.zval) {
+    vphp.generic_sync_props[DailyReport](ptr, zv)
+}
+@[export: 'vphp_wrap_DailyReport_init']
+pub fn vphp_wrap_dailyreport_init(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &DailyReport(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.init(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_DailyReport_summarize']
+pub fn vphp_wrap_dailyreport_summarize(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &DailyReport(ptr) }
+    res := recv.summarize()
+    ctx.return_val[string](res)
+}
+@[export: 'DailyReport_handlers']
+pub fn dailyreport_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(dailyreport_get_prop)
+        write_handler: voidptr(dailyreport_set_prop)
+        sync_handler:  voidptr(dailyreport_sync_props)
+        new_raw:       voidptr(dailyreport_new_raw)
+    } }
+}
+
 @[export: 'Author_new_raw']
 pub fn author_new_raw() voidptr {
     return vphp.generic_new_raw[Author]()
@@ -375,6 +453,12 @@ fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
 fn vphp_wrap_v_logic_main(ctx vphp.Context) {
     arg_0 := ctx
     v_logic_main(arg_0)
+}
+
+@[export: 'vphp_wrap_v_slim_demo_dispatch']
+fn vphp_wrap_v_slim_demo_dispatch(ctx vphp.Context) {
+    arg_0 := ctx
+    v_slim_demo_dispatch(arg_0)
 }
 
 @[export: 'vphp_wrap_v_new_coach']

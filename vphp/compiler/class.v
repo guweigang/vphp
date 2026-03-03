@@ -8,6 +8,8 @@ pub mut:
 	php_name   string      // PHP 侧类名 (如 VPhp\Task)，可含命名空间
 	parent     string      // 继承关系
 	is_final   bool
+	is_abstract bool
+	implements []string
 	shadow_const_name string  // 绑定的影子常量名，如 "article_consts"
 	shadow_static_name string // 新增：绑定的影子静态属性名，如 "article_statics"
 	shadow_const_type string  // 绑定的影子常量的 V 侧类型
@@ -47,6 +49,7 @@ pub mut:
     args          []PhpArg
     has_export    bool
     visibility    string
+    is_abstract   bool
 }
 
 pub struct PhpArg {
@@ -81,6 +84,15 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 					r.shadow_const_name = attr.arg
 				} else if attr.name == 'php_static' {
 					r.shadow_static_name = attr.arg
+				} else if attr.name == 'php_abstract' {
+					r.is_abstract = true
+				} else if attr.name == 'php_implements' && attr.arg != '' {
+					for name in attr.arg.split(',') {
+						trimmed := name.trim_space()
+						if trimmed != '' {
+							r.implements << trimmed
+						}
+					}
 				}
 			}
 			if stmt.embeds.len > 0 && r.parent == '' {
@@ -95,12 +107,14 @@ fn (mut r PhpClassRepr) parse(stmt ast.Stmt, table &ast.Table) bool {
 			for field in stmt.fields {
 			  type_name := table.get_type_name(field.typ)
 			  
-			  // Parse comments for @[php_static] marker since V attributes on fields are picky
-			  mut is_static := false
-			  for comment in field.comments {
-				  if comment.text.contains('@[php_static]') {
-					  is_static = true
-					  break
+			  // Keep field-level markers as compatibility fallback; preferred class static export comes from shadow statics.
+			  mut is_static := field.attrs.any(it.name == 'php_static')
+			  if !is_static {
+				  for comment in field.comments {
+					  if comment.text.contains('@[php_static]') {
+						  is_static = true
+						  break
+					  }
 				  }
 			  }
 
@@ -133,6 +147,8 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 		}
 	}
 
+	is_abstract := stmt.attrs.any(it.name == 'php_abstract')
+
 	mut args := []PhpArg{}
 	start_idx := if stmt.is_method { 1 } else { 0 }
 	
@@ -154,6 +170,7 @@ pub fn (mut r PhpClassRepr) add_method(stmt ast.FnDecl, table &ast.Table) {
 		visibility: if stmt.is_pub { 'public' } else { 'protected' }
 		args: args
 		has_export: has_export
+		is_abstract: is_abstract
 	}
 }
 
@@ -178,6 +195,8 @@ pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table,
 		}
 	}
 
+	is_abstract := stmt.attrs.any(it.name == 'php_abstract')
+
 	mut args := []PhpArg{}
 	for param in stmt.params {
 		args << PhpArg{
@@ -196,5 +215,6 @@ pub fn (mut r PhpClassRepr) add_static_method(stmt ast.FnDecl, table &ast.Table,
 		visibility: if stmt.is_pub { 'public' } else { 'protected' }
 		args: args
 		has_export: has_export
+		is_abstract: is_abstract
 	}
 }

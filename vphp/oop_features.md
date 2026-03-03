@@ -1,0 +1,325 @@
+# OOP Features in `vphp`
+
+This document describes the current PHP-facing OOP feature set implemented by `vphp`, including the mapping rules, runtime behavior, and current limitations.
+
+## Supported Features
+
+Current first-class OOP export features:
+
+- `@[php_class]`
+- `@[php_method]`
+- `@[php_const: shadow_const]`
+- `@[php_static: shadow_static]`
+- `@[php_enum]`
+- `@[php_interface]`
+- `@[php_abstract]`
+- `@[php_extends: 'ParentClass']`
+- `@[php_implements: 'IfaceA,IfaceB']`
+
+## `@[php_class]`
+
+Use `@[php_class]` on a V `struct` to export it as a PHP class.
+
+```v
+@[heap]
+@[php_class]
+struct Article {
+pub mut:
+	title string
+}
+```
+
+Behavior:
+
+- exported as an internal PHP class
+- object allocation is handled by the generated Zend wrapper
+- instance fields become PHP properties
+- visibility is inferred from V field visibility
+
+Current mapping:
+
+- `pub` / `pub mut` fields -> PHP `public`
+- non-`pub` fields -> PHP `protected`
+
+Notes:
+
+- field-level PHP attributes are still limited by current V syntax, so some metadata is inferred indirectly
+- object property synchronization is field-based and scalar-oriented
+
+## `@[php_method]`
+
+Use `@[php_method]` to export methods to PHP.
+
+```v
+@[php_method]
+pub fn (a &Article) save() bool {
+	return true
+}
+```
+
+Behavior:
+
+- instance methods become PHP instance methods
+- static V methods like `fn Article.create()` become PHP static methods
+- `init(...)` is mapped to PHP `__construct`
+- method visibility follows V visibility
+
+Current mapping:
+
+- `pub fn` -> PHP `public`
+- non-`pub fn` -> PHP `protected`
+
+## Class Constants via `@[php_const: shadow_const]`
+
+`vphp` currently exposes class constants through a shadow constant struct.
+
+Example:
+
+```v
+struct ArticleConsts {
+	max_title_len int
+	name          string
+	age           int
+}
+
+const article_consts = ArticleConsts{
+	max_title_len: 1024
+	name: 'Samantha Black'
+	age: 24
+}
+
+@[php_class]
+@[php_const: article_consts]
+struct Article {}
+```
+
+PHP result:
+
+```php
+Article::MAX_TITLE_LEN
+Article::NAME
+Article::AGE
+```
+
+Behavior:
+
+- shadow constant fields are exported as PHP class constants
+- constant names are uppercased
+- values are copied at module init time
+
+Important limitations:
+
+- this is one-way export from V to PHP
+- only scalar fields are currently meaningful here
+- constants are derived from the shadow struct constant, not from arbitrary V fields
+
+Design note:
+
+- this model is stable and simple
+- it is not the same as exporting arbitrary V `const` inside a class body
+
+## Class Static Properties via `@[php_static: shadow_static]`
+
+Static properties are currently implemented through a shadow singleton plus generated sync helpers.
+
+Example:
+
+```v
+struct ArticleStatics {
+pub mut:
+	total_count int
+}
+
+const article_statics = ArticleStatics{}
+
+@[php_class]
+@[php_static: article_statics]
+struct Article {
+}
+```
+
+Runtime model:
+
+1. PHP has a real static property on the class entry
+2. V has a shadow singleton object, such as `article_statics`
+3. generated wrappers synchronize values:
+   - PHP -> V before a wrapped method runs
+   - V -> PHP after a wrapped method returns
+
+Generated helpers:
+
+- `Article.statics()`
+- `Article.sync_statics_from_php(ctx)`
+- `Article.sync_statics_to_php(ctx)`
+
+What this means in practice:
+
+- if PHP writes `Article::$total_count = 100`, the next wrapped V method sees `100`
+- if V increments the shadow value inside a wrapped method, PHP sees the updated value afterwards
+
+Important limitations:
+
+- this is not a direct shared-memory static variable model
+- synchronization currently happens at generated method boundaries
+- if V accesses the shadow singleton outside the normal wrapper path, it is your responsibility to ensure sync is correct
+- field names are inferred from the shadow static struct itself
+- field-level `@[php_static]` attribute and comment marker remain only as compatibility fallback
+- current helper support is scalar-only:
+  - `int`
+  - `string`
+  - `bool`
+
+Review conclusion:
+
+- the model is workable and testable
+- the semantics are clear once described as "shadow singleton + sync"
+- the current syntax is a bit awkward and should be improved later
+
+## `@[php_enum]`
+
+Use `@[php_enum]` on a V enum to export it to PHP.
+
+```v
+@[php_enum]
+enum ArticleStatus {
+	draft
+	review
+	published
+}
+```
+
+Current PHP mapping:
+
+- exported as a `final` internal PHP class
+- enum cases are exposed as class constants
+- the type is not instantiable
+
+Example:
+
+```php
+ArticleStatus::draft
+ArticleStatus::review
+```
+
+Current limitations:
+
+- this is not yet PHP 8.1 native enum object semantics
+- current case values are integer-backed
+- complex case expressions are not supported yet
+
+Design note:
+
+- this is intentionally a conservative first version to stabilize compiler and tests first
+
+## `@[php_interface]`
+
+Use `@[php_interface]` on a V interface to export a PHP interface.
+
+```v
+@[php_interface]
+interface ContentContract {
+	save() bool
+	get_formatted_title() string
+}
+```
+
+Then explicitly bind it to a class:
+
+```v
+@[php_class]
+@[php_implements: 'ContentContract']
+struct Article {}
+```
+
+PHP behavior:
+
+- interface is visible through reflection
+- interface methods are abstract
+- `instanceof` works
+- `class_implements()` works
+
+Current limitation:
+
+- implementation is explicit via `@[php_implements: ...]`
+- automatic inference from V interface implementation is not done yet
+- method signature validation is currently soft; Zend-side relationship is established, but compile-time semantic validation can still be improved
+
+## `@[php_abstract]`
+
+`@[php_abstract]` works on both classes and methods.
+
+Example:
+
+```v
+@[php_class]
+@[php_abstract]
+struct AbstractReport {}
+
+@[php_method]
+@[php_abstract]
+pub fn (r &AbstractReport) summarize() string {
+	return ''
+}
+```
+
+Behavior:
+
+- abstract classes are marked with PHP abstract class flags
+- abstract methods are emitted into the method table without a concrete handler
+- abstract classes cannot be instantiated from PHP
+
+Current expectation:
+
+- concrete subclasses should provide the implementation as normal exported methods
+
+## Inheritance via `@[php_extends]` and embed
+
+Two inheritance styles are currently supported:
+
+1. explicit
+
+```v
+@[php_class]
+@[php_extends: 'Post']
+struct Article {
+	Post
+}
+```
+
+2. inferred from first embed
+
+```v
+@[php_class]
+struct Story {
+	Post
+}
+```
+
+Current behavior:
+
+- PHP inheritance is registered through Zend class registration
+- inherited methods and properties work from PHP
+
+## Current Design Assessment
+
+These parts are in good shape:
+
+- class export
+- method export
+- inheritance
+- interface registration
+- abstract registration
+- enum first version
+
+These parts are functional but still a little awkward:
+
+- class constants through shadow structs
+- static properties through shadow singleton synchronization
+- field-level `@[php_static]` marker via comments
+
+## Recommended Next Improvements
+
+1. replace comment-based static field marking with a cleaner syntax
+2. add signature validation for `@[php_implements]`
+3. decide whether `@[php_enum]` should evolve into native PHP enum support
+4. document sum type / Result / Option mapping before implementation

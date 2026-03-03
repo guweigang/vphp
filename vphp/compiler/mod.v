@@ -59,6 +59,25 @@ pub fn (mut c Compiler) compile() !string {
 
 	// --- 第一阶段：扫描所有 Struct 定义 ---
 	for stmt in all_stmts {
+		if stmt is ast.InterfaceDecl {
+			mut iface := new_interface_repr()
+			if iface.parse(stmt, c.table) {
+				c.elements << iface
+				continue
+			}
+		}
+
+		if stmt is ast.EnumDecl {
+			mut enum_repr := new_enum_repr()
+			if enum_repr.parse(stmt, c.table) {
+				if enum_repr.parse_err != '' {
+					return error(enum_repr.parse_err)
+				}
+				c.elements << enum_repr
+				continue
+			}
+		}
+
 		if stmt is ast.StructDecl {
 			// A. 探测是否是 Zend Globals 定义
 			if c.globals_repr.name == '' {

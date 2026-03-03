@@ -5,6 +5,86 @@ pub:
 	ext_name string
 }
 
+fn (g CGenerator) build_func(f &PhpFuncRepr) FuncBuilder {
+	return FuncBuilder{
+		php_name: f.name
+		c_func: f.name
+	}
+}
+
+fn (g CGenerator) build_global_constant(c &PhpConstRepr) GlobalConstantBuilder {
+	return new_global_constant_builder(c.name, c.const_type, c.value)
+}
+
+fn visibility_to_method_flags(visibility string) string {
+	return match visibility {
+		'protected' { 'ZEND_ACC_PROTECTED' }
+		'private' { 'ZEND_ACC_PRIVATE' }
+		else { 'ZEND_ACC_PUBLIC' }
+	}
+}
+
+fn visibility_to_property_flags(prop PhpClassProp) string {
+	mut flags := visibility_to_method_flags(prop.visibility)
+	if prop.is_static {
+		flags += ' | ZEND_ACC_STATIC'
+	}
+	return flags
+}
+
+fn (g CGenerator) build_interface_type(r &PhpInterfaceRepr) &PHPTypeBuilder {
+	mut builder := new_interface_builder(r.php_name, r.c_name())
+	for m in r.methods {
+		builder.add_abstract_method(m.name, '${r.c_name().to_lower()}_${m.name}',
+			visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT')
+	}
+	return builder
+}
+
+fn (g CGenerator) build_enum_type(r &PhpEnumRepr) &PHPTypeBuilder {
+	mut builder := new_enum_builder(r.php_name, r.c_name())
+	builder.add_class_flag('ZEND_ACC_FINAL')
+	builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PRIVATE')
+	for case_ in r.cases {
+		builder.add_constant(case_.name, 'int', case_.value)
+	}
+	return builder
+}
+
+fn (g CGenerator) build_class_type(r &PhpClassRepr, has_init bool) &PHPTypeBuilder {
+	mut builder := new_class_builder(r.php_name, r.c_name())
+	builder.set_parent(r.parent)
+	if r.is_abstract {
+		builder.add_class_flag('ZEND_ACC_EXPLICIT_ABSTRACT_CLASS')
+	}
+	for iface in r.implements {
+		builder.add_interface(iface)
+	}
+	for con in r.constants {
+		builder.add_constant(con.name, con.const_type, con.value)
+	}
+	for prop in r.properties {
+		builder.add_property(prop.name, prop.v_type, visibility_to_property_flags(prop))
+	}
+	if !has_init {
+		builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC')
+	}
+	for m in r.methods {
+		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
+		mut flags := visibility_to_method_flags(m.visibility)
+		if m.is_static {
+			flags += ' | ZEND_ACC_STATIC'
+		}
+		c_func := '${r.c_name().to_lower()}_${m.name}'
+		if m.is_abstract {
+			builder.add_abstract_method(php_method_name, c_func, flags + ' | ZEND_ACC_ABSTRACT')
+		} else {
+			builder.add_method(php_method_name, c_func, flags)
+		}
+	}
+	return builder
+}
+
 // 模板变量替换
 fn render_tpl(tpl string, vars map[string]string) string {
 	mut out := tpl
@@ -124,56 +204,6 @@ PHP_METHOD({{CLASS}}, __construct) {
 }
 '
 
-pub fn (g CGenerator) gen_h_defs(mut elements []PhpRepr) []string {
-	mut res := []string{}
-	for mut el in elements {
-		if mut el is PhpFuncRepr {
-			res << 'PHP_FUNCTION(${el.name});'
-		} else if mut el is PhpClassRepr {
-			res << 'extern zend_class_entry *${el.c_name().to_lower()}_ce;'
-		}
-	}
-	return res
-}
-
-pub fn (g CGenerator) gen_minit_lines(mut elements []PhpRepr) []string {
-	mut res := []string{}
-	for mut el in elements {
-		if mut el is PhpConstRepr {
-			// 只有显式标注了 @[php_const] 且不是结构体的才导出为全局常量
-			if el.has_php_const && el.const_type != 'struct' {
-				res << render_global_constant(el.name, el.const_type, el.value)
-			}
-		} else if mut el is PhpClassRepr {
-			mut builder := new_class_builder(el.php_name, el.c_name())
-			builder.set_parent(el.parent)
-
-			for con in el.constants {
-				builder.add_constant(con.name, con.const_type, con.value)
-			}
-			
-			for prop in el.properties {
-				// 获取可见性修饰符
-				mut flags := 'ZEND_ACC_PUBLIC'
-				if prop.visibility == 'protected' {
-					flags = 'ZEND_ACC_PROTECTED'
-				} else if prop.visibility == 'private' {
-					flags = 'ZEND_ACC_PRIVATE'
-				}
-
-				// 这里的 prop.is_static 必须在 mod.v 链接阶段准确设置
-				if prop.is_static { 
-					flags += ' | ZEND_ACC_STATIC' 
-				}
-				builder.add_property(prop.name, prop.v_type, flags)
-			}
-			
-			res << builder.render_minit()
-		}
-	}
-	return res
-}
-
 pub fn (g CGenerator) gen_c_code(mut elements []PhpRepr) []string {
     mut res := []string{}
     for mut el in elements {
@@ -181,15 +211,43 @@ pub fn (g CGenerator) gen_c_code(mut elements []PhpRepr) []string {
             res << g.gen_func_c(el)
         } else if mut el is PhpClassRepr {
             res << g.gen_class_c(el)
+        } else if mut el is PhpInterfaceRepr {
+            res << g.gen_interface_c(el)
+        } else if mut el is PhpEnumRepr {
+            res << g.gen_enum_c(el)
         }
     }
     return res
 }
 
+fn (g CGenerator) gen_interface_c(r &PhpInterfaceRepr) []string {
+	mut c := []string{}
+	builder := g.build_interface_type(r)
+	c << builder.render_ce_declaration()
+	c << builder.render_arginfo_defs()
+	c << builder.render_methods_array()
+	return c
+}
+
+fn (g CGenerator) gen_enum_c(r &PhpEnumRepr) []string {
+	mut c := []string{}
+	c_class := r.c_name()
+	builder := g.build_enum_type(r)
+
+	c << builder.render_ce_declaration()
+	c << builder.render_arginfo_defs()
+	c << 'PHP_METHOD(${c_class}, __construct) {'
+	c << '    vphp_throw("${r.php_name} is an enum-style type and cannot be instantiated", 0);'
+	c << '}'
+	c << builder.render_methods_array()
+
+	return c
+}
+
 fn (g CGenerator) gen_func_c(f &PhpFuncRepr) []string {
     mut r := []string{}
-    r << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${f.name}, 0, 0, 0)'
-    r << 'ZEND_END_ARG_INFO()'
+    func_builder := g.build_func(f)
+    r << func_builder.render_arginfo()
 
     tm := TypeMap.get_type(f.return_type)
     
@@ -229,19 +287,17 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 	mut c := []string{}
 	c_class := r.c_name()        // C macro safe: VPhp_Task
 	lower_name := c_class.to_lower()
+	has_init := r.methods.any(it.name == 'init')
+	builder := g.build_class_type(r, has_init)
 
-	c << 'zend_class_entry *${lower_name}_ce = NULL;'
-
-	// 1. 生成参数信息
-	for m in r.methods {
-		c << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${lower_name}_${m.name}, 0, 0, 0)'
-		c << 'ZEND_END_ARG_INFO()'
-	}
+	c << builder.render_ce_declaration()
+	c << builder.render_arginfo_defs()
 
 	// 2. 生成方法包装器 — 使用模板
-	mut has_init := false
 	for m in r.methods {
-		if m.name == 'init' { has_init = true }
+		if m.is_abstract {
+			continue
+		}
 		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
 		
 		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
@@ -291,34 +347,10 @@ fn (g CGenerator) gen_class_c(r &PhpClassRepr) []string {
 			'CLASS':       c_class
 			'LOWER_CLASS': lower_name
 		}
-		c << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${lower_name}___construct, 0, 0, 0)'
-		c << 'ZEND_END_ARG_INFO()'
 		c << render_tpl(tpl_default_construct, vars)
 	}
 
 	// 3. 生成方法表 (zend_function_entry) 
-	mut builder := new_class_builder(r.php_name, c_class)
-	if !has_init {
-		builder.add_method('__construct', '${lower_name}___construct', 'ZEND_ACC_PUBLIC')
-	}
-	for m in r.methods {
-		php_method_name := if m.name == 'init' { '__construct' } else { m.name }
-		
-		mut flags := 'ZEND_ACC_PUBLIC'
-		if m.visibility == 'protected' {
-			flags = 'ZEND_ACC_PROTECTED'
-		} else if m.visibility == 'private' {
-			flags = 'ZEND_ACC_PRIVATE'
-		}
-
-		if m.is_static { 
-			flags += ' | ZEND_ACC_STATIC' 
-		}
-		
-		// 传递包含前缀的 C 函数参数信息名称，比如 arginfo_article_save
-		c_func := '${lower_name}_${m.name}' 
-		builder.add_method(php_method_name, c_func, flags)
-	}
 	c << builder.render_methods_array()
 
 	return c

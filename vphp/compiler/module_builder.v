@@ -16,7 +16,7 @@ pub mut:
 	ext_name      string
 	version       string
 	description   string
-	functions     []string // 全局函数名列表
+	functions     []FuncBuilder
 	minit_content []string // 注入到 MINIT 中的代码行
 	ini_entries   []IniEntry
 	globals       PhpGlobalsRepr
@@ -30,8 +30,8 @@ pub fn new_module_builder(ext_name string, version string, description string) &
 	}
 }
 
-pub fn (mut b ModuleBuilder) add_function(name string) {
-	b.functions << name
+pub fn (mut b ModuleBuilder) add_function(fn_builder FuncBuilder) {
+	b.functions << fn_builder
 }
 
 pub fn (mut b ModuleBuilder) add_minit_line(line string) {
@@ -47,7 +47,7 @@ pub fn (b &ModuleBuilder) render_functions_table() string {
 	mut res := strings.new_builder(512)
 	res.write_string('static const zend_function_entry ${b.ext_name}_functions[] = {\n')
 	for f in b.functions {
-		res.write_string('    PHP_FE(${f}, arginfo_${f})\n')
+		res.write_string(f.render_fe() + '\n')
 	}
 	res.write_string('    PHP_FE_END\n};\n')
 	return res.str()
@@ -204,4 +204,3 @@ typedef struct { void* str; int len; int is_lit; } v_string;
 extern void vphp_framework_init(int module_number);
 '
 }
-

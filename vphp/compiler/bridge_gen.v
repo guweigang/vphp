@@ -3,6 +3,45 @@ module compiler
 import os
 import strings
 
+fn (c Compiler) collect_non_type_fragments() ExportFragments {
+	mut fragments := ExportFragments{}
+	c_gen := CGenerator{ ext_name: c.ext_name }
+
+	for el in c.elements {
+		if el is PhpFuncRepr {
+			fragments.merge(c_gen.build_func(el).export_fragments())
+		} else if el is PhpConstRepr {
+			if el.has_php_const && el.const_type != 'struct' {
+				fragments.merge(c_gen.build_global_constant(el).export_fragments())
+			}
+		}
+	}
+
+	return fragments
+}
+
+fn (c Compiler) collect_type_fragments() ExportFragments {
+	mut fragments := ExportFragments{}
+	c_gen := CGenerator{ ext_name: c.ext_name }
+
+	for el in c.elements {
+		if el is PhpInterfaceRepr {
+			fragments.merge(c_gen.build_interface_type(el).export_fragments())
+		}
+	}
+
+	for el in c.elements {
+		if el is PhpClassRepr {
+			has_init := el.methods.any(it.name == 'init')
+			fragments.merge(c_gen.build_class_type(el, has_init).export_fragments())
+		} else if el is PhpEnumRepr {
+			fragments.merge(c_gen.build_enum_type(el).export_fragments())
+		}
+	}
+
+	return fragments
+}
+
 // ==========================================
 // 1. 总入口：由外部 build.v 调用
 // ==========================================
@@ -23,6 +62,8 @@ fn (mut c Compiler) generate_c() ! {
 
 	// 2. 模块层：初始化 ModuleBuilder 并收集功能点
 	mut mod_builder := new_module_builder(c.ext_name, c.ext_version, c.ext_description)
+	fragments := c.collect_non_type_fragments()
+	type_fragments := c.collect_type_fragments()
 	for k, v in c.ini_entries {
 		mod_builder.add_ini_entry(k, v)
 	}
@@ -37,14 +78,15 @@ fn (mut c Compiler) generate_c() ! {
 		res.write_string(line + '\n')
 	}
 
-	for mut el in c.elements {
-		if mut el is PhpFuncRepr {
-			mod_builder.add_function(el.name)
-		}
+	for fn_builder in fragments.function_table {
+		mod_builder.add_function(fn_builder)
 	}
 
 	// 注入 MINIT 内容
-	for line in c_gen.gen_minit_lines(mut c.elements) {
+	for line in fragments.minit_lines {
+		mod_builder.add_minit_line(line)
+	}
+	for line in type_fragments.minit_lines {
 		mod_builder.add_minit_line(line)
 	}
 
@@ -93,8 +135,12 @@ fn (mut c Compiler) generate_h() ! {
 	res.write_string('#define phpext_${c.ext_name}_ptr &${c.ext_name}_module_entry\n\n')
 	res.write_string('extern void* vphp_get_active_globals();\n\n')
 
-	c_gen := CGenerator{ ext_name: c.ext_name }
-	for line in c_gen.gen_h_defs(mut c.elements) {
+	fragments := c.collect_non_type_fragments()
+	type_fragments := c.collect_type_fragments()
+	for line in fragments.declarations {
+		res.write_string(line + '\n')
+	}
+	for line in type_fragments.declarations {
 		res.write_string(line + '\n')
 	}
 

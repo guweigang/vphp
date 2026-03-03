@@ -8,7 +8,75 @@ typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
+zend_class_entry *abstractreport_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_abstractreport___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_abstractreport_label, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_abstractreport_summarize, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(AbstractReport, label) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_AbstractReport_label(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_AbstractReport_label(wrapper->v_ptr, ctx);
+}
+
+PHP_METHOD(AbstractReport, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* AbstractReport_handlers();
+    vphp_class_handlers *h = AbstractReport_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+}
+
+static const zend_function_entry abstractreport_methods[] = {
+    PHP_ME(AbstractReport, __construct, arginfo_abstractreport___construct, ZEND_ACC_PUBLIC)
+    PHP_ME(AbstractReport, label, arginfo_abstractreport_label, ZEND_ACC_PUBLIC)
+    ZEND_RAW_FENTRY("summarize", NULL, arginfo_abstractreport_summarize, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
+    PHP_FE_END
+};
+
+zend_class_entry *dailyreport_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_init, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_summarize, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(DailyReport, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* DailyReport_handlers();
+    vphp_class_handlers *h = DailyReport_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void vphp_wrap_DailyReport_init(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    vphp_wrap_DailyReport_init(v_ptr, ctx);
+}
+PHP_METHOD(DailyReport, summarize) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_DailyReport_summarize(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_DailyReport_summarize(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry dailyreport_methods[] = {
+    PHP_ME(DailyReport, __construct, arginfo_dailyreport_init, ZEND_ACC_PUBLIC)
+    PHP_ME(DailyReport, summarize, arginfo_dailyreport_summarize, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 zend_class_entry *author_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_author___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_author_create, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_author_get_name, 0, 0, 0)
@@ -32,8 +100,6 @@ PHP_METHOD(Author, get_name) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_Author_get_name(wrapper->v_ptr, ctx);
 }
-ZEND_BEGIN_ARG_INFO_EX(arginfo_author___construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
 
 PHP_METHOD(Author, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -54,6 +120,8 @@ static const zend_function_entry author_methods[] = {
 };
 
 zend_class_entry *post_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_post___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_post_set_author, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_post_get_author, 0, 0, 0)
@@ -82,8 +150,6 @@ PHP_METHOD(Post, get_author) {
     }
 }
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_post___construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
 
 PHP_METHOD(Post, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -208,6 +274,8 @@ static const zend_function_entry article_methods[] = {
 };
 
 zend_class_entry *story_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_story___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_story_create, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_story_tell, 0, 0, 0)
@@ -231,8 +299,6 @@ PHP_METHOD(Story, tell) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_Story_tell(wrapper->v_ptr, ctx);
 }
-ZEND_BEGIN_ARG_INFO_EX(arginfo_story___construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
 
 PHP_METHOD(Story, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -252,7 +318,31 @@ static const zend_function_entry story_methods[] = {
     PHP_FE_END
 };
 
+zend_class_entry *contentcontract_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 0)
+ZEND_END_ARG_INFO()
+static const zend_function_entry contentcontract_methods[] = {
+    ZEND_RAW_FENTRY("save", NULL, arginfo_contentcontract_save, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
+    ZEND_RAW_FENTRY("get_formatted_title", NULL, arginfo_contentcontract_get_formatted_title, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
+    PHP_FE_END
+};
+
+zend_class_entry *articlestatus_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_articlestatus___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(ArticleStatus, __construct) {
+    vphp_throw("ArticleStatus is an enum-style type and cannot be instantiated", 0);
+}
+static const zend_function_entry articlestatus_methods[] = {
+    PHP_ME(ArticleStatus, __construct, arginfo_articlestatus___construct, ZEND_ACC_PRIVATE)
+    PHP_FE_END
+};
+
 zend_class_entry *vphp__task_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_wait, 0, 0, 0)
@@ -277,8 +367,6 @@ PHP_METHOD(VPhp__Task, list) {
     extern void vphp_wrap_VPhpTask_list(vphp_context_internal ctx);
     vphp_wrap_VPhpTask_list(ctx);
 }
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task___construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
 
 PHP_METHOD(VPhp__Task, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -418,6 +506,13 @@ PHP_FUNCTION(v_logic_main) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     v_logic_main(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_slim_demo_dispatch, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void v_slim_demo_dispatch(vphp_context_internal ctx);
+PHP_FUNCTION(v_slim_demo_dispatch) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    v_slim_demo_dispatch(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_new_coach, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void v_new_coach(vphp_context_internal ctx);
@@ -486,6 +581,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_get_v_closure_auto, arginfo_v_get_v_closure_auto)
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
+    PHP_FE(v_slim_demo_dispatch, arginfo_v_slim_demo_dispatch)
     PHP_FE(v_new_coach, arginfo_v_new_coach)
     PHP_FE(v_new_db, arginfo_v_new_db)
     PHP_FE(v_check_res, arginfo_v_check_res)
@@ -498,6 +594,27 @@ PHP_MINIT_FUNCTION(vphptest) {
     extern void vphp_ext_startup() __attribute__((weak));
     if (vphp_ext_startup) vphp_ext_startup();
     REGISTER_INI_ENTRIES();
+        REGISTER_STRING_CONSTANT("APP_VERSION", "1.0.0", CONST_CS | CONST_PERSISTENT);
+        REGISTER_LONG_CONSTANT("MAX_RETRY", 3, CONST_CS | CONST_PERSISTENT);
+        REGISTER_DOUBLE_CONSTANT("PI_VALUE", 3.14159, CONST_CS | CONST_PERSISTENT);
+        REGISTER_BOOL_CONSTANT("DEBUG_MODE", 0, CONST_CS | CONST_PERSISTENT);
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "ContentContract", contentcontract_methods);
+        contentcontract_ce = zend_register_internal_interface(&ce);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "AbstractReport", abstractreport_methods);
+        abstractreport_ce = zend_register_internal_class(&ce);
+        abstractreport_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+        abstractreport_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_string(abstractreport_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "DailyReport", dailyreport_methods);
+        dailyreport_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "abstractreport", sizeof("abstractreport")-1));
+        dailyreport_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_string(dailyreport_ce, "summary", sizeof("summary")-1, "", ZEND_ACC_PUBLIC);
+    }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Author", author_methods);
         author_ce = zend_register_internal_class(&ce);
@@ -515,6 +632,7 @@ PHP_MINIT_FUNCTION(vphptest) {
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
         article_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         article_ce->create_object = vphp_create_object_handler;
+        zend_class_implements(article_ce, 1, contentcontract_ce);
         zend_declare_class_constant_long(article_ce, "MAX_TITLE_LEN", sizeof("MAX_TITLE_LEN")-1, 1024);
         zend_declare_class_constant_string(article_ce, "NAME", sizeof("NAME")-1, "Samantha Black");
         zend_declare_class_constant_long(article_ce, "AGE", sizeof("AGE")-1, 24);
@@ -532,14 +650,18 @@ PHP_MINIT_FUNCTION(vphptest) {
         zend_declare_property_long(story_ce, "chapter_count", sizeof("chapter_count")-1, 0, ZEND_ACC_PUBLIC);
     }
     {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "ArticleStatus", articlestatus_methods);
+        articlestatus_ce = zend_register_internal_class(&ce);
+        articlestatus_ce->ce_flags |= ZEND_ACC_FINAL;
+        zend_declare_class_constant_long(articlestatus_ce, "draft", sizeof("draft")-1, 0);
+        zend_declare_class_constant_long(articlestatus_ce, "review", sizeof("review")-1, 1);
+        zend_declare_class_constant_long(articlestatus_ce, "published", sizeof("published")-1, 2);
+    }
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
         vphp__task_ce = zend_register_internal_class(&ce);
         vphp__task_ce->create_object = vphp_create_object_handler;
     }
-        REGISTER_STRING_CONSTANT("APP_VERSION", "1.0.0", CONST_CS | CONST_PERSISTENT);
-        REGISTER_LONG_CONSTANT("MAX_RETRY", 3, CONST_CS | CONST_PERSISTENT);
-        REGISTER_DOUBLE_CONSTANT("PI_VALUE", 3.14159, CONST_CS | CONST_PERSISTENT);
-        REGISTER_BOOL_CONSTANT("DEBUG_MODE", 0, CONST_CS | CONST_PERSISTENT);
     return SUCCESS;
 }
 PHP_MSHUTDOWN_FUNCTION(vphptest) {
