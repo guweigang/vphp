@@ -32,8 +32,7 @@ fn (c Compiler) collect_type_fragments() ExportFragments {
 
 	for el in c.elements {
 		if el is PhpClassRepr {
-			has_init := el.methods.any(it.name == 'init')
-			fragments.merge(c_gen.build_class_type(el, has_init).export_fragments())
+			fragments.merge(c_gen.build_class_export(el))
 		} else if el is PhpEnumRepr {
 			fragments.merge(c_gen.build_enum_export(el))
 		}

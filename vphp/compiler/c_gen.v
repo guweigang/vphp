@@ -28,6 +28,13 @@ fn (g CGenerator) build_enum_export(r &PhpEnumRepr) ExportFragments {
 	return fragments
 }
 
+fn (g CGenerator) build_class_export(r &PhpClassRepr) ExportFragments {
+	has_init := r.methods.any(it.name == 'init')
+	mut fragments := g.build_class_type(r, has_init).export_fragments()
+	fragments.implementations = g.gen_class_c(r)
+	return fragments
+}
+
 fn visibility_to_method_flags(visibility string) string {
 	return match visibility {
 		'protected' { 'ZEND_ACC_PROTECTED' }
@@ -221,8 +228,6 @@ pub fn (g CGenerator) gen_c_code(mut elements []PhpRepr) []string {
     for mut el in elements {
         if mut el is PhpFuncRepr {
             res << g.gen_func_c(el)
-        } else if mut el is PhpClassRepr {
-            res << g.gen_class_c(el)
         }
     }
     return res

@@ -11089,6 +11089,7 @@ VV_LOC vphp__compiler__FuncBuilder vphp__compiler__CGenerator_build_func(vphp__c
 VV_LOC vphp__compiler__GlobalConstantBuilder vphp__compiler__CGenerator_build_global_constant(vphp__compiler__CGenerator g, vphp__compiler__PhpConstRepr* c);
 VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_interface_export(vphp__compiler__CGenerator g, vphp__compiler__PhpInterfaceRepr* r);
 VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_enum_export(vphp__compiler__CGenerator g, vphp__compiler__PhpEnumRepr* r);
+VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_class_export(vphp__compiler__CGenerator g, vphp__compiler__PhpClassRepr* r);
 VV_LOC string vphp__compiler__visibility_to_method_flags(string visibility);
 VV_LOC string vphp__compiler__visibility_to_property_flags(vphp__compiler__PhpClassProp prop);
 VV_LOC vphp__compiler__PHPTypeBuilder* vphp__compiler__CGenerator_build_interface_type(vphp__compiler__CGenerator g, vphp__compiler__PhpInterfaceRepr* r);
@@ -79127,18 +79128,7 @@ VV_LOC vphp__compiler__ExportFragments vphp__compiler__Compiler_collect_type_fra
 	for (int _t2 = 0; _t2 < c.elements.len; ++_t2) {
 		vphp__compiler__PhpRepr el = ((vphp__compiler__PhpRepr*)c.elements.data)[_t2];
 		if ((el)._typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) {
-			bool _t3 = false;
-			Array_vphp__compiler__PhpMethodRepr _t3_orig = (el._vphp__compiler__PhpClassRepr)->methods;
-			int _t3_len = _t3_orig.len;
-			for (int _t4 = 0; _t4 < _t3_len; ++_t4) {
-				vphp__compiler__PhpMethodRepr it = ((vphp__compiler__PhpMethodRepr*) _t3_orig.data)[_t4];
-				if (builtin__fast_string_eq(it.name, _S("init"))) {
-					_t3 = true;
-					break;
-				}
-			}
-			bool has_init =_t3;
-			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_class_type(c_gen, (el._vphp__compiler__PhpClassRepr), has_init)));
+			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__CGenerator_build_class_export(c_gen, (el._vphp__compiler__PhpClassRepr)));
 		} else if ((el)._typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpEnumRepr_index) {
 			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__CGenerator_build_enum_export(c_gen, (el._vphp__compiler__PhpEnumRepr)));
 		}
@@ -79534,6 +79524,22 @@ VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_enum_exp
 	fragments.implementations = vphp__compiler__CGenerator_gen_enum_c(g, r);
 	return fragments;
 }
+VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_class_export(vphp__compiler__CGenerator g, vphp__compiler__PhpClassRepr* r) {
+	bool _t1 = false;
+	Array_vphp__compiler__PhpMethodRepr _t1_orig = r->methods;
+	int _t1_len = _t1_orig.len;
+	for (int _t2 = 0; _t2 < _t1_len; ++_t2) {
+		vphp__compiler__PhpMethodRepr it = ((vphp__compiler__PhpMethodRepr*) _t1_orig.data)[_t2];
+		if (builtin__fast_string_eq(it.name, _S("init"))) {
+			_t1 = true;
+			break;
+		}
+	}
+	bool has_init =_t1;
+	vphp__compiler__ExportFragments fragments = vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_class_type(g, r, has_init));
+	fragments.implementations = vphp__compiler__CGenerator_gen_class_c(g, r);
+	return fragments;
+}
 VV_LOC string vphp__compiler__visibility_to_method_flags(string visibility) {
 	return ((_SLIT_EQ(visibility.str, visibility.len, "protected"))? (_S("ZEND_ACC_PROTECTED")) : (_SLIT_EQ(visibility.str, visibility.len, "private"))? (_S("ZEND_ACC_PRIVATE")) : (_S("ZEND_ACC_PUBLIC")));
 }
@@ -79623,8 +79629,6 @@ Array_string vphp__compiler__CGenerator_gen_c_code(vphp__compiler__CGenerator g,
 		vphp__compiler__PhpRepr* el = ((vphp__compiler__PhpRepr*)elements->data) + _t1;
 		if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpFuncRepr_index) {
 			_PUSH_MANY(&res, (vphp__compiler__CGenerator_gen_func_c(g, (el->_vphp__compiler__PhpFuncRepr))), _t2, Array_string);
-		} else if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) {
-			_PUSH_MANY(&res, (vphp__compiler__CGenerator_gen_class_c(g, (el->_vphp__compiler__PhpClassRepr))), _t3, Array_string);
 		}
 	}
 	return res;
