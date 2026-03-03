@@ -16,6 +16,18 @@ fn (g CGenerator) build_global_constant(c &PhpConstRepr) GlobalConstantBuilder {
 	return new_global_constant_builder(c.name, c.const_type, c.value)
 }
 
+fn (g CGenerator) build_interface_export(r &PhpInterfaceRepr) ExportFragments {
+	mut fragments := g.build_interface_type(r).export_fragments()
+	fragments.implementations = g.gen_interface_c(r)
+	return fragments
+}
+
+fn (g CGenerator) build_enum_export(r &PhpEnumRepr) ExportFragments {
+	mut fragments := g.build_enum_type(r).export_fragments()
+	fragments.implementations = g.gen_enum_c(r)
+	return fragments
+}
+
 fn visibility_to_method_flags(visibility string) string {
 	return match visibility {
 		'protected' { 'ZEND_ACC_PROTECTED' }
@@ -211,10 +223,6 @@ pub fn (g CGenerator) gen_c_code(mut elements []PhpRepr) []string {
             res << g.gen_func_c(el)
         } else if mut el is PhpClassRepr {
             res << g.gen_class_c(el)
-        } else if mut el is PhpInterfaceRepr {
-            res << g.gen_interface_c(el)
-        } else if mut el is PhpEnumRepr {
-            res << g.gen_enum_c(el)
         }
     }
     return res

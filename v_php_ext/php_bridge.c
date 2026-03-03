@@ -8,6 +8,28 @@ typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
+zend_class_entry *contentcontract_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 0)
+ZEND_END_ARG_INFO()
+static const zend_function_entry contentcontract_methods[] = {
+    ZEND_RAW_FENTRY("save", NULL, arginfo_contentcontract_save, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
+    ZEND_RAW_FENTRY("get_formatted_title", NULL, arginfo_contentcontract_get_formatted_title, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
+    PHP_FE_END
+};
+
+zend_class_entry *articlestatus_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_articlestatus___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(ArticleStatus, __construct) {
+    vphp_throw("ArticleStatus is an enum-style type and cannot be instantiated", 0);
+}
+static const zend_function_entry articlestatus_methods[] = {
+    PHP_ME(ArticleStatus, __construct, arginfo_articlestatus___construct, ZEND_ACC_PRIVATE)
+    PHP_FE_END
+};
+
 zend_class_entry *abstractreport_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_abstractreport___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -315,28 +337,6 @@ static const zend_function_entry story_methods[] = {
     PHP_ME(Story, __construct, arginfo_story___construct, ZEND_ACC_PUBLIC)
     PHP_ME(Story, create, arginfo_story_create, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(Story, tell, arginfo_story_tell, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
-zend_class_entry *contentcontract_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 0)
-ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 0)
-ZEND_END_ARG_INFO()
-static const zend_function_entry contentcontract_methods[] = {
-    ZEND_RAW_FENTRY("save", NULL, arginfo_contentcontract_save, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
-    ZEND_RAW_FENTRY("get_formatted_title", NULL, arginfo_contentcontract_get_formatted_title, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
-    PHP_FE_END
-};
-
-zend_class_entry *articlestatus_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_articlestatus___construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-PHP_METHOD(ArticleStatus, __construct) {
-    vphp_throw("ArticleStatus is an enum-style type and cannot be instantiated", 0);
-}
-static const zend_function_entry articlestatus_methods[] = {
-    PHP_ME(ArticleStatus, __construct, arginfo_articlestatus___construct, ZEND_ACC_PRIVATE)
     PHP_FE_END
 };
 

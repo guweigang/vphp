@@ -11087,6 +11087,8 @@ string vphp__compiler__GlobalConstantBuilder_render_register(vphp__compiler__Glo
 vphp__compiler__ExportFragments vphp__compiler__GlobalConstantBuilder_export_fragments(vphp__compiler__GlobalConstantBuilder b);
 VV_LOC vphp__compiler__FuncBuilder vphp__compiler__CGenerator_build_func(vphp__compiler__CGenerator g, vphp__compiler__PhpFuncRepr* f);
 VV_LOC vphp__compiler__GlobalConstantBuilder vphp__compiler__CGenerator_build_global_constant(vphp__compiler__CGenerator g, vphp__compiler__PhpConstRepr* c);
+VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_interface_export(vphp__compiler__CGenerator g, vphp__compiler__PhpInterfaceRepr* r);
+VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_enum_export(vphp__compiler__CGenerator g, vphp__compiler__PhpEnumRepr* r);
 VV_LOC string vphp__compiler__visibility_to_method_flags(string visibility);
 VV_LOC string vphp__compiler__visibility_to_property_flags(vphp__compiler__PhpClassProp prop);
 VV_LOC vphp__compiler__PHPTypeBuilder* vphp__compiler__CGenerator_build_interface_type(vphp__compiler__CGenerator g, vphp__compiler__PhpInterfaceRepr* r);
@@ -79119,7 +79121,7 @@ VV_LOC vphp__compiler__ExportFragments vphp__compiler__Compiler_collect_type_fra
 	for (int _t1 = 0; _t1 < c.elements.len; ++_t1) {
 		vphp__compiler__PhpRepr el = ((vphp__compiler__PhpRepr*)c.elements.data)[_t1];
 		if ((el)._typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpInterfaceRepr_index) {
-			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_interface_type(c_gen, (el._vphp__compiler__PhpInterfaceRepr))));
+			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__CGenerator_build_interface_export(c_gen, (el._vphp__compiler__PhpInterfaceRepr)));
 		}
 	}
 	for (int _t2 = 0; _t2 < c.elements.len; ++_t2) {
@@ -79138,7 +79140,7 @@ VV_LOC vphp__compiler__ExportFragments vphp__compiler__Compiler_collect_type_fra
 			bool has_init =_t3;
 			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_class_type(c_gen, (el._vphp__compiler__PhpClassRepr), has_init)));
 		} else if ((el)._typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpEnumRepr_index) {
-			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_enum_type(c_gen, (el._vphp__compiler__PhpEnumRepr))));
+			vphp__compiler__ExportFragments_merge(&fragments, vphp__compiler__CGenerator_build_enum_export(c_gen, (el._vphp__compiler__PhpEnumRepr)));
 		}
 	}
 	return fragments;
@@ -79203,21 +79205,25 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	mod_builder->globals = c->globals_repr;
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_declarations(mod_builder));
 	vphp__compiler__CGenerator c_gen = ((vphp__compiler__CGenerator){.ext_name = c->ext_name,});
-	Array_string _t5 = vphp__compiler__CGenerator_gen_c_code(c_gen, &c->elements);
-	for (int _t6 = 0; _t6 < _t5.len; ++_t6) {
-		string line = ((string*)_t5.data)[_t6];
+	for (int _t5 = 0; _t5 < type_fragments.implementations.len; ++_t5) {
+		string line = ((string*)type_fragments.implementations.data)[_t5];
 		strings__Builder_write_string(&res, builtin__string__plus(line, _S("\n")));
 	}
-	for (int _t7 = 0; _t7 < fragments.function_table.len; ++_t7) {
-		vphp__compiler__FuncBuilder fn_builder = ((vphp__compiler__FuncBuilder*)fragments.function_table.data)[_t7];
+	Array_string _t6 = vphp__compiler__CGenerator_gen_c_code(c_gen, &c->elements);
+	for (int _t7 = 0; _t7 < _t6.len; ++_t7) {
+		string line = ((string*)_t6.data)[_t7];
+		strings__Builder_write_string(&res, builtin__string__plus(line, _S("\n")));
+	}
+	for (int _t8 = 0; _t8 < fragments.function_table.len; ++_t8) {
+		vphp__compiler__FuncBuilder fn_builder = ((vphp__compiler__FuncBuilder*)fragments.function_table.data)[_t8];
 		vphp__compiler__ModuleBuilder_add_function(mod_builder, fn_builder);
 	}
-	for (int _t8 = 0; _t8 < fragments.minit_lines.len; ++_t8) {
-		string line = ((string*)fragments.minit_lines.data)[_t8];
+	for (int _t9 = 0; _t9 < fragments.minit_lines.len; ++_t9) {
+		string line = ((string*)fragments.minit_lines.data)[_t9];
 		vphp__compiler__ModuleBuilder_add_minit_line(mod_builder, line);
 	}
-	for (int _t9 = 0; _t9 < type_fragments.minit_lines.len; ++_t9) {
-		string line = ((string*)type_fragments.minit_lines.data)[_t9];
+	for (int _t10 = 0; _t10 < type_fragments.minit_lines.len; ++_t10) {
+		string line = ((string*)type_fragments.minit_lines.data)[_t10];
 		vphp__compiler__ModuleBuilder_add_minit_line(mod_builder, line);
 	}
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_globals_struct(mod_builder));
@@ -79230,12 +79236,12 @@ VV_LOC _result_void vphp__compiler__Compiler_generate_c(vphp__compiler__Compiler
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_globals_getter(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_module_entry(mod_builder));
 	strings__Builder_write_string(&res, vphp__compiler__ModuleBuilder_render_get_module(mod_builder));
-	_result_void _t10 = os__write_file(_S("php_bridge.c"), strings__Builder_str(&res));
-	if (_t10.is_error) {
-		_result_void _t11 = {0};
-		_t11.is_error = true;
-		_t11.err = _t10.err;
-		return _t11;
+	_result_void _t11 = os__write_file(_S("php_bridge.c"), strings__Builder_str(&res));
+	if (_t11.is_error) {
+		_result_void _t12 = {0};
+		_t12.is_error = true;
+		_t12.err = _t11.err;
+		return _t12;
 	}
 	
  ;
@@ -79518,6 +79524,16 @@ VV_LOC vphp__compiler__FuncBuilder vphp__compiler__CGenerator_build_func(vphp__c
 VV_LOC vphp__compiler__GlobalConstantBuilder vphp__compiler__CGenerator_build_global_constant(vphp__compiler__CGenerator g, vphp__compiler__PhpConstRepr* c) {
 	return vphp__compiler__new_global_constant_builder(c->name, c->const_type, c->value);
 }
+VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_interface_export(vphp__compiler__CGenerator g, vphp__compiler__PhpInterfaceRepr* r) {
+	vphp__compiler__ExportFragments fragments = vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_interface_type(g, r));
+	fragments.implementations = vphp__compiler__CGenerator_gen_interface_c(g, r);
+	return fragments;
+}
+VV_LOC vphp__compiler__ExportFragments vphp__compiler__CGenerator_build_enum_export(vphp__compiler__CGenerator g, vphp__compiler__PhpEnumRepr* r) {
+	vphp__compiler__ExportFragments fragments = vphp__compiler__PHPTypeBuilder_export_fragments(*vphp__compiler__CGenerator_build_enum_type(g, r));
+	fragments.implementations = vphp__compiler__CGenerator_gen_enum_c(g, r);
+	return fragments;
+}
 VV_LOC string vphp__compiler__visibility_to_method_flags(string visibility) {
 	return ((_SLIT_EQ(visibility.str, visibility.len, "protected"))? (_S("ZEND_ACC_PROTECTED")) : (_SLIT_EQ(visibility.str, visibility.len, "private"))? (_S("ZEND_ACC_PRIVATE")) : (_S("ZEND_ACC_PUBLIC")));
 }
@@ -79609,10 +79625,6 @@ Array_string vphp__compiler__CGenerator_gen_c_code(vphp__compiler__CGenerator g,
 			_PUSH_MANY(&res, (vphp__compiler__CGenerator_gen_func_c(g, (el->_vphp__compiler__PhpFuncRepr))), _t2, Array_string);
 		} else if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpClassRepr_index) {
 			_PUSH_MANY(&res, (vphp__compiler__CGenerator_gen_class_c(g, (el->_vphp__compiler__PhpClassRepr))), _t3, Array_string);
-		} else if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpInterfaceRepr_index) {
-			_PUSH_MANY(&res, (vphp__compiler__CGenerator_gen_interface_c(g, (el->_vphp__compiler__PhpInterfaceRepr))), _t4, Array_string);
-		} else if ((el)->_typ == _vphp__compiler__PhpRepr_vphp__compiler__PhpEnumRepr_index) {
-			_PUSH_MANY(&res, (vphp__compiler__CGenerator_gen_enum_c(g, (el->_vphp__compiler__PhpEnumRepr))), _t5, Array_string);
 		}
 	}
 	return res;

@@ -26,7 +26,7 @@ fn (c Compiler) collect_type_fragments() ExportFragments {
 
 	for el in c.elements {
 		if el is PhpInterfaceRepr {
-			fragments.merge(c_gen.build_interface_type(el).export_fragments())
+			fragments.merge(c_gen.build_interface_export(el))
 		}
 	}
 
@@ -35,7 +35,7 @@ fn (c Compiler) collect_type_fragments() ExportFragments {
 			has_init := el.methods.any(it.name == 'init')
 			fragments.merge(c_gen.build_class_type(el, has_init).export_fragments())
 		} else if el is PhpEnumRepr {
-			fragments.merge(c_gen.build_enum_type(el).export_fragments())
+			fragments.merge(c_gen.build_enum_export(el))
 		}
 	}
 
@@ -74,6 +74,9 @@ fn (mut c Compiler) generate_c() ! {
 
 	// 1. 业务逻辑层：写入每个元素的实例实现 (Wrapper / ArgInfo)
 	c_gen := CGenerator{ ext_name: c.ext_name }
+	for line in type_fragments.implementations {
+		res.write_string(line + '\n')
+	}
 	for line in c_gen.gen_c_code(mut c.elements) {
 		res.write_string(line + '\n')
 	}
