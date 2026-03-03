@@ -12,17 +12,7 @@ pub:
 	ret &C.zval
 }
 
-// 获取当前 PHP 函数调用的所有参数
-pub fn (ctx Context) get_args() []ZVal {
-	num := ctx.num_args()
-	mut res := []ZVal{}
-	for i in 1 .. (num + 1) {
-		res << ZVal{
-			raw: C.vphp_get_arg_ptr(ctx.ex, u32(i))
-		}
-	}
-	return res
-}
+// ======== 构造与基础状态 ========
 
 // 创建 Context 实例
 pub fn Context.new(ex &C.zend_execute_data, ret &C.zval) Context {
@@ -39,8 +29,6 @@ pub fn new_context(ex &C.zend_execute_data, ret &C.zval) Context {
 	return Context.new(ex, ret)
 }
 
-// ======== 核心方法 (获取参数相关) ========
-
 pub fn (ctx Context) num_args() int {
 	return int(C.vphp_get_num_args(ctx.ex))
 }
@@ -48,6 +36,24 @@ pub fn (ctx Context) num_args() int {
 pub fn (ctx Context) has_exception() bool {
 	return C.vphp_has_exception()
 }
+
+pub fn (ctx Context) get_ce() voidptr {
+	return C.vphp_get_active_ce(ctx.ex)
+}
+
+// 获取当前 PHP 函数调用的所有参数
+pub fn (ctx Context) get_args() []ZVal {
+	num := ctx.num_args()
+	mut res := []ZVal{}
+	for i in 1 .. (num + 1) {
+		res << ZVal{
+			raw: C.vphp_get_arg_ptr(ctx.ex, u32(i))
+		}
+	}
+	return res
+}
+
+// ======== 参数读取 ========
 
 pub fn (ctx Context) arg_raw(index int) ZVal {
 	if index < 0 || index >= ctx.num_args() {
@@ -99,7 +105,7 @@ pub fn (ctx Context) arg_raw_obj(index int) voidptr {
 	return wrapper.v_ptr
 }
 
-// ======== 返回值管理 ========
+// ======== 返回值写入 ========
 
 pub fn (ctx Context) return_null() {
 	unsafe { C.vphp_set_null(ctx.ret) }
@@ -239,7 +245,7 @@ pub fn return_val_raw[T](ret &C.zval, val T) {
 	}
 }
 
-// ======== 自动化闭包桥接器 ========
+// ======== 闭包桥接 ========
 
 type ClosureArity0Void = fn ()
 
@@ -276,9 +282,7 @@ fn bridge_handler[T](v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	}
 }
 
-pub fn (ctx Context) get_ce() voidptr {
-	return C.vphp_get_active_ce(ctx.ex)
-}
+// ======== 类与静态属性辅助 ========
 
 pub fn set_static_prop[T](ce voidptr, name string, val T) {
 	$if T is int {
@@ -311,5 +315,5 @@ pub fn (ctx Context) wrap_closure[T](v_cb T) {
 	C.vphp_create_closure_FULL_AUTO_V2(ctx.ret, voidptr(saved_cb), voidptr(bridge_handler[T]))
 }
 
-// ======== 类与静态属性支持 ========
+// ======== 运行时 FFI 辅助 ========
 fn C.malloc(size usize) voidptr
