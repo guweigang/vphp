@@ -68,6 +68,7 @@ pub fn C.vphp_get_obj_from_zval(zv &C.zval) &C.zend_object
 pub fn C.vphp_get_v_ptr_from_zval(zv &C.zval) voidptr
 pub fn C.vphp_zval_foreach(zv &C.zval, cb voidptr, ctx voidptr)
 pub fn C.vphp_read_property_compat(obj &C.zend_object, name &char, name_len int, rv &C.zval) &C.zval
+pub fn C.vphp_write_property_compat(obj &C.zend_object, name &char, name_len int, value &C.zval)
 pub fn C.vphp_update_property_string(obj &C.zval, name &char, name_len int, value &char)
 pub fn C.vphp_update_property_long(obj &C.zval, name &char, name_len int, value i64)
 pub fn C.vphp_add_property_double(obj &C.zval, name &char, val f64)

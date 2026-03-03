@@ -303,6 +303,18 @@ pub fn (v ZVal) get_prop(name string) ZVal {
 	}
 }
 
+pub fn (v ZVal) prop(name string) ZVal {
+	return v.get_prop(name)
+}
+
+pub fn (v ZVal) set_prop(name string, value ZVal) {
+	if !v.is_object() || value.raw == 0 {
+		return
+	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	C.vphp_write_property_compat(obj, &char(name.str), name.len, value.raw)
+}
+
 // 快捷方式：属性 → string
 pub fn (v ZVal) get_prop_string(name string) string {
 	prop := v.get_prop(name)

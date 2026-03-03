@@ -92,6 +92,8 @@ void vphp_array_foreach(zval *z, void *ctx, void (*callback)(void *, zval *));
 // 属性与兼容层
 zval *vphp_read_property_compat(zend_object *obj, const char *name,
                                 int name_len, zval *rv);
+void vphp_write_property_compat(zend_object *obj, const char *name, int name_len,
+                                zval *value);
 
 // 状态获取
 char *VPHP_Z_STRVAL(zval *z);

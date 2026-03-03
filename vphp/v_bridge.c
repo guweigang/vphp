@@ -304,6 +304,11 @@ zval *vphp_read_property_compat(zend_object *obj, const char *name,
   return zend_get_std_object_handlers()->read_property(
       obj, zend_string_init(name, name_len, 0), BP_VAR_R, NULL, rv);
 }
+void vphp_write_property_compat(zend_object *obj, const char *name, int name_len,
+                                zval *value) {
+  zend_get_std_object_handlers()->write_property(
+      obj, zend_string_init(name, name_len, 0), value, NULL);
+}
 void vphp_write_property(zend_object *object, zend_string *member, zval *value,
                          void **cache_slot) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);

@@ -120,6 +120,22 @@ fn v_analyze_user_object(ctx vphp.Context) {
 	ctx.return_string(res_msg)
 }
 
+@[export: 'v_mutate_user_object']
+fn v_mutate_user_object(ctx vphp.Context) {
+	user_obj := ctx.arg_raw(0)
+	if !user_obj.is_object() {
+		vphp.throw_exception('需要 User 对象', 0)
+		return
+	}
+
+	user_obj.set_prop('name', vphp.new_val_string('Updated by V'))
+	user_obj.set_prop('age', vphp.new_val_int(20))
+
+	name := user_obj.prop('name').to_string()
+	age := user_obj.prop('age').to_int()
+	ctx.return_string('updated=${name}:${age}')
+}
+
 @[export: 'v_trigger_user_action']
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
