@@ -133,7 +133,7 @@ fn v_trigger_user_action(ctx vphp.Context) {
 	}
 	score_val.set_int(100)
 
-	res := user_obj.call('updateScore', [score_val])
+	res := user_obj.method('updateScore', [score_val])
 
 	if ctx.has_exception() {
 		return
@@ -151,7 +151,7 @@ fn v_call_php_closure(ctx vphp.Context) {
 	}
 	msg.set_string('Message from V Engine')
 
-	res := cb.invoke([msg])
+	res := cb.call([msg])
 
 	if ctx.has_exception() {
 		return

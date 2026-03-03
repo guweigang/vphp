@@ -146,7 +146,7 @@ pub fn (a &Article) process_with_callback(callback vphp.ZVal) bool {
     mut args := []vphp.ZVal{}
     args << vphp.new_val_string('Calling from V')
 
-    res := callback.invoke(args)
+    res := callback.call(args)
     if res.raw == 0 {
         return false
     }

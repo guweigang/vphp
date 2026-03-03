@@ -348,10 +348,10 @@ pub fn (v ZVal) get_prop_bool(name string) bool {
 	return prop.to_bool()
 }
 
-// ======== 方法调用 ========
+// ======== PHP interop ========
 
 // 调用对象方法 $obj->method(args...)
-pub fn (v ZVal) call(method string, args []ZVal) ZVal {
+pub fn (v ZVal) method(method string, args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_object() {
 		return unsafe {
 			ZVal{
@@ -380,8 +380,8 @@ pub fn (v ZVal) call(method string, args []ZVal) ZVal {
 	}
 }
 
-// 调用 callable（闭包、匿名函数等）
-pub fn (v ZVal) invoke(args []ZVal) ZVal {
+// 调用 callable（闭包、匿名函数、函数名字符串等）
+pub fn (v ZVal) call(args []ZVal) ZVal {
 	if v.raw == 0 {
 		return unsafe {
 			ZVal{
@@ -407,6 +407,16 @@ pub fn (v ZVal) invoke(args []ZVal) ZVal {
 			raw: retval
 		}
 	}
+}
+
+// 兼容旧 API：对象方法调用
+pub fn (v ZVal) call_method(method string, args []ZVal) ZVal {
+	return v.method(method, args)
+}
+
+// 兼容旧 API：callable 调用
+pub fn (v ZVal) invoke(args []ZVal) ZVal {
+	return v.call(args)
 }
 
 // ======== 工厂方法 ========

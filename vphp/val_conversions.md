@@ -99,7 +99,7 @@ out.from_v[map[string]f64]({
 ```v
 arg0 := new_zval_from[string]('hello') or { return }
 arg1 := new_zval_from[int](42) or { return }
-res := callable.invoke([arg0, arg1])
+res := callable.call([arg0, arg1])
 ```
 
 ## 4. Semantic Val[T] API
