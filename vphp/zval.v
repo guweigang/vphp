@@ -527,7 +527,7 @@ pub fn (v ZVal) static_prop(name string) ZVal {
 	}
 }
 
-pub fn (v ZVal) constant(name string) ZVal {
+pub fn (v ZVal) @const(name string) ZVal {
 	if v.raw == 0 || !v.is_string() {
 		return unsafe {
 			ZVal{
@@ -542,6 +542,11 @@ pub fn (v ZVal) constant(name string) ZVal {
 	return ZVal{
 		raw: res
 	}
+}
+
+// 兼容旧命名：建议改用 `.@const(...)`
+pub fn (v ZVal) constant(name string) ZVal {
+	return v.@const(name)
 }
 
 pub fn (v ZVal) set_static_prop(name string, value ZVal) {
@@ -571,8 +576,8 @@ pub fn (v ZVal) static_prop_v[T](name string) !T {
 	return v.static_prop(name).to_v[T]()
 }
 
-pub fn (v ZVal) constant_v[T](name string) !T {
-	return v.constant(name).to_v[T]()
+pub fn (v ZVal) const_v[T](name string) !T {
+	return v.@const(name).to_v[T]()
 }
 
 // -------- Typed object helpers --------
@@ -597,6 +602,11 @@ pub fn (v ZVal) construct_object[T](args []ZVal) ?&T {
 
 pub fn (v ZVal) static_method_object[T](method string, args []ZVal) ?&T {
 	return v.static_method(method, args).to_object[T]()
+}
+
+// 兼容旧命名：建议改用 `.const_v[T](...)`
+pub fn (v ZVal) constant_v[T](name string) !T {
+	return v.const_v[T](name)
 }
 
 // -------- Compatibility aliases --------

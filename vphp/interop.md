@@ -46,7 +46,7 @@ These are the low-level interop actions:
 | `z.static_method(name, args)` | call class static method |
 | `z.static_prop(name)` | read static property |
 | `z.set_static_prop(name, value)` | write static property |
-| `z.constant(name)` | read class constant |
+| `z.@const(name)` | read class constant |
 
 Example:
 
@@ -75,13 +75,13 @@ Convenience wrappers are available:
 | `method_v[T](name, args)` | `method(name, args).to_v[T]()` |
 | `prop_v[T](name)` | `prop(name).to_v[T]()` |
 | `static_prop_v[T](name)` | `static_prop(name).to_v[T]()` |
-| `constant_v[T](name)` | `constant(name).to_v[T]()` |
+| `const_v[T](name)` | `@const(name).to_v[T]()` |
 
 Example:
 
 ```v
 count := vphp.php_class('PhpCounter').static_prop_v[int]('count')!
-label := vphp.php_class('PhpTypedBox').constant_v[string]('LABEL')!
+label := vphp.php_class('PhpTypedBox').const_v[string]('LABEL')!
 ```
 
 ## 4. Typed Object Helpers
@@ -256,7 +256,7 @@ article := vphp.php_class('Article').construct_object[Article]([
 	return
 }
 
-label := vphp.php_class('Article').constant_v[string]('NAME') or {
+label := vphp.php_class('Article').const_v[string]('NAME') or {
 	'unknown'
 }
 

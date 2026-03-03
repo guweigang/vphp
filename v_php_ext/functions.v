@@ -190,11 +190,11 @@ fn v_mutate_php_static_prop(ctx vphp.Context) {
 
 @[export: 'v_read_php_class_constant']
 fn v_read_php_class_constant(ctx vphp.Context) {
-	article_max := vphp.php_class('Article').constant_v[int]('MAX_TITLE_LEN') or {
+	article_max := vphp.php_class('Article').const_v[int]('MAX_TITLE_LEN') or {
 		vphp.throw_exception('读取 Article::MAX_TITLE_LEN 失败: ${err.msg()}', 0)
 		return
 	}
-	php_version := vphp.php_class('PhpMeta').constant_v[string]('VERSION') or {
+	php_version := vphp.php_class('PhpMeta').const_v[string]('VERSION') or {
 		vphp.throw_exception('读取 PhpMeta::VERSION 失败: ${err.msg()}', 0)
 		return
 	}
@@ -225,7 +225,7 @@ fn v_typed_php_interop(ctx vphp.Context) {
 		vphp.throw_exception('读取静态属性 count 失败: ${err.msg()}', 0)
 		return
 	}
-	label := vphp.php_class('PhpTypedBox').constant_v[string]('LABEL') or {
+	label := vphp.php_class('PhpTypedBox').const_v[string]('LABEL') or {
 		vphp.throw_exception('读取类常量 LABEL 失败: ${err.msg()}', 0)
 		return
 	}
