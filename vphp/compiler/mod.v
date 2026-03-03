@@ -3,6 +3,7 @@ module compiler
 
 import v.ast
 import v.pref
+import compiler.parser as cparser
 import v.parser
 import compiler.repr
 
@@ -54,16 +55,14 @@ pub fn (mut c Compiler) compile() !string {
 	// --- 第一阶段：扫描所有 Struct 定义 ---
 	for stmt in all_stmts {
 		if stmt is ast.InterfaceDecl {
-			mut iface := repr.new_interface_repr()
-			if iface.parse(stmt, c.table) {
+			if iface := cparser.parse_interface_decl(stmt, c.table) {
 				c.elements << iface
 				continue
 			}
 		}
 
 		if stmt is ast.EnumDecl {
-			mut enum_repr := repr.new_enum_repr()
-			if enum_repr.parse(stmt, c.table) {
+			if enum_repr := cparser.parse_enum_decl(stmt, c.table) {
 				if enum_repr.parse_err != '' {
 					return error(enum_repr.parse_err)
 				}
@@ -75,14 +74,14 @@ pub fn (mut c Compiler) compile() !string {
 		if stmt is ast.StructDecl {
 			// A. 探测是否是 Zend Globals 定义
 			if c.globals_repr.name == '' {
-				if c.globals_repr.parse(stmt, c.table) {
+				if globals_repr := cparser.parse_globals_decl(stmt, c.table) {
+					c.globals_repr = globals_repr
 					continue
 				}
 			}
 
 			// B. 或者是普通类定义
-			mut cls := repr.new_class_repr()
-			if cls.parse(stmt, c.table) {
+			if cls := cparser.parse_class_decl(stmt, c.table) {
 				// 记录该类在 elements 数组中的位置
 				c.class_index[cls.name] = c.elements.len
 				c.elements << cls
@@ -130,23 +129,20 @@ pub fn (mut c Compiler) compile() !string {
 			}
 
 			// 3. 否则，作为普通全局函数处理
-			mut func := repr.new_func_repr()
-			if func.parse(stmt, c.table) {
+			if func := cparser.parse_function_decl(stmt, c.table) {
 				c.elements << func
 				continue
 			}
 		}
 
 		// 2. 尝试作为常量解析
-		mut con := repr.new_const_repr()
-		if con.parse(stmt, c.table) {
+		if con := cparser.parse_constant_decl(stmt, c.table) {
 			c.elements << con
 			continue
 		}
 
 		// 3. 任务识别逻辑
-		mut task := repr.new_task_repr()
-		if task.parse(stmt, c.table) {
+		if task := cparser.parse_task_decl(stmt, c.table) {
 			c.elements << task
 			continue
 		}
