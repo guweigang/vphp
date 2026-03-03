@@ -385,8 +385,15 @@ pub fn (v ZVal) get_prop_bool(name string) bool {
 }
 
 // ======== PHP interop ========
+// 和 `interop.md` 保持一致的分层：
+// 1. 基础动作
+// 2. typed value helpers
+// 3. typed object helpers
+// 4. compatibility aliases
 
-// 调用对象方法 $obj->method(args...)
+// -------- Base actions --------
+
+// 调用对象方法：$obj->method(args...)
 pub fn (v ZVal) method(method string, args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_object() {
 		return unsafe {
@@ -545,34 +552,39 @@ pub fn (v ZVal) set_static_prop(name string, value ZVal) {
 		&char(name.str), name.len, value.raw)
 }
 
-// 兼容旧 API：对象方法调用
-pub fn (v ZVal) call_method(method string, args []ZVal) ZVal {
-	return v.method(method, args)
-}
-
-// 兼容旧 API：callable 调用
-pub fn (v ZVal) invoke(args []ZVal) ZVal {
-	return v.call(args)
-}
+// -------- Typed value helpers --------
+// 本质上是 `base action + to_v[T]()` 的语法糖。
 
 pub fn (v ZVal) call_v[T](args []ZVal) !T {
 	return v.call(args).to_v[T]()
-}
-
-pub fn (v ZVal) call_object[T](args []ZVal) ?&T {
-	return v.call(args).to_object[T]()
 }
 
 pub fn (v ZVal) method_v[T](method string, args []ZVal) !T {
 	return v.method(method, args).to_v[T]()
 }
 
-pub fn (v ZVal) method_object[T](method string, args []ZVal) ?&T {
-	return v.method(method, args).to_object[T]()
-}
-
 pub fn (v ZVal) prop_v[T](name string) !T {
 	return v.prop(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_prop_v[T](name string) !T {
+	return v.static_prop(name).to_v[T]()
+}
+
+pub fn (v ZVal) constant_v[T](name string) !T {
+	return v.constant(name).to_v[T]()
+}
+
+// -------- Typed object helpers --------
+// 只对 `vphp` 导出的对象有意义，
+// 本质上是 `base action + to_object[T]()` 的语法糖。
+
+pub fn (v ZVal) call_object[T](args []ZVal) ?&T {
+	return v.call(args).to_object[T]()
+}
+
+pub fn (v ZVal) method_object[T](method string, args []ZVal) ?&T {
+	return v.method(method, args).to_object[T]()
 }
 
 pub fn (v ZVal) prop_object[T](name string) ?&T {
@@ -583,16 +595,20 @@ pub fn (v ZVal) construct_object[T](args []ZVal) ?&T {
 	return v.construct(args).to_object[T]()
 }
 
-pub fn (v ZVal) static_prop_v[T](name string) !T {
-	return v.static_prop(name).to_v[T]()
-}
-
 pub fn (v ZVal) static_method_object[T](method string, args []ZVal) ?&T {
 	return v.static_method(method, args).to_object[T]()
 }
 
-pub fn (v ZVal) constant_v[T](name string) !T {
-	return v.constant(name).to_v[T]()
+// -------- Compatibility aliases --------
+
+// 兼容旧 API：对象方法调用
+pub fn (v ZVal) call_method(method string, args []ZVal) ZVal {
+	return v.method(method, args)
+}
+
+// 兼容旧 API：callable 调用
+pub fn (v ZVal) invoke(args []ZVal) ZVal {
+	return v.call(args)
 }
 
 // ======== 工厂方法 ========
