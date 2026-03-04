@@ -13,6 +13,25 @@ This directory contains runnable example apps for `vslim`.
 - named routes
 - `url_for()` / `redirect_to()`
 
+```php
+<?php
+declare(strict_types=1);
+
+$app = new VSlimApp();
+
+$app->get_named('hello.show', '/hello/:name', function (VSlimRequest $req) {
+    return new VSlimResponse(
+        200,
+        'Hello, ' . $req->param('name'),
+        'text/plain; charset=utf-8'
+    );
+});
+
+$app->get('/go/:name', function (VSlimRequest $req) use ($app) {
+    return $app->redirect_to('hello.show', ['name' => $req->param('name')]);
+});
+```
+
 ## Build
 
 From the `vslim` directory:
