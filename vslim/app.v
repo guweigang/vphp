@@ -49,6 +49,8 @@ pub mut:
 	host string
 	remote_addr string
 	headers_json string
+	cookies_json string
+	params_json string
 }
 
 @[php_method]
@@ -61,6 +63,8 @@ pub fn (mut r VSlimRequest) construct(method string, raw_path string, body strin
 	r.host = ''
 	r.remote_addr = ''
 	r.headers_json = '{}'
+	r.cookies_json = '{}'
+	r.params_json = '{}'
 	return r
 }
 
@@ -91,8 +95,40 @@ pub fn (r &VSlimRequest) has_header(name string) bool {
 	return normalize_header_name(name) in headers
 }
 
+@[php_method]
+pub fn (r &VSlimRequest) cookie(name string) string {
+	cookies := r.cookies()
+	return cookies[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_cookie(name string) bool {
+	cookies := r.cookies()
+	return name in cookies
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) param(name string) string {
+	params := r.params()
+	return params[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_param(name string) bool {
+	params := r.params()
+	return name in params
+}
+
 pub fn (r &VSlimRequest) headers() map[string]string {
 	return parse_headers_json(r.headers_json)
+}
+
+pub fn (r &VSlimRequest) cookies() map[string]string {
+	return parse_name_map_json(r.cookies_json)
+}
+
+pub fn (r &VSlimRequest) params() map[string]string {
+	return parse_name_map_json(r.params_json)
 }
 
 pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
@@ -215,6 +251,8 @@ pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequ
 		host: ''
 		remote_addr: ''
 		headers_json: '{}'
+		cookies_json: '{}'
+		params_json: '{}'
 	}
 }
 
@@ -233,6 +271,8 @@ pub fn new_vslim_request_from_envelope(envelope map[string]string) &VSlimRequest
 		host: envelope['host'] or { '' }
 		remote_addr: envelope['remote_addr'] or { '' }
 		headers_json: envelope['headers_json'] or { '{}' }
+		cookies_json: envelope['cookies_json'] or { '{}' }
+		params_json: envelope['params_json'] or { '{}' }
 	}
 }
 
@@ -253,7 +293,11 @@ pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
 pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 	_ = app
 	mut slim := new_slim_demo_app()
-	res := slim.dispatch(req.to_slim_request())
+	res, params := dispatch_demo_request_with_params(req.to_slim_request())
+	unsafe {
+		mut writable := &VSlimRequest(req)
+		writable.params_json = json.encode(params)
+	}
 	return to_vslim_response(res)
 }
 
@@ -305,13 +349,18 @@ fn parse_query_string(query_str string) map[string]string {
 	return out
 }
 
+fn parse_name_map_json(raw string) map[string]string {
+	if raw == '' {
+		return map[string]string{}
+	}
+	decoded := json.decode(map[string]string, raw) or {
+		return map[string]string{}
+	}
+	return decoded
+}
+
 fn parse_headers_json(headers_json string) map[string]string {
-	if headers_json == '' {
-		return map[string]string{}
-	}
-	decoded := json.decode(map[string]string, headers_json) or {
-		return map[string]string{}
-	}
+	decoded := parse_name_map_json(headers_json)
 	mut out := map[string]string{}
 	for key, value in decoded {
 		out[normalize_header_name(key)] = value
@@ -451,6 +500,30 @@ fn request_from_envelope(envelope map[string]string) SlimRequest {
 fn dispatch_demo_request(req SlimRequest) SlimResponse {
 	mut app := new_slim_demo_app()
 	return app.dispatch(req)
+}
+
+fn dispatch_demo_request_with_params(req SlimRequest) (SlimResponse, map[string]string) {
+	mut app := new_slim_demo_app()
+	method := req.method.to_upper()
+	path := normalize_path(req.path)
+	mut method_not_allowed := false
+	for route in app.routes {
+		ok, params := match_route(route.pattern, path)
+		if !ok {
+			continue
+		}
+		if route.method != method {
+			method_not_allowed = true
+			continue
+		}
+		mut bound := req
+		bound.params = params.clone()
+		return app.run_middleware(0, bound), params
+	}
+	if method_not_allowed {
+		return method_not_allowed_response(), map[string]string{}
+	}
+	return not_found_response(), map[string]string{}
 }
 
 @[php_function]

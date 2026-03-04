@@ -111,11 +111,14 @@ $req->scheme = 'https';
 $req->host = 'demo.local';
 $req->remote_addr = '127.0.0.1';
 $req->headers_json = '{"x-trace-id":"from-header"}';
+$req->cookies_json = '{"sid":"cookie-7"}';
 
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');
 
 $res = $app->dispatch_request($req);
+echo $req->param('id');
+echo $req->cookie('sid');
 ```
 
 也可以直接用函数入口：

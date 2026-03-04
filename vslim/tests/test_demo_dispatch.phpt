@@ -38,7 +38,9 @@ $req->scheme = 'https';
 $req->host = 'demo.local';
 $req->remote_addr = '127.0.0.1';
 $req->headers_json = '{"x-trace-id":"from-header","content-type":"application/json"}';
+$req->cookies_json = '{"sid":"cookie-7"}';
 echo $req->header('x-trace-id') . '|' . ($req->has_header('content-type') ? 'yes' : 'no') . '|' . $req->scheme . '|' . $req->host . '|' . $req->remote_addr . PHP_EOL;
+echo $req->cookie('sid') . '|' . ($req->has_cookie('sid') ? 'yes' : 'no') . '|' . $req->param('id') . '|' . ($req->has_param('id') ? 'yes' : 'no') . PHP_EOL;
 
 $envelope = vslim_handle_request([
     'method' => 'GET',
@@ -48,6 +50,7 @@ $envelope = vslim_handle_request([
     'host' => 'worker.local',
     'remote_addr' => '10.0.0.8',
     'headers_json' => '{"x-worker":"yes"}',
+    'cookies_json' => '{"session":"worker-cookie"}',
 ]);
 echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_type'] . PHP_EOL;
 ?>
@@ -63,4 +66,5 @@ echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_ty
 200|{"user":"7","trace":"from-php"}|application/json; charset=utf-8
 from-php|yes
 from-header|yes|https|demo.local|127.0.0.1
+cookie-7|yes|7|yes
 200|secret|text/plain; charset=utf-8
