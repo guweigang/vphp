@@ -1,4 +1,4 @@
-.PHONY: all build extension test clean
+.PHONY: all build ext test clean
 
 BREW_PATH ?= /opt/homebrew
 DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
@@ -15,7 +15,7 @@ build:
 	v -path ".:..:@vlib" run build.v
 
 # 仅使用仓库中已有的生成物链接扩展
-extension:
+ext:
 	@if [ -z "$(EXT_C)" ]; then \
 		echo "Error: no transpiled extension C file found (expected vphp_ext_*.c)."; \
 		exit 1; \
