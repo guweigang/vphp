@@ -40,7 +40,7 @@
 
 当前测试状态：
 
-- `31 PASS`
+- `36 PASS`
 - `1 SKIP`
 - `0 FAIL`
 
@@ -132,7 +132,7 @@ module main
 
 import vphp
 
-@[export: 'v_logic_main']
+@[php_function]
 fn v_logic_main(ctx vphp.Context) {
 	name := ctx.arg[string](0)
 	ctx.return_string('Hello, ${name}')
@@ -197,7 +197,7 @@ formatted := obj.method('format', [
 
 ```bash
 cd /Users/guweigang/Source/vphpext/v_php_ext
-v run build.v
+make build
 ```
 
 成功后会生成：
@@ -205,7 +205,24 @@ v run build.v
 - `php_bridge.h`
 - `php_bridge.c`
 - `bridge.v`
+- `vphp_ext_vphptest.c`
 - `v_php_ext.so`
+
+如果你已经提前跑过 `vphp` 编译器，并且仓库里已有生成的中间 C 文件，也可以直接跳过 compile 阶段，只做最终链接：
+
+```bash
+cd /Users/guweigang/Source/vphpext/v_php_ext
+make ext
+```
+
+现在的构建入口是：
+
+- `make build`
+  - 完整流程：`vphp compile + 代码生成 + V 转 C + GCC 链接`
+- `make ext`
+  - 只使用仓库中现成的 `vphp_ext_*.c` / `php_bridge.c` / `php_bridge.h` 做最终链接
+- `make test`
+  - 先完整构建，再运行 `phpt`
 
 ## 测试
 
