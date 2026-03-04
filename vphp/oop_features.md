@@ -46,6 +46,7 @@ Notes:
 
 - field-level PHP attributes are still limited by current V syntax, so some metadata is inferred indirectly
 - object property synchronization is field-based and scalar-oriented
+- generated property interop handlers only expose `public` fields; protected fields keep Zend visibility checks
 
 ## `@[php_method]`
 
