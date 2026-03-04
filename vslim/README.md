@@ -12,18 +12,15 @@
 
 ## 当前目标
 
-当前目录先落的是一个最小骨架：
+这版 `vslim` 已经把早期在 `v_php_ext/slim.v` 里验证过的 MVP 核心迁了过来，并保留独立扩展形态。
 
-- `VSlimApp`
-- `VSlimResponse`
-- `vslim_handle_request()`
-- `vslim_demo_dispatch()`
+当前包括：
 
-它现在已经能表达一条完整边界：
-
-- PHP 侧调用 `VSlimApp::demo()->dispatch(...)`
-- 或直接调用 `vslim_handle_request()`
-- 得到一个标准化响应结构
+- `SlimApp` 路由核心（纯 V）
+- middleware chain
+- 路由参数匹配
+- `VSlimApp` / `VSlimResponse` 作为 PHP-facing façade
+- `vslim_handle_request()` / `vslim_demo_dispatch()` 作为稳定函数入口
 
 ## 与 vhttpd 的交互模型
 
@@ -42,10 +39,10 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 
 - PHP worker
   - 负责加载业务代码和 Composer 生态
-  - 调用 `vslim_handle_request(...)` 或 `VSlim\\App`
+  - 调用 `vslim_handle_request(...)` 或 `VSlimApp`
 
 - `vslim`
-  - 负责路由匹配、请求分发、响应封装
+  - 负责路由匹配、middleware、请求分发、响应封装
   - 输出稳定的 `{status, body, content_type}` 结构
 
 ## 为什么这样分层
@@ -65,8 +62,31 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 ## 当前示例路由
 
 - `GET /health`
-- `GET /hello/:name`
+- `GET /users/:id`
+- `GET /private`
+- `GET /panic`
 - `GET /meta`
+
+中间件：
+
+- `with_trace_id`
+- `auth_guard`
+
+## 当前 PHP 面
+
+```php
+$app = VSlimApp::demo();
+$res = $app->dispatch('GET', '/users/42');
+
+echo $res->status;
+echo $res->body;
+```
+
+也可以直接用函数入口：
+
+```php
+$r = vslim_demo_dispatch('GET', '/private?token=ok');
+```
 
 ## 构建与测试
 
@@ -79,7 +99,7 @@ make test
 
 ## 下一步建议
 
-1. 给 `VSlim\\App` 加 middleware
-2. 给 `VSlim\\Request` 建模
-3. 定义 `vhttpd <-> PHP worker <-> vslim` 的标准请求/响应协议
+1. 给 `VSlimRequest` 建模并导出
+2. 把 `vhttpd -> PHP worker -> vslim_handle_request` 的协议标准化
+3. 把 demo app 提升成可配置 app builder
 4. 再考虑是否导出更完整的 PHP 面向对象 API

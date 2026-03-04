@@ -2,7 +2,7 @@ module main
 
 import vphp
 
-pub struct RouteRequest {
+pub struct SlimRequest {
 pub mut:
 	method string
 	path   string
@@ -11,20 +11,92 @@ pub mut:
 	body   string
 }
 
-pub struct RouteResponse {
+pub struct SlimResponse {
 pub mut:
-	status       int
-	body         string
-	content_type string
+	status  int
+	body    string
+	headers map[string]string
 }
 
-pub type RouteHandler = fn (RouteRequest) RouteResponse
+pub type SlimHandler = fn (SlimRequest) SlimResponse
+pub type SlimNext = fn (SlimRequest) SlimResponse
+pub type SlimMiddleware = fn (SlimRequest, SlimNext) SlimResponse
 
-pub struct Route {
+pub struct SlimRoute {
 pub:
 	method  string
 	pattern string
-	handler RouteHandler = unsafe { nil }
+	handler SlimHandler = unsafe { nil }
+}
+
+pub struct SlimApp {
+mut:
+	routes      []SlimRoute
+	middlewares []SlimMiddleware
+}
+
+pub fn new_slim_app() SlimApp {
+	return SlimApp{}
+}
+
+pub fn (mut app SlimApp) use(mw SlimMiddleware) {
+	app.middlewares << mw
+}
+
+pub fn (mut app SlimApp) get(pattern string, handler SlimHandler) {
+	app.routes << SlimRoute{
+		method: 'GET'
+		pattern: pattern
+		handler: handler
+	}
+}
+
+pub fn (mut app SlimApp) post(pattern string, handler SlimHandler) {
+	app.routes << SlimRoute{
+		method: 'POST'
+		pattern: pattern
+		handler: handler
+	}
+}
+
+pub fn (app SlimApp) dispatch(req SlimRequest) SlimResponse {
+	return app.run_middleware(0, req)
+}
+
+fn (app SlimApp) run_middleware(index int, req SlimRequest) SlimResponse {
+	if index >= app.middlewares.len {
+		return app.dispatch_route(req)
+	}
+	mw := app.middlewares[index]
+	next := fn [app, index] (r SlimRequest) SlimResponse {
+		return app.run_middleware(index + 1, r)
+	}
+	return mw(req, next)
+}
+
+fn (app SlimApp) dispatch_route(req SlimRequest) SlimResponse {
+	method := req.method.to_upper()
+	path := normalize_path(req.path)
+	mut method_not_allowed := false
+
+	for route in app.routes {
+		ok, params := match_route(route.pattern, path)
+		if !ok {
+			continue
+		}
+		if route.method != method {
+			method_not_allowed = true
+			continue
+		}
+		mut bound := req
+		bound.params = params.clone()
+		return route.handler(bound)
+	}
+
+	if method_not_allowed {
+		return method_not_allowed_response()
+	}
+	return not_found_response()
 }
 
 @[heap]
@@ -46,8 +118,8 @@ pub fn (mut r VSlimResponse) construct(status int, body string, content_type str
 
 pub fn (r &VSlimResponse) as_array() map[string]string {
 	return {
-		'status':       '${r.status}'
-		'body':         r.body
+		'status': '${r.status}'
+		'body': r.body
 		'content_type': r.content_type
 	}
 }
@@ -70,17 +142,22 @@ pub fn VSlimApp.demo() &VSlimApp {
 pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
 	_ = app
 	path, query := split_path_and_query(raw_path)
-	res := demo_dispatch(RouteRequest{
+	mut slim := new_slim_demo_app()
+	res := slim.dispatch(SlimRequest{
 		method: method
 		path: path
 		params: map[string]string{}
 		query: query
 		body: ''
 	})
+	return to_vslim_response(res)
+}
+
+fn to_vslim_response(res SlimResponse) &VSlimResponse {
 	return &VSlimResponse{
 		status: res.status
 		body: res.body
-		content_type: res.content_type
+		content_type: res.headers['content-type'] or { '' }
 	}
 }
 
@@ -92,45 +169,6 @@ fn normalize_path(path string) string {
 		return path
 	}
 	return '/${path}'
-}
-
-fn split_path_and_query(raw_path string) (string, map[string]string) {
-	path := normalize_path(raw_path)
-	if !path.contains('?') {
-		return path, map[string]string{}
-	}
-	base := path.all_before('?')
-	query_str := path.all_after('?')
-	mut out := map[string]string{}
-	for pair in query_str.split('&') {
-		if pair == '' {
-			continue
-		}
-		if pair.contains('=') {
-			k := pair.all_before('=')
-			v := pair.all_after('=')
-			out[k] = v
-		} else {
-			out[pair] = ''
-		}
-	}
-	return normalize_path(base), out
-}
-
-fn text_response(status int, body string) RouteResponse {
-	return RouteResponse{
-		status: status
-		body: body
-		content_type: 'text/plain; charset=utf-8'
-	}
-}
-
-fn json_response(status int, json_body string) RouteResponse {
-	return RouteResponse{
-		status: status
-		body: json_body
-		content_type: 'application/json; charset=utf-8'
-	}
 }
 
 fn match_route(pattern string, path string) (bool, map[string]string) {
@@ -161,63 +199,137 @@ fn match_route(pattern string, path string) (bool, map[string]string) {
 	return true, params
 }
 
-fn demo_routes() []Route {
-	return [
-		Route{
-			method: 'GET'
-			pattern: '/health'
-			handler: fn (_ RouteRequest) RouteResponse {
-				return text_response(200, 'OK')
-			}
-		},
-		Route{
-			method: 'GET'
-			pattern: '/hello/:name'
-			handler: fn (req RouteRequest) RouteResponse {
-				name := req.params['name'] or { 'world' }
-				return text_response(200, 'Hello, ${name}')
-			}
-		},
-		Route{
-			method: 'GET'
-			pattern: '/meta'
-			handler: fn (_ RouteRequest) RouteResponse {
-				return json_response(200, '{"runtime":"vslim","bridge":"vphp","server":"vhttpd"}')
-			}
-		},
-	]
+fn text_response(status int, body string) SlimResponse {
+	return SlimResponse{
+		status: status
+		body: body
+		headers: {
+			'content-type': 'text/plain; charset=utf-8'
+		}
+	}
 }
 
-fn demo_dispatch(req RouteRequest) RouteResponse {
-	method := req.method.to_upper()
-	path := normalize_path(req.path)
-	mut method_not_allowed := false
-	for route in demo_routes() {
-		ok, params := match_route(route.pattern, path)
-		if !ok {
-			continue
+fn json_response(status int, json_body string) SlimResponse {
+	return SlimResponse{
+		status: status
+		body: json_body
+		headers: {
+			'content-type': 'application/json; charset=utf-8'
 		}
-		if route.method != method {
-			method_not_allowed = true
-			continue
-		}
-		mut bound := req
-		bound.params = params.clone()
-		return route.handler(bound)
 	}
-	if method_not_allowed {
-		return text_response(405, 'Method Not Allowed')
-	}
+}
+
+fn not_found_response() SlimResponse {
 	return text_response(404, 'Not Found')
+}
+
+fn method_not_allowed_response() SlimResponse {
+	return text_response(405, 'Method Not Allowed')
+}
+
+fn internal_error_response() SlimResponse {
+	return text_response(500, 'Internal Server Error')
+}
+
+fn with_trace_id(req SlimRequest, next SlimNext) SlimResponse {
+	mut out := req
+	if out.query['trace_id'] == '' {
+		out.query['trace_id'] = 'trace-local-mvp'
+	}
+	return next(out)
+}
+
+fn auth_guard(req SlimRequest, next SlimNext) SlimResponse {
+	if req.path == '/private' {
+		token := req.query['token'] or { '' }
+		if token != 'ok' {
+			return text_response(401, 'Unauthorized')
+		}
+	}
+	return next(req)
+}
+
+fn health_handler(req SlimRequest) SlimResponse {
+	_ = req
+	return text_response(200, 'OK')
+}
+
+fn user_handler(req SlimRequest) SlimResponse {
+	user_id := req.params['id'] or { 'unknown' }
+	trace_id := req.query['trace_id'] or { '' }
+	return json_response(200, '{"user":"${user_id}","trace":"${trace_id}"}')
+}
+
+fn private_handler(req SlimRequest) SlimResponse {
+	_ = req
+	return text_response(200, 'secret')
+}
+
+fn panic_handler(req SlimRequest) SlimResponse {
+	_ = req
+	return internal_error_response()
+}
+
+fn meta_handler(req SlimRequest) SlimResponse {
+	trace_id := req.query['trace_id'] or { '' }
+	return json_response(200, '{"runtime":"vslim","bridge":"vphp","server":"vhttpd","trace":"${trace_id}"}')
+}
+
+fn split_path_and_query(raw_path string) (string, map[string]string) {
+	path := normalize_path(raw_path)
+	if !path.contains('?') {
+		return path, map[string]string{}
+	}
+	base := path.all_before('?')
+	query_str := path.all_after('?')
+	mut out := map[string]string{}
+	for pair in query_str.split('&') {
+		if pair == '' {
+			continue
+		}
+		if pair.contains('=') {
+			k := pair.all_before('=')
+			v := pair.all_after('=')
+			out[k] = v
+		} else {
+			out[pair] = ''
+		}
+	}
+	return normalize_path(base), out
+}
+
+fn new_slim_demo_app() SlimApp {
+	mut app := new_slim_app()
+	app.use(with_trace_id)
+	app.use(auth_guard)
+	app.get('/health', health_handler)
+	app.get('/users/:id', user_handler)
+	app.get('/private', private_handler)
+	app.get('/panic', panic_handler)
+	app.get('/meta', meta_handler)
+	return app
 }
 
 @[php_function]
 fn vslim_handle_request(ctx vphp.Context) {
 	method := ctx.arg[string](0)
 	raw_path := ctx.arg[string](1)
-	app := VSlimApp.demo()
-	res := app.dispatch(method, raw_path)
-	ctx.return_map(res.as_array())
+	path, query := split_path_and_query(raw_path)
+
+	mut app := new_slim_demo_app()
+	res := app.dispatch(SlimRequest{
+		method: method
+		path: path
+		params: map[string]string{}
+		query: query
+		body: ''
+	})
+
+	ctx.return_map({
+		'status': '${res.status}'
+		'body': res.body
+		'content_type': res.headers['content-type'] or { '' }
+	})
 }
 
 @[php_function]
