@@ -116,3 +116,75 @@ If `php-worker.php` finds an app bootstrap file (`VSLIM_HTTPD_APP` or `httpd/app
 - keep `vslim` native while letting `php-worker.php` speak PSR-7 at the edge
 
 `app.php` uses this adapter by default when the worker receives a PSR-7 request object.
+
+## Writing your own `app.php`
+
+`php-worker.php` looks for an app bootstrap in this order:
+
+1. `VSLIM_HTTPD_APP`
+2. `vslim/httpd/app.php`
+
+The bootstrap file should `return` a callable. The worker will call it like this:
+
+- with a PSR-7 request object and the raw envelope when a supported PSR-17 factory is available
+- with the raw envelope only when no PSR-7 factory is available
+
+### Simplest `vslim` app
+
+```php
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/vslim_psr7_adapter.php';
+
+return static function (mixed $request, array $envelope = []): VSlimResponse|array {
+    $app = VSlimApp::demo();
+
+    if (is_object($request)) {
+        return VSlimPsr7Adapter::dispatch($app, $request);
+    }
+
+    if (is_array($request)) {
+        return vslim_handle_request($request);
+    }
+
+    return [
+        'status' => 500,
+        'content_type' => 'text/plain; charset=utf-8',
+        'body' => 'No request payload available',
+    ];
+};
+```
+
+### Returning a PSR-7-style response object
+
+If your callable returns an object with:
+
+- `getStatusCode()`
+- `getHeaders()`
+- `getBody()`
+
+the worker will normalize it back into the transport envelope.
+
+This means you can place a PSR-7-oriented app behind `vhttpd` without changing `vhttpd` itself.
+
+### Returning an array directly
+
+You can also skip response objects and return:
+
+```php
+[
+    'status' => 200,
+    'content_type' => 'application/json; charset=utf-8',
+    'headers' => ['x-demo' => 'yes'],
+    'body' => '{"ok":true}',
+]
+```
+
+or just return a plain string:
+
+```php
+return 'hello from php-worker';
+```
+
+The worker will normalize these into the same wire format used by `vhttpd`.
