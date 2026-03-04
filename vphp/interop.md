@@ -168,6 +168,8 @@ loaded := vphp.include_once('/tmp/bootstrap.php')
 | `z.interface_names()` | 已实现接口列表 |
 | `z.is_internal_class()` | 是否 PHP 内建类 |
 | `z.is_user_class()` | 是否用户类 |
+| `z.is_instance_of(name)` | 是否是给定类/父类/接口的实例 |
+| `z.implements_interface(name)` | 是否实现指定接口 |
 | `z.method_exists(name)` | 方法是否存在 |
 | `z.property_exists(name)` | 属性是否存在 |
 | `z.method_names()` | 方法名列表 |

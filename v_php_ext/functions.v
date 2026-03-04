@@ -330,6 +330,10 @@ fn v_php_object_introspection(ctx vphp.Context) {
 	}
 
 	ctx.return_map({
+		'is_box':              obj.is_instance_of('Demo\\Inspect\\GreeterBox').str()
+		'is_datetime':         obj.is_instance_of('DateTimeImmutable').str()
+		'implements_string':   obj.implements_interface('Stringable').str()
+		'implements_json':     obj.implements_interface('JsonSerializable').str()
 		'has_method_greet':     obj.method_exists('greet').str()
 		'has_method_missing':   obj.method_exists('missingMethod').str()
 		'method_names':         obj.method_names().join(',')

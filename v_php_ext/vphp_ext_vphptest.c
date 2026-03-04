@@ -9703,14 +9703,16 @@ bool vphp__ZVal_is_internal_class(vphp__ZVal v);
 bool vphp__ZVal_is_user_class(vphp__ZVal v);
 Array_string vphp__ZVal_interface_names(vphp__ZVal v);
 VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_9336(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+bool vphp__ZVal_is_instance_of(vphp__ZVal v, string name);
+bool vphp__ZVal_implements_interface(vphp__ZVal v, string name);
 bool vphp__ZVal_method_exists(vphp__ZVal v, string name);
 bool vphp__ZVal_property_exists(vphp__ZVal v, string name);
 Array_string vphp__ZVal_method_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10177(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10517(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_property_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10649(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10989(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_const_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_11209(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_11549(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_const_exists(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_method(vphp__ZVal v, string method, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_call(vphp__ZVal v, Array_vphp__ZVal args);
@@ -9745,7 +9747,7 @@ _result_int vphp__ZVal_to_v_T_int(vphp__ZVal v);
 _result_i64 vphp__ZVal_to_v_T_i64(vphp__ZVal v);
 _result_Array_f64 vphp__ZVal_to_v_T_Array_f64(vphp__ZVal v);
 _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_map_string_string_20301(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_map_string_string_20641(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
 _result_Array_string vphp__ZVal_to_v_T_Array_string(vphp__ZVal v);
 _result_bool vphp__ZVal_to_v_T_bool(vphp__ZVal v);
 _result_f64 vphp__ZVal_to_v_T_f64(vphp__ZVal v);
@@ -11571,14 +11573,14 @@ VV_LOC void main__v_trigger_user_action(vphp__Context ctx);
 VV_LOC void main__v_call_php_closure(vphp__Context ctx);
 VV_LOC void main__v_test_globals(vphp__Context ctx);
 VV_LOC void main__v_get_v_closure(vphp__Context ctx);
-VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_10263(int n);
+VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_10559(int n);
 VV_LOC void main__v_get_v_closure_auto(vphp__Context ctx);
-struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535_Ctx {
+struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831_Ctx {
 	string prefix;
 };
 
-struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535_Ctx;
-VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535(string name, int count);
+struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831_Ctx;
+VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831(string name, int count);
 main__ReadonlyRecord* main__ReadonlyRecord_construct(main__ReadonlyRecord* r, string title);
 string main__ReadonlyRecord_reveal(main__ReadonlyRecord* r);
 VV_LOC void main__v_new_coach(vphp__Context ctx);
@@ -18413,19 +18415,19 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_9
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10177(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10517(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10649(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10989(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_11209(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_11549(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_map_string_string_20301(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_map_string_string_20641(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
 	builtin__map_set(m, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -18445,12 +18447,12 @@ VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26662(
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.symbol = vphp__Context_arg_T_string(ctx, 1),.count = vphp__Context_arg_T_int(ctx, 2),}, sizeof(main__AnalyzeTask))));
 }
 
-VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_10263(int n) {
+VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_10559(int n) {
 	return (int)(n * 10);
 }
 
-VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535(string name, int count) {
-	struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831(string name, int count) {
+	struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = _V_closure_ctx->prefix}}, {_S(": Hello "), 0xfe10, {.d_s = name}}, {_S(", count is "), 0xfe07, {.d_i32 = count}}, {_SLIT0, 0, { .d_c = 0 }}}));
 }
 
@@ -36766,6 +36768,19 @@ Array_string vphp__ZVal_interface_names(vphp__ZVal v) {
 	;
 	return out;
 }
+bool vphp__ZVal_is_instance_of(vphp__ZVal v, string name) {
+	if (v.raw == 0) {
+		return false;
+	}
+	vphp__ZVal res = vphp__ZVal_call(vphp__php_fn(_S("is_a")), builtin__new_array_from_c_array(3, 3, sizeof(vphp__ZVal), _MOV((vphp__ZVal[3]){v, vphp__ZVal__static__new_string(name), vphp__ZVal__static__new_bool(true)})));
+	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
+}
+bool vphp__ZVal_implements_interface(vphp__ZVal v, string name) {
+	if (name.len == 0) {
+		return false;
+	}
+	return (Array_string_contains(vphp__ZVal_interface_names(v), name));
+}
 bool vphp__ZVal_method_exists(vphp__ZVal v, string name) {
 	if (v.raw == 0) {
 		return false;
@@ -36790,7 +36805,7 @@ Array_string vphp__ZVal_method_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10177);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10517);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -36805,7 +36820,7 @@ Array_string vphp__ZVal_property_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10649);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_10989);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -36824,7 +36839,7 @@ Array_string vphp__ZVal_const_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_11209);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_array_string_11549);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -37347,7 +37362,7 @@ _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v) {
 		}
 		Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_map_string_string_20301);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_86_vphp__zval_vphp__zval_mut_map_string_string_20641);
 		_result_Map_string_string _t14;
 		builtin___result_ok(&(Map_string_string[]) { out }, (_result*)(&_t14), sizeof(Map_string_string));
 		 
@@ -81952,8 +81967,12 @@ VV_LOC void main__v_php_object_introspection(vphp__Context ctx) {
 		vphp__throw_exception(_S("\351\234\200\350\246\201\345\257\271\350\261\241\345\217\202\346\225\260"), 0);
 		return;
 	}
-	vphp__Context_return_map_T_string(ctx, builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 8, sizeof(string), sizeof(string),
-		_MOV((string[8]){
+	vphp__Context_return_map_T_string(ctx, builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 12, sizeof(string), sizeof(string),
+		_MOV((string[12]){
+			_S("is_box"),
+			_S("is_datetime"),
+			_S("implements_string"),
+			_S("implements_json"),
 			_S("has_method_greet"),
 			_S("has_method_missing"),
 			_S("method_names"),
@@ -81963,7 +81982,11 @@ VV_LOC void main__v_php_object_introspection(vphp__Context ctx) {
 			_S("class_consts"),
 			_S("datetime_has_atom"),
 		}),
-		_MOV((string[8]){
+		_MOV((string[12]){
+			builtin__bool_str(vphp__ZVal_is_instance_of(obj, _S("Demo\\Inspect\\GreeterBox"))), 
+			builtin__bool_str(vphp__ZVal_is_instance_of(obj, _S("DateTimeImmutable"))), 
+			builtin__bool_str(vphp__ZVal_implements_interface(obj, _S("Stringable"))), 
+			builtin__bool_str(vphp__ZVal_implements_interface(obj, _S("JsonSerializable"))), 
 			builtin__bool_str(vphp__ZVal_method_exists(obj, _S("greet"))), 
 			builtin__bool_str(vphp__ZVal_method_exists(obj, _S("missingMethod"))), 
 			Array_string_join(vphp__ZVal_method_names(obj), _S(",")), 
@@ -82017,13 +82040,13 @@ VV_LOC void main__v_test_globals(vphp__Context ctx) {
 	);
 }
 VV_LOC void main__v_get_v_closure(vphp__Context ctx) {
-	int (*v_cb) (int) = 	anon_fn_0edbd70ee5bb0de7_48_int__int_10263;
+	int (*v_cb) (int) = 	anon_fn_0edbd70ee5bb0de7_48_int__int_10559;
 	vphp__Context_wrap_closure_T_anon_fn_int__int(ctx, (voidptr)v_cb);
 }
 VV_LOC void main__v_get_v_closure_auto(vphp__Context ctx) {
 	string prefix = _S("V-Power");
-	string (*v_cb) (string, int) = 	builtin__closure__closure_create(anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535, (struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535_Ctx){.prefix = prefix,
-	}, sizeof(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10535_Ctx)));
+	string (*v_cb) (string, int) = 	builtin__closure__closure_create(anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831, (struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831_Ctx){.prefix = prefix,
+	}, sizeof(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10831_Ctx)));
 	vphp__Context_wrap_closure_T_anon_fn_string_int__string(ctx, (voidptr)v_cb);
 }
 main__ReadonlyRecord* main__ReadonlyRecord_construct(main__ReadonlyRecord* r, string title) {
