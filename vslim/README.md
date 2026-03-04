@@ -140,6 +140,8 @@ $r = vslim_handle_request([
 cd /Users/guweigang/Source/vphpext/vslim
 make build
 make ext
+make vhttpd
+make serve
 make test
 ```
 
@@ -148,6 +150,11 @@ HTTP runtime 相关文件现在在：
 - [/Users/guweigang/Source/vphpext/vslim/httpd/main.v](/Users/guweigang/Source/vphpext/vslim/httpd/main.v)
 - [/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php](/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php)
 - [/Users/guweigang/Source/vphpext/vslim/httpd/README.md](/Users/guweigang/Source/vphpext/vslim/httpd/README.md)
+
+开发时最顺手的入口是：
+
+- `make vhttpd`：重新编译 `vhttpd`
+- `make serve`：用 managed worker 模式直接拉起 `vhttpd + php-worker + vslim`
 
 ## 下一步建议
 
