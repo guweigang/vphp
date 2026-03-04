@@ -316,6 +316,7 @@ Current behavior:
 - their properties and methods are flattened into the consuming class
 - if the outer struct already defines the same property or method, the outer struct wins
 - if multiple embedded traits contribute the same property or method, later conflicts are skipped
+- trait member visibility is preserved when flattened into the outer class
 - traits are currently compile-time mixins in `vphp`; they are not emitted as standalone PHP `trait` declarations
 
 ### Case 3: embedded plain V struct
