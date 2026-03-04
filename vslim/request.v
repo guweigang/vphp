@@ -8,18 +8,7 @@ pub fn (mut r VSlimRequest) construct(method string, raw_path string, body strin
 	r.raw_path = raw_path
 	r.path, r.query_string = normalize_request_target(raw_path)
 	r.body = body
-	r.scheme = 'http'
-	r.host = ''
-	r.port = ''
-	r.protocol_version = '1.1'
-	r.remote_addr = ''
-	r.query_json = '{}'
-	r.headers_json = '{}'
-	r.cookies_json = '{}'
-	r.attributes_json = '{}'
-	r.server_json = '{}'
-	r.uploaded_files_json = '[]'
-	r.params_json = '{}'
+	apply_request_defaults(mut r)
 	return r
 }
 
@@ -126,25 +115,15 @@ pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
 
 pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequest {
 	path, query_string := normalize_request_target(raw_path)
-	return &VSlimRequest{
+	mut req := &VSlimRequest{
 		method: method
 		raw_path: raw_path
 		path: path
 		query_string: query_string
 		body: body
-		scheme: 'http'
-		host: ''
-		port: ''
-		protocol_version: '1.1'
-		remote_addr: ''
-		query_json: '{}'
-		headers_json: '{}'
-		cookies_json: '{}'
-		attributes_json: '{}'
-		server_json: '{}'
-		uploaded_files_json: '[]'
-		params_json: '{}'
 	}
+	apply_request_defaults(mut req)
+	return req
 }
 
 pub fn new_vslim_request_from_envelope(envelope map[string]string) &VSlimRequest {
@@ -152,25 +131,27 @@ pub fn new_vslim_request_from_envelope(envelope map[string]string) &VSlimRequest
 	raw_path := envelope['path'] or { '/' }
 	body := envelope['body'] or { '' }
 	path, query_string := normalize_request_target(raw_path)
-	return &VSlimRequest{
+	mut req := &VSlimRequest{
 		method: method
 		raw_path: raw_path
 		path: path
 		query_string: query_string
 		body: body
-		scheme: envelope['scheme'] or { 'http' }
-		host: envelope['host'] or { '' }
-		port: envelope['port'] or { '' }
-		protocol_version: envelope['protocol_version'] or { '1.1' }
-		remote_addr: envelope['remote_addr'] or { '' }
-		query_json: envelope['query_json'] or { '{}' }
-		headers_json: envelope['headers_json'] or { '{}' }
-		cookies_json: envelope['cookies_json'] or { '{}' }
-		attributes_json: envelope['attributes_json'] or { '{}' }
-		server_json: envelope['server_json'] or { '{}' }
-		uploaded_files_json: envelope['uploaded_files_json'] or { '[]' }
-		params_json: envelope['params_json'] or { '{}' }
 	}
+	apply_request_defaults(mut req)
+	req.scheme = envelope['scheme'] or { req.scheme }
+	req.host = envelope['host'] or { req.host }
+	req.port = envelope['port'] or { req.port }
+	req.protocol_version = envelope['protocol_version'] or { req.protocol_version }
+	req.remote_addr = envelope['remote_addr'] or { req.remote_addr }
+	req.query_json = envelope['query_json'] or { req.query_json }
+	req.headers_json = envelope['headers_json'] or { req.headers_json }
+	req.cookies_json = envelope['cookies_json'] or { req.cookies_json }
+	req.attributes_json = envelope['attributes_json'] or { req.attributes_json }
+	req.server_json = envelope['server_json'] or { req.server_json }
+	req.uploaded_files_json = envelope['uploaded_files_json'] or { req.uploaded_files_json }
+	req.params_json = envelope['params_json'] or { req.params_json }
+	return req
 }
 
 fn request_from_envelope(envelope map[string]string) SlimRequest {
@@ -180,6 +161,21 @@ fn request_from_envelope(envelope map[string]string) SlimRequest {
 fn split_path_and_query(raw_path string) (string, map[string]string) {
 	path, query_str := normalize_request_target(raw_path)
 	return path, parse_query_string(query_str)
+}
+
+fn apply_request_defaults(mut r VSlimRequest) {
+	r.scheme = 'http'
+	r.host = ''
+	r.port = ''
+	r.protocol_version = '1.1'
+	r.remote_addr = ''
+	r.query_json = '{}'
+	r.headers_json = '{}'
+	r.cookies_json = '{}'
+	r.attributes_json = '{}'
+	r.server_json = '{}'
+	r.uploaded_files_json = '[]'
+	r.params_json = '{}'
 }
 
 fn parse_name_map_json(raw string) map[string]string {

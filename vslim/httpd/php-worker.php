@@ -102,56 +102,11 @@ final class PhpWorker
     public function dispatchRequest(array $req): array
     {
         $id = (string) ($req["id"] ?? "");
-        $method = strtoupper((string) ($req["method"] ?? "GET"));
-        $path = (string) ($req["path"] ?? "/");
-        $query =
-            isset($req["query"]) && is_array($req["query"])
-                ? $req["query"]
-                : [];
-        $body = (string) ($req["body"] ?? "");
-        $headers =
-            isset($req["headers"]) && is_array($req["headers"])
-                ? $req["headers"]
-                : [];
-        $cookies =
-            isset($req["cookies"]) && is_array($req["cookies"])
-                ? $req["cookies"]
-                : [];
-        $attributes =
-            isset($req["attributes"]) && is_array($req["attributes"])
-                ? $req["attributes"]
-                : [];
-        $server =
-            isset($req["server"]) && is_array($req["server"])
-                ? $req["server"]
-                : [];
-        $uploadedFiles =
-            isset($req["uploaded_files"]) && is_array($req["uploaded_files"])
-                ? $req["uploaded_files"]
-                : [];
-
-        $envelope = [
-            "method" => $method,
-            "path" => $this->rebuildPath($path, $query),
-            "body" => $body,
-            "scheme" => (string) ($req["scheme"] ?? "http"),
-            "host" => (string) ($req["host"] ?? ""),
-            "port" => (string) ($req["port"] ?? ""),
-            "protocol_version" => (string) ($req["protocol_version"] ?? "1.1"),
-            "remote_addr" => (string) ($req["remote_addr"] ?? ""),
-            "query_json" => json_encode($query, JSON_UNESCAPED_UNICODE),
-            "headers_json" => json_encode($headers, JSON_UNESCAPED_UNICODE),
-            "cookies_json" => json_encode($cookies, JSON_UNESCAPED_UNICODE),
-            "attributes_json" => json_encode(
-                $attributes,
-                JSON_UNESCAPED_UNICODE,
-            ),
-            "server_json" => json_encode($server, JSON_UNESCAPED_UNICODE),
-            "uploaded_files_json" => json_encode(
-                $uploadedFiles,
-                JSON_UNESCAPED_UNICODE,
-            ),
-        ];
+        $envelope = $this->normalizeRequestEnvelope($req);
+        $method = strtoupper((string) ($envelope["method"] ?? "GET"));
+        $path = (string) ($envelope["path"] ?? "/");
+        $query = $this->decodeJsonMap((string) ($envelope["query_json"] ?? "{}"));
+        $body = (string) ($envelope["body"] ?? "");
 
         try {
             $appHandler = $this->loadAppHandler();
@@ -238,6 +193,39 @@ final class PhpWorker
         }
     }
 
+    /**
+     * @param array<string,mixed> $req
+     * @return array<string,string>
+     */
+    private function normalizeRequestEnvelope(array $req): array
+    {
+        $method = strtoupper((string) ($req["method"] ?? "GET"));
+        $path = (string) ($req["path"] ?? "/");
+        $query = $this->readAssocMap($req, "query");
+        $headers = $this->normalizeHeaderMap($this->readAssocMap($req, "headers"));
+        $cookies = $this->readAssocMap($req, "cookies");
+        $attributes = $this->readAssocMap($req, "attributes");
+        $server = $this->readAssocMap($req, "server");
+        $uploadedFiles = $this->readList($req, "uploaded_files");
+
+        return [
+            "method" => $method,
+            "path" => $this->rebuildPath($path, $query),
+            "body" => (string) ($req["body"] ?? ""),
+            "scheme" => (string) ($req["scheme"] ?? "http"),
+            "host" => (string) ($req["host"] ?? ""),
+            "port" => (string) ($req["port"] ?? ""),
+            "protocol_version" => (string) ($req["protocol_version"] ?? "1.1"),
+            "remote_addr" => (string) ($req["remote_addr"] ?? ""),
+            "query_json" => json_encode($query, JSON_UNESCAPED_UNICODE),
+            "headers_json" => json_encode($headers, JSON_UNESCAPED_UNICODE),
+            "cookies_json" => json_encode($cookies, JSON_UNESCAPED_UNICODE),
+            "attributes_json" => json_encode($attributes, JSON_UNESCAPED_UNICODE),
+            "server_json" => json_encode($server, JSON_UNESCAPED_UNICODE),
+            "uploaded_files_json" => json_encode($uploadedFiles, JSON_UNESCAPED_UNICODE),
+        ];
+    }
+
     /** @return mixed */
     private function loadAppHandler(): mixed
     {
@@ -308,6 +296,61 @@ final class PhpWorker
         $request->server_json = (string) ($envelope["server_json"] ?? "{}");
         $request->uploaded_files_json = (string) ($envelope["uploaded_files_json"] ?? "[]");
         return $request;
+    }
+
+    /**
+     * @param array<string,mixed> $input
+     * @return array<string,string>
+     */
+    private function readAssocMap(array $input, string $key): array
+    {
+        $raw = $input[$key] ?? [];
+        if (!is_array($raw)) {
+            return [];
+        }
+        $out = [];
+        foreach ($raw as $name => $value) {
+            if (is_array($value)) {
+                $out[(string) $name] = implode(", ", array_map("strval", $value));
+            } else {
+                $out[(string) $name] = (string) $value;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * @param array<string,mixed> $input
+     * @return list<string>
+     */
+    private function readList(array $input, string $key): array
+    {
+        $raw = $input[$key] ?? [];
+        if (!is_array($raw)) {
+            return [];
+        }
+        return array_values(array_map("strval", $raw));
+    }
+
+    /** @return array<string,string> */
+    private function decodeJsonMap(string $raw): array
+    {
+        if ($raw === "" || $raw === "{}") {
+            return [];
+        }
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded)) {
+            return [];
+        }
+        $out = [];
+        foreach ($decoded as $name => $value) {
+            if (is_array($value)) {
+                $out[(string) $name] = implode(", ", array_map("strval", $value));
+            } else {
+                $out[(string) $name] = (string) $value;
+            }
+        }
+        return $out;
     }
 
     private function resolveAppBootstrapPath(): ?string

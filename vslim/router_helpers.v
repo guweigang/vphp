@@ -1,5 +1,6 @@
 module main
 
+import net.urllib
 import vphp
 
 fn normalize_path(path string) string {
@@ -125,17 +126,13 @@ fn parse_query_string(query_str string) map[string]string {
 	if query_str == '' {
 		return out
 	}
-	for pair in query_str.split('&') {
-		if pair == '' {
+	values := urllib.parse_query(query_str) or { return out }
+	for key, entries in values.to_map() {
+		if entries.len == 0 {
+			out[key] = ''
 			continue
 		}
-		if pair.contains('=') {
-			k := pair.all_before('=')
-			v := pair.all_after('=')
-			out[k] = v
-		} else {
-			out[pair] = ''
-		}
+		out[key] = entries[0]
 	}
 	return out
 }
