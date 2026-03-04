@@ -19,6 +19,7 @@
 - `SlimApp` 路由核心（纯 V）
 - middleware chain
 - 路由参数匹配
+- `VSlimRequest` 请求包装
 - `VSlimApp` / `VSlimResponse` 作为 PHP-facing façade
 - `vslim_handle_request()` / `vslim_demo_dispatch()` 作为稳定函数入口
 
@@ -44,6 +45,22 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 - `vslim`
   - 负责路由匹配、middleware、请求分发、响应封装
   - 输出稳定的 `{status, body, content_type}` 结构
+
+当前推荐的 worker 协议是一个 request envelope：
+
+```php
+[
+    'method' => 'GET',
+    'path' => '/users/42?trace_id=worker',
+    'body' => '',
+]
+```
+
+`vhttpd` 或 PHP worker 可以把它直接交给：
+
+```php
+$response = vslim_handle_request($requestEnvelope);
+```
 
 ## 为什么这样分层
 
@@ -82,10 +99,27 @@ echo $res->status;
 echo $res->body;
 ```
 
+也可以显式构建请求对象：
+
+```php
+$req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
+$res = $app->dispatch_request($req);
+```
+
 也可以直接用函数入口：
 
 ```php
 $r = vslim_demo_dispatch('GET', '/private?token=ok');
+```
+
+或者用更适合 `vhttpd` 的 envelope 入口：
+
+```php
+$r = vslim_handle_request([
+    'method' => 'GET',
+    'path' => '/private?token=ok',
+    'body' => '',
+]);
 ```
 
 ## 构建与测试
@@ -99,7 +133,7 @@ make test
 
 ## 下一步建议
 
-1. 给 `VSlimRequest` 建模并导出
-2. 把 `vhttpd -> PHP worker -> vslim_handle_request` 的协议标准化
-3. 把 demo app 提升成可配置 app builder
+1. 给 request envelope 增加 headers / remote addr / scheme 等字段
+2. 把 demo app 提升成可配置 app builder
+3. 补 `VSlimRequest` 的 query/header helper
 4. 再考虑是否导出更完整的 PHP 面向对象 API

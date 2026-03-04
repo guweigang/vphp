@@ -35,6 +35,41 @@ mut:
 	middlewares []SlimMiddleware
 }
 
+@[heap]
+@[php_class]
+struct VSlimRequest {
+pub mut:
+	method string
+	raw_path string
+	path string
+	body string
+	query_string string
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) construct(method string, raw_path string, body string) &VSlimRequest {
+	r.method = method
+	r.raw_path = raw_path
+	r.path, r.query_string = normalize_request_target(raw_path)
+	r.body = body
+	return r
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) str() string {
+	return '${r.method} ${r.raw_path}'
+}
+
+pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
+	return SlimRequest{
+		method: r.method
+		path: r.path
+		params: map[string]string{}
+		query: parse_query_string(r.query_string)
+		body: r.body
+	}
+}
+
 pub fn new_slim_app() SlimApp {
 	return SlimApp{}
 }
@@ -133,6 +168,17 @@ pub fn (r &VSlimResponse) str() string {
 @[php_class]
 struct VSlimApp {}
 
+pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequest {
+	path, query_string := normalize_request_target(raw_path)
+	return &VSlimRequest{
+		method: method
+		raw_path: raw_path
+		path: path
+		query_string: query_string
+		body: body
+	}
+}
+
 @[php_method]
 pub fn VSlimApp.demo() &VSlimApp {
 	return &VSlimApp{}
@@ -141,15 +187,16 @@ pub fn VSlimApp.demo() &VSlimApp {
 @[php_method]
 pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
 	_ = app
-	path, query := split_path_and_query(raw_path)
 	mut slim := new_slim_demo_app()
-	res := slim.dispatch(SlimRequest{
-		method: method
-		path: path
-		params: map[string]string{}
-		query: query
-		body: ''
-	})
+	res := slim.dispatch(new_vslim_request(method, raw_path, '').to_slim_request())
+	return to_vslim_response(res)
+}
+
+@[php_method]
+pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
+	_ = app
+	mut slim := new_slim_demo_app()
+	res := slim.dispatch(req.to_slim_request())
 	return to_vslim_response(res)
 }
 
@@ -169,6 +216,36 @@ fn normalize_path(path string) string {
 		return path
 	}
 	return '/${path}'
+}
+
+fn normalize_request_target(raw_path string) (string, string) {
+	path := normalize_path(raw_path)
+	if !path.contains('?') {
+		return path, ''
+	}
+	base := normalize_path(path.all_before('?'))
+	query := path.all_after('?')
+	return base, query
+}
+
+fn parse_query_string(query_str string) map[string]string {
+	mut out := map[string]string{}
+	if query_str == '' {
+		return out
+	}
+	for pair in query_str.split('&') {
+		if pair == '' {
+			continue
+		}
+		if pair.contains('=') {
+			k := pair.all_before('=')
+			v := pair.all_after('=')
+			out[k] = v
+		} else {
+			out[pair] = ''
+		}
+	}
+	return out
 }
 
 fn match_route(pattern string, path string) (bool, map[string]string) {
@@ -276,26 +353,8 @@ fn meta_handler(req SlimRequest) SlimResponse {
 }
 
 fn split_path_and_query(raw_path string) (string, map[string]string) {
-	path := normalize_path(raw_path)
-	if !path.contains('?') {
-		return path, map[string]string{}
-	}
-	base := path.all_before('?')
-	query_str := path.all_after('?')
-	mut out := map[string]string{}
-	for pair in query_str.split('&') {
-		if pair == '' {
-			continue
-		}
-		if pair.contains('=') {
-			k := pair.all_before('=')
-			v := pair.all_after('=')
-			out[k] = v
-		} else {
-			out[pair] = ''
-		}
-	}
-	return normalize_path(base), out
+	path, query_str := normalize_request_target(raw_path)
+	return path, parse_query_string(query_str)
 }
 
 fn new_slim_demo_app() SlimApp {
@@ -310,20 +369,37 @@ fn new_slim_demo_app() SlimApp {
 	return app
 }
 
-@[php_function]
-fn vslim_handle_request(ctx vphp.Context) {
-	method := ctx.arg[string](0)
-	raw_path := ctx.arg[string](1)
+fn request_from_envelope(envelope map[string]string) SlimRequest {
+	method := envelope['method'] or { 'GET' }
+	raw_path := envelope['path'] or { '/' }
+	body := envelope['body'] or { '' }
 	path, query := split_path_and_query(raw_path)
-
-	mut app := new_slim_demo_app()
-	res := app.dispatch(SlimRequest{
+	return SlimRequest{
 		method: method
 		path: path
 		params: map[string]string{}
 		query: query
-		body: ''
-	})
+		body: body
+	}
+}
+
+fn dispatch_demo_request(req SlimRequest) SlimResponse {
+	mut app := new_slim_demo_app()
+	return app.dispatch(req)
+}
+
+@[php_function]
+fn vslim_handle_request(ctx vphp.Context) {
+	mut res := SlimResponse{}
+	if ctx.num_args() == 1 {
+		envelope := ctx.arg[map[string]string](0)
+		res = dispatch_demo_request(request_from_envelope(envelope))
+	} else {
+		method := ctx.arg[string](0)
+		raw_path := ctx.arg[string](1)
+		body := if ctx.num_args() > 2 { ctx.arg[string](2) } else { '' }
+		res = dispatch_demo_request(new_vslim_request(method, raw_path, body).to_slim_request())
+	}
 
 	ctx.return_map({
 		'status': '${res.status}'

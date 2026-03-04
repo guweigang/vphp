@@ -4,6 +4,102 @@ import vphp
 
 #include "php_bridge.h"
 
+@[export: 'VSlimRequest_new_raw']
+pub fn vslimrequest_new_raw() voidptr {
+    return vphp.generic_new_raw[VSlimRequest]()
+}
+@[export: 'VSlimRequest_get_prop']
+pub fn vslimrequest_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &VSlimRequest(ptr)
+        if name == 'method' {
+            vphp.return_val_raw(rv, obj.method)
+            return
+        }
+        if name == 'raw_path' {
+            vphp.return_val_raw(rv, obj.raw_path)
+            return
+        }
+        if name == 'path' {
+            vphp.return_val_raw(rv, obj.path)
+            return
+        }
+        if name == 'body' {
+            vphp.return_val_raw(rv, obj.body)
+            return
+        }
+        if name == 'query_string' {
+            vphp.return_val_raw(rv, obj.query_string)
+            return
+        }
+    }
+}
+@[export: 'VSlimRequest_set_prop']
+pub fn vslimrequest_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &VSlimRequest(ptr)
+        arg := vphp.ZVal{ raw: value }
+        if name == 'method' {
+            obj.method = arg.get_string()
+            return
+        }
+        if name == 'raw_path' {
+            obj.raw_path = arg.get_string()
+            return
+        }
+        if name == 'path' {
+            obj.path = arg.get_string()
+            return
+        }
+        if name == 'body' {
+            obj.body = arg.get_string()
+            return
+        }
+        if name == 'query_string' {
+            obj.query_string = arg.get_string()
+            return
+        }
+    }
+}
+@[export: 'VSlimRequest_sync_props']
+pub fn vslimrequest_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &VSlimRequest(ptr)
+        out := vphp.ZVal{ raw: zv }
+        out.add_property_string('method', obj.method)
+        out.add_property_string('raw_path', obj.raw_path)
+        out.add_property_string('path', obj.path)
+        out.add_property_string('body', obj.body)
+        out.add_property_string('query_string', obj.query_string)
+    }
+}
+@[export: 'vphp_wrap_VSlimRequest_construct']
+pub fn vphp_wrap_vslimrequest_construct(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg[string](2)
+    res := recv.construct(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_str']
+pub fn vphp_wrap_vslimrequest_str(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.str()
+    ctx.return_val[string](res)
+}
+@[export: 'VSlimRequest_handlers']
+pub fn vslimrequest_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(vslimrequest_get_prop)
+        write_handler: voidptr(vslimrequest_set_prop)
+        sync_handler:  voidptr(vslimrequest_sync_props)
+        new_raw:       voidptr(vslimrequest_new_raw)
+    } }
+}
+
 @[export: 'VSlimResponse_new_raw']
 pub fn vslimresponse_new_raw() voidptr {
     return vphp.generic_new_raw[VSlimResponse]()
@@ -119,6 +215,13 @@ pub fn vphp_wrap_vslimapp_dispatch(ptr voidptr, ctx vphp.Context) voidptr {
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     res := recv.dispatch(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_dispatch_request']
+pub fn vphp_wrap_vslimapp_dispatch_request(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := unsafe { &VSlimRequest(ctx.arg_raw_obj(0)) }
+    res := recv.dispatch_request(arg_0)
     return voidptr(res)
 }
 @[export: 'VSlimApp_handlers']
