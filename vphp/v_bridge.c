@@ -214,6 +214,18 @@ static zend_class_entry *vphp_lookup_class_by_name(const char *class_name,
   zend_string_release(zs);
   return ce;
 }
+static zend_class_entry *vphp_get_ce_from_zval(zval *zv) {
+  if (!zv) {
+    return NULL;
+  }
+  if (Z_TYPE_P(zv) == IS_OBJECT) {
+    return Z_OBJCE_P(zv);
+  }
+  if (Z_TYPE_P(zv) == IS_STRING) {
+    return vphp_lookup_class_by_name(Z_STRVAL_P(zv), Z_STRLEN_P(zv));
+  }
+  return NULL;
+}
 int vphp_call_php_func(const char *name, int name_len, zval *retval,
                        int param_count, zval **params_ptrs) {
   zval func_name;
@@ -331,12 +343,29 @@ int vphp_is_callable(zval *callable) {
   return callable ? zend_is_callable(callable, 0, NULL) : 0;
 }
 const char *vphp_get_object_class_name(zval *zv, int *len) {
-  if (!zv || Z_TYPE_P(zv) != IS_OBJECT) {
+  zend_class_entry *ce = vphp_get_ce_from_zval(zv);
+  if (!ce) {
     *len = 0;
     return "";
   }
-  *len = ZSTR_LEN(Z_OBJCE_P(zv)->name);
-  return ZSTR_VAL(Z_OBJCE_P(zv)->name);
+  *len = ZSTR_LEN(ce->name);
+  return ZSTR_VAL(ce->name);
+}
+const char *vphp_get_parent_class_name(zval *zv, int *len) {
+  zend_class_entry *ce = vphp_get_ce_from_zval(zv);
+  if (!ce || !ce->parent) {
+    *len = 0;
+    return "";
+  }
+  *len = ZSTR_LEN(ce->parent->name);
+  return ZSTR_VAL(ce->parent->name);
+}
+int vphp_class_is_internal(zval *zv) {
+  zend_class_entry *ce = vphp_get_ce_from_zval(zv);
+  if (!ce) {
+    return 0;
+  }
+  return (ce->type == ZEND_INTERNAL_CLASS) ? 1 : 0;
 }
 int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs) {

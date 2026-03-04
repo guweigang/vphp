@@ -139,6 +139,8 @@ int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
 int vphp_include_file(const char *filename, int filename_len, zval *retval,
                       int once);
 const char *vphp_get_object_class_name(zval *zv, int *len);
+const char *vphp_get_parent_class_name(zval *zv, int *len);
+int vphp_class_is_internal(zval *zv);
 
 zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
                                        const char *name, int name_len, zval *rv);

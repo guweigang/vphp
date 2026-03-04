@@ -100,6 +100,8 @@ pub fn C.vphp_call_callable(callable &C.zval, retval &C.zval, p_count int, param
 pub fn C.vphp_new_instance(class_name &char, len int, retval &C.zval, p_count int, params &&C.zval) int
 pub fn C.vphp_include_file(filename &char, filename_len int, retval &C.zval, once int) int
 pub fn C.vphp_get_object_class_name(zv &C.zval, len &int) &char
+pub fn C.vphp_get_parent_class_name(zv &C.zval, len &int) &char
+pub fn C.vphp_class_is_internal(zv &C.zval) int
 pub fn C.vphp_create_closure_FULL_AUTO_V2(z &C.zval, thunk voidptr, bridge voidptr)
 
 // ===== 9. 资源系统 =====

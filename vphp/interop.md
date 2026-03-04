@@ -58,6 +58,10 @@ These are the low-level interop actions:
 | `z.class_name()` | object class name / class-string name |
 | `z.namespace_name()` | namespace part of class name |
 | `z.short_name()` | short class name |
+| `z.parent_class_name()` | parent class name |
+| `z.interface_names()` | implemented interface names |
+| `z.is_internal_class()` | whether the class is an internal PHP class |
+| `z.is_user_class()` | inverse of `is_internal_class()` |
 
 Example:
 
@@ -74,6 +78,18 @@ Property write note:
 - writing a readonly property raises the normal Zend readonly error
 - protected/private properties are not widened by `vphp`; visibility checks still apply
 - `class_name()` returns the object FQCN for objects, or the same string for class-string `ZVal`s
+
+Metadata example:
+
+```v
+obj := vphp.php_class('DateTimeImmutable').construct([
+	vphp.ZVal.new_string('2026-03-04'),
+])
+println(obj.class_name())
+println(obj.parent_class_name())
+println(obj.interface_names())
+println(obj.is_internal_class())
+```
 
 ## 3. Typed Value Helpers
 

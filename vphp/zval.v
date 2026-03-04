@@ -410,6 +410,48 @@ pub fn (v ZVal) short_name() string {
 	return class_name.all_after_last('\\')
 }
 
+pub fn (v ZVal) parent_class_name() string {
+	if v.raw == 0 {
+		return ''
+	}
+	unsafe {
+		mut len := 0
+		name := C.vphp_get_parent_class_name(v.raw, &len)
+		if name == 0 || len <= 0 {
+			return ''
+		}
+		return name.vstring_with_len(len).clone()
+	}
+}
+
+pub fn (v ZVal) is_internal_class() bool {
+	if v.raw == 0 {
+		return false
+	}
+	return C.vphp_class_is_internal(v.raw) == 1
+}
+
+pub fn (v ZVal) is_user_class() bool {
+	return !v.is_internal_class()
+}
+
+pub fn (v ZVal) interface_names() []string {
+	class_name := v.class_name()
+	if class_name.len == 0 {
+		return []string{}
+	}
+	interfaces := php_fn('class_implements').call([ZVal.new_string(class_name)])
+	if !interfaces.is_array() {
+		return []string{}
+	}
+	mut out := []string{}
+	out = interfaces.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
+		acc << val.to_string()
+	})
+	out.sort()
+	return out
+}
+
 // ======== PHP interop ========
 // 和 `interop.md` 保持一致的分层：
 // 1. 基础动作

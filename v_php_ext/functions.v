@@ -295,9 +295,13 @@ fn v_php_object_meta(ctx vphp.Context) {
 	}
 
 	ctx.return_map({
-		'class':     obj.class_name()
-		'namespace': obj.namespace_name()
-		'short':     obj.short_name()
+		'class':      obj.class_name()
+		'namespace':  obj.namespace_name()
+		'short':      obj.short_name()
+		'parent':     obj.parent_class_name()
+		'internal':   obj.is_internal_class().str()
+		'user_class': obj.is_user_class().str()
+		'interfaces': obj.interface_names().join(',')
 	})
 }
 
