@@ -11393,50 +11393,64 @@ voidptr main__vphp_wrap_vslimrequest_set_params(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimRequest_set_params(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_set_params
 void main__vphp_wrap_vslimrequest_query(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_query(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_query
-void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_query_all
+void main__vphp_wrap_vslimrequest_query_params(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_query_params(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_query_params
 void main__vphp_wrap_vslimrequest_has_query(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_query(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_query
+void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_query_all
 void main__vphp_wrap_vslimrequest_header(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_header
-void main__vphp_wrap_vslimrequest_headers_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_headers_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_headers_all
+void main__vphp_wrap_vslimrequest_headers(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_headers(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_headers
 void main__vphp_wrap_vslimrequest_has_header(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_header
 void main__vphp_wrap_vslimrequest_content_type(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_content_type(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_content_type
 void main__vphp_wrap_vslimrequest_cookie(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_cookie(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_cookie
-void main__vphp_wrap_vslimrequest_cookies_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_cookies_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_cookies_all
+void main__vphp_wrap_vslimrequest_cookies(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_cookies(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_cookies
 void main__vphp_wrap_vslimrequest_has_cookie(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_cookie(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_cookie
 void main__vphp_wrap_vslimrequest_param(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_param(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_param
-void main__vphp_wrap_vslimrequest_params_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_params_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_params_all
+void main__vphp_wrap_vslimrequest_route_params(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_route_params(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_route_params
 void main__vphp_wrap_vslimrequest_has_param(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_param(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_param
 void main__vphp_wrap_vslimrequest_attribute(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_attribute(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_attribute
-void main__vphp_wrap_vslimrequest_attributes_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_attributes_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_attributes_all
+void main__vphp_wrap_vslimrequest_attributes(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_attributes(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_attributes
 void main__vphp_wrap_vslimrequest_has_attribute(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_attribute(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_attribute
 void main__vphp_wrap_vslimrequest_server_value(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_server_value(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_server_value
-void main__vphp_wrap_vslimrequest_server_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_server_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_server_all
+void main__vphp_wrap_vslimrequest_server_params(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_server_params(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_server_params
 void main__vphp_wrap_vslimrequest_has_server(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_server(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_server
 void main__vphp_wrap_vslimrequest_uploaded_file_count(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_uploaded_file_count(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_uploaded_file_count
-void main__vphp_wrap_vslimrequest_uploaded_files_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimRequest_uploaded_files_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_uploaded_files_all
+void main__vphp_wrap_vslimrequest_uploaded_files(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_uploaded_files(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_uploaded_files
 void main__vphp_wrap_vslimrequest_has_uploaded_files(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_has_uploaded_files(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_has_uploaded_files
 void main__vphp_wrap_vslimrequest_is_secure(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_is_secure(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_is_secure
+void main__vphp_wrap_vslimrequest_headers_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_headers_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_headers_all
+void main__vphp_wrap_vslimrequest_cookies_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_cookies_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_cookies_all
+void main__vphp_wrap_vslimrequest_params_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_params_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_params_all
+void main__vphp_wrap_vslimrequest_attributes_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_attributes_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_attributes_all
+void main__vphp_wrap_vslimrequest_server_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_server_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_server_all
+void main__vphp_wrap_vslimrequest_uploaded_files_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_uploaded_files_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_uploaded_files_all
 voidptr main__vslimrequest_handlers(void);
 VV_EXP voidptr VSlimRequest_handlers(void); // exported fn main.vslimrequest_handlers
 voidptr main__vslimresponse_new_raw(void);
@@ -11451,8 +11465,8 @@ voidptr main__vphp_wrap_vslimresponse_construct(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_construct(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_construct
 void main__vphp_wrap_vslimresponse_header(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimResponse_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_header
-void main__vphp_wrap_vslimresponse_headers_all(voidptr ptr, vphp__Context ctx);
-VV_EXP void vphp_wrap_VSlimResponse_headers_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_headers_all
+void main__vphp_wrap_vslimresponse_headers(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimResponse_headers(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_headers
 void main__vphp_wrap_vslimresponse_has_header(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimResponse_has_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_has_header
 voidptr main__vphp_wrap_vslimresponse_set_header(voidptr ptr, vphp__Context ctx);
@@ -11469,6 +11483,8 @@ voidptr main__vphp_wrap_vslimresponse_set_cookie_full(voidptr ptr, vphp__Context
 VV_EXP voidptr vphp_wrap_VSlimResponse_set_cookie_full(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_cookie_full
 voidptr main__vphp_wrap_vslimresponse_delete_cookie(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_delete_cookie(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_delete_cookie
+voidptr main__vphp_wrap_vslimresponse_set_status(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimResponse_set_status(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_status
 voidptr main__vphp_wrap_vslimresponse_with_status(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_with_status(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_with_status
 voidptr main__vphp_wrap_vslimresponse_text(voidptr ptr, vphp__Context ctx);
@@ -11481,6 +11497,8 @@ voidptr main__vphp_wrap_vslimresponse_redirect(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_redirect(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_redirect
 voidptr main__vphp_wrap_vslimresponse_redirect_with_status(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_redirect_with_status(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_redirect_with_status
+void main__vphp_wrap_vslimresponse_headers_all(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimResponse_headers_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_headers_all
 void main__vphp_wrap_vslimresponse_str(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimResponse_str(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_str
 void main__vphp_wrap_vslimresponse_content_length(voidptr ptr, vphp__Context ctx);
@@ -11503,6 +11521,8 @@ voidptr main__vphp_wrap_vslimapp_group(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_group(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_group
 voidptr main__vphp_wrap_vslimapp_dispatch(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_dispatch(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_dispatch
+voidptr main__vphp_wrap_vslimapp_dispatch_body(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_dispatch_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_dispatch_body
 voidptr main__vphp_wrap_vslimapp_dispatch_request(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_dispatch_request(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_dispatch_request
 voidptr main__vphp_wrap_vslimapp_dispatch_envelope(voidptr ptr, vphp__Context ctx);
@@ -11590,6 +11610,7 @@ main__VSlimApp* main__VSlimApp__static__demo(void);
 main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path);
 main__VSlimRouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix);
 main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path);
+main__VSlimResponse* main__VSlimApp_dispatch_body(main__VSlimApp* app, string method, string raw_path, string body);
 main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req);
 main__VSlimResponse* main__VSlimApp_dispatch_envelope(main__VSlimApp* app, vphp__ZVal envelope);
 main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler);
@@ -11641,7 +11662,7 @@ VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_st
 VV_LOC vphp__ZVal main__build_php_response_object(main__SlimResponse res);
 VV_LOC main__SlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__ZVal request_payload, main__SlimResponse initial);
 VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_15343(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_15509(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
 VV_LOC void main__vslim_response_headers(vphp__Context ctx);
@@ -11655,35 +11676,42 @@ main__VSlimRequest* main__VSlimRequest_set_server(main__VSlimRequest* r, vphp__Z
 main__VSlimRequest* main__VSlimRequest_set_uploaded_files(main__VSlimRequest* r, vphp__ZVal uploaded_files);
 main__VSlimRequest* main__VSlimRequest_set_params(main__VSlimRequest* r, vphp__ZVal params);
 string main__VSlimRequest_query(main__VSlimRequest* r, string key);
-Map_string_string main__VSlimRequest_query_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r);
 bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key);
+Map_string_string main__VSlimRequest_query_all(main__VSlimRequest* r);
 string main__VSlimRequest_header(main__VSlimRequest* r, string name);
-Map_string_string main__VSlimRequest_headers_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r);
 bool main__VSlimRequest_has_header(main__VSlimRequest* r, string name);
 string main__VSlimRequest_content_type(main__VSlimRequest* r);
 string main__VSlimRequest_cookie(main__VSlimRequest* r, string name);
-Map_string_string main__VSlimRequest_cookies_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r);
 bool main__VSlimRequest_has_cookie(main__VSlimRequest* r, string name);
 string main__VSlimRequest_param(main__VSlimRequest* r, string name);
-Map_string_string main__VSlimRequest_params_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_route_params(main__VSlimRequest* r);
 bool main__VSlimRequest_has_param(main__VSlimRequest* r, string name);
 string main__VSlimRequest_attribute(main__VSlimRequest* r, string name);
-Map_string_string main__VSlimRequest_attributes_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r);
 bool main__VSlimRequest_has_attribute(main__VSlimRequest* r, string name);
 string main__VSlimRequest_server_value(main__VSlimRequest* r, string name);
-Map_string_string main__VSlimRequest_server_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_server_params(main__VSlimRequest* r);
 bool main__VSlimRequest_has_server(main__VSlimRequest* r, string name);
 int main__VSlimRequest_uploaded_file_count(main__VSlimRequest* r);
-Array_string main__VSlimRequest_uploaded_files_all(main__VSlimRequest* r);
+Array_string main__VSlimRequest_uploaded_files(main__VSlimRequest* r);
 bool main__VSlimRequest_has_uploaded_files(main__VSlimRequest* r);
 bool main__VSlimRequest_is_secure(main__VSlimRequest* r);
-VV_LOC Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r);
-VV_LOC Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r);
-VV_LOC Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r);
-VV_LOC Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r);
-VV_LOC Map_string_string main__VSlimRequest_params(main__VSlimRequest* r);
-VV_LOC Map_string_string main__VSlimRequest_server_values(main__VSlimRequest* r);
-VV_LOC Array_string main__VSlimRequest_uploaded_files_list(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_headers_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_cookies_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_params_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_attributes_all(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_server_all(main__VSlimRequest* r);
+Array_string main__VSlimRequest_uploaded_files_all(main__VSlimRequest* r);
+VV_LOC Map_string_string main__VSlimRequest_header_values(main__VSlimRequest* r);
+VV_LOC Map_string_string main__VSlimRequest_query_values(main__VSlimRequest* r);
+VV_LOC Map_string_string main__VSlimRequest_cookie_values(main__VSlimRequest* r);
+VV_LOC Map_string_string main__VSlimRequest_attribute_values(main__VSlimRequest* r);
+VV_LOC Map_string_string main__VSlimRequest_route_param_values(main__VSlimRequest* r);
+VV_LOC Map_string_string main__VSlimRequest_server_param_values(main__VSlimRequest* r);
+VV_LOC Array_string main__VSlimRequest_uploaded_file_values(main__VSlimRequest* r);
 main__SlimRequest main__VSlimRequest_to_slim_request(main__VSlimRequest* r);
 main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body);
 main__VSlimRequest* main__new_vslim_request_from_zval(vphp__ZVal envelope);
@@ -11692,7 +11720,7 @@ VV_LOC void main__apply_request_defaults(main__VSlimRequest* r);
 VV_LOC Map_string_string main__normalize_header_map(Map_string_string headers);
 main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type);
 string main__VSlimResponse_header(main__VSlimResponse* r, string name);
-Map_string_string main__VSlimResponse_headers_all(main__VSlimResponse* r);
+Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r);
 bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name);
 main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value);
 main__VSlimResponse* main__VSlimResponse_set_content_type(main__VSlimResponse* r, string content_type);
@@ -11701,13 +11729,15 @@ main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, stri
 main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path);
 main__VSlimResponse* main__VSlimResponse_set_cookie_full(main__VSlimResponse* r, string name, string value, string path, string domain, int max_age, bool secure, bool http_only, string same_site);
 main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name);
+main__VSlimResponse* main__VSlimResponse_set_status(main__VSlimResponse* r, int status);
 main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status);
 main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body);
 main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body);
 main__VSlimResponse* main__VSlimResponse_html(main__VSlimResponse* r, string body);
 main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string location);
 main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status);
-VV_LOC Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r);
+Map_string_string main__VSlimResponse_headers_all(main__VSlimResponse* r);
+VV_LOC Map_string_string main__VSlimResponse_header_values(main__VSlimResponse* r);
 Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r);
 string main__VSlimResponse_str(main__VSlimResponse* r);
 int main__VSlimResponse_content_length(main__VSlimResponse* r);
@@ -18465,7 +18495,7 @@ VV_LOC main__SlimResponse anon_fn_92e0265fc71deba1_43_main__slimrequest__main__S
 	return main__SlimApp_run_middleware(_V_closure_ctx->app, (int)(_V_closure_ctx->index + 1), r);
 }
 
-VV_LOC void anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_15343(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_15509(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -81016,14 +81046,14 @@ void main__vphp_wrap_vslimrequest_query(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_query(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_query(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_query_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Map_string_string res = main__VSlimRequest_query_all(recv);
+	Map_string_string res = main__VSlimRequest_query_params(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_query_all -> main__vphp_wrap_vslimrequest_query_all
-void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_query_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_query_params -> main__vphp_wrap_vslimrequest_query_params
+void vphp_wrap_VSlimRequest_query_params(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_query_params(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_query(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81035,6 +81065,15 @@ void main__vphp_wrap_vslimrequest_has_query(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_has_query(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_has_query(ptr, ctx);
 }
+void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Map_string_string res = main__VSlimRequest_query_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_query_all -> main__vphp_wrap_vslimrequest_query_all
+void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_query_all(ptr, ctx);
+}
 void main__vphp_wrap_vslimrequest_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
@@ -81045,14 +81084,14 @@ void main__vphp_wrap_vslimrequest_header(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_header(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_header(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_headers_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_headers(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Map_string_string res = main__VSlimRequest_headers_all(recv);
+	Map_string_string res = main__VSlimRequest_headers(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_headers_all -> main__vphp_wrap_vslimrequest_headers_all
-void vphp_wrap_VSlimRequest_headers_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_headers_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_headers -> main__vphp_wrap_vslimrequest_headers
+void vphp_wrap_VSlimRequest_headers(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_headers(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81083,14 +81122,14 @@ void main__vphp_wrap_vslimrequest_cookie(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_cookie(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_cookie(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_cookies_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_cookies(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Map_string_string res = main__VSlimRequest_cookies_all(recv);
+	Map_string_string res = main__VSlimRequest_cookies(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_cookies_all -> main__vphp_wrap_vslimrequest_cookies_all
-void vphp_wrap_VSlimRequest_cookies_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_cookies_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_cookies -> main__vphp_wrap_vslimrequest_cookies
+void vphp_wrap_VSlimRequest_cookies(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_cookies(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_cookie(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81112,14 +81151,14 @@ void main__vphp_wrap_vslimrequest_param(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_param(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_param(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_params_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_route_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Map_string_string res = main__VSlimRequest_params_all(recv);
+	Map_string_string res = main__VSlimRequest_route_params(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_params_all -> main__vphp_wrap_vslimrequest_params_all
-void vphp_wrap_VSlimRequest_params_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_params_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_route_params -> main__vphp_wrap_vslimrequest_route_params
+void vphp_wrap_VSlimRequest_route_params(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_route_params(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_param(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81141,14 +81180,14 @@ void main__vphp_wrap_vslimrequest_attribute(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_attribute(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_attribute(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_attributes_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_attributes(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Map_string_string res = main__VSlimRequest_attributes_all(recv);
+	Map_string_string res = main__VSlimRequest_attributes(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_attributes_all -> main__vphp_wrap_vslimrequest_attributes_all
-void vphp_wrap_VSlimRequest_attributes_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_attributes_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_attributes -> main__vphp_wrap_vslimrequest_attributes
+void vphp_wrap_VSlimRequest_attributes(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_attributes(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_attribute(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81170,14 +81209,14 @@ void main__vphp_wrap_vslimrequest_server_value(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimRequest_server_value(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_server_value(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_server_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_server_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Map_string_string res = main__VSlimRequest_server_all(recv);
+	Map_string_string res = main__VSlimRequest_server_params(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_server_all -> main__vphp_wrap_vslimrequest_server_all
-void vphp_wrap_VSlimRequest_server_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_server_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_server_params -> main__vphp_wrap_vslimrequest_server_params
+void vphp_wrap_VSlimRequest_server_params(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_server_params(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_server(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81198,14 +81237,14 @@ void main__vphp_wrap_vslimrequest_uploaded_file_count(voidptr ptr, vphp__Context
 void vphp_wrap_VSlimRequest_uploaded_file_count(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_uploaded_file_count(ptr, ctx);
 }
-void main__vphp_wrap_vslimrequest_uploaded_files_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimrequest_uploaded_files(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
-	Array_string res = main__VSlimRequest_uploaded_files_all(recv);
+	Array_string res = main__VSlimRequest_uploaded_files(recv);
 	vphp__Context_return_val_T_Array_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimRequest_uploaded_files_all -> main__vphp_wrap_vslimrequest_uploaded_files_all
-void vphp_wrap_VSlimRequest_uploaded_files_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimrequest_uploaded_files_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimRequest_uploaded_files -> main__vphp_wrap_vslimrequest_uploaded_files
+void vphp_wrap_VSlimRequest_uploaded_files(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_uploaded_files(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_has_uploaded_files(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -81224,6 +81263,60 @@ void main__vphp_wrap_vslimrequest_is_secure(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_VSlimRequest_is_secure -> main__vphp_wrap_vslimrequest_is_secure
 void vphp_wrap_VSlimRequest_is_secure(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_is_secure(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_headers_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Map_string_string res = main__VSlimRequest_headers_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_headers_all -> main__vphp_wrap_vslimrequest_headers_all
+void vphp_wrap_VSlimRequest_headers_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_headers_all(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_cookies_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Map_string_string res = main__VSlimRequest_cookies_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_cookies_all -> main__vphp_wrap_vslimrequest_cookies_all
+void vphp_wrap_VSlimRequest_cookies_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_cookies_all(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_params_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Map_string_string res = main__VSlimRequest_params_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_params_all -> main__vphp_wrap_vslimrequest_params_all
+void vphp_wrap_VSlimRequest_params_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_params_all(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_attributes_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Map_string_string res = main__VSlimRequest_attributes_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_attributes_all -> main__vphp_wrap_vslimrequest_attributes_all
+void vphp_wrap_VSlimRequest_attributes_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_attributes_all(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_server_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Map_string_string res = main__VSlimRequest_server_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_server_all -> main__vphp_wrap_vslimrequest_server_all
+void vphp_wrap_VSlimRequest_server_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_server_all(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_uploaded_files_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	Array_string res = main__VSlimRequest_uploaded_files_all(recv);
+	vphp__Context_return_val_T_Array_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimRequest_uploaded_files_all -> main__vphp_wrap_vslimrequest_uploaded_files_all
+void vphp_wrap_VSlimRequest_uploaded_files_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_uploaded_files_all(ptr, ctx);
 }
 voidptr main__vslimrequest_handlers(void) {
 	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimrequest_get_prop)),.write_handler = ((voidptr)(main__vslimrequest_set_prop)),.sync_handler = ((voidptr)(main__vslimrequest_sync_props)),.new_raw = ((voidptr)(main__vslimrequest_new_raw)),}, sizeof(vphp_class_handlers)));
@@ -81319,14 +81412,14 @@ void main__vphp_wrap_vslimresponse_header(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimResponse_header(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_header(ptr, ctx);
 }
-void main__vphp_wrap_vslimresponse_headers_all(voidptr ptr, vphp__Context ctx) {
+void main__vphp_wrap_vslimresponse_headers(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
-	Map_string_string res = main__VSlimResponse_headers_all(recv);
+	Map_string_string res = main__VSlimResponse_headers(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
 }
-// export alias: vphp_wrap_VSlimResponse_headers_all -> main__vphp_wrap_vslimresponse_headers_all
-void vphp_wrap_VSlimResponse_headers_all(voidptr ptr, vphp__Context ctx) {
-	return main__vphp_wrap_vslimresponse_headers_all(ptr, ctx);
+// export alias: vphp_wrap_VSlimResponse_headers -> main__vphp_wrap_vslimresponse_headers
+void vphp_wrap_VSlimResponse_headers(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_headers(ptr, ctx);
 }
 void main__vphp_wrap_vslimresponse_has_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
@@ -81418,6 +81511,16 @@ voidptr main__vphp_wrap_vslimresponse_delete_cookie(voidptr ptr, vphp__Context c
 voidptr vphp_wrap_VSlimResponse_delete_cookie(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_delete_cookie(ptr, ctx);
 }
+voidptr main__vphp_wrap_vslimresponse_set_status(voidptr ptr, vphp__Context ctx) {
+	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int arg_0 = vphp__Context_arg_T_int(ctx, 0);
+	main__VSlimResponse* res = main__VSlimResponse_set_status(recv, arg_0);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimResponse_set_status -> main__vphp_wrap_vslimresponse_set_status
+voidptr vphp_wrap_VSlimResponse_set_status(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_set_status(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimresponse_with_status(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
 	int arg_0 = vphp__Context_arg_T_int(ctx, 0);
@@ -81478,6 +81581,15 @@ voidptr main__vphp_wrap_vslimresponse_redirect_with_status(voidptr ptr, vphp__Co
 // export alias: vphp_wrap_VSlimResponse_redirect_with_status -> main__vphp_wrap_vslimresponse_redirect_with_status
 voidptr vphp_wrap_VSlimResponse_redirect_with_status(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_redirect_with_status(ptr, ctx);
+}
+void main__vphp_wrap_vslimresponse_headers_all(voidptr ptr, vphp__Context ctx) {
+	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	Map_string_string res = main__VSlimResponse_headers_all(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+}
+// export alias: vphp_wrap_VSlimResponse_headers_all -> main__vphp_wrap_vslimresponse_headers_all
+void vphp_wrap_VSlimResponse_headers_all(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_headers_all(ptr, ctx);
 }
 void main__vphp_wrap_vslimresponse_str(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
@@ -81582,6 +81694,18 @@ voidptr main__vphp_wrap_vslimapp_dispatch(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_VSlimApp_dispatch -> main__vphp_wrap_vslimapp_dispatch
 voidptr vphp_wrap_VSlimApp_dispatch(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_dispatch(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_dispatch_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
+	main__VSlimResponse* res = main__VSlimApp_dispatch_body(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_dispatch_body -> main__vphp_wrap_vslimapp_dispatch_body
+voidptr vphp_wrap_VSlimApp_dispatch_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_dispatch_body(ptr, ctx);
 }
 voidptr main__vphp_wrap_vslimapp_dispatch_request(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
@@ -82152,13 +82276,16 @@ main__VSlimRouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix) 
 	return ((main__VSlimRouteGroup*)builtin__memdup(&(main__VSlimRouteGroup){.app = app,.prefix = main__normalize_group_prefix(prefix),}, sizeof(main__VSlimRouteGroup)));
 }
 main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path) {
-	main__VSlimRequest* req = main__new_vslim_request(method, raw_path, _S(""));
+	return main__VSlimApp_dispatch_body(app, method, raw_path, _S(""));
+}
+main__VSlimResponse* main__VSlimApp_dispatch_body(main__VSlimApp* app, string method, string raw_path, string body) {
+	main__VSlimRequest* req = main__new_vslim_request(method, raw_path, body);
 	return main__VSlimApp_dispatch_request(app, req);
 }
 main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req) {
-	multi_return_main__SlimResponse_Map_string_string mr_733 = main__dispatch_app_request_with_params(app, req);
-	main__SlimResponse res = mr_733.arg0;
-	Map_string_string params = mr_733.arg1;
+	multi_return_main__SlimResponse_Map_string_string mr_899 = main__dispatch_app_request_with_params(app, req);
+	main__SlimResponse res = mr_899.arg0;
+	Map_string_string params = mr_899.arg1;
 	{ // Unsafe block
 		main__VSlimRequest* writable = ((main__VSlimRequest*)(req));
 		writable->params = builtin__map_clone(&params);
@@ -82392,10 +82519,10 @@ VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, str
 }
 VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
 	if (app->routes.len > 0) {
-		multi_return_main__SlimResponse_Map_string_string_bool mr_9648 = main__dispatch_php_routes_with_params(app, req);
-		main__SlimResponse res = mr_9648.arg0;
-		Map_string_string params = mr_9648.arg1;
-		bool ok = mr_9648.arg2;
+		multi_return_main__SlimResponse_Map_string_string_bool mr_9814 = main__dispatch_php_routes_with_params(app, req);
+		main__SlimResponse res = mr_9814.arg0;
+		Map_string_string params = mr_9814.arg1;
+		bool ok = mr_9814.arg2;
 		if (ok) {
 			return (multi_return_main__SlimResponse_Map_string_string){.arg0=res, .arg1=params};
 		}
@@ -82412,9 +82539,9 @@ VV_LOC multi_return_main__SlimResponse_Map_string_string_bool main__dispatch_php
 	bool method_not_allowed = false;
 	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
 		main__PhpRoute route = ((main__PhpRoute*)app->routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_10125 = main__match_route(route.pattern, path);
-		bool ok = mr_10125.arg0;
-		Map_string_string params = mr_10125.arg1;
+		multi_return_bool_Map_string_string mr_10291 = main__match_route(route.pattern, path);
+		bool ok = mr_10291.arg0;
+		Map_string_string params = mr_10291.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -82570,7 +82697,7 @@ VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result) 
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_15343);
+			, (voidptr)			anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_15509);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
@@ -82703,7 +82830,7 @@ main__VSlimRequest* main__VSlimRequest_set_params(main__VSlimRequest* r, vphp__Z
 	return r;
 }
 string main__VSlimRequest_query(main__VSlimRequest* r, string key) {
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, main__VSlimRequest_query_params(r)), &(string[]){key}));
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, main__VSlimRequest_query_values(r)), &(string[]){key}));
 	_option_string _t2 = {0};
 	if (_t3) {
 		*((string*)&_t2.data) = *((string*)_t3);
@@ -82717,14 +82844,17 @@ string main__VSlimRequest_query(main__VSlimRequest* r, string key) {
 	
 	return (*(string*)_t2.data);
 }
+Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r) {
+	return main__VSlimRequest_query_values(r);
+}
+bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key) {
+	return _IN_MAP(ADDR(string, key), ADDR(map, main__VSlimRequest_query_values(r)));
+}
 Map_string_string main__VSlimRequest_query_all(main__VSlimRequest* r) {
 	return main__VSlimRequest_query_params(r);
 }
-bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key) {
-	return _IN_MAP(ADDR(string, key), ADDR(map, main__VSlimRequest_query_params(r)));
-}
 string main__VSlimRequest_header(main__VSlimRequest* r, string name) {
-	Map_string_string headers = main__VSlimRequest_headers(r);
+	Map_string_string headers = main__VSlimRequest_header_values(r);
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){main__normalize_header_name(name)}));
 	_option_string _t2 = {0};
 	if (_t3) {
@@ -82739,18 +82869,18 @@ string main__VSlimRequest_header(main__VSlimRequest* r, string name) {
 	
 	return (*(string*)_t2.data);
 }
-Map_string_string main__VSlimRequest_headers_all(main__VSlimRequest* r) {
-	return main__VSlimRequest_headers(r);
+Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r) {
+	return main__VSlimRequest_header_values(r);
 }
 bool main__VSlimRequest_has_header(main__VSlimRequest* r, string name) {
-	Map_string_string headers = main__VSlimRequest_headers(r);
+	Map_string_string headers = main__VSlimRequest_header_values(r);
 	return _IN_MAP(ADDR(string, main__normalize_header_name(name)), ADDR(map, headers));
 }
 string main__VSlimRequest_content_type(main__VSlimRequest* r) {
 	return main__VSlimRequest_header(r, _S("content-type"));
 }
 string main__VSlimRequest_cookie(main__VSlimRequest* r, string name) {
-	Map_string_string cookies = main__VSlimRequest_cookies(r);
+	Map_string_string cookies = main__VSlimRequest_cookie_values(r);
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, cookies), &(string[]){name}));
 	_option_string _t2 = {0};
 	if (_t3) {
@@ -82765,15 +82895,15 @@ string main__VSlimRequest_cookie(main__VSlimRequest* r, string name) {
 	
 	return (*(string*)_t2.data);
 }
-Map_string_string main__VSlimRequest_cookies_all(main__VSlimRequest* r) {
-	return main__VSlimRequest_cookies(r);
+Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r) {
+	return main__VSlimRequest_cookie_values(r);
 }
 bool main__VSlimRequest_has_cookie(main__VSlimRequest* r, string name) {
-	Map_string_string cookies = main__VSlimRequest_cookies(r);
+	Map_string_string cookies = main__VSlimRequest_cookie_values(r);
 	return _IN_MAP(ADDR(string, name), ADDR(map, cookies));
 }
 string main__VSlimRequest_param(main__VSlimRequest* r, string name) {
-	Map_string_string params = main__VSlimRequest_params(r);
+	Map_string_string params = main__VSlimRequest_route_param_values(r);
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, params), &(string[]){name}));
 	_option_string _t2 = {0};
 	if (_t3) {
@@ -82788,15 +82918,15 @@ string main__VSlimRequest_param(main__VSlimRequest* r, string name) {
 	
 	return (*(string*)_t2.data);
 }
-Map_string_string main__VSlimRequest_params_all(main__VSlimRequest* r) {
-	return main__VSlimRequest_params(r);
+Map_string_string main__VSlimRequest_route_params(main__VSlimRequest* r) {
+	return main__VSlimRequest_route_param_values(r);
 }
 bool main__VSlimRequest_has_param(main__VSlimRequest* r, string name) {
-	Map_string_string params = main__VSlimRequest_params(r);
+	Map_string_string params = main__VSlimRequest_route_param_values(r);
 	return _IN_MAP(ADDR(string, name), ADDR(map, params));
 }
 string main__VSlimRequest_attribute(main__VSlimRequest* r, string name) {
-	Map_string_string attrs = main__VSlimRequest_attributes(r);
+	Map_string_string attrs = main__VSlimRequest_attribute_values(r);
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, attrs), &(string[]){name}));
 	_option_string _t2 = {0};
 	if (_t3) {
@@ -82811,15 +82941,15 @@ string main__VSlimRequest_attribute(main__VSlimRequest* r, string name) {
 	
 	return (*(string*)_t2.data);
 }
-Map_string_string main__VSlimRequest_attributes_all(main__VSlimRequest* r) {
-	return main__VSlimRequest_attributes(r);
+Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r) {
+	return main__VSlimRequest_attribute_values(r);
 }
 bool main__VSlimRequest_has_attribute(main__VSlimRequest* r, string name) {
-	Map_string_string attrs = main__VSlimRequest_attributes(r);
+	Map_string_string attrs = main__VSlimRequest_attribute_values(r);
 	return _IN_MAP(ADDR(string, name), ADDR(map, attrs));
 }
 string main__VSlimRequest_server_value(main__VSlimRequest* r, string name) {
-	Map_string_string values = main__VSlimRequest_server_values(r);
+	Map_string_string values = main__VSlimRequest_server_param_values(r);
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, values), &(string[]){name}));
 	_option_string _t2 = {0};
 	if (_t3) {
@@ -82834,56 +82964,74 @@ string main__VSlimRequest_server_value(main__VSlimRequest* r, string name) {
 	
 	return (*(string*)_t2.data);
 }
-Map_string_string main__VSlimRequest_server_all(main__VSlimRequest* r) {
-	return main__VSlimRequest_server_values(r);
+Map_string_string main__VSlimRequest_server_params(main__VSlimRequest* r) {
+	return main__VSlimRequest_server_param_values(r);
 }
 bool main__VSlimRequest_has_server(main__VSlimRequest* r, string name) {
-	Map_string_string values = main__VSlimRequest_server_values(r);
+	Map_string_string values = main__VSlimRequest_server_param_values(r);
 	return _IN_MAP(ADDR(string, name), ADDR(map, values));
 }
 int main__VSlimRequest_uploaded_file_count(main__VSlimRequest* r) {
-	return main__VSlimRequest_uploaded_files_list(r).len;
+	return main__VSlimRequest_uploaded_file_values(r).len;
 }
-Array_string main__VSlimRequest_uploaded_files_all(main__VSlimRequest* r) {
-	return main__VSlimRequest_uploaded_files_list(r);
+Array_string main__VSlimRequest_uploaded_files(main__VSlimRequest* r) {
+	return main__VSlimRequest_uploaded_file_values(r);
 }
 bool main__VSlimRequest_has_uploaded_files(main__VSlimRequest* r) {
-	return main__VSlimRequest_uploaded_files_list(r).len > 0;
+	return main__VSlimRequest_uploaded_file_values(r).len > 0;
 }
 bool main__VSlimRequest_is_secure(main__VSlimRequest* r) {
 	return builtin__string__eq(builtin__string_to_lower(r->scheme), _S("https"));
 }
-VV_LOC Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r) {
+Map_string_string main__VSlimRequest_headers_all(main__VSlimRequest* r) {
+	return main__VSlimRequest_headers(r);
+}
+Map_string_string main__VSlimRequest_cookies_all(main__VSlimRequest* r) {
+	return main__VSlimRequest_cookies(r);
+}
+Map_string_string main__VSlimRequest_params_all(main__VSlimRequest* r) {
+	return main__VSlimRequest_route_params(r);
+}
+Map_string_string main__VSlimRequest_attributes_all(main__VSlimRequest* r) {
+	return main__VSlimRequest_attributes(r);
+}
+Map_string_string main__VSlimRequest_server_all(main__VSlimRequest* r) {
+	return main__VSlimRequest_server_params(r);
+}
+Array_string main__VSlimRequest_uploaded_files_all(main__VSlimRequest* r) {
+	return main__VSlimRequest_uploaded_files(r);
+}
+VV_LOC Map_string_string main__VSlimRequest_header_values(main__VSlimRequest* r) {
 	return builtin__map_clone(&r->headers);
 }
-VV_LOC Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r) {
+VV_LOC Map_string_string main__VSlimRequest_query_values(main__VSlimRequest* r) {
 	if (r->query.len > 0) {
 		return builtin__map_clone(&r->query);
 	}
 	return main__parse_query_string(r->query_string);
 }
-VV_LOC Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r) {
+VV_LOC Map_string_string main__VSlimRequest_cookie_values(main__VSlimRequest* r) {
 	return builtin__map_clone(&r->cookies);
 }
-VV_LOC Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r) {
+VV_LOC Map_string_string main__VSlimRequest_attribute_values(main__VSlimRequest* r) {
 	return builtin__map_clone(&r->attributes);
 }
-VV_LOC Map_string_string main__VSlimRequest_params(main__VSlimRequest* r) {
+VV_LOC Map_string_string main__VSlimRequest_route_param_values(main__VSlimRequest* r) {
 	return builtin__map_clone(&r->params);
 }
-VV_LOC Map_string_string main__VSlimRequest_server_values(main__VSlimRequest* r) {
+VV_LOC Map_string_string main__VSlimRequest_server_param_values(main__VSlimRequest* r) {
 	return builtin__map_clone(&r->server);
 }
-VV_LOC Array_string main__VSlimRequest_uploaded_files_list(main__VSlimRequest* r) {
+VV_LOC Array_string main__VSlimRequest_uploaded_file_values(main__VSlimRequest* r) {
 	return builtin__array_clone_to_depth(&r->uploaded_files, 1);
 }
 main__SlimRequest main__VSlimRequest_to_slim_request(main__VSlimRequest* r) {
-	return ((main__SlimRequest){.method = r->method,.path = r->path,.params = main__VSlimRequest_params(r),.query = main__VSlimRequest_query_params(r),.body = r->body,});
+	return ((main__SlimRequest){.method = r->method,.path = r->path,.params = main__VSlimRequest_route_params(r),.query = main__VSlimRequest_query_params(r),.body = r->body,});
 }
 main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body) {
-	multi_return_string_string mr_4984 = main__normalize_request_target(raw_path);
-	string path = mr_4984.arg0;
-	string query_string = mr_4984.arg1;
+	multi_return_string_string mr_5825 = main__normalize_request_target(raw_path);
+	string path = mr_5825.arg0;
+	string query_string = mr_5825.arg1;
 	main__VSlimRequest* req = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,.raw_path = raw_path,.path = path,.body = body,.query_string = query_string,.scheme = (string){.str=(byteptr)"", .is_lit=1},.host = (string){.str=(byteptr)"", .is_lit=1},.port = (string){.str=(byteptr)"", .is_lit=1},.protocol_version = (string){.str=(byteptr)"", .is_lit=1},.remote_addr = (string){.str=(byteptr)"", .is_lit=1},.query = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.attributes = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.server = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.uploaded_files = builtin____new_array(0, 0, sizeof(string)),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimRequest)));
 	main__apply_request_defaults(req);
 	return req;
@@ -82925,9 +83073,9 @@ main__VSlimRequest* main__new_vslim_request_from_zval(vphp__ZVal envelope) {
 	}
 	_t8: {};
 		string body = _t7;
-	multi_return_string_string mr_5518 = main__normalize_request_target(raw_path);
-	string path = mr_5518.arg0;
-	string query_string = mr_5518.arg1;
+	multi_return_string_string mr_6359 = main__normalize_request_target(raw_path);
+	string path = mr_6359.arg0;
+	string query_string = mr_6359.arg1;
 	main__VSlimRequest* req = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,.raw_path = raw_path,.path = path,.body = body,.query_string = query_string,.scheme = (string){.str=(byteptr)"", .is_lit=1},.host = (string){.str=(byteptr)"", .is_lit=1},.port = (string){.str=(byteptr)"", .is_lit=1},.protocol_version = (string){.str=(byteptr)"", .is_lit=1},.remote_addr = (string){.str=(byteptr)"", .is_lit=1},.query = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.attributes = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.server = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.uploaded_files = builtin____new_array(0, 0, sizeof(string)),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimRequest)));
 	main__apply_request_defaults(req);
 	string _t10; /* if prepend */
@@ -83140,7 +83288,7 @@ main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int s
 	return r;
 }
 string main__VSlimResponse_header(main__VSlimResponse* r, string name) {
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){main__normalize_header_name(name)}));
 	_option_string _t2 = {0};
 	if (_t3) {
@@ -83155,22 +83303,22 @@ string main__VSlimResponse_header(main__VSlimResponse* r, string name) {
 	
 	return (*(string*)_t2.data);
 }
-Map_string_string main__VSlimResponse_headers_all(main__VSlimResponse* r) {
-	return main__VSlimResponse_headers(r);
+Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r) {
+	return main__VSlimResponse_header_values(r);
 }
 bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name) {
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	return _IN_MAP(ADDR(string, main__normalize_header_name(name)), ADDR(map, headers));
 }
 main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value) {
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){main__normalize_header_name(name)}, &(string[]) { value });
 	main__apply_response_headers(r, headers);
 	return r;
 }
 main__VSlimResponse* main__VSlimResponse_set_content_type(main__VSlimResponse* r, string content_type) {
 	r->content_type = content_type;
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { content_type });
 	main__apply_response_headers(r, headers);
 	return r;
@@ -83186,26 +83334,29 @@ main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r,
 }
 main__VSlimResponse* main__VSlimResponse_set_cookie_full(main__VSlimResponse* r, string name, string value, string path, string domain, int max_age, bool secure, bool http_only, string same_site) {
 	string header_value = main__build_set_cookie_header(name, value, path, domain, max_age, secure, http_only, same_site);
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
 	main__apply_response_headers(r, headers);
 	return r;
 }
 main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name) {
 	string header_value = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("=; Path=/; Max-Age=0"), 0, { .d_c = 0 }}}));
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
 	main__apply_response_headers(r, headers);
 	return r;
 }
-main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status) {
+main__VSlimResponse* main__VSlimResponse_set_status(main__VSlimResponse* r, int status) {
 	r->status = status;
 	return r;
+}
+main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status) {
+	return main__VSlimResponse_set_status(r, status);
 }
 main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body) {
 	r->body = body;
 	r->content_type = _S("text/plain; charset=utf-8");
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
 	main__apply_response_headers(r, headers);
 	return r;
@@ -83213,7 +83364,7 @@ main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string bod
 main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body) {
 	r->body = body;
 	r->content_type = _S("application/json; charset=utf-8");
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
 	main__apply_response_headers(r, headers);
 	return r;
@@ -83221,7 +83372,7 @@ main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string bod
 main__VSlimResponse* main__VSlimResponse_html(main__VSlimResponse* r, string body) {
 	r->body = body;
 	r->content_type = _S("text/html");
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
 	main__apply_response_headers(r, headers);
 	return r;
@@ -83232,7 +83383,7 @@ main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string
 main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status) {
 	r->status = status;
 	r->body = _S("");
-	Map_string_string headers = main__VSlimResponse_headers(r);
+	Map_string_string headers = main__VSlimResponse_header_values(r);
 	builtin__map_set(&headers, &(string[]){_S("location")}, &(string[]) { location });
 	if (!_IN_MAP(ADDR(string, _S("content-type")), ADDR(map, headers))) {
 		builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
@@ -83240,7 +83391,10 @@ main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimRespons
 	main__apply_response_headers(r, headers);
 	return r;
 }
-VV_LOC Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r) {
+Map_string_string main__VSlimResponse_headers_all(main__VSlimResponse* r) {
+	return main__VSlimResponse_headers(r);
+}
+VV_LOC Map_string_string main__VSlimResponse_header_values(main__VSlimResponse* r) {
 	return builtin__map_clone(&r->headers);
 }
 Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r) {

@@ -198,11 +198,11 @@ $req->set_query(['trace_id' => 'from-json']);
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');
 echo $req->attribute('actor');
-print_r($req->query_all());
-print_r($req->headers_all());
-print_r($req->cookies_all());
-print_r($req->attributes_all());
-print_r($req->server_all());
+print_r($req->query_params());
+print_r($req->headers());
+print_r($req->cookies());
+print_r($req->attributes());
+print_r($req->server_params());
 echo $req->content_type();
 echo $req->server_value('server_name');
 echo $req->uploaded_file_count();
@@ -233,7 +233,7 @@ $res->set_cookie_full('sid', 'cookie-303', '/', 'demo.local', 60, true, true, 'l
 echo $res->cookie_header();
 
 echo $res->header('x-demo');
-print_r($res->headers_all());
+print_r($res->headers());
 echo $res->content_type;
 ```
 
@@ -415,6 +415,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
   - `middleware(...)` (`before()` 的别名)
 - dispatch：
   - `dispatch(...)`
+  - `dispatch_body(...)`
   - `dispatch_request(...)`
 - reverse routing：
   - `url_for(...)`
@@ -438,6 +439,18 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
   - `content_type()`
   - `uploaded_file_count()`
   - `is_secure()`
+
+兼容说明：
+
+- `query_all()/headers_all()/cookies_all()/params_all()/attributes_all()/server_all()/uploaded_files_all()` 仍然保留
+- 但第一版推荐主用：
+  - `query_params()`
+  - `headers()`
+  - `cookies()`
+  - `route_params()`
+  - `attributes()`
+  - `server_params()`
+  - `uploaded_files()`
 
 ### `VSlimResponse`
 

@@ -61,7 +61,17 @@ pub fn (mut r VSlimRequest) set_params(params vphp.ZVal) &VSlimRequest {
 
 @[php_method]
 pub fn (r &VSlimRequest) query(key string) string {
-	return r.query_params()[key] or { '' }
+	return r.query_values()[key] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) query_params() map[string]string {
+	return r.query_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_query(key string) bool {
+	return key in r.query_values()
 }
 
 @[php_method]
@@ -70,24 +80,19 @@ pub fn (r &VSlimRequest) query_all() map[string]string {
 }
 
 @[php_method]
-pub fn (r &VSlimRequest) has_query(key string) bool {
-	return key in r.query_params()
-}
-
-@[php_method]
 pub fn (r &VSlimRequest) header(name string) string {
-	headers := r.headers()
+	headers := r.header_values()
 	return headers[normalize_header_name(name)] or { '' }
 }
 
 @[php_method]
-pub fn (r &VSlimRequest) headers_all() map[string]string {
-	return r.headers()
+pub fn (r &VSlimRequest) headers() map[string]string {
+	return r.header_values()
 }
 
 @[php_method]
 pub fn (r &VSlimRequest) has_header(name string) bool {
-	headers := r.headers()
+	headers := r.header_values()
 	return normalize_header_name(name) in headers
 }
 
@@ -98,8 +103,95 @@ pub fn (r &VSlimRequest) content_type() string {
 
 @[php_method]
 pub fn (r &VSlimRequest) cookie(name string) string {
-	cookies := r.cookies()
+	cookies := r.cookie_values()
 	return cookies[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) cookies() map[string]string {
+	return r.cookie_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_cookie(name string) bool {
+	cookies := r.cookie_values()
+	return name in cookies
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) param(name string) string {
+	params := r.route_param_values()
+	return params[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) route_params() map[string]string {
+	return r.route_param_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_param(name string) bool {
+	params := r.route_param_values()
+	return name in params
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) attribute(name string) string {
+	attrs := r.attribute_values()
+	return attrs[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) attributes() map[string]string {
+	return r.attribute_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_attribute(name string) bool {
+	attrs := r.attribute_values()
+	return name in attrs
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) server_value(name string) string {
+	values := r.server_param_values()
+	return values[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) server_params() map[string]string {
+	return r.server_param_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_server(name string) bool {
+	values := r.server_param_values()
+	return name in values
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) uploaded_file_count() int {
+	return r.uploaded_file_values().len
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) uploaded_files() []string {
+	return r.uploaded_file_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_uploaded_files() bool {
+	return r.uploaded_file_values().len > 0
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) is_secure() bool {
+	return r.scheme.to_lower() == 'https'
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) headers_all() map[string]string {
+	return r.headers()
 }
 
 @[php_method]
@@ -108,32 +200,8 @@ pub fn (r &VSlimRequest) cookies_all() map[string]string {
 }
 
 @[php_method]
-pub fn (r &VSlimRequest) has_cookie(name string) bool {
-	cookies := r.cookies()
-	return name in cookies
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) param(name string) string {
-	params := r.params()
-	return params[name] or { '' }
-}
-
-@[php_method]
 pub fn (r &VSlimRequest) params_all() map[string]string {
-	return r.params()
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) has_param(name string) bool {
-	params := r.params()
-	return name in params
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) attribute(name string) string {
-	attrs := r.attributes()
-	return attrs[name] or { '' }
+	return r.route_params()
 }
 
 @[php_method]
@@ -142,76 +210,43 @@ pub fn (r &VSlimRequest) attributes_all() map[string]string {
 }
 
 @[php_method]
-pub fn (r &VSlimRequest) has_attribute(name string) bool {
-	attrs := r.attributes()
-	return name in attrs
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) server_value(name string) string {
-	values := r.server_values()
-	return values[name] or { '' }
-}
-
-@[php_method]
 pub fn (r &VSlimRequest) server_all() map[string]string {
-	return r.server_values()
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) has_server(name string) bool {
-	values := r.server_values()
-	return name in values
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) uploaded_file_count() int {
-	return r.uploaded_files_list().len
+	return r.server_params()
 }
 
 @[php_method]
 pub fn (r &VSlimRequest) uploaded_files_all() []string {
-	return r.uploaded_files_list()
+	return r.uploaded_files()
 }
 
-@[php_method]
-pub fn (r &VSlimRequest) has_uploaded_files() bool {
-	return r.uploaded_files_list().len > 0
-}
-
-@[php_method]
-pub fn (r &VSlimRequest) is_secure() bool {
-	return r.scheme.to_lower() == 'https'
-}
-
-fn (r &VSlimRequest) headers() map[string]string {
+fn (r &VSlimRequest) header_values() map[string]string {
 	return r.headers.clone()
 }
 
-fn (r &VSlimRequest) query_params() map[string]string {
+fn (r &VSlimRequest) query_values() map[string]string {
 	if r.query.len > 0 {
 		return r.query.clone()
 	}
 	return parse_query_string(r.query_string)
 }
 
-fn (r &VSlimRequest) cookies() map[string]string {
+fn (r &VSlimRequest) cookie_values() map[string]string {
 	return r.cookies.clone()
 }
 
-fn (r &VSlimRequest) attributes() map[string]string {
+fn (r &VSlimRequest) attribute_values() map[string]string {
 	return r.attributes.clone()
 }
 
-fn (r &VSlimRequest) params() map[string]string {
+fn (r &VSlimRequest) route_param_values() map[string]string {
 	return r.params.clone()
 }
 
-fn (r &VSlimRequest) server_values() map[string]string {
+fn (r &VSlimRequest) server_param_values() map[string]string {
 	return r.server.clone()
 }
 
-fn (r &VSlimRequest) uploaded_files_list() []string {
+fn (r &VSlimRequest) uploaded_file_values() []string {
 	return r.uploaded_files.clone()
 }
 
@@ -219,7 +254,7 @@ pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
 	return SlimRequest{
 		method: r.method
 		path: r.path
-		params: r.params()
+		params: r.route_params()
 		query: r.query_params()
 		body: r.body
 	}

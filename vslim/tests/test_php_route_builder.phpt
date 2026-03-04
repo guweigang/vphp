@@ -113,8 +113,7 @@ echo $redirect->status . '|' . $redirect->header('location') . '|' . $redirect->
 $manual = new VSlimResponse(200, 'ignored', 'text/plain; charset=utf-8');
 $manual->redirect_with_status('/moved', 307);
 echo $manual->status . '|' . $manual->header('location') . '|' . $manual->content_type . PHP_EOL;
-$req = new VSlimRequest('POST', '/submit?trace_id=builder', 'payload');
-$res = $app->dispatch_request($req);
+$res = $app->dispatch_body('POST', '/submit?trace_id=builder', 'payload');
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
 echo $app->dispatch('GET', '/api/users/9')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/members/12')->body . PHP_EOL;

@@ -48,7 +48,7 @@ echo $req->header('x-trace-id') . '|' . ($req->has_header('content-type') ? 'yes
 echo $req->cookie('sid') . '|' . ($req->has_cookie('sid') ? 'yes' : 'no') . '|' . $req->param('id') . '|' . ($req->has_param('id') ? 'yes' : 'no') . PHP_EOL;
 echo $req->query('trace_id') . '|' . $req->attribute('actor') . '|' . ($req->has_attribute('actor') ? 'yes' : 'no') . '|' . $req->port . '|' . $req->protocol_version . PHP_EOL;
 echo $req->content_type() . '|' . $req->server_value('server_name') . '|' . ($req->has_server('server_name') ? 'yes' : 'no') . '|' . $req->uploaded_file_count() . '|' . ($req->is_secure() ? 'yes' : 'no') . PHP_EOL;
-echo $req->query_all()['trace_id'] . '|' . $req->headers_all()['content-type'] . '|' . $req->cookies_all()['sid'] . '|' . $req->attributes_all()['actor'] . '|' . $req->server_all()['server_name'] . '|' . ($req->has_uploaded_files() ? 'yes' : 'no') . PHP_EOL;
+echo $req->query_params()['trace_id'] . '|' . $req->headers()['content-type'] . '|' . $req->cookies()['sid'] . '|' . $req->attributes()['actor'] . '|' . $req->server_params()['server_name'] . '|' . ($req->has_uploaded_files() ? 'yes' : 'no') . PHP_EOL;
 
 $envelope = vslim_handle_request([
     'method' => 'GET',
@@ -82,7 +82,7 @@ $resp->html('<b>ok</b>');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->content_length() . PHP_EOL;
 $resp->set_content_type('application/xml');
 echo $resp->content_type . '|' . $resp->header('content-type') . PHP_EOL;
-echo $resp->headers_all()['content-type'] . '|' . $resp->headers_all()['x-demo'] . PHP_EOL;
+echo $resp->headers()['content-type'] . '|' . $resp->headers()['x-demo'] . PHP_EOL;
 $resp->set_cookie_full('sid', 'cookie-303', '/', 'demo.local', 60, true, true, 'lax');
 echo $resp->cookie_header() . PHP_EOL;
 ?>

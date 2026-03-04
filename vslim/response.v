@@ -13,24 +13,24 @@ pub fn (mut r VSlimResponse) construct(status int, body string, content_type str
 
 @[php_method]
 pub fn (r &VSlimResponse) header(name string) string {
-	headers := r.headers()
+	headers := r.header_values()
 	return headers[normalize_header_name(name)] or { '' }
 }
 
 @[php_method]
-pub fn (r &VSlimResponse) headers_all() map[string]string {
-	return r.headers()
+pub fn (r &VSlimResponse) headers() map[string]string {
+	return r.header_values()
 }
 
 @[php_method]
 pub fn (r &VSlimResponse) has_header(name string) bool {
-	headers := r.headers()
+	headers := r.header_values()
 	return normalize_header_name(name) in headers
 }
 
 @[php_method]
 pub fn (mut r VSlimResponse) set_header(name string, value string) &VSlimResponse {
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers[normalize_header_name(name)] = value
 	apply_response_headers(mut r, headers)
 	return r
@@ -39,7 +39,7 @@ pub fn (mut r VSlimResponse) set_header(name string, value string) &VSlimRespons
 @[php_method]
 pub fn (mut r VSlimResponse) set_content_type(content_type string) &VSlimResponse {
 	r.content_type = content_type
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['content-type'] = content_type
 	apply_response_headers(mut r, headers)
 	return r
@@ -63,7 +63,7 @@ pub fn (mut r VSlimResponse) set_cookie_opts(name string, value string, path str
 @[php_method]
 pub fn (mut r VSlimResponse) set_cookie_full(name string, value string, path string, domain string, max_age int, secure bool, http_only bool, same_site string) &VSlimResponse {
 	header_value := build_set_cookie_header(name, value, path, domain, max_age, secure, http_only, same_site)
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['set-cookie'] = header_value
 	apply_response_headers(mut r, headers)
 	return r
@@ -72,7 +72,7 @@ pub fn (mut r VSlimResponse) set_cookie_full(name string, value string, path str
 @[php_method]
 pub fn (mut r VSlimResponse) delete_cookie(name string) &VSlimResponse {
 	header_value := '${name}=; Path=/; Max-Age=0'
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['set-cookie'] = header_value
 	apply_response_headers(mut r, headers)
 	return r
@@ -93,7 +93,7 @@ pub fn (mut r VSlimResponse) with_status(status int) &VSlimResponse {
 pub fn (mut r VSlimResponse) text(body string) &VSlimResponse {
 	r.body = body
 	r.content_type = 'text/plain; charset=utf-8'
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['content-type'] = r.content_type
 	apply_response_headers(mut r, headers)
 	return r
@@ -103,7 +103,7 @@ pub fn (mut r VSlimResponse) text(body string) &VSlimResponse {
 pub fn (mut r VSlimResponse) json(body string) &VSlimResponse {
 	r.body = body
 	r.content_type = 'application/json; charset=utf-8'
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['content-type'] = r.content_type
 	apply_response_headers(mut r, headers)
 	return r
@@ -113,7 +113,7 @@ pub fn (mut r VSlimResponse) json(body string) &VSlimResponse {
 pub fn (mut r VSlimResponse) html(body string) &VSlimResponse {
 	r.body = body
 	r.content_type = 'text/html'
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['content-type'] = r.content_type
 	apply_response_headers(mut r, headers)
 	return r
@@ -128,7 +128,7 @@ pub fn (mut r VSlimResponse) redirect(location string) &VSlimResponse {
 pub fn (mut r VSlimResponse) redirect_with_status(location string, status int) &VSlimResponse {
 	r.status = status
 	r.body = ''
-	mut headers := r.headers()
+	mut headers := r.header_values()
 	headers['location'] = location
 	if 'content-type' !in headers {
 		headers['content-type'] = r.content_type
@@ -137,7 +137,12 @@ pub fn (mut r VSlimResponse) redirect_with_status(location string, status int) &
 	return r
 }
 
-fn (r &VSlimResponse) headers() map[string]string {
+@[php_method]
+pub fn (r &VSlimResponse) headers_all() map[string]string {
+	return r.headers()
+}
+
+fn (r &VSlimResponse) header_values() map[string]string {
 	return r.headers.clone()
 }
 

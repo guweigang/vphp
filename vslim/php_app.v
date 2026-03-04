@@ -27,7 +27,12 @@ pub fn (app &VSlimApp) group(prefix string) &VSlimRouteGroup {
 
 @[php_method]
 pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
-	req := new_vslim_request(method, raw_path, '')
+	return app.dispatch_body(method, raw_path, '')
+}
+
+@[php_method]
+pub fn (app &VSlimApp) dispatch_body(method string, raw_path string, body string) &VSlimResponse {
+	req := new_vslim_request(method, raw_path, body)
 	return app.dispatch_request(req)
 }
 
