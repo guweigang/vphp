@@ -44,6 +44,13 @@ final class VSlimPsr7Adapter
             'port' => $vRequest->port,
             'protocol_version' => $vRequest->protocol_version,
             'remote_addr' => $vRequest->remote_addr,
+            'headers' => self::readHeaders($request),
+            'cookies' => self::normalizeMap(self::readMap($request, 'getCookieParams', 'cookies')),
+            'query' => self::normalizeMap(self::readMap($request, 'getQueryParams', 'query')),
+            'attributes' => self::normalizeMap(self::readAttributes($request)),
+            'server' => self::normalizeMap(self::readServerParams($request)),
+            'uploaded_files' => self::readUploadedFiles($request),
+            // Keep compatibility with current exported vslim_handle_request envelope shape.
             'headers_json' => $vRequest->headers_json,
             'cookies_json' => $vRequest->cookies_json,
             'query_json' => $vRequest->query_json,
@@ -170,6 +177,23 @@ final class VSlimPsr7Adapter
             return $request->{$property};
         }
         return [];
+    }
+
+    /** @param array<string,mixed> $map */
+    private static function normalizeMap(array $map): array
+    {
+        $out = [];
+        foreach ($map as $key => $value) {
+            if (!is_string($key)) {
+                continue;
+            }
+            if (is_array($value)) {
+                $out[$key] = implode(', ', array_map('strval', $value));
+            } else {
+                $out[$key] = (string) $value;
+            }
+        }
+        return $out;
     }
 
     private static function readServerValue(object $request, string $key): string

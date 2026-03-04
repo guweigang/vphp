@@ -28,12 +28,12 @@ final class VHttpdPsr7Bridge
         $port = (string)($envelope['port'] ?? '');
         $protocolVersion = (string)($envelope['protocol_version'] ?? '1.1');
         $remoteAddr = (string)($envelope['remote_addr'] ?? '');
-        $headers = self::decodeNameMap((string)($envelope['headers_json'] ?? '{}'));
-        $cookies = self::decodeNameMap((string)($envelope['cookies_json'] ?? '{}'));
-        $query = self::decodeNameMap((string)($envelope['query_json'] ?? '{}'));
-        $attributes = self::decodeNameMap((string)($envelope['attributes_json'] ?? '{}'));
-        $server = self::decodeNameMap((string)($envelope['server_json'] ?? '{}'));
-        $uploadedFiles = self::decodeUploadedFiles((string)($envelope['uploaded_files_json'] ?? '[]'));
+        $headers = self::readNameMap($envelope, 'headers', 'headers_json');
+        $cookies = self::readNameMap($envelope, 'cookies', 'cookies_json');
+        $query = self::readNameMap($envelope, 'query', 'query_json');
+        $attributes = self::readNameMap($envelope, 'attributes', 'attributes_json');
+        $server = self::readNameMap($envelope, 'server', 'server_json');
+        $uploadedFiles = self::readUploadedFiles($envelope);
 
         if ($query === []) {
             $query = self::parseQueryFromPath($path);
@@ -47,6 +47,18 @@ final class VHttpdPsr7Bridge
             'guzzle' => self::buildWithGuzzle($method, $uri, $server, $headers, $cookies, $query, $body, $attributes, $uploadedFiles, $protocolVersion),
             default => null,
         };
+    }
+
+    /**
+     * @param array<string,mixed> $envelope
+     * @return array<string,string>
+     */
+    private static function readNameMap(array $envelope, string $mapKey, string $jsonKey): array
+    {
+        if (isset($envelope[$mapKey]) && is_array($envelope[$mapKey])) {
+            return self::normalizeNameMap($envelope[$mapKey]);
+        }
+        return self::decodeNameMap((string)($envelope[$jsonKey] ?? '{}'));
     }
 
     private static function detectFactoryKind(): ?string
@@ -99,18 +111,44 @@ final class VHttpdPsr7Bridge
         if (!is_array($decoded)) {
             return [];
         }
+        return self::normalizeNameMap($decoded);
+    }
+
+    /**
+     * @param array<mixed,mixed> $decoded
+     * @return array<string,string>
+     */
+    private static function normalizeNameMap(array $decoded): array
+    {
+        if (!is_array($decoded)) {
+            return [];
+        }
         $out = [];
         foreach ($decoded as $key => $value) {
-            if (is_string($key) && (is_scalar($value) || $value === null)) {
+            if (!is_string($key)) {
+                continue;
+            }
+            if (is_array($value)) {
+                $out[$key] = implode(', ', array_map('strval', $value));
+                continue;
+            }
+            if (is_scalar($value) || $value === null) {
                 $out[$key] = (string)$value;
             }
         }
         return $out;
     }
 
-    /** @return array<int,mixed> */
-    private static function decodeUploadedFiles(string $json): array
+    /**
+     * @param array<string,mixed> $envelope
+     * @return array<int,mixed>
+     */
+    private static function readUploadedFiles(array $envelope): array
     {
+        if (isset($envelope['uploaded_files']) && is_array($envelope['uploaded_files'])) {
+            return array_values($envelope['uploaded_files']);
+        }
+        $json = (string)($envelope['uploaded_files_json'] ?? '[]');
         $decoded = json_decode($json, true);
         return is_array($decoded) ? $decoded : [];
     }

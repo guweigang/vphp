@@ -98,6 +98,24 @@ namespace {
     echo $req->headers['content-type'] . '|' . $req->headers['x-request-id'] . PHP_EOL;
     echo $req->cookies['sid'] . '|' . $req->query['trace_id'] . '|' . $req->attributes['route'] . PHP_EOL;
     echo $req->server['HTTP_HOST'] . '|' . $req->server['REMOTE_ADDR'] . '|' . $req->server['SERVER_PROTOCOL'] . PHP_EOL;
+
+    $req2 = VHttpdPsr7Bridge::buildServerRequest([
+        'method' => 'GET',
+        'path' => '/hello/world?trace_id=array-shape',
+        'scheme' => 'http',
+        'host' => 'demo.local',
+        'port' => '80',
+        'protocol_version' => '1.1',
+        'remote_addr' => '127.0.0.2',
+        'headers' => ['x-request-id' => ['a', 'b']],
+        'cookies' => ['sid' => 'cookie-array'],
+        'query' => ['trace_id' => 'array-shape'],
+        'attributes' => ['source' => 'worker-shape'],
+        'server' => ['REQUEST_TIME_FLOAT' => '2.34'],
+        'uploaded_files' => [],
+    ]);
+    echo $req2->method . '|' . $req2->uri . '|' . $req2->headers['x-request-id'] . PHP_EOL;
+    echo $req2->cookies['sid'] . '|' . $req2->query['trace_id'] . '|' . $req2->attributes['source'] . '|' . $req2->server['REMOTE_ADDR'] . PHP_EOL;
 }
 ?>
 --EXPECT--
@@ -107,3 +125,5 @@ POST|https://demo.local:443/users/9?trace_id=psr|2
 application/json|abc
 cookie-7|psr|users.show
 demo.local|127.0.0.1|HTTP/2
+GET|http://demo.local:80/hello/world?trace_id=array-shape|a, b
+cookie-array|array-shape|worker-shape|127.0.0.2

@@ -65,10 +65,14 @@ $vreq = VSlimPsr7Adapter::toVSlimRequest($req);
 echo $vreq->method . '|' . $vreq->raw_path . '|' . $vreq->scheme . '|' . $vreq->host . '|' . $vreq->port . '|' . $vreq->protocol_version . PHP_EOL;
 echo $vreq->query('trace_id') . '|' . $vreq->cookie('sid') . '|' . $vreq->attribute('actor') . '|' . $vreq->header('x-trace-id') . PHP_EOL;
 
+$env = VSlimPsr7Adapter::toWorkerEnvelope($req);
+echo $env['method'] . '|' . $env['path'] . '|' . $env['headers']['x-trace-id'] . '|' . $env['cookies']['sid'] . '|' . $env['query']['trace_id'] . PHP_EOL;
+
 $res = VSlimPsr7Adapter::dispatch($app, $req);
 echo $res->status . '|' . $res->body . '|' . $res->content_type . PHP_EOL;
 ?>
 --EXPECT--
 GET|/users/55?trace_id=psr-bridge|https|demo.local|443|2
 psr-bridge|cookie-55|psr-user|from-psr7
+GET|/users/55?trace_id=psr-bridge|from-psr7|cookie-55|psr-bridge
 200|{"user":"55","trace":"psr-bridge"}|application/json; charset=utf-8
