@@ -106,3 +106,13 @@ If `php-worker.php` finds an app bootstrap file (`VSLIM_HTTPD_APP` or `httpd/app
 - build a PSR-7 request when a supported PSR-17 factory is available
 - dispatch the request into that app callable
 - normalize a PSR-7-style response back into the worker transport envelope
+
+## VSlim adapter
+
+`vslim_psr7_adapter.php` provides a small PHP-side bridge that can:
+
+- convert a PSR-7 style request object into `VSlimRequest`
+- dispatch that request through `VSlimApp`
+- keep `vslim` native while letting `php-worker.php` speak PSR-7 at the edge
+
+`app.php` uses this adapter by default when the worker receives a PSR-7 request object.
