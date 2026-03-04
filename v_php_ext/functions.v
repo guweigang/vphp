@@ -303,6 +303,41 @@ fn v_include_php_file_once(ctx vphp.Context) {
 }
 
 @[php_function]
+fn v_include_php_module_demo(ctx vphp.Context) {
+	path := ctx.arg[string](0)
+	config := vphp.include_once(path)
+	if !config.is_valid() {
+		vphp.throw_exception('include_once 失败: ${path}', 0)
+		return
+	}
+	if !config.is_array() {
+		vphp.throw_exception('fixture 必须返回 array', 0)
+		return
+	}
+	if !vphp.class_exists('Demo\\IncludeCase\\ModuleBox') {
+		vphp.throw_exception('Demo\\IncludeCase\\ModuleBox 未加载', 0)
+		return
+	}
+
+	box := vphp.php_class('Demo\\IncludeCase\\ModuleBox').construct([
+		vphp.ZVal.new_string('codex'),
+	])
+	class_name := box.class_name()
+	short_name := box.short_name()
+	desc := box.method_v[string]('describe', []) or {
+		vphp.throw_exception('调用 describe 失败: ${err.msg()}', 0)
+		return
+	}
+
+	mut entries := []string{}
+	entries = config.foreach_with_ctx[[]string](entries, fn (key vphp.ZVal, val vphp.ZVal, mut acc []string) {
+		acc << '${key.to_string()}=${val.to_string()}'
+	})
+
+	ctx.return_string('count=${config.array_count()}|class=${class_name}|short=${short_name}|desc=${desc}|items=${entries.join(",")}')
+}
+
+@[php_function]
 fn v_php_object_meta(ctx vphp.Context) {
 	obj := ctx.arg_raw(0)
 	if !obj.is_object() {

@@ -162,6 +162,13 @@ PHP_FUNCTION(v_include_php_file_once) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_include_php_file_once(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_include_php_module_demo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_include_php_module_demo(vphp_context_internal ctx);
+PHP_FUNCTION(v_include_php_module_demo) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_include_php_module_demo(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_php_object_meta, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_php_object_meta(vphp_context_internal ctx);
@@ -781,6 +788,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_php_symbol_exists, arginfo_v_php_symbol_exists)
     PHP_FE(v_include_php_file, arginfo_v_include_php_file)
     PHP_FE(v_include_php_file_once, arginfo_v_include_php_file_once)
+    PHP_FE(v_include_php_module_demo, arginfo_v_include_php_module_demo)
     PHP_FE(v_php_object_meta, arginfo_v_php_object_meta)
     PHP_FE(v_php_object_introspection, arginfo_v_php_object_introspection)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)

@@ -792,6 +792,12 @@ fn vphp_wrap_v_include_php_file_once(ctx vphp.Context) {
     v_include_php_file_once(arg_0)
 }
 
+@[export: 'vphp_wrap_v_include_php_module_demo']
+fn vphp_wrap_v_include_php_module_demo(ctx vphp.Context) {
+    arg_0 := ctx
+    v_include_php_module_demo(arg_0)
+}
+
 @[export: 'vphp_wrap_v_php_object_meta']
 fn vphp_wrap_v_php_object_meta(ctx vphp.Context) {
     arg_0 := ctx
