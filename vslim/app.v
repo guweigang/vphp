@@ -310,6 +310,35 @@ pub fn (mut r VSlimResponse) set_header(name string, value string) &VSlimRespons
 }
 
 @[php_method]
+pub fn (r &VSlimResponse) cookie_header() string {
+	return r.header('set-cookie')
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) set_cookie(name string, value string) &VSlimResponse {
+	return r.set_cookie_opts(name, value, '/')
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) set_cookie_opts(name string, value string, path string) &VSlimResponse {
+	cookie_path := if path == '' { '/' } else { path }
+	header_value := '${name}=${value}; Path=${cookie_path}'
+	mut headers := r.headers()
+	headers['set-cookie'] = header_value
+	apply_response_headers(mut r, headers)
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) delete_cookie(name string) &VSlimResponse {
+	header_value := '${name}=; Path=/; Max-Age=0'
+	mut headers := r.headers()
+	headers['set-cookie'] = header_value
+	apply_response_headers(mut r, headers)
+	return r
+}
+
+@[php_method]
 pub fn (mut r VSlimResponse) with_status(status int) &VSlimResponse {
 	r.status = status
 	return r

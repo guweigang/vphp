@@ -68,6 +68,10 @@ echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_ty
 $resp = new VSlimResponse(201, 'created', 'text/plain; charset=utf-8');
 $resp->set_header('x-demo', 'yes')->with_status(202)->json('{"ok":true}');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->header('x-demo') . '|' . ($resp->has_header('content-type') ? 'yes' : 'no') . PHP_EOL;
+$resp->set_cookie('sid', 'cookie-202');
+echo $resp->cookie_header() . PHP_EOL;
+$resp->delete_cookie('sid');
+echo $resp->cookie_header() . PHP_EOL;
 
 $resp->text('plain-again');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . PHP_EOL;
@@ -88,4 +92,6 @@ cookie-7|yes|7|yes
 from-json|tester|yes|443|1.1
 200|secret|text/plain; charset=utf-8
 202|{"ok":true}|application/json; charset=utf-8|yes|yes
+sid=cookie-202; Path=/
+sid=; Path=/; Max-Age=0
 202|plain-again|text/plain; charset=utf-8

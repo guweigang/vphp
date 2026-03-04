@@ -129,6 +129,9 @@ $res->set_header('x-demo', 'yes')
     ->with_status(202)
     ->json('{"ok":true}');
 
+$res->set_cookie('sid', 'cookie-202');
+echo $res->cookie_header();
+
 echo $res->header('x-demo');
 echo $res->content_type;
 ```

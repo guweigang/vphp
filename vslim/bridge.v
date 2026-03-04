@@ -462,6 +462,36 @@ pub fn vphp_wrap_vslimresponse_set_header(ptr voidptr, ctx vphp.Context) voidptr
     res := recv.set_header(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimResponse_cookie_header']
+pub fn vphp_wrap_vslimresponse_cookie_header(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    res := recv.cookie_header()
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimResponse_set_cookie']
+pub fn vphp_wrap_vslimresponse_set_cookie(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.set_cookie(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimResponse_set_cookie_opts']
+pub fn vphp_wrap_vslimresponse_set_cookie_opts(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg[string](2)
+    res := recv.set_cookie_opts(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimResponse_delete_cookie']
+pub fn vphp_wrap_vslimresponse_delete_cookie(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.delete_cookie(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimResponse_with_status']
 pub fn vphp_wrap_vslimresponse_with_status(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimResponse(ptr) }
