@@ -350,8 +350,9 @@ pub fn (r &VSlimResponse) str() string {
 @[php_class]
 struct VSlimApp {
 mut:
-	routes   []PhpRoute
-	use_demo bool
+	routes          []PhpRoute
+	php_middlewares []vphp.ZVal
+	use_demo        bool
 }
 
 pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequest {
@@ -450,6 +451,14 @@ pub fn (mut app VSlimApp) post(pattern string, handler vphp.ZVal) &VSlimApp {
 }
 
 @[php_method]
+pub fn (mut app VSlimApp) middleware(handler vphp.ZVal) &VSlimApp {
+	if handler.is_valid() && handler.is_callable() {
+		app.php_middlewares << handler.dup()
+	}
+	return app
+}
+
+@[php_method]
 pub fn (group &VSlimRouteGroup) group(prefix string) &VSlimRouteGroup {
 	return &VSlimRouteGroup{
 		app: group.app
@@ -529,14 +538,42 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimRespon
 			continue
 		}
 		payload := build_php_request_object(req, params)
-		res := route.handler.call([payload])
+		res := dispatch_php_handler_with_middlewares(app, payload, route.handler, 0)
 		return normalize_php_route_response(res), params, true
 	}
 
 	if method_not_allowed {
 		return method_not_allowed_response(), map[string]string{}, true
 	}
+	middleware_res := run_php_middlewares_only(app, req)
+	if middleware_res.is_valid() && !middleware_res.is_null() && !middleware_res.is_undef() {
+		return normalize_php_route_response(middleware_res), map[string]string{}, true
+	}
 	return SlimResponse{}, map[string]string{}, false
+}
+
+
+fn dispatch_php_handler_with_middlewares(app &VSlimApp, payload vphp.ZVal, handler vphp.ZVal, index int) vphp.ZVal {
+	if index >= app.php_middlewares.len {
+		if !handler.is_valid() {
+			return vphp.ZVal{ raw: unsafe { nil } }
+		}
+		return handler.call([payload])
+	}
+	mw := app.php_middlewares[index]
+	res := mw.call([payload])
+	if !res.is_valid() || res.is_null() || res.is_undef() {
+		return dispatch_php_handler_with_middlewares(app, payload, handler, index + 1)
+	}
+	return res
+}
+
+fn run_php_middlewares_only(app &VSlimApp, req &VSlimRequest) vphp.ZVal {
+	if app.php_middlewares.len == 0 {
+		return vphp.ZVal{ raw: unsafe { nil } }
+	}
+	payload := build_php_request_object(req, map[string]string{})
+	return dispatch_php_handler_with_middlewares(app, payload, vphp.ZVal{ raw: unsafe { nil } }, 0)
 }
 
 fn build_php_request_object(req &VSlimRequest, params map[string]string) vphp.ZVal {

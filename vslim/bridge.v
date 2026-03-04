@@ -544,6 +544,13 @@ pub fn vphp_wrap_vslimapp_post(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_middleware']
+pub fn vphp_wrap_vslimapp_middleware(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.middleware(arg_0)
+    return voidptr(res)
+}
 @[export: 'VSlimApp_handlers']
 pub fn vslimapp_handlers() voidptr {
     return unsafe { &C.vphp_class_handlers{

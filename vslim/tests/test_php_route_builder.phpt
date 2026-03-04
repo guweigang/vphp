@@ -5,6 +5,22 @@ VSlimApp can register PHP route handlers and dispatch them
 --FILE--
 <?php
 $app = new VSlimApp();
+$app->middleware(function (VSlimRequest $req) {
+    if ($req->path === '/blocked') {
+        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+    }
+    return null;
+});
+$app->middleware(function (VSlimRequest $req) {
+    if ($req->path === '/submit' && $req->query('trace_id') === 'mw') {
+        return [
+            'status' => 202,
+            'content_type' => 'text/plain; charset=utf-8',
+            'body' => 'middleware:' . $req->body,
+        ];
+    }
+    return null;
+});
 $app->get('/hello/:name', function (VSlimRequest $req) {
     return new VSlimResponse(200, 'Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
 });
@@ -34,9 +50,13 @@ $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
 echo $app->dispatch('GET', '/api/users/9')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping')->body . PHP_EOL;
+echo $app->dispatch('GET', '/blocked')->status . '|' . $app->dispatch('GET', '/blocked')->body . PHP_EOL;
+echo $app->dispatch('POST', '/submit?trace_id=mw')->status . '|' . $app->dispatch('POST', '/submit?trace_id=mw')->body . PHP_EOL;
 ?>
 --EXPECT--
 Hello, codex
 201|{"body":"payload","trace":"builder"}|builder
 user:9
 {"pong":true,"path":"\/api\/v1\/ping"}
+403|blocked
+202|middleware:
