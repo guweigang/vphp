@@ -53,6 +53,13 @@ $envelope = vslim_handle_request([
     'cookies_json' => '{"session":"worker-cookie"}',
 ]);
 echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_type'] . PHP_EOL;
+
+$resp = new VSlimResponse(201, 'created', 'text/plain; charset=utf-8');
+$resp->set_header('x-demo', 'yes')->with_status(202)->json('{"ok":true}');
+echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->header('x-demo') . '|' . ($resp->has_header('content-type') ? 'yes' : 'no') . PHP_EOL;
+
+$resp->text('plain-again');
+echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . PHP_EOL;
 ?>
 --EXPECT--
 200|OK|text/plain; charset=utf-8
@@ -68,3 +75,5 @@ from-php|yes
 from-header|yes|https|demo.local|127.0.0.1
 cookie-7|yes|7|yes
 200|secret|text/plain; charset=utf-8
+202|{"ok":true}|application/json; charset=utf-8|yes|yes
+202|plain-again|text/plain; charset=utf-8

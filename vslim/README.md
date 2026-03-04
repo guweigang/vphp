@@ -121,6 +121,18 @@ echo $req->param('id');
 echo $req->cookie('sid');
 ```
 
+响应对象也提供了基础 helper：
+
+```php
+$res = new VSlimResponse(200, 'hello', 'text/plain; charset=utf-8');
+$res->set_header('x-demo', 'yes')
+    ->with_status(202)
+    ->json('{"ok":true}');
+
+echo $res->header('x-demo');
+echo $res->content_type;
+```
+
 也可以直接用函数入口：
 
 ```php

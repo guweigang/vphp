@@ -212,6 +212,7 @@ pub mut:
 	status       int
 	body         string
 	content_type string
+	headers_json  string
 }
 
 @[php_method]
@@ -219,7 +220,60 @@ pub fn (mut r VSlimResponse) construct(status int, body string, content_type str
 	r.status = status
 	r.body = body
 	r.content_type = content_type
+	r.headers_json = json.encode({
+		'content-type': content_type
+	})
 	return r
+}
+
+@[php_method]
+pub fn (r &VSlimResponse) header(name string) string {
+	headers := r.headers()
+	return headers[normalize_header_name(name)] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimResponse) has_header(name string) bool {
+	headers := r.headers()
+	return normalize_header_name(name) in headers
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) set_header(name string, value string) &VSlimResponse {
+	mut headers := r.headers()
+	headers[normalize_header_name(name)] = value
+	apply_response_headers(mut r, headers)
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) with_status(status int) &VSlimResponse {
+	r.status = status
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) text(body string) &VSlimResponse {
+	r.body = body
+	r.content_type = 'text/plain; charset=utf-8'
+	mut headers := r.headers()
+	headers['content-type'] = r.content_type
+	apply_response_headers(mut r, headers)
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) json(body string) &VSlimResponse {
+	r.body = body
+	r.content_type = 'application/json; charset=utf-8'
+	mut headers := r.headers()
+	headers['content-type'] = r.content_type
+	apply_response_headers(mut r, headers)
+	return r
+}
+
+pub fn (r &VSlimResponse) headers() map[string]string {
+	return parse_headers_json(r.headers_json)
 }
 
 pub fn (r &VSlimResponse) as_array() map[string]string {
@@ -302,11 +356,18 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 }
 
 fn to_vslim_response(res SlimResponse) &VSlimResponse {
+	headers_json := json.encode(res.headers)
 	return &VSlimResponse{
 		status: res.status
 		body: res.body
 		content_type: res.headers['content-type'] or { '' }
+		headers_json: headers_json
 	}
+}
+
+fn apply_response_headers(mut r VSlimResponse, headers map[string]string) {
+	r.headers_json = json.encode(headers)
+	r.content_type = headers['content-type'] or { r.content_type }
 }
 
 fn normalize_path(path string) string {
