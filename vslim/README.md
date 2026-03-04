@@ -187,13 +187,15 @@ echo $res->body;
 
 ```php
 $req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
-$req->scheme = 'https';
-$req->host = 'demo.local';
-$req->remote_addr = '127.0.0.1';
+$req->set_scheme('https');
+$req->set_host('demo.local');
+$req->set_remote_addr('127.0.0.1');
 $req->set_headers(['x-trace-id' => 'from-header']);
 $req->set_cookies(['sid' => 'cookie-7']);
 $req->set_attributes(['actor' => 'tester']);
 $req->set_query(['trace_id' => 'from-json']);
+$req->set_port('443');
+$req->set_protocol_version('1.1');
 
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');
@@ -429,16 +431,38 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
 
 - transport facade：
   - `query(...)`
+  - `query_params()`
   - `header(...)`
+  - `headers()`
   - `cookie(...)`
+  - `cookies()`
   - `attribute(...)`
+  - `attributes()`
   - `server_value(...)`
+  - `server_params()`
 - routing facade：
   - `param(...)`
+  - `route_params()`
 - environment：
   - `content_type()`
+  - `uploaded_files()`
   - `uploaded_file_count()`
   - `is_secure()`
+- setters：
+  - `set_method(...)`
+  - `set_target(...)`
+  - `set_body(...)`
+  - `set_scheme(...)`
+  - `set_host(...)`
+  - `set_port(...)`
+  - `set_protocol_version(...)`
+  - `set_remote_addr(...)`
+  - `set_query(...)`
+  - `set_headers(...)`
+  - `set_cookies(...)`
+  - `set_attributes(...)`
+  - `set_server(...)`
+  - `set_uploaded_files(...)`
 
 兼容说明：
 

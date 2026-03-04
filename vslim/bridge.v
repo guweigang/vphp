@@ -309,6 +309,62 @@ pub fn vphp_wrap_vslimrequest_set_query(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.set_query(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimRequest_set_method']
+pub fn vphp_wrap_vslimrequest_set_method(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_method(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_target']
+pub fn vphp_wrap_vslimrequest_set_target(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_target(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_body']
+pub fn vphp_wrap_vslimrequest_set_body(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_body(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_scheme']
+pub fn vphp_wrap_vslimrequest_set_scheme(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_scheme(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_host']
+pub fn vphp_wrap_vslimrequest_set_host(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_host(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_port']
+pub fn vphp_wrap_vslimrequest_set_port(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_port(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_protocol_version']
+pub fn vphp_wrap_vslimrequest_set_protocol_version(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_protocol_version(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_remote_addr']
+pub fn vphp_wrap_vslimrequest_set_remote_addr(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_remote_addr(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimRequest_set_headers']
 pub fn vphp_wrap_vslimrequest_set_headers(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimRequest(ptr) }

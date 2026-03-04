@@ -4,10 +4,9 @@ import vphp
 
 @[php_method]
 pub fn (mut r VSlimRequest) construct(method string, raw_path string, body string) &VSlimRequest {
-	r.method = method
-	r.raw_path = raw_path
-	r.path, r.query_string = normalize_request_target(raw_path)
-	r.body = body
+	r.set_method(method)
+	r.set_target(raw_path)
+	r.set_body(body)
 	apply_request_defaults(mut r)
 	return r
 }
@@ -20,6 +19,55 @@ pub fn (r &VSlimRequest) str() string {
 @[php_method]
 pub fn (mut r VSlimRequest) set_query(query vphp.ZVal) &VSlimRequest {
 	r.query = zval_to_name_map(query)
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_method(method string) &VSlimRequest {
+	r.method = method
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_target(raw_path string) &VSlimRequest {
+	r.raw_path = raw_path
+	r.path, r.query_string = normalize_request_target(raw_path)
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_body(body string) &VSlimRequest {
+	r.body = body
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_scheme(scheme string) &VSlimRequest {
+	r.scheme = scheme
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_host(host string) &VSlimRequest {
+	r.host = host
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_port(port string) &VSlimRequest {
+	r.port = port
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_protocol_version(protocol_version string) &VSlimRequest {
+	r.protocol_version = protocol_version
+	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimRequest) set_remote_addr(remote_addr string) &VSlimRequest {
+	r.remote_addr = remote_addr
 	return r
 }
 
