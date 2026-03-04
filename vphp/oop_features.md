@@ -338,6 +338,14 @@ Recommendation:
 - use `@[php_trait]` for trait-style composition when you want embedded methods and properties flattened into the outer PHP class
 - leave plain embeds as internal implementation detail unless you explicitly want PHP projection
 
+### Embed Mapping Summary
+
+| V embed form | PHP projection | Current rule |
+|---|---|---|
+| embedded `@[php_class]` | `extends` | exactly one embedded exported class may become the parent unless `@[php_extends: ...]` is declared explicitly |
+| embedded `@[php_trait]` | compile-time flatten | trait properties and methods are flattened into the outer class; outer class members win on conflicts |
+| embedded plain struct | no projection | kept as V-only composition detail; not exposed as PHP inheritance, properties, or methods |
+
 ## Current Design Assessment
 
 These parts are in good shape:

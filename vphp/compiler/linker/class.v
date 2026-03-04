@@ -3,6 +3,22 @@ module linker
 import v.ast
 import compiler.repr
 
+fn is_php_trait_class(el repr.PhpRepr) bool {
+	return el is repr.PhpClassRepr && el.is_trait
+}
+
+fn is_php_exported_class(el repr.PhpRepr) bool {
+	return el is repr.PhpClassRepr && !el.is_trait
+}
+
+fn has_property_named(props []repr.PhpClassProp, name string) bool {
+	return props.any(it.name == name)
+}
+
+fn has_method_named(methods []repr.PhpMethodRepr, name string, is_static bool) bool {
+	return methods.any(it.name == name && it.is_static == is_static)
+}
+
 pub fn link_class_shadows(mut elements []repr.PhpRepr, table &ast.Table) {
 	for i in 0 .. elements.len {
 		mut el := elements[i]
@@ -17,8 +33,9 @@ pub fn link_class_shadows(mut elements []repr.PhpRepr, table &ast.Table) {
 pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
 	mut class_map := map[string]string{}
 	for el in elements {
-		if el is repr.PhpClassRepr && !el.is_trait {
-			class_map[el.name] = el.php_name
+		if is_php_exported_class(el) {
+			cls := el as repr.PhpClassRepr
+			class_map[cls.name] = cls.php_name
 		}
 	}
 
@@ -57,8 +74,9 @@ pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
 pub fn link_class_traits(mut elements []repr.PhpRepr) ! {
 	mut trait_map := map[string]repr.PhpClassRepr{}
 	for el in elements {
-		if el is repr.PhpClassRepr && el.is_trait {
-			trait_map[el.name] = el
+		if is_php_trait_class(el) {
+			trait_repr := el as repr.PhpClassRepr
+			trait_map[trait_repr.name] = trait_repr
 		}
 	}
 
@@ -78,13 +96,15 @@ pub fn link_class_traits(mut elements []repr.PhpRepr) ! {
 					if prop.is_static {
 						continue
 					}
-					if el.properties.any(it.name == prop.name) {
+					// Match PHP trait resolution: the outer class wins on conflicts.
+					if has_property_named(el.properties, prop.name) {
 						continue
 					}
 					el.properties << prop
 				}
 				for method in trait_repr.methods {
-					if el.methods.any(it.name == method.name && it.is_static == method.is_static) {
+					// Match PHP trait resolution: the consuming class keeps its own method.
+					if has_method_named(el.methods, method.name, method.is_static) {
 						continue
 					}
 					el.methods << method
