@@ -147,7 +147,8 @@ fn read_exact(mut conn unix.StreamConn, size int) ![]u8 {
 
 fn read_frame(mut conn unix.StreamConn) !string {
 	header := read_exact(mut conn, 4)!
-	size := (int(header[0]) << 24) | (int(header[1]) << 16) | (int(header[2]) << 8) | int(header[3])
+	size_u32 := (u32(header[0]) << 24) | (u32(header[1]) << 16) | (u32(header[2]) << 8) | u32(header[3])
+	size := int(size_u32)
 	if size <= 0 || size > 16 * 1024 * 1024 {
 		return error('invalid frame size ${size}')
 	}
