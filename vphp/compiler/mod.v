@@ -72,7 +72,7 @@ pub fn (mut c Compiler) compile() !string {
 			}
 		}
 
-		if stmt is ast.StructDecl {
+			if stmt is ast.StructDecl {
 			// A. 探测是否是 Zend Globals 定义
 			if c.globals_repr.name == '' {
 				if globals_repr := cparser.parse_globals_decl(stmt, c.table) {
@@ -150,6 +150,7 @@ pub fn (mut c Compiler) compile() !string {
 	}
 
 	linker.link_class_shadows(mut c.elements, c.table)
+	linker.link_class_traits(mut c.elements)!
 	linker.link_class_embeds(mut c.elements)!
 	linker.link_class_interfaces(mut c.elements)!
 

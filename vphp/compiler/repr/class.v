@@ -5,6 +5,7 @@ pub mut:
 	name       string      // V struct 名 (如 VPhpTask)
 	php_name   string      // PHP 侧类名 (如 VPhp\Task)，可含命名空间
 	parent     string      // 继承关系
+	is_trait   bool
 	is_final   bool
 	is_abstract bool
 	embeds_v   []string
@@ -38,6 +39,7 @@ pub:
 	v_type     string // V 端的原始类型，如 'int', 'string', 'bool'
 	visibility string // 'public', 'protected', 'private'
 	is_static  bool
+	is_mut     bool
 }
 
 pub struct PhpMethodRepr {

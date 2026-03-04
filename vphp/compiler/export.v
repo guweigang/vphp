@@ -33,7 +33,7 @@ fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	}
 
 	for el in c.elements {
-		if el is repr.PhpClassRepr {
+		if el is repr.PhpClassRepr && !el.is_trait {
 			fragments.merge(c_emitter.build_class_export(el))
 		} else if el is repr.PhpEnumRepr {
 			fragments.merge(c_emitter.build_enum_export(el))

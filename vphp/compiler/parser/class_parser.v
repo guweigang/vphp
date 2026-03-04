@@ -9,12 +9,13 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 	}
 	struct_decl := stmt as ast.StructDecl
 	mut cls := repr.new_class_repr()
-	if !struct_decl.attrs.any(it.name == 'php_class') {
+	if !struct_decl.attrs.any(it.name == 'php_class' || it.name == 'php_trait') {
 		return none
 	}
+	cls.is_trait = struct_decl.attrs.any(it.name == 'php_trait')
 
 	cls.name = struct_decl.name.all_after('.')
-	if attr := struct_decl.attrs.find_first('php_class') {
+	if attr := struct_decl.attrs.find_first(if cls.is_trait { 'php_trait' } else { 'php_class' }) {
 		cls.php_name = if attr.arg != '' { attr.arg } else { cls.name }
 	} else {
 		cls.php_name = cls.name
@@ -62,6 +63,7 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 			v_type: type_name
 			visibility: if field.is_pub { 'public' } else { 'protected' }
 			is_static: is_static
+			is_mut: field.is_mut
 		}
 	}
 	return cls

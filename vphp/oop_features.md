@@ -7,7 +7,7 @@ This document describes the current PHP-facing OOP feature set implemented by `v
 Current first-class OOP export features:
 
 - `@[php_class]`
-- `@[php_trait]` (planned)
+- `@[php_trait]`
 - `@[php_method]`
 - `@[php_const: shadow_const]`
 - `@[php_static: shadow_static]`
@@ -309,13 +309,14 @@ Current linker rule:
 
 ### Case 2: embedded `@[php_trait]`
 
-This is the intended trait path, but it is not implemented yet.
+Embedded `@[php_trait]` structs are treated as PHP trait-style mixins at compile time.
 
-Target behavior:
+Current behavior:
 
-- embedded `@[php_trait]` structs should be treated as PHP trait-style mixins
-- their properties and methods should be flattened into the consuming class
-- duplicate property/method names must be detected and rejected or resolved explicitly
+- their properties and methods are flattened into the consuming class
+- if the outer struct already defines the same property or method, the outer struct wins
+- if multiple embedded traits contribute the same property or method, later conflicts are skipped
+- traits are currently compile-time mixins in `vphp`; they are not emitted as standalone PHP `trait` declarations
 
 ### Case 3: embedded plain V struct
 
@@ -334,7 +335,7 @@ Why this default is preferred:
 Recommendation:
 
 - use `@[php_class]` for PHP inheritance
-- use `@[php_trait]` for trait-style composition once implemented
+- use `@[php_trait]` for trait-style composition when you want embedded methods and properties flattened into the outer PHP class
 - leave plain embeds as internal implementation detail unless you explicitly want PHP projection
 
 ## Current Design Assessment

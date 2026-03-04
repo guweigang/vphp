@@ -17,7 +17,7 @@ pub fn link_class_shadows(mut elements []repr.PhpRepr, table &ast.Table) {
 pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
 	mut class_map := map[string]string{}
 	for el in elements {
-		if el is repr.PhpClassRepr {
+		if el is repr.PhpClassRepr && !el.is_trait {
 			class_map[el.name] = el.php_name
 		}
 	}
@@ -25,6 +25,10 @@ pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
 	for i in 0 .. elements.len {
 		mut el := elements[i]
 		if mut el is repr.PhpClassRepr {
+			if el.is_trait {
+				elements[i] = el
+				continue
+			}
 			if el.parent != '' || el.embeds_v.len == 0 {
 				elements[i] = el
 				continue
@@ -45,6 +49,47 @@ pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
 				el.parent = embedded_php_classes[0]
 			}
 
+			elements[i] = el
+		}
+	}
+}
+
+pub fn link_class_traits(mut elements []repr.PhpRepr) ! {
+	mut trait_map := map[string]repr.PhpClassRepr{}
+	for el in elements {
+		if el is repr.PhpClassRepr && el.is_trait {
+			trait_map[el.name] = el
+		}
+	}
+
+	for i in 0 .. elements.len {
+		mut el := elements[i]
+		if mut el is repr.PhpClassRepr {
+			if el.is_trait || el.embeds_v.len == 0 {
+				elements[i] = el
+				continue
+			}
+			for embed_name in el.embeds_v {
+				if embed_name !in trait_map {
+					continue
+				}
+				trait_repr := trait_map[embed_name]
+				for prop in trait_repr.properties {
+					if prop.is_static {
+						continue
+					}
+					if el.properties.any(it.name == prop.name) {
+						continue
+					}
+					el.properties << prop
+				}
+				for method in trait_repr.methods {
+					if el.methods.any(it.name == method.name && it.is_static == method.is_static) {
+						continue
+					}
+					el.methods << method
+				}
+			}
 			elements[i] = el
 		}
 	}
@@ -71,6 +116,7 @@ fn link_class_shadow_statics(mut cls repr.PhpClassRepr, elements []repr.PhpRepr,
 							v_type: table.get_type_name(field.typ)
 							visibility: 'public'
 							is_static: true
+							is_mut: true
 						}
 					}
 				}

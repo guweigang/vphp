@@ -20,6 +20,9 @@ fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
         if mut el is repr.PhpFuncRepr {
             out.write_string(g.gen_func_glue(el).join('\n') + '\n\n')
         } else if mut el is repr.PhpClassRepr {
+            if el.is_trait {
+                continue
+            }
             out.write_string(g.gen_class_glue(el).join('\n') + '\n\n')
         } else if mut el is repr.PhpTaskRepr {
             task_registrations << g.gen_task_registration(el)
@@ -93,19 +96,125 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     // B. 属性读取
     out << "@[export: '${r.name}_get_prop']"
     out << "pub fn ${lower_name}_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {"
-    out << "    vphp.generic_get_prop[${r.name}](ptr, name_ptr, name_len, rv)"
+    out << "    unsafe {"
+    out << "        name := name_ptr.vstring_with_len(name_len).clone()"
+    out << "        obj := &${r.name}(ptr)"
+    for prop in r.properties {
+        if prop.is_static {
+            continue
+        }
+        match prop.v_type {
+            'string' {
+                out << "        if name == '${prop.name}' {"
+                out << "            vphp.return_val_raw(rv, obj.${prop.name})"
+                out << "            return"
+                out << "        }"
+            }
+            'int' {
+                out << "        if name == '${prop.name}' {"
+                out << "            vphp.return_val_raw(rv, i64(obj.${prop.name}))"
+                out << "            return"
+                out << "        }"
+            }
+            'i64' {
+                out << "        if name == '${prop.name}' {"
+                out << "            vphp.return_val_raw(rv, obj.${prop.name})"
+                out << "            return"
+                out << "        }"
+            }
+            'bool' {
+                out << "        if name == '${prop.name}' {"
+                out << "            vphp.return_val_raw(rv, obj.${prop.name})"
+                out << "            return"
+                out << "        }"
+            }
+            'f64' {
+                out << "        if name == '${prop.name}' {"
+                out << "            vphp.return_val_raw(rv, obj.${prop.name})"
+                out << "            return"
+                out << "        }"
+            }
+            else {}
+        }
+    }
+    out << "    }"
     out << "}"
 
     // C. 属性写入
     out << "@[export: '${r.name}_set_prop']"
     out << "pub fn ${lower_name}_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {"
-    out << "    vphp.generic_set_prop[${r.name}](ptr, name_ptr, name_len, value)"
+    out << "    unsafe {"
+    out << "        name := name_ptr.vstring_with_len(name_len).clone()"
+    out << "        mut obj := &${r.name}(ptr)"
+    out << "        arg := vphp.ZVal{ raw: value }"
+    for prop in r.properties {
+        if prop.is_static || !prop.is_mut {
+            continue
+        }
+        match prop.v_type {
+            'string' {
+                out << "        if name == '${prop.name}' {"
+                out << "            obj.${prop.name} = arg.get_string()"
+                out << "            return"
+                out << "        }"
+            }
+            'int' {
+                out << "        if name == '${prop.name}' {"
+                out << "            obj.${prop.name} = int(arg.get_int())"
+                out << "            return"
+                out << "        }"
+            }
+            'i64' {
+                out << "        if name == '${prop.name}' {"
+                out << "            obj.${prop.name} = arg.get_int()"
+                out << "            return"
+                out << "        }"
+            }
+            'bool' {
+                out << "        if name == '${prop.name}' {"
+                out << "            obj.${prop.name} = arg.get_bool()"
+                out << "            return"
+                out << "        }"
+            }
+            'f64' {
+                out << "        if name == '${prop.name}' {"
+                out << "            obj.${prop.name} = C.vphp_get_double(value)"
+                out << "            return"
+                out << "        }"
+            }
+            else {}
+        }
+    }
+    out << "    }"
     out << "}"
 
     // E. 同步器
     out << "@[export: '${r.name}_sync_props']"
     out << "pub fn ${lower_name}_sync_props(ptr voidptr, zv &C.zval) {"
-    out << "    vphp.generic_sync_props[${r.name}](ptr, zv)"
+    out << "    unsafe {"
+    out << "        obj := &${r.name}(ptr)"
+    out << "        out := vphp.ZVal{ raw: zv }"
+    for prop in r.properties {
+        if prop.is_static {
+            continue
+        }
+        match prop.v_type {
+            'string' {
+                out << "        out.add_property_string('${prop.name}', obj.${prop.name})"
+            }
+            'int', 'i64' {
+                out << "        out.add_property_long('${prop.name}', i64(obj.${prop.name}))"
+            }
+            'f64' {
+                out << "        out.add_property_double('${prop.name}', obj.${prop.name})"
+            }
+            'bool' {
+                out << "        out.add_property_bool('${prop.name}', obj.${prop.name})"
+            }
+            else {}
+        }
+    }
+    out << "    }"
     out << "}"
 
     // F. 影子访问器
