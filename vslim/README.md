@@ -235,11 +235,16 @@ echo $res->content_type;
 ```php
 $app = new VSlimApp();
 
-$app->middleware(function (VSlimRequest $req) {
+$app->before(function (VSlimRequest $req) {
     if ($req->path === '/blocked') {
         return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
     }
     return null;
+});
+
+$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+    $res->set_header('x-runtime', 'vslim');
+    return $res;
 });
 
 $api = $app->group('/api');
@@ -268,6 +273,13 @@ $redirect = $app->redirect_to('api.users.show', ['id' => '42']);
 echo $redirect->status;
 echo $redirect->header('location');
 ```
+
+说明：
+
+- `before()` 用于请求进入 route handler 之前的短路逻辑
+- `after()` 用于基于 `VSlimResponse` 做统一收口
+- `middleware()` 仍然可用，但第一版只是 `before()` 的别名
+- group 也支持 `before()` / `after()`
 
 也可以直接用函数入口：
 
@@ -308,9 +320,24 @@ HTTP runtime 相关文件现在在：
 - `make vhttpd`：重新编译 `vhttpd`
 - `make serve`：用 managed worker 模式直接拉起 `vhttpd + php-worker + vslim`
 
-## 下一步建议
+## First Release Boundary
 
-1. 把 demo app 提升成可配置 app builder
-2. 给 request envelope 增加更结构化的 headers/cookies 表达
-3. 补 `VSlimRequest` 的 path param / header collection helper
-4. 再考虑是否导出更完整的 PHP 面向对象 API
+第一版我们明确承诺这些：
+
+- `veb` 是 HTTP/runtime 源头
+- `vhttpd` 尽量薄，贴着 `veb`
+- `vslim` 只做 framework layer
+- `vphp` 只做 bridge/compiler/runtime
+- request transport 统一使用结构化数组 envelope
+- PHP userland 通过 `VSlimApp` runtime builder 注册 routes / groups / hooks
+
+第一版明确不做这些：
+
+- 不直接兼容原版 Slim 内核
+- 不把 `vslim` 改造成完整 PSR-7 immutable core
+- 不让 `vphp` 承担 HTTP helper
+- 不引入会把 TLS/network 栈拖进扩展构建链的重量级 `net.http` 依赖
+
+更细的范围说明见：
+
+- [/Users/guweigang/Source/vphpext/vslim/release_v1.md](/Users/guweigang/Source/vphpext/vslim/release_v1.md)

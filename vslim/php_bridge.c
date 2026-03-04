@@ -36,6 +36,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_group, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_middleware, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_before, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_after, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_get, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_post, 0, 0, 0)
@@ -85,6 +89,38 @@ PHP_METHOD(VSlimRouteGroup, middleware) {
     // printf("PHP_METHOD VSlimRouteGroup::middleware called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = vphp_wrap_VSlimRouteGroup_middleware(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimroutegroup_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRouteGroup_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRouteGroup_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRouteGroup, before) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRouteGroup_before(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRouteGroup::before called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRouteGroup_before(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimroutegroup_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRouteGroup_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRouteGroup_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRouteGroup, after) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRouteGroup_after(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRouteGroup::after called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRouteGroup_after(wrapper->v_ptr, ctx);
     vphp_return_obj(return_value, v_instance, vslimroutegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRouteGroup_handlers();
@@ -300,6 +336,8 @@ static const zend_function_entry vslimroutegroup_methods[] = {
     PHP_ME(VSlimRouteGroup, __construct, arginfo_vslimroutegroup___construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, group, arginfo_vslimroutegroup_group, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, middleware, arginfo_vslimroutegroup_middleware, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRouteGroup, before, arginfo_vslimroutegroup_before, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRouteGroup, after, arginfo_vslimroutegroup_after, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, get, arginfo_vslimroutegroup_get, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, post, arginfo_vslimroutegroup_post, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, put, arginfo_vslimroutegroup_put, ZEND_ACC_PUBLIC)
@@ -988,6 +1026,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimapp_any_named, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimapp_middleware, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimapp_before, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimapp_after, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimapp_url_for, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimapp_url_for_query, 0, 0, 0)
@@ -1283,6 +1325,38 @@ PHP_METHOD(VSlimApp, middleware) {
     }
 }
 
+
+PHP_METHOD(VSlimApp, before) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimApp_before(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimApp::before called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimApp_before(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimapp_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimApp_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimApp, after) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimApp_after(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimApp::after called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimApp_after(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimapp_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimApp_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+    }
+}
+
 PHP_METHOD(VSlimApp, url_for) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -1379,6 +1453,8 @@ static const zend_function_entry vslimapp_methods[] = {
     PHP_ME(VSlimApp, delete_named, arginfo_vslimapp_delete_named, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimApp, any_named, arginfo_vslimapp_any_named, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimApp, middleware, arginfo_vslimapp_middleware, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimApp, before, arginfo_vslimapp_before, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimApp, after, arginfo_vslimapp_after, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimApp, url_for, arginfo_vslimapp_url_for, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimApp, url_for_query, arginfo_vslimapp_url_for_query, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimApp, url_for_abs, arginfo_vslimapp_url_for_abs, ZEND_ACC_PUBLIC)
@@ -1450,8 +1526,10 @@ PHP_MINIT_FUNCTION(vslim) {
         vslimapp_ce = zend_register_internal_class(&ce);
         vslimapp_ce->create_object = vphp_create_object_handler;
         zend_declare_property_null(vslimapp_ce, "routes", sizeof("routes")-1, ZEND_ACC_PROTECTED);
-        zend_declare_property_null(vslimapp_ce, "php_middlewares", sizeof("php_middlewares")-1, ZEND_ACC_PROTECTED);
-        zend_declare_property_null(vslimapp_ce, "php_group_middlewares", sizeof("php_group_middlewares")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimapp_ce, "php_before_hooks", sizeof("php_before_hooks")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimapp_ce, "php_after_hooks", sizeof("php_after_hooks")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimapp_ce, "php_group_before", sizeof("php_group_before")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimapp_ce, "php_group_after", sizeof("php_group_after")-1, ZEND_ACC_PROTECTED);
         zend_declare_property_string(vslimapp_ce, "base_path", sizeof("base_path")-1, "", ZEND_ACC_PROTECTED);
         zend_declare_property_bool(vslimapp_ce, "use_demo", sizeof("use_demo")-1, 0, ZEND_ACC_PROTECTED);
     }

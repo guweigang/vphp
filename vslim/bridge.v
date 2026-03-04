@@ -45,6 +45,20 @@ pub fn vphp_wrap_vslimroutegroup_middleware(ptr voidptr, ctx vphp.Context) voidp
     res := recv.middleware(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimRouteGroup_before']
+pub fn vphp_wrap_vslimroutegroup_before(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.before(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_after']
+pub fn vphp_wrap_vslimroutegroup_after(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.after(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimRouteGroup_get']
 pub fn vphp_wrap_vslimroutegroup_get(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimRouteGroup(ptr) }
@@ -818,6 +832,20 @@ pub fn vphp_wrap_vslimapp_middleware(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
     arg_0 := ctx.arg_val(0)
     res := recv.middleware(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_before']
+pub fn vphp_wrap_vslimapp_before(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.before(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_after']
+pub fn vphp_wrap_vslimapp_after(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.after(arg_0)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_url_for']

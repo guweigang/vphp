@@ -118,8 +118,21 @@ pub fn (mut app VSlimApp) any_named(name string, pattern string, handler vphp.ZV
 
 @[php_method]
 pub fn (mut app VSlimApp) middleware(handler vphp.ZVal) &VSlimApp {
+	return app.before(handler)
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) before(handler vphp.ZVal) &VSlimApp {
 	if handler.is_valid() && handler.is_callable() {
-		app.php_middlewares << handler.dup()
+		app.php_before_hooks << handler.dup()
+	}
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) after(handler vphp.ZVal) &VSlimApp {
+	if handler.is_valid() && handler.is_callable() {
+		app.php_after_hooks << handler.dup()
 	}
 	return app
 }
@@ -134,12 +147,32 @@ pub fn (group &VSlimRouteGroup) group(prefix string) &VSlimRouteGroup {
 
 @[php_method]
 pub fn (group &VSlimRouteGroup) middleware(handler vphp.ZVal) &VSlimRouteGroup {
+	return group.before(handler)
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) before(handler vphp.ZVal) &VSlimRouteGroup {
 	if !handler.is_valid() || !handler.is_callable() {
 		return group
 	}
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.php_group_middlewares << PhpGroupMiddleware{
+		app.php_group_before << PhpGroupHook{
+			prefix: normalize_group_prefix(group.prefix)
+			handler: handler.dup()
+		}
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) after(handler vphp.ZVal) &VSlimRouteGroup {
+	if !handler.is_valid() || !handler.is_callable() {
+		return group
+	}
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.php_group_after << PhpGroupHook{
 			prefix: normalize_group_prefix(group.prefix)
 			handler: handler.dup()
 		}
@@ -340,52 +373,66 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimRespon
 			continue
 		}
 		payload := build_php_request_object(req, params)
-		route_mws := matching_group_middlewares(app, path)
-		res := dispatch_php_handler_with_middlewares(app, route_mws, payload, route.handler, 0)
-		return normalize_php_route_response(res), params, true
+		route_before := matching_group_before_hooks(app, path)
+		before_res := run_php_before_hooks(app, route_before, payload)
+		if before_res.is_valid() && !before_res.is_null() && !before_res.is_undef() {
+			res := normalize_php_route_response(before_res)
+			return apply_php_after_hooks(app, path, payload, res), params, true
+		}
+		raw_res := route.handler.call([payload])
+		res := normalize_php_route_response(raw_res)
+		return apply_php_after_hooks(app, path, payload, res), params, true
 	}
 
 	if method_not_allowed {
 		return method_not_allowed_response(), map[string]string{}, true
 	}
-	middleware_res := run_php_middlewares_only(app, matching_group_middlewares(app, path), req)
-	if middleware_res.is_valid() && !middleware_res.is_null() && !middleware_res.is_undef() {
-		return normalize_php_route_response(middleware_res), map[string]string{}, true
+	payload := build_php_request_object(req, map[string]string{})
+	before_res := run_php_before_hooks(app, matching_group_before_hooks(app, path), payload)
+	if before_res.is_valid() && !before_res.is_null() && !before_res.is_undef() {
+		res := normalize_php_route_response(before_res)
+		return apply_php_after_hooks(app, path, payload, res), map[string]string{}, true
 	}
 	return SlimResponse{}, map[string]string{}, false
 }
 
-fn dispatch_php_handler_with_middlewares(app &VSlimApp, route_middlewares []vphp.ZVal, payload vphp.ZVal, handler vphp.ZVal, index int) vphp.ZVal {
-	total := app.php_middlewares.len + route_middlewares.len
+fn dispatch_php_before_hooks(app &VSlimApp, route_before []vphp.ZVal, payload vphp.ZVal, index int) vphp.ZVal {
+	total := app.php_before_hooks.len + route_before.len
 	if index >= total {
-		if !handler.is_valid() {
-			return vphp.ZVal{ raw: unsafe { nil } }
-		}
-		return handler.call([payload])
+		return vphp.ZVal.new_null()
 	}
-	mw := if index < app.php_middlewares.len {
-		app.php_middlewares[index]
+	hook := if index < app.php_before_hooks.len {
+		app.php_before_hooks[index]
 	} else {
-		route_middlewares[index - app.php_middlewares.len]
+		route_before[index - app.php_before_hooks.len]
 	}
-	res := mw.call([payload])
+	res := hook.call([payload])
 	if !res.is_valid() || res.is_null() || res.is_undef() {
-		return dispatch_php_handler_with_middlewares(app, route_middlewares, payload, handler, index + 1)
+		return dispatch_php_before_hooks(app, route_before, payload, index + 1)
 	}
 	return res
 }
 
-fn run_php_middlewares_only(app &VSlimApp, route_middlewares []vphp.ZVal, req &VSlimRequest) vphp.ZVal {
-	if app.php_middlewares.len == 0 && route_middlewares.len == 0 {
-		return vphp.ZVal{ raw: unsafe { nil } }
+fn run_php_before_hooks(app &VSlimApp, route_before []vphp.ZVal, payload vphp.ZVal) vphp.ZVal {
+	if app.php_before_hooks.len == 0 && route_before.len == 0 {
+		return vphp.ZVal.new_null()
 	}
-	payload := build_php_request_object(req, map[string]string{})
-	return dispatch_php_handler_with_middlewares(app, route_middlewares, payload, vphp.ZVal{ raw: unsafe { nil } }, 0)
+	return dispatch_php_before_hooks(app, route_before, payload, 0)
 }
 
-fn matching_group_middlewares(app &VSlimApp, path string) []vphp.ZVal {
+fn matching_group_before_hooks(app &VSlimApp, path string) []vphp.ZVal {
 	mut out := []vphp.ZVal{}
-	for item in app.php_group_middlewares {
+	for item in app.php_group_before {
+		if path_has_prefix(path, item.prefix) {
+			out << item.handler
+		}
+	}
+	return out
+}
+
+fn matching_group_after_hooks(app &VSlimApp, path string) []vphp.ZVal {
+	mut out := []vphp.ZVal{}
+	for item in app.php_group_after {
 		if path_has_prefix(path, item.prefix) {
 			out << item.handler
 		}
@@ -429,6 +476,38 @@ fn build_php_request_object(req &VSlimRequest, params map[string]string) vphp.ZV
 		C.vphp_bind_handlers(C.vphp_get_obj_from_zval(payload.raw), &C.vphp_class_handlers(vslimrequest_handlers()))
 		return payload
 	}
+}
+
+fn build_php_response_object(res SlimResponse) vphp.ZVal {
+	unsafe {
+		mut payload := vphp.ZVal.new_null()
+		bound := to_vslim_response(res)
+		C.vphp_return_obj(payload.raw, bound, C.vslimresponse_ce)
+		C.vphp_bind_handlers(C.vphp_get_obj_from_zval(payload.raw), &C.vphp_class_handlers(vslimresponse_handlers()))
+		return payload
+	}
+}
+
+fn apply_php_after_hooks(app &VSlimApp, path string, request_payload vphp.ZVal, initial SlimResponse) SlimResponse {
+	if app.php_after_hooks.len == 0 && app.php_group_after.len == 0 {
+		return initial
+	}
+	mut current := initial
+	group_after := matching_group_after_hooks(app, path)
+	total := app.php_after_hooks.len + group_after.len
+	for i in 0 .. total {
+		hook := if i < app.php_after_hooks.len {
+			app.php_after_hooks[i]
+		} else {
+			group_after[i - app.php_after_hooks.len]
+		}
+		response_payload := build_php_response_object(current)
+		res := hook.call([request_payload, response_payload])
+		if res.is_valid() && !res.is_null() && !res.is_undef() {
+			current = normalize_php_route_response(res)
+		}
+	}
+	return current
 }
 
 fn normalize_php_route_response(result vphp.ZVal) SlimResponse {

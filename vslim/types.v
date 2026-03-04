@@ -42,7 +42,7 @@ struct PhpRoute {
 	handler vphp.ZVal
 }
 
-struct PhpGroupMiddleware {
+struct PhpGroupHook {
 	prefix  string
 	handler vphp.ZVal
 }
@@ -94,9 +94,11 @@ mut:
 @[php_class]
 struct VSlimApp {
 mut:
-	routes                []PhpRoute
-	php_middlewares       []vphp.ZVal
-	php_group_middlewares []PhpGroupMiddleware
-	base_path             string
-	use_demo              bool
+	routes            []PhpRoute
+	php_before_hooks  []vphp.ZVal
+	php_after_hooks   []vphp.ZVal
+	php_group_before  []PhpGroupHook
+	php_group_after   []PhpGroupHook
+	base_path         string
+	use_demo          bool
 }

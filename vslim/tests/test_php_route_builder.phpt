@@ -5,6 +5,12 @@ VSlimApp can register PHP route handlers and dispatch them
 --FILE--
 <?php
 $app = new VSlimApp();
+$app->before(function (VSlimRequest $req) {
+    if ($req->path === '/before-only') {
+        return 'before-only';
+    }
+    return null;
+});
 $app->middleware(function (VSlimRequest $req) {
     if ($req->path === '/blocked') {
         return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
@@ -35,6 +41,13 @@ $app->post('/submit', function (VSlimRequest $req) {
         'body' => json_encode(['body' => $req->body, 'trace' => $req->query('trace_id') ?: 'none']),
     ];
 });
+$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+    if ($req->path === '/hello/codex') {
+        $res->set_header('x-after', 'app');
+        return $res;
+    }
+    return null;
+});
 $api = $app->group('/api');
 $api->middleware(function (VSlimRequest $req) {
     if ($req->path === '/api/blocked') {
@@ -44,6 +57,13 @@ $api->middleware(function (VSlimRequest $req) {
 });
 $api->get('/users/:id', function (VSlimRequest $req) {
     return 'user:' . $req->param('id');
+});
+$api->after(function (VSlimRequest $req, VSlimResponse $res) {
+    if ($req->path === '/api/users/9') {
+        $res->text('after:' . $res->body);
+        return $res;
+    }
+    return null;
 });
 $api->get_named('api.users.show', '/members/:id', function (VSlimRequest $req) {
     return 'member:' . $req->param('id');
@@ -83,7 +103,7 @@ $v1->get('/ping', function (VSlimRequest $req) {
 });
 $app->set_base_path('/v1');
 
-echo $app->dispatch('GET', '/hello/codex')->body . PHP_EOL;
+echo $app->dispatch('GET', '/hello/codex')->body . '|' . $app->dispatch('GET', '/hello/codex')->header('x-after') . PHP_EOL;
 echo $app->url_for('hello.show', ['name' => 'nova']) . PHP_EOL;
 echo $app->url_for_query('api.users.show', ['id' => '12'], ['tab' => 'profile', 'trace' => '1']) . PHP_EOL;
 echo $app->url_for_abs('hello.show', ['name' => 'nova'], 'https', 'demo.local') . PHP_EOL;
@@ -108,16 +128,17 @@ echo $app->dispatch('GET', '/api/blocked')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping?trace_id=group')->status . '|' . $app->dispatch('GET', '/api/v1/ping?trace_id=group')->body . PHP_EOL;
 echo $app->dispatch('GET', '/blocked')->status . '|' . $app->dispatch('GET', '/blocked')->body . PHP_EOL;
 echo $app->dispatch('POST', '/submit?trace_id=mw')->status . '|' . $app->dispatch('POST', '/submit?trace_id=mw')->body . PHP_EOL;
+echo $app->dispatch('GET', '/before-only')->status . '|' . $app->dispatch('GET', '/before-only')->body . PHP_EOL;
 ?>
 --EXPECT--
-Hello, codex
+Hello, codex|app
 /v1/hello/nova
 /v1/api/members/12?tab=profile&trace=1
 https://demo.local/v1/hello/nova
 302|/hello/jump|
 307|/moved|text/plain; charset=utf-8
 201|{"body":"payload","trace":"builder"}|builder
-user:9
+after:user:9
 member:12
 /api/users/33
 put:33
@@ -129,3 +150,4 @@ group-blocked
 206|group-middleware
 403|blocked
 202|middleware:
+200|before-only
