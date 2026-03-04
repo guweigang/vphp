@@ -67,4 +67,5 @@ Method: get_author - public
 2. Runtime behavior:
 Title: Hello V!
 Formatted: [Protected] Hello V!
+Caught protected property access: Cannot access protected property Article::$content
 Caught protected method call: Call to protected method Article::internal_format() from global scope

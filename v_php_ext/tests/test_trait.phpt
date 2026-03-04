@@ -15,6 +15,11 @@ echo "summary=" . $post->summary() . PHP_EOL;
 echo "bump=" . $post->bump() . PHP_EOL;
 echo "visits_after=" . $post->visits . PHP_EOL;
 try {
+    echo $post->internal_note . PHP_EOL;
+} catch (Error $e) {
+    echo "protected_prop=" . $e->getMessage() . PHP_EOL;
+}
+try {
     echo $post->internal_trait() . PHP_EOL;
 } catch (Error $e) {
     echo "protected_method=" . $e->getMessage() . PHP_EOL;
@@ -29,4 +34,5 @@ trait_only=trait:from-trait
 summary=class:Hello
 bump=2
 visits_after=2
+protected_prop=Cannot access protected property TraitPost::$internal_note
 protected_method=Call to protected method TraitPost::internal_trait() from global scope

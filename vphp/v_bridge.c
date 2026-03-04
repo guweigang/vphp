@@ -339,6 +339,7 @@ void vphp_array_foreach(zval *z, void *ctx, void (*callback)(void *, zval *)) {
 }
 zend_object_handlers vphp_obj_handlers;
 void vphp_free_object_handler(zend_object *obj) { zend_object_std_dtor(obj); }
+
 zval *vphp_read_property(zend_object *object, zend_string *member, int type,
                          void **cache_slot, zval *rv) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);

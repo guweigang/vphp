@@ -100,7 +100,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     out << "        name := name_ptr.vstring_with_len(name_len).clone()"
     out << "        obj := &${r.name}(ptr)"
     for prop in r.properties {
-        if prop.is_static {
+        if prop.is_static || prop.visibility != 'public' {
             continue
         }
         match prop.v_type {
@@ -148,7 +148,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     out << "        mut obj := &${r.name}(ptr)"
     out << "        arg := vphp.ZVal{ raw: value }"
     for prop in r.properties {
-        if prop.is_static || !prop.is_mut {
+        if prop.is_static || prop.visibility != 'public' || !prop.is_mut {
             continue
         }
         match prop.v_type {
