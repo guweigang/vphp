@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/psr7_bridge.php';
+
 /**
  * PHP Worker for vhttpd proxy mode.
  *
@@ -97,8 +99,15 @@ final class PhpWorker
                 'body' => $body,
                 'scheme' => (string)($req['scheme'] ?? 'http'),
                 'host' => (string)($req['host'] ?? ''),
+                'port' => (string)($req['port'] ?? ''),
+                'protocol_version' => (string)($req['protocol_version'] ?? '1.1'),
                 'remote_addr' => (string)($req['remote_addr'] ?? ''),
+                'query_json' => json_encode($query, JSON_UNESCAPED_UNICODE),
                 'headers_json' => json_encode(isset($req['headers']) && is_array($req['headers']) ? $req['headers'] : [], JSON_UNESCAPED_UNICODE),
+                'cookies_json' => json_encode(isset($req['cookies']) && is_array($req['cookies']) ? $req['cookies'] : [], JSON_UNESCAPED_UNICODE),
+                'attributes_json' => json_encode(isset($req['attributes']) && is_array($req['attributes']) ? $req['attributes'] : [], JSON_UNESCAPED_UNICODE),
+                'server_json' => json_encode(isset($req['server']) && is_array($req['server']) ? $req['server'] : [], JSON_UNESCAPED_UNICODE),
+                'uploaded_files_json' => json_encode(isset($req['uploaded_files']) && is_array($req['uploaded_files']) ? $req['uploaded_files'] : [], JSON_UNESCAPED_UNICODE),
             ];
 
             try {
@@ -120,6 +129,33 @@ final class PhpWorker
         }
 
         try {
+            if (VHttpdPsr7Bridge::canBuildServerRequest()) {
+                $psrRequest = VHttpdPsr7Bridge::buildServerRequest([
+                    'method' => $method,
+                    'path' => $this->rebuildPath($path, $query),
+                    'body' => $body,
+                    'scheme' => (string)($req['scheme'] ?? 'http'),
+                    'host' => (string)($req['host'] ?? ''),
+                    'port' => (string)($req['port'] ?? ''),
+                    'protocol_version' => (string)($req['protocol_version'] ?? '1.1'),
+                    'remote_addr' => (string)($req['remote_addr'] ?? ''),
+                    'query_json' => json_encode($query, JSON_UNESCAPED_UNICODE),
+                    'headers_json' => json_encode(isset($req['headers']) && is_array($req['headers']) ? $req['headers'] : [], JSON_UNESCAPED_UNICODE),
+                    'cookies_json' => json_encode(isset($req['cookies']) && is_array($req['cookies']) ? $req['cookies'] : [], JSON_UNESCAPED_UNICODE),
+                    'attributes_json' => json_encode(isset($req['attributes']) && is_array($req['attributes']) ? $req['attributes'] : [], JSON_UNESCAPED_UNICODE),
+                    'server_json' => json_encode(isset($req['server']) && is_array($req['server']) ? $req['server'] : [], JSON_UNESCAPED_UNICODE),
+                    'uploaded_files_json' => json_encode(isset($req['uploaded_files']) && is_array($req['uploaded_files']) ? $req['uploaded_files'] : [], JSON_UNESCAPED_UNICODE),
+                ]);
+                if ($psrRequest !== null) {
+                    return $this->resJson($id, 200, [
+                        'psr7' => true,
+                        'class' => get_class($psrRequest),
+                        'method' => $psrRequest->method ?? '',
+                        'uri' => $psrRequest->uri ?? '',
+                    ]);
+                }
+            }
+
             if ($path === '/health') {
                 if ($method !== 'GET') {
                     return $this->res($id, 405, 'Method Not Allowed');
@@ -256,5 +292,7 @@ function parseSocketFromArgv(array $argv): string
 }
 
 $socketPath = parseSocketFromArgv($_SERVER['argv'] ?? []);
-$worker = new PhpWorker($socketPath);
-$worker->run();
+if (!defined('VSLIM_HTTPD_WORKER_NOAUTO')) {
+    $worker = new PhpWorker($socketPath);
+    $worker->run();
+}

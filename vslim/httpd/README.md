@@ -85,3 +85,17 @@ That keeps:
 - `vhttpd` as the network/runtime layer
 - `php-worker.php` as the PHP worker boundary
 - `vslim` as the framework dispatch layer
+
+## Optional PSR-7 bridge
+
+`php-worker.php` now includes `psr7_bridge.php`.
+
+If the runtime detects a supported PSR-17 style factory implementation, it can build a real
+PSR-7-style server request from the request envelope before dispatching deeper into userland.
+
+Current built-in factory detection covers:
+
+- `Nyholm\\Psr7\\Factory\\Psr17Factory`
+- `GuzzleHttp\\Psr7\\HttpFactory`
+
+This keeps `vhttpd` transport-generic while letting the worker boundary move toward PSR-7.
