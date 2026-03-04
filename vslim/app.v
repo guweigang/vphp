@@ -228,6 +228,38 @@ pub fn (mut app SlimApp) post(pattern string, handler SlimHandler) {
 	}
 }
 
+pub fn (mut app SlimApp) put(pattern string, handler SlimHandler) {
+	app.routes << SlimRoute{
+		method: 'PUT'
+		pattern: pattern
+		handler: handler
+	}
+}
+
+pub fn (mut app SlimApp) patch(pattern string, handler SlimHandler) {
+	app.routes << SlimRoute{
+		method: 'PATCH'
+		pattern: pattern
+		handler: handler
+	}
+}
+
+pub fn (mut app SlimApp) delete(pattern string, handler SlimHandler) {
+	app.routes << SlimRoute{
+		method: 'DELETE'
+		pattern: pattern
+		handler: handler
+	}
+}
+
+pub fn (mut app SlimApp) any(pattern string, handler SlimHandler) {
+	app.routes << SlimRoute{
+		method: '*'
+		pattern: pattern
+		handler: handler
+	}
+}
+
 pub fn (app SlimApp) dispatch(req SlimRequest) SlimResponse {
 	return app.run_middleware(0, req)
 }
@@ -253,7 +285,7 @@ fn (app SlimApp) dispatch_route(req SlimRequest) SlimResponse {
 		if !ok {
 			continue
 		}
-		if route.method != method {
+		if route.method != '*' && route.method != method {
 			method_not_allowed = true
 			continue
 		}
@@ -512,6 +544,30 @@ pub fn (mut app VSlimApp) post(pattern string, handler vphp.ZVal) &VSlimApp {
 }
 
 @[php_method]
+pub fn (mut app VSlimApp) put(pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('PUT', '', pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) patch(pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('PATCH', '', pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) delete(pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('DELETE', '', pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) any(pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('*', '', pattern, handler)
+	return app
+}
+
+@[php_method]
 pub fn (mut app VSlimApp) get_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
 	app.add_php_route('GET', name, pattern, handler)
 	return app
@@ -520,6 +576,30 @@ pub fn (mut app VSlimApp) get_named(name string, pattern string, handler vphp.ZV
 @[php_method]
 pub fn (mut app VSlimApp) post_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
 	app.add_php_route('POST', name, pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) put_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('PUT', name, pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) patch_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('PATCH', name, pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) delete_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('DELETE', name, pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) any_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('*', name, pattern, handler)
 	return app
 }
 
@@ -573,6 +653,42 @@ pub fn (group &VSlimRouteGroup) post(pattern string, handler vphp.ZVal) &VSlimRo
 }
 
 @[php_method]
+pub fn (group &VSlimRouteGroup) put(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('PUT', '', join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) patch(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('PATCH', '', join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) delete(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('DELETE', '', join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) any(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('*', '', join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
 pub fn (group &VSlimRouteGroup) get_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
@@ -586,6 +702,42 @@ pub fn (group &VSlimRouteGroup) post_named(name string, pattern string, handler 
 	unsafe {
 		mut app := &VSlimApp(group.app)
 		app.add_php_route('POST', name, join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) put_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('PUT', name, join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) patch_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('PATCH', name, join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) delete_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('DELETE', name, join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) any_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('*', name, join_route_prefix(group.prefix, pattern), handler)
 	}
 	return group
 }
@@ -685,7 +837,7 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimRespon
 		if !ok {
 			continue
 		}
-		if route.method != method {
+		if route.method != '*' && route.method != method {
 			method_not_allowed = true
 			continue
 		}

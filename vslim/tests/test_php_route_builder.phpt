@@ -51,6 +51,18 @@ $api->get_named('api.users.show', '/members/:id', function (VSlimRequest $req) {
 $api->get('/blocked', function (VSlimRequest $req) {
     return 'route-blocked';
 });
+$api->put_named('api.users.update', '/users/:id', function (VSlimRequest $req) {
+    return 'put:' . $req->param('id');
+});
+$api->delete('/users/:id', function (VSlimRequest $req) {
+    return 'delete:' . $req->param('id');
+});
+$api->patch('/users/:id', function (VSlimRequest $req) {
+    return 'patch:' . $req->param('id');
+});
+$api->any_named('api.echo.any', '/echo/:id', function (VSlimRequest $req) {
+    return $req->method . ':' . $req->param('id');
+});
 $v1 = $api->group('/v1');
 $v1->middleware(function (VSlimRequest $req) {
     if ($req->path === '/api/v1/ping' && $req->query('trace_id') === 'group') {
@@ -86,6 +98,11 @@ $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
 echo $app->dispatch('GET', '/api/users/9')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/members/12')->body . PHP_EOL;
+echo $app->url_for('api.users.update', ['id' => '33']) . PHP_EOL;
+echo $app->dispatch('PUT', '/api/users/33')->body . PHP_EOL;
+echo $app->dispatch('PATCH', '/api/users/34')->body . PHP_EOL;
+echo $app->dispatch('DELETE', '/api/users/35')->body . PHP_EOL;
+echo $app->dispatch('POST', '/api/echo/44')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/blocked')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping?trace_id=group')->status . '|' . $app->dispatch('GET', '/api/v1/ping?trace_id=group')->body . PHP_EOL;
@@ -102,6 +119,11 @@ https://demo.local/v1/hello/nova
 201|{"body":"payload","trace":"builder"}|builder
 user:9
 member:12
+/api/users/33
+put:33
+patch:34
+delete:35
+POST:44
 {"pong":true,"path":"\/api\/v1\/ping"}
 group-blocked
 206|group-middleware

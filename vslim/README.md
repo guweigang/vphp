@@ -152,6 +152,12 @@ $api = $app->group('/api');
 $api->get_named('api.users.show', '/users/:id', function (VSlimRequest $req) {
     return 'user:' . $req->param('id');
 });
+$api->put_named('api.users.update', '/users/:id', function (VSlimRequest $req) {
+    return 'updated:' . $req->param('id');
+});
+$api->any('/echo/:id', function (VSlimRequest $req) {
+    return $req->method . ':' . $req->param('id');
+});
 
 $app->set_base_path('/v1');
 

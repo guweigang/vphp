@@ -11270,15 +11270,19 @@ main__SlimApp main__new_slim_app(void);
 void main__SlimApp_use(main__SlimApp* app, main__SlimResponse (*mw)(main__SlimRequest , main__SlimResponse (*)(main__SlimRequest )));
 void main__SlimApp_get(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
 void main__SlimApp_post(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_put(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_patch(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_delete(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_any(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
 main__SlimResponse main__SlimApp_dispatch(main__SlimApp app, main__SlimRequest req);
 VV_LOC main__SlimResponse main__SlimApp_run_middleware(main__SlimApp app, int index, main__SlimRequest req);
-struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773_Ctx {
+struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx {
 	main__SlimApp app;
 	int index;
 };
 
-struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773_Ctx;
-VV_LOC main__SlimResponse anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773(main__SlimRequest r);
+struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx;
+VV_LOC main__SlimResponse anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397(main__SlimRequest r);
 VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__SlimRequest req);
 main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type);
 string main__VSlimResponse_header(main__VSlimResponse* r, string name);
@@ -11305,15 +11309,31 @@ main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method,
 main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req);
 main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler);
 main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_patch(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_delete(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZVal handler);
 main__VSlimApp* main__VSlimApp_get_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
 main__VSlimApp* main__VSlimApp_post_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_put_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_patch_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_delete_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
 main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler);
 main__VSlimRouteGroup* main__VSlimRouteGroup_group(main__VSlimRouteGroup* group, string prefix);
 main__VSlimRouteGroup* main__VSlimRouteGroup_middleware(main__VSlimRouteGroup* group, vphp__ZVal handler);
 main__VSlimRouteGroup* main__VSlimRouteGroup_get(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
 main__VSlimRouteGroup* main__VSlimRouteGroup_post(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_put(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_any(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
 main__VSlimRouteGroup* main__VSlimRouteGroup_get_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
 main__VSlimRouteGroup* main__VSlimRouteGroup_post_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_put_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_any_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
 string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params);
 string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
 string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host);
@@ -11331,7 +11351,7 @@ VV_LOC Array_vphp__ZVal main__matching_group_middlewares(main__VSlimApp* app, st
 VV_LOC bool main__path_has_prefix(string path, string prefix);
 VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params);
 VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_20349(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_24451(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC string main__normalize_path(string path);
 VV_LOC string main__normalize_group_prefix(string prefix);
 VV_LOC string main__normalize_base_path(string base_path);
@@ -11381,10 +11401,26 @@ voidptr main__vphp_wrap_vslimroutegroup_get(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimRouteGroup_get(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_get
 voidptr main__vphp_wrap_vslimroutegroup_post(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimRouteGroup_post(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_post
+voidptr main__vphp_wrap_vslimroutegroup_put(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_put(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_put
+voidptr main__vphp_wrap_vslimroutegroup_patch(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_patch(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_patch
+voidptr main__vphp_wrap_vslimroutegroup_delete(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_delete(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_delete
+voidptr main__vphp_wrap_vslimroutegroup_any(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_any(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_any
 voidptr main__vphp_wrap_vslimroutegroup_get_named(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimRouteGroup_get_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_get_named
 voidptr main__vphp_wrap_vslimroutegroup_post_named(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimRouteGroup_post_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_post_named
+voidptr main__vphp_wrap_vslimroutegroup_put_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_put_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_put_named
+voidptr main__vphp_wrap_vslimroutegroup_patch_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_patch_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_patch_named
+voidptr main__vphp_wrap_vslimroutegroup_delete_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_delete_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_delete_named
+voidptr main__vphp_wrap_vslimroutegroup_any_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimRouteGroup_any_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimroutegroup_any_named
 voidptr main__vslimroutegroup_handlers(void);
 VV_EXP voidptr VSlimRouteGroup_handlers(void); // exported fn main.vslimroutegroup_handlers
 voidptr main__vslimrequest_new_raw(void);
@@ -11483,10 +11519,26 @@ voidptr main__vphp_wrap_vslimapp_get(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_get(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_get
 voidptr main__vphp_wrap_vslimapp_post(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_post(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_post
+voidptr main__vphp_wrap_vslimapp_put(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_put(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_put
+voidptr main__vphp_wrap_vslimapp_patch(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_patch(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_patch
+voidptr main__vphp_wrap_vslimapp_delete(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_delete(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_delete
+voidptr main__vphp_wrap_vslimapp_any(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_any(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_any
 voidptr main__vphp_wrap_vslimapp_get_named(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_get_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_get_named
 voidptr main__vphp_wrap_vslimapp_post_named(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_post_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_post_named
+voidptr main__vphp_wrap_vslimapp_put_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_put_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_put_named
+voidptr main__vphp_wrap_vslimapp_patch_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_patch_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_patch_named
+voidptr main__vphp_wrap_vslimapp_delete_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_delete_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_delete_named
+voidptr main__vphp_wrap_vslimapp_any_named(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_any_named(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_any_named
 voidptr main__vphp_wrap_vslimapp_middleware(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_middleware(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_middleware
 void main__vphp_wrap_vslimapp_url_for(voidptr ptr, vphp__Context ctx);
@@ -18299,12 +18351,12 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_map_string_str
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC main__SlimResponse anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773(main__SlimRequest r) {
-	struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC main__SlimResponse anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397(main__SlimRequest r) {
+	struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return main__SlimApp_run_middleware(_V_closure_ctx->app, (int)(_V_closure_ctx->index + 1), r);
 }
 
-VV_LOC void anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_20349(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_24451(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -79460,6 +79512,18 @@ void main__SlimApp_get(main__SlimApp* app, string pattern, main__SlimResponse (*
 void main__SlimApp_post(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
 	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("POST"),.pattern = pattern,.handler = (voidptr)handler,}) }));
 }
+void main__SlimApp_put(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("PUT"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_patch(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("PATCH"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_delete(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("DELETE"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_any(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("*"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
 main__SlimResponse main__SlimApp_dispatch(main__SlimApp app, main__SlimRequest req) {
 	return main__SlimApp_run_middleware(app, 0, req);
 }
@@ -79468,9 +79532,9 @@ VV_LOC main__SlimResponse main__SlimApp_run_middleware(main__SlimApp app, int in
 		return main__SlimApp_dispatch_route(app, req);
 	}
 	main__SlimResponse (*mw) (main__SlimRequest , main__SlimResponse (*)(main__SlimRequest )) = (*(voidptr*)builtin__array_get(app.middlewares, index));
-	main__SlimResponse (*next) (main__SlimRequest) = 	builtin__closure__closure_create(anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773, (struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773_Ctx){.app = app,
+	main__SlimResponse (*next) (main__SlimRequest) = 	builtin__closure__closure_create(anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397, (struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx){.app = app,
 		.index = index,
-	}, sizeof(struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_4773_Ctx)));
+	}, sizeof(struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx)));
 	return mw(req, (voidptr)next);
 }
 VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__SlimRequest req) {
@@ -79479,13 +79543,13 @@ VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__
 	bool method_not_allowed = false;
 	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
 		main__SlimRoute route = ((main__SlimRoute*)app.routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_5050 = main__match_route(route.pattern, path);
-		bool ok = mr_5050.arg0;
-		Map_string_string params = mr_5050.arg1;
+		multi_return_bool_Map_string_string mr_5674 = main__match_route(route.pattern, path);
+		bool ok = mr_5674.arg0;
+		Map_string_string params = mr_5674.arg1;
 		if (!ok) {
 			continue;
 		}
-		if (!builtin__string__eq(route.method, method)) {
+		if (!builtin__fast_string_eq(route.method, _S("*")) && !builtin__string__eq(route.method, method)) {
 			method_not_allowed = true;
 			continue;
 		}
@@ -79620,9 +79684,9 @@ string main__VSlimResponse_str(main__VSlimResponse* r) {
 	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = r->status}}, {_S(" "), 0xfe10, {.d_s = r->content_type}}, {_S(" "), 0xfe10, {.d_s = r->body}}, {_SLIT0, 0, { .d_c = 0 }}}));
 }
 main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body) {
-	multi_return_string_string mr_8927 = main__normalize_request_target(raw_path);
-	string path = mr_8927.arg0;
-	string query_string = mr_8927.arg1;
+	multi_return_string_string mr_9574 = main__normalize_request_target(raw_path);
+	string path = mr_9574.arg0;
+	string query_string = mr_9574.arg1;
 	return ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,
 		.raw_path = raw_path,
 		.path = path,
@@ -79682,9 +79746,9 @@ main__VSlimRequest* main__new_vslim_request_from_envelope(Map_string_string enve
 	}
 	
 	string body = (*(string*)_t5.data);
-	multi_return_string_string mr_9546 = main__normalize_request_target(raw_path);
-	string path = mr_9546.arg0;
-	string query_string = mr_9546.arg1;
+	multi_return_string_string mr_10193 = main__normalize_request_target(raw_path);
+	string path = mr_10193.arg0;
+	string query_string = mr_10193.arg1;
 		string* _t9 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("query_json")}));
 		_option_string _t8 = {0};
 		if (_t9) {
@@ -79863,9 +79927,9 @@ main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method,
 	return main__VSlimApp_dispatch_request(app, req);
 }
 main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req) {
-	multi_return_main__SlimResponse_Map_string_string mr_10995 = main__dispatch_app_request_with_params(app, req);
-	main__SlimResponse res = mr_10995.arg0;
-	Map_string_string params = mr_10995.arg1;
+	multi_return_main__SlimResponse_Map_string_string mr_11642 = main__dispatch_app_request_with_params(app, req);
+	main__SlimResponse res = mr_11642.arg0;
+	Map_string_string params = mr_11642.arg1;
 	{ // Unsafe block
 		main__VSlimRequest* writable = ((main__VSlimRequest*)(req));
 		// json.encode
@@ -79891,12 +79955,44 @@ main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__Z
 	main__VSlimApp_add_php_route(app, _S("POST"), _S(""), pattern, handler);
 	return app;
 }
+main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PUT"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_patch(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PATCH"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_delete(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("DELETE"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("*"), _S(""), pattern, handler);
+	return app;
+}
 main__VSlimApp* main__VSlimApp_get_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
 	main__VSlimApp_add_php_route(app, _S("GET"), name, pattern, handler);
 	return app;
 }
 main__VSlimApp* main__VSlimApp_post_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
 	main__VSlimApp_add_php_route(app, _S("POST"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_put_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PUT"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_patch_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PATCH"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_delete_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("DELETE"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("*"), name, pattern, handler);
 	return app;
 }
 main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler) {
@@ -79932,6 +80028,34 @@ main__VSlimRouteGroup* main__VSlimRouteGroup_post(main__VSlimRouteGroup* group, 
 	}
 	return group;
 }
+main__VSlimRouteGroup* main__VSlimRouteGroup_put(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PUT"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PATCH"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("DELETE"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_any(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("*"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
 main__VSlimRouteGroup* main__VSlimRouteGroup_get_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
@@ -79943,6 +80067,34 @@ main__VSlimRouteGroup* main__VSlimRouteGroup_post_named(main__VSlimRouteGroup* g
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
 		main__VSlimApp_add_php_route(app, _S("POST"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_put_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PUT"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PATCH"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("DELETE"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_any_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("*"), name, main__join_route_prefix(group->prefix, pattern), handler);
 	}
 	return group;
 }
@@ -80033,10 +80185,10 @@ VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_stri
 }
 VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
 	if (app->routes.len > 0) {
-		multi_return_main__SlimResponse_Map_string_string_bool mr_16044 = main__dispatch_php_routes_with_params(app, req);
-		main__SlimResponse res = mr_16044.arg0;
-		Map_string_string params = mr_16044.arg1;
-		bool ok = mr_16044.arg2;
+		multi_return_main__SlimResponse_Map_string_string_bool mr_20123 = main__dispatch_php_routes_with_params(app, req);
+		main__SlimResponse res = mr_20123.arg0;
+		Map_string_string params = mr_20123.arg1;
+		bool ok = mr_20123.arg2;
 		if (ok) {
 			return (multi_return_main__SlimResponse_Map_string_string){.arg0=res, .arg1=params};
 		}
@@ -80053,13 +80205,13 @@ VV_LOC multi_return_main__SlimResponse_Map_string_string_bool main__dispatch_php
 	bool method_not_allowed = false;
 	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
 		main__PhpRoute route = ((main__PhpRoute*)app->routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_16521 = main__match_route(route.pattern, path);
-		bool ok = mr_16521.arg0;
-		Map_string_string params = mr_16521.arg1;
+		multi_return_bool_Map_string_string mr_20600 = main__match_route(route.pattern, path);
+		bool ok = mr_20600.arg0;
+		Map_string_string params = mr_20600.arg1;
 		if (!ok) {
 			continue;
 		}
-		if (!builtin__string__eq(route.method, method)) {
+		if (!builtin__fast_string_eq(route.method, _S("*")) && !builtin__string__eq(route.method, method)) {
 			method_not_allowed = true;
 			continue;
 		}
@@ -80174,7 +80326,7 @@ VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result) 
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_20349);
+			, (voidptr)			anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_24451);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
@@ -80579,9 +80731,9 @@ VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_demo_req
 	bool method_not_allowed = false;
 	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
 		main__SlimRoute route = ((main__SlimRoute*)app.routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_27682 = main__match_route(route.pattern, path);
-		bool ok = mr_27682.arg0;
-		Map_string_string params = mr_27682.arg1;
+		multi_return_bool_Map_string_string mr_31784 = main__match_route(route.pattern, path);
+		bool ok = mr_31784.arg0;
+		Map_string_string params = mr_31784.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -80721,6 +80873,50 @@ voidptr main__vphp_wrap_vslimroutegroup_post(voidptr ptr, vphp__Context ctx) {
 voidptr vphp_wrap_VSlimRouteGroup_post(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimroutegroup_post(ptr, ctx);
 }
+voidptr main__vphp_wrap_vslimroutegroup_put(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_put(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_put -> main__vphp_wrap_vslimroutegroup_put
+voidptr vphp_wrap_VSlimRouteGroup_put(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_put(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_patch(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_patch(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_patch -> main__vphp_wrap_vslimroutegroup_patch
+voidptr vphp_wrap_VSlimRouteGroup_patch(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_patch(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_delete(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_delete(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_delete -> main__vphp_wrap_vslimroutegroup_delete
+voidptr vphp_wrap_VSlimRouteGroup_delete(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_delete(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_any(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_any(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_any -> main__vphp_wrap_vslimroutegroup_any
+voidptr vphp_wrap_VSlimRouteGroup_any(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_any(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimroutegroup_get_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
@@ -80744,6 +80940,54 @@ voidptr main__vphp_wrap_vslimroutegroup_post_named(voidptr ptr, vphp__Context ct
 // export alias: vphp_wrap_VSlimRouteGroup_post_named -> main__vphp_wrap_vslimroutegroup_post_named
 voidptr vphp_wrap_VSlimRouteGroup_post_named(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimroutegroup_post_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_put_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_put_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_put_named -> main__vphp_wrap_vslimroutegroup_put_named
+voidptr vphp_wrap_VSlimRouteGroup_put_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_put_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_patch_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_patch_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_patch_named -> main__vphp_wrap_vslimroutegroup_patch_named
+voidptr vphp_wrap_VSlimRouteGroup_patch_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_patch_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_delete_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_delete_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_delete_named -> main__vphp_wrap_vslimroutegroup_delete_named
+voidptr vphp_wrap_VSlimRouteGroup_delete_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_delete_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimroutegroup_any_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRouteGroup* recv = ((main__VSlimRouteGroup*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimRouteGroup* res = main__VSlimRouteGroup_any_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimRouteGroup_any_named -> main__vphp_wrap_vslimroutegroup_any_named
+voidptr vphp_wrap_VSlimRouteGroup_any_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimroutegroup_any_named(ptr, ctx);
 }
 voidptr main__vslimroutegroup_handlers(void) {
 	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimroutegroup_get_prop)),.write_handler = ((voidptr)(main__vslimroutegroup_set_prop)),.sync_handler = ((voidptr)(main__vslimroutegroup_sync_props)),.new_raw = ((voidptr)(main__vslimroutegroup_new_raw)),}, sizeof(vphp_class_handlers)));
@@ -81417,6 +81661,50 @@ voidptr main__vphp_wrap_vslimapp_post(voidptr ptr, vphp__Context ctx) {
 voidptr vphp_wrap_VSlimApp_post(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_post(ptr, ctx);
 }
+voidptr main__vphp_wrap_vslimapp_put(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimApp* res = main__VSlimApp_put(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_put -> main__vphp_wrap_vslimapp_put
+voidptr vphp_wrap_VSlimApp_put(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_put(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_patch(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimApp* res = main__VSlimApp_patch(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_patch -> main__vphp_wrap_vslimapp_patch
+voidptr vphp_wrap_VSlimApp_patch(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_patch(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_delete(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimApp* res = main__VSlimApp_delete(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_delete -> main__vphp_wrap_vslimapp_delete
+voidptr vphp_wrap_VSlimApp_delete(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_delete(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_any(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	main__VSlimApp* res = main__VSlimApp_any(recv, arg_0, arg_1);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_any -> main__vphp_wrap_vslimapp_any
+voidptr vphp_wrap_VSlimApp_any(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_any(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimapp_get_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
@@ -81440,6 +81728,54 @@ voidptr main__vphp_wrap_vslimapp_post_named(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_VSlimApp_post_named -> main__vphp_wrap_vslimapp_post_named
 voidptr vphp_wrap_VSlimApp_post_named(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_post_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_put_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimApp* res = main__VSlimApp_put_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_put_named -> main__vphp_wrap_vslimapp_put_named
+voidptr vphp_wrap_VSlimApp_put_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_put_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_patch_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimApp* res = main__VSlimApp_patch_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_patch_named -> main__vphp_wrap_vslimapp_patch_named
+voidptr vphp_wrap_VSlimApp_patch_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_patch_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_delete_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimApp* res = main__VSlimApp_delete_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_delete_named -> main__vphp_wrap_vslimapp_delete_named
+voidptr vphp_wrap_VSlimApp_delete_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_delete_named(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_any_named(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimApp* res = main__VSlimApp_any_named(recv, arg_0, arg_1, arg_2);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimApp_any_named -> main__vphp_wrap_vslimapp_any_named
+voidptr vphp_wrap_VSlimApp_any_named(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_any_named(ptr, ctx);
 }
 voidptr main__vphp_wrap_vslimapp_middleware(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));

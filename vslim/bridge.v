@@ -61,6 +61,38 @@ pub fn vphp_wrap_vslimroutegroup_post(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimRouteGroup_put']
+pub fn vphp_wrap_vslimroutegroup_put(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.put(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_patch']
+pub fn vphp_wrap_vslimroutegroup_patch(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.patch(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_delete']
+pub fn vphp_wrap_vslimroutegroup_delete(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.delete(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_any']
+pub fn vphp_wrap_vslimroutegroup_any(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.any(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimRouteGroup_get_named']
 pub fn vphp_wrap_vslimroutegroup_get_named(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimRouteGroup(ptr) }
@@ -77,6 +109,42 @@ pub fn vphp_wrap_vslimroutegroup_post_named(ptr voidptr, ctx vphp.Context) voidp
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.post_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_put_named']
+pub fn vphp_wrap_vslimroutegroup_put_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.put_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_patch_named']
+pub fn vphp_wrap_vslimroutegroup_patch_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.patch_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_delete_named']
+pub fn vphp_wrap_vslimroutegroup_delete_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.delete_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_any_named']
+pub fn vphp_wrap_vslimroutegroup_any_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.any_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'VSlimRouteGroup_handlers']
@@ -622,6 +690,38 @@ pub fn vphp_wrap_vslimapp_post(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_put']
+pub fn vphp_wrap_vslimapp_put(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.put(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_patch']
+pub fn vphp_wrap_vslimapp_patch(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.patch(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_delete']
+pub fn vphp_wrap_vslimapp_delete(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.delete(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_any']
+pub fn vphp_wrap_vslimapp_any(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.any(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_get_named']
 pub fn vphp_wrap_vslimapp_get_named(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
@@ -638,6 +738,42 @@ pub fn vphp_wrap_vslimapp_post_named(ptr voidptr, ctx vphp.Context) voidptr {
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.post_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_put_named']
+pub fn vphp_wrap_vslimapp_put_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.put_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_patch_named']
+pub fn vphp_wrap_vslimapp_patch_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.patch_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_delete_named']
+pub fn vphp_wrap_vslimapp_delete_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.delete_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_any_named']
+pub fn vphp_wrap_vslimapp_any_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.any_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_middleware']
