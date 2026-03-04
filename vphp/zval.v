@@ -452,6 +452,57 @@ pub fn (v ZVal) interface_names() []string {
 	return out
 }
 
+pub fn (v ZVal) method_exists(name string) bool {
+	if v.raw == 0 {
+		return false
+	}
+	res := php_fn('method_exists').call([v, ZVal.new_string(name)])
+	return res.is_valid() && res.to_bool()
+}
+
+pub fn (v ZVal) property_exists(name string) bool {
+	if v.raw == 0 {
+		return false
+	}
+	res := php_fn('property_exists').call([v, ZVal.new_string(name)])
+	return res.is_valid() && res.to_bool()
+}
+
+pub fn (v ZVal) const_names() []string {
+	class_name := v.class_name()
+	if class_name.len == 0 {
+		return []string{}
+	}
+	consts := php_class('ReflectionClass').construct([
+		ZVal.new_string(class_name),
+	]).method('getConstants', [])
+	if !consts.is_array() {
+		return []string{}
+	}
+	keys := php_fn('array_keys').call([consts])
+	if !keys.is_array() {
+		return []string{}
+	}
+	mut out := []string{}
+	out = keys.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
+		acc << val.to_string()
+	})
+	out.sort()
+	return out
+}
+
+pub fn (v ZVal) const_exists(name string) bool {
+	class_name := v.class_name()
+	if class_name.len == 0 {
+		return false
+	}
+	rc := php_class('ReflectionClass').construct([
+		ZVal.new_string(class_name),
+	])
+	res := rc.method('hasConstant', [ZVal.new_string(name)])
+	return res.is_valid() && res.to_bool()
+}
+
 // ======== PHP interop ========
 // 和 `interop.md` 保持一致的分层：
 // 1. 基础动作

@@ -792,6 +792,12 @@ fn vphp_wrap_v_php_object_meta(ctx vphp.Context) {
     v_php_object_meta(arg_0)
 }
 
+@[export: 'vphp_wrap_v_php_object_introspection']
+fn vphp_wrap_v_php_object_introspection(ctx vphp.Context) {
+    arg_0 := ctx
+    v_php_object_introspection(arg_0)
+}
+
 @[export: 'vphp_wrap_v_trigger_user_action']
 fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
     arg_0 := ctx

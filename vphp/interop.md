@@ -1,154 +1,65 @@
 # PHP Interop
 
-This document describes the `V -> PHP` interop layer in `vphp`.
+`vphp` 的 interop 层负责把 `V -> PHP` 的调用收成一套统一语义：
 
-Core idea:
+- 入口函数先拿到一个 `ZVal`
+- 后续动作都挂在 `ZVal` 上
+- typed helper 只是 `to_v[T]()` / `to_object[T]()` 的语法糖
 
-- Entry points such as `php_fn(name)` and `php_class(name)` return a `ZVal`
-- All follow-up actions happen on `ZVal`
-- Typed helpers are thin wrappers over `ZVal.to_v[T]()` or `ZVal.to_object[T]()`
+推荐把这份文档当成使用手册来查。
 
-## 1. Entry Points
+## 1. 函数
 
-Use these to obtain a PHP target as `ZVal`:
+全局函数入口：
 
 ```v
 fn_ref := vphp.php_fn('strlen')
-cls_ref := vphp.php_class('DateTime')
-app_ver := vphp.php_const('PHP_VERSION')
+res := fn_ref.call([
+	vphp.ZVal.new_string('codex'),
+])
 ```
 
-Compatibility helper:
+更短的写法：
+
+```v
+length := vphp.php_fn('strlen').call_v[int]([
+	vphp.ZVal.new_string('codex'),
+])!
+```
+
+兼容入口仍然保留：
 
 ```v
 res := vphp.call_php('phpversion', [])
 ```
 
-Recommended style:
+但推荐统一用：
 
 ```v
 res := vphp.php_fn('phpversion').call([])
 ```
 
-Additional file-loading helpers:
+函数相关的常用 API：
 
-```v
-loaded := vphp.include('/path/to/file.php')
-loaded_once := vphp.include_once('/path/to/file.php')
-```
-
-## 2. Base `ZVal` Actions
-
-These are the low-level interop actions:
-
-| API | Meaning |
+| API | 说明 |
 | --- | --- |
-| `z.call(args)` | call a callable/function-like target |
-| `z.method(name, args)` | call object method |
-| `z.construct(args)` | construct object from class-string |
-| `z.prop(name)` | read object property |
-| `z.set_prop(name, value)` | write object property |
-| `z.has_prop(name)` | property exists check |
-| `z.isset_prop(name)` | PHP `isset($obj->prop)` |
-| `z.unset_prop(name)` | PHP `unset($obj->prop)` |
-| `z.static_method(name, args)` | call class static method |
-| `z.static_prop(name)` | read static property |
-| `z.set_static_prop(name, value)` | write static property |
-| `z.@const(name)` | read class constant |
-| `z.class_name()` | object class name / class-string name |
-| `z.namespace_name()` | namespace part of class name |
-| `z.short_name()` | short class name |
-| `z.parent_class_name()` | parent class name |
-| `z.interface_names()` | implemented interface names |
-| `z.is_internal_class()` | whether the class is an internal PHP class |
-| `z.is_user_class()` | inverse of `is_internal_class()` |
+| `php_fn(name)` | 获取一个可调用的 PHP 函数引用 |
+| `z.call(args)` | 调用 callable / 函数名 |
+| `z.call_v[T](args)` | `call(args).to_v[T]()` |
+| `z.call_object[T](args)` | `call(args).to_object[T]()` |
 
-Example:
+## 2. 类
+
+类入口：
 
 ```v
-obj := vphp.php_class('PhpGreeter').construct([
-	vphp.ZVal.new_string('Codex'),
-])
-msg := obj.method('greet', []).to_string()
-```
-
-Property write note:
-
-- `set_prop(...)` respects the PHP runtime rules of the target object
-- writing a readonly property raises the normal Zend readonly error
-- protected/private properties are not widened by `vphp`; visibility checks still apply
-- `class_name()` returns the object FQCN for objects, or the same string for class-string `ZVal`s
-
-Metadata example:
-
-```v
-obj := vphp.php_class('DateTimeImmutable').construct([
+cls := vphp.php_class('DateTimeImmutable')
+obj := cls.construct([
 	vphp.ZVal.new_string('2026-03-04'),
 ])
-println(obj.class_name())
-println(obj.parent_class_name())
-println(obj.interface_names())
-println(obj.is_internal_class())
 ```
 
-## 3. Typed Value Helpers
-
-If you want a concrete V value, you can always write:
-
-```v
-length := vphp.php_fn('strlen').call([
-	vphp.ZVal.new_string('codex'),
-]).to_v[int]()!
-```
-
-Convenience wrappers are available:
-
-| Helper | Equivalent |
-| --- | --- |
-| `call_v[T](args)` | `call(args).to_v[T]()` |
-| `method_v[T](name, args)` | `method(name, args).to_v[T]()` |
-| `prop_v[T](name)` | `prop(name).to_v[T]()` |
-| `static_prop_v[T](name)` | `static_prop(name).to_v[T]()` |
-| `const_v[T](name)` | `@const(name).to_v[T]()` |
-
-Example:
-
-```v
-count := vphp.php_class('PhpCounter').static_prop_v[int]('count')!
-label := vphp.php_class('PhpTypedBox').const_v[string]('LABEL')!
-```
-
-## 4. Typed Object Helpers
-
-For `vphp`-exported objects, you can restore the underlying V pointer as `&T`.
-
-Base restore helper:
-
-```v
-article_zv := vphp.php_class('Article').construct([
-	vphp.ZVal.new_string('Hello'),
-	vphp.ZVal.new_int(1),
-])
-article := article_zv.to_object[Article]() or { return }
-```
-
-Convenience wrappers:
-
-| Helper | Equivalent |
-| --- | --- |
-| `call_object[T](args)` | `call(args).to_object[T]()` |
-| `method_object[T](name, args)` | `method(name, args).to_object[T]()` |
-| `prop_object[T](name)` | `prop(name).to_object[T]()` |
-| `construct_object[T](args)` | `construct(args).to_object[T]()` |
-| `static_method_object[T](name, args)` | `static_method(name, args).to_object[T]()` |
-
-Example:
-
-```v
-author := vphp.php_class('Author').static_method_object[Author]('create', [
-	vphp.ZVal.new_string('Gu Weigang'),
-]) or { return }
-```
+如果目标是 `vphp` 导出的对象，可以直接恢复成 `&T`：
 
 ```v
 article := vphp.php_class('Article').construct_object[Article]([
@@ -157,32 +68,169 @@ article := vphp.php_class('Article').construct_object[Article]([
 ]) or { return }
 ```
 
-## 5. Important Boundary: Userland PHP Objects vs `vphp` Objects
+类相关的常用 API：
 
-`to_object[T]()` and all `*_object[T]()` helpers only work when the PHP object
-is actually backed by a `vphp` object wrapper.
+| API | 说明 |
+| --- | --- |
+| `php_class(name)` | 获取 class-string `ZVal` |
+| `z.construct(args)` | 从 class-string 构造对象 |
+| `z.construct_object[T](args)` | `construct(args).to_object[T]()` |
+| `z.static_method(name, args)` | 调用静态方法 |
+| `z.static_method_object[T](name, args)` | 期望结果是 `vphp` 对象时恢复 `&T` |
+| `z.static_prop(name)` | 读取静态属性 |
+| `z.static_prop_v[T](name)` | 读取静态属性并转成 V 值 |
+| `z.@const(name)` | 读取类常量 |
+| `z.const_v[T](name)` | 读取类常量并转成 V 值 |
+| `z.const_names()` | 获取类常量名列表 |
+| `z.const_exists(name)` | 判断类常量是否存在 |
 
-This works:
+例子：
+
+```v
+label := vphp.php_class('PhpTypedBox').const_v[string]('LABEL')!
+count := vphp.php_class('PhpCounter').static_prop_v[int]('count')!
+```
+
+## 3. 对象
+
+对象的实例调用和属性访问都挂在 `ZVal` 上：
+
+```v
+obj := vphp.php_class('PhpGreeter').construct([
+	vphp.ZVal.new_string('Codex'),
+])
+
+msg := obj.method_v[string]('greet', [])!
+name := obj.prop_v[string]('name')!
+```
+
+对象相关的常用 API：
+
+| API | 说明 |
+| --- | --- |
+| `z.method(name, args)` | 调用实例方法 |
+| `z.method_v[T](name, args)` | `method(name, args).to_v[T]()` |
+| `z.method_object[T](name, args)` | `method(name, args).to_object[T]()` |
+| `z.prop(name)` | 读取属性 |
+| `z.prop_v[T](name)` | `prop(name).to_v[T]()` |
+| `z.prop_object[T](name)` | `prop(name).to_object[T]()` |
+| `z.set_prop(name, value)` | 写属性 |
+| `z.has_prop(name)` | 当前可访问 property 存在判断 |
+| `z.isset_prop(name)` | 对齐 PHP `isset($obj->prop)` |
+| `z.unset_prop(name)` | 对齐 PHP `unset($obj->prop)` |
+| `z.method_exists(name)` | 判断类/对象方法是否存在 |
+| `z.property_exists(name)` | 判断类/对象属性是否存在 |
+
+属性写入会遵守 PHP 运行时规则：
+
+- readonly 属性不能写
+- protected/private 可见性不会被 interop 放宽
+
+## 4. 文件加载
+
+在 V 侧可以直接加载 PHP 文件：
+
+```v
+vphp.include('/path/to/file.php')
+vphp.include_once('/path/to/file.php')
+```
+
+相关 API：
+
+| API | 说明 |
+| --- | --- |
+| `php_const(name)` | 读取 PHP 全局常量 |
+| `include(path)` | 对齐 PHP `include` |
+| `include_once(path)` | 对齐 PHP `include_once` |
+
+例子：
+
+```v
+ver := vphp.php_const('PHP_VERSION').to_string()
+loaded := vphp.include_once('/tmp/bootstrap.php')
+```
+
+## 5. 元信息
+
+`ZVal` 还提供了一组偏 introspection 的 helper，主要针对对象和 class-string：
+
+| API | 说明 |
+| --- | --- |
+| `z.class_name()` | 类全名（对象或 class-string） |
+| `z.namespace_name()` | 命名空间部分 |
+| `z.short_name()` | 短类名 |
+| `z.parent_class_name()` | 父类名 |
+| `z.interface_names()` | 已实现接口列表 |
+| `z.is_internal_class()` | 是否 PHP 内建类 |
+| `z.is_user_class()` | 是否用户类 |
+| `z.method_exists(name)` | 方法是否存在 |
+| `z.property_exists(name)` | 属性是否存在 |
+| `z.const_names()` | 类常量列表 |
+| `z.const_exists(name)` | 类常量是否存在 |
+
+例子：
+
+```v
+obj := vphp.php_class('DateTimeImmutable').construct([
+	vphp.ZVal.new_string('2026-03-04'),
+])
+
+println(obj.class_name())
+println(obj.parent_class_name())
+println(obj.interface_names())
+println(obj.const_exists('ATOM'))
+```
+
+## Typed 与 Raw 的选择
+
+推荐原则：
+
+1. 已知返回类型时，优先 `*_v[T]`
+2. 已知返回值是 `vphp` 对象时，优先 `*_object[T]`
+3. 需要动态判断类型或做通用运行时时，先拿 raw `ZVal`
+
+例如：
+
+```v
+res := vphp.php_fn('strlen').call([vphp.ZVal.new_string('codex')])
+length := res.to_v[int]()!
+```
+
+或者直接：
+
+```v
+length := vphp.php_fn('strlen').call_v[int]([
+	vphp.ZVal.new_string('codex'),
+])!
+```
+
+## `vphp` 对象与普通 PHP 对象的边界
+
+`to_object[T]()` 和所有 `*_object[T]()` helper 只适用于：
+
+- PHP 对象底层真的由 `vphp` wrapper 承载
+
+也就是说，这种可以：
 
 ```v
 article := vphp.php_class('Article').construct_object[Article]([...]) or { return }
 ```
 
-This does **not** restore to a V pointer:
+这种不可以恢复成 `&Article`：
 
 ```v
-user_obj := vphp.php_class('DateTime').construct([])
-user_obj.to_object[Article]() or { /* none */ }
+dt := vphp.php_class('DateTimeImmutable').construct([])
+dt.to_object[Article]() or { /* none */ }
 ```
 
-Reason:
+原因很简单：
 
-- `Article` is exported by `vphp`, so the PHP object carries a V pointer
-- `DateTime` is a normal PHP/userland/internal object, so there is no V pointer to recover
+- `Article` 带着 V 指针
+- `DateTimeImmutable` 没有
 
-## 6. Preferred Value Construction
+## 参数构造建议
 
-When building arguments manually, prefer the static factory style on `ZVal`:
+手动组装参数时，推荐统一使用：
 
 ```v
 vphp.ZVal.new_null()
@@ -192,147 +240,35 @@ vphp.ZVal.new_bool(true)
 vphp.ZVal.new_string('hello')
 ```
 
-Legacy compatibility helpers such as `new_val_string(...)` still exist, but the
-preferred style is `ZVal.new_*()`.
+旧的 `new_val_*` 兼容入口还在，但不再主推。
 
-## 7. Recommended Usage Style
+## 错误处理建议
 
-Use low-level methods when you want full control:
+两种常用风格：
 
-```v
-res := vphp.php_fn('strlen').call([vphp.ZVal.new_string('codex')])
-length := res.to_v[int]()!
-```
+### 严格桥接
 
-Use typed helpers when you want concise code:
+当 PHP 调用失败就应该立刻转成 PHP 异常时：
 
 ```v
 length := vphp.php_fn('strlen').call_v[int]([
 	vphp.ZVal.new_string('codex'),
-])!
-```
-
-Use object helpers only when you know the result is a `vphp`-exported object:
-
-```v
-author := vphp.php_class('Author').static_method_object[Author]('create', [
-	vphp.ZVal.new_string('Typed Author'),
-]) or { return }
-```
-
-## 8. Error Handling Guidance
-
-There are two common styles in `vphp` interop code.
-
-### Style A: strict bridge, fail fast
-
-Use this when the PHP call is part of your core contract and failure should
-become a PHP exception immediately.
-
-```v
-fn v_do_work(ctx vphp.Context) {
-	length := vphp.php_fn('strlen').call_v[int]([
-		vphp.ZVal.new_string('codex'),
-	]) or {
-		vphp.throw_exception('strlen failed: ${err.msg()}', 0)
-		return
-	}
-	ctx.return_int(length)
+]) or {
+	vphp.throw_exception('strlen failed: ${err.msg()}', 0)
+	return
 }
 ```
 
-Use this style for:
+### 宽容桥接
 
-- required callbacks
-- required configuration/constants
-- object restoration that must succeed
-- framework/runtime control flow
-
-### Style B: tolerant bridge, fallback locally
-
-Use this when PHP interop is optional and you have a clear local default.
+当结果只是增强信息，有清晰 fallback 时：
 
 ```v
 mode := cfg.prop_v[string]('mode') or { 'default' }
 count := vphp.php_class('PhpCounter').static_prop_v[int]('count') or { 0 }
 ```
 
-Use this style for:
+经验规则：
 
-- optional metadata
-- diagnostics
-- best-effort enrichment
-
-### Suggested rule of thumb
-
-- if the result is required to continue safely: `throw_exception(...)`
-- if the result is optional and you know the fallback: `or { ... }`
-
-## 9. Mixing Value and Object Helpers
-
-In real code, interop usually mixes both styles.
-
-Example:
-
-```v
-author := vphp.php_class('Author').static_method_object[Author]('create', [
-	vphp.ZVal.new_string('Gu Weigang'),
-]) or {
-	vphp.throw_exception('create author failed', 0)
-	return
-}
-
-article := vphp.php_class('Article').construct_object[Article]([
-	vphp.ZVal.new_string('Bridge'),
-	vphp.ZVal.new_int(7),
-]) or {
-	vphp.throw_exception('construct article failed', 0)
-	return
-}
-
-label := vphp.php_class('Article').const_v[string]('NAME') or {
-	'unknown'
-}
-
-println('${author.name} -> ${article.title} (${label})')
-```
-
-This pattern is usually the most readable:
-
-1. restore objects with `*_object[T]()`
-2. read scalars with `*_v[T]()`
-3. only drop down to raw `ZVal` when you need custom conversion or low-level control
-
-## 10. Choosing Between Raw and Typed APIs
-
-Prefer raw `ZVal` actions when:
-
-- you need to inspect PHP type at runtime
-- the target type is not known yet
-- you are building generic runtime helpers
-
-Prefer typed helpers when:
-
-- the result type is already known
-- you want shorter business logic
-- you want conversion failures to be explicit
-
-Example of raw-first flow:
-
-```v
-res := vphp.php_fn('phpversion').call([])
-if !res.is_string() {
-	vphp.throw_exception('phpversion must return string', 0)
-	return
-}
-version := res.to_string()
-```
-
-Example of typed-first flow:
-
-```v
-version := vphp.php_fn('phpversion').call_v[string]([]) or {
-	vphp.throw_exception('phpversion failed: ${err.msg()}', 0)
-	return
-}
-```
+- 核心控制流：抛异常
+- 可选信息：本地 fallback

@@ -162,6 +162,13 @@ PHP_FUNCTION(v_php_object_meta) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_php_object_meta(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_php_object_introspection, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_php_object_introspection(vphp_context_internal ctx);
+PHP_FUNCTION(v_php_object_introspection) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_php_object_introspection(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_trigger_user_action, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_trigger_user_action(vphp_context_internal ctx);
@@ -767,6 +774,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_include_php_file, arginfo_v_include_php_file)
     PHP_FE(v_include_php_file_once, arginfo_v_include_php_file_once)
     PHP_FE(v_php_object_meta, arginfo_v_php_object_meta)
+    PHP_FE(v_php_object_introspection, arginfo_v_php_object_introspection)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
     PHP_FE(v_test_globals, arginfo_v_test_globals)

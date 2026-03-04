@@ -32,6 +32,7 @@ PHP_FUNCTION(v_read_php_global_const);
 PHP_FUNCTION(v_include_php_file);
 PHP_FUNCTION(v_include_php_file_once);
 PHP_FUNCTION(v_php_object_meta);
+PHP_FUNCTION(v_php_object_introspection);
 PHP_FUNCTION(v_trigger_user_action);
 PHP_FUNCTION(v_call_php_closure);
 PHP_FUNCTION(v_test_globals);

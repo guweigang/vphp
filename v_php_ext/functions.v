@@ -306,6 +306,24 @@ fn v_php_object_meta(ctx vphp.Context) {
 }
 
 @[php_function]
+fn v_php_object_introspection(ctx vphp.Context) {
+	obj := ctx.arg_raw(0)
+	if !obj.is_object() {
+		vphp.throw_exception('需要对象参数', 0)
+		return
+	}
+
+	ctx.return_map({
+		'has_method_greet':     obj.method_exists('greet').str()
+		'has_method_missing':   obj.method_exists('missingMethod').str()
+		'has_prop_name':        obj.property_exists('name').str()
+		'has_prop_missing':     obj.property_exists('missingProp').str()
+		'class_consts':         obj.const_names().join(',')
+		'datetime_has_atom':    vphp.php_class('DateTimeImmutable').const_exists('ATOM').str()
+	})
+}
+
+@[php_function]
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
 	if !user_obj.is_object() {
