@@ -8,6 +8,126 @@
 
 推荐把这份文档当成使用手册来查。
 
+## 定义权与所有权模型
+
+理解 `vphp` interop 时，最重要的一点是先区分：
+
+1. 谁拥有“定义权”
+2. 谁拥有“运行时状态”
+
+可以把系统分成两类。
+
+### 1. PHP-owned symbols
+
+这类定义本来就在 PHP / Zend 一侧：
+
+- PHP 全局函数
+- PHP userland class
+- PHP internal class
+- PHP interface / trait
+- PHP userland object
+
+当 V 侧访问它们时，本质上只是：
+
+- 拿到一个 `ZVal`
+- 再调用 Zend 原本的能力
+
+例如：
+
+```v
+dt := vphp.php_class('DateTimeImmutable').construct([
+	vphp.ZVal.new_string('2026-03-04'),
+])
+
+stamp := dt.method_v[string]('format', [
+	vphp.ZVal.new_string('c'),
+])!
+```
+
+这里：
+
+- `DateTimeImmutable` 的定义权在 PHP
+- 对象状态也在 PHP / Zend
+- V 只是调用者
+
+这类场景里，不存在“两次定义”。
+
+### 2. V-owned but PHP-exported symbols
+
+这类定义写在 V 侧，但需要导出到 PHP：
+
+- `@[php_function]`
+- `@[php_class]`
+- `@[php_interface]`
+- `@[php_enum]`
+
+这里要分开看：
+
+#### 函数
+
+函数更接近“单份语义 + 一层 PHP 入口”：
+
+- V 侧有真实函数实现
+- PHP 侧注册一个 Zend function entry
+- 调用时桥接到 V
+
+所以函数不是“两块状态内存”，而是：
+
+- 一份逻辑实现
+- 一份 PHP 导出入口
+
+#### 类 / 对象 / static / const
+
+这类有状态实体，就更接近“两套表示”：
+
+- V 侧有 struct / object 语义
+- PHP 侧有 class entry / object / property table / static table
+
+因此这里通常会出现：
+
+- V 侧表示
+- PHP 侧表示
+- 编译器和运行时负责桥接
+- 必要时做同步
+
+这也是为什么 `vphp` 里会有：
+
+- object wrapper
+- generated `get_prop / set_prop / sync_props`
+- class static shadow
+- class const shadow
+
+### 一句话总结
+
+- PHP 原生定义：`V -> Zend`
+- V 导出定义：`V 定义 + PHP 导出壳 + 必要的桥接/同步`
+
+### 对对象最实用的理解
+
+如果对象来自 PHP 原生定义，例如：
+
+```v
+obj := vphp.php_class('DateTimeImmutable').construct([])
+```
+
+那么 V 侧拿到的是“PHP 对象的 `ZVal` 视图”。
+
+如果对象来自 `vphp` 导出的 V 类，例如：
+
+```v
+article := vphp.php_class('Article').construct_object[Article]([...]) or { return }
+```
+
+那么它同时有两层：
+
+- PHP 侧对象壳子
+- V 侧真实对象指针
+
+这也是为什么：
+
+- 普通 PHP 对象不能随便 `to_object[T]()`
+- `vphp` 导出的对象才可以恢复成 `&T`
+
 ## 1. 函数
 
 全局函数入口：
