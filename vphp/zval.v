@@ -258,8 +258,9 @@ pub fn (v ZVal) get_or(key string, default_val string) string {
 	return val.to_string()
 }
 
-// ======== 对象属性操作 ========
+// ======== 对象属性与类元信息 ========
 
+// -------- 对象属性操作 --------
 pub fn (v ZVal) add_property_string(key string, val string) {
 	unsafe { C.add_property_stringl(v.raw, &char(key.str), &char(val.str), val.len) }
 }
@@ -374,6 +375,7 @@ pub fn (v ZVal) get_prop_bool(name string) bool {
 	return prop.to_bool()
 }
 
+// -------- 类元信息 / introspection --------
 pub fn (v ZVal) class_name() string {
 	if v.raw == 0 {
 		return ''
@@ -566,7 +568,7 @@ pub fn (v ZVal) const_exists(name string) bool {
 
 // ======== PHP interop ========
 // 和 `interop.md` 保持一致的分层：
-// 1. 基础动作
+// 1. base actions
 // 2. typed value helpers
 // 3. typed object helpers
 // 4. compatibility aliases
