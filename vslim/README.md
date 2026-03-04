@@ -162,6 +162,7 @@ make test
 
 HTTP runtime 相关文件现在在：
 
+- [/Users/guweigang/Source/vphpext/vslim/psr7_bridge.md](/Users/guweigang/Source/vphpext/vslim/psr7_bridge.md)
 - [/Users/guweigang/Source/vphpext/vslim/httpd/main.v](/Users/guweigang/Source/vphpext/vslim/httpd/main.v)
 - [/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php](/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php)
 - [/Users/guweigang/Source/vphpext/vslim/httpd/README.md](/Users/guweigang/Source/vphpext/vslim/httpd/README.md)

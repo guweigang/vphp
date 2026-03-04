@@ -45,11 +45,17 @@ pub mut:
 	path string
 	body string
 	query_string string
+	query_json string
 	scheme string
 	host string
+	port string
+	protocol_version string
 	remote_addr string
 	headers_json string
 	cookies_json string
+	attributes_json string
+	server_json string
+	uploaded_files_json string
 	params_json string
 }
 
@@ -61,9 +67,15 @@ pub fn (mut r VSlimRequest) construct(method string, raw_path string, body strin
 	r.body = body
 	r.scheme = 'http'
 	r.host = ''
+	r.port = ''
+	r.protocol_version = '1.1'
 	r.remote_addr = ''
+	r.query_json = '{}'
 	r.headers_json = '{}'
 	r.cookies_json = '{}'
+	r.attributes_json = '{}'
+	r.server_json = '{}'
+	r.uploaded_files_json = '[]'
 	r.params_json = '{}'
 	return r
 }
@@ -75,12 +87,12 @@ pub fn (r &VSlimRequest) str() string {
 
 @[php_method]
 pub fn (r &VSlimRequest) query(key string) string {
-	return parse_query_string(r.query_string)[key] or { '' }
+	return r.query_params()[key] or { '' }
 }
 
 @[php_method]
 pub fn (r &VSlimRequest) has_query(key string) bool {
-	return key in parse_query_string(r.query_string)
+	return key in r.query_params()
 }
 
 @[php_method]
@@ -119,12 +131,41 @@ pub fn (r &VSlimRequest) has_param(name string) bool {
 	return name in params
 }
 
+@[php_method]
+pub fn (r &VSlimRequest) attribute(name string) string {
+	attrs := r.attributes()
+	return attrs[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_attribute(name string) bool {
+	attrs := r.attributes()
+	return name in attrs
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) query_json_value() string {
+	return r.query_json
+}
+
 pub fn (r &VSlimRequest) headers() map[string]string {
 	return parse_headers_json(r.headers_json)
 }
 
+pub fn (r &VSlimRequest) query_params() map[string]string {
+	if r.query_json != '' && r.query_json != '{}' {
+		return parse_name_map_json(r.query_json)
+	}
+	return parse_query_string(r.query_string)
+}
+
 pub fn (r &VSlimRequest) cookies() map[string]string {
 	return parse_name_map_json(r.cookies_json)
+}
+
+pub fn (r &VSlimRequest) attributes() map[string]string {
+	return parse_name_map_json(r.attributes_json)
+
 }
 
 pub fn (r &VSlimRequest) params() map[string]string {
@@ -135,8 +176,8 @@ pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
 	return SlimRequest{
 		method: r.method
 		path: r.path
-		params: map[string]string{}
-		query: parse_query_string(r.query_string)
+		params: r.params()
+		query: r.query_params()
 		body: r.body
 	}
 }
@@ -303,9 +344,15 @@ pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequ
 		body: body
 		scheme: 'http'
 		host: ''
+		port: ''
+		protocol_version: '1.1'
 		remote_addr: ''
+		query_json: '{}'
 		headers_json: '{}'
 		cookies_json: '{}'
+		attributes_json: '{}'
+		server_json: '{}'
+		uploaded_files_json: '[]'
 		params_json: '{}'
 	}
 }
@@ -323,9 +370,15 @@ pub fn new_vslim_request_from_envelope(envelope map[string]string) &VSlimRequest
 		body: body
 		scheme: envelope['scheme'] or { 'http' }
 		host: envelope['host'] or { '' }
+		port: envelope['port'] or { '' }
+		protocol_version: envelope['protocol_version'] or { '1.1' }
 		remote_addr: envelope['remote_addr'] or { '' }
+		query_json: envelope['query_json'] or { '{}' }
 		headers_json: envelope['headers_json'] or { '{}' }
 		cookies_json: envelope['cookies_json'] or { '{}' }
+		attributes_json: envelope['attributes_json'] or { '{}' }
+		server_json: envelope['server_json'] or { '{}' }
+		uploaded_files_json: envelope['uploaded_files_json'] or { '[]' }
 		params_json: envelope['params_json'] or { '{}' }
 	}
 }
@@ -351,6 +404,9 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 	unsafe {
 		mut writable := &VSlimRequest(req)
 		writable.params_json = json.encode(params)
+		if writable.attributes_json == '{}' || writable.attributes_json == '' {
+			writable.attributes_json = json.encode(params)
+		}
 	}
 	return to_vslim_response(res)
 }

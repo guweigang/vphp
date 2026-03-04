@@ -39,8 +39,13 @@ $req->host = 'demo.local';
 $req->remote_addr = '127.0.0.1';
 $req->headers_json = '{"x-trace-id":"from-header","content-type":"application/json"}';
 $req->cookies_json = '{"sid":"cookie-7"}';
+$req->attributes_json = '{"actor":"tester"}';
+$req->query_json = '{"trace_id":"from-json"}';
+$req->port = '443';
+$req->protocol_version = '1.1';
 echo $req->header('x-trace-id') . '|' . ($req->has_header('content-type') ? 'yes' : 'no') . '|' . $req->scheme . '|' . $req->host . '|' . $req->remote_addr . PHP_EOL;
 echo $req->cookie('sid') . '|' . ($req->has_cookie('sid') ? 'yes' : 'no') . '|' . $req->param('id') . '|' . ($req->has_param('id') ? 'yes' : 'no') . PHP_EOL;
+echo $req->query('trace_id') . '|' . $req->attribute('actor') . '|' . ($req->has_attribute('actor') ? 'yes' : 'no') . '|' . $req->port . '|' . $req->protocol_version . PHP_EOL;
 
 $envelope = vslim_handle_request([
     'method' => 'GET',
@@ -48,9 +53,15 @@ $envelope = vslim_handle_request([
     'body' => '',
     'scheme' => 'https',
     'host' => 'worker.local',
+    'port' => '443',
+    'protocol_version' => '1.1',
     'remote_addr' => '10.0.0.8',
+    'query_json' => '{"token":"ok","trace_id":"worker"}',
     'headers_json' => '{"x-worker":"yes"}',
     'cookies_json' => '{"session":"worker-cookie"}',
+    'attributes_json' => '{"source":"httpd"}',
+    'server_json' => '{"REQUEST_TIME_FLOAT":"1.23"}',
+    'uploaded_files_json' => '[]',
 ]);
 echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_type'] . PHP_EOL;
 
@@ -74,6 +85,7 @@ echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . PHP_EOL;
 from-php|yes
 from-header|yes|https|demo.local|127.0.0.1
 cookie-7|yes|7|yes
+from-json|tester|yes|443|1.1
 200|secret|text/plain; charset=utf-8
 202|{"ok":true}|application/json; charset=utf-8|yes|yes
 202|plain-again|text/plain; charset=utf-8

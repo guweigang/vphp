@@ -103,6 +103,8 @@ fn dispatch_via_worker(socket_path string, method string, path string) !(int, st
 	defer {
 		conn.close() or {}
 	}
+	normalized_path, query_string := normalize_request_target(path)
+	query_json := json.encode(parse_query_string(query_string))
 	payload := json.encode({
 		'id':          'vhttpd-${time.now().unix_micro()}'
 		'method':      method.to_upper()
@@ -110,14 +112,51 @@ fn dispatch_via_worker(socket_path string, method string, path string) !(int, st
 		'body':        ''
 		'scheme':      'http'
 		'host':        ''
+		'port':        ''
+		'protocol_version': '1.1'
 		'remote_addr': ''
+		'query_json':  query_json
 		'headers_json': '{}'
+		'cookies_json': '{}'
+		'attributes_json': '{}'
+		'server_json': '{}'
+		'uploaded_files_json': '[]'
 	})
 	write_frame(mut conn, payload)!
 	resp_raw := read_frame(mut conn)!
 	resp := json.decode(WorkerResponse, resp_raw)!
 	ctype := resp.headers['content-type'] or { 'text/plain; charset=utf-8' }
 	return resp.status, resp.body, ctype
+}
+
+fn normalize_request_target(raw_path string) (string, string) {
+	path := normalize_path(raw_path)
+	if !path.contains('?') {
+		return path, ''
+	}
+	base := normalize_path(path.all_before('?'))
+	query := path.all_after('?')
+	return base, query
+}
+
+fn parse_query_string(query_str string) map[string]string {
+	mut out := map[string]string{}
+	if query_str == '' {
+		return out
+	}
+	for pair in query_str.split('&') {
+		if pair == '' {
+			continue
+		}
+		if pair.contains('=') {
+			k := pair.all_before('=')
+			v := pair.all_after('=')
+			out[k] = v
+		} else {
+			out[pair] = ''
+		}
+	}
+	return out
 }
 
 fn wait_for_worker(socket_path string, timeout_ms int) ! {
