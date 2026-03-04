@@ -33,10 +33,30 @@ $app->post('/submit', function (VSlimRequest $req) {
     ];
 });
 $api = $app->group('/api');
+$api->middleware(function (VSlimRequest $req) {
+    if ($req->path === '/api/blocked') {
+        return 'group-blocked';
+    }
+    return null;
+});
 $api->get('/users/:id', function (VSlimRequest $req) {
     return 'user:' . $req->param('id');
 });
-$api->group('/v1')->get('/ping', function (VSlimRequest $req) {
+$api->get('/blocked', function (VSlimRequest $req) {
+    return 'route-blocked';
+});
+$v1 = $api->group('/v1');
+$v1->middleware(function (VSlimRequest $req) {
+    if ($req->path === '/api/v1/ping' && $req->query('trace_id') === 'group') {
+        return [
+            'status' => 206,
+            'content_type' => 'text/plain; charset=utf-8',
+            'body' => 'group-middleware',
+        ];
+    }
+    return null;
+});
+$v1->get('/ping', function (VSlimRequest $req) {
     return [
         'status' => 200,
         'content_type' => 'application/json; charset=utf-8',
@@ -50,6 +70,8 @@ $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
 echo $app->dispatch('GET', '/api/users/9')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping')->body . PHP_EOL;
+echo $app->dispatch('GET', '/api/blocked')->body . PHP_EOL;
+echo $app->dispatch('GET', '/api/v1/ping?trace_id=group')->status . '|' . $app->dispatch('GET', '/api/v1/ping?trace_id=group')->body . PHP_EOL;
 echo $app->dispatch('GET', '/blocked')->status . '|' . $app->dispatch('GET', '/blocked')->body . PHP_EOL;
 echo $app->dispatch('POST', '/submit?trace_id=mw')->status . '|' . $app->dispatch('POST', '/submit?trace_id=mw')->body . PHP_EOL;
 ?>
@@ -58,5 +80,7 @@ Hello, codex
 201|{"body":"payload","trace":"builder"}|builder
 user:9
 {"pong":true,"path":"\/api\/v1\/ping"}
+group-blocked
+206|group-middleware
 403|blocked
 202|middleware:

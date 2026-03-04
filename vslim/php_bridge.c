@@ -27,6 +27,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_group, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_middleware, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_get, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup_post, 0, 0, 0)
@@ -40,6 +42,22 @@ PHP_METHOD(VSlimRouteGroup, group) {
     // printf("PHP_METHOD VSlimRouteGroup::group called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = vphp_wrap_VSlimRouteGroup_group(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimroutegroup_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRouteGroup_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRouteGroup_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRouteGroup, middleware) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRouteGroup_middleware(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRouteGroup::middleware called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRouteGroup_middleware(wrapper->v_ptr, ctx);
     vphp_return_obj(return_value, v_instance, vslimroutegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRouteGroup_handlers();
@@ -94,6 +112,7 @@ PHP_METHOD(VSlimRouteGroup, __construct) {
 static const zend_function_entry vslimroutegroup_methods[] = {
     PHP_ME(VSlimRouteGroup, __construct, arginfo_vslimroutegroup___construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, group, arginfo_vslimroutegroup_group, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRouteGroup, middleware, arginfo_vslimroutegroup_middleware, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, get, arginfo_vslimroutegroup_get, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRouteGroup, post, arginfo_vslimroutegroup_post, ZEND_ACC_PUBLIC)
     PHP_FE_END
@@ -592,6 +611,7 @@ PHP_MINIT_FUNCTION(vslim) {
         vslimapp_ce->create_object = vphp_create_object_handler;
         zend_declare_property_null(vslimapp_ce, "routes", sizeof("routes")-1, ZEND_ACC_PROTECTED);
         zend_declare_property_null(vslimapp_ce, "php_middlewares", sizeof("php_middlewares")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimapp_ce, "php_group_middlewares", sizeof("php_group_middlewares")-1, ZEND_ACC_PROTECTED);
         zend_declare_property_bool(vslimapp_ce, "use_demo", sizeof("use_demo")-1, 0, ZEND_ACC_PROTECTED);
     }
     return SUCCESS;

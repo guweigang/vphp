@@ -38,6 +38,13 @@ pub fn vphp_wrap_vslimroutegroup_group(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.group(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimRouteGroup_middleware']
+pub fn vphp_wrap_vslimroutegroup_middleware(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.middleware(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimRouteGroup_get']
 pub fn vphp_wrap_vslimroutegroup_get(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimRouteGroup(ptr) }
