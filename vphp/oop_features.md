@@ -48,6 +48,36 @@ Notes:
 - field-level PHP attributes are still limited by current V syntax, so some metadata is inferred indirectly
 - object property synchronization is field-based and scalar-oriented
 - generated property interop handlers only expose `public` fields; protected fields keep Zend visibility checks
+- `readonly` is inferred from V mutability, not from a separate PHP-only attribute
+- a `pub` but non-`mut` field becomes a public readonly property
+- a non-`pub` and non-`mut` field becomes a protected readonly property
+
+Example:
+
+```v
+@[heap]
+@[php_class]
+struct AuditLog {
+pub:
+	created_at int
+pub mut:
+	title string
+mut:
+	internal_note string
+}
+```
+
+PHP-side effect:
+
+- `created_at` -> `public readonly`
+- `title` -> `public`
+- `internal_note` -> `protected`
+
+Runtime notes:
+
+- readonly properties can still be assigned from the generated constructor/init path
+- PHP userland writes after construction raise the normal Zend readonly error
+- `ZVal.set_prop(...)` follows the same runtime rule and will also fail on readonly properties
 
 ## `@[php_method]`
 

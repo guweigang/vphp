@@ -57,6 +57,12 @@ obj := vphp.php_class('PhpGreeter').construct([
 msg := obj.method('greet', []).to_string()
 ```
 
+Property write note:
+
+- `set_prop(...)` respects the PHP runtime rules of the target object
+- writing a readonly property raises the normal Zend readonly error
+- protected/private properties are not widened by `vphp`; visibility checks still apply
+
 ## 3. Typed Value Helpers
 
 If you want a concrete V value, you can always write:
