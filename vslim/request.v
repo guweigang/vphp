@@ -65,6 +65,11 @@ pub fn (r &VSlimRequest) query(key string) string {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) query_all() map[string]string {
+	return r.query_params()
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) has_query(key string) bool {
 	return key in r.query_params()
 }
@@ -73,6 +78,11 @@ pub fn (r &VSlimRequest) has_query(key string) bool {
 pub fn (r &VSlimRequest) header(name string) string {
 	headers := r.headers()
 	return headers[normalize_header_name(name)] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) headers_all() map[string]string {
+	return r.headers()
 }
 
 @[php_method]
@@ -93,6 +103,11 @@ pub fn (r &VSlimRequest) cookie(name string) string {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) cookies_all() map[string]string {
+	return r.cookies()
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) has_cookie(name string) bool {
 	cookies := r.cookies()
 	return name in cookies
@@ -102,6 +117,11 @@ pub fn (r &VSlimRequest) has_cookie(name string) bool {
 pub fn (r &VSlimRequest) param(name string) string {
 	params := r.params()
 	return params[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) params_all() map[string]string {
+	return r.params()
 }
 
 @[php_method]
@@ -117,6 +137,11 @@ pub fn (r &VSlimRequest) attribute(name string) string {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) attributes_all() map[string]string {
+	return r.attributes()
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) has_attribute(name string) bool {
 	attrs := r.attributes()
 	return name in attrs
@@ -129,6 +154,11 @@ pub fn (r &VSlimRequest) server_value(name string) string {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) server_all() map[string]string {
+	return r.server_values()
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) has_server(name string) bool {
 	values := r.server_values()
 	return name in values
@@ -137,6 +167,16 @@ pub fn (r &VSlimRequest) has_server(name string) bool {
 @[php_method]
 pub fn (r &VSlimRequest) uploaded_file_count() int {
 	return r.uploaded_files_list().len
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) uploaded_files_all() []string {
+	return r.uploaded_files_list()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_uploaded_files() bool {
+	return r.uploaded_files_list().len > 0
 }
 
 @[php_method]

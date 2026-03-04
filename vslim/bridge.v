@@ -358,6 +358,12 @@ pub fn vphp_wrap_vslimrequest_query(ptr voidptr, ctx vphp.Context)  {
     res := recv.query(arg_0)
     ctx.return_val[string](res)
 }
+@[export: 'vphp_wrap_VSlimRequest_query_all']
+pub fn vphp_wrap_vslimrequest_query_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.query_all()
+    ctx.return_val[map[string]string](res)
+}
 @[export: 'vphp_wrap_VSlimRequest_has_query']
 pub fn vphp_wrap_vslimrequest_has_query(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
@@ -371,6 +377,12 @@ pub fn vphp_wrap_vslimrequest_header(ptr voidptr, ctx vphp.Context)  {
     arg_0 := ctx.arg[string](0)
     res := recv.header(arg_0)
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_headers_all']
+pub fn vphp_wrap_vslimrequest_headers_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.headers_all()
+    ctx.return_val[map[string]string](res)
 }
 @[export: 'vphp_wrap_VSlimRequest_has_header']
 pub fn vphp_wrap_vslimrequest_has_header(ptr voidptr, ctx vphp.Context)  {
@@ -392,6 +404,12 @@ pub fn vphp_wrap_vslimrequest_cookie(ptr voidptr, ctx vphp.Context)  {
     res := recv.cookie(arg_0)
     ctx.return_val[string](res)
 }
+@[export: 'vphp_wrap_VSlimRequest_cookies_all']
+pub fn vphp_wrap_vslimrequest_cookies_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.cookies_all()
+    ctx.return_val[map[string]string](res)
+}
 @[export: 'vphp_wrap_VSlimRequest_has_cookie']
 pub fn vphp_wrap_vslimrequest_has_cookie(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
@@ -405,6 +423,12 @@ pub fn vphp_wrap_vslimrequest_param(ptr voidptr, ctx vphp.Context)  {
     arg_0 := ctx.arg[string](0)
     res := recv.param(arg_0)
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_params_all']
+pub fn vphp_wrap_vslimrequest_params_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.params_all()
+    ctx.return_val[map[string]string](res)
 }
 @[export: 'vphp_wrap_VSlimRequest_has_param']
 pub fn vphp_wrap_vslimrequest_has_param(ptr voidptr, ctx vphp.Context)  {
@@ -420,6 +444,12 @@ pub fn vphp_wrap_vslimrequest_attribute(ptr voidptr, ctx vphp.Context)  {
     res := recv.attribute(arg_0)
     ctx.return_val[string](res)
 }
+@[export: 'vphp_wrap_VSlimRequest_attributes_all']
+pub fn vphp_wrap_vslimrequest_attributes_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.attributes_all()
+    ctx.return_val[map[string]string](res)
+}
 @[export: 'vphp_wrap_VSlimRequest_has_attribute']
 pub fn vphp_wrap_vslimrequest_has_attribute(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
@@ -434,6 +464,12 @@ pub fn vphp_wrap_vslimrequest_server_value(ptr voidptr, ctx vphp.Context)  {
     res := recv.server_value(arg_0)
     ctx.return_val[string](res)
 }
+@[export: 'vphp_wrap_VSlimRequest_server_all']
+pub fn vphp_wrap_vslimrequest_server_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.server_all()
+    ctx.return_val[map[string]string](res)
+}
 @[export: 'vphp_wrap_VSlimRequest_has_server']
 pub fn vphp_wrap_vslimrequest_has_server(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
@@ -446,6 +482,18 @@ pub fn vphp_wrap_vslimrequest_uploaded_file_count(ptr voidptr, ctx vphp.Context)
     mut recv := unsafe { &VSlimRequest(ptr) }
     res := recv.uploaded_file_count()
     ctx.return_val[int](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_uploaded_files_all']
+pub fn vphp_wrap_vslimrequest_uploaded_files_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.uploaded_files_all()
+    ctx.return_val[[]string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_has_uploaded_files']
+pub fn vphp_wrap_vslimrequest_has_uploaded_files(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.has_uploaded_files()
+    ctx.return_val[bool](res)
 }
 @[export: 'vphp_wrap_VSlimRequest_is_secure']
 pub fn vphp_wrap_vslimrequest_is_secure(ptr voidptr, ctx vphp.Context)  {
@@ -531,6 +579,12 @@ pub fn vphp_wrap_vslimresponse_header(ptr voidptr, ctx vphp.Context)  {
     arg_0 := ctx.arg[string](0)
     res := recv.header(arg_0)
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimResponse_headers_all']
+pub fn vphp_wrap_vslimresponse_headers_all(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    res := recv.headers_all()
+    ctx.return_val[map[string]string](res)
 }
 @[export: 'vphp_wrap_VSlimResponse_has_header']
 pub fn vphp_wrap_vslimresponse_has_header(ptr voidptr, ctx vphp.Context)  {

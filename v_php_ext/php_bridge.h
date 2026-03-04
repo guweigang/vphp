@@ -44,7 +44,6 @@ PHP_FUNCTION(v_iter_helpers_demo);
 PHP_FUNCTION(v_iterable_object_demo);
 PHP_FUNCTION(v_reverse_string);
 PHP_FUNCTION(v_logic_main);
-PHP_FUNCTION(v_slim_demo_dispatch);
 PHP_FUNCTION(v_new_coach);
 PHP_FUNCTION(v_new_db);
 PHP_FUNCTION(v_check_res);

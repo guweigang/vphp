@@ -246,13 +246,6 @@ PHP_FUNCTION(v_logic_main) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_logic_main(ctx);
 }
-ZEND_BEGIN_ARG_INFO_EX(arginfo_v_slim_demo_dispatch, 0, 0, 0)
-ZEND_END_ARG_INFO()
-extern void vphp_wrap_v_slim_demo_dispatch(vphp_context_internal ctx);
-PHP_FUNCTION(v_slim_demo_dispatch) {
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    vphp_wrap_v_slim_demo_dispatch(ctx);
-}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_new_coach, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_new_coach(vphp_context_internal ctx);
@@ -846,7 +839,6 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_iterable_object_demo, arginfo_v_iterable_object_demo)
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
-    PHP_FE(v_slim_demo_dispatch, arginfo_v_slim_demo_dispatch)
     PHP_FE(v_new_coach, arginfo_v_new_coach)
     PHP_FE(v_new_db, arginfo_v_new_db)
     PHP_FE(v_check_res, arginfo_v_check_res)

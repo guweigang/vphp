@@ -198,9 +198,15 @@ $req->set_query(['trace_id' => 'from-json']);
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');
 echo $req->attribute('actor');
+print_r($req->query_all());
+print_r($req->headers_all());
+print_r($req->cookies_all());
+print_r($req->attributes_all());
+print_r($req->server_all());
 echo $req->content_type();
 echo $req->server_value('server_name');
 echo $req->uploaded_file_count();
+var_dump($req->has_uploaded_files());
 var_dump($req->is_secure());
 
 $res = $app->dispatch_request($req);
@@ -227,6 +233,7 @@ $res->set_cookie_full('sid', 'cookie-303', '/', 'demo.local', 60, true, true, 'l
 echo $res->cookie_header();
 
 echo $res->header('x-demo');
+print_r($res->headers_all());
 echo $res->content_type;
 ```
 

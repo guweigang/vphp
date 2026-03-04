@@ -922,12 +922,6 @@ fn vphp_wrap_v_logic_main(ctx vphp.Context) {
     v_logic_main(arg_0)
 }
 
-@[export: 'vphp_wrap_v_slim_demo_dispatch']
-fn vphp_wrap_v_slim_demo_dispatch(ctx vphp.Context) {
-    arg_0 := ctx
-    v_slim_demo_dispatch(arg_0)
-}
-
 @[export: 'vphp_wrap_v_new_coach']
 fn vphp_wrap_v_new_coach(ctx vphp.Context) {
     arg_0 := ctx

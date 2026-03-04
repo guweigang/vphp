@@ -48,6 +48,7 @@ echo $req->header('x-trace-id') . '|' . ($req->has_header('content-type') ? 'yes
 echo $req->cookie('sid') . '|' . ($req->has_cookie('sid') ? 'yes' : 'no') . '|' . $req->param('id') . '|' . ($req->has_param('id') ? 'yes' : 'no') . PHP_EOL;
 echo $req->query('trace_id') . '|' . $req->attribute('actor') . '|' . ($req->has_attribute('actor') ? 'yes' : 'no') . '|' . $req->port . '|' . $req->protocol_version . PHP_EOL;
 echo $req->content_type() . '|' . $req->server_value('server_name') . '|' . ($req->has_server('server_name') ? 'yes' : 'no') . '|' . $req->uploaded_file_count() . '|' . ($req->is_secure() ? 'yes' : 'no') . PHP_EOL;
+echo $req->query_all()['trace_id'] . '|' . $req->headers_all()['content-type'] . '|' . $req->cookies_all()['sid'] . '|' . $req->attributes_all()['actor'] . '|' . $req->server_all()['server_name'] . '|' . ($req->has_uploaded_files() ? 'yes' : 'no') . PHP_EOL;
 
 $envelope = vslim_handle_request([
     'method' => 'GET',
@@ -81,6 +82,7 @@ $resp->html('<b>ok</b>');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->content_length() . PHP_EOL;
 $resp->set_content_type('application/xml');
 echo $resp->content_type . '|' . $resp->header('content-type') . PHP_EOL;
+echo $resp->headers_all()['content-type'] . '|' . $resp->headers_all()['x-demo'] . PHP_EOL;
 $resp->set_cookie_full('sid', 'cookie-303', '/', 'demo.local', 60, true, true, 'lax');
 echo $resp->cookie_header() . PHP_EOL;
 ?>
@@ -99,6 +101,7 @@ from-header|yes|https|demo.local|127.0.0.1
 cookie-7|yes|7|yes
 from-json|tester|yes|443|1.1
 application/json|demo.local|yes|0|yes
+from-json|application/json|cookie-7|tester|demo.local|no
 200|secret|text/plain; charset=utf-8
 202|{"ok":true}|application/json; charset=utf-8|yes|yes
 sid=cookie-202; Path=/
@@ -106,4 +109,5 @@ sid=; Path=/; Max-Age=0
 202|plain-again|text/plain; charset=utf-8
 202|<b>ok</b>|text/html|9
 application/xml|application/xml
+application/xml|yes
 sid=cookie-303; Path=/; Domain=demo.local; Max-Age=60; HttpOnly; Secure; SameSite=Lax

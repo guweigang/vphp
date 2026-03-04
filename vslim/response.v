@@ -18,6 +18,11 @@ pub fn (r &VSlimResponse) header(name string) string {
 }
 
 @[php_method]
+pub fn (r &VSlimResponse) headers_all() map[string]string {
+	return r.headers()
+}
+
+@[php_method]
 pub fn (r &VSlimResponse) has_header(name string) bool {
 	headers := r.headers()
 	return normalize_header_name(name) in headers

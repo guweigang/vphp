@@ -20,6 +20,11 @@ fn php_method_name(name string) string {
 	}
 }
 
+fn method_returns_object(r &repr.PhpClassRepr, m &repr.PhpMethodRepr) bool {
+	is_factory := is_constructor_method(m.name) || (m.is_static && m.return_type.ends_with(r.name))
+	return is_factory || m.return_type.starts_with('&')
+}
+
 fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 	return *builder.new_func_builder(f.name, f.name)
 }
@@ -298,6 +303,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
 		
 		tm := TypeMap.get_type(m.return_type)
+		returns_object := method_returns_object(r, m)
 
 		vars := {
 			'CLASS':       c_class
@@ -311,9 +317,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		if is_constructor_method(m.name) {
 			c << render_tpl(tpl_construct, vars)
 		} else if m.is_static {
-			if m.has_export && tm.c_type == 'void*' {
-				c << render_tpl(tpl_static_factory, vars)
-			} else if !m.has_export && tm.c_type == 'void*' {
+			if returns_object {
 				c << render_tpl(tpl_static_factory, vars)
 			} else if tm.v_type == 'void' {
 				c << render_tpl(tpl_static_void, vars)
@@ -321,7 +325,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 				c << render_tpl(tpl_static_scalar, vars)
 			}
 		} else {
-			if tm.c_type == 'void*' {
+			if returns_object {
 				ret_class := tm.v_type.replace('&', '').replace('main.', '')
 				mut obj_vars := vars.clone()
 				obj_vars['RET_CLASS'] = ret_class
