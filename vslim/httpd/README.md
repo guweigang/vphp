@@ -129,6 +129,11 @@ The bootstrap file should `return` a callable. The worker will call it like this
 - with a PSR-7 request object and the raw envelope when a supported PSR-17 factory is available
 - with the raw envelope only when no PSR-7 factory is available
 
+It may also return a `VSlimApp` instance directly. In that case, the worker will:
+
+- dispatch through `VSlimPsr7Adapter::dispatch(...)` when a PSR-7 request is available
+- otherwise hydrate a `VSlimRequest` from the envelope and call `VSlimApp->dispatch_request(...)`
+
 ### Simplest `vslim` app
 
 ```php
@@ -154,6 +159,25 @@ return static function (mixed $request, array $envelope = []): VSlimResponse|arr
         'body' => 'No request payload available',
     ];
 };
+```
+
+### Returning a `VSlimApp` directly
+
+```php
+<?php
+declare(strict_types=1);
+
+$app = new VSlimApp();
+
+$app->get('/hello/:name', function (VSlimRequest $req) {
+    return new VSlimResponse(
+        200,
+        'Hello, ' . $req->param('name'),
+        'text/plain; charset=utf-8'
+    );
+});
+
+return $app;
 ```
 
 ### Returning a PSR-7-style response object
