@@ -1,5 +1,7 @@
 --TEST--
 VHTTPD worker dispatches to a PSR-7 app handler when available
+--SKIPIF--
+<?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
 <?php
 namespace Nyholm\Psr7\Factory {

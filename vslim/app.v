@@ -36,6 +36,12 @@ mut:
 	middlewares []SlimMiddleware
 }
 
+struct PhpRoute {
+	method  string
+	pattern string
+	handler vphp.ZVal
+}
+
 @[heap]
 @[php_class]
 struct VSlimRequest {
@@ -332,7 +338,11 @@ pub fn (r &VSlimResponse) str() string {
 
 @[heap]
 @[php_class]
-struct VSlimApp {}
+struct VSlimApp {
+mut:
+	routes   []PhpRoute
+	use_demo bool
+}
 
 pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequest {
 	path, query_string := normalize_request_target(raw_path)
@@ -385,22 +395,20 @@ pub fn new_vslim_request_from_envelope(envelope map[string]string) &VSlimRequest
 
 @[php_method]
 pub fn VSlimApp.demo() &VSlimApp {
-	return &VSlimApp{}
+	return &VSlimApp{
+		use_demo: true
+	}
 }
 
 @[php_method]
 pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
-	_ = app
-	mut slim := new_slim_demo_app()
-	res := slim.dispatch(new_vslim_request(method, raw_path, '').to_slim_request())
-	return to_vslim_response(res)
+	req := new_vslim_request(method, raw_path, '')
+	return app.dispatch_request(req)
 }
 
 @[php_method]
 pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
-	_ = app
-	mut slim := new_slim_demo_app()
-	res, params := dispatch_demo_request_with_params(req.to_slim_request())
+	res, params := dispatch_app_request_with_params(app, req.to_slim_request())
 	unsafe {
 		mut writable := &VSlimRequest(req)
 		writable.params_json = json.encode(params)
@@ -409,6 +417,29 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 		}
 	}
 	return to_vslim_response(res)
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) get(pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('GET', pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) post(pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('POST', pattern, handler)
+	return app
+}
+
+fn (mut app VSlimApp) add_php_route(method string, pattern string, handler vphp.ZVal) {
+	if !handler.is_valid() || !handler.is_callable() {
+		return
+	}
+	app.routes << PhpRoute{
+		method: method.to_upper()
+		pattern: pattern
+		handler: handler.dup()
+	}
 }
 
 fn to_vslim_response(res SlimResponse) &VSlimResponse {
@@ -424,6 +455,98 @@ fn to_vslim_response(res SlimResponse) &VSlimResponse {
 fn apply_response_headers(mut r VSlimResponse, headers map[string]string) {
 	r.headers_json = json.encode(headers)
 	r.content_type = headers['content-type'] or { r.content_type }
+}
+
+fn dispatch_app_request_with_params(app &VSlimApp, req SlimRequest) (SlimResponse, map[string]string) {
+	if app.routes.len > 0 {
+		res, params, ok := dispatch_php_routes_with_params(app, req)
+		if ok {
+			return res, params
+		}
+	}
+	if app.use_demo {
+		return dispatch_demo_request_with_params(req)
+	}
+	return not_found_response(), map[string]string{}
+}
+
+fn dispatch_php_routes_with_params(app &VSlimApp, req SlimRequest) (SlimResponse, map[string]string, bool) {
+	method := req.method.to_upper()
+	path := normalize_path(req.path)
+	mut method_not_allowed := false
+
+	for route in app.routes {
+		ok, params := match_route(route.pattern, path)
+		if !ok {
+			continue
+		}
+		if route.method != method {
+			method_not_allowed = true
+			continue
+		}
+		mut bound := req
+		bound.params = params.clone()
+		payload := build_php_request_payload(bound)
+		res := route.handler.call([payload])
+		return normalize_php_route_response(res), params, true
+	}
+
+	if method_not_allowed {
+		return method_not_allowed_response(), map[string]string{}, true
+	}
+	return SlimResponse{}, map[string]string{}, false
+}
+
+fn build_php_request_payload(req SlimRequest) vphp.ZVal {
+	mut payload := vphp.ZVal.new_null()
+	payload.from_v[map[string]string]({
+		'method': req.method
+		'path': req.path
+		'body': req.body
+		'params_json': json.encode(req.params)
+		'query_json': json.encode(req.query)
+	}) or {
+		payload.array_init()
+	}
+	return payload
+}
+
+fn normalize_php_route_response(result vphp.ZVal) SlimResponse {
+	if !result.is_valid() || result.is_null() || result.is_undef() {
+		return text_response(200, '')
+	}
+	if result.is_object() && result.is_instance_of('VSlimResponse') {
+		if resp := result.to_object[VSlimResponse]() {
+			return SlimResponse{
+				status: resp.status
+				body: resp.body
+				headers: resp.headers()
+			}
+		}
+	}
+	if result.is_string() {
+		return text_response(200, result.get_string())
+	}
+	if result.is_array() {
+		mut headers := map[string]string{}
+		if h := result.get('headers') {
+			headers = h.fold[map[string]string](map[string]string{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc map[string]string) {
+				acc[key.to_string()] = val.to_string()
+			})
+		}
+		status := if s := result.get('status') { int(s.to_i64()) } else { 200 }
+		body := result.get_or('body', '')
+		content_type := result.get_or('content_type', headers['content-type'] or { 'text/plain; charset=utf-8' })
+		if 'content-type' !in headers {
+			headers['content-type'] = content_type
+		}
+		return SlimResponse{
+			status: status
+			body: body
+			headers: headers
+		}
+	}
+	return text_response(500, 'Invalid route response')
 }
 
 fn normalize_path(path string) string {

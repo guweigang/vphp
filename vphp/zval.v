@@ -634,6 +634,23 @@ pub fn (v ZVal) call(args []ZVal) ZVal {
 	}
 }
 
+pub fn (v ZVal) dup() ZVal {
+	if v.raw == 0 {
+		return unsafe {
+			ZVal{
+				raw: 0
+			}
+		}
+	}
+	unsafe {
+		out := ZVal{
+			raw: C.vphp_new_zval()
+		}
+		C.ZVAL_COPY(out.raw, v.raw)
+		return out
+	}
+}
+
 pub fn (v ZVal) construct(args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_string() {
 		return unsafe {

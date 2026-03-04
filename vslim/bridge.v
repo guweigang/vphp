@@ -438,6 +438,7 @@ pub fn vslimapp_sync_props(ptr voidptr, zv &C.zval) {
     unsafe {
         obj := &VSlimApp(ptr)
         out := vphp.ZVal{ raw: zv }
+        out.add_property_bool('use_demo', obj.use_demo)
     }
 }
 @[export: 'vphp_wrap_VSlimApp_demo']
@@ -458,6 +459,22 @@ pub fn vphp_wrap_vslimapp_dispatch_request(ptr voidptr, ctx vphp.Context) voidpt
     mut recv := unsafe { &VSlimApp(ptr) }
     arg_0 := unsafe { &VSlimRequest(ctx.arg_raw_obj(0)) }
     res := recv.dispatch_request(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_get']
+pub fn vphp_wrap_vslimapp_get(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.get(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_post']
+pub fn vphp_wrap_vslimapp_post(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
 @[export: 'VSlimApp_handlers']
