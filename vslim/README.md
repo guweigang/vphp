@@ -150,11 +150,16 @@ $api->get_named('api.users.show', '/users/:id', function (VSlimRequest $req) {
     return 'user:' . $req->param('id');
 });
 
+$app->set_base_path('/v1');
+
 echo $app->url_for('api.users.show', ['id' => '42']);
-// /api/users/42
+// /v1/api/users/42
 
 echo $app->url_for_query('api.users.show', ['id' => '42'], ['tab' => 'profile']);
-// /api/users/42?tab=profile
+// /v1/api/users/42?tab=profile
+
+echo $app->url_for_abs('api.users.show', ['id' => '42'], 'https', 'demo.local');
+// https://demo.local/v1/api/users/42
 
 $redirect = $app->redirect_to('api.users.show', ['id' => '42']);
 echo $redirect->status;

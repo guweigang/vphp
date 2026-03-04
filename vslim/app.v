@@ -377,6 +377,7 @@ mut:
 	routes               []PhpRoute
 	php_middlewares      []vphp.ZVal
 	php_group_middlewares []PhpGroupMiddleware
+	base_path            string
 	use_demo             bool
 }
 
@@ -434,6 +435,12 @@ pub fn VSlimApp.demo() &VSlimApp {
 	return &VSlimApp{
 		use_demo: true
 	}
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) set_base_path(base_path string) &VSlimApp {
+	app.base_path = normalize_base_path(base_path)
+	return app
 }
 
 @[php_method]
@@ -565,10 +572,25 @@ pub fn (app &VSlimApp) url_for_query(name string, params vphp.ZVal, query vphp.Z
 	query_map := zval_to_name_map(query)
 	for route in app.routes {
 		if route.name == name {
-			return render_route_url(route.pattern, &params_map, &query_map) or { '' }
+			raw := render_route_url(route.pattern, &params_map, &query_map) or { '' }
+			return app.apply_base_path(raw)
 		}
 	}
 	return ''
+}
+
+@[php_method]
+pub fn (app &VSlimApp) url_for_abs(name string, params vphp.ZVal, scheme string, host string) string {
+	return app.url_for_query_abs(name, params, vphp.ZVal.new_null(), scheme, host)
+}
+
+@[php_method]
+pub fn (app &VSlimApp) url_for_query_abs(name string, params vphp.ZVal, query vphp.ZVal, scheme string, host string) string {
+	path := app.url_for_query(name, params, query)
+	if path == '' {
+		return ''
+	}
+	return join_absolute_url(scheme, host, path)
 }
 
 @[php_method]
@@ -790,6 +812,17 @@ fn normalize_group_prefix(prefix string) string {
 	return out
 }
 
+fn normalize_base_path(base_path string) string {
+	if base_path == '' || base_path == '/' {
+		return ''
+	}
+	mut out := normalize_path(base_path)
+	if out.len > 1 && out.ends_with('/') {
+		out = out[..out.len - 1]
+	}
+	return out
+}
+
 fn join_route_prefix(prefix string, pattern string) string {
 	base := normalize_group_prefix(prefix)
 	mut tail := normalize_path(pattern)
@@ -803,6 +836,29 @@ fn join_route_prefix(prefix string, pattern string) string {
 		tail = tail[1..]
 	}
 	return '${base}/${tail}'
+}
+
+fn (app &VSlimApp) apply_base_path(path string) string {
+	base := normalize_base_path(app.base_path)
+	if base == '' || path == '' {
+		return path
+	}
+	if path == '/' {
+		return base
+	}
+	if path.starts_with('/') {
+		return base + path
+	}
+	return '${base}/${path}'
+}
+
+fn join_absolute_url(scheme string, host string, path string) string {
+	clean_scheme := if scheme == '' { 'http' } else { scheme }
+	clean_host := host.trim_space()
+	if clean_host == '' {
+		return path
+	}
+	return '${clean_scheme}://${clean_host}${path}'
 }
 
 fn render_route_url(pattern string, params &map[string]string, query &map[string]string) ?string {

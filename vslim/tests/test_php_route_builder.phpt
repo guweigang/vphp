@@ -69,10 +69,13 @@ $v1->get('/ping', function (VSlimRequest $req) {
         'body' => json_encode(['pong' => true, 'path' => $req->path]),
     ];
 });
+$app->set_base_path('/v1');
 
 echo $app->dispatch('GET', '/hello/codex')->body . PHP_EOL;
 echo $app->url_for('hello.show', ['name' => 'nova']) . PHP_EOL;
 echo $app->url_for_query('api.users.show', ['id' => '12'], ['tab' => 'profile', 'trace' => '1']) . PHP_EOL;
+echo $app->url_for_abs('hello.show', ['name' => 'nova'], 'https', 'demo.local') . PHP_EOL;
+$app->set_base_path('');
 $redirect = $app->redirect_to('hello.show', ['name' => 'jump']);
 echo $redirect->status . '|' . $redirect->header('location') . '|' . $redirect->body . PHP_EOL;
 $manual = new VSlimResponse(200, 'ignored', 'text/plain; charset=utf-8');
@@ -91,8 +94,9 @@ echo $app->dispatch('POST', '/submit?trace_id=mw')->status . '|' . $app->dispatc
 ?>
 --EXPECT--
 Hello, codex
-/hello/nova
-/api/members/12?tab=profile&trace=1
+/v1/hello/nova
+/v1/api/members/12?tab=profile&trace=1
+https://demo.local/v1/hello/nova
 302|/hello/jump|
 307|/moved|text/plain; charset=utf-8
 201|{"body":"payload","trace":"builder"}|builder

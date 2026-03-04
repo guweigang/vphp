@@ -538,12 +538,20 @@ pub fn vslimapp_sync_props(ptr voidptr, zv &C.zval) {
     unsafe {
         obj := &VSlimApp(ptr)
         out := vphp.ZVal{ raw: zv }
+        out.add_property_string('base_path', obj.base_path)
         out.add_property_bool('use_demo', obj.use_demo)
     }
 }
 @[export: 'vphp_wrap_VSlimApp_demo']
 pub fn vphp_wrap_vslimapp_demo(ctx vphp.Context) voidptr {
     res := VSlimApp.demo()
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_set_base_path']
+pub fn vphp_wrap_vslimapp_set_base_path(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_base_path(arg_0)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_group']
@@ -624,6 +632,27 @@ pub fn vphp_wrap_vslimapp_url_for_query(ptr voidptr, ctx vphp.Context)  {
     arg_1 := ctx.arg_val(1)
     arg_2 := ctx.arg_val(2)
     res := recv.url_for_query(arg_0, arg_1, arg_2)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_url_for_abs']
+pub fn vphp_wrap_vslimapp_url_for_abs(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg[string](2)
+    arg_3 := ctx.arg[string](3)
+    res := recv.url_for_abs(arg_0, arg_1, arg_2, arg_3)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_url_for_query_abs']
+pub fn vphp_wrap_vslimapp_url_for_query_abs(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg_val(2)
+    arg_3 := ctx.arg[string](3)
+    arg_4 := ctx.arg[string](4)
+    res := recv.url_for_query_abs(arg_0, arg_1, arg_2, arg_3, arg_4)
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_VSlimApp_redirect_to']
