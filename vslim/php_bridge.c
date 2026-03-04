@@ -654,11 +654,15 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_has_header, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_set_header, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_set_content_type, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_cookie_header, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_set_cookie, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_set_cookie_opts, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_set_cookie_full, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_delete_cookie, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -668,11 +672,15 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_text, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_json, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_html, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_redirect, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_redirect_with_status, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_vslimresponse_str, 0, 0, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimresponse_content_length, 0, 0, 0)
 ZEND_END_ARG_INFO()
 PHP_METHOD(VSlimResponse, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -719,6 +727,22 @@ PHP_METHOD(VSlimResponse, set_header) {
     }
 }
 
+
+PHP_METHOD(VSlimResponse, set_content_type) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimResponse_set_content_type(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimResponse::set_content_type called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimResponse_set_content_type(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimresponse_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+    }
+}
+
 PHP_METHOD(VSlimResponse, cookie_header) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -752,6 +776,22 @@ PHP_METHOD(VSlimResponse, set_cookie_opts) {
     // printf("PHP_METHOD VSlimResponse::set_cookie_opts called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = vphp_wrap_VSlimResponse_set_cookie_opts(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimresponse_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimResponse, set_cookie_full) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimResponse_set_cookie_full(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimResponse::set_cookie_full called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimResponse_set_cookie_full(wrapper->v_ptr, ctx);
     vphp_return_obj(return_value, v_instance, vslimresponse_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
@@ -824,6 +864,22 @@ PHP_METHOD(VSlimResponse, json) {
 }
 
 
+PHP_METHOD(VSlimResponse, html) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimResponse_html(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimResponse::html called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimResponse_html(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimresponse_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+    }
+}
+
+
 PHP_METHOD(VSlimResponse, redirect) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -863,21 +919,33 @@ PHP_METHOD(VSlimResponse, __toString) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimResponse_str(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(VSlimResponse, content_length) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimResponse_content_length(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimResponse_content_length(wrapper->v_ptr, ctx);
+}
 static const zend_function_entry vslimresponse_methods[] = {
     PHP_ME(VSlimResponse, __construct, arginfo_vslimresponse_construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, header, arginfo_vslimresponse_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, has_header, arginfo_vslimresponse_has_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, set_header, arginfo_vslimresponse_set_header, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimResponse, set_content_type, arginfo_vslimresponse_set_content_type, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, cookie_header, arginfo_vslimresponse_cookie_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, set_cookie, arginfo_vslimresponse_set_cookie, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, set_cookie_opts, arginfo_vslimresponse_set_cookie_opts, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimResponse, set_cookie_full, arginfo_vslimresponse_set_cookie_full, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, delete_cookie, arginfo_vslimresponse_delete_cookie, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, with_status, arginfo_vslimresponse_with_status, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, text, arginfo_vslimresponse_text, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, json, arginfo_vslimresponse_json, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimResponse, html, arginfo_vslimresponse_html, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, redirect, arginfo_vslimresponse_redirect, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, redirect_with_status, arginfo_vslimresponse_redirect_with_status, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimResponse, __toString, arginfo_vslimresponse_str, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimResponse, content_length, arginfo_vslimresponse_content_length, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 

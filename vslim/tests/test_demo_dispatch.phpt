@@ -77,6 +77,12 @@ echo $resp->cookie_header() . PHP_EOL;
 
 $resp->text('plain-again');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . PHP_EOL;
+$resp->html('<b>ok</b>');
+echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->content_length() . PHP_EOL;
+$resp->set_content_type('application/xml');
+echo $resp->content_type . '|' . $resp->header('content-type') . PHP_EOL;
+$resp->set_cookie_full('sid', 'cookie-303', '/', 'demo.local', 60, true, true, 'lax');
+echo $resp->cookie_header() . PHP_EOL;
 ?>
 --EXPECT--
 200|OK|text/plain; charset=utf-8
@@ -98,3 +104,6 @@ application/json|demo.local|yes|0|yes
 sid=cookie-202; Path=/
 sid=; Path=/; Max-Age=0
 202|plain-again|text/plain; charset=utf-8
+202|<b>ok</b>|text/html|9
+application/xml|application/xml
+sid=cookie-303; Path=/; Domain=demo.local; Max-Age=60; HttpOnly; Secure; SameSite=Lax

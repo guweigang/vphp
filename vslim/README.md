@@ -28,6 +28,27 @@
   - 路由、middleware、request/response facade、reverse routing
   - 不把自己做成第二个 runtime
 
+## 四层结构
+
+```mermaid
+flowchart LR
+    A["veb"] --> B["vhttpd"]
+    B --> C["php-worker"]
+    C --> D["vslim"]
+    D --> E["vphp"]
+```
+
+- `veb`
+  - HTTP/runtime 源头
+- `vhttpd`
+  - 贴着 `veb` 做 transport 和 worker forwarding
+- `php-worker`
+  - PHP userland 与 PSR-7 边界
+- `vslim`
+  - runtime framework layer
+- `vphp`
+  - bridge/compiler/runtime
+
 ## 为什么不直接复用 veb 的 route 定义
 
 这里我们刻意没有把 `vslim` 做成 `veb` 的语法薄封装，原因不是要绕开 `veb`，而是两层职责不同：
@@ -195,7 +216,14 @@ $res->set_header('x-demo', 'yes')
     ->with_status(202)
     ->json('{"ok":true}');
 
+$res->html('<b>ok</b>');
+echo $res->content_length();
+echo $res->content_type;
+
+$res->set_content_type('application/xml');
+
 $res->set_cookie('sid', 'cookie-202');
+$res->set_cookie_full('sid', 'cookie-303', '/', 'demo.local', 60, true, true, 'lax');
 echo $res->cookie_header();
 
 echo $res->header('x-demo');

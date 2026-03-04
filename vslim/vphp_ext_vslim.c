@@ -9598,6 +9598,7 @@ Array_vphp__ZVal vphp__Context_get_args(vphp__Context ctx);
 vphp__ZVal vphp__Context_arg_raw(vphp__Context ctx, int index);
 string vphp__Context_arg_T_string(vphp__Context ctx, int index);
 int vphp__Context_arg_T_int(vphp__Context ctx, int index);
+bool vphp__Context_arg_T_bool(vphp__Context ctx, int index);
 vphp__ZVal vphp__Context_arg_val(vphp__Context ctx, int index);
 voidptr vphp__Context_arg_raw_obj(vphp__Context ctx, int index);
 void vphp__Context_return_null(vphp__Context ctx);
@@ -9773,6 +9774,7 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_str
 _result_Array_string vphp__ZVal_to_v_T_Array_string(vphp__ZVal v);
 _result_string vphp__ZVal_to_v_T_string(vphp__ZVal v);
 _result_int vphp__ZVal_to_v_T_int(vphp__ZVal v);
+_result_bool vphp__ZVal_to_v_T_bool(vphp__ZVal v);
 _result_void vphp__ZVal_from_v_T_Array_string(vphp__ZVal v, Array_string value);
 _result_void vphp__ZVal_from_v_T_string(vphp__ZVal v, string value);
 _result_void vphp__ZVal_from_v_T_int(vphp__ZVal v, int value);
@@ -11430,12 +11432,16 @@ void main__vphp_wrap_vslimresponse_has_header(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimResponse_has_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_has_header
 voidptr main__vphp_wrap_vslimresponse_set_header(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_set_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_header
+voidptr main__vphp_wrap_vslimresponse_set_content_type(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimResponse_set_content_type(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_content_type
 void main__vphp_wrap_vslimresponse_cookie_header(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimResponse_cookie_header(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_cookie_header
 voidptr main__vphp_wrap_vslimresponse_set_cookie(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_set_cookie(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_cookie
 voidptr main__vphp_wrap_vslimresponse_set_cookie_opts(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_set_cookie_opts(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_cookie_opts
+voidptr main__vphp_wrap_vslimresponse_set_cookie_full(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimResponse_set_cookie_full(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_set_cookie_full
 voidptr main__vphp_wrap_vslimresponse_delete_cookie(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_delete_cookie(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_delete_cookie
 voidptr main__vphp_wrap_vslimresponse_with_status(voidptr ptr, vphp__Context ctx);
@@ -11444,12 +11450,16 @@ voidptr main__vphp_wrap_vslimresponse_text(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_text(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_text
 voidptr main__vphp_wrap_vslimresponse_json(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_json(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_json
+voidptr main__vphp_wrap_vslimresponse_html(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimResponse_html(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_html
 voidptr main__vphp_wrap_vslimresponse_redirect(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_redirect(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_redirect
 voidptr main__vphp_wrap_vslimresponse_redirect_with_status(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimResponse_redirect_with_status(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_redirect_with_status
 void main__vphp_wrap_vslimresponse_str(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimResponse_str(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_str
+void main__vphp_wrap_vslimresponse_content_length(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimResponse_content_length(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimresponse_content_length
 voidptr main__vslimresponse_handlers(void);
 VV_EXP voidptr VSlimResponse_handlers(void); // exported fn main.vslimresponse_handlers
 voidptr main__vslimapp_new_raw(void);
@@ -11637,20 +11647,25 @@ main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int s
 string main__VSlimResponse_header(main__VSlimResponse* r, string name);
 bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name);
 main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value);
+main__VSlimResponse* main__VSlimResponse_set_content_type(main__VSlimResponse* r, string content_type);
 string main__VSlimResponse_cookie_header(main__VSlimResponse* r);
 main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, string name, string value);
 main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path);
+main__VSlimResponse* main__VSlimResponse_set_cookie_full(main__VSlimResponse* r, string name, string value, string path, string domain, int max_age, bool secure, bool http_only, string same_site);
 main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name);
 main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status);
 main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body);
 main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body);
+main__VSlimResponse* main__VSlimResponse_html(main__VSlimResponse* r, string body);
 main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string location);
 main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status);
 VV_LOC Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r);
 Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r);
 string main__VSlimResponse_str(main__VSlimResponse* r);
+int main__VSlimResponse_content_length(main__VSlimResponse* r);
 VV_LOC main__VSlimResponse* main__to_vslim_response(main__SlimResponse res);
 VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_string headers);
+VV_LOC string main__build_set_cookie_header(string name, string value, string path, string domain, int max_age, bool secure, bool http_only, string same_site);
 VV_LOC main__SlimResponse main__text_response(int status, string body);
 VV_LOC main__SlimResponse main__json_response(int status, string json_body);
 VV_LOC main__SlimResponse main__not_found_response(void);
@@ -36140,6 +36155,22 @@ int vphp__Context_arg_T_int(vphp__Context ctx, int index) {
 	
  	return (*(int*)_t4.data);
 }
+bool vphp__Context_arg_T_bool(vphp__Context ctx, int index) {
+	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
+	if (!vphp__ZVal_is_valid(val)) {
+		return 0;
+	}
+	#if false
+	{
+	}
+	#endif
+	_result_bool _t4 = vphp__ZVal_to_v_T_bool(val);
+	if (_t4.is_error) {
+		*(bool*) _t4.data = 0;
+	}
+	
+ 	return (*(bool*)_t4.data);
+}
 vphp__ZVal vphp__Context_arg_val(vphp__Context ctx, int index) {
 	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
 	if (!vphp__ZVal_is_valid(val)) {
@@ -37746,6 +37777,72 @@ _result_int vphp__ZVal_to_v_T_int(vphp__ZVal v) {
 	}
 	#endif
 	return (_result_int){ .is_error=true, .err=builtin___v_error(_S("unsupported to_v conversion for requested type")), .data={E_STRUCT} };
+}
+_result_bool vphp__ZVal_to_v_T_bool(vphp__ZVal v) {
+	#if false
+	{
+	}
+	#endif
+	#if true
+	{
+		if (!vphp__ZVal_is_bool(v)) {
+			return (_result_bool){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("type mismatch: expected bool, got "), 0xfe10, {.d_s = vphp__ZVal_type_name(v)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		_result_bool _t4;
+		builtin___result_ok(&(bool[]) { vphp__ZVal_to_bool(v) }, (_result*)(&_t4), sizeof(bool));
+		 
+		return _t4;
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	return (_result_bool){ .is_error=true, .err=builtin___v_error(_S("unsupported to_v conversion for requested type")), .data={E_STRUCT} };
 }
 _result_void vphp__ZVal_from_v_T_Array_string(vphp__ZVal v, Array_string value) {
 	#if false
@@ -81100,6 +81197,16 @@ voidptr main__vphp_wrap_vslimresponse_set_header(voidptr ptr, vphp__Context ctx)
 voidptr vphp_wrap_VSlimResponse_set_header(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_set_header(ptr, ctx);
 }
+voidptr main__vphp_wrap_vslimresponse_set_content_type(voidptr ptr, vphp__Context ctx) {
+	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	main__VSlimResponse* res = main__VSlimResponse_set_content_type(recv, arg_0);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimResponse_set_content_type -> main__vphp_wrap_vslimresponse_set_content_type
+voidptr vphp_wrap_VSlimResponse_set_content_type(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_set_content_type(ptr, ctx);
+}
 void main__vphp_wrap_vslimresponse_cookie_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
 	string res = main__VSlimResponse_cookie_header(recv);
@@ -81131,6 +81238,23 @@ voidptr main__vphp_wrap_vslimresponse_set_cookie_opts(voidptr ptr, vphp__Context
 // export alias: vphp_wrap_VSlimResponse_set_cookie_opts -> main__vphp_wrap_vslimresponse_set_cookie_opts
 voidptr vphp_wrap_VSlimResponse_set_cookie_opts(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_set_cookie_opts(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimresponse_set_cookie_full(voidptr ptr, vphp__Context ctx) {
+	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
+	string arg_3 = vphp__Context_arg_T_string(ctx, 3);
+	int arg_4 = vphp__Context_arg_T_int(ctx, 4);
+	bool arg_5 = vphp__Context_arg_T_bool(ctx, 5);
+	bool arg_6 = vphp__Context_arg_T_bool(ctx, 6);
+	string arg_7 = vphp__Context_arg_T_string(ctx, 7);
+	main__VSlimResponse* res = main__VSlimResponse_set_cookie_full(recv, arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimResponse_set_cookie_full -> main__vphp_wrap_vslimresponse_set_cookie_full
+voidptr vphp_wrap_VSlimResponse_set_cookie_full(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_set_cookie_full(ptr, ctx);
 }
 voidptr main__vphp_wrap_vslimresponse_delete_cookie(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
@@ -81172,6 +81296,16 @@ voidptr main__vphp_wrap_vslimresponse_json(voidptr ptr, vphp__Context ctx) {
 voidptr vphp_wrap_VSlimResponse_json(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_json(ptr, ctx);
 }
+voidptr main__vphp_wrap_vslimresponse_html(voidptr ptr, vphp__Context ctx) {
+	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	main__VSlimResponse* res = main__VSlimResponse_html(recv, arg_0);
+	return ((voidptr)(res));
+}
+// export alias: vphp_wrap_VSlimResponse_html -> main__vphp_wrap_vslimresponse_html
+voidptr vphp_wrap_VSlimResponse_html(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_html(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimresponse_redirect(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
@@ -81201,6 +81335,15 @@ void main__vphp_wrap_vslimresponse_str(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_VSlimResponse_str -> main__vphp_wrap_vslimresponse_str
 void vphp_wrap_VSlimResponse_str(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_str(ptr, ctx);
+}
+void main__vphp_wrap_vslimresponse_content_length(voidptr ptr, vphp__Context ctx) {
+	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int res = main__VSlimResponse_content_length(recv);
+	vphp__Context_return_val_T_int(ctx, res);
+}
+// export alias: vphp_wrap_VSlimResponse_content_length -> main__vphp_wrap_vslimresponse_content_length
+void vphp_wrap_VSlimResponse_content_length(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimresponse_content_length(ptr, ctx);
 }
 voidptr main__vslimresponse_handlers(void) {
 	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimresponse_get_prop)),.write_handler = ((voidptr)(main__vslimresponse_set_prop)),.sync_handler = ((voidptr)(main__vslimresponse_sync_props)),.new_raw = ((voidptr)(main__vslimresponse_new_raw)),}, sizeof(vphp_class_handlers)));
@@ -82749,6 +82892,13 @@ main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, stri
 	main__apply_response_headers(r, headers);
 	return r;
 }
+main__VSlimResponse* main__VSlimResponse_set_content_type(main__VSlimResponse* r, string content_type) {
+	r->content_type = content_type;
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { content_type });
+	main__apply_response_headers(r, headers);
+	return r;
+}
 string main__VSlimResponse_cookie_header(main__VSlimResponse* r) {
 	return main__VSlimResponse_header(r, _S("set-cookie"));
 }
@@ -82756,8 +82906,10 @@ main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, stri
 	return main__VSlimResponse_set_cookie_opts(r, name, value, _S("/"));
 }
 main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path) {
-	string cookie_path = ((path).len == 0 ? (_S("/")) : (path));
-	string header_value = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("="), 0xfe10, {.d_s = value}}, {_S("; Path="), 0xfe10, {.d_s = cookie_path}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	return main__VSlimResponse_set_cookie_full(r, name, value, path, _S(""), 0, false, false, _S(""));
+}
+main__VSlimResponse* main__VSlimResponse_set_cookie_full(main__VSlimResponse* r, string name, string value, string path, string domain, int max_age, bool secure, bool http_only, string same_site) {
+	string header_value = main__build_set_cookie_header(name, value, path, domain, max_age, secure, http_only, same_site);
 	Map_string_string headers = main__VSlimResponse_headers(r);
 	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
 	main__apply_response_headers(r, headers);
@@ -82785,6 +82937,14 @@ main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string bod
 main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body) {
 	r->body = body;
 	r->content_type = _S("application/json; charset=utf-8");
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
+	main__apply_response_headers(r, headers);
+	return r;
+}
+main__VSlimResponse* main__VSlimResponse_html(main__VSlimResponse* r, string body) {
+	r->body = body;
+	r->content_type = _S("text/html");
 	Map_string_string headers = main__VSlimResponse_headers(r);
 	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
 	main__apply_response_headers(r, headers);
@@ -82825,6 +82985,9 @@ Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r) {
 string main__VSlimResponse_str(main__VSlimResponse* r) {
 	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = r->status}}, {_S(" "), 0xfe10, {.d_s = r->content_type}}, {_S(" "), 0xfe10, {.d_s = r->body}}, {_SLIT0, 0, { .d_c = 0 }}}));
 }
+int main__VSlimResponse_content_length(main__VSlimResponse* r) {
+	return r->body.len;
+}
 VV_LOC main__VSlimResponse* main__to_vslim_response(main__SlimResponse res) {
 	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, res.headers), &(string[]){_S("content-type")}));
 	_option_string _t2 = {0};
@@ -82855,6 +83018,44 @@ VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_stri
 	}
 	
 	r->content_type = (*(string*)_t1.data);
+}
+VV_LOC string main__build_set_cookie_header(string name, string value, string path, string domain, int max_age, bool secure, bool http_only, string same_site) {
+	Array_string parts = builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("="), 0xfe10, {.d_s = value}}, {_SLIT0, 0, { .d_c = 0 }}}))}));
+	string cookie_path = ((path).len == 0 ? (_S("/")) : (path));
+	builtin__array_push((array*)&parts, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Path="), 0xfe10, {.d_s = cookie_path}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	if ((domain).len != 0) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Domain="), 0xfe10, {.d_s = domain}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	}
+	if (max_age != 0) {
+		if (max_age > 0) {
+			builtin__array_push((array*)&parts, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Max-Age="), 0xfe07, {.d_i32 = max_age}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+		} else {
+			builtin__array_push((array*)&parts, _MOV((string[]){ _S("Max-Age=0") }));
+		}
+	}
+	if (http_only) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ _S("HttpOnly") }));
+	}
+	if (secure) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ _S("Secure") }));
+	}
+	string _t7 = builtin__string_to_lower(same_site);
+	
+	if (_SLIT_EQ(_t7.str, _t7.len, "lax")) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ _S("SameSite=Lax") }));
+	}
+	else if (_SLIT_EQ(_t7.str, _t7.len, "strict")) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ _S("SameSite=Strict") }));
+	}
+	else if (_SLIT_EQ(_t7.str, _t7.len, "none")) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ _S("SameSite=None") }));
+	}
+	else if (_SLIT_EQ(_t7.str, _t7.len, "default")) {
+		builtin__array_push((array*)&parts, _MOV((string[]){ _S("SameSite") }));
+	}
+	else {
+	}
+	return Array_string_join(parts, _S("; "));
 }
 VV_LOC main__SlimResponse main__text_response(int status, string body) {
 	return ((main__SlimResponse){.status = status,.body = body,.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),

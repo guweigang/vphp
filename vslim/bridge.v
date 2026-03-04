@@ -533,6 +533,13 @@ pub fn vphp_wrap_vslimresponse_set_header(ptr voidptr, ctx vphp.Context) voidptr
     res := recv.set_header(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimResponse_set_content_type']
+pub fn vphp_wrap_vslimresponse_set_content_type(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.set_content_type(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimResponse_cookie_header']
 pub fn vphp_wrap_vslimresponse_cookie_header(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimResponse(ptr) }
@@ -554,6 +561,20 @@ pub fn vphp_wrap_vslimresponse_set_cookie_opts(ptr voidptr, ctx vphp.Context) vo
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg[string](2)
     res := recv.set_cookie_opts(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimResponse_set_cookie_full']
+pub fn vphp_wrap_vslimresponse_set_cookie_full(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg[string](2)
+    arg_3 := ctx.arg[string](3)
+    arg_4 := ctx.arg[int](4)
+    arg_5 := ctx.arg[bool](5)
+    arg_6 := ctx.arg[bool](6)
+    arg_7 := ctx.arg[string](7)
+    res := recv.set_cookie_full(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimResponse_delete_cookie']
@@ -584,6 +605,13 @@ pub fn vphp_wrap_vslimresponse_json(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.json(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimResponse_html']
+pub fn vphp_wrap_vslimresponse_html(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.html(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimResponse_redirect']
 pub fn vphp_wrap_vslimresponse_redirect(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimResponse(ptr) }
@@ -604,6 +632,12 @@ pub fn vphp_wrap_vslimresponse_str(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimResponse(ptr) }
     res := recv.str()
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimResponse_content_length']
+pub fn vphp_wrap_vslimresponse_content_length(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    res := recv.content_length()
+    ctx.return_val[int](res)
 }
 @[export: 'VSlimResponse_handlers']
 pub fn vslimresponse_handlers() voidptr {

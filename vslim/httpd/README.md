@@ -36,6 +36,14 @@ So the rule for the first release is:
 - `veb` is the HTTP/runtime source
 - `vslim` is the runtime framework layer built on top of that transport boundary
 
+```mermaid
+flowchart LR
+    A["Client"] --> B["vhttpd (veb)"]
+    B --> C["php-worker"]
+    C --> D["vslim"]
+    D --> E["vphp"]
+```
+
 ## Build
 
 ```bash
