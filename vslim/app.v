@@ -1,5 +1,6 @@
 module main
 
+import json
 import vphp
 
 pub struct SlimRequest {
@@ -44,6 +45,10 @@ pub mut:
 	path string
 	body string
 	query_string string
+	scheme string
+	host string
+	remote_addr string
+	headers_json string
 }
 
 @[php_method]
@@ -52,12 +57,42 @@ pub fn (mut r VSlimRequest) construct(method string, raw_path string, body strin
 	r.raw_path = raw_path
 	r.path, r.query_string = normalize_request_target(raw_path)
 	r.body = body
+	r.scheme = 'http'
+	r.host = ''
+	r.remote_addr = ''
+	r.headers_json = '{}'
 	return r
 }
 
 @[php_method]
 pub fn (r &VSlimRequest) str() string {
 	return '${r.method} ${r.raw_path}'
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) query(key string) string {
+	return parse_query_string(r.query_string)[key] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_query(key string) bool {
+	return key in parse_query_string(r.query_string)
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) header(name string) string {
+	headers := r.headers()
+	return headers[normalize_header_name(name)] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_header(name string) bool {
+	headers := r.headers()
+	return normalize_header_name(name) in headers
+}
+
+pub fn (r &VSlimRequest) headers() map[string]string {
+	return parse_headers_json(r.headers_json)
 }
 
 pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
@@ -176,6 +211,28 @@ pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequ
 		path: path
 		query_string: query_string
 		body: body
+		scheme: 'http'
+		host: ''
+		remote_addr: ''
+		headers_json: '{}'
+	}
+}
+
+pub fn new_vslim_request_from_envelope(envelope map[string]string) &VSlimRequest {
+	method := envelope['method'] or { 'GET' }
+	raw_path := envelope['path'] or { '/' }
+	body := envelope['body'] or { '' }
+	path, query_string := normalize_request_target(raw_path)
+	return &VSlimRequest{
+		method: method
+		raw_path: raw_path
+		path: path
+		query_string: query_string
+		body: body
+		scheme: envelope['scheme'] or { 'http' }
+		host: envelope['host'] or { '' }
+		remote_addr: envelope['remote_addr'] or { '' }
+		headers_json: envelope['headers_json'] or { '{}' }
 	}
 }
 
@@ -246,6 +303,24 @@ fn parse_query_string(query_str string) map[string]string {
 		}
 	}
 	return out
+}
+
+fn parse_headers_json(headers_json string) map[string]string {
+	if headers_json == '' {
+		return map[string]string{}
+	}
+	decoded := json.decode(map[string]string, headers_json) or {
+		return map[string]string{}
+	}
+	mut out := map[string]string{}
+	for key, value in decoded {
+		out[normalize_header_name(key)] = value
+	}
+	return out
+}
+
+fn normalize_header_name(name string) string {
+	return name.trim_space().to_lower()
 }
 
 fn match_route(pattern string, path string) (bool, map[string]string) {
@@ -370,17 +445,7 @@ fn new_slim_demo_app() SlimApp {
 }
 
 fn request_from_envelope(envelope map[string]string) SlimRequest {
-	method := envelope['method'] or { 'GET' }
-	raw_path := envelope['path'] or { '/' }
-	body := envelope['body'] or { '' }
-	path, query := split_path_and_query(raw_path)
-	return SlimRequest{
-		method: method
-		path: path
-		params: map[string]string{}
-		query: query
-		body: body
-	}
+	return new_vslim_request_from_envelope(envelope).to_slim_request()
 }
 
 fn dispatch_demo_request(req SlimRequest) SlimResponse {

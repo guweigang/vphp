@@ -33,6 +33,22 @@ pub fn vslimrequest_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zv
             vphp.return_val_raw(rv, obj.query_string)
             return
         }
+        if name == 'scheme' {
+            vphp.return_val_raw(rv, obj.scheme)
+            return
+        }
+        if name == 'host' {
+            vphp.return_val_raw(rv, obj.host)
+            return
+        }
+        if name == 'remote_addr' {
+            vphp.return_val_raw(rv, obj.remote_addr)
+            return
+        }
+        if name == 'headers_json' {
+            vphp.return_val_raw(rv, obj.headers_json)
+            return
+        }
     }
 }
 @[export: 'VSlimRequest_set_prop']
@@ -61,6 +77,22 @@ pub fn vslimrequest_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C
             obj.query_string = arg.get_string()
             return
         }
+        if name == 'scheme' {
+            obj.scheme = arg.get_string()
+            return
+        }
+        if name == 'host' {
+            obj.host = arg.get_string()
+            return
+        }
+        if name == 'remote_addr' {
+            obj.remote_addr = arg.get_string()
+            return
+        }
+        if name == 'headers_json' {
+            obj.headers_json = arg.get_string()
+            return
+        }
     }
 }
 @[export: 'VSlimRequest_sync_props']
@@ -73,6 +105,10 @@ pub fn vslimrequest_sync_props(ptr voidptr, zv &C.zval) {
         out.add_property_string('path', obj.path)
         out.add_property_string('body', obj.body)
         out.add_property_string('query_string', obj.query_string)
+        out.add_property_string('scheme', obj.scheme)
+        out.add_property_string('host', obj.host)
+        out.add_property_string('remote_addr', obj.remote_addr)
+        out.add_property_string('headers_json', obj.headers_json)
     }
 }
 @[export: 'vphp_wrap_VSlimRequest_construct']
@@ -89,6 +125,34 @@ pub fn vphp_wrap_vslimrequest_str(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
     res := recv.str()
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_query']
+pub fn vphp_wrap_vslimrequest_query(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.query(arg_0)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_has_query']
+pub fn vphp_wrap_vslimrequest_has_query(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.has_query(arg_0)
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_header']
+pub fn vphp_wrap_vslimrequest_header(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.header(arg_0)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_has_header']
+pub fn vphp_wrap_vslimrequest_has_header(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.has_header(arg_0)
+    ctx.return_val[bool](res)
 }
 @[export: 'VSlimRequest_handlers']
 pub fn vslimrequest_handlers() voidptr {

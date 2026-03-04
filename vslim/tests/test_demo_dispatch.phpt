@@ -32,11 +32,22 @@ echo $meta['status'] . '|' . $meta['body'] . '|' . $meta['content_type'] . PHP_E
 $req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
 $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->content_type . PHP_EOL;
+echo $req->query('trace_id') . '|' . ($req->has_query('trace_id') ? 'yes' : 'no') . PHP_EOL;
+
+$req->scheme = 'https';
+$req->host = 'demo.local';
+$req->remote_addr = '127.0.0.1';
+$req->headers_json = '{"x-trace-id":"from-header","content-type":"application/json"}';
+echo $req->header('x-trace-id') . '|' . ($req->has_header('content-type') ? 'yes' : 'no') . '|' . $req->scheme . '|' . $req->host . '|' . $req->remote_addr . PHP_EOL;
 
 $envelope = vslim_handle_request([
     'method' => 'GET',
     'path' => '/private?token=ok&trace_id=worker',
     'body' => '',
+    'scheme' => 'https',
+    'host' => 'worker.local',
+    'remote_addr' => '10.0.0.8',
+    'headers_json' => '{"x-worker":"yes"}',
 ]);
 echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_type'] . PHP_EOL;
 ?>
@@ -50,4 +61,6 @@ echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_ty
 500|Internal Server Error|text/plain; charset=utf-8
 200|{"runtime":"vslim","bridge":"vphp","server":"vhttpd","trace":"trace-local-mvp"}|application/json; charset=utf-8
 200|{"user":"7","trace":"from-php"}|application/json; charset=utf-8
+from-php|yes
+from-header|yes|https|demo.local|127.0.0.1
 200|secret|text/plain; charset=utf-8

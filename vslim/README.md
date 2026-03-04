@@ -53,6 +53,10 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
     'method' => 'GET',
     'path' => '/users/42?trace_id=worker',
     'body' => '',
+    'scheme' => 'https',
+    'host' => 'example.test',
+    'remote_addr' => '127.0.0.1',
+    'headers_json' => '{"x-request-id":"demo"}',
 ]
 ```
 
@@ -103,6 +107,14 @@ echo $res->body;
 
 ```php
 $req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
+$req->scheme = 'https';
+$req->host = 'demo.local';
+$req->remote_addr = '127.0.0.1';
+$req->headers_json = '{"x-trace-id":"from-header"}';
+
+echo $req->query('trace_id');
+echo $req->header('x-trace-id');
+
 $res = $app->dispatch_request($req);
 ```
 
@@ -133,7 +145,7 @@ make test
 
 ## 下一步建议
 
-1. 给 request envelope 增加 headers / remote addr / scheme 等字段
-2. 把 demo app 提升成可配置 app builder
-3. 补 `VSlimRequest` 的 query/header helper
+1. 把 demo app 提升成可配置 app builder
+2. 给 request envelope 增加更结构化的 headers/cookies 表达
+3. 补 `VSlimRequest` 的 path param / header collection helper
 4. 再考虑是否导出更完整的 PHP 面向对象 API
