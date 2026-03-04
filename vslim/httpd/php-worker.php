@@ -105,7 +105,7 @@ final class PhpWorker
         $envelope = $this->normalizeRequestEnvelope($req);
         $method = strtoupper((string) ($envelope["method"] ?? "GET"));
         $path = (string) ($envelope["path"] ?? "/");
-        $query = $this->decodeJsonMap((string) ($envelope["query_json"] ?? "{}"));
+        $query = $this->readAssocMap($envelope, "query");
         $body = (string) ($envelope["body"] ?? "");
 
         try {
@@ -195,7 +195,7 @@ final class PhpWorker
 
     /**
      * @param array<string,mixed> $req
-     * @return array<string,string>
+     * @return array<string,mixed>
      */
     private function normalizeRequestEnvelope(array $req): array
     {
@@ -217,12 +217,12 @@ final class PhpWorker
             "port" => (string) ($req["port"] ?? ""),
             "protocol_version" => (string) ($req["protocol_version"] ?? "1.1"),
             "remote_addr" => (string) ($req["remote_addr"] ?? ""),
-            "query_json" => json_encode($query, JSON_UNESCAPED_UNICODE),
-            "headers_json" => json_encode($headers, JSON_UNESCAPED_UNICODE),
-            "cookies_json" => json_encode($cookies, JSON_UNESCAPED_UNICODE),
-            "attributes_json" => json_encode($attributes, JSON_UNESCAPED_UNICODE),
-            "server_json" => json_encode($server, JSON_UNESCAPED_UNICODE),
-            "uploaded_files_json" => json_encode($uploadedFiles, JSON_UNESCAPED_UNICODE),
+            "query" => $query,
+            "headers" => $headers,
+            "cookies" => $cookies,
+            "attributes" => $attributes,
+            "server" => $server,
+            "uploaded_files" => $uploadedFiles,
         ];
     }
 
@@ -289,12 +289,12 @@ final class PhpWorker
         $request->port = (string) ($envelope["port"] ?? "");
         $request->protocol_version = (string) ($envelope["protocol_version"] ?? "1.1");
         $request->remote_addr = (string) ($envelope["remote_addr"] ?? "");
-        $request->headers_json = (string) ($envelope["headers_json"] ?? "{}");
-        $request->cookies_json = (string) ($envelope["cookies_json"] ?? "{}");
-        $request->query_json = (string) ($envelope["query_json"] ?? "{}");
-        $request->attributes_json = (string) ($envelope["attributes_json"] ?? "{}");
-        $request->server_json = (string) ($envelope["server_json"] ?? "{}");
-        $request->uploaded_files_json = (string) ($envelope["uploaded_files_json"] ?? "[]");
+        $request->set_headers($this->readAssocMap($envelope, "headers"));
+        $request->set_cookies($this->readAssocMap($envelope, "cookies"));
+        $request->set_query($this->readAssocMap($envelope, "query"));
+        $request->set_attributes($this->readAssocMap($envelope, "attributes"));
+        $request->set_server($this->readAssocMap($envelope, "server"));
+        $request->set_uploaded_files($this->readList($envelope, "uploaded_files"));
         return $request;
     }
 
@@ -330,27 +330,6 @@ final class PhpWorker
             return [];
         }
         return array_values(array_map("strval", $raw));
-    }
-
-    /** @return array<string,string> */
-    private function decodeJsonMap(string $raw): array
-    {
-        if ($raw === "" || $raw === "{}") {
-            return [];
-        }
-        $decoded = json_decode($raw, true);
-        if (!is_array($decoded)) {
-            return [];
-        }
-        $out = [];
-        foreach ($decoded as $name => $value) {
-            if (is_array($value)) {
-                $out[(string) $name] = implode(", ", array_map("strval", $value));
-            } else {
-                $out[(string) $name] = (string) $value;
-            }
-        }
-        return $out;
     }
 
     private function resolveAppBootstrapPath(): ?string
@@ -399,13 +378,8 @@ final class PhpWorker
 
         if (is_object($result) && $result instanceof VSlimResponse) {
             $headers = [];
-            if (isset($result->headers_json) && is_string($result->headers_json)) {
-                $decoded = json_decode($result->headers_json, true);
-                if (is_array($decoded)) {
-                    $headers = $this->normalizeHeaderMap($decoded);
-                }
-            } elseif (method_exists($result, "headers")) {
-                $headers = $this->normalizeHeaderMap((array) $result->headers());
+            if (function_exists("vslim_response_headers")) {
+                $headers = $this->normalizeHeaderMap((array) vslim_response_headers($result));
             }
             $body = (string) ($result->body ?? "");
             $contentType =

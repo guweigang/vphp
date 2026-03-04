@@ -22,6 +22,13 @@ PHP_FUNCTION(vslim_demo_dispatch) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_vslim_demo_dispatch(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim_response_headers, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_vslim_response_headers(vphp_context_internal ctx);
+PHP_FUNCTION(vslim_response_headers) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_vslim_response_headers(ctx);
+}
 zend_class_entry *vslimroutegroup_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimroutegroup___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -313,6 +320,20 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_vslimrequest_str, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_query, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_headers, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_cookies, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_attributes, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_server, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_uploaded_files, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_set_params, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_query, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_has_query, 0, 0, 0)
@@ -332,8 +353,6 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_attribute, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_has_attribute, 0, 0, 0)
-ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_query_json_value, 0, 0, 0)
 ZEND_END_ARG_INFO()
 PHP_METHOD(VSlimRequest, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -356,6 +375,118 @@ PHP_METHOD(VSlimRequest, __toString) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimRequest_str(wrapper->v_ptr, ctx);
 }
+
+PHP_METHOD(VSlimRequest, set_query) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_query(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_query called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_query(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRequest, set_headers) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_headers(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_headers called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_headers(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRequest, set_cookies) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_cookies(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_cookies called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_cookies(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRequest, set_attributes) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_attributes(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_attributes called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_attributes(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRequest, set_server) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_server(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_server called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_server(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRequest, set_uploaded_files) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_uploaded_files(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_uploaded_files called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_uploaded_files(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlimRequest, set_params) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimRequest_set_params(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlimRequest::set_params called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimRequest_set_params(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslimrequest_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimRequest_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+    }
+}
+
 PHP_METHOD(VSlimRequest, query) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -436,17 +567,16 @@ PHP_METHOD(VSlimRequest, has_attribute) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimRequest_has_attribute(wrapper->v_ptr, ctx);
 }
-PHP_METHOD(VSlimRequest, query_json_value) {
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern void vphp_wrap_VSlimRequest_query_json_value(void* v_ptr, vphp_context_internal ctx);
-    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    if (!wrapper->v_ptr) RETURN_FALSE;
-    vphp_wrap_VSlimRequest_query_json_value(wrapper->v_ptr, ctx);
-}
 static const zend_function_entry vslimrequest_methods[] = {
     PHP_ME(VSlimRequest, __construct, arginfo_vslimrequest_construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, __toString, arginfo_vslimrequest_str, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_query, arginfo_vslimrequest_set_query, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_headers, arginfo_vslimrequest_set_headers, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_cookies, arginfo_vslimrequest_set_cookies, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_attributes, arginfo_vslimrequest_set_attributes, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_server, arginfo_vslimrequest_set_server, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_uploaded_files, arginfo_vslimrequest_set_uploaded_files, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, set_params, arginfo_vslimrequest_set_params, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, query, arginfo_vslimrequest_query, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, has_query, arginfo_vslimrequest_has_query, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, header, arginfo_vslimrequest_header, ZEND_ACC_PUBLIC)
@@ -457,7 +587,6 @@ static const zend_function_entry vslimrequest_methods[] = {
     PHP_ME(VSlimRequest, has_param, arginfo_vslimrequest_has_param, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, attribute, arginfo_vslimrequest_attribute, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, has_attribute, arginfo_vslimrequest_has_attribute, ZEND_ACC_PUBLIC)
-    PHP_ME(VSlimRequest, query_json_value, arginfo_vslimrequest_query_json_value, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -1148,6 +1277,7 @@ static void php_vslim_init_globals(zend_vslim_globals *globals) {
 static const zend_function_entry vslim_functions[] = {
     PHP_FE(vslim_handle_request, arginfo_vslim_handle_request)
     PHP_FE(vslim_demo_dispatch, arginfo_vslim_demo_dispatch)
+    PHP_FE(vslim_response_headers, arginfo_vslim_response_headers)
     PHP_FE_END
 };
 PHP_MINIT_FUNCTION(vslim) {
@@ -1170,18 +1300,18 @@ PHP_MINIT_FUNCTION(vslim) {
         zend_declare_property_string(vslimrequest_ce, "path", sizeof("path")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "body", sizeof("body")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "query_string", sizeof("query_string")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "query_json", sizeof("query_json")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "scheme", sizeof("scheme")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "host", sizeof("host")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "port", sizeof("port")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "protocol_version", sizeof("protocol_version")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimrequest_ce, "remote_addr", sizeof("remote_addr")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "headers_json", sizeof("headers_json")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "cookies_json", sizeof("cookies_json")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "attributes_json", sizeof("attributes_json")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "server_json", sizeof("server_json")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "uploaded_files_json", sizeof("uploaded_files_json")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimrequest_ce, "params_json", sizeof("params_json")-1, "", ZEND_ACC_PUBLIC);
+        zend_declare_property_null(vslimrequest_ce, "query", sizeof("query")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimrequest_ce, "headers", sizeof("headers")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimrequest_ce, "cookies", sizeof("cookies")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimrequest_ce, "attributes", sizeof("attributes")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimrequest_ce, "server", sizeof("server")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimrequest_ce, "uploaded_files", sizeof("uploaded_files")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslimrequest_ce, "params", sizeof("params")-1, ZEND_ACC_PROTECTED);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VSlimResponse", vslimresponse_methods);
@@ -1190,7 +1320,7 @@ PHP_MINIT_FUNCTION(vslim) {
         zend_declare_property_long(vslimresponse_ce, "status", sizeof("status")-1, 0, ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimresponse_ce, "body", sizeof("body")-1, "", ZEND_ACC_PUBLIC);
         zend_declare_property_string(vslimresponse_ce, "content_type", sizeof("content_type")-1, "", ZEND_ACC_PUBLIC);
-        zend_declare_property_string(vslimresponse_ce, "headers_json", sizeof("headers_json")-1, "", ZEND_ACC_PUBLIC);
+        zend_declare_property_null(vslimresponse_ce, "headers", sizeof("headers")-1, ZEND_ACC_PROTECTED);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VSlimApp", vslimapp_methods);

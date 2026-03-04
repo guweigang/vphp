@@ -75,7 +75,7 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
     'scheme' => 'https',
     'host' => 'example.test',
     'remote_addr' => '127.0.0.1',
-    'headers_json' => '{"x-request-id":"demo"}',
+    'headers' => ['x-request-id' => 'demo'],
 ]
 ```
 
@@ -135,8 +135,8 @@ $req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
 $req->scheme = 'https';
 $req->host = 'demo.local';
 $req->remote_addr = '127.0.0.1';
-$req->headers_json = '{"x-trace-id":"from-header"}';
-$req->cookies_json = '{"sid":"cookie-7"}';
+$req->set_headers(['x-trace-id' => 'from-header']);
+$req->set_cookies(['sid' => 'cookie-7']);
 
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');

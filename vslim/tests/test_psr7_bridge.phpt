@@ -84,12 +84,12 @@ namespace {
         'port' => '443',
         'protocol_version' => '2',
         'remote_addr' => '127.0.0.1',
-        'headers_json' => '{"content-type":"application/json","x-request-id":"abc"}',
-        'cookies_json' => '{"sid":"cookie-7"}',
-        'query_json' => '{"trace_id":"psr"}',
-        'attributes_json' => '{"route":"users.show"}',
-        'server_json' => '{"REQUEST_TIME_FLOAT":"1.23"}',
-        'uploaded_files_json' => '[]',
+        'headers' => ['content-type' => 'application/json', 'x-request-id' => 'abc'],
+        'cookies' => ['sid' => 'cookie-7'],
+        'query' => ['trace_id' => 'psr'],
+        'attributes' => ['route' => 'users.show'],
+        'server' => ['REQUEST_TIME_FLOAT' => '1.23'],
+        'uploaded_files' => [],
     ]);
 
     echo get_class($req) . PHP_EOL;

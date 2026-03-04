@@ -6,7 +6,7 @@ import vphp
 fn vslim_handle_request(ctx vphp.Context) {
 	mut res := SlimResponse{}
 	if ctx.num_args() == 1 {
-		envelope := ctx.arg[map[string]string](0)
+		envelope := ctx.arg_raw(0)
 		res = dispatch_demo_request(request_from_envelope(envelope))
 	} else {
 		method := ctx.arg[string](0)
@@ -25,4 +25,18 @@ fn vslim_handle_request(ctx vphp.Context) {
 @[php_function]
 fn vslim_demo_dispatch(ctx vphp.Context) {
 	vslim_handle_request(ctx)
+}
+
+@[php_function]
+fn vslim_response_headers(ctx vphp.Context) {
+	raw := ctx.arg_raw(0)
+	if !raw.is_valid() || !raw.is_object() {
+		ctx.return_map(map[string]string{})
+		return
+	}
+	if resp := raw.to_object[VSlimResponse]() {
+		ctx.return_val(resp.headers())
+		return
+	}
+	ctx.return_map(map[string]string{})
 }

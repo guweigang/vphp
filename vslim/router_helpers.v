@@ -148,6 +148,13 @@ fn zval_to_name_map(z vphp.ZVal) map[string]string {
 	return z.to_v[map[string]string]() or { map[string]string{} }
 }
 
+fn zval_to_string_list(z vphp.ZVal) []string {
+	if !z.is_valid() || z.is_null() || z.is_undef() {
+		return []string{}
+	}
+	return z.to_v[[]string]() or { []string{} }
+}
+
 fn match_route(pattern string, path string) (bool, map[string]string) {
 	p := normalize_path(pattern)
 	u := normalize_path(path)

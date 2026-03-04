@@ -186,10 +186,6 @@ pub fn vslimrequest_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zv
             vphp.return_val_raw(rv, obj.query_string)
             return
         }
-        if name == 'query_json' {
-            vphp.return_val_raw(rv, obj.query_json)
-            return
-        }
         if name == 'scheme' {
             vphp.return_val_raw(rv, obj.scheme)
             return
@@ -208,30 +204,6 @@ pub fn vslimrequest_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zv
         }
         if name == 'remote_addr' {
             vphp.return_val_raw(rv, obj.remote_addr)
-            return
-        }
-        if name == 'headers_json' {
-            vphp.return_val_raw(rv, obj.headers_json)
-            return
-        }
-        if name == 'cookies_json' {
-            vphp.return_val_raw(rv, obj.cookies_json)
-            return
-        }
-        if name == 'attributes_json' {
-            vphp.return_val_raw(rv, obj.attributes_json)
-            return
-        }
-        if name == 'server_json' {
-            vphp.return_val_raw(rv, obj.server_json)
-            return
-        }
-        if name == 'uploaded_files_json' {
-            vphp.return_val_raw(rv, obj.uploaded_files_json)
-            return
-        }
-        if name == 'params_json' {
-            vphp.return_val_raw(rv, obj.params_json)
             return
         }
     }
@@ -262,10 +234,6 @@ pub fn vslimrequest_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C
             obj.query_string = arg.get_string()
             return
         }
-        if name == 'query_json' {
-            obj.query_json = arg.get_string()
-            return
-        }
         if name == 'scheme' {
             obj.scheme = arg.get_string()
             return
@@ -286,30 +254,6 @@ pub fn vslimrequest_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C
             obj.remote_addr = arg.get_string()
             return
         }
-        if name == 'headers_json' {
-            obj.headers_json = arg.get_string()
-            return
-        }
-        if name == 'cookies_json' {
-            obj.cookies_json = arg.get_string()
-            return
-        }
-        if name == 'attributes_json' {
-            obj.attributes_json = arg.get_string()
-            return
-        }
-        if name == 'server_json' {
-            obj.server_json = arg.get_string()
-            return
-        }
-        if name == 'uploaded_files_json' {
-            obj.uploaded_files_json = arg.get_string()
-            return
-        }
-        if name == 'params_json' {
-            obj.params_json = arg.get_string()
-            return
-        }
     }
 }
 @[export: 'VSlimRequest_sync_props']
@@ -322,18 +266,11 @@ pub fn vslimrequest_sync_props(ptr voidptr, zv &C.zval) {
         out.add_property_string('path', obj.path)
         out.add_property_string('body', obj.body)
         out.add_property_string('query_string', obj.query_string)
-        out.add_property_string('query_json', obj.query_json)
         out.add_property_string('scheme', obj.scheme)
         out.add_property_string('host', obj.host)
         out.add_property_string('port', obj.port)
         out.add_property_string('protocol_version', obj.protocol_version)
         out.add_property_string('remote_addr', obj.remote_addr)
-        out.add_property_string('headers_json', obj.headers_json)
-        out.add_property_string('cookies_json', obj.cookies_json)
-        out.add_property_string('attributes_json', obj.attributes_json)
-        out.add_property_string('server_json', obj.server_json)
-        out.add_property_string('uploaded_files_json', obj.uploaded_files_json)
-        out.add_property_string('params_json', obj.params_json)
     }
 }
 @[export: 'vphp_wrap_VSlimRequest_construct']
@@ -350,6 +287,55 @@ pub fn vphp_wrap_vslimrequest_str(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
     res := recv.str()
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_query']
+pub fn vphp_wrap_vslimrequest_set_query(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_query(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_headers']
+pub fn vphp_wrap_vslimrequest_set_headers(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_headers(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_cookies']
+pub fn vphp_wrap_vslimrequest_set_cookies(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_cookies(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_attributes']
+pub fn vphp_wrap_vslimrequest_set_attributes(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_attributes(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_server']
+pub fn vphp_wrap_vslimrequest_set_server(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_server(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_uploaded_files']
+pub fn vphp_wrap_vslimrequest_set_uploaded_files(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_uploaded_files(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRequest_set_params']
+pub fn vphp_wrap_vslimrequest_set_params(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_params(arg_0)
+    return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimRequest_query']
 pub fn vphp_wrap_vslimrequest_query(ptr voidptr, ctx vphp.Context)  {
@@ -421,12 +407,6 @@ pub fn vphp_wrap_vslimrequest_has_attribute(ptr voidptr, ctx vphp.Context)  {
     res := recv.has_attribute(arg_0)
     ctx.return_val[bool](res)
 }
-@[export: 'vphp_wrap_VSlimRequest_query_json_value']
-pub fn vphp_wrap_vslimrequest_query_json_value(ptr voidptr, ctx vphp.Context)  {
-    mut recv := unsafe { &VSlimRequest(ptr) }
-    res := recv.query_json_value()
-    ctx.return_val[string](res)
-}
 @[export: 'VSlimRequest_handlers']
 pub fn vslimrequest_handlers() voidptr {
     return unsafe { &C.vphp_class_handlers{
@@ -458,10 +438,6 @@ pub fn vslimresponse_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.z
             vphp.return_val_raw(rv, obj.content_type)
             return
         }
-        if name == 'headers_json' {
-            vphp.return_val_raw(rv, obj.headers_json)
-            return
-        }
     }
 }
 @[export: 'VSlimResponse_set_prop']
@@ -482,10 +458,6 @@ pub fn vslimresponse_set_prop(ptr voidptr, name_ptr &char, name_len int, value &
             obj.content_type = arg.get_string()
             return
         }
-        if name == 'headers_json' {
-            obj.headers_json = arg.get_string()
-            return
-        }
     }
 }
 @[export: 'VSlimResponse_sync_props']
@@ -496,7 +468,6 @@ pub fn vslimresponse_sync_props(ptr voidptr, zv &C.zval) {
         out.add_property_long('status', i64(obj.status))
         out.add_property_string('body', obj.body)
         out.add_property_string('content_type', obj.content_type)
-        out.add_property_string('headers_json', obj.headers_json)
     }
 }
 @[export: 'vphp_wrap_VSlimResponse_construct']
@@ -858,5 +829,11 @@ fn vphp_wrap_vslim_handle_request(ctx vphp.Context) {
 fn vphp_wrap_vslim_demo_dispatch(ctx vphp.Context) {
     arg_0 := ctx
     vslim_demo_dispatch(arg_0)
+}
+
+@[export: 'vphp_wrap_vslim_response_headers']
+fn vphp_wrap_vslim_response_headers(ctx vphp.Context) {
+    arg_0 := ctx
+    vslim_response_headers(arg_0)
 }
 

@@ -28,11 +28,11 @@ final class VHttpdPsr7Bridge
         $port = (string)($envelope['port'] ?? '');
         $protocolVersion = (string)($envelope['protocol_version'] ?? '1.1');
         $remoteAddr = (string)($envelope['remote_addr'] ?? '');
-        $headers = self::readNameMap($envelope, 'headers', 'headers_json');
-        $cookies = self::readNameMap($envelope, 'cookies', 'cookies_json');
-        $query = self::readNameMap($envelope, 'query', 'query_json');
-        $attributes = self::readNameMap($envelope, 'attributes', 'attributes_json');
-        $server = self::readNameMap($envelope, 'server', 'server_json');
+        $headers = self::readNameMap($envelope, 'headers');
+        $cookies = self::readNameMap($envelope, 'cookies');
+        $query = self::readNameMap($envelope, 'query');
+        $attributes = self::readNameMap($envelope, 'attributes');
+        $server = self::readNameMap($envelope, 'server');
         $uploadedFiles = self::readUploadedFiles($envelope);
 
         if ($query === []) {
@@ -53,12 +53,12 @@ final class VHttpdPsr7Bridge
      * @param array<string,mixed> $envelope
      * @return array<string,string>
      */
-    private static function readNameMap(array $envelope, string $mapKey, string $jsonKey): array
+    private static function readNameMap(array $envelope, string $mapKey): array
     {
-        if (isset($envelope[$mapKey]) && is_array($envelope[$mapKey])) {
-            return self::normalizeNameMap($envelope[$mapKey]);
+        if (!isset($envelope[$mapKey]) || !is_array($envelope[$mapKey])) {
+            return [];
         }
-        return self::decodeNameMap((string)($envelope[$jsonKey] ?? '{}'));
+        return self::normalizeNameMap($envelope[$mapKey]);
     }
 
     private static function detectFactoryKind(): ?string
@@ -101,19 +101,6 @@ final class VHttpdPsr7Bridge
         return $merged;
     }
 
-    /** @return array<string,string> */
-    private static function decodeNameMap(string $json): array
-    {
-        if ($json === '') {
-            return [];
-        }
-        $decoded = json_decode($json, true);
-        if (!is_array($decoded)) {
-            return [];
-        }
-        return self::normalizeNameMap($decoded);
-    }
-
     /**
      * @param array<mixed,mixed> $decoded
      * @return array<string,string>
@@ -148,9 +135,7 @@ final class VHttpdPsr7Bridge
         if (isset($envelope['uploaded_files']) && is_array($envelope['uploaded_files'])) {
             return array_values($envelope['uploaded_files']);
         }
-        $json = (string)($envelope['uploaded_files_json'] ?? '[]');
-        $decoded = json_decode($json, true);
-        return is_array($decoded) ? $decoded : [];
+        return [];
     }
 
     /** @return array<string,string> */

@@ -1,15 +1,13 @@
 module main
 
-import json
-
 @[php_method]
 pub fn (mut r VSlimResponse) construct(status int, body string, content_type string) &VSlimResponse {
 	r.status = status
 	r.body = body
 	r.content_type = content_type
-	r.headers_json = json.encode({
+	r.headers = {
 		'content-type': content_type
-	})
+	}
 	return r
 }
 
@@ -106,8 +104,8 @@ pub fn (mut r VSlimResponse) redirect_with_status(location string, status int) &
 	return r
 }
 
-pub fn (r &VSlimResponse) headers() map[string]string {
-	return parse_headers_json(r.headers_json)
+fn (r &VSlimResponse) headers() map[string]string {
+	return r.headers.clone()
 }
 
 pub fn (r &VSlimResponse) as_array() map[string]string {
@@ -124,18 +122,17 @@ pub fn (r &VSlimResponse) str() string {
 }
 
 fn to_vslim_response(res SlimResponse) &VSlimResponse {
-	headers_json := json.encode(res.headers)
 	return &VSlimResponse{
 		status: res.status
 		body: res.body
 		content_type: res.headers['content-type'] or { '' }
-		headers_json: headers_json
+		headers: res.headers.clone()
 	}
 }
 
 fn apply_response_headers(mut r VSlimResponse, headers map[string]string) {
-	r.headers_json = json.encode(headers)
-	r.content_type = headers['content-type'] or { r.content_type }
+	r.headers = normalize_header_map(headers)
+	r.content_type = r.headers['content-type'] or { r.content_type }
 }
 
 fn text_response(status int, body string) SlimResponse {

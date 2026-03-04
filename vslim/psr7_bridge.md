@@ -57,20 +57,20 @@ Recommended envelope fields:
 - `scheme`
 - `host`
 - `port`
-- `headers_json`
-- `cookies_json`
-- `query_json`
+- `headers`
+- `cookies`
+- `query`
 - `body`
 - `remote_addr`
-- `server_json`
-- `uploaded_files_json`
-- `attributes_json`
+- `server`
+- `uploaded_files`
+- `attributes`
 
 Notes:
 
-- Today `vslim` already uses `headers_json`/`cookies_json` successfully.
-- Continuing with JSON-encoded maps is acceptable for the transport boundary.
-- Later, these fields can become richer without changing the high-level architecture.
+- Transport should stay structured and array-based across `vhttpd -> php-worker -> vslim`.
+- This keeps `veb`-derived request data intact and avoids a second JSON compatibility shape.
+- Additional fields can still be added later without changing the high-level architecture.
 
 ### Layer 2: php-worker owns PHP ecosystem adaptation
 
@@ -212,20 +212,20 @@ Minimal recommended shape:
     'port' => '443',
     'protocol_version' => '1.1',
     'remote_addr' => '127.0.0.1',
-    'headers_json' => '{"x-request-id":"abc"}',
-    'cookies_json' => '{"sid":"cookie-7"}',
-    'query_json' => '{"trace_id":"worker"}',
-    'server_json' => '{"REQUEST_TIME_FLOAT":"..."}',
-    'uploaded_files_json' => '[]',
-    'attributes_json' => '{}',
+    'headers' => ['x-request-id' => 'abc'],
+    'cookies' => ['sid' => 'cookie-7'],
+    'query' => ['trace_id' => 'worker'],
+    'server' => ['REQUEST_TIME_FLOAT' => '...'],
+    'uploaded_files' => [],
+    'attributes' => [],
 ]
 ```
 
 Notes:
 
 - `path` can remain the canonical request target.
-- `query_json` is useful even if query is also embedded in `path`; it avoids reparsing later.
-- `attributes_json` maps cleanly to PSR-7 request attributes and also to route params.
+- `query` is still useful even if query is also embedded in `path`; it avoids reparsing later.
+- `attributes` maps cleanly to PSR-7 request attributes and also to route params.
 
 ## Suggested PHP worker strategy
 

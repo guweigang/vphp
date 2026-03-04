@@ -22,12 +22,12 @@ final class VSlimPsr7Adapter
         $vRequest->port = self::readUriPart($request, 'getPort', 'port', '');
         $vRequest->protocol_version = self::readProtocolVersion($request);
         $vRequest->remote_addr = self::readServerValue($request, 'REMOTE_ADDR');
-        $vRequest->headers_json = json_encode(self::readHeaders($request), JSON_UNESCAPED_UNICODE);
-        $vRequest->cookies_json = json_encode(self::readMap($request, 'getCookieParams', 'cookies'), JSON_UNESCAPED_UNICODE);
-        $vRequest->query_json = json_encode(self::readMap($request, 'getQueryParams', 'query'), JSON_UNESCAPED_UNICODE);
-        $vRequest->attributes_json = json_encode(self::readAttributes($request), JSON_UNESCAPED_UNICODE);
-        $vRequest->server_json = json_encode(self::readServerParams($request), JSON_UNESCAPED_UNICODE);
-        $vRequest->uploaded_files_json = json_encode(self::readUploadedFiles($request), JSON_UNESCAPED_UNICODE);
+        $vRequest->set_headers(self::readHeaders($request));
+        $vRequest->set_cookies(self::normalizeMap(self::readMap($request, 'getCookieParams', 'cookies')));
+        $vRequest->set_query(self::normalizeMap(self::readMap($request, 'getQueryParams', 'query')));
+        $vRequest->set_attributes(self::normalizeMap(self::readAttributes($request)));
+        $vRequest->set_server(self::normalizeMap(self::readServerParams($request)));
+        $vRequest->set_uploaded_files(self::normalizeList(self::readUploadedFiles($request)));
         return $vRequest;
     }
 
@@ -50,13 +50,6 @@ final class VSlimPsr7Adapter
             'attributes' => self::normalizeMap(self::readAttributes($request)),
             'server' => self::normalizeMap(self::readServerParams($request)),
             'uploaded_files' => self::readUploadedFiles($request),
-            // Keep compatibility with current exported vslim_handle_request envelope shape.
-            'headers_json' => $vRequest->headers_json,
-            'cookies_json' => $vRequest->cookies_json,
-            'query_json' => $vRequest->query_json,
-            'attributes_json' => $vRequest->attributes_json,
-            'server_json' => $vRequest->server_json,
-            'uploaded_files_json' => $vRequest->uploaded_files_json,
         ];
     }
 
@@ -194,6 +187,12 @@ final class VSlimPsr7Adapter
             }
         }
         return $out;
+    }
+
+    /** @param array<int,mixed> $items */
+    private static function normalizeList(array $items): array
+    {
+        return array_values(array_map('strval', $items));
     }
 
     private static function readServerValue(object $request, string $key): string

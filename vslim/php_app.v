@@ -1,6 +1,5 @@
 module main
 
-import json
 import vphp
 
 #include "php_bridge.h"
@@ -37,9 +36,9 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 	res, params := dispatch_app_request_with_params(app, req)
 	unsafe {
 		mut writable := &VSlimRequest(req)
-		writable.params_json = json.encode(params)
-		if writable.attributes_json == '{}' || writable.attributes_json == '' {
-			writable.attributes_json = json.encode(params)
+		writable.params = params.clone()
+		if writable.attributes.len == 0 {
+			writable.attributes = params.clone()
 		}
 	}
 	return to_vslim_response(res)
@@ -413,18 +412,18 @@ fn build_php_request_object(req &VSlimRequest, params map[string]string) vphp.ZV
 			path: req.path
 			body: req.body
 			query_string: req.query_string
-			query_json: req.query_json
 			scheme: req.scheme
 			host: req.host
 			port: req.port
 			protocol_version: req.protocol_version
 			remote_addr: req.remote_addr
-			headers_json: req.headers_json
-			cookies_json: req.cookies_json
-			attributes_json: req.attributes_json
-			server_json: req.server_json
-			uploaded_files_json: req.uploaded_files_json
-			params_json: json.encode(params)
+			query: req.query.clone()
+			headers: req.headers.clone()
+			cookies: req.cookies.clone()
+			attributes: req.attributes.clone()
+			server: req.server.clone()
+			uploaded_files: req.uploaded_files.clone()
+			params: params.clone()
 		}
 		C.vphp_return_obj(payload.raw, bound, C.vslimrequest_ce)
 		C.vphp_bind_handlers(C.vphp_get_obj_from_zval(payload.raw), &C.vphp_class_handlers(vslimrequest_handlers()))

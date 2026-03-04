@@ -59,23 +59,24 @@ mut:
 @[php_class]
 struct VSlimRequest {
 pub mut:
-	method            string
-	raw_path          string
-	path              string
-	body              string
-	query_string      string
-	query_json        string
-	scheme            string
-	host              string
-	port              string
-	protocol_version  string
-	remote_addr       string
-	headers_json      string
-	cookies_json      string
-	attributes_json   string
-	server_json       string
-	uploaded_files_json string
-	params_json       string
+	method           string
+	raw_path         string
+	path             string
+	body             string
+	query_string     string
+	scheme           string
+	host             string
+	port             string
+	protocol_version string
+	remote_addr      string
+mut:
+	query          map[string]string
+	headers        map[string]string
+	cookies        map[string]string
+	attributes     map[string]string
+	server         map[string]string
+	uploaded_files []string
+	params         map[string]string
 }
 
 @[heap]
@@ -85,7 +86,8 @@ pub mut:
 	status       int
 	body         string
 	content_type string
-	headers_json string
+mut:
+	headers map[string]string
 }
 
 @[heap]
