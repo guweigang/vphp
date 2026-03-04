@@ -416,6 +416,14 @@ void vphp_unset_property_compat(zend_object *obj, const char *name, int name_len
 void vphp_write_property(zend_object *object, zend_string *member, zval *value,
                          void **cache_slot) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
+  zend_property_info *prop_info =
+      zend_get_property_info(object->ce, member, /* silent */ true);
+  if (prop_info && prop_info != ZEND_WRONG_PROPERTY_INFO &&
+      (prop_info->flags & ZEND_ACC_READONLY)) {
+    zend_readonly_property_modification_error_ex(
+        ZSTR_VAL(object->ce->name), ZSTR_VAL(member));
+    return;
+  }
   if (wrapper->v_ptr && wrapper->write_handler)
     wrapper->write_handler(wrapper->v_ptr, ZSTR_VAL(member),
                            (int)ZSTR_LEN(member), value);

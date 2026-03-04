@@ -48,6 +48,7 @@ extern zend_class_entry *author_ce;
 extern zend_class_entry *post_ce;
 extern zend_class_entry *article_ce;
 extern zend_class_entry *story_ce;
+extern zend_class_entry *traitpost_ce;
 extern zend_class_entry *articlestatus_ce;
 extern zend_class_entry *vphp__task_ce;
 #endif

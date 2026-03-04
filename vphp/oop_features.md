@@ -41,6 +41,7 @@ Current mapping:
 
 - `pub` / `pub mut` fields -> PHP `public`
 - non-`pub` fields -> PHP `protected`
+- non-`mut` fields -> PHP `readonly` (except static properties, which keep current shadow-static behavior)
 
 Notes:
 

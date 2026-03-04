@@ -58,6 +58,9 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 	if prop.is_static {
 		flags += ' | ZEND_ACC_STATIC'
 	}
+	if !prop.is_static && !prop.is_mut {
+		flags += ' | ZEND_ACC_READONLY'
+	}
 	return flags
 }
 

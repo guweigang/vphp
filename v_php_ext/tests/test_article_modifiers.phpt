@@ -37,6 +37,12 @@ try {
 }
 
 try {
+    $article->created_at = 99;
+} catch (Error $e) {
+    echo "Caught readonly property write: " . $e->getMessage() . "\n";
+}
+
+try {
     $article->internal_format();
 } catch (Error $e) {
     echo "Caught protected method call: " . $e->getMessage() . "\n";
@@ -47,7 +53,7 @@ try {
 1. Reflection checks:
 Property: post_id - public
 Property: author - public
-Property: created_at - public
+Property: created_at - public protected(set) readonly
 Property: id - public
 Property: title - public
 Property: is_top - public
@@ -68,4 +74,5 @@ Method: get_author - public
 Title: Hello V!
 Formatted: [Protected] Hello V!
 Caught protected property access: Cannot access protected property Article::$content
+Caught readonly property write: Cannot modify readonly property Article::$created_at
 Caught protected method call: Call to protected method Article::internal_format() from global scope
