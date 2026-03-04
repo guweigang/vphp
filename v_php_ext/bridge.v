@@ -774,6 +774,12 @@ fn vphp_wrap_v_read_php_global_const(ctx vphp.Context) {
     v_read_php_global_const(arg_0)
 }
 
+@[export: 'vphp_wrap_v_php_symbol_exists']
+fn vphp_wrap_v_php_symbol_exists(ctx vphp.Context) {
+    arg_0 := ctx
+    v_php_symbol_exists(arg_0)
+}
+
 @[export: 'vphp_wrap_v_include_php_file']
 fn vphp_wrap_v_include_php_file(ctx vphp.Context) {
     arg_0 := ctx

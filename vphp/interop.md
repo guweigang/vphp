@@ -44,6 +44,7 @@ res := vphp.php_fn('phpversion').call([])
 | API | 说明 |
 | --- | --- |
 | `php_fn(name)` | 获取一个可调用的 PHP 函数引用 |
+| `function_exists(name)` | 判断 PHP 全局函数是否存在 |
 | `z.call(args)` | 调用 callable / 函数名 |
 | `z.call_v[T](args)` | `call(args).to_v[T]()` |
 | `z.call_object[T](args)` | `call(args).to_object[T]()` |
@@ -73,6 +74,9 @@ article := vphp.php_class('Article').construct_object[Article]([
 | API | 说明 |
 | --- | --- |
 | `php_class(name)` | 获取 class-string `ZVal` |
+| `class_exists(name)` | 判断类是否存在 |
+| `interface_exists(name)` | 判断接口是否存在 |
+| `trait_exists(name)` | 判断 trait 是否存在 |
 | `z.construct(args)` | 从 class-string 构造对象 |
 | `z.construct_object[T](args)` | `construct(args).to_object[T]()` |
 | `z.static_method(name, args)` | 调用静态方法 |
@@ -140,6 +144,7 @@ vphp.include_once('/path/to/file.php')
 | API | 说明 |
 | --- | --- |
 | `php_const(name)` | 读取 PHP 全局常量 |
+| `global_const_exists(name)` | 判断 PHP 全局常量是否存在 |
 | `include(path)` | 对齐 PHP `include` |
 | `include_once(path)` | 对齐 PHP `include_once` |
 

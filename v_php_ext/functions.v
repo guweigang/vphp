@@ -265,6 +265,22 @@ fn v_read_php_global_const(ctx vphp.Context) {
 }
 
 @[php_function]
+fn v_php_symbol_exists(ctx vphp.Context) {
+	ctx.return_map({
+		'function_strlen':     vphp.function_exists('strlen').str()
+		'function_missing':    vphp.function_exists('definitely_missing_fn').str()
+		'class_datetime':      vphp.class_exists('DateTimeImmutable').str()
+		'class_missing':       vphp.class_exists('Nope\\MissingClass').str()
+		'interface_json':      vphp.interface_exists('JsonSerializable').str()
+		'interface_missing':   vphp.interface_exists('Nope\\MissingInterface').str()
+		'trait_user':          vphp.trait_exists('Demo\\Interop\\HelperTrait').str()
+		'trait_missing':       vphp.trait_exists('Nope\\MissingTrait').str()
+		'const_php_version':   vphp.global_const_exists('PHP_VERSION').str()
+		'const_missing':       vphp.global_const_exists('NOPE_MISSING_CONST').str()
+	})
+}
+
+@[php_function]
 fn v_include_php_file(ctx vphp.Context) {
 	path := ctx.arg[string](0)
 	result := vphp.include(path)

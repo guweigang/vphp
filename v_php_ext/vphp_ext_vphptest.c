@@ -9588,8 +9588,13 @@ void vphp__Context_wrap_closure_T_anon_fn_string_int__string(vphp__Context ctx, 
 void vphp__throw_exception(string msg, int code);
 void vphp__report_error(int level, string msg);
 vphp__ZVal vphp__php_fn(string name);
+bool vphp__function_exists(string name);
 vphp__ZVal vphp__php_class(string name);
+bool vphp__class_exists(string name);
+bool vphp__interface_exists(string name);
+bool vphp__trait_exists(string name);
 vphp__ZVal vphp__php_const(string name);
+bool vphp__global_const_exists(string name);
 vphp__ZVal vphp__include(string path);
 vphp__ZVal vphp__include_once(string path);
 vphp__ZVal vphp__call_php(string name, Array_vphp__ZVal args);
@@ -11490,6 +11495,8 @@ VV_LOC void main__vphp_wrap_v_typed_object_restore(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_typed_object_restore(vphp__Context ctx); // exported fn main.vphp_wrap_v_typed_object_restore
 VV_LOC void main__vphp_wrap_v_read_php_global_const(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_read_php_global_const(vphp__Context ctx); // exported fn main.vphp_wrap_v_read_php_global_const
+VV_LOC void main__vphp_wrap_v_php_symbol_exists(vphp__Context ctx);
+VV_EXP void vphp_wrap_v_php_symbol_exists(vphp__Context ctx); // exported fn main.vphp_wrap_v_php_symbol_exists
 VV_LOC void main__vphp_wrap_v_include_php_file(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_include_php_file(vphp__Context ctx); // exported fn main.vphp_wrap_v_include_php_file
 VV_LOC void main__vphp_wrap_v_include_php_file_once(vphp__Context ctx);
@@ -11525,7 +11532,7 @@ VV_EXP void vphp_wrap_v_analyze_fitness_data(vphp__Context ctx); // exported fn 
 VV_LOC void main__vphp_wrap_v_get_alerts(vphp__Context ctx);
 VV_EXP void vphp_wrap_v_get_alerts(vphp__Context ctx); // exported fn main.vphp_wrap_v_get_alerts
 VV_LOC void main__vphp_ext_startup(void);
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26515(vphp__Context ctx);
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26662(vphp__Context ctx);
 VV_EXP void vphp_ext_startup(void); // exported fn main.vphp_ext_startup
 VV_LOC void main__main(void);
 VV_LOC void main__v_reverse_string(vphp__Context ctx);
@@ -11551,6 +11558,7 @@ VV_LOC void main__v_read_php_class_constant(vphp__Context ctx);
 VV_LOC void main__v_typed_php_interop(vphp__Context ctx);
 VV_LOC void main__v_typed_object_restore(vphp__Context ctx);
 VV_LOC void main__v_read_php_global_const(vphp__Context ctx);
+VV_LOC void main__v_php_symbol_exists(vphp__Context ctx);
 VV_LOC void main__v_include_php_file(vphp__Context ctx);
 VV_LOC void main__v_include_php_file_once(vphp__Context ctx);
 VV_LOC void main__v_php_object_meta(vphp__Context ctx);
@@ -11559,14 +11567,14 @@ VV_LOC void main__v_trigger_user_action(vphp__Context ctx);
 VV_LOC void main__v_call_php_closure(vphp__Context ctx);
 VV_LOC void main__v_test_globals(vphp__Context ctx);
 VV_LOC void main__v_get_v_closure(vphp__Context ctx);
-VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_9336(int n);
+VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_10151(int n);
 VV_LOC void main__v_get_v_closure_auto(vphp__Context ctx);
-struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608_Ctx {
+struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423_Ctx {
 	string prefix;
 };
 
-struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608_Ctx;
-VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608(string name, int count);
+struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423_Ctx;
+VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423(string name, int count);
 main__ReadonlyRecord* main__ReadonlyRecord_construct(main__ReadonlyRecord* r, string title);
 string main__ReadonlyRecord_reveal(main__ReadonlyRecord* r);
 VV_LOC void main__v_new_coach(vphp__Context ctx);
@@ -18421,16 +18429,16 @@ VV_LOC void anon_fn_0457a5b1ba51b454_41_vphp__zval_vphp__zval_2593(vphp__ZVal ke
 	}
 }
 
-VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26515(vphp__Context ctx) {
+VV_LOC vphp__ITask anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26662(vphp__Context ctx) {
 	return I_main__AnalyzeTask_to_Interface_vphp__ITask(((main__AnalyzeTask*)builtin__memdup(&(main__AnalyzeTask){.symbol = vphp__Context_arg_T_string(ctx, 1),.count = vphp__Context_arg_T_int(ctx, 2),}, sizeof(main__AnalyzeTask))));
 }
 
-VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_9336(int n) {
+VV_LOC int anon_fn_0edbd70ee5bb0de7_48_int__int_10151(int n) {
 	return (int)(n * 10);
 }
 
-VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608(string name, int count) {
-	struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC string anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423(string name, int count) {
+	struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = _V_closure_ctx->prefix}}, {_S(": Hello "), 0xfe10, {.d_s = name}}, {_S(", count is "), 0xfe07, {.d_i32 = count}}, {_SLIT0, 0, { .d_c = 0 }}}));
 }
 
@@ -35964,11 +35972,31 @@ void vphp__report_error(int level, string msg) {
 vphp__ZVal vphp__php_fn(string name) {
 	return vphp__ZVal__static__new_string(name);
 }
+bool vphp__function_exists(string name) {
+	vphp__ZVal res = vphp__ZVal_call(vphp__php_fn(_S("function_exists")), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__ZVal__static__new_string(name)})));
+	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
+}
 vphp__ZVal vphp__php_class(string name) {
 	return vphp__ZVal__static__new_string(name);
 }
+bool vphp__class_exists(string name) {
+	vphp__ZVal res = vphp__ZVal_call(vphp__php_fn(_S("class_exists")), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__ZVal__static__new_string(name), vphp__ZVal__static__new_bool(true)})));
+	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
+}
+bool vphp__interface_exists(string name) {
+	vphp__ZVal res = vphp__ZVal_call(vphp__php_fn(_S("interface_exists")), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__ZVal__static__new_string(name), vphp__ZVal__static__new_bool(true)})));
+	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
+}
+bool vphp__trait_exists(string name) {
+	vphp__ZVal res = vphp__ZVal_call(vphp__php_fn(_S("trait_exists")), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__ZVal__static__new_string(name), vphp__ZVal__static__new_bool(true)})));
+	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
+}
 vphp__ZVal vphp__php_const(string name) {
 	return vphp__ZVal_call(vphp__php_fn(_S("constant")), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__ZVal__static__new_string(name)})));
+}
+bool vphp__global_const_exists(string name) {
+	vphp__ZVal res = vphp__ZVal_call(vphp__php_fn(_S("defined")), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__ZVal__static__new_string(name)})));
+	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
 }
 vphp__ZVal vphp__include(string path) {
 	{ // Unsafe block
@@ -81236,6 +81264,14 @@ VV_LOC void main__vphp_wrap_v_read_php_global_const(vphp__Context ctx) {
 void vphp_wrap_v_read_php_global_const(vphp__Context ctx) {
 	return main__vphp_wrap_v_read_php_global_const(ctx);
 }
+VV_LOC void main__vphp_wrap_v_php_symbol_exists(vphp__Context ctx) {
+	vphp__Context arg_0 = ctx;
+	main__v_php_symbol_exists(arg_0);
+}
+// export alias: vphp_wrap_v_php_symbol_exists -> main__vphp_wrap_v_php_symbol_exists
+void vphp_wrap_v_php_symbol_exists(vphp__Context ctx) {
+	return main__vphp_wrap_v_php_symbol_exists(ctx);
+}
 VV_LOC void main__vphp_wrap_v_include_php_file(vphp__Context ctx) {
 	vphp__Context arg_0 = ctx;
 	main__v_include_php_file(arg_0);
@@ -81373,7 +81409,7 @@ void vphp_wrap_v_get_alerts(vphp__Context ctx) {
 	return main__vphp_wrap_v_get_alerts(ctx);
 }
 VV_LOC void main__vphp_ext_startup(void) {
-	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26515);
+	vphp__ITask__static__register(_S("AnalyzeTask"), (voidptr)	anon_fn_029a7d6ebfccb35b_42_vphp__context__vphp__ITask_26662);
 }
 // export alias: vphp_ext_startup -> main__vphp_ext_startup
 void vphp_ext_startup(void) {
@@ -81793,6 +81829,35 @@ VV_LOC void main__v_read_php_global_const(vphp__Context ctx) {
 	}
 	vphp__Context_return_string(ctx, builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = const_name}}, {_S("="), 0xfe10, {.d_s = vphp__ZVal_to_string(value)}}, {_SLIT0, 0, { .d_c = 0 }}})));
 }
+VV_LOC void main__v_php_symbol_exists(vphp__Context ctx) {
+	vphp__Context_return_map_T_string(ctx, builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 10, sizeof(string), sizeof(string),
+		_MOV((string[10]){
+			_S("function_strlen"),
+			_S("function_missing"),
+			_S("class_datetime"),
+			_S("class_missing"),
+			_S("interface_json"),
+			_S("interface_missing"),
+			_S("trait_user"),
+			_S("trait_missing"),
+			_S("const_php_version"),
+			_S("const_missing"),
+		}),
+		_MOV((string[10]){
+			builtin__bool_str(vphp__function_exists(_S("strlen"))), 
+			builtin__bool_str(vphp__function_exists(_S("definitely_missing_fn"))), 
+			builtin__bool_str(vphp__class_exists(_S("DateTimeImmutable"))), 
+			builtin__bool_str(vphp__class_exists(_S("Nope\\MissingClass"))), 
+			builtin__bool_str(vphp__interface_exists(_S("JsonSerializable"))), 
+			builtin__bool_str(vphp__interface_exists(_S("Nope\\MissingInterface"))), 
+			builtin__bool_str(vphp__trait_exists(_S("Demo\\Interop\\HelperTrait"))), 
+			builtin__bool_str(vphp__trait_exists(_S("Nope\\MissingTrait"))), 
+			builtin__bool_str(vphp__global_const_exists(_S("PHP_VERSION"))), 
+			builtin__bool_str(vphp__global_const_exists(_S("NOPE_MISSING_CONST"))), 
+		})
+	)
+	);
+}
 VV_LOC void main__v_include_php_file(vphp__Context ctx) {
 	string path = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal result = vphp__include(path);
@@ -81906,13 +81971,13 @@ VV_LOC void main__v_test_globals(vphp__Context ctx) {
 	);
 }
 VV_LOC void main__v_get_v_closure(vphp__Context ctx) {
-	int (*v_cb) (int) = 	anon_fn_0edbd70ee5bb0de7_48_int__int_9336;
+	int (*v_cb) (int) = 	anon_fn_0edbd70ee5bb0de7_48_int__int_10151;
 	vphp__Context_wrap_closure_T_anon_fn_int__int(ctx, (voidptr)v_cb);
 }
 VV_LOC void main__v_get_v_closure_auto(vphp__Context ctx) {
 	string prefix = _S("V-Power");
-	string (*v_cb) (string, int) = 	builtin__closure__closure_create(anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608, (struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608_Ctx){.prefix = prefix,
-	}, sizeof(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_9608_Ctx)));
+	string (*v_cb) (string, int) = 	builtin__closure__closure_create(anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423, (struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423_Ctx){.prefix = prefix,
+	}, sizeof(struct _V_anon_fn_0edbd70ee5bb0de7_48_string_int__string_10423_Ctx)));
 	vphp__Context_wrap_closure_T_anon_fn_string_int__string(ctx, (voidptr)v_cb);
 }
 main__ReadonlyRecord* main__ReadonlyRecord_construct(main__ReadonlyRecord* r, string title) {

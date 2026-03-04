@@ -141,6 +141,13 @@ PHP_FUNCTION(v_read_php_global_const) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_read_php_global_const(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_php_symbol_exists, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_php_symbol_exists(vphp_context_internal ctx);
+PHP_FUNCTION(v_php_symbol_exists) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_php_symbol_exists(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_include_php_file, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_include_php_file(vphp_context_internal ctx);
@@ -771,6 +778,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_typed_php_interop, arginfo_v_typed_php_interop)
     PHP_FE(v_typed_object_restore, arginfo_v_typed_object_restore)
     PHP_FE(v_read_php_global_const, arginfo_v_read_php_global_const)
+    PHP_FE(v_php_symbol_exists, arginfo_v_php_symbol_exists)
     PHP_FE(v_include_php_file, arginfo_v_include_php_file)
     PHP_FE(v_include_php_file_once, arginfo_v_include_php_file_once)
     PHP_FE(v_php_object_meta, arginfo_v_php_object_meta)

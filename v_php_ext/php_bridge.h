@@ -29,6 +29,7 @@ PHP_FUNCTION(v_read_php_class_constant);
 PHP_FUNCTION(v_typed_php_interop);
 PHP_FUNCTION(v_typed_object_restore);
 PHP_FUNCTION(v_read_php_global_const);
+PHP_FUNCTION(v_php_symbol_exists);
 PHP_FUNCTION(v_include_php_file);
 PHP_FUNCTION(v_include_php_file_once);
 PHP_FUNCTION(v_php_object_meta);
