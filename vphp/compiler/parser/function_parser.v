@@ -13,29 +13,27 @@ pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpFuncRepr {
 		return none
 	}
 
-	mut has_export := false
-	mut exp_name := ''
 	mut has_php_func := false
+	mut php_name := ''
 
 	for attr in fn_decl.attrs {
-		if attr.name == 'export' && attr.arg != '' {
-			has_export = true
-			exp_name = attr.arg
-		} else if attr.name == 'php_function' {
+		if attr.name == 'php_function' {
 			has_php_func = true
+			if attr.arg != '' {
+				php_name = attr.arg
+			}
 		}
 	}
 
-	if !has_export && !has_php_func {
+	if !has_php_func {
 		return none
 	}
-	if exp_name.starts_with('vphp_') || exp_name.starts_with('zm_') {
+	if php_name.starts_with('vphp_') || php_name.starts_with('zm_') {
 		return none
 	}
 
-	func.name = if exp_name != '' { exp_name } else { fn_decl.name.all_after('.') }
+	func.name = if php_name != '' { php_name } else { fn_decl.name.all_after('.') }
 	func.original_name = fn_decl.name.all_after('.')
-	func.uses_php_function = has_php_func
 
 	for param in fn_decl.params {
 		mut typ_name := table.get_type_name(param.typ)

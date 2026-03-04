@@ -7,6 +7,7 @@ This document describes the current PHP-facing OOP feature set implemented by `v
 Current first-class OOP export features:
 
 - `@[php_class]`
+- `@[php_trait]` (planned)
 - `@[php_method]`
 - `@[php_const: shadow_const]`
 - `@[php_static: shadow_static]`
@@ -271,11 +272,17 @@ Current expectation:
 
 - concrete subclasses should provide the implementation as normal exported methods
 
-## Inheritance via `@[php_extends]` and embed
+## Inheritance and Embed Semantics
 
-Two inheritance styles are currently supported:
+`vphp` now treats V-side embeds as a semantic input that must be resolved by linker rules, instead of blindly assuming "first embed == parent class".
 
-1. explicit
+There are three target cases.
+
+### Case 1: embedded `@[php_class]`
+
+If an embedded struct is also exported as `@[php_class]`, `vphp` may map it to PHP inheritance.
+
+Explicit form:
 
 ```v
 @[php_class]
@@ -285,7 +292,7 @@ struct Article {
 }
 ```
 
-2. inferred from first embed
+Implicit form:
 
 ```v
 @[php_class]
@@ -294,10 +301,41 @@ struct Story {
 }
 ```
 
-Current behavior:
+Current linker rule:
 
-- PHP inheritance is registered through Zend class registration
-- inherited methods and properties work from PHP
+- if `@[php_extends: ...]` is present, that wins
+- otherwise, if exactly one embedded struct is a `@[php_class]`, it becomes the PHP parent
+- if multiple embedded structs are `@[php_class]`, compilation should fail and require explicit `@[php_extends: ...]`
+
+### Case 2: embedded `@[php_trait]`
+
+This is the intended trait path, but it is not implemented yet.
+
+Target behavior:
+
+- embedded `@[php_trait]` structs should be treated as PHP trait-style mixins
+- their properties and methods should be flattened into the consuming class
+- duplicate property/method names must be detected and rejected or resolved explicitly
+
+### Case 3: embedded plain V struct
+
+If an embedded struct is neither `@[php_class]` nor `@[php_trait]`, the recommended semantics are:
+
+- keep it as V-side composition only
+- do not auto-map it to PHP `extends`
+- do not auto-flatten it into PHP-visible properties or methods
+
+Why this default is preferred:
+
+- not every V embed is intended as a PHP type relationship
+- auto-flattening would leak implementation details into the PHP surface
+- treating every embed as inheritance was too aggressive and incorrect
+
+Recommendation:
+
+- use `@[php_class]` for PHP inheritance
+- use `@[php_trait]` for trait-style composition once implemented
+- leave plain embeds as internal implementation detail unless you explicitly want PHP projection
 
 ## Current Design Assessment
 

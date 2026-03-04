@@ -2,7 +2,7 @@ module main
 
 import vphp
 
-@[export: 'v_reverse_string']
+@[php_function]
 fn v_reverse_string(ctx vphp.Context) {
     unsafe {
         in_val := ctx.arg_raw(0)
@@ -25,7 +25,7 @@ fn v_reverse_string(ctx vphp.Context) {
     }
 }
 
-@[export: 'v_logic_main']
+@[php_function]
 fn v_logic_main(ctx vphp.Context) {
 	unsafe {
 		args := ctx.get_args()

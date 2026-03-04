@@ -14,6 +14,42 @@ pub fn link_class_shadows(mut elements []repr.PhpRepr, table &ast.Table) {
 	}
 }
 
+pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
+	mut class_map := map[string]string{}
+	for el in elements {
+		if el is repr.PhpClassRepr {
+			class_map[el.name] = el.php_name
+		}
+	}
+
+	for i in 0 .. elements.len {
+		mut el := elements[i]
+		if mut el is repr.PhpClassRepr {
+			if el.parent != '' || el.embeds_v.len == 0 {
+				elements[i] = el
+				continue
+			}
+
+			mut embedded_php_classes := []string{}
+			for embed_name in el.embeds_v {
+				if embed_name in class_map {
+					embedded_php_classes << class_map[embed_name]
+				}
+			}
+
+			if embedded_php_classes.len > 1 {
+				return error('class `${el.name}` embeds multiple `@[php_class]` structs; please declare `@[php_extends: ...]` explicitly')
+			}
+
+			if embedded_php_classes.len == 1 {
+				el.parent = embedded_php_classes[0]
+			}
+
+			elements[i] = el
+		}
+	}
+}
+
 fn link_class_shadow_statics(mut cls repr.PhpClassRepr, elements []repr.PhpRepr, table &ast.Table) {
 	if cls.shadow_static_name == '' {
 		return

@@ -75,6 +75,13 @@ Fields:
   - Whether the class should be emitted as abstract
   - Consumed by the builder/emitter layer to set Zend flags
 
+- `embeds_v`
+  - Raw V-side embedded struct names
+  - Preserved so linker can decide whether an embed should become:
+    - PHP inheritance
+    - future trait expansion
+    - or remain V-only composition
+
 - `implements_v`
   - Explicit V-side `implements` declarations as parsed from the struct
   - This preserves the V-side source-of-truth relationship
@@ -216,6 +223,37 @@ Fields:
 - `v_type`
   - Original V-side parameter type
 
+## Function Repr
+
+Defined in [function.v](/Users/guweigang/Source/vphpext/vphp/compiler/repr/function.v).
+
+### `PhpFuncRepr`
+
+Represents one PHP-visible free function exported from V.
+
+Fields:
+
+- `name`
+  - Final PHP-visible function name
+
+- `original_name`
+  - Original V function name
+
+- `return_type`
+  - Original V return type
+
+- `args`
+  - Ordered parameter metadata
+
+- `is_internal`
+  - Reserved for internal/compiler-managed exports
+
+Notes:
+
+- user-facing free functions are sourced from `@[php_function]`
+- the generated PHP entry always calls the generated V wrapper
+- that wrapper is responsible for reading `Context`, calling the original V function, and writing the return value
+
 ## Interface Repr
 
 Defined in [interface.v](/Users/guweigang/Source/vphpext/vphp/compiler/repr/interface.v).
@@ -299,8 +337,6 @@ Fields:
   - Internal-use flag
   - Mostly a policy/control field
 
-- `uses_php_function`
-  - Whether this came from the `@[php_function]` path
   - Used to distinguish wrapper strategy
 
 ## Constant Repr

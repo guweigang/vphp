@@ -19,7 +19,7 @@ fn v_pure_map_test(k string, v string) map[string]string {
 	}
 }
 
-@[export: 'v_process_list']
+@[php_function]
 fn v_process_list(ctx vphp.Context) {
 	input_list := ctx.arg[[]string](0)
 
@@ -33,7 +33,7 @@ fn v_process_list(ctx vphp.Context) {
 	}
 }
 
-@[export: 'v_test_map']
+@[php_function]
 fn v_test_map(ctx vphp.Context) {
 	config := ctx.arg[map[string]string](0)
 
@@ -44,7 +44,7 @@ fn v_test_map(ctx vphp.Context) {
 	ctx.return_string('Map processed, keys: ${config.keys()}')
 }
 
-@[export: 'v_get_config']
+@[php_function]
 fn v_get_config(ctx vphp.Context) {
 	input := ctx.arg_raw(0)
 
@@ -57,7 +57,7 @@ fn v_get_config(ctx vphp.Context) {
 	ctx.return_string(db_val.to_string())
 }
 
-@[export: 'v_get_user']
+@[php_function]
 fn v_get_user(ctx vphp.Context) {
 	raw_id := ctx.arg_raw(0)
 	println('DEBUG: PHP ID Type: ${raw_id.type_id()}')
@@ -73,14 +73,14 @@ fn v_get_user(ctx vphp.Context) {
 	ctx.return_object(user_data)
 }
 
-@[export: 'v_call_back']
+@[php_function]
 fn v_call_back(ctx vphp.Context) {
 	php_version := vphp.php_fn('phpversion').call([])
 
 	ctx.return_string('V knows PHP version is: ' + php_version.to_string())
 }
 
-@[export: 'v_complex_test']
+@[php_function]
 fn v_complex_test(ctx vphp.Context) {
 	s := ctx.arg[string](0)
 	i := ctx.arg[int](1)
@@ -100,7 +100,7 @@ fn v_complex_test(ctx vphp.Context) {
 	ctx.return_map(res)
 }
 
-@[export: 'v_analyze_user_object']
+@[php_function]
 fn v_analyze_user_object(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
 
@@ -120,7 +120,7 @@ fn v_analyze_user_object(ctx vphp.Context) {
 	ctx.return_string(res_msg)
 }
 
-@[export: 'v_mutate_user_object']
+@[php_function]
 fn v_mutate_user_object(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
 	if !user_obj.is_object() {
@@ -136,7 +136,7 @@ fn v_mutate_user_object(ctx vphp.Context) {
 	ctx.return_string('updated=${name}:${age}')
 }
 
-@[export: 'v_check_user_object_props']
+@[php_function]
 fn v_check_user_object_props(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
 	if !user_obj.is_object() {
@@ -160,7 +160,7 @@ fn v_check_user_object_props(ctx vphp.Context) {
 	})
 }
 
-@[export: 'v_construct_php_object']
+@[php_function]
 fn v_construct_php_object(ctx vphp.Context) {
 	obj := vphp.php_class('PhpGreeter').construct([vphp.ZVal.new_string('Codex')])
 	if !obj.is_object() {
@@ -173,13 +173,13 @@ fn v_construct_php_object(ctx vphp.Context) {
 	ctx.return_string('constructed=${name}:${msg}')
 }
 
-@[export: 'v_call_php_static_method']
+@[php_function]
 fn v_call_php_static_method(ctx vphp.Context) {
 	res := vphp.php_class('PhpMath').static_method('triple', [vphp.ZVal.new_int(7)])
 	ctx.return_string('static=' + res.to_int().str())
 }
 
-@[export: 'v_mutate_php_static_prop']
+@[php_function]
 fn v_mutate_php_static_prop(ctx vphp.Context) {
 	cls := vphp.php_class('PhpCounter')
 	before := cls.static_prop('count').to_int()
@@ -188,7 +188,7 @@ fn v_mutate_php_static_prop(ctx vphp.Context) {
 	ctx.return_string('static_prop=${before}->${after}')
 }
 
-@[export: 'v_read_php_class_constant']
+@[php_function]
 fn v_read_php_class_constant(ctx vphp.Context) {
 	article_max := vphp.php_class('Article').const_v[int]('MAX_TITLE_LEN') or {
 		vphp.throw_exception('读取 Article::MAX_TITLE_LEN 失败: ${err.msg()}', 0)
@@ -201,7 +201,7 @@ fn v_read_php_class_constant(ctx vphp.Context) {
 	ctx.return_string('consts=${article_max}:${php_version}')
 }
 
-@[export: 'v_typed_php_interop']
+@[php_function]
 fn v_typed_php_interop(ctx vphp.Context) {
 	obj := ctx.arg_raw(0)
 	if !obj.is_object() {
@@ -233,7 +233,7 @@ fn v_typed_php_interop(ctx vphp.Context) {
 	ctx.return_string('typed=${length}:${name}:${score}:${count}:${label}')
 }
 
-@[export: 'v_typed_object_restore']
+@[php_function]
 fn v_typed_object_restore(ctx vphp.Context) {
 	mut author := vphp.php_class('Author').static_method_object[Author]('create', [
 		vphp.ZVal.new_string('Typed Author'),
@@ -253,7 +253,7 @@ fn v_typed_object_restore(ctx vphp.Context) {
 	ctx.return_string('objects=${author.name}:${article.id}:${article.title}:${article.is_top}')
 }
 
-@[export: 'v_trigger_user_action']
+@[php_function]
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
 	if !user_obj.is_object() {
@@ -275,7 +275,7 @@ fn v_trigger_user_action(ctx vphp.Context) {
 	ctx.return_string('Action triggered, PHP returned: ' + res.to_string())
 }
 
-@[export: 'v_call_php_closure']
+@[php_function]
 fn v_call_php_closure(ctx vphp.Context) {
 	cb := ctx.arg_raw(0)
 
@@ -293,7 +293,7 @@ fn v_call_php_closure(ctx vphp.Context) {
 	ctx.return_string('Closure executed, PHP said: ' + res.to_string())
 }
 
-@[export: 'v_test_globals']
+@[php_function]
 fn v_test_globals(ctx vphp.Context) {
 	mut g := vphp.get_globals[ExtGlobals]()
 	g.request_count++
@@ -306,7 +306,6 @@ fn v_test_globals(ctx vphp.Context) {
 }
 
 // 测试 V 侧原生闭包自动转换。
-@[export: 'v_get_v_closure']
 @[php_function]
 fn v_get_v_closure(ctx vphp.Context) {
 	// 定义一个简单的 int -> int 闭包，供 test_closure.php 使用
@@ -317,7 +316,7 @@ fn v_get_v_closure(ctx vphp.Context) {
 }
 
 // 测试 V 侧原生闭包自动转换。
-@[export: 'v_get_v_closure_auto']
+@[php_function]
 fn v_get_v_closure_auto(ctx vphp.Context) {
 	prefix := 'V-Power'
 	// 定义一个带捕获的原生 V 闭包。

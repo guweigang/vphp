@@ -12,7 +12,7 @@ struct MotionReport {
 	device_mode string
 }
 
-@[export: 'v_analyze_fitness_data']
+@[php_function]
 fn v_analyze_fitness_data(ctx vphp.Context) {
 	name := ctx.arg[string](0)
 	hr_data := ctx.arg[[]f64](1)
@@ -69,7 +69,7 @@ struct FinalReport {
 	alerts    []HeartPoint
 }
 
-@[export: 'v_get_alerts']
+@[php_function]
 fn v_get_alerts(ctx vphp.Context) {
 	mut alerts := []HeartPoint{}
 	alerts << HeartPoint{1677481200, 155.0}

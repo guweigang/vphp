@@ -39,12 +39,10 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 			}
 		}
 	}
-	if struct_decl.embeds.len > 0 && cls.parent == '' {
-		parent_type_name := table.get_type_name(struct_decl.embeds[0].typ)
-		cls.parent = if parent_type_name.contains('.') {
-			parent_type_name.all_after('.')
-		} else {
-			parent_type_name
+	for embed in struct_decl.embeds {
+		embed_name := strip_module(table.get_type_name(embed.typ))
+		if embed_name != '' {
+			cls.embeds_v << embed_name
 		}
 	}
 	for field in struct_decl.fields {

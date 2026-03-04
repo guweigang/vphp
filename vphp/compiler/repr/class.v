@@ -7,6 +7,7 @@ pub mut:
 	parent     string      // 继承关系
 	is_final   bool
 	is_abstract bool
+	embeds_v   []string
 	implements_v []string
 	implements []string
 	shadow_const_name string  // 绑定的影子常量名，如 "article_consts"

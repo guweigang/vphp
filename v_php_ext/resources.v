@@ -6,7 +6,7 @@ struct Coach { mut: name string }
 struct Database { mut: connected bool }
 
 // 创建"教练"资源
-@[export: 'v_new_coach']
+@[php_function]
 fn v_new_coach(ctx vphp.Context) {
     unsafe {
         p := malloc(sizeof(Coach))
@@ -17,7 +17,7 @@ fn v_new_coach(ctx vphp.Context) {
 }
 
 // 创建"数据库"资源
-@[export: 'v_new_db']
+@[php_function]
 fn v_new_db(ctx vphp.Context) {
     unsafe {
         p := malloc(sizeof(Database))
@@ -28,7 +28,7 @@ fn v_new_db(ctx vphp.Context) {
 }
 
 // 使用资源
-@[export: 'v_check_res']
+@[php_function]
 fn v_check_res(ctx vphp.Context) {
     res_val := ctx.arg_raw(0)
 

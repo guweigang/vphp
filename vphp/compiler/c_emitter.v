@@ -259,38 +259,12 @@ fn (g CGenerator) gen_func_c(f &repr.PhpFuncRepr) []string {
     mut r := []string{}
     func_builder := g.build_func(f)
     r << func_builder.render_arginfo()
-
-    tm := TypeMap.get_type(f.return_type)
-    
-    target_func := if f.uses_php_function { 'vphp_wrap_${f.name}' } else { f.name }
-
-    if tm.v_type == 'void' {
-        r << 'extern void ${target_func}(vphp_context_internal ctx);'
-        r << 'PHP_FUNCTION(${f.name}) {'
-        r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
-        r << '    ${target_func}(ctx);'
-        r << '}'
-    } else if !f.uses_php_function && tm.v_type == 'string' {
-        r << 'extern v_string ${target_func}(vphp_context_internal ctx);'
-        r << 'PHP_FUNCTION(${f.name}) {'
-        r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
-        r << '    v_string res = ${target_func}(ctx);'
-        r << '    RETVAL_STRINGL((char*)res.str, res.len);'
-        r << '}'
-    } else if !f.uses_php_function {
-        r << 'extern ${tm.c_type} ${target_func}(vphp_context_internal ctx);'
-        r << 'PHP_FUNCTION(${f.name}) {'
-        r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
-        r << '    ${tm.c_type} res = ${target_func}(ctx);'
-        r << '    ${tm.php_return}(res);'
-        r << '}'
-    } else {
-        r << 'extern void ${target_func}(vphp_context_internal ctx);'
-        r << 'PHP_FUNCTION(${f.name}) {'
-        r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
-        r << '    ${target_func}(ctx);'
-        r << '}'
-    }
+	target_func := 'vphp_wrap_${f.name}'
+	r << 'extern void ${target_func}(vphp_context_internal ctx);'
+	r << 'PHP_FUNCTION(${f.name}) {'
+	r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+	r << '    ${target_func}(ctx);'
+	r << '}'
     return r
 }
 
