@@ -372,6 +372,71 @@ vphp.ZVal.new_string('hello')
 
 旧的 `new_val_*` 兼容入口还在，但不再主推。
 
+## 数组遍历 helper：`each / fold / reduce`
+
+对 `array` / `object` 类型的 `ZVal`，现在有两组遍历语义：
+
+### 原生遍历
+
+- `foreach(...)`
+- `each(...)`
+
+其中：
+
+- `each(...)` 是更语义化的别名
+- 适合做副作用式遍历
+- 不显式返回累积结果
+
+例如：
+
+```v
+mut items := []string{}
+mut ref := &items
+
+z.each(fn [ref] (key vphp.ZVal, val vphp.ZVal) {
+	unsafe {
+		(*ref) << '${key.to_string()}=${val.to_string()}'
+	}
+})
+```
+
+### 带累积器的遍历
+
+- `foreach_with_ctx(init, cb)`
+- `fold(init, cb)`
+- `reduce(init, cb)`
+
+其中：
+
+- `fold(...)` / `reduce(...)` 是更直观的语义化别名
+- 当前 `reduce(...)` 与 `fold(...)` 保持同义，统一采用显式初始值版本
+- 适合把 PHP 数组折叠成：
+  - `[]string`
+  - `map[string]string`
+  - 字符串汇总
+  - 任意自定义累积器
+
+例如：
+
+```v
+items := z.fold[[]string]([]string{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc []string) {
+	acc << '${key.to_string()}=${val.to_string()}'
+})
+
+summary := z.reduce[string]('', fn (_ vphp.ZVal, val vphp.ZVal, mut acc string) {
+	if acc.len > 0 {
+		acc += '|'
+	}
+	acc += val.to_string()
+})
+```
+
+推荐习惯：
+
+- 只遍历副作用：`each(...)`
+- 要累积结果：`fold(...)`
+- 兼容旧代码：`foreach(...)` / `foreach_with_ctx(...)`
+
 ## 错误处理建议
 
 两种常用风格：

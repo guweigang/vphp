@@ -218,6 +218,13 @@ PHP_FUNCTION(v_get_v_closure_auto) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_get_v_closure_auto(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_iter_helpers_demo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_iter_helpers_demo(vphp_context_internal ctx);
+PHP_FUNCTION(v_iter_helpers_demo) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_iter_helpers_demo(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_reverse_string(vphp_context_internal ctx);
@@ -796,6 +803,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_test_globals, arginfo_v_test_globals)
     PHP_FE(v_get_v_closure, arginfo_v_get_v_closure)
     PHP_FE(v_get_v_closure_auto, arginfo_v_get_v_closure_auto)
+    PHP_FE(v_iter_helpers_demo, arginfo_v_iter_helpers_demo)
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
     PHP_FE(v_slim_demo_dispatch, arginfo_v_slim_demo_dispatch)

@@ -840,6 +840,12 @@ fn vphp_wrap_v_get_v_closure_auto(ctx vphp.Context) {
     v_get_v_closure_auto(arg_0)
 }
 
+@[export: 'vphp_wrap_v_iter_helpers_demo']
+fn vphp_wrap_v_iter_helpers_demo(ctx vphp.Context) {
+    arg_0 := ctx
+    v_iter_helpers_demo(arg_0)
+}
+
 @[export: 'vphp_wrap_v_reverse_string']
 fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
     arg_0 := ctx

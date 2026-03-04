@@ -1139,6 +1139,11 @@ pub fn (v ZVal) foreach(cb ForeachCb) {
 	C.vphp_zval_foreach(v.raw, &cb, vphp_foreach_wrapper)
 }
 
+// 语义化别名：更贴近日常遍历语义
+pub fn (v ZVal) each(cb ForeachCb) {
+	v.foreach(cb)
+}
+
 pub type ForeachWithCtxCb[T] = fn (key ZVal, val ZVal, mut ctx T)
 
 fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
@@ -1167,4 +1172,14 @@ pub fn (v ZVal) foreach_with_ctx[T](ctx T, cb ForeachWithCtxCb[T]) T {
 	}
 	C.vphp_zval_foreach(v.raw, &pack, vphp_foreach_with_ctx_wrapper[T])
 	return pack.ctx
+}
+
+// 语义化别名：带累积器的遍历
+pub fn (v ZVal) fold[T](init T, cb ForeachWithCtxCb[T]) T {
+	return v.foreach_with_ctx[T](init, cb)
+}
+
+// reduce 目前与 fold 保持同义；统一采用显式初始值版本
+pub fn (v ZVal) reduce[T](init T, cb ForeachWithCtxCb[T]) T {
+	return v.foreach_with_ctx[T](init, cb)
 }
