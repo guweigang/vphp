@@ -15,6 +15,7 @@ Use these to obtain a PHP target as `ZVal`:
 ```v
 fn_ref := vphp.php_fn('strlen')
 cls_ref := vphp.php_class('DateTime')
+app_ver := vphp.php_const('PHP_VERSION')
 ```
 
 Compatibility helper:
@@ -27,6 +28,13 @@ Recommended style:
 
 ```v
 res := vphp.php_fn('phpversion').call([])
+```
+
+Additional file-loading helpers:
+
+```v
+loaded := vphp.include('/path/to/file.php')
+loaded_once := vphp.include_once('/path/to/file.php')
 ```
 
 ## 2. Base `ZVal` Actions
@@ -47,6 +55,9 @@ These are the low-level interop actions:
 | `z.static_prop(name)` | read static property |
 | `z.set_static_prop(name, value)` | write static property |
 | `z.@const(name)` | read class constant |
+| `z.class_name()` | object class name / class-string name |
+| `z.namespace_name()` | namespace part of class name |
+| `z.short_name()` | short class name |
 
 Example:
 
@@ -62,6 +73,7 @@ Property write note:
 - `set_prop(...)` respects the PHP runtime rules of the target object
 - writing a readonly property raises the normal Zend readonly error
 - protected/private properties are not widened by `vphp`; visibility checks still apply
+- `class_name()` returns the object FQCN for objects, or the same string for class-string `ZVal`s
 
 ## 3. Typed Value Helpers
 

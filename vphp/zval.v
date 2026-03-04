@@ -374,6 +374,42 @@ pub fn (v ZVal) get_prop_bool(name string) bool {
 	return prop.to_bool()
 }
 
+pub fn (v ZVal) class_name() string {
+	if v.raw == 0 {
+		return ''
+	}
+	if v.is_string() {
+		return v.to_string()
+	}
+	if !v.is_object() {
+		return ''
+	}
+	unsafe {
+		mut len := 0
+		name := C.vphp_get_object_class_name(v.raw, &len)
+		if name == 0 || len <= 0 {
+			return ''
+		}
+		return name.vstring_with_len(len).clone()
+	}
+}
+
+pub fn (v ZVal) namespace_name() string {
+	class_name := v.class_name()
+	if !class_name.contains('\\') {
+		return ''
+	}
+	return class_name.all_before_last('\\')
+}
+
+pub fn (v ZVal) short_name() string {
+	class_name := v.class_name()
+	if !class_name.contains('\\') {
+		return class_name
+	}
+	return class_name.all_after_last('\\')
+}
+
 // ======== PHP interop ========
 // 和 `interop.md` 保持一致的分层：
 // 1. 基础动作

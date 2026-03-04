@@ -136,6 +136,9 @@ int vphp_call_static_method(const char *class_name, int class_name_len,
                             int param_count, zval **params_ptrs);
 int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
                       int param_count, zval **params_ptrs);
+int vphp_include_file(const char *filename, int filename_len, zval *retval,
+                      int once);
+const char *vphp_get_object_class_name(zval *zv, int *len);
 
 zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
                                        const char *name, int name_len, zval *rv);

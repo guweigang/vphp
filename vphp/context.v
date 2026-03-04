@@ -143,6 +143,14 @@ pub fn (ctx Context) return_obj(v_ptr voidptr, ce voidptr) {
 	C.vphp_return_obj(ctx.ret, v_ptr, ce)
 }
 
+pub fn (ctx Context) return_zval(val ZVal) {
+	if !val.is_valid() {
+		ctx.return_null()
+		return
+	}
+	unsafe { C.ZVAL_COPY(ctx.ret, val.raw) }
+}
+
 pub fn (ctx Context) return_val[T](val T) {
 	mut out := ZVal{
 		raw: ctx.ret
@@ -243,6 +251,14 @@ pub fn return_val_raw[T](ret &C.zval, val T) {
 		}
 		out.from_v[T](val) or { out.set_null() }
 	}
+}
+
+pub fn return_zval_raw(ret &C.zval, val ZVal) {
+	if !val.is_valid() {
+		unsafe { C.vphp_set_null(ret) }
+		return
+	}
+	unsafe { C.ZVAL_COPY(ret, val.raw) }
 }
 
 // ======== 闭包桥接 ========

@@ -134,6 +134,34 @@ PHP_FUNCTION(v_typed_object_restore) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_typed_object_restore(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_read_php_global_const, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_read_php_global_const(vphp_context_internal ctx);
+PHP_FUNCTION(v_read_php_global_const) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_read_php_global_const(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_include_php_file, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_include_php_file(vphp_context_internal ctx);
+PHP_FUNCTION(v_include_php_file) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_include_php_file(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_include_php_file_once, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_include_php_file_once(vphp_context_internal ctx);
+PHP_FUNCTION(v_include_php_file_once) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_include_php_file_once(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_php_object_meta, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_php_object_meta(vphp_context_internal ctx);
+PHP_FUNCTION(v_php_object_meta) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_php_object_meta(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_trigger_user_action, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_trigger_user_action(vphp_context_internal ctx);
@@ -546,6 +574,38 @@ static const zend_function_entry story_methods[] = {
     PHP_FE_END
 };
 
+zend_class_entry *readonlyrecord_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_readonlyrecord_construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_readonlyrecord_reveal, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(ReadonlyRecord, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* ReadonlyRecord_handlers();
+    vphp_class_handlers *h = ReadonlyRecord_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void vphp_wrap_ReadonlyRecord_construct(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    vphp_wrap_ReadonlyRecord_construct(v_ptr, ctx);
+}
+PHP_METHOD(ReadonlyRecord, reveal) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_ReadonlyRecord_reveal(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_ReadonlyRecord_reveal(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry readonlyrecord_methods[] = {
+    PHP_ME(ReadonlyRecord, __construct, arginfo_readonlyrecord_construct, ZEND_ACC_PUBLIC)
+    PHP_ME(ReadonlyRecord, reveal, arginfo_readonlyrecord_reveal, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 zend_class_entry *traitpost_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_traitpost_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -703,6 +763,10 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_read_php_class_constant, arginfo_v_read_php_class_constant)
     PHP_FE(v_typed_php_interop, arginfo_v_typed_php_interop)
     PHP_FE(v_typed_object_restore, arginfo_v_typed_object_restore)
+    PHP_FE(v_read_php_global_const, arginfo_v_read_php_global_const)
+    PHP_FE(v_include_php_file, arginfo_v_include_php_file)
+    PHP_FE(v_include_php_file_once, arginfo_v_include_php_file_once)
+    PHP_FE(v_php_object_meta, arginfo_v_php_object_meta)
     PHP_FE(v_trigger_user_action, arginfo_v_trigger_user_action)
     PHP_FE(v_call_php_closure, arginfo_v_call_php_closure)
     PHP_FE(v_test_globals, arginfo_v_test_globals)
@@ -777,6 +841,14 @@ PHP_MINIT_FUNCTION(vphptest) {
         story_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
         story_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(story_ce, "chapter_count", sizeof("chapter_count")-1, 0, ZEND_ACC_PUBLIC);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "ReadonlyRecord", readonlyrecord_methods);
+        readonlyrecord_ce = zend_register_internal_class(&ce);
+        readonlyrecord_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_long(readonlyrecord_ce, "created_at", sizeof("created_at")-1, 0, ZEND_ACC_PUBLIC | ZEND_ACC_READONLY);
+        zend_declare_property_string(readonlyrecord_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
+        zend_declare_property_string(readonlyrecord_ce, "internal_note", sizeof("internal_note")-1, "", ZEND_ACC_PROTECTED);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "TraitPost", traitpost_methods);

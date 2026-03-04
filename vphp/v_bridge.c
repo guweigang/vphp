@@ -281,6 +281,27 @@ int vphp_new_instance(const char *class_name, int class_name_len, zval *retval,
     efree(params);
   return result;
 }
+int vphp_include_file(const char *filename, int filename_len, zval *retval,
+                      int once) {
+  zend_file_handle file_handle;
+  zend_string *filename_str = zend_string_init(filename, filename_len, 0);
+  zend_string *resolved_path = zend_resolve_path(filename_str);
+  zend_string_release(filename_str);
+  if (once && resolved_path &&
+      zend_hash_exists(&EG(included_files), resolved_path)) {
+    ZVAL_TRUE(retval);
+    zend_string_release(resolved_path);
+    return SUCCESS;
+  }
+  zend_stream_init_filename(&file_handle, filename);
+  file_handle.primary_script = 0;
+  if (resolved_path) {
+    file_handle.opened_path = resolved_path;
+  }
+  ZVAL_UNDEF(retval);
+  return zend_execute_scripts(once ? ZEND_INCLUDE_ONCE : ZEND_INCLUDE, retval, 1,
+                              &file_handle);
+}
 bool vphp_has_exception() { return EG(exception) != NULL; }
 int vphp_call_method(zval *obj, const char *method, int method_len,
                      zval *retval, int param_count, zval **params_ptrs) {
@@ -308,6 +329,14 @@ int vphp_call_method(zval *obj, const char *method, int method_len,
 }
 int vphp_is_callable(zval *callable) {
   return callable ? zend_is_callable(callable, 0, NULL) : 0;
+}
+const char *vphp_get_object_class_name(zval *zv, int *len) {
+  if (!zv || Z_TYPE_P(zv) != IS_OBJECT) {
+    *len = 0;
+    return "";
+  }
+  *len = ZSTR_LEN(Z_OBJCE_P(zv)->name);
+  return ZSTR_VAL(Z_OBJCE_P(zv)->name);
 }
 int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs) {

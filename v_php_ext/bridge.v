@@ -445,6 +445,70 @@ pub fn story_handlers() voidptr {
     } }
 }
 
+@[export: 'ReadonlyRecord_new_raw']
+pub fn readonlyrecord_new_raw() voidptr {
+    return vphp.generic_new_raw[ReadonlyRecord]()
+}
+@[export: 'ReadonlyRecord_get_prop']
+pub fn readonlyrecord_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &ReadonlyRecord(ptr)
+        if name == 'created_at' {
+            vphp.return_val_raw(rv, i64(obj.created_at))
+            return
+        }
+        if name == 'title' {
+            vphp.return_val_raw(rv, obj.title)
+            return
+        }
+    }
+}
+@[export: 'ReadonlyRecord_set_prop']
+pub fn readonlyrecord_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &ReadonlyRecord(ptr)
+        arg := vphp.ZVal{ raw: value }
+        if name == 'title' {
+            obj.title = arg.get_string()
+            return
+        }
+    }
+}
+@[export: 'ReadonlyRecord_sync_props']
+pub fn readonlyrecord_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &ReadonlyRecord(ptr)
+        out := vphp.ZVal{ raw: zv }
+        out.add_property_long('created_at', i64(obj.created_at))
+        out.add_property_string('title', obj.title)
+        out.add_property_string('internal_note', obj.internal_note)
+    }
+}
+@[export: 'vphp_wrap_ReadonlyRecord_construct']
+pub fn vphp_wrap_readonlyrecord_construct(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &ReadonlyRecord(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.construct(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_ReadonlyRecord_reveal']
+pub fn vphp_wrap_readonlyrecord_reveal(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &ReadonlyRecord(ptr) }
+    res := recv.reveal()
+    ctx.return_val[string](res)
+}
+@[export: 'ReadonlyRecord_handlers']
+pub fn readonlyrecord_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(readonlyrecord_get_prop)
+        write_handler: voidptr(readonlyrecord_set_prop)
+        sync_handler:  voidptr(readonlyrecord_sync_props)
+        new_raw:       voidptr(readonlyrecord_new_raw)
+    } }
+}
+
 @[export: 'TraitPost_new_raw']
 pub fn traitpost_new_raw() voidptr {
     return vphp.generic_new_raw[TraitPost]()
@@ -702,6 +766,30 @@ fn vphp_wrap_v_typed_php_interop(ctx vphp.Context) {
 fn vphp_wrap_v_typed_object_restore(ctx vphp.Context) {
     arg_0 := ctx
     v_typed_object_restore(arg_0)
+}
+
+@[export: 'vphp_wrap_v_read_php_global_const']
+fn vphp_wrap_v_read_php_global_const(ctx vphp.Context) {
+    arg_0 := ctx
+    v_read_php_global_const(arg_0)
+}
+
+@[export: 'vphp_wrap_v_include_php_file']
+fn vphp_wrap_v_include_php_file(ctx vphp.Context) {
+    arg_0 := ctx
+    v_include_php_file(arg_0)
+}
+
+@[export: 'vphp_wrap_v_include_php_file_once']
+fn vphp_wrap_v_include_php_file_once(ctx vphp.Context) {
+    arg_0 := ctx
+    v_include_php_file_once(arg_0)
+}
+
+@[export: 'vphp_wrap_v_php_object_meta']
+fn vphp_wrap_v_php_object_meta(ctx vphp.Context) {
+    arg_0 := ctx
+    v_php_object_meta(arg_0)
 }
 
 @[export: 'vphp_wrap_v_trigger_user_action']

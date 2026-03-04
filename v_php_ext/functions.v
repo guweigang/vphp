@@ -254,6 +254,54 @@ fn v_typed_object_restore(ctx vphp.Context) {
 }
 
 @[php_function]
+fn v_read_php_global_const(ctx vphp.Context) {
+	const_name := ctx.arg[string](0)
+	value := vphp.php_const(const_name)
+	if !value.is_valid() {
+		vphp.throw_exception('读取常量失败: ${const_name}', 0)
+		return
+	}
+	ctx.return_string('${const_name}=${value.to_string()}')
+}
+
+@[php_function]
+fn v_include_php_file(ctx vphp.Context) {
+	path := ctx.arg[string](0)
+	result := vphp.include(path)
+	if !result.is_valid() {
+		vphp.throw_exception('include 失败: ${path}', 0)
+		return
+	}
+	ctx.return_zval(result)
+}
+
+@[php_function]
+fn v_include_php_file_once(ctx vphp.Context) {
+	path := ctx.arg[string](0)
+	result := vphp.include_once(path)
+	if !result.is_valid() {
+		vphp.throw_exception('include_once 失败: ${path}', 0)
+		return
+	}
+	ctx.return_zval(result)
+}
+
+@[php_function]
+fn v_php_object_meta(ctx vphp.Context) {
+	obj := ctx.arg_raw(0)
+	if !obj.is_object() {
+		vphp.throw_exception('需要对象参数', 0)
+		return
+	}
+
+	ctx.return_map({
+		'class':     obj.class_name()
+		'namespace': obj.namespace_name()
+		'short':     obj.short_name()
+	})
+}
+
+@[php_function]
 fn v_trigger_user_action(ctx vphp.Context) {
 	user_obj := ctx.arg_raw(0)
 	if !user_obj.is_object() {
