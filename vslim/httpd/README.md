@@ -81,10 +81,23 @@ This gives you a single command that boots:
 Endpoints:
 
 - `GET /health` -> `OK`
-- `GET /dispatch?method=GET&path=/users/42` -> `{"user":"42"}`
-- `HEAD /dispatch?method=GET&path=/go/nova` -> same status/headers, no body
-- `GET /dispatch?method=POST&path=/health` -> `405 Method Not Allowed`
-- `GET /dispatch?method=GET&path=/panic` -> `500 Internal Server Error`
+- direct requests are proxied to the PHP worker as-is:
+  - `GET /hello/codex`
+  - `GET /go/nova`
+  - `GET /api/meta`
+- `/dispatch` is kept as a debug bridge endpoint:
+  - `GET /dispatch?method=GET&path=/users/42`
+  - `HEAD /dispatch?method=GET&path=/go/nova`
+  - `GET /dispatch?method=POST&path=/health`
+  - `GET /dispatch?method=GET&path=/panic`
+
+For local smoke tests, prefer bypassing shell/system proxies:
+
+```bash
+curl --noproxy '*' -i http://127.0.0.1:19881/hello/codex
+curl --noproxy '*' -i http://127.0.0.1:19881/go/nova
+curl --noproxy '*' -i -H 'Host: demo.local' http://127.0.0.1:19881/api/meta
+```
 
 ## PHP Userland scheduling
 

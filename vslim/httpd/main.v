@@ -192,6 +192,29 @@ fn dispatch_via_worker(socket_path string, method string, path string, req http.
 	return resp
 }
 
+fn proxy_worker_response(mut app App, mut ctx Context, method string, path string, body_on_head string) veb.Result {
+	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
+	resp := dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
+		app.emit('http.request', {
+			'method': method.to_upper()
+			'path':   normalize_path(path)
+			'status': '502'
+		})
+		ctx.res.set_status(.bad_gateway)
+		return ctx.text(body_on_head)
+	}
+	app.emit('http.request', {
+		'method': method.to_upper()
+		'path':   normalize_path(path)
+		'status': '${resp.status}'
+	})
+	ctx.res.set_status(http.status_from_int(resp.status))
+	apply_worker_headers(mut ctx, resp.headers)
+	ctype := resp.headers['content-type'] or { 'text/plain; charset=utf-8' }
+	ctx.set_content_type(ctype)
+	return ctx.text(if body_on_head == '' && method.to_upper() == 'HEAD' { '' } else { resp.body })
+}
+
 fn normalize_request_target(raw_path string) (string, string) {
 	path := normalize_path(raw_path)
 	if !path.contains('?') {
@@ -317,35 +340,19 @@ pub fn (mut app App) health(mut ctx Context) veb.Result {
 pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
-	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
+	if app.worker_socket != '' {
+		return proxy_worker_response(mut app, mut ctx, method, path, 'Bad Gateway')
+	}
 	mut status := 200
 	mut body := ''
 	mut ctype := 'text/plain; charset=utf-8'
-	mut worker_headers := map[string]string{}
-	if app.worker_socket != '' {
-		resp := dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
-			app.emit('http.request', {
-				'method': method.to_upper()
-				'path':   normalize_path(path)
-				'status': '502'
-			})
-			ctx.res.set_status(.bad_gateway)
-			return ctx.text('Bad Gateway')
-		}
-		status = resp.status
-		body = resp.body
-		worker_headers = resp.headers.clone()
-		ctype = worker_headers['content-type'] or { 'text/plain; charset=utf-8' }
-	} else {
-		status, body, ctype = dispatch_core(method, path)
-	}
+	status, body, ctype = dispatch_core(method, path)
 	app.emit('http.request', {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${status}'
 	})
 	ctx.res.set_status(http.status_from_int(status))
-	apply_worker_headers(mut ctx, worker_headers)
 	ctx.set_content_type(ctype)
 	return ctx.text(body)
 }
@@ -354,37 +361,81 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
-	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
+	if app.worker_socket != '' {
+		return proxy_worker_response(mut app, mut ctx, method, path, '')
+	}
 	mut status := 200
 	mut body := ''
 	mut ctype := 'text/plain; charset=utf-8'
-	mut worker_headers := map[string]string{}
-	if app.worker_socket != '' {
-		resp := dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
-			app.emit('http.request', {
-				'method': method.to_upper()
-				'path':   normalize_path(path)
-				'status': '502'
-			})
-			ctx.res.set_status(.bad_gateway)
-			return ctx.text('')
-		}
-		status = resp.status
-		body = resp.body
-		worker_headers = resp.headers.clone()
-		ctype = worker_headers['content-type'] or { 'text/plain; charset=utf-8' }
-	} else {
-		status, body, ctype = dispatch_core(method, path)
-	}
+	status, body, ctype = dispatch_core(method, path)
 	app.emit('http.request', {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${status}'
 	})
 	ctx.res.set_status(http.status_from_int(status))
-	apply_worker_headers(mut ctx, worker_headers)
 	ctx.set_content_type(ctype)
 	return ctx.text(body)
+}
+
+@['/:path...'; get]
+pub fn (mut app App) proxy_get(mut ctx Context, path string) veb.Result {
+	if app.worker_socket == '' {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
+	target := if ctx.req.url == '' { path } else { ctx.req.url }
+	return proxy_worker_response(mut app, mut ctx, 'GET', target, '')
+}
+
+@['/:path...'; post]
+pub fn (mut app App) proxy_post(mut ctx Context, path string) veb.Result {
+	if app.worker_socket == '' {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
+	target := if ctx.req.url == '' { path } else { ctx.req.url }
+	return proxy_worker_response(mut app, mut ctx, 'POST', target, '')
+}
+
+@['/:path...'; put]
+pub fn (mut app App) proxy_put(mut ctx Context, path string) veb.Result {
+	if app.worker_socket == '' {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
+	target := if ctx.req.url == '' { path } else { ctx.req.url }
+	return proxy_worker_response(mut app, mut ctx, 'PUT', target, '')
+}
+
+@['/:path...'; patch]
+pub fn (mut app App) proxy_patch(mut ctx Context, path string) veb.Result {
+	if app.worker_socket == '' {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
+	target := if ctx.req.url == '' { path } else { ctx.req.url }
+	return proxy_worker_response(mut app, mut ctx, 'PATCH', target, '')
+}
+
+@['/:path...'; delete]
+pub fn (mut app App) proxy_delete(mut ctx Context, path string) veb.Result {
+	if app.worker_socket == '' {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
+	target := if ctx.req.url == '' { path } else { ctx.req.url }
+	return proxy_worker_response(mut app, mut ctx, 'DELETE', target, '')
+}
+
+@['/:path...'; head]
+pub fn (mut app App) proxy_head(mut ctx Context, path string) veb.Result {
+	if app.worker_socket == '' {
+		ctx.res.set_status(.not_found)
+		return ctx.text('')
+	}
+	target := if ctx.req.url == '' { path } else { ctx.req.url }
+	return proxy_worker_response(mut app, mut ctx, 'HEAD', target, '')
 }
 
 fn run_server(args []string) {
