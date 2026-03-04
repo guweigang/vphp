@@ -2,6 +2,7 @@ module main
 
 import json
 import net.http
+import net.urllib
 import net.unix
 import os
 import sync
@@ -30,6 +31,71 @@ struct WorkerResponse {
 	status       int
 	body         string
 	headers       map[string]string
+}
+
+struct WorkerRequestPayload {
+	id               string
+	method           string
+	path             string
+	body             string
+	scheme           string
+	host             string
+	port             string
+	protocol_version string
+	remote_addr      string
+	query            map[string]string
+	headers          map[string]string
+	cookies          map[string]string
+	attributes       map[string]string
+	server           map[string]string
+	uploaded_files   []string
+}
+
+fn header_map_from_request(req http.Request) map[string]string {
+	mut out := map[string]string{}
+	for key in req.header.keys() {
+		values := req.header.custom_values(key)
+		if values.len == 0 {
+			continue
+		}
+		out[key.to_lower()] = values.join(', ')
+	}
+	return out
+}
+
+fn cookie_map_from_request(req http.Request) map[string]string {
+	raw := req.header.get(.cookie) or { return map[string]string{} }
+	mut out := map[string]string{}
+	for pair in raw.split(';') {
+		clean := pair.trim_space()
+		if clean == '' {
+			continue
+		}
+		if clean.contains('=') {
+			out[clean.all_before('=').trim_space()] = clean.all_after('=').trim_space()
+		} else {
+			out[clean] = ''
+		}
+	}
+	return out
+}
+
+fn server_map_from_request(req http.Request, remote_addr string) map[string]string {
+	mut host := req.host
+	mut port := ''
+	if host == '' {
+		host = req.header.get(.host) or { '' }
+	}
+	if host != '' {
+		host, port = urllib.split_host_port(host)
+	}
+	return {
+		'host':        host
+		'port':        port
+		'remote_addr': remote_addr
+		'method':      req.method.str()
+		'url':         req.url
+	}
 }
 
 fn normalize_path(path string) string {
@@ -98,29 +164,35 @@ fn read_frame(mut conn unix.StreamConn) !string {
 	return body.bytestr()
 }
 
-fn dispatch_via_worker(socket_path string, method string, path string) !(int, string, string) {
+fn dispatch_via_worker(socket_path string, method string, path string, req http.Request, remote_addr string) !(int, string, string) {
 	mut conn := unix.connect_stream(socket_path)!
 	defer {
 		conn.close() or {}
 	}
 	normalized_path, query_string := normalize_request_target(path)
-	query_json := json.encode(parse_query_string(query_string))
-	payload := json.encode({
-		'id':          'vhttpd-${time.now().unix_micro()}'
-		'method':      method.to_upper()
-		'path':        path
-		'body':        ''
-		'scheme':      'http'
-		'host':        ''
-		'port':        ''
-		'protocol_version': '1.1'
-		'remote_addr': ''
-		'query_json':  query_json
-		'headers_json': '{}'
-		'cookies_json': '{}'
-		'attributes_json': '{}'
-		'server_json': '{}'
-		'uploaded_files_json': '[]'
+	query := parse_query_string(query_string)
+	headers := header_map_from_request(req)
+	cookies := cookie_map_from_request(req)
+	server := server_map_from_request(req, remote_addr)
+	host := server['host'] or { req.host }
+	port := server['port'] or { '' }
+	scheme := req.header.get(.x_forwarded_proto) or { 'http' }
+	payload := json.encode(WorkerRequestPayload{
+		id: 'vhttpd-${time.now().unix_micro()}'
+		method: method.to_upper()
+		path: normalized_path
+		body: req.data
+		scheme: scheme
+		host: host
+		port: port
+		protocol_version: req.version.str().trim_left('HTTP/')
+		remote_addr: remote_addr
+		query: query
+		headers: headers
+		cookies: cookies
+		attributes: map[string]string{}
+		server: server
+		uploaded_files: []string{}
 	})
 	write_frame(mut conn, payload)!
 	resp_raw := read_frame(mut conn)!
@@ -259,8 +331,9 @@ pub fn (mut app App) health(mut ctx Context) veb.Result {
 pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
+	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
 	status, body, ctype := if app.worker_socket != '' {
-		dispatch_via_worker(app.worker_socket, method, path) or {
+		dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
 			500, 'Worker Unavailable', 'text/plain; charset=utf-8'
 		}
 	} else {
