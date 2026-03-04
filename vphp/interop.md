@@ -170,6 +170,8 @@ loaded := vphp.include_once('/tmp/bootstrap.php')
 | `z.is_user_class()` | 是否用户类 |
 | `z.method_exists(name)` | 方法是否存在 |
 | `z.property_exists(name)` | 属性是否存在 |
+| `z.method_names()` | 方法名列表 |
+| `z.property_names()` | 属性名列表 |
 | `z.const_names()` | 类常量列表 |
 | `z.const_exists(name)` | 类常量是否存在 |
 

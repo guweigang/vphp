@@ -332,8 +332,10 @@ fn v_php_object_introspection(ctx vphp.Context) {
 	ctx.return_map({
 		'has_method_greet':     obj.method_exists('greet').str()
 		'has_method_missing':   obj.method_exists('missingMethod').str()
+		'method_names':         obj.method_names().join(',')
 		'has_prop_name':        obj.property_exists('name').str()
 		'has_prop_missing':     obj.property_exists('missingProp').str()
+		'property_names':       obj.property_names().join(',')
 		'class_consts':         obj.const_names().join(',')
 		'datetime_has_atom':    vphp.php_class('DateTimeImmutable').const_exists('ATOM').str()
 	})

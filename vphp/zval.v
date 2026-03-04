@@ -468,6 +468,44 @@ pub fn (v ZVal) property_exists(name string) bool {
 	return res.is_valid() && res.to_bool()
 }
 
+pub fn (v ZVal) method_names() []string {
+	class_name := v.class_name()
+	if class_name.len == 0 {
+		return []string{}
+	}
+	methods := php_class('ReflectionClass').construct([
+		ZVal.new_string(class_name),
+	]).method('getMethods', [])
+	if !methods.is_array() {
+		return []string{}
+	}
+	mut out := []string{}
+	out = methods.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
+		acc << val.method('getName', []).to_string()
+	})
+	out.sort()
+	return out
+}
+
+pub fn (v ZVal) property_names() []string {
+	class_name := v.class_name()
+	if class_name.len == 0 {
+		return []string{}
+	}
+	props := php_class('ReflectionClass').construct([
+		ZVal.new_string(class_name),
+	]).method('getProperties', [])
+	if !props.is_array() {
+		return []string{}
+	}
+	mut out := []string{}
+	out = props.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
+		acc << val.method('getName', []).to_string()
+	})
+	out.sort()
+	return out
+}
+
 pub fn (v ZVal) const_names() []string {
 	class_name := v.class_name()
 	if class_name.len == 0 {

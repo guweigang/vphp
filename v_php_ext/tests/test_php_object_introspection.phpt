@@ -33,3 +33,5 @@ has_method_greet=true
 has_method_missing=false
 has_prop_missing=false
 has_prop_name=true
+method_names=__construct,greet
+property_names=name
