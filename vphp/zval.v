@@ -460,6 +460,14 @@ pub fn (v ZVal) is_instance_of(name string) bool {
 	return res.is_valid() && res.to_bool()
 }
 
+pub fn (v ZVal) is_subclass_of(name string) bool {
+	if v.raw == 0 {
+		return false
+	}
+	res := php_fn('is_subclass_of').call([v, ZVal.new_string(name), ZVal.new_bool(true)])
+	return res.is_valid() && res.to_bool()
+}
+
 pub fn (v ZVal) implements_interface(name string) bool {
 	if name.len == 0 {
 		return false

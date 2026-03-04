@@ -6,7 +6,9 @@ ZVal object introspection exposes method, property, and class constant metadata
 <?php
 namespace Demo\Inspect;
 
-final class GreeterBox
+class BaseBox {}
+
+final class GreeterBox extends BaseBox
 {
     public const LABEL = 'BOX';
     public const VERSION = '1.0';
@@ -37,5 +39,7 @@ implements_json=false
 implements_string=false
 is_box=true
 is_datetime=false
+is_subclass_parent=true
+is_subclass_self=false
 method_names=__construct,greet
 property_names=name

@@ -332,6 +332,8 @@ fn v_php_object_introspection(ctx vphp.Context) {
 	ctx.return_map({
 		'is_box':              obj.is_instance_of('Demo\\Inspect\\GreeterBox').str()
 		'is_datetime':         obj.is_instance_of('DateTimeImmutable').str()
+		'is_subclass_parent':  obj.is_subclass_of('Demo\\Inspect\\BaseBox').str()
+		'is_subclass_self':    obj.is_subclass_of('Demo\\Inspect\\GreeterBox').str()
 		'implements_string':   obj.implements_interface('Stringable').str()
 		'implements_json':     obj.implements_interface('JsonSerializable').str()
 		'has_method_greet':     obj.method_exists('greet').str()
