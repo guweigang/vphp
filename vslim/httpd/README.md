@@ -4,12 +4,12 @@ This is the **Scheme 2** prototype:
 
 - HTTP server runs as a standalone V CLI process (`veb`).
 - PHP Userland controls lifecycle and reads events.
-- `vphp` stays generic; framework/server logic stays in `v_php_ext`.
+- `vphp` stays generic; framework/server logic now lives with `vslim`.
 
 ## Build
 
 ```bash
-cd v_php_ext/httpd
+cd vslim/httpd
 v -o vhttpd main.v
 ```
 
@@ -31,7 +31,7 @@ v -o vhttpd main.v
   --event-log /tmp/vhttpd.events.ndjson \
   --worker-socket /tmp/vslim_worker.sock \
   --worker-autostart 1 \
-  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/v_php_ext/httpd/php-worker.php --socket /tmp/vslim_worker.sock'
+  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_worker.sock'
 ```
 
 This gives you a single command that boots:
@@ -72,26 +72,16 @@ print_r($mgr->events(20));
 $mgr->stop();
 ```
 
-## One-command PHP daemon
+## Current direction
 
-You can also run a pure PHP daemon directly:
+The active integration path is:
 
-```bash
-cd v_php_ext/httpd
-php daemon.php --host 127.0.0.1 --port 19080
+```text
+vhttpd -> php-worker.php -> vslim_handle_request(...)
 ```
 
-Then:
+That keeps:
 
-```bash
-curl http://127.0.0.1:19080/health
-```
-
-### Plug your framework
-
-1. Copy `app.example.php` to `app.php`
-2. Return your own `handler` (and optional `request_factory`)
-3. `php daemon.php`
-
-`daemon.php` will try to create a standard PSR-7 `ServerRequest` automatically
-if Nyholm/Guzzle PSR-7 classes are available. Otherwise it falls back to a normalized raw request array.
+- `vhttpd` as the network/runtime layer
+- `php-worker.php` as the PHP worker boundary
+- `vslim` as the framework dispatch layer

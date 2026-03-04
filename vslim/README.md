@@ -143,6 +143,12 @@ make ext
 make test
 ```
 
+HTTP runtime 相关文件现在在：
+
+- [/Users/guweigang/Source/vphpext/vslim/httpd/main.v](/Users/guweigang/Source/vphpext/vslim/httpd/main.v)
+- [/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php](/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php)
+- [/Users/guweigang/Source/vphpext/vslim/httpd/README.md](/Users/guweigang/Source/vphpext/vslim/httpd/README.md)
+
 ## 下一步建议
 
 1. 把 demo app 提升成可配置 app builder
