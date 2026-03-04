@@ -61,6 +61,24 @@ pub fn vphp_wrap_vslimroutegroup_post(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimRouteGroup_get_named']
+pub fn vphp_wrap_vslimroutegroup_get_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.get_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_post_named']
+pub fn vphp_wrap_vslimroutegroup_post_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.post_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
 @[export: 'VSlimRouteGroup_handlers']
 pub fn vslimroutegroup_handlers() voidptr {
     return unsafe { &C.vphp_class_handlers{
@@ -551,12 +569,47 @@ pub fn vphp_wrap_vslimapp_post(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_get_named']
+pub fn vphp_wrap_vslimapp_get_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.get_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_post_named']
+pub fn vphp_wrap_vslimapp_post_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.post_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_middleware']
 pub fn vphp_wrap_vslimapp_middleware(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
     arg_0 := ctx.arg_val(0)
     res := recv.middleware(arg_0)
     return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_url_for']
+pub fn vphp_wrap_vslimapp_url_for(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.url_for(arg_0, arg_1)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_url_for_query']
+pub fn vphp_wrap_vslimapp_url_for_query(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.url_for_query(arg_0, arg_1, arg_2)
+    ctx.return_val[string](res)
 }
 @[export: 'VSlimApp_handlers']
 pub fn vslimapp_handlers() voidptr {

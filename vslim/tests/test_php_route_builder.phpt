@@ -24,6 +24,9 @@ $app->middleware(function (VSlimRequest $req) {
 $app->get('/hello/:name', function (VSlimRequest $req) {
     return new VSlimResponse(200, 'Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
 });
+$app->get_named('hello.show', '/hello/:name', function (VSlimRequest $req) {
+    return new VSlimResponse(200, 'Named Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
+});
 $app->post('/submit', function (VSlimRequest $req) {
     return [
         'status' => 201,
@@ -41,6 +44,9 @@ $api->middleware(function (VSlimRequest $req) {
 });
 $api->get('/users/:id', function (VSlimRequest $req) {
     return 'user:' . $req->param('id');
+});
+$api->get_named('api.users.show', '/members/:id', function (VSlimRequest $req) {
+    return 'member:' . $req->param('id');
 });
 $api->get('/blocked', function (VSlimRequest $req) {
     return 'route-blocked';
@@ -65,10 +71,13 @@ $v1->get('/ping', function (VSlimRequest $req) {
 });
 
 echo $app->dispatch('GET', '/hello/codex')->body . PHP_EOL;
+echo $app->url_for('hello.show', ['name' => 'nova']) . PHP_EOL;
+echo $app->url_for_query('api.users.show', ['id' => '12'], ['tab' => 'profile', 'trace' => '1']) . PHP_EOL;
 $req = new VSlimRequest('POST', '/submit?trace_id=builder', 'payload');
 $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
 echo $app->dispatch('GET', '/api/users/9')->body . PHP_EOL;
+echo $app->dispatch('GET', '/api/members/12')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/blocked')->body . PHP_EOL;
 echo $app->dispatch('GET', '/api/v1/ping?trace_id=group')->status . '|' . $app->dispatch('GET', '/api/v1/ping?trace_id=group')->body . PHP_EOL;
@@ -77,8 +86,11 @@ echo $app->dispatch('POST', '/submit?trace_id=mw')->status . '|' . $app->dispatc
 ?>
 --EXPECT--
 Hello, codex
+/hello/nova
+/api/members/12?tab=profile&trace=1
 201|{"body":"payload","trace":"builder"}|builder
 user:9
+member:12
 {"pong":true,"path":"\/api\/v1\/ping"}
 group-blocked
 206|group-middleware

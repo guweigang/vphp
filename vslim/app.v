@@ -40,6 +40,7 @@ mut:
 
 struct PhpRoute {
 	method  string
+	name    string
 	pattern string
 	handler vphp.ZVal
 }
@@ -446,13 +447,25 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 
 @[php_method]
 pub fn (mut app VSlimApp) get(pattern string, handler vphp.ZVal) &VSlimApp {
-	app.add_php_route('GET', pattern, handler)
+	app.add_php_route('GET', '', pattern, handler)
 	return app
 }
 
 @[php_method]
 pub fn (mut app VSlimApp) post(pattern string, handler vphp.ZVal) &VSlimApp {
-	app.add_php_route('POST', pattern, handler)
+	app.add_php_route('POST', '', pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) get_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('GET', name, pattern, handler)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) post_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
+	app.add_php_route('POST', name, pattern, handler)
 	return app
 }
 
@@ -491,7 +504,7 @@ pub fn (group &VSlimRouteGroup) middleware(handler vphp.ZVal) &VSlimRouteGroup {
 pub fn (group &VSlimRouteGroup) get(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('GET', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('GET', '', join_route_prefix(group.prefix, pattern), handler)
 	}
 	return group
 }
@@ -500,17 +513,53 @@ pub fn (group &VSlimRouteGroup) get(pattern string, handler vphp.ZVal) &VSlimRou
 pub fn (group &VSlimRouteGroup) post(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('POST', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('POST', '', join_route_prefix(group.prefix, pattern), handler)
 	}
 	return group
 }
 
-fn (mut app VSlimApp) add_php_route(method string, pattern string, handler vphp.ZVal) {
+@[php_method]
+pub fn (group &VSlimRouteGroup) get_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('GET', name, join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) post_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('POST', name, join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (app &VSlimApp) url_for(name string, params vphp.ZVal) string {
+	return app.url_for_query(name, params, vphp.ZVal.new_null())
+}
+
+@[php_method]
+pub fn (app &VSlimApp) url_for_query(name string, params vphp.ZVal, query vphp.ZVal) string {
+	params_map := zval_to_name_map(params)
+	query_map := zval_to_name_map(query)
+	for route in app.routes {
+		if route.name == name {
+			return render_route_url(route.pattern, &params_map, &query_map) or { '' }
+		}
+	}
+	return ''
+}
+
+fn (mut app VSlimApp) add_php_route(method string, name string, pattern string, handler vphp.ZVal) {
 	if !handler.is_valid() || !handler.is_callable() {
 		return
 	}
 	app.routes << PhpRoute{
 		method: method.to_upper()
+		name: name
 		pattern: pattern
 		handler: handler.dup()
 	}
@@ -725,6 +774,44 @@ fn join_route_prefix(prefix string, pattern string) string {
 	return '${base}/${tail}'
 }
 
+fn render_route_url(pattern string, params &map[string]string, query &map[string]string) ?string {
+	p := normalize_path(pattern)
+	mut parts := []string{}
+	for part in p.trim('/').split('/') {
+		if part == '' {
+			continue
+		}
+		if part.starts_with(':') {
+			key := part.all_after(':')
+			if key !in params {
+				return none
+			}
+			unsafe {
+				parts << params[key]
+			}
+			continue
+		}
+		parts << part
+	}
+	mut path := if parts.len == 0 { '/' } else { '/' + parts.join('/') }
+	if query.len > 0 {
+		path += '?' + encode_query_params(query)
+	}
+	return path
+}
+
+fn encode_query_params(query &map[string]string) string {
+	mut keys := query.keys()
+	keys.sort()
+	mut parts := []string{}
+	for key in keys {
+		unsafe {
+			parts << '${key}=${query[key]}'
+		}
+	}
+	return parts.join('&')
+}
+
 fn normalize_request_target(raw_path string) (string, string) {
 	path := normalize_path(raw_path)
 	if !path.contains('?') {
@@ -763,6 +850,13 @@ fn parse_name_map_json(raw string) map[string]string {
 		return map[string]string{}
 	}
 	return decoded
+}
+
+fn zval_to_name_map(z vphp.ZVal) map[string]string {
+	if !z.is_valid() || z.is_null() || z.is_undef() {
+		return map[string]string{}
+	}
+	return z.to_v[map[string]string]() or { map[string]string{} }
 }
 
 fn parse_headers_json(headers_json string) map[string]string {

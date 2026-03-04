@@ -133,6 +133,30 @@ echo $res->header('x-demo');
 echo $res->content_type;
 ```
 
+也可以在 PHP 侧直接 builder 路由、group 和 middleware：
+
+```php
+$app = new VSlimApp();
+
+$app->middleware(function (VSlimRequest $req) {
+    if ($req->path === '/blocked') {
+        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+    }
+    return null;
+});
+
+$api = $app->group('/api');
+$api->get_named('api.users.show', '/users/:id', function (VSlimRequest $req) {
+    return 'user:' . $req->param('id');
+});
+
+echo $app->url_for('api.users.show', ['id' => '42']);
+// /api/users/42
+
+echo $app->url_for_query('api.users.show', ['id' => '42'], ['tab' => 'profile']);
+// /api/users/42?tab=profile
+```
+
 也可以直接用函数入口：
 
 ```php
