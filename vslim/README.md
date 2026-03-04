@@ -155,6 +155,10 @@ echo $app->url_for('api.users.show', ['id' => '42']);
 
 echo $app->url_for_query('api.users.show', ['id' => '42'], ['tab' => 'profile']);
 // /api/users/42?tab=profile
+
+$redirect = $app->redirect_to('api.users.show', ['id' => '42']);
+echo $redirect->status;
+echo $redirect->header('location');
 ```
 
 也可以直接用函数入口：

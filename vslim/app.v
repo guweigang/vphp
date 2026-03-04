@@ -335,6 +335,24 @@ pub fn (mut r VSlimResponse) json(body string) &VSlimResponse {
 	return r
 }
 
+@[php_method]
+pub fn (mut r VSlimResponse) redirect(location string) &VSlimResponse {
+	return r.redirect_with_status(location, 302)
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) redirect_with_status(location string, status int) &VSlimResponse {
+	r.status = status
+	r.body = ''
+	mut headers := r.headers()
+	headers['location'] = location
+	if 'content-type' !in headers {
+		headers['content-type'] = r.content_type
+	}
+	apply_response_headers(mut r, headers)
+	return r
+}
+
 pub fn (r &VSlimResponse) headers() map[string]string {
 	return parse_headers_json(r.headers_json)
 }
@@ -551,6 +569,19 @@ pub fn (app &VSlimApp) url_for_query(name string, params vphp.ZVal, query vphp.Z
 		}
 	}
 	return ''
+}
+
+@[php_method]
+pub fn (app &VSlimApp) redirect_to(name string, params vphp.ZVal) &VSlimResponse {
+	return app.redirect_to_query(name, params, vphp.ZVal.new_null())
+}
+
+@[php_method]
+pub fn (app &VSlimApp) redirect_to_query(name string, params vphp.ZVal, query vphp.ZVal) &VSlimResponse {
+	location := app.url_for_query(name, params, query)
+	mut res := &VSlimResponse{}
+	res.construct(302, '', 'text/plain; charset=utf-8')
+	return res.redirect(location)
 }
 
 fn (mut app VSlimApp) add_php_route(method string, name string, pattern string, handler vphp.ZVal) {

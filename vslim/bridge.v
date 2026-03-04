@@ -483,6 +483,21 @@ pub fn vphp_wrap_vslimresponse_json(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.json(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimResponse_redirect']
+pub fn vphp_wrap_vslimresponse_redirect(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.redirect(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimResponse_redirect_with_status']
+pub fn vphp_wrap_vslimresponse_redirect_with_status(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[int](1)
+    res := recv.redirect_with_status(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimResponse_str']
 pub fn vphp_wrap_vslimresponse_str(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimResponse(ptr) }
@@ -610,6 +625,23 @@ pub fn vphp_wrap_vslimapp_url_for_query(ptr voidptr, ctx vphp.Context)  {
     arg_2 := ctx.arg_val(2)
     res := recv.url_for_query(arg_0, arg_1, arg_2)
     ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_redirect_to']
+pub fn vphp_wrap_vslimapp_redirect_to(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.redirect_to(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_redirect_to_query']
+pub fn vphp_wrap_vslimapp_redirect_to_query(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.redirect_to_query(arg_0, arg_1, arg_2)
+    return voidptr(res)
 }
 @[export: 'VSlimApp_handlers']
 pub fn vslimapp_handlers() voidptr {

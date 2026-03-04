@@ -73,6 +73,11 @@ $v1->get('/ping', function (VSlimRequest $req) {
 echo $app->dispatch('GET', '/hello/codex')->body . PHP_EOL;
 echo $app->url_for('hello.show', ['name' => 'nova']) . PHP_EOL;
 echo $app->url_for_query('api.users.show', ['id' => '12'], ['tab' => 'profile', 'trace' => '1']) . PHP_EOL;
+$redirect = $app->redirect_to('hello.show', ['name' => 'jump']);
+echo $redirect->status . '|' . $redirect->header('location') . '|' . $redirect->body . PHP_EOL;
+$manual = new VSlimResponse(200, 'ignored', 'text/plain; charset=utf-8');
+$manual->redirect_with_status('/moved', 307);
+echo $manual->status . '|' . $manual->header('location') . '|' . $manual->content_type . PHP_EOL;
 $req = new VSlimRequest('POST', '/submit?trace_id=builder', 'payload');
 $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
@@ -88,6 +93,8 @@ echo $app->dispatch('POST', '/submit?trace_id=mw')->status . '|' . $app->dispatc
 Hello, codex
 /hello/nova
 /api/members/12?tab=profile&trace=1
+302|/hello/jump|
+307|/moved|text/plain; charset=utf-8
 201|{"body":"payload","trace":"builder"}|builder
 user:9
 member:12
