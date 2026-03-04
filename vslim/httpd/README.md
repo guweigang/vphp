@@ -13,6 +13,29 @@ The design rule is:
 - `vslim` should stay at the framework layer
 - `vphp` should not become an HTTP helper bag
 
+## Why vhttpd uses veb but vslim keeps its own router
+
+This split is intentional.
+
+- `vhttpd`
+  - should stay as close to `veb` as possible
+  - `veb.Context`, `http.Request`, `urllib`, and `http.Cookie` are the source of truth
+  - this is where we want to benefit from V's HTTP/runtime stack
+
+- `vslim`
+  - is not trying to replace `veb`
+  - it exists to expose a runtime app builder to PHP userland
+  - PHP-side APIs like:
+    - `VSlimApp->get(...)`
+    - `VSlimApp->group(...)`
+    - `VSlimApp->middleware(...)`
+    require runtime route registration, which does not fit `veb`'s compile-time route generation model
+
+So the rule for the first release is:
+
+- `veb` is the HTTP/runtime source
+- `vslim` is the runtime framework layer built on top of that transport boundary
+
 ## Build
 
 ```bash

@@ -41,11 +41,13 @@ $req->set_headers(['x-trace-id' => 'from-header', 'content-type' => 'application
 $req->set_cookies(['sid' => 'cookie-7']);
 $req->set_attributes(['actor' => 'tester']);
 $req->set_query(['trace_id' => 'from-json']);
+$req->set_server(['server_name' => 'demo.local']);
 $req->port = '443';
 $req->protocol_version = '1.1';
 echo $req->header('x-trace-id') . '|' . ($req->has_header('content-type') ? 'yes' : 'no') . '|' . $req->scheme . '|' . $req->host . '|' . $req->remote_addr . PHP_EOL;
 echo $req->cookie('sid') . '|' . ($req->has_cookie('sid') ? 'yes' : 'no') . '|' . $req->param('id') . '|' . ($req->has_param('id') ? 'yes' : 'no') . PHP_EOL;
 echo $req->query('trace_id') . '|' . $req->attribute('actor') . '|' . ($req->has_attribute('actor') ? 'yes' : 'no') . '|' . $req->port . '|' . $req->protocol_version . PHP_EOL;
+echo $req->content_type() . '|' . $req->server_value('server_name') . '|' . ($req->has_server('server_name') ? 'yes' : 'no') . '|' . $req->uploaded_file_count() . '|' . ($req->is_secure() ? 'yes' : 'no') . PHP_EOL;
 
 $envelope = vslim_handle_request([
     'method' => 'GET',
@@ -90,6 +92,7 @@ from-php|yes
 from-header|yes|https|demo.local|127.0.0.1
 cookie-7|yes|7|yes
 from-json|tester|yes|443|1.1
+application/json|demo.local|yes|0|yes
 200|secret|text/plain; charset=utf-8
 202|{"ok":true}|application/json; charset=utf-8|yes|yes
 sid=cookie-202; Path=/

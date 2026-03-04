@@ -28,6 +28,33 @@
   - 路由、middleware、request/response facade、reverse routing
   - 不把自己做成第二个 runtime
 
+## 为什么不直接复用 veb 的 route 定义
+
+这里我们刻意没有把 `vslim` 做成 `veb` 的语法薄封装，原因不是要绕开 `veb`，而是两层职责不同：
+
+- `veb`
+  - 更适合 V 原生应用
+  - 路由和 middleware 主要是 compile-time 生成
+  - `App` 结构和 handler 关系在 V 编译阶段就确定
+
+- `vslim`
+  - 需要让 PHP userland 在运行时 builder 路由
+  - 例如：
+    - `$app->get(...)`
+    - `$app->group(...)`
+    - `$app->middleware(...)`
+  - 这些能力天然是 runtime registration，不是 compile-time route scanning
+
+所以第一版的原则是：
+
+- `veb` 负责 HTTP 输入、连接生命周期、请求原始数据
+- `vslim` 负责运行时路由、middleware、response facade
+
+换句话说：
+
+> `vslim` 复用 `veb` 作为 HTTP 源头，而不是重复实现 server；
+> 但它保留自己的 runtime router，因为 PHP-side app builder 本质上不是 `veb` 的 compile-time 模式。
+
 ## 当前目标
 
 这版 `vslim` 已经把早期在 `v_php_ext/slim.v` 里验证过的 MVP 核心迁了过来，并保留独立扩展形态。
@@ -150,6 +177,10 @@ $req->set_query(['trace_id' => 'from-json']);
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');
 echo $req->attribute('actor');
+echo $req->content_type();
+echo $req->server_value('server_name');
+echo $req->uploaded_file_count();
+var_dump($req->is_secure());
 
 $res = $app->dispatch_request($req);
 echo $req->param('id');

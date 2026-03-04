@@ -82,6 +82,11 @@ pub fn (r &VSlimRequest) has_header(name string) bool {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) content_type() string {
+	return r.header('content-type')
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) cookie(name string) string {
 	cookies := r.cookies()
 	return cookies[name] or { '' }
@@ -115,6 +120,28 @@ pub fn (r &VSlimRequest) attribute(name string) string {
 pub fn (r &VSlimRequest) has_attribute(name string) bool {
 	attrs := r.attributes()
 	return name in attrs
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) server_value(name string) string {
+	values := r.server_values()
+	return values[name] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_server(name string) bool {
+	values := r.server_values()
+	return name in values
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) uploaded_file_count() int {
+	return r.uploaded_files_list().len
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) is_secure() bool {
+	return r.scheme.to_lower() == 'https'
 }
 
 fn (r &VSlimRequest) headers() map[string]string {

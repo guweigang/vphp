@@ -342,6 +342,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_header, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_has_header, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_content_type, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_cookie, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_has_cookie, 0, 0, 0)
@@ -353,6 +355,14 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_attribute, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_has_attribute, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_server_value, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_has_server, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_uploaded_file_count, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslimrequest_is_secure, 0, 0, 0)
 ZEND_END_ARG_INFO()
 PHP_METHOD(VSlimRequest, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -519,6 +529,14 @@ PHP_METHOD(VSlimRequest, has_header) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimRequest_has_header(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(VSlimRequest, content_type) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_content_type(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_content_type(wrapper->v_ptr, ctx);
+}
 PHP_METHOD(VSlimRequest, cookie) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -567,6 +585,38 @@ PHP_METHOD(VSlimRequest, has_attribute) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimRequest_has_attribute(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(VSlimRequest, server_value) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_server_value(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_server_value(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlimRequest, has_server) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_has_server(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_has_server(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlimRequest, uploaded_file_count) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_uploaded_file_count(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_uploaded_file_count(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlimRequest, is_secure) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_is_secure(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_is_secure(wrapper->v_ptr, ctx);
+}
 static const zend_function_entry vslimrequest_methods[] = {
     PHP_ME(VSlimRequest, __construct, arginfo_vslimrequest_construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, __toString, arginfo_vslimrequest_str, ZEND_ACC_PUBLIC)
@@ -581,12 +631,17 @@ static const zend_function_entry vslimrequest_methods[] = {
     PHP_ME(VSlimRequest, has_query, arginfo_vslimrequest_has_query, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, header, arginfo_vslimrequest_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, has_header, arginfo_vslimrequest_has_header, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, content_type, arginfo_vslimrequest_content_type, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, cookie, arginfo_vslimrequest_cookie, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, has_cookie, arginfo_vslimrequest_has_cookie, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, param, arginfo_vslimrequest_param, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, has_param, arginfo_vslimrequest_has_param, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, attribute, arginfo_vslimrequest_attribute, ZEND_ACC_PUBLIC)
     PHP_ME(VSlimRequest, has_attribute, arginfo_vslimrequest_has_attribute, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, server_value, arginfo_vslimrequest_server_value, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, has_server, arginfo_vslimrequest_has_server, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, uploaded_file_count, arginfo_vslimrequest_uploaded_file_count, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlimRequest, is_secure, arginfo_vslimrequest_is_secure, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
