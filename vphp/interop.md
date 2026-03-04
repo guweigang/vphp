@@ -402,3 +402,81 @@ count := vphp.php_class('PhpCounter').static_prop_v[int]('count') or { 0 }
 
 - 核心控制流：抛异常
 - 可选信息：本地 fallback
+
+## 完整示例：include PHP 模块文件后在 V 侧使用
+
+一个很实用的 interop 场景是：
+
+1. 在 PHP 文件里定义 class
+2. 同一个文件返回 config array
+3. V 侧 `include_once`
+4. V 侧构造该类、调用方法、读取类信息
+5. V 侧遍历返回的数组
+
+例如 PHP fixture：
+
+```php
+<?php
+
+namespace Demo\IncludeCase;
+
+final class ModuleBox
+{
+    public function __construct(public string $name) {}
+
+    public function describe(): string
+    {
+        return "box:{$this->name}";
+    }
+}
+
+return [
+    'mode' => 'prod',
+    'driver' => 'mysql',
+    'host' => '127.0.0.1',
+];
+```
+
+V 侧可以这样使用：
+
+```v
+config := vphp.include_once(path)
+if !config.is_array() {
+	return
+}
+
+if !vphp.class_exists('Demo\\IncludeCase\\ModuleBox') {
+	return
+}
+
+box := vphp.php_class('Demo\\IncludeCase\\ModuleBox').construct([
+	vphp.ZVal.new_string('codex'),
+])
+
+desc := box.method_v[string]('describe', []) or { return }
+class_name := box.class_name()
+short_name := box.short_name()
+
+mut entries := []string{}
+entries = config.foreach_with_ctx[[]string](entries, fn (key vphp.ZVal, val vphp.ZVal, mut acc []string) {
+	acc << '${key.to_string()}=${val.to_string()}'
+})
+
+println('count=${config.array_count()}')
+println('class=${class_name}')
+println('short=${short_name}')
+println('desc=${desc}')
+println('items=${entries.join(",")}')
+```
+
+这条链说明了：
+
+- `include_once()` 不只是加载值，也可以加载 PHP 类型定义
+- `php_class(...)` 不会主动检查类是否存在，存在性判断应显式走 `class_exists(...)`
+- PHP 返回的数组可以直接在 V 侧 `count + foreach`
+- 同一条 interop 链里可以同时处理：
+  - 文件加载
+  - 类构造
+  - 方法调用
+  - 元信息读取
+  - 数组遍历
