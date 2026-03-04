@@ -93,6 +93,64 @@ That keeps:
 - `php-worker.php` as the PHP worker boundary
 - `vslim` as the framework dispatch layer
 
+## Final request envelope
+
+`vhttpd` now forwards a single structured request shape derived from `veb.Context`
+and `net.http.Request`. This is the transport contract for:
+
+- `vhttpd -> php-worker.php`
+- `php-worker.php -> vslim_handle_request(...)`
+- `VSlimPsr7Adapter::toWorkerEnvelope(...)`
+
+Current envelope shape:
+
+```php
+[
+    'method' => 'GET',
+    'path' => '/users/42?trace_id=worker',
+    'body' => '',
+    'scheme' => 'https',
+    'host' => 'example.test',
+    'port' => '443',
+    'protocol_version' => '1.1',
+    'remote_addr' => '127.0.0.1',
+    'headers' => [
+        'content-type' => 'application/json',
+        'x-request-id' => 'abc',
+    ],
+    'cookies' => [
+        'sid' => 'cookie-7',
+    ],
+    'query' => [
+        'trace_id' => 'worker',
+    ],
+    'attributes' => [],
+    'server' => [
+        'host' => 'example.test',
+        'port' => '443',
+        'remote_addr' => '127.0.0.1',
+        'method' => 'GET',
+        'url' => '/users/42?trace_id=worker',
+    ],
+    'uploaded_files' => [],
+]
+```
+
+Field notes:
+
+- `path` is still the canonical request target.
+- `query` is carried separately to avoid reparsing downstream.
+- `headers` are normalized to lower-case names at the worker boundary.
+- `cookies` are derived from the original `http.Request` headers via `http.read_cookies(...)`.
+- `server` is lightweight metadata copied from the `veb/http` request layer.
+- `uploaded_files` is reserved for future worker-side hydration; it stays structured even when empty.
+
+Compatibility note:
+
+- older `*_json` fields are intentionally removed
+- first release uses the array envelope only
+- if a caller still sends the old shape, it is now considered invalid input
+
 ## Optional PSR-7 bridge
 
 `php-worker.php` now includes `psr7_bridge.php`.

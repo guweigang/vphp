@@ -74,8 +74,15 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
     'body' => '',
     'scheme' => 'https',
     'host' => 'example.test',
+    'port' => '443',
+    'protocol_version' => '1.1',
     'remote_addr' => '127.0.0.1',
     'headers' => ['x-request-id' => 'demo'],
+    'cookies' => ['sid' => 'cookie-7'],
+    'query' => ['trace_id' => 'worker'],
+    'attributes' => [],
+    'server' => ['host' => 'example.test'],
+    'uploaded_files' => [],
 ]
 ```
 
@@ -137,9 +144,12 @@ $req->host = 'demo.local';
 $req->remote_addr = '127.0.0.1';
 $req->set_headers(['x-trace-id' => 'from-header']);
 $req->set_cookies(['sid' => 'cookie-7']);
+$req->set_attributes(['actor' => 'tester']);
+$req->set_query(['trace_id' => 'from-json']);
 
 echo $req->query('trace_id');
 echo $req->header('x-trace-id');
+echo $req->attribute('actor');
 
 $res = $app->dispatch_request($req);
 echo $req->param('id');
