@@ -216,6 +216,12 @@ echo $req->param('id');
 echo $req->cookie('sid');
 ```
 
+请求对象说明：
+
+- 第一版推荐优先使用 `set_*()` 方法来调整 request metadata
+- `VSlimRequest` 目前仍保留 public 字段，方便调试和过渡
+- 但从 API 演进角度，我们会把 `set_scheme()/set_host()/set_port()/set_protocol_version()/set_remote_addr()` 视为稳定入口
+
 响应对象也提供了基础 helper：
 
 ```php

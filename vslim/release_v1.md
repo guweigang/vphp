@@ -96,6 +96,8 @@ flowchart LR
 - `VSlimResponse`
 - query / header / cookie / param / attribute 访问
 - content type / response headers / cookie helpers
+- request metadata setter：
+  - `set_scheme()/set_host()/set_port()/set_protocol_version()/set_remote_addr()`
 
 ### Lifecycle hooks
 
