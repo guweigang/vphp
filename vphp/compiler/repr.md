@@ -241,6 +241,8 @@ Fields:
 
 - `return_type`
   - Original V return type
+  - This is semantic V type information, not a direct signal that the emitter
+    should build a PHP object wrapper
 
 - `args`
   - Ordered parameter metadata
@@ -329,6 +331,8 @@ Fields:
 
 - `return_type`
   - V-side return type
+  - The emitter still needs to classify whether this is an object return or a
+    scalar/container return
 
 - `args`
   - Ordered argument metadata

@@ -187,6 +187,44 @@ For a class export:
 
 That is why `build_class_export(...)` exists alongside `build_class_type(...)`.
 
+### Return-shape classification
+
+One subtle but important responsibility in `c_emitter.v` is deciding whether a
+`@[php_method]` return value should be emitted as:
+
+1. an object-return wrapper, or
+2. a plain value/container bridge using `ctx.return_val[...]`
+
+This classification must stay aligned with `v_glue.v`.
+
+Object-return wrappers are only correct for:
+
+- constructors (`construct` / `init`)
+- static factory methods returning the receiver type
+- methods returning `&SomePhpClass`
+
+Container returns such as:
+
+- `map[string]string`
+- `map[string]int`
+- `[]string`
+
+are still value returns, even though `TypeMap` may fall back to a generic C
+representation for them.
+
+If `c_emitter.v` misclassifies these as object returns, generated C will try to
+emit synthetic class-entry symbols such as:
+
+- `map[string]string_ce`
+- `[]string_ce`
+
+which are both invalid C identifiers and the wrong runtime model.
+
+The practical rule is:
+
+- object wrappers are chosen from method semantics
+- generic fallback C types alone are not enough to imply "PHP object return"
+
 ### What should eventually move out of `c_emitter.v`
 
 Potential future refactors:
