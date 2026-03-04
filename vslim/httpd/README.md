@@ -99,3 +99,10 @@ Current built-in factory detection covers:
 - `GuzzleHttp\\Psr7\\HttpFactory`
 
 This keeps `vhttpd` transport-generic while letting the worker boundary move toward PSR-7.
+
+If `php-worker.php` finds an app bootstrap file (`VSLIM_HTTPD_APP` or `httpd/app.php`), it will:
+
+- load the returned callable
+- build a PSR-7 request when a supported PSR-17 factory is available
+- dispatch the request into that app callable
+- normalize a PSR-7-style response back into the worker transport envelope

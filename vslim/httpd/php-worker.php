@@ -18,12 +18,17 @@ require_once __DIR__ . '/psr7_bridge.php';
 final class PhpWorker
 {
     private string $socketPath;
+    private ?string $appBootstrapPath;
     /** @var resource|null */
     private $server = null;
+    /** @var callable|null */
+    private $appHandler = null;
+    private bool $appLoaded = false;
 
-    public function __construct(string $socketPath)
+    public function __construct(string $socketPath, ?string $appBootstrapPath = null)
     {
         $this->socketPath = $socketPath;
+        $this->appBootstrapPath = $appBootstrapPath;
     }
 
     public function run(): void
@@ -73,7 +78,7 @@ final class PhpWorker
                 continue;
             }
 
-            $res = $this->dispatch($req);
+            $res = $this->dispatchRequest($req);
             $this->writeFrame($conn, json_encode($res, JSON_UNESCAPED_UNICODE));
         }
 
@@ -84,33 +89,49 @@ final class PhpWorker
      * @param array<string,mixed> $req
      * @return array<string,mixed>
      */
-    private function dispatch(array $req): array
+    public function dispatchRequest(array $req): array
     {
         $id = (string)($req['id'] ?? '');
         $method = strtoupper((string)($req['method'] ?? 'GET'));
         $path = (string)($req['path'] ?? '/');
         $query = isset($req['query']) && is_array($req['query']) ? $req['query'] : [];
         $body = (string)($req['body'] ?? '');
+        $headers = isset($req['headers']) && is_array($req['headers']) ? $req['headers'] : [];
+        $cookies = isset($req['cookies']) && is_array($req['cookies']) ? $req['cookies'] : [];
+        $attributes = isset($req['attributes']) && is_array($req['attributes']) ? $req['attributes'] : [];
+        $server = isset($req['server']) && is_array($req['server']) ? $req['server'] : [];
+        $uploadedFiles = isset($req['uploaded_files']) && is_array($req['uploaded_files']) ? $req['uploaded_files'] : [];
 
-        if (function_exists('vslim_handle_request')) {
-            $envelope = [
-                'method' => $method,
-                'path' => $this->rebuildPath($path, $query),
-                'body' => $body,
-                'scheme' => (string)($req['scheme'] ?? 'http'),
-                'host' => (string)($req['host'] ?? ''),
-                'port' => (string)($req['port'] ?? ''),
-                'protocol_version' => (string)($req['protocol_version'] ?? '1.1'),
-                'remote_addr' => (string)($req['remote_addr'] ?? ''),
-                'query_json' => json_encode($query, JSON_UNESCAPED_UNICODE),
-                'headers_json' => json_encode(isset($req['headers']) && is_array($req['headers']) ? $req['headers'] : [], JSON_UNESCAPED_UNICODE),
-                'cookies_json' => json_encode(isset($req['cookies']) && is_array($req['cookies']) ? $req['cookies'] : [], JSON_UNESCAPED_UNICODE),
-                'attributes_json' => json_encode(isset($req['attributes']) && is_array($req['attributes']) ? $req['attributes'] : [], JSON_UNESCAPED_UNICODE),
-                'server_json' => json_encode(isset($req['server']) && is_array($req['server']) ? $req['server'] : [], JSON_UNESCAPED_UNICODE),
-                'uploaded_files_json' => json_encode(isset($req['uploaded_files']) && is_array($req['uploaded_files']) ? $req['uploaded_files'] : [], JSON_UNESCAPED_UNICODE),
-            ];
+        $envelope = [
+            'method' => $method,
+            'path' => $this->rebuildPath($path, $query),
+            'body' => $body,
+            'scheme' => (string)($req['scheme'] ?? 'http'),
+            'host' => (string)($req['host'] ?? ''),
+            'port' => (string)($req['port'] ?? ''),
+            'protocol_version' => (string)($req['protocol_version'] ?? '1.1'),
+            'remote_addr' => (string)($req['remote_addr'] ?? ''),
+            'query_json' => json_encode($query, JSON_UNESCAPED_UNICODE),
+            'headers_json' => json_encode($headers, JSON_UNESCAPED_UNICODE),
+            'cookies_json' => json_encode($cookies, JSON_UNESCAPED_UNICODE),
+            'attributes_json' => json_encode($attributes, JSON_UNESCAPED_UNICODE),
+            'server_json' => json_encode($server, JSON_UNESCAPED_UNICODE),
+            'uploaded_files_json' => json_encode($uploadedFiles, JSON_UNESCAPED_UNICODE),
+        ];
 
-            try {
+        try {
+            $appHandler = $this->loadAppHandler();
+            if ($appHandler !== null) {
+                $psrRequest = VHttpdPsr7Bridge::canBuildServerRequest()
+                    ? VHttpdPsr7Bridge::buildServerRequest($envelope)
+                    : null;
+                $appResult = $psrRequest !== null
+                    ? $appHandler($psrRequest, $envelope)
+                    : $appHandler($envelope);
+                return $this->normalizeAppResponse($id, $appResult);
+            }
+
+            if (function_exists('vslim_handle_request')) {
                 $res = vslim_handle_request($envelope);
                 if (is_array($res)) {
                     return [
@@ -121,31 +142,10 @@ final class PhpWorker
                         'body' => (string)($res['body'] ?? ''),
                     ];
                 }
-            } catch (Throwable $e) {
-                return $this->res($id, 500, 'Internal Server Error', [
-                    'x-worker-error' => $e->getMessage(),
-                ]);
             }
-        }
 
-        try {
             if (VHttpdPsr7Bridge::canBuildServerRequest()) {
-                $psrRequest = VHttpdPsr7Bridge::buildServerRequest([
-                    'method' => $method,
-                    'path' => $this->rebuildPath($path, $query),
-                    'body' => $body,
-                    'scheme' => (string)($req['scheme'] ?? 'http'),
-                    'host' => (string)($req['host'] ?? ''),
-                    'port' => (string)($req['port'] ?? ''),
-                    'protocol_version' => (string)($req['protocol_version'] ?? '1.1'),
-                    'remote_addr' => (string)($req['remote_addr'] ?? ''),
-                    'query_json' => json_encode($query, JSON_UNESCAPED_UNICODE),
-                    'headers_json' => json_encode(isset($req['headers']) && is_array($req['headers']) ? $req['headers'] : [], JSON_UNESCAPED_UNICODE),
-                    'cookies_json' => json_encode(isset($req['cookies']) && is_array($req['cookies']) ? $req['cookies'] : [], JSON_UNESCAPED_UNICODE),
-                    'attributes_json' => json_encode(isset($req['attributes']) && is_array($req['attributes']) ? $req['attributes'] : [], JSON_UNESCAPED_UNICODE),
-                    'server_json' => json_encode(isset($req['server']) && is_array($req['server']) ? $req['server'] : [], JSON_UNESCAPED_UNICODE),
-                    'uploaded_files_json' => json_encode(isset($req['uploaded_files']) && is_array($req['uploaded_files']) ? $req['uploaded_files'] : [], JSON_UNESCAPED_UNICODE),
-                ]);
+                $psrRequest = VHttpdPsr7Bridge::buildServerRequest($envelope);
                 if ($psrRequest !== null) {
                     return $this->resJson($id, 200, [
                         'psr7' => true,
@@ -196,10 +196,100 @@ final class PhpWorker
         }
     }
 
+    /** @return callable|null */
+    private function loadAppHandler(): ?callable
+    {
+        if ($this->appLoaded) {
+            return $this->appHandler;
+        }
+        $this->appLoaded = true;
+
+        $path = $this->resolveAppBootstrapPath();
+        if ($path === null || !is_file($path)) {
+            return $this->appHandler = null;
+        }
+
+        $loaded = require $path;
+        if (is_callable($loaded)) {
+            return $this->appHandler = $loaded;
+        }
+        if (function_exists('vslim_httpd_app')) {
+            /** @var callable $fn */
+            $fn = 'vslim_httpd_app';
+            return $this->appHandler = $fn;
+        }
+        return $this->appHandler = null;
+    }
+
+    private function resolveAppBootstrapPath(): ?string
+    {
+        $env = getenv('VSLIM_HTTPD_APP');
+        if (is_string($env) && $env !== '') {
+            return $env;
+        }
+        if ($this->appBootstrapPath !== null && $this->appBootstrapPath !== '') {
+            return $this->appBootstrapPath;
+        }
+        return __DIR__ . '/app.php';
+    }
+
+    /**
+     * @param mixed $result
+     * @return array<string,mixed>
+     */
+    private function normalizeAppResponse(string $id, mixed $result): array
+    {
+        if (is_array($result)) {
+            $headers = isset($result['headers']) && is_array($result['headers']) ? $result['headers'] : [];
+            $contentType = (string)($result['content_type'] ?? ($headers['content-type'] ?? 'text/plain; charset=utf-8'));
+            if (!isset($headers['content-type'])) {
+                $headers['content-type'] = $contentType;
+            }
+            return [
+                'id' => $id,
+                'status' => (int)($result['status'] ?? 200),
+                'content_type' => $contentType,
+                'headers' => $headers,
+                'body' => (string)($result['body'] ?? ''),
+            ];
+        }
+
+        if (is_string($result)) {
+            return $this->res($id, 200, $result);
+        }
+
+        if (is_object($result) && method_exists($result, 'getStatusCode') && method_exists($result, 'getHeaders') && method_exists($result, 'getBody')) {
+            $status = (int)$result->getStatusCode();
+            $headers = [];
+            foreach ((array)$result->getHeaders() as $name => $value) {
+                if (is_array($value)) {
+                    $headers[(string)$name] = implode(', ', array_map('strval', $value));
+                } else {
+                    $headers[(string)$name] = (string)$value;
+                }
+            }
+            $contentType = (string)($headers['content-type'] ?? 'text/plain; charset=utf-8');
+            if (!isset($headers['content-type'])) {
+                $headers['content-type'] = $contentType;
+            }
+            return [
+                'id' => $id,
+                'status' => $status,
+                'content_type' => $contentType,
+                'headers' => $headers,
+                'body' => (string)$result->getBody(),
+            ];
+        }
+
+        return $this->res($id, 500, 'Internal Server Error', [
+            'x-worker-error' => 'Unsupported app response type',
+        ]);
+    }
+
     /** @param array<string,mixed> $query */
     private function rebuildPath(string $path, array $query): string
     {
-        if ($query === []) {
+        if ($query === [] || str_contains($path, '?')) {
             return $path;
         }
         return $path . '?' . http_build_query($query);
