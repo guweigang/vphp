@@ -97,6 +97,10 @@ Behavior:
 - `construct(...)` is mapped to PHP `__construct`
 - `str() string` is mapped to PHP `__toString()`
 - method visibility follows V visibility
+- method returns support:
+  - scalars such as `string`, `int`, `bool`, `f64`
+  - container values such as `map[string]string` and `[]string`
+  - object returns such as `&Article`
 
 Current mapping:
 

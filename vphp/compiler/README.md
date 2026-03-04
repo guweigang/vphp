@@ -82,6 +82,12 @@ Read:
 1. [builder.md](/Users/guweigang/Source/vphpext/vphp/compiler/builder.md)
 2. [emission_pipeline.md](/Users/guweigang/Source/vphpext/vphp/compiler/emission_pipeline.md)
 
+Important:
+
+- `emission_pipeline.md` now documents return-shape classification for
+  `@[php_method]`, including container returns like `map[string]string` and
+  `[]string`
+
 ## Guiding Idea
 
 The compiler is organized around this progression:
