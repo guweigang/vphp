@@ -2,9 +2,16 @@
 
 This is the **Scheme 2** prototype:
 
-- HTTP server runs as a standalone V CLI process (`veb`).
+- HTTP server runs as a standalone V CLI process built directly on `veb`.
 - PHP Userland controls lifecycle and reads events.
 - `vphp` stays generic; framework/server logic now lives with `vslim`.
+
+The design rule is:
+
+- `veb` is the HTTP source of truth
+- `vhttpd` should stay thin and reuse `veb` / `http` / `urllib`
+- `vslim` should stay at the framework layer
+- `vphp` should not become an HTTP helper bag
 
 ## Build
 
@@ -82,7 +89,7 @@ vhttpd -> php-worker.php -> vslim_handle_request(...)
 
 That keeps:
 
-- `vhttpd` as the network/runtime layer
+- `vhttpd` as the `veb`-based network/runtime layer
 - `php-worker.php` as the PHP worker boundary
 - `vslim` as the framework dispatch layer
 

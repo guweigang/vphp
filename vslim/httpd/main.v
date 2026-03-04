@@ -64,18 +64,9 @@ fn header_map_from_request(req http.Request) map[string]string {
 }
 
 fn cookie_map_from_request(req http.Request) map[string]string {
-	raw := req.header.get(.cookie) or { return map[string]string{} }
 	mut out := map[string]string{}
-	for pair in raw.split(';') {
-		clean := pair.trim_space()
-		if clean == '' {
-			continue
-		}
-		if clean.contains('=') {
-			out[clean.all_before('=').trim_space()] = clean.all_after('=').trim_space()
-		} else {
-			out[clean] = ''
-		}
+	for cookie in http.read_cookies(req.header, '') {
+		out[cookie.name] = cookie.value
 	}
 	return out
 }
@@ -170,7 +161,7 @@ fn dispatch_via_worker(socket_path string, method string, path string, req http.
 		conn.close() or {}
 	}
 	normalized_path, query_string := normalize_request_target(path)
-	query := parse_query_string(query_string)
+	query := parse_query_map(query_string)
 	headers := header_map_from_request(req)
 	cookies := cookie_map_from_request(req)
 	server := server_map_from_request(req, remote_addr)
@@ -211,22 +202,18 @@ fn normalize_request_target(raw_path string) (string, string) {
 	return base, query
 }
 
-fn parse_query_string(query_str string) map[string]string {
+fn parse_query_map(query_str string) map[string]string {
 	mut out := map[string]string{}
 	if query_str == '' {
 		return out
 	}
-	for pair in query_str.split('&') {
-		if pair == '' {
+	values := urllib.parse_query(query_str) or { return out }
+	for key, entries in values.to_map() {
+		if entries.len == 0 {
+			out[key] = ''
 			continue
 		}
-		if pair.contains('=') {
-			k := pair.all_before('=')
-			v := pair.all_after('=')
-			out[k] = v
-		} else {
-			out[pair] = ''
-		}
+		out[key] = entries[0]
 	}
 	return out
 }

@@ -4,11 +4,29 @@
 
 - `vphp` 提供 Zend binding、编译器和 runtime
 - `vslim` 提供面向 PHP 开发者的 Slim-inspired 框架 API
-- `vhttpd` 提供 HTTP runtime
+- `vhttpd` 提供 HTTP runtime，并且**尽量直接复用 `veb`**
 
 一句话说：
 
 > `vslim` 不是运行原版 Slim，而是做一个让 PHP 开发者心智熟悉的 V 微框架扩展。
+
+## 三层边界
+
+这条线现在有一个明确边界，我们后面也会继续守住：
+
+- `vphp`
+  - 只做 PHP <-> V bridge、编译器和 runtime
+  - 不承载 HTTP 通用能力
+
+- `vhttpd`
+  - 尽量直接站在 `veb` 上
+  - 优先使用 `veb.Context`、`http.Request`、`urllib`、`http.Cookie`
+  - 不重复实现 HTTP 解析和 server lifecycle
+
+- `vslim`
+  - 只做 framework layer
+  - 路由、middleware、request/response facade、reverse routing
+  - 不把自己做成第二个 runtime
 
 ## 当前目标
 
@@ -34,8 +52,9 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 分工：
 
 - `vhttpd`
+  - 以 `veb` 作为 HTTP 源头
   - 接收网络请求
-  - 解析 method/path/query/body
+  - 利用 `veb.Context` / `http.Request` 提取 method/path/query/body/header/cookie
   - 做连接管理、日志和可观测性
 
 - PHP worker
@@ -65,6 +84,12 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 ```php
 $response = vslim_handle_request($requestEnvelope);
 ```
+
+这里的关键原则是：
+
+- request 采集尽量来自 `veb`
+- worker envelope 只是 transport 边界
+- `vslim` 只消费归一化后的 request 语义
 
 ## 为什么这样分层
 
