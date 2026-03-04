@@ -336,6 +336,28 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 	return ctx.text(body)
 }
 
+@['/dispatch'; head]
+pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
+	method := ctx.query['method'] or { 'GET' }
+	path := ctx.query['path'] or { '/health' }
+	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
+	status, body, ctype := if app.worker_socket != '' {
+		dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
+			500, 'Worker Unavailable', 'text/plain; charset=utf-8'
+		}
+	} else {
+		dispatch_core(method, path)
+	}
+	app.emit('http.request', {
+		'method': method.to_upper()
+		'path':   normalize_path(path)
+		'status': '${status}'
+	})
+	ctx.res.set_status(to_http_status(status))
+	ctx.set_content_type(ctype)
+	return ctx.text(body)
+}
+
 fn run_server(args []string) {
 	host := get_arg(args, '--host', '127.0.0.1')
 	port := get_arg(args, '--port', '18081').int()

@@ -82,6 +82,7 @@ Endpoints:
 
 - `GET /health` -> `OK`
 - `GET /dispatch?method=GET&path=/users/42` -> `{"user":"42"}`
+- `HEAD /dispatch?method=GET&path=/go/nova` -> same status/headers, no body
 - `GET /dispatch?method=POST&path=/health` -> `405 Method Not Allowed`
 - `GET /dispatch?method=GET&path=/panic` -> `500 Internal Server Error`
 
