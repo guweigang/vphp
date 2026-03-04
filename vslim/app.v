@@ -3,6 +3,8 @@ module main
 import json
 import vphp
 
+#include "php_bridge.h"
+
 pub struct SlimRequest {
 pub mut:
 	method string
@@ -408,7 +410,7 @@ pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
 
 @[php_method]
 pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
-	res, params := dispatch_app_request_with_params(app, req.to_slim_request())
+	res, params := dispatch_app_request_with_params(app, req)
 	unsafe {
 		mut writable := &VSlimRequest(req)
 		writable.params_json = json.encode(params)
@@ -457,7 +459,7 @@ fn apply_response_headers(mut r VSlimResponse, headers map[string]string) {
 	r.content_type = headers['content-type'] or { r.content_type }
 }
 
-fn dispatch_app_request_with_params(app &VSlimApp, req SlimRequest) (SlimResponse, map[string]string) {
+fn dispatch_app_request_with_params(app &VSlimApp, req &VSlimRequest) (SlimResponse, map[string]string) {
 	if app.routes.len > 0 {
 		res, params, ok := dispatch_php_routes_with_params(app, req)
 		if ok {
@@ -465,12 +467,12 @@ fn dispatch_app_request_with_params(app &VSlimApp, req SlimRequest) (SlimRespons
 		}
 	}
 	if app.use_demo {
-		return dispatch_demo_request_with_params(req)
+		return dispatch_demo_request_with_params(req.to_slim_request())
 	}
 	return not_found_response(), map[string]string{}
 }
 
-fn dispatch_php_routes_with_params(app &VSlimApp, req SlimRequest) (SlimResponse, map[string]string, bool) {
+fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimResponse, map[string]string, bool) {
 	method := req.method.to_upper()
 	path := normalize_path(req.path)
 	mut method_not_allowed := false
@@ -484,9 +486,7 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req SlimRequest) (SlimResponse
 			method_not_allowed = true
 			continue
 		}
-		mut bound := req
-		bound.params = params.clone()
-		payload := build_php_request_payload(bound)
+		payload := build_php_request_object(req, params)
 		res := route.handler.call([payload])
 		return normalize_php_route_response(res), params, true
 	}
@@ -497,18 +497,32 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req SlimRequest) (SlimResponse
 	return SlimResponse{}, map[string]string{}, false
 }
 
-fn build_php_request_payload(req SlimRequest) vphp.ZVal {
-	mut payload := vphp.ZVal.new_null()
-	payload.from_v[map[string]string]({
-		'method': req.method
-		'path': req.path
-		'body': req.body
-		'params_json': json.encode(req.params)
-		'query_json': json.encode(req.query)
-	}) or {
-		payload.array_init()
+fn build_php_request_object(req &VSlimRequest, params map[string]string) vphp.ZVal {
+	unsafe {
+		mut payload := vphp.ZVal.new_null()
+		mut bound := &VSlimRequest{
+			method: req.method
+			raw_path: req.raw_path
+			path: req.path
+			body: req.body
+			query_string: req.query_string
+			query_json: req.query_json
+			scheme: req.scheme
+			host: req.host
+			port: req.port
+			protocol_version: req.protocol_version
+			remote_addr: req.remote_addr
+			headers_json: req.headers_json
+			cookies_json: req.cookies_json
+			attributes_json: req.attributes_json
+			server_json: req.server_json
+			uploaded_files_json: req.uploaded_files_json
+			params_json: json.encode(params)
+		}
+		C.vphp_return_obj(payload.raw, bound, C.vslimrequest_ce)
+		C.vphp_bind_handlers(C.vphp_get_obj_from_zval(payload.raw), &C.vphp_class_handlers(vslimrequest_handlers()))
+		return payload
 	}
-	return payload
 }
 
 fn normalize_php_route_response(result vphp.ZVal) SlimResponse {

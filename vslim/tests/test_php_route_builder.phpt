@@ -5,17 +5,15 @@ VSlimApp can register PHP route handlers and dispatch them
 --FILE--
 <?php
 $app = new VSlimApp();
-$app->get('/hello/:name', function (array $req) {
-    $params = json_decode($req['params_json'], true);
-    return new VSlimResponse(200, 'Hello, ' . $params['name'], 'text/plain; charset=utf-8');
+$app->get('/hello/:name', function (VSlimRequest $req) {
+    return new VSlimResponse(200, 'Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
 });
-$app->post('/submit', function (array $req) {
-    $query = json_decode($req['query_json'], true);
+$app->post('/submit', function (VSlimRequest $req) {
     return [
         'status' => 201,
         'content_type' => 'application/json; charset=utf-8',
         'headers' => ['x-mode' => 'builder'],
-        'body' => json_encode(['body' => $req['body'], 'trace' => $query['trace_id'] ?? 'none']),
+        'body' => json_encode(['body' => $req->body, 'trace' => $req->query('trace_id') ?: 'none']),
     ];
 });
 
