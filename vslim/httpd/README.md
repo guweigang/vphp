@@ -276,6 +276,69 @@ $app->get('/hello/:name', function (VSlimRequest $req) {
 return $app;
 ```
 
+This is the recommended first-release shape:
+
+- `vhttpd` stays close to `veb`
+- `php-worker.php` loads your bootstrap
+- your bootstrap returns a `VSlimApp`
+- `VSlimApp` owns runtime routing and hooks
+
+### Lifecycle semantics
+
+When your bootstrap returns a `VSlimApp`, request flow is:
+
+```text
+before hooks -> route handler -> after hooks
+```
+
+Return contract:
+
+- `before()` returns `null`
+  - continue dispatch
+- `before()` returns `VSlimResponse` / `array` / `string`
+  - short-circuit route dispatch
+  - still flows into `after()`
+- `after()` returns `null`
+  - keep current response
+- `after()` returns `VSlimResponse` / `array` / `string`
+  - replace current response
+- `before()/route/after()` throws
+  - the PHP exception is not swallowed
+  - it bubbles to the worker boundary
+- invalid return values
+  - normalize to `500 Invalid route response`
+
+### Minimal custom app
+
+```php
+<?php
+declare(strict_types=1);
+
+$app = new VSlimApp();
+
+$app->before(function (VSlimRequest $req) {
+    if ($req->path === '/blocked') {
+        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+    }
+    return null;
+});
+
+$app->get('/hello/:name', function (VSlimRequest $req) {
+    return new VSlimResponse(
+        200,
+        'Hello, ' . $req->param('name'),
+        'text/plain; charset=utf-8'
+    );
+});
+
+$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+    $res->set_header('x-runtime', 'vslim');
+    return $res;
+});
+
+return $app;
+```
+
 ### Returning a PSR-7-style response object
 
 If your callable returns an object with:

@@ -281,6 +281,15 @@ echo $redirect->header('location');
 - `middleware()` 仍然可用，但第一版只是 `before()` 的别名
 - group 也支持 `before()` / `after()`
 
+生命周期返回约定：
+
+- `before()` 返回 `null`：继续执行后续 hook / route handler
+- `before()` 返回 `VSlimResponse` / `array` / `string`：立即 short-circuit，并继续进入 `after()`
+- `after()` 返回 `null`：保留当前响应
+- `after()` 返回 `VSlimResponse` / `array` / `string`：替换当前响应
+- `before()/route/after()` 中直接抛出的 PHP 异常：原样向外冒泡
+- hook 或 route 返回无法归一化的值：收敛成 `500 Invalid route response`
+
 也可以直接用函数入口：
 
 ```php
@@ -319,6 +328,68 @@ HTTP runtime 相关文件现在在：
 
 - `make vhttpd`：重新编译 `vhttpd`
 - `make serve`：用 managed worker 模式直接拉起 `vhttpd + php-worker + vslim`
+
+## Minimal End-to-End Tutorial
+
+1. 构建扩展和 `vhttpd`
+
+```bash
+cd /Users/guweigang/Source/vphpext/vslim
+make build
+make vhttpd
+```
+
+2. 编写一个最小 worker app，例如：
+   [/Users/guweigang/Source/vphpext/vslim/httpd/app.php](/Users/guweigang/Source/vphpext/vslim/httpd/app.php)
+
+```php
+<?php
+declare(strict_types=1);
+
+$app = new VSlimApp();
+
+$app->before(function (VSlimRequest $req) {
+    if ($req->path === '/blocked') {
+        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+    }
+    return null;
+});
+
+$app->get('/hello/:name', function (VSlimRequest $req) {
+    return new VSlimResponse(
+        200,
+        'Hello, ' . $req->param('name'),
+        'text/plain; charset=utf-8'
+    );
+});
+
+$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+    $res->set_header('x-runtime', 'vslim');
+    return $res;
+});
+
+return $app;
+```
+
+3. 启动服务
+
+```bash
+cd /Users/guweigang/Source/vphpext/vslim
+make serve
+```
+
+4. 发请求
+
+```bash
+curl "http://127.0.0.1:19881/dispatch?method=GET&path=/hello/codex"
+curl -i "http://127.0.0.1:19881/dispatch?method=GET&path=/blocked"
+```
+
+这条链路是：
+
+```text
+HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
+```
 
 ## First Release Boundary
 
