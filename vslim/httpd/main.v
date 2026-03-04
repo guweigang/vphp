@@ -30,7 +30,7 @@ struct WorkerResponse {
 	id           string
 	status       int
 	body         string
-	headers       map[string]string
+	headers      map[string]string
 }
 
 struct WorkerRequestPayload {
@@ -155,7 +155,7 @@ fn read_frame(mut conn unix.StreamConn) !string {
 	return body.bytestr()
 }
 
-fn dispatch_via_worker(socket_path string, method string, path string, req http.Request, remote_addr string) !(int, string, string) {
+fn dispatch_via_worker(socket_path string, method string, path string, req http.Request, remote_addr string) !WorkerResponse {
 	mut conn := unix.connect_stream(socket_path)!
 	defer {
 		conn.close() or {}
@@ -188,8 +188,7 @@ fn dispatch_via_worker(socket_path string, method string, path string, req http.
 	write_frame(mut conn, payload)!
 	resp_raw := read_frame(mut conn)!
 	resp := json.decode(WorkerResponse, resp_raw)!
-	ctype := resp.headers['content-type'] or { 'text/plain; charset=utf-8' }
-	return resp.status, resp.body, ctype
+	return resp
 }
 
 fn normalize_request_target(raw_path string) (string, string) {
@@ -260,14 +259,13 @@ fn (mut w ManagedWorker) stop() {
 	w.proc.close()
 }
 
-fn to_http_status(code int) http.Status {
-	return match code {
-		200 { .ok }
-		401 { .unauthorized }
-		404 { .not_found }
-		405 { .method_not_allowed }
-		500 { .internal_server_error }
-		else { .ok }
+fn apply_worker_headers(mut ctx Context, headers map[string]string) {
+	for name, value in headers {
+		lower := name.to_lower()
+		if lower == 'content-type' || lower == 'content-length' {
+			continue
+		}
+		ctx.set_custom_header(name, value) or {}
 	}
 }
 
@@ -310,7 +308,7 @@ pub fn (mut app App) health(mut ctx Context) veb.Result {
 		'path':   '/health'
 		'status': '${status}'
 	})
-	ctx.res.set_status(to_http_status(status))
+	ctx.res.set_status(http.status_from_int(status))
 	return ctx.text(body)
 }
 
@@ -319,19 +317,34 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
 	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
-	status, body, ctype := if app.worker_socket != '' {
-		dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
-			500, 'Worker Unavailable', 'text/plain; charset=utf-8'
+	mut status := 200
+	mut body := ''
+	mut ctype := 'text/plain; charset=utf-8'
+	mut worker_headers := map[string]string{}
+	if app.worker_socket != '' {
+		resp := dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
+			app.emit('http.request', {
+				'method': method.to_upper()
+				'path':   normalize_path(path)
+				'status': '502'
+			})
+			ctx.res.set_status(.bad_gateway)
+			return ctx.text('Bad Gateway')
 		}
+		status = resp.status
+		body = resp.body
+		worker_headers = resp.headers.clone()
+		ctype = worker_headers['content-type'] or { 'text/plain; charset=utf-8' }
 	} else {
-		dispatch_core(method, path)
+		status, body, ctype = dispatch_core(method, path)
 	}
 	app.emit('http.request', {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${status}'
 	})
-	ctx.res.set_status(to_http_status(status))
+	ctx.res.set_status(http.status_from_int(status))
+	apply_worker_headers(mut ctx, worker_headers)
 	ctx.set_content_type(ctype)
 	return ctx.text(body)
 }
@@ -341,19 +354,34 @@ pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
 	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
-	status, body, ctype := if app.worker_socket != '' {
-		dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
-			500, 'Worker Unavailable', 'text/plain; charset=utf-8'
+	mut status := 200
+	mut body := ''
+	mut ctype := 'text/plain; charset=utf-8'
+	mut worker_headers := map[string]string{}
+	if app.worker_socket != '' {
+		resp := dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
+			app.emit('http.request', {
+				'method': method.to_upper()
+				'path':   normalize_path(path)
+				'status': '502'
+			})
+			ctx.res.set_status(.bad_gateway)
+			return ctx.text('')
 		}
+		status = resp.status
+		body = resp.body
+		worker_headers = resp.headers.clone()
+		ctype = worker_headers['content-type'] or { 'text/plain; charset=utf-8' }
 	} else {
-		dispatch_core(method, path)
+		status, body, ctype = dispatch_core(method, path)
 	}
 	app.emit('http.request', {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${status}'
 	})
-	ctx.res.set_status(to_http_status(status))
+	ctx.res.set_status(http.status_from_int(status))
+	apply_worker_headers(mut ctx, worker_headers)
 	ctx.set_content_type(ctype)
 	return ctx.text(body)
 }
