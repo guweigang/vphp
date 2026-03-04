@@ -20,6 +20,11 @@ pub mut:
 	mu sync.Mutex
 }
 
+struct ManagedWorker {
+mut:
+	proc &os.Process = unsafe { nil }
+}
+
 struct WorkerResponse {
 	id           string
 	status       int
@@ -115,6 +120,48 @@ fn dispatch_via_worker(socket_path string, method string, path string) !(int, st
 	return resp.status, resp.body, ctype
 }
 
+fn wait_for_worker(socket_path string, timeout_ms int) ! {
+	deadline := time.now().add(time.millisecond * timeout_ms)
+	for time.now() < deadline {
+		mut conn := unix.connect_stream(socket_path) or {
+			time.sleep(100 * time.millisecond)
+			continue
+		}
+		conn.close() or {}
+		return
+	}
+	return error('worker socket not ready: ${socket_path}')
+}
+
+fn start_managed_worker(worker_cmd string, worker_socket string, workdir string) !ManagedWorker {
+	if worker_cmd == '' {
+		return error('empty worker command')
+	}
+	if worker_socket == '' {
+		return error('worker socket is required when autostart is enabled')
+	}
+	mut proc := os.new_process('/bin/sh')
+	proc.set_args(['-lc', worker_cmd])
+	proc.set_work_folder(workdir)
+	proc.use_pgroup = true
+	proc.run()
+	wait_for_worker(worker_socket, 5000)!
+	return ManagedWorker{
+		proc: proc
+	}
+}
+
+fn (mut w ManagedWorker) stop() {
+	if isnil(w.proc) {
+		return
+	}
+	if w.proc.is_alive() {
+		w.proc.signal_pgkill()
+		w.proc.wait()
+	}
+	w.proc.close()
+}
+
 fn to_http_status(code int) http.Status {
 	return match code {
 		200 { .ok }
@@ -196,12 +243,23 @@ fn run_server(args []string) {
 	event_log := get_arg(args, '--event-log', '/tmp/vhttpd.events.ndjson')
 	pid_file := get_arg(args, '--pid-file', '/tmp/vhttpd.pid')
 	worker_socket := get_arg(args, '--worker-socket', '')
+	worker_cmd := get_arg(args, '--worker-cmd', '')
+	worker_autostart := get_arg(args, '--worker-autostart', '').trim_space() in ['1', 'true', 'yes', 'on']
 
 	os.mkdir_all(os.dir(event_log)) or {}
 	os.mkdir_all(os.dir(pid_file)) or {}
 	os.write_file(pid_file, '${os.getpid()}') or {}
+	mut managed := ManagedWorker{}
 	defer {
+		managed.stop()
 		os.rm(pid_file) or {}
+	}
+
+	if worker_autostart {
+		managed = start_managed_worker(worker_cmd, worker_socket, os.getwd()) or {
+			eprintln('worker start failed: ${err}')
+			return
+		}
 	}
 
 	mut app := &App{
@@ -212,6 +270,7 @@ fn run_server(args []string) {
 		'host': host
 		'port': '${port}'
 		'pid':  '${os.getpid()}'
+		'worker_autostart': if worker_autostart { 'true' } else { 'false' }
 	})
 
 	veb.run_at[App, Context](mut app, host: host, port: port, family: .ip) or {
