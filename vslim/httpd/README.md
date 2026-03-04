@@ -308,6 +308,16 @@ Return contract:
 - invalid return values
   - normalize to `500 Invalid route response`
 
+Execution order:
+
+```text
+app before -> matching group before -> route -> app after -> matching group after
+```
+
+This ordering is covered by:
+
+- [/Users/guweigang/Source/vphpext/vslim/tests/test_php_hook_order.phpt](/Users/guweigang/Source/vphpext/vslim/tests/test_php_hook_order.phpt)
+
 ### Minimal custom app
 
 ```php
@@ -337,6 +347,16 @@ $app->after(function (VSlimRequest $req, VSlimResponse $res) {
 });
 
 return $app;
+```
+
+There is also a ready-to-run example at:
+
+- [/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php](/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php)
+
+You can point the worker at it with:
+
+```bash
+export VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php
 ```
 
 ### Returning a PSR-7-style response object

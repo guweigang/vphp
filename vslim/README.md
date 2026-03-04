@@ -290,6 +290,16 @@ echo $redirect->header('location');
 - `before()/route/after()` 中直接抛出的 PHP 异常：原样向外冒泡
 - hook 或 route 返回无法归一化的值：收敛成 `500 Invalid route response`
 
+执行顺序：
+
+```text
+app before -> matching group before -> route -> app after -> matching group after
+```
+
+这个顺序已经由测试固定：
+
+- [/Users/guweigang/Source/vphpext/vslim/tests/test_php_hook_order.phpt](/Users/guweigang/Source/vphpext/vslim/tests/test_php_hook_order.phpt)
+
 也可以直接用函数入口：
 
 ```php
@@ -340,35 +350,16 @@ make vhttpd
 ```
 
 2. 编写一个最小 worker app，例如：
-   [/Users/guweigang/Source/vphpext/vslim/httpd/app.php](/Users/guweigang/Source/vphpext/vslim/httpd/app.php)
+   [/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php](/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php)
 
-```php
-<?php
-declare(strict_types=1);
+把它拷到：
 
-$app = new VSlimApp();
+- [/Users/guweigang/Source/vphpext/vslim/httpd/app.php](/Users/guweigang/Source/vphpext/vslim/httpd/app.php)
 
-$app->before(function (VSlimRequest $req) {
-    if ($req->path === '/blocked') {
-        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
-    }
-    return null;
-});
+或者通过环境变量指定：
 
-$app->get('/hello/:name', function (VSlimRequest $req) {
-    return new VSlimResponse(
-        200,
-        'Hello, ' . $req->param('name'),
-        'text/plain; charset=utf-8'
-    );
-});
-
-$app->after(function (VSlimRequest $req, VSlimResponse $res) {
-    $res->set_header('x-runtime', 'vslim');
-    return $res;
-});
-
-return $app;
+```bash
+export VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php
 ```
 
 3. 启动服务
@@ -383,6 +374,7 @@ make serve
 ```bash
 curl "http://127.0.0.1:19881/dispatch?method=GET&path=/hello/codex"
 curl -i "http://127.0.0.1:19881/dispatch?method=GET&path=/blocked"
+curl "http://127.0.0.1:19881/dispatch?method=GET&path=/api/meta"
 ```
 
 这条链路是：
