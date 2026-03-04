@@ -146,16 +146,64 @@ void vphp_array_add_next_zval(zval *main_array, zval *sub_item) {
 void vphp_return_array_start(zval *return_value) { array_init(return_value); }
 void vphp_zval_foreach(zval *z, void *ctx,
                        void (*callback)(void *, zval *, zval *)) {
-  if (z && (Z_TYPE_P(z) == IS_ARRAY || Z_TYPE_P(z) == IS_OBJECT)) {
-    HashTable *ht = (Z_TYPE_P(z) == IS_ARRAY) ? Z_ARRVAL_P(z) : Z_OBJPROP_P(z);
+  if (!z) {
+    return;
+  }
+
+  if (Z_TYPE_P(z) == IS_ARRAY) {
+    HashTable *ht = Z_ARRVAL_P(z);
     zend_string *key;
+    zend_ulong index;
     zval *val;
-    ZEND_HASH_FOREACH_STR_KEY_VAL(ht, key, val) {
+    ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, val) {
       zval key_zv;
       if (key) {
         ZVAL_STR(&key_zv, key);
       } else {
-        ZVAL_NULL(&key_zv);
+        ZVAL_LONG(&key_zv, index);
+      }
+      callback(ctx, &key_zv, val);
+    }
+    ZEND_HASH_FOREACH_END();
+    return;
+  }
+
+  if (Z_TYPE_P(z) == IS_OBJECT) {
+    zend_class_entry *ce = Z_OBJCE_P(z);
+
+    if (ce && ce->get_iterator) {
+      zend_object_iterator *iter = ce->get_iterator(ce, z, 0);
+      if (iter) {
+        if (iter->funcs->rewind) {
+          iter->funcs->rewind(iter);
+        }
+        while (iter->funcs->valid(iter) == SUCCESS) {
+          zval key_zv;
+          zval *val = iter->funcs->get_current_data(iter);
+          if (iter->funcs->get_current_key) {
+            iter->funcs->get_current_key(iter, &key_zv);
+          } else {
+            ZVAL_LONG(&key_zv, iter->index);
+          }
+          callback(ctx, &key_zv, val);
+          zval_ptr_dtor(&key_zv);
+          iter->funcs->move_forward(iter);
+        }
+        zend_iterator_dtor(iter);
+        return;
+      }
+    }
+
+    HashTable *ht = Z_OBJPROP_P(z);
+    zend_string *key;
+    zend_ulong index;
+    zval *val;
+    ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, val) {
+      zval key_zv;
+      if (key) {
+        ZVAL_STR(&key_zv, key);
+      } else {
+        ZVAL_LONG(&key_zv, index);
       }
       callback(ctx, &key_zv, val);
     }

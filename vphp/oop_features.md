@@ -95,6 +95,7 @@ Behavior:
 - instance methods become PHP instance methods
 - static V methods like `fn Article.create()` become PHP static methods
 - `construct(...)` is mapped to PHP `__construct`
+- `str() string` is mapped to PHP `__toString()`
 - method visibility follows V visibility
 
 Current mapping:

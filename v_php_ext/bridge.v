@@ -655,6 +655,64 @@ pub fn vphptask_handlers() voidptr {
     } }
 }
 
+@[export: 'StringableBox_new_raw']
+pub fn stringablebox_new_raw() voidptr {
+    return vphp.generic_new_raw[StringableBox]()
+}
+@[export: 'StringableBox_get_prop']
+pub fn stringablebox_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &StringableBox(ptr)
+        if name == 'name' {
+            vphp.return_val_raw(rv, obj.name)
+            return
+        }
+    }
+}
+@[export: 'StringableBox_set_prop']
+pub fn stringablebox_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &StringableBox(ptr)
+        arg := vphp.ZVal{ raw: value }
+        if name == 'name' {
+            obj.name = arg.get_string()
+            return
+        }
+    }
+}
+@[export: 'StringableBox_sync_props']
+pub fn stringablebox_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &StringableBox(ptr)
+        out := vphp.ZVal{ raw: zv }
+        out.add_property_string('name', obj.name)
+    }
+}
+@[export: 'vphp_wrap_StringableBox_construct']
+pub fn vphp_wrap_stringablebox_construct(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &StringableBox(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.construct(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_StringableBox_str']
+pub fn vphp_wrap_stringablebox_str(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &StringableBox(ptr) }
+    res := recv.str()
+    ctx.return_val[string](res)
+}
+@[export: 'StringableBox_handlers']
+pub fn stringablebox_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(stringablebox_get_prop)
+        write_handler: voidptr(stringablebox_set_prop)
+        sync_handler:  voidptr(stringablebox_sync_props)
+        new_raw:       voidptr(stringablebox_new_raw)
+    } }
+}
+
 @[export: 'vphp_wrap_v_add']
 fn vphp_wrap_v_add(ctx vphp.Context) {
     arg_0 := ctx.arg[i64](0)
@@ -844,6 +902,12 @@ fn vphp_wrap_v_get_v_closure_auto(ctx vphp.Context) {
 fn vphp_wrap_v_iter_helpers_demo(ctx vphp.Context) {
     arg_0 := ctx
     v_iter_helpers_demo(arg_0)
+}
+
+@[export: 'vphp_wrap_v_iterable_object_demo']
+fn vphp_wrap_v_iterable_object_demo(ctx vphp.Context) {
+    arg_0 := ctx
+    v_iterable_object_demo(arg_0)
 }
 
 @[export: 'vphp_wrap_v_reverse_string']

@@ -136,14 +136,18 @@ pub fn (b &ClassBuilder) render_impl_postlude() string {
 	return b.render_methods_array()
 }
 
-pub fn (b &ClassBuilder) render_arginfo_defs() string {
-	mut res := []string{}
-	for m in b.methods {
-		res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, 0)'
-		res << 'ZEND_END_ARG_INFO()'
+	pub fn (b &ClassBuilder) render_arginfo_defs() string {
+		mut res := []string{}
+		for m in b.methods {
+			if m.php_name == '__toString' {
+				res << 'ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_${m.c_func}, 0, 0, IS_STRING, 0)'
+			} else {
+				res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, 0)'
+			}
+			res << 'ZEND_END_ARG_INFO()'
+		}
+		return res.join('\n')
 	}
-	return res.join('\n')
-}
 
 pub fn (b &ClassBuilder) render_methods_array() string {
 	mut res := []string{}

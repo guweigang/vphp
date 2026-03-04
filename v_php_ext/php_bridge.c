@@ -225,6 +225,13 @@ PHP_FUNCTION(v_iter_helpers_demo) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_iter_helpers_demo(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_iterable_object_demo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_iterable_object_demo(vphp_context_internal ctx);
+PHP_FUNCTION(v_iterable_object_demo) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_iterable_object_demo(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_reverse_string, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_reverse_string(vphp_context_internal ctx);
@@ -757,6 +764,38 @@ static const zend_function_entry vphp__task_methods[] = {
     PHP_FE_END
 };
 
+zend_class_entry *stringablebox_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_stringablebox_construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_stringablebox_str, 0, 0, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(StringableBox, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* StringableBox_handlers();
+    vphp_class_handlers *h = StringableBox_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void vphp_wrap_StringableBox_construct(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    vphp_wrap_StringableBox_construct(v_ptr, ctx);
+}
+PHP_METHOD(StringableBox, __toString) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_StringableBox_str(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_StringableBox_str(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry stringablebox_methods[] = {
+    PHP_ME(StringableBox, __construct, arginfo_stringablebox_construct, ZEND_ACC_PUBLIC)
+    PHP_ME(StringableBox, __toString, arginfo_stringablebox_str, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 ZEND_BEGIN_MODULE_GLOBALS(vphptest)
     zend_long request_count;
     v_string last_user;
@@ -804,6 +843,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_get_v_closure, arginfo_v_get_v_closure)
     PHP_FE(v_get_v_closure_auto, arginfo_v_get_v_closure_auto)
     PHP_FE(v_iter_helpers_demo, arginfo_v_iter_helpers_demo)
+    PHP_FE(v_iterable_object_demo, arginfo_v_iterable_object_demo)
     PHP_FE(v_reverse_string, arginfo_v_reverse_string)
     PHP_FE(v_logic_main, arginfo_v_logic_main)
     PHP_FE(v_slim_demo_dispatch, arginfo_v_slim_demo_dispatch)
@@ -903,6 +943,12 @@ PHP_MINIT_FUNCTION(vphptest) {
         INIT_CLASS_ENTRY(ce, "VPhp\\Task", vphp__task_methods);
         vphp__task_ce = zend_register_internal_class(&ce);
         vphp__task_ce->create_object = vphp_create_object_handler;
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "StringableBox", stringablebox_methods);
+        stringablebox_ce = zend_register_internal_class(&ce);
+        stringablebox_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_string(stringablebox_ce, "name", sizeof("name")-1, "", ZEND_ACC_PUBLIC);
     }
     return SUCCESS;
 }

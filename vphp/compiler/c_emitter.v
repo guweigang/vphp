@@ -12,6 +12,14 @@ fn is_constructor_method(name string) bool {
 	return name == 'construct' || name == 'init'
 }
 
+fn php_method_name(name string) string {
+	return match name {
+		'construct', 'init' { '__construct' }
+		'str' { '__toString' }
+		else { name }
+	}
+}
+
 fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 	return *builder.new_func_builder(f.name, f.name)
 }
@@ -67,7 +75,7 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_interface_builder(r.php_name, r.c_name())
 	for m in r.methods {
-		class_builder.add_abstract_method(m.name, '${r.c_name().to_lower()}_${m.name}',
+		class_builder.add_abstract_method(php_method_name(m.name), '${r.c_name().to_lower()}_${m.name}',
 			visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT')
 	}
 	return class_builder
@@ -102,16 +110,16 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC')
 	}
 	for m in r.methods {
-		php_method_name := if is_constructor_method(m.name) { '__construct' } else { m.name }
+		php_name := php_method_name(m.name)
 		mut flags := visibility_to_method_flags(m.visibility)
 		if m.is_static {
 			flags += ' | ZEND_ACC_STATIC'
 		}
 		c_func := '${r.c_name().to_lower()}_${m.name}'
 		if m.is_abstract {
-			class_builder.add_abstract_method(php_method_name, c_func, flags + ' | ZEND_ACC_ABSTRACT')
+			class_builder.add_abstract_method(php_name, c_func, flags + ' | ZEND_ACC_ABSTRACT')
 		} else {
-			class_builder.add_method(php_method_name, c_func, flags)
+			class_builder.add_method(php_name, c_func, flags)
 		}
 	}
 	return class_builder
@@ -285,7 +293,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		if m.is_abstract {
 			continue
 		}
-		php_method_name := if is_constructor_method(m.name) { '__construct' } else { m.name }
+		php_name := php_method_name(m.name)
 		
 		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
 		
@@ -294,7 +302,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		vars := {
 			'CLASS':       c_class
 			'LOWER_CLASS': lower_name
-			'PHP_METHOD':  php_method_name
+			'PHP_METHOD':  php_name
 			'V_FUNC':      v_c_func
 			'C_TYPE':      tm.c_type
 			'PHP_RETURN':  tm.php_return

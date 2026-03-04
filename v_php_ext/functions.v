@@ -495,3 +495,23 @@ fn v_iter_helpers_demo(ctx vphp.Context) {
 
 	ctx.return_string('each=${each_state.buf};fold=${fold_items.join(",")};values=${values.join(",")};reduce=${reduced}')
 }
+
+@[php_function]
+fn v_iterable_object_demo(ctx vphp.Context) {
+	input := ctx.arg_raw(0)
+	mut each_state := IterTextState{}
+	mut each_ref := &each_state
+	input.each(fn [each_ref] (key vphp.ZVal, val vphp.ZVal) {
+		unsafe {
+			if !(*each_ref).first {
+				(*each_ref).buf += ','
+			}
+			(*each_ref).buf += '${key.to_string()}=${val.to_string()}'
+			(*each_ref).first = false
+		}
+	})
+	fold_items := input.fold[[]string]([]string{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc []string) {
+		acc << '${key.to_string()}=${val.to_string()}'
+	})
+	ctx.return_string('each=${each_state.buf};fold=${fold_items.join(",")};count=${fold_items.len}')
+}

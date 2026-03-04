@@ -390,15 +390,29 @@ vphp.ZVal.new_string('hello')
 例如：
 
 ```v
-mut items := []string{}
-mut ref := &items
+struct IterState {
+mut:
+	buf   string
+	first bool = true
+}
+
+mut state := IterState{}
+mut ref := &state
 
 z.each(fn [ref] (key vphp.ZVal, val vphp.ZVal) {
 	unsafe {
-		(*ref) << '${key.to_string()}=${val.to_string()}'
+		if !(*ref).first {
+			(*ref).buf += ','
+		}
+		(*ref).buf += '${key.to_string()}=${val.to_string()}'
+		(*ref).first = false
 	}
 })
 ```
+
+`each(...)` / `fold(...)` 不只适用于 PHP array。
+只要 PHP 对象实现了可遍历语义（例如 `Iterator` / `IteratorAggregate`），
+底层也会按 PHP `foreach ($obj as $key => $value)` 的方式遍历它。
 
 ### 带累积器的遍历
 
@@ -421,6 +435,10 @@ z.each(fn [ref] (key vphp.ZVal, val vphp.ZVal) {
 ```v
 items := z.fold[[]string]([]string{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc []string) {
 	acc << '${key.to_string()}=${val.to_string()}'
+})
+
+settings := z.fold[map[string]string](map[string]string{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc map[string]string) {
+	acc[key.to_string()] = val.to_string()
 })
 
 summary := z.reduce[string]('', fn (_ vphp.ZVal, val vphp.ZVal, mut acc string) {
