@@ -2,6 +2,28 @@
 
 declare(strict_types=1);
 
+final class TestPsr7ResponseBody
+{
+    private bool $rewound = false;
+
+    public function __construct(private string $content) {}
+
+    public function rewind(): void
+    {
+        $this->rewound = true;
+    }
+
+    public function getContents(): string
+    {
+        return $this->content;
+    }
+
+    public function wasRewound(): bool
+    {
+        return $this->rewound;
+    }
+}
+
 return static function (object $request, array $envelope = []): object {
     $trace = $request->query['trace_id'] ?? 'none';
     $route = $request->attributes['route'] ?? 'unset';
@@ -16,7 +38,7 @@ return static function (object $request, array $envelope = []): object {
     );
     return new TestPsr7Response(
         202,
-        ['content-type' => ['text/plain; charset=utf-8'], 'x-app' => ['psr7']],
-        new TestPsr7Stream($body),
+        ['Content-Type' => ['text/plain; charset=utf-8'], 'X-App' => ['psr7', 'bridge']],
+        new TestPsr7ResponseBody($body),
     );
 };

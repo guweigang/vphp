@@ -240,18 +240,10 @@ final class PhpWorker
     private function normalizeAppResponse(string $id, mixed $result): array
     {
         if (is_array($result)) {
-            $headers = isset($result['headers']) && is_array($result['headers']) ? $result['headers'] : [];
+            $headers = $this->normalizeHeaderMap(isset($result['headers']) && is_array($result['headers']) ? $result['headers'] : []);
+            $body = (string)($result['body'] ?? '');
             $contentType = (string)($result['content_type'] ?? ($headers['content-type'] ?? 'text/plain; charset=utf-8'));
-            if (!isset($headers['content-type'])) {
-                $headers['content-type'] = $contentType;
-            }
-            return [
-                'id' => $id,
-                'status' => (int)($result['status'] ?? 200),
-                'content_type' => $contentType,
-                'headers' => $headers,
-                'body' => (string)($result['body'] ?? ''),
-            ];
+            return $this->buildNormalizedResponse($id, (int)($result['status'] ?? 200), $body, $headers, $contentType);
         }
 
         if (is_string($result)) {
@@ -260,30 +252,76 @@ final class PhpWorker
 
         if (is_object($result) && method_exists($result, 'getStatusCode') && method_exists($result, 'getHeaders') && method_exists($result, 'getBody')) {
             $status = (int)$result->getStatusCode();
-            $headers = [];
-            foreach ((array)$result->getHeaders() as $name => $value) {
-                if (is_array($value)) {
-                    $headers[(string)$name] = implode(', ', array_map('strval', $value));
-                } else {
-                    $headers[(string)$name] = (string)$value;
-                }
-            }
+            $headers = $this->normalizeHeaderMap((array)$result->getHeaders());
+            $body = $this->stringifyBody($result->getBody());
             $contentType = (string)($headers['content-type'] ?? 'text/plain; charset=utf-8');
-            if (!isset($headers['content-type'])) {
-                $headers['content-type'] = $contentType;
-            }
-            return [
-                'id' => $id,
-                'status' => $status,
-                'content_type' => $contentType,
-                'headers' => $headers,
-                'body' => (string)$result->getBody(),
-            ];
+            return $this->buildNormalizedResponse($id, $status, $body, $headers, $contentType);
         }
 
         return $this->res($id, 500, 'Internal Server Error', [
             'x-worker-error' => 'Unsupported app response type',
         ]);
+    }
+
+    /**
+     * @param array<string,mixed> $headers
+     * @return array<string,string>
+     */
+    private function normalizeHeaderMap(array $headers): array
+    {
+        $out = [];
+        foreach ($headers as $name => $value) {
+            $key = strtolower((string)$name);
+            if (is_array($value)) {
+                $out[$key] = implode(', ', array_map('strval', $value));
+            } else {
+                $out[$key] = (string)$value;
+            }
+        }
+        return $out;
+    }
+
+    private function stringifyBody(mixed $body): string
+    {
+        if (is_string($body)) {
+            return $body;
+        }
+        if (is_object($body)) {
+            if (method_exists($body, 'rewind')) {
+                try {
+                    $body->rewind();
+                } catch (Throwable) {
+                }
+            }
+            if (method_exists($body, 'getContents')) {
+                return (string)$body->getContents();
+            }
+            if (method_exists($body, '__toString')) {
+                return (string)$body;
+            }
+        }
+        return (string)$body;
+    }
+
+    /**
+     * @param array<string,string> $headers
+     * @return array<string,mixed>
+     */
+    private function buildNormalizedResponse(string $id, int $status, string $body, array $headers, string $contentType): array
+    {
+        if (!isset($headers['content-type'])) {
+            $headers['content-type'] = $contentType;
+        }
+        if (!isset($headers['content-length'])) {
+            $headers['content-length'] = (string)strlen($body);
+        }
+        return [
+            'id' => $id,
+            'status' => $status,
+            'content_type' => $headers['content-type'],
+            'headers' => $headers,
+            'body' => $body,
+        ];
     }
 
     /** @param array<string,mixed> $query */

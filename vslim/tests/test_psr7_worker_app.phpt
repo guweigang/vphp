@@ -75,11 +75,11 @@ namespace {
         public function __construct(
             private int $status,
             private array $headers,
-            private TestPsr7Stream $body,
+            private object $body,
         ) {}
         public function getStatusCode(): int { return $this->status; }
         public function getHeaders(): array { return $this->headers; }
-        public function getBody(): TestPsr7Stream { return $this->body; }
+        public function getBody(): object { return $this->body; }
     }
 
     putenv('VSLIM_HTTPD_APP=' . __DIR__ . '/fixtures/psr7_app_fixture.php');
@@ -106,11 +106,11 @@ namespace {
     ]);
 
     echo $res['id'] . PHP_EOL;
-    echo $res['status'] . '|' . $res['content_type'] . '|' . $res['headers']['x-app'] . PHP_EOL;
+    echo $res['status'] . '|' . $res['content_type'] . '|' . $res['headers']['x-app'] . '|' . $res['headers']['content-length'] . PHP_EOL;
     echo $res['body'] . PHP_EOL;
 }
 ?>
 --EXPECT--
 req-1
-202|text/plain; charset=utf-8|psr7
+202|text/plain; charset=utf-8|psr7, bridge|83
 app|GET|https://demo.local:443/users/9?trace_id=psr-app|psr-app|users.show|cookie-9
