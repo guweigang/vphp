@@ -219,7 +219,7 @@ echo $req->cookie('sid');
 ```php
 $res = new VSlimResponse(200, 'hello', 'text/plain; charset=utf-8');
 $res->set_header('x-demo', 'yes')
-    ->with_status(202)
+    ->set_status(202)
     ->json('{"ok":true}');
 
 $res->html('<b>ok</b>');
@@ -442,6 +442,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
 ### `VSlimResponse`
 
 - headers：
+  - `set_status(...)`
   - `set_header(...)`
   - `header(...)`
   - `has_header(...)`
@@ -458,6 +459,12 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
   - `set_cookie_opts(...)`
   - `set_cookie_full(...)`
   - `delete_cookie(...)`
+
+兼容说明：
+
+- `with_status(...)` 仍然保留
+- 但第一版推荐主用 `set_status(...)`
+- 因为 `VSlimResponse` 是可变对象，不是 PSR-7 immutable response
 
 第一版我们明确承诺这些：
 

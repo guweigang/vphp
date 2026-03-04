@@ -69,7 +69,7 @@ $envelope = vslim_handle_request([
 echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_type'] . PHP_EOL;
 
 $resp = new VSlimResponse(201, 'created', 'text/plain; charset=utf-8');
-$resp->set_header('x-demo', 'yes')->with_status(202)->json('{"ok":true}');
+$resp->set_header('x-demo', 'yes')->set_status(202)->json('{"ok":true}');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->header('x-demo') . '|' . ($resp->has_header('content-type') ? 'yes' : 'no') . PHP_EOL;
 $resp->set_cookie('sid', 'cookie-202');
 echo $resp->cookie_header() . PHP_EOL;

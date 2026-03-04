@@ -79,9 +79,14 @@ pub fn (mut r VSlimResponse) delete_cookie(name string) &VSlimResponse {
 }
 
 @[php_method]
-pub fn (mut r VSlimResponse) with_status(status int) &VSlimResponse {
+pub fn (mut r VSlimResponse) set_status(status int) &VSlimResponse {
 	r.status = status
 	return r
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) with_status(status int) &VSlimResponse {
+	return r.set_status(status)
 }
 
 @[php_method]
