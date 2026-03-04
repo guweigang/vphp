@@ -45,6 +45,12 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 }
 
 @[php_method]
+pub fn (app &VSlimApp) dispatch_envelope(envelope vphp.ZVal) &VSlimResponse {
+	req := new_vslim_request_from_zval(envelope)
+	return app.dispatch_request(req)
+}
+
+@[php_method]
 pub fn (mut app VSlimApp) get(pattern string, handler vphp.ZVal) &VSlimApp {
 	app.add_php_route('GET', '', pattern, handler)
 	return app

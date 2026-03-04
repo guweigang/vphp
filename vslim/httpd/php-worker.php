@@ -239,6 +239,11 @@ final class PhpWorker
             return $this->appHandler = null;
         }
 
+        clearstatcache(true, $path);
+        if (function_exists('opcache_invalidate')) {
+            @opcache_invalidate($path, true);
+        }
+
         $loaded = require $path;
         if (is_callable($loaded)) {
             return $this->appHandler = $loaded;
@@ -269,33 +274,9 @@ final class PhpWorker
                 require_once __DIR__ . "/vslim_psr7_adapter.php";
                 return VSlimPsr7Adapter::dispatch($appHandler, $psrRequest);
             }
-            return $appHandler->dispatch_request(
-                $this->buildVSlimRequestFromEnvelope($envelope),
-            );
+            return $appHandler->dispatch_envelope($envelope);
         }
         throw new RuntimeException("Unsupported app bootstrap result");
-    }
-
-    /** @param array<string,mixed> $envelope */
-    private function buildVSlimRequestFromEnvelope(array $envelope): VSlimRequest
-    {
-        $request = new VSlimRequest(
-            (string) ($envelope["method"] ?? "GET"),
-            (string) ($envelope["path"] ?? "/"),
-            (string) ($envelope["body"] ?? ""),
-        );
-        $request->scheme = (string) ($envelope["scheme"] ?? "http");
-        $request->host = (string) ($envelope["host"] ?? "");
-        $request->port = (string) ($envelope["port"] ?? "");
-        $request->protocol_version = (string) ($envelope["protocol_version"] ?? "1.1");
-        $request->remote_addr = (string) ($envelope["remote_addr"] ?? "");
-        $request->set_headers($this->readAssocMap($envelope, "headers"));
-        $request->set_cookies($this->readAssocMap($envelope, "cookies"));
-        $request->set_query($this->readAssocMap($envelope, "query"));
-        $request->set_attributes($this->readAssocMap($envelope, "attributes"));
-        $request->set_server($this->readAssocMap($envelope, "server"));
-        $request->set_uploaded_files($this->readList($envelope, "uploaded_files"));
-        return $request;
     }
 
     /**

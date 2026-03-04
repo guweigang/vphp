@@ -10,7 +10,7 @@ $app->before(function (VSlimRequest $req) {
     return null;
 });
 
-$app->get('/hello/:name', function (VSlimRequest $req) {
+$app->get_named('hello.show', '/hello/:name', function (VSlimRequest $req) {
     return new VSlimResponse(
         200,
         'Hello, ' . $req->param('name'),
@@ -18,8 +18,12 @@ $app->get('/hello/:name', function (VSlimRequest $req) {
     );
 });
 
+$app->get('/go/:name', function (VSlimRequest $req) use ($app) {
+    return $app->redirect_to('hello.show', ['name' => $req->param('name')]);
+});
+
 $api = $app->group('/api');
-$api->get('/meta', function (VSlimRequest $req) {
+$api->get('/meta', function (VSlimRequest $req) use ($app) {
     return [
         'status' => 200,
         'content_type' => 'application/json; charset=utf-8',
@@ -27,6 +31,7 @@ $api->get('/meta', function (VSlimRequest $req) {
             'path' => $req->path,
             'secure' => $req->is_secure(),
             'host' => $req->host,
+            'hello_url' => $app->url_for('hello.show', ['name' => 'codex']),
         ]),
     ];
 });

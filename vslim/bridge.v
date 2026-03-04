@@ -725,6 +725,13 @@ pub fn vphp_wrap_vslimapp_dispatch_request(ptr voidptr, ctx vphp.Context) voidpt
     res := recv.dispatch_request(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_dispatch_envelope']
+pub fn vphp_wrap_vslimapp_dispatch_envelope(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.dispatch_envelope(arg_0)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_get']
 pub fn vphp_wrap_vslimapp_get(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }

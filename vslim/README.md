@@ -375,6 +375,7 @@ make serve
 curl "http://127.0.0.1:19881/dispatch?method=GET&path=/hello/codex"
 curl -i "http://127.0.0.1:19881/dispatch?method=GET&path=/blocked"
 curl "http://127.0.0.1:19881/dispatch?method=GET&path=/api/meta"
+curl -i "http://127.0.0.1:19881/dispatch?method=GET&path=/go/nova"
 ```
 
 这条链路是：
@@ -383,7 +384,73 @@ curl "http://127.0.0.1:19881/dispatch?method=GET&path=/api/meta"
 HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
 ```
 
+这个示例现在也覆盖了：
+
+- named route：`hello.show`
+- reverse routing：`url_for(...)`
+- redirect helper：`redirect_to(...)`
+
 ## First Release Boundary
+
+## Public API Snapshot
+
+第一版建议优先围绕这几个对象使用：
+
+### `VSlimApp`
+
+- app builder：
+  - `get/post/put/patch/delete/any`
+  - `get_named/post_named/...`
+  - `group(...)`
+- lifecycle：
+  - `before(...)`
+  - `after(...)`
+  - `middleware(...)` (`before()` 的别名)
+- dispatch：
+  - `dispatch(...)`
+  - `dispatch_request(...)`
+- reverse routing：
+  - `url_for(...)`
+  - `url_for_query(...)`
+  - `url_for_abs(...)`
+  - `url_for_query_abs(...)`
+  - `redirect_to(...)`
+  - `redirect_to_query(...)`
+
+### `VSlimRequest`
+
+- transport facade：
+  - `query(...)`
+  - `header(...)`
+  - `cookie(...)`
+  - `attribute(...)`
+  - `server_value(...)`
+- routing facade：
+  - `param(...)`
+- environment：
+  - `content_type()`
+  - `uploaded_file_count()`
+  - `is_secure()`
+
+### `VSlimResponse`
+
+- headers：
+  - `set_header(...)`
+  - `header(...)`
+  - `has_header(...)`
+  - `set_content_type(...)`
+- body helpers：
+  - `text(...)`
+  - `json(...)`
+  - `html(...)`
+- redirect：
+  - `redirect(...)`
+  - `redirect_with_status(...)`
+- cookies：
+  - `set_cookie(...)`
+  - `set_cookie_opts(...)`
+  - `set_cookie_full(...)`
+  - `delete_cookie(...)`
 
 第一版我们明确承诺这些：
 

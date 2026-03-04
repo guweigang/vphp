@@ -359,6 +359,13 @@ You can point the worker at it with:
 export VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php
 ```
 
+This example also demonstrates:
+
+- named routes
+- `url_for(...)`
+- `redirect_to(...)`
+- app-level `before()` / `after()`
+
 ### Returning a PSR-7-style response object
 
 If your callable returns an object with:
