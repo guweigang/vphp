@@ -2438,7 +2438,7 @@ static inline unsigned char atomic_fetch_xor_byte(unsigned char* x, unsigned cha
 #endif
 
 
-// added by module `main`, file: app.v:6:
+// added by module `main`, file: bridge.v:5:
 
 #if defined(__has_include)
 #if __has_include("php_bridge.h")
@@ -2451,7 +2451,7 @@ static inline unsigned char atomic_fetch_xor_byte(unsigned char* x, unsigned cha
 #endif
 
 
-// added by module `main`, file: bridge.v:5:
+// added by module `main`, file: php_app.v:6:
 
 #if defined(__has_include)
 #if __has_include("php_bridge.h")
@@ -3640,10 +3640,10 @@ typedef string Array_fixed_string_11 [11];
 typedef voidptr Array_fixed_voidptr_11 [11];
 typedef array Array_RepIndex;
 typedef map Map_string_string;
+typedef array Array_vphp__ZVal;
 typedef array Array_main__SlimRoute;
 typedef array Array_main__SlimMiddleware;
 typedef array Array_main__PhpRoute;
-typedef array Array_vphp__ZVal;
 typedef array Array_main__PhpGroupMiddleware;
 typedef map Map_string_int;
 typedef array Array_bool;
@@ -3905,13 +3905,18 @@ struct InputRuneIterator {
 	E_STRUCT_DECL;
 };
 
+struct main__VSlimRouteGroup {
+	main__VSlimApp* app;
+	string prefix;
+};
+
 struct vphp__ZVal {
 	zval* raw;
 };
 
-struct main__VSlimRouteGroup {
-	main__VSlimApp* app;
-	string prefix;
+struct vphp__Context {
+	zend_execute_data* ex;
+	zval* ret;
 };
 
 struct main__VSlimRequest {
@@ -3934,11 +3939,6 @@ struct main__VSlimRequest {
 	string params_json;
 };
 
-struct vphp__Context {
-	zend_execute_data* ex;
-	zval* ret;
-};
-
 // Union sum type vphp__TaskResult = 
 //          |   21 = string
 //          |    8 = int
@@ -3947,8 +3947,8 @@ struct vphp__Context {
 //          |   19 = bool
 //          |   37 = Array_string
 //          |   47 = Array_int
-//          |  173 = Array_i64
-//          |  174 = Array_f64
+//          |  172 = Array_i64
+//          |  173 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -4010,13 +4010,13 @@ struct vphp__compiler__builder__ConstantBuilder {
 //          |  395 = v__ast__Block
 //          |  396 = v__ast__BranchStmt
 //          |  397 = v__ast__ComptimeFor
-//          |  283 = v__ast__ConstDecl
+//          |  282 = v__ast__ConstDecl
 //          |  398 = v__ast__DebuggerStmt
 //          |  399 = v__ast__DeferStmt
 //          |  400 = v__ast__EmptyStmt
-//          |  279 = v__ast__EnumDecl
+//          |  278 = v__ast__EnumDecl
 //          |  401 = v__ast__ExprStmt
-//          |  281 = v__ast__FnDecl
+//          |  280 = v__ast__FnDecl
 //          |  402 = v__ast__ForCStmt
 //          |  403 = v__ast__ForInStmt
 //          |  404 = v__ast__ForStmt
@@ -4025,13 +4025,13 @@ struct vphp__compiler__builder__ConstantBuilder {
 //          |  407 = v__ast__GotoStmt
 //          |  408 = v__ast__HashStmt
 //          |  409 = v__ast__Import
-//          |  278 = v__ast__InterfaceDecl
+//          |  277 = v__ast__InterfaceDecl
 //          |  410 = v__ast__Module
 //          |  340 = v__ast__NodeError
 //          |  411 = v__ast__Return
 //          |  412 = v__ast__SemicolonStmt
 //          |  413 = v__ast__SqlStmt
-//          |  280 = v__ast__StructDecl
+//          |  279 = v__ast__StructDecl
 //          |  339 = v__ast__TypeDecl
 struct v__ast__Stmt {
 	union {
@@ -4167,7 +4167,7 @@ struct v__ast__TypeDecl {
 //          |  370 = v__ast__LambdaExpr
 //          |  371 = v__ast__Likely
 //          |  372 = v__ast__LockExpr
-//          |  286 = v__ast__MapInit
+//          |  285 = v__ast__MapInit
 //          |  373 = v__ast__MatchExpr
 //          |  374 = v__ast__Nil
 //          |  375 = v__ast__None
@@ -4183,8 +4183,8 @@ struct v__ast__TypeDecl {
 //          |  385 = v__ast__SpawnExpr
 //          |  386 = v__ast__SqlExpr
 //          |  387 = v__ast__StringInterLiteral
-//          |  285 = v__ast__StringLiteral
-//          |  284 = v__ast__StructInit
+//          |  284 = v__ast__StringLiteral
+//          |  283 = v__ast__StructInit
 //          |  388 = v__ast__TypeNode
 //          |  389 = v__ast__TypeOf
 //          |  390 = v__ast__UnsafeExpr
@@ -4273,7 +4273,7 @@ struct v__ast__ScopeObject {
 //          |  423 = v__ast__EmptyNode
 //          |  424 = v__ast__EnumField
 //          |  391 = v__ast__Expr
-//          |  282 = v__ast__File
+//          |  281 = v__ast__File
 //          |  419 = v__ast__GlobalField
 //          |  425 = v__ast__IfBranch
 //          |  426 = v__ast__MatchBranch
@@ -4281,7 +4281,7 @@ struct v__ast__ScopeObject {
 //          |  427 = v__ast__Param
 //          |  421 = v__ast__ScopeObject
 //          |  428 = v__ast__SelectBranch
-//          |  276 = v__ast__Stmt
+//          |  275 = v__ast__Stmt
 //          |  429 = v__ast__StructField
 //          |  430 = v__ast__StructInitField
 struct v__ast__Node {
@@ -4585,6 +4585,32 @@ struct ToWideConfig {
 	bool from_ansi;
 };
 
+struct main__VSlimResponse {
+	int status;
+	string body;
+	string content_type;
+	string headers_json;
+};
+
+struct main__VSlimApp {
+	Array_main__PhpRoute routes;
+	Array_vphp__ZVal php_middlewares;
+	Array_main__PhpGroupMiddleware php_group_middlewares;
+	string base_path;
+	bool use_demo;
+};
+
+struct main__SlimApp {
+	Array_main__SlimRoute routes;
+	Array_main__SlimMiddleware middlewares;
+};
+
+struct main__SlimRoute {
+	string method;
+	string pattern;
+	main__SlimHandler handler;
+};
+
 struct main__SlimRequest {
 	string method;
 	string path;
@@ -4599,15 +4625,9 @@ struct main__SlimResponse {
 	Map_string_string headers;
 };
 
-struct main__SlimRoute {
-	string method;
-	string pattern;
-	main__SlimHandler handler;
-};
-
-struct main__SlimApp {
-	Array_main__SlimRoute routes;
-	Array_main__SlimMiddleware middlewares;
+struct main__PhpGroupMiddleware {
+	string prefix;
+	vphp__ZVal handler;
 };
 
 struct main__PhpRoute {
@@ -4615,26 +4635,6 @@ struct main__PhpRoute {
 	string name;
 	string pattern;
 	vphp__ZVal handler;
-};
-
-struct main__PhpGroupMiddleware {
-	string prefix;
-	vphp__ZVal handler;
-};
-
-struct main__VSlimApp {
-	Array_main__PhpRoute routes;
-	Array_vphp__ZVal php_middlewares;
-	Array_main__PhpGroupMiddleware php_group_middlewares;
-	string base_path;
-	bool use_demo;
-};
-
-struct main__VSlimResponse {
-	int status;
-	string body;
-	string content_type;
-	string headers_json;
 };
 
 struct strings__IndentParam {
@@ -7761,11 +7761,11 @@ typedef struct thread_arg_vphp__ITask_run {
 	vphp__ITask arg0;
 } thread_arg_vphp__ITask_run;
 
-typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731 {
+typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731 {
 	void (*fn) (sync__WaitGroup*, void (*) ());
 	sync__WaitGroup* arg1;
 	void (*arg2) ();
-} thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731;
+} thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
 static bool Array_v__token__Kind_contains(Array_v__token__Kind a, v__token__Kind v);
@@ -9528,8 +9528,8 @@ voidptr vphp__Context_get_ce(vphp__Context ctx);
 Array_vphp__ZVal vphp__Context_get_args(vphp__Context ctx);
 vphp__ZVal vphp__Context_arg_raw(vphp__Context ctx, int index);
 string vphp__Context_arg_T_string(vphp__Context ctx, int index);
-Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int index);
 int vphp__Context_arg_T_int(vphp__Context ctx, int index);
+Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int index);
 vphp__ZVal vphp__Context_arg_val(vphp__Context ctx, int index);
 voidptr vphp__Context_arg_raw_obj(vphp__Context ctx, int index);
 void vphp__Context_return_null(vphp__Context ctx);
@@ -9594,7 +9594,7 @@ vphp__DynVal vphp__dyn_map(Map_string_vphp__DynVal v);
 vphp__DynVal vphp__dyn_object_ref(voidptr ptr);
 vphp__DynVal vphp__dyn_resource_ref(voidptr ptr);
 _result_vphp__DynVal vphp__decode_val(vphp__ZVal z);
-VV_LOC void anon_fn_3035ace31b993c50_75_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m);
+VV_LOC void anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m);
 _result_void vphp__encode_val(vphp__DynVal v, vphp__ZVal* out);
 _result_vphp__ZVal vphp__new_zval_from_val(vphp__DynVal v);
 bool vphp__ZVal_is_valid(vphp__ZVal v);
@@ -9665,18 +9665,18 @@ string vphp__ZVal_parent_class_name(vphp__ZVal v);
 bool vphp__ZVal_is_internal_class(vphp__ZVal v);
 bool vphp__ZVal_is_user_class(vphp__ZVal v);
 Array_string vphp__ZVal_interface_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_9435(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_9435(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_is_instance_of(vphp__ZVal v, string name);
 bool vphp__ZVal_is_subclass_of(vphp__ZVal v, string name);
 bool vphp__ZVal_implements_interface(vphp__ZVal v, string name);
 bool vphp__ZVal_method_exists(vphp__ZVal v, string name);
 bool vphp__ZVal_property_exists(vphp__ZVal v, string name);
 Array_string vphp__ZVal_method_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_10832(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_10832(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_property_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_11304(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11304(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_const_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_11864(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11864(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_const_exists(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_method(vphp__ZVal v, string method, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_call(vphp__ZVal v, Array_vphp__ZVal args);
@@ -9700,7 +9700,7 @@ vphp__ZVal vphp__new_val_float(f64 f);
 vphp__ZVal vphp__new_val_bool(bool b);
 vphp__ZVal vphp__new_val_string(string s);
 _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_map_string_string_21156(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_string_21156(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
 _result_string vphp__ZVal_to_v_T_string(vphp__ZVal v);
 _result_int vphp__ZVal_to_v_T_int(vphp__ZVal v);
 _result_void vphp__ZVal_from_v_T_Array_string(vphp__ZVal v, Array_string value);
@@ -10455,7 +10455,7 @@ void sync__WaitGroup_add(sync__WaitGroup* wg, int delta);
 void sync__WaitGroup_done(sync__WaitGroup* wg);
 void sync__WaitGroup_wait(sync__WaitGroup* wg);
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)());
-VV_LOC void anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
+VV_LOC void anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
 u64 sync__thread_id(void);
 _result_string v__util__resolve_d_value(Map_string_string compile_values, string str);
 _result_string v__util__resolve_env_value(string str, bool check_for_presence);
@@ -11247,144 +11247,6 @@ VV_LOC Array_string vphp__compiler__VGenerator_gen_func_glue(vphp__compiler__VGe
 VV_LOC Array_string vphp__compiler__VGenerator_gen_class_glue(vphp__compiler__VGenerator g, vphp__compiler__repr__PhpClassRepr* r);
 VV_LOC bool vphp__compiler__is_v_keyword(string name);
 VV_LOC string vphp__compiler__VGenerator_gen_task_registration(vphp__compiler__VGenerator g, vphp__compiler__repr__PhpTaskRepr* t);
-main__VSlimRequest* main__VSlimRequest_construct(main__VSlimRequest* r, string method, string raw_path, string body);
-string main__VSlimRequest_str(main__VSlimRequest* r);
-string main__VSlimRequest_query(main__VSlimRequest* r, string key);
-bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key);
-string main__VSlimRequest_header(main__VSlimRequest* r, string name);
-bool main__VSlimRequest_has_header(main__VSlimRequest* r, string name);
-string main__VSlimRequest_cookie(main__VSlimRequest* r, string name);
-bool main__VSlimRequest_has_cookie(main__VSlimRequest* r, string name);
-string main__VSlimRequest_param(main__VSlimRequest* r, string name);
-bool main__VSlimRequest_has_param(main__VSlimRequest* r, string name);
-string main__VSlimRequest_attribute(main__VSlimRequest* r, string name);
-bool main__VSlimRequest_has_attribute(main__VSlimRequest* r, string name);
-string main__VSlimRequest_query_json_value(main__VSlimRequest* r);
-Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r);
-Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r);
-Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r);
-Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r);
-Map_string_string main__VSlimRequest_params(main__VSlimRequest* r);
-main__SlimRequest main__VSlimRequest_to_slim_request(main__VSlimRequest* r);
-main__SlimApp main__new_slim_app(void);
-void main__SlimApp_use(main__SlimApp* app, main__SlimResponse (*mw)(main__SlimRequest , main__SlimResponse (*)(main__SlimRequest )));
-void main__SlimApp_get(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
-void main__SlimApp_post(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
-void main__SlimApp_put(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
-void main__SlimApp_patch(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
-void main__SlimApp_delete(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
-void main__SlimApp_any(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
-main__SlimResponse main__SlimApp_dispatch(main__SlimApp app, main__SlimRequest req);
-VV_LOC main__SlimResponse main__SlimApp_run_middleware(main__SlimApp app, int index, main__SlimRequest req);
-struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx {
-	main__SlimApp app;
-	int index;
-};
-
-struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx;
-VV_LOC main__SlimResponse anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397(main__SlimRequest r);
-VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__SlimRequest req);
-main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type);
-string main__VSlimResponse_header(main__VSlimResponse* r, string name);
-bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name);
-main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value);
-string main__VSlimResponse_cookie_header(main__VSlimResponse* r);
-main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, string name, string value);
-main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path);
-main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name);
-main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status);
-main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body);
-main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body);
-main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string location);
-main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status);
-Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r);
-Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r);
-string main__VSlimResponse_str(main__VSlimResponse* r);
-main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body);
-main__VSlimRequest* main__new_vslim_request_from_envelope(Map_string_string envelope);
-main__VSlimApp* main__VSlimApp__static__demo(void);
-main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path);
-main__VSlimRouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix);
-main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path);
-main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req);
-main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_patch(main__VSlimApp* app, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_delete(main__VSlimApp* app, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_get_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_post_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_put_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_patch_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_delete_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
-main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_group(main__VSlimRouteGroup* group, string prefix);
-main__VSlimRouteGroup* main__VSlimRouteGroup_middleware(main__VSlimRouteGroup* group, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_get(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_post(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_put(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_patch(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_delete(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_any(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_get_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_post_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_put_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_patch_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_delete_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
-main__VSlimRouteGroup* main__VSlimRouteGroup_any_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
-string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params);
-string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
-string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host);
-string main__VSlimApp_url_for_query_abs(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query, string scheme, string host);
-main__VSlimResponse* main__VSlimApp_redirect_to(main__VSlimApp* app, string name, vphp__ZVal params);
-main__VSlimResponse* main__VSlimApp_redirect_to_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
-VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler);
-VV_LOC main__VSlimResponse* main__to_vslim_response(main__SlimResponse res);
-VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_string headers);
-VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req);
-VV_LOC multi_return_main__SlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req);
-VV_LOC vphp__ZVal main__dispatch_php_handler_with_middlewares(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, vphp__ZVal payload, vphp__ZVal handler, int index);
-VV_LOC vphp__ZVal main__run_php_middlewares_only(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, main__VSlimRequest* req);
-VV_LOC Array_vphp__ZVal main__matching_group_middlewares(main__VSlimApp* app, string path);
-VV_LOC bool main__path_has_prefix(string path, string prefix);
-VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params);
-VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_24451(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
-VV_LOC string main__normalize_path(string path);
-VV_LOC string main__normalize_group_prefix(string prefix);
-VV_LOC string main__normalize_base_path(string base_path);
-VV_LOC string main__join_route_prefix(string prefix, string pattern);
-VV_LOC string main__VSlimApp_apply_base_path(main__VSlimApp* app, string path);
-VV_LOC string main__join_absolute_url(string scheme, string host, string path);
-VV_LOC _option_string main__render_route_url(string pattern, Map_string_string* params, Map_string_string* query);
-VV_LOC string main__encode_query_params(Map_string_string* query);
-VV_LOC multi_return_string_string main__normalize_request_target(string raw_path);
-VV_LOC Map_string_string main__parse_query_string(string query_str);
-VV_LOC Map_string_string main__parse_name_map_json(string raw);
-VV_LOC Map_string_string main__zval_to_name_map(vphp__ZVal z);
-VV_LOC Map_string_string main__parse_headers_json(string headers_json);
-VV_LOC string main__normalize_header_name(string name);
-VV_LOC multi_return_bool_Map_string_string main__match_route(string pattern, string path);
-VV_LOC main__SlimResponse main__text_response(int status, string body);
-VV_LOC main__SlimResponse main__json_response(int status, string json_body);
-VV_LOC main__SlimResponse main__not_found_response(void);
-VV_LOC main__SlimResponse main__method_not_allowed_response(void);
-VV_LOC main__SlimResponse main__internal_error_response(void);
-VV_LOC main__SlimResponse main__with_trace_id(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest ));
-VV_LOC main__SlimResponse main__auth_guard(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest ));
-VV_LOC main__SlimResponse main__health_handler(main__SlimRequest req);
-VV_LOC main__SlimResponse main__user_handler(main__SlimRequest req);
-VV_LOC main__SlimResponse main__private_handler(main__SlimRequest req);
-VV_LOC main__SlimResponse main__panic_handler(main__SlimRequest req);
-VV_LOC main__SlimResponse main__meta_handler(main__SlimRequest req);
-VV_LOC main__SlimApp main__new_slim_demo_app(void);
-VV_LOC main__SlimRequest main__request_from_envelope(Map_string_string envelope);
-VV_LOC main__SlimResponse main__dispatch_demo_request(main__SlimRequest req);
-VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_demo_request_with_params(main__SlimRequest req);
-VV_LOC void main__vslim_handle_request(vphp__Context ctx);
-VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
 voidptr main__vslimroutegroup_new_raw(void);
 VV_EXP voidptr VSlimRouteGroup_new_raw(void); // exported fn main.vslimroutegroup_new_raw
 void main__vslimroutegroup_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
@@ -11560,6 +11422,144 @@ VV_EXP void vphp_wrap_vslim_handle_request(vphp__Context ctx); // exported fn ma
 VV_LOC void main__vphp_wrap_vslim_demo_dispatch(vphp__Context ctx);
 VV_EXP void vphp_wrap_vslim_demo_dispatch(vphp__Context ctx); // exported fn main.vphp_wrap_vslim_demo_dispatch
 VV_LOC void main__main(void);
+main__SlimApp main__new_slim_app(void);
+void main__SlimApp_use(main__SlimApp* app, main__SlimResponse (*mw)(main__SlimRequest , main__SlimResponse (*)(main__SlimRequest )));
+void main__SlimApp_get(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_post(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_put(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_patch(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_delete(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+void main__SlimApp_any(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest ));
+main__SlimResponse main__SlimApp_dispatch(main__SlimApp app, main__SlimRequest req);
+VV_LOC main__SlimResponse main__SlimApp_run_middleware(main__SlimApp app, int index, main__SlimRequest req);
+struct _V_anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406_Ctx {
+	main__SlimApp app;
+	int index;
+};
+
+struct _V_anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406_Ctx;
+VV_LOC main__SlimResponse anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406(main__SlimRequest r);
+VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__SlimRequest req);
+VV_LOC main__SlimResponse main__with_trace_id(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest ));
+VV_LOC main__SlimResponse main__auth_guard(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest ));
+VV_LOC main__SlimResponse main__health_handler(main__SlimRequest req);
+VV_LOC main__SlimResponse main__user_handler(main__SlimRequest req);
+VV_LOC main__SlimResponse main__private_handler(main__SlimRequest req);
+VV_LOC main__SlimResponse main__panic_handler(main__SlimRequest req);
+VV_LOC main__SlimResponse main__meta_handler(main__SlimRequest req);
+VV_LOC main__SlimApp main__new_slim_demo_app(void);
+VV_LOC main__SlimResponse main__dispatch_demo_request(main__SlimRequest req);
+VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_demo_request_with_params(main__SlimRequest req);
+main__VSlimApp* main__VSlimApp__static__demo(void);
+main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path);
+main__VSlimRouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix);
+main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path);
+main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req);
+main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_patch(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_delete(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_get_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_post_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_put_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_patch_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_delete_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler);
+main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_group(main__VSlimRouteGroup* group, string prefix);
+main__VSlimRouteGroup* main__VSlimRouteGroup_middleware(main__VSlimRouteGroup* group, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_get(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_post(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_put(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_any(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_get_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_post_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_put_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+main__VSlimRouteGroup* main__VSlimRouteGroup_any_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler);
+string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params);
+string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
+string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host);
+string main__VSlimApp_url_for_query_abs(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query, string scheme, string host);
+main__VSlimResponse* main__VSlimApp_redirect_to(main__VSlimApp* app, string name, vphp__ZVal params);
+main__VSlimResponse* main__VSlimApp_redirect_to_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
+VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler);
+VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req);
+VV_LOC multi_return_main__SlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req);
+VV_LOC vphp__ZVal main__dispatch_php_handler_with_middlewares(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, vphp__ZVal payload, vphp__ZVal handler, int index);
+VV_LOC vphp__ZVal main__run_php_middlewares_only(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, main__VSlimRequest* req);
+VV_LOC Array_vphp__ZVal main__matching_group_middlewares(main__VSlimApp* app, string path);
+VV_LOC bool main__path_has_prefix(string path, string prefix);
+VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params);
+VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result);
+VV_LOC void anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_13122(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void main__vslim_handle_request(vphp__Context ctx);
+VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
+main__VSlimRequest* main__VSlimRequest_construct(main__VSlimRequest* r, string method, string raw_path, string body);
+string main__VSlimRequest_str(main__VSlimRequest* r);
+string main__VSlimRequest_query(main__VSlimRequest* r, string key);
+bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key);
+string main__VSlimRequest_header(main__VSlimRequest* r, string name);
+bool main__VSlimRequest_has_header(main__VSlimRequest* r, string name);
+string main__VSlimRequest_cookie(main__VSlimRequest* r, string name);
+bool main__VSlimRequest_has_cookie(main__VSlimRequest* r, string name);
+string main__VSlimRequest_param(main__VSlimRequest* r, string name);
+bool main__VSlimRequest_has_param(main__VSlimRequest* r, string name);
+string main__VSlimRequest_attribute(main__VSlimRequest* r, string name);
+bool main__VSlimRequest_has_attribute(main__VSlimRequest* r, string name);
+string main__VSlimRequest_query_json_value(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_params(main__VSlimRequest* r);
+main__SlimRequest main__VSlimRequest_to_slim_request(main__VSlimRequest* r);
+main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body);
+main__VSlimRequest* main__new_vslim_request_from_envelope(Map_string_string envelope);
+VV_LOC main__SlimRequest main__request_from_envelope(Map_string_string envelope);
+VV_LOC Map_string_string main__parse_name_map_json(string raw);
+VV_LOC Map_string_string main__parse_headers_json(string headers_json);
+main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type);
+string main__VSlimResponse_header(main__VSlimResponse* r, string name);
+bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name);
+main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value);
+string main__VSlimResponse_cookie_header(main__VSlimResponse* r);
+main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, string name, string value);
+main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path);
+main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name);
+main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status);
+main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body);
+main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body);
+main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string location);
+main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status);
+Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r);
+Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r);
+string main__VSlimResponse_str(main__VSlimResponse* r);
+VV_LOC main__VSlimResponse* main__to_vslim_response(main__SlimResponse res);
+VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_string headers);
+VV_LOC main__SlimResponse main__text_response(int status, string body);
+VV_LOC main__SlimResponse main__json_response(int status, string json_body);
+VV_LOC main__SlimResponse main__not_found_response(void);
+VV_LOC main__SlimResponse main__method_not_allowed_response(void);
+VV_LOC main__SlimResponse main__internal_error_response(void);
+VV_LOC string main__normalize_path(string path);
+VV_LOC string main__normalize_group_prefix(string prefix);
+VV_LOC string main__normalize_base_path(string base_path);
+VV_LOC string main__join_route_prefix(string prefix, string pattern);
+VV_LOC string main__VSlimApp_apply_base_path(main__VSlimApp* app, string path);
+VV_LOC string main__join_absolute_url(string scheme, string host, string path);
+VV_LOC _option_string main__render_route_url(string pattern, Map_string_string* params, Map_string_string* query);
+VV_LOC string main__encode_query_params(Map_string_string* query);
+VV_LOC multi_return_string_string main__normalize_request_target(string raw_path);
+VV_LOC Map_string_string main__parse_query_string(string query_str);
+VV_LOC string main__normalize_header_name(string name);
+VV_LOC Map_string_string main__zval_to_name_map(vphp__ZVal z);
+VV_LOC multi_return_bool_Map_string_string main__match_route(string pattern, string path);
 static string time__FormatTime_str(time__FormatTime it);
 static string time__FormatDate_str(time__FormatDate it);
 static string v__pref__Arch_str(v__pref__Arch it);
@@ -13201,7 +13201,7 @@ VV_LOC  int compare_6896267785627929237_int(int* a, int* b) {
 	else return 1;
 }
 
-VV_LOC  int compare_11976479745138665065_string(string* a, string* b) {
+VV_LOC  int compare_13292602513269992837_string(string* a, string* b) {
 	if (builtin__string__lt(*a, *b)) return -1;
 	else return 1;
 }
@@ -13277,7 +13277,7 @@ static inline void __chan_bool_pushval(chan_bool ch, bool val) {
 // V gowrappers waiter fns:
 vphp__TaskResult __v_thread_vphp__TaskResult_wait(__v_thread_vphp__TaskResult thread);
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
-void* anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731 *arg);
+void* anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731 *arg);
 
 // V auto str functions:
 static string time__FormatTime_str(time__FormatTime it) { /* gen_str_for_enum */
@@ -14970,7 +14970,7 @@ v__ast__Expr v__ast__Ident_to_sumtype_v__ast__Expr(v__ast__Ident* x, bool is_mut
 v__ast__Node v__ast__Stmt_to_sumtype_v__ast__Node(v__ast__Stmt* x, bool is_mut) {
 	v__ast__Stmt* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__Stmt)); }
-	return (v__ast__Node){ ._v__ast__Stmt = ptr, ._typ = 276};
+	return (v__ast__Node){ ._v__ast__Stmt = ptr, ._typ = 275};
 }
 
 v__ast__Node v__ast__StructInitField_to_sumtype_v__ast__Node(v__ast__StructInitField* x, bool is_mut) {
@@ -14982,7 +14982,7 @@ v__ast__Node v__ast__StructInitField_to_sumtype_v__ast__Node(v__ast__StructInitF
 v__ast__Stmt v__ast__FnDecl_to_sumtype_v__ast__Stmt(v__ast__FnDecl* x, bool is_mut) {
 	v__ast__FnDecl* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__FnDecl)); }
-	return (v__ast__Stmt){ ._v__ast__FnDecl = ptr, ._typ = 281, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__FnDecl, pos))};
+	return (v__ast__Stmt){ ._v__ast__FnDecl = ptr, ._typ = 280, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__FnDecl, pos))};
 }
 
 v__ast__Node v__ast__CallArg_to_sumtype_v__ast__Node(v__ast__CallArg* x, bool is_mut) {
@@ -15066,19 +15066,19 @@ v__ast__Expr v__ast__ArrayInit_to_sumtype_v__ast__Expr(v__ast__ArrayInit* x, boo
 v__ast__Expr v__ast__StringLiteral_to_sumtype_v__ast__Expr(v__ast__StringLiteral* x, bool is_mut) {
 	v__ast__StringLiteral* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__StringLiteral)); }
-	return (v__ast__Expr){ ._v__ast__StringLiteral = ptr, ._typ = 285};
+	return (v__ast__Expr){ ._v__ast__StringLiteral = ptr, ._typ = 284};
 }
 
 v__ast__Expr v__ast__MapInit_to_sumtype_v__ast__Expr(v__ast__MapInit* x, bool is_mut) {
 	v__ast__MapInit* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__MapInit)); }
-	return (v__ast__Expr){ ._v__ast__MapInit = ptr, ._typ = 286};
+	return (v__ast__Expr){ ._v__ast__MapInit = ptr, ._typ = 285};
 }
 
 v__ast__Expr v__ast__StructInit_to_sumtype_v__ast__Expr(v__ast__StructInit* x, bool is_mut) {
 	v__ast__StructInit* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__StructInit)); }
-	return (v__ast__Expr){ ._v__ast__StructInit = ptr, ._typ = 284};
+	return (v__ast__Expr){ ._v__ast__StructInit = ptr, ._typ = 283};
 }
 
 v__ast__TypeInfo v__ast__SumType_to_sumtype_v__ast__TypeInfo(v__ast__SumType* x, bool is_mut) {
@@ -15438,7 +15438,7 @@ v__ast__Expr v__ast__AnonFn_to_sumtype_v__ast__Expr(v__ast__AnonFn* x, bool is_m
 v__ast__Stmt v__ast__StructDecl_to_sumtype_v__ast__Stmt(v__ast__StructDecl* x, bool is_mut) {
 	v__ast__StructDecl* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__StructDecl)); }
-	return (v__ast__Stmt){ ._v__ast__StructDecl = ptr, ._typ = 280, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__StructDecl, pos))};
+	return (v__ast__Stmt){ ._v__ast__StructDecl = ptr, ._typ = 279, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__StructDecl, pos))};
 }
 
 v__ast__Expr v__ast__IndexExpr_to_sumtype_v__ast__Expr(v__ast__IndexExpr* x, bool is_mut) {
@@ -15516,19 +15516,19 @@ v__ast__Stmt v__ast__Import_to_sumtype_v__ast__Stmt(v__ast__Import* x, bool is_m
 v__ast__Stmt v__ast__ConstDecl_to_sumtype_v__ast__Stmt(v__ast__ConstDecl* x, bool is_mut) {
 	v__ast__ConstDecl* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__ConstDecl)); }
-	return (v__ast__Stmt){ ._v__ast__ConstDecl = ptr, ._typ = 283, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__ConstDecl, pos))};
+	return (v__ast__Stmt){ ._v__ast__ConstDecl = ptr, ._typ = 282, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__ConstDecl, pos))};
 }
 
 v__ast__Stmt v__ast__InterfaceDecl_to_sumtype_v__ast__Stmt(v__ast__InterfaceDecl* x, bool is_mut) {
 	v__ast__InterfaceDecl* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__InterfaceDecl)); }
-	return (v__ast__Stmt){ ._v__ast__InterfaceDecl = ptr, ._typ = 278, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__InterfaceDecl, pos))};
+	return (v__ast__Stmt){ ._v__ast__InterfaceDecl = ptr, ._typ = 277, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__InterfaceDecl, pos))};
 }
 
 v__ast__Stmt v__ast__EnumDecl_to_sumtype_v__ast__Stmt(v__ast__EnumDecl* x, bool is_mut) {
 	v__ast__EnumDecl* ptr = x;
 	if (!is_mut) { ptr = builtin__memdup(x, sizeof(v__ast__EnumDecl)); }
-	return (v__ast__Stmt){ ._v__ast__EnumDecl = ptr, ._typ = 279, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__EnumDecl, pos))};
+	return (v__ast__Stmt){ ._v__ast__EnumDecl = ptr, ._typ = 278, .pos = (v__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, v__ast__EnumDecl, pos))};
 }
 
 v__ast__Stmt v__ast__TypeDecl_to_sumtype_v__ast__Stmt(v__ast__TypeDecl* x, bool is_mut) {
@@ -17574,7 +17574,7 @@ inline bool v__ast__Expr_sumtype_eq(v__ast__Expr a, v__ast__Expr b) {
 	if (a._typ == 372) {
 		return v__ast__LockExpr_struct_eq(*a._v__ast__LockExpr, *b._v__ast__LockExpr);
 	}
-	if (a._typ == 286) {
+	if (a._typ == 285) {
 		return v__ast__MapInit_struct_eq(*a._v__ast__MapInit, *b._v__ast__MapInit);
 	}
 	if (a._typ == 373) {
@@ -17622,10 +17622,10 @@ inline bool v__ast__Expr_sumtype_eq(v__ast__Expr a, v__ast__Expr b) {
 	if (a._typ == 387) {
 		return v__ast__StringInterLiteral_struct_eq(*a._v__ast__StringInterLiteral, *b._v__ast__StringInterLiteral);
 	}
-	if (a._typ == 285) {
+	if (a._typ == 284) {
 		return v__ast__StringLiteral_struct_eq(*a._v__ast__StringLiteral, *b._v__ast__StringLiteral);
 	}
-	if (a._typ == 284) {
+	if (a._typ == 283) {
 		return v__ast__StructInit_struct_eq(*a._v__ast__StructInit, *b._v__ast__StructInit);
 	}
 	if (a._typ == 388) {
@@ -18082,7 +18082,7 @@ inline bool v__ast__Stmt_sumtype_eq(v__ast__Stmt a, v__ast__Stmt b) {
 	if (a._typ == 397) {
 		return v__ast__ComptimeFor_struct_eq(*a._v__ast__ComptimeFor, *b._v__ast__ComptimeFor);
 	}
-	if (a._typ == 283) {
+	if (a._typ == 282) {
 		return v__ast__ConstDecl_struct_eq(*a._v__ast__ConstDecl, *b._v__ast__ConstDecl);
 	}
 	if (a._typ == 398) {
@@ -18094,13 +18094,13 @@ inline bool v__ast__Stmt_sumtype_eq(v__ast__Stmt a, v__ast__Stmt b) {
 	if (a._typ == 400) {
 		return v__ast__EmptyStmt_struct_eq(*a._v__ast__EmptyStmt, *b._v__ast__EmptyStmt);
 	}
-	if (a._typ == 279) {
+	if (a._typ == 278) {
 		return v__ast__EnumDecl_struct_eq(*a._v__ast__EnumDecl, *b._v__ast__EnumDecl);
 	}
 	if (a._typ == 401) {
 		return v__ast__ExprStmt_struct_eq(*a._v__ast__ExprStmt, *b._v__ast__ExprStmt);
 	}
-	if (a._typ == 281) {
+	if (a._typ == 280) {
 		return v__ast__FnDecl_struct_eq(*a._v__ast__FnDecl, *b._v__ast__FnDecl);
 	}
 	if (a._typ == 402) {
@@ -18127,7 +18127,7 @@ inline bool v__ast__Stmt_sumtype_eq(v__ast__Stmt a, v__ast__Stmt b) {
 	if (a._typ == 409) {
 		return v__ast__Import_struct_eq(*a._v__ast__Import, *b._v__ast__Import);
 	}
-	if (a._typ == 278) {
+	if (a._typ == 277) {
 		return v__ast__InterfaceDecl_struct_eq(*a._v__ast__InterfaceDecl, *b._v__ast__InterfaceDecl);
 	}
 	if (a._typ == 410) {
@@ -18145,7 +18145,7 @@ inline bool v__ast__Stmt_sumtype_eq(v__ast__Stmt a, v__ast__Stmt b) {
 	if (a._typ == 413) {
 		return v__ast__SqlStmt_struct_eq(*a._v__ast__SqlStmt, *b._v__ast__SqlStmt);
 	}
-	if (a._typ == 280) {
+	if (a._typ == 279) {
 		return v__ast__StructDecl_struct_eq(*a._v__ast__StructDecl, *b._v__ast__StructDecl);
 	}
 	if (a._typ == 339) {
@@ -18238,7 +18238,7 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 	builtin___v_free(arg);
 	return ret_ptr;
 }
-void* anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731 *arg) {
+void* anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731 *arg) {
 	arg->fn(arg->arg1, arg->arg2);
 	builtin___v_free(arg);
 	return 0;
@@ -18316,7 +18316,7 @@ cJSON* json__encode_Map_string_string(Map_string_string val) {
 
 
 // V anon functions:
-VV_LOC void anon_fn_3035ace31b993c50_75_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
+VV_LOC void anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
 	_result_vphp__DynVal _t1 = vphp__decode_val(v);
 	if (_t1.is_error) {
 		*(vphp__DynVal*) _t1.data = vphp__dyn_null();
@@ -18326,37 +18326,37 @@ VV_LOC void anon_fn_3035ace31b993c50_75_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__DynVal*)builtin__map_get_and_set((map*)m, &(string[]){vphp__ZVal_to_string(key)}, &(vphp__DynVal[]){ (vphp__DynVal){.type = 0,.data = (vphp__DynValData){.b = 0,.i = 0,.f = 0,.s = (string){.str=(byteptr)"", .is_lit=1},.ptr = 0,},.list = builtin____new_array(0, 0, sizeof(vphp__DynVal)),.map = builtin__new_map(sizeof(string), sizeof(vphp__DynVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),} })) = decoded;
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_9435(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_9435(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_10832(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_10832(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_11304(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11304(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_11864(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11864(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_map_string_string_21156(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_string_21156(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
 	builtin__map_set(m, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
-	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
+	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
 	f();
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC main__SlimResponse anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397(main__SlimRequest r) {
-	struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC main__SlimResponse anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406(main__SlimRequest r) {
+	struct _V_anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return main__SlimApp_run_middleware(_V_closure_ctx->app, (int)(_V_closure_ctx->index + 1), r);
 }
 
-VV_LOC void anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_24451(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_13122(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -18393,17 +18393,17 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_semver__InvalidComparatorFormatError_index) return 776;
 	if (sidx == _IError_semver__EmptyInputError_index) return 778;
 	if (sidx == _IError_semver__InvalidVersionFormatError_index) return 779;
-	if (sidx == _IError_os__Eof_index) return 211;
-	if (sidx == _IError_os__NotExpected_index) return 212;
-	if (sidx == _IError_os__FileNotOpenedError_index) return 214;
-	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 215;
-	if (sidx == _IError_os__ExecutableNotFoundError_index) return 233;
+	if (sidx == _IError_os__Eof_index) return 210;
+	if (sidx == _IError_os__NotExpected_index) return 211;
+	if (sidx == _IError_os__FileNotOpenedError_index) return 213;
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 214;
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return 232;
 	if (sidx == _IError_v__parser__IncludeError_index) return 614;
 	return 30;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 175: return "vphp.TaskResult";
+		case 174: return "vphp.TaskResult";
 		case 21: return "string";
 		case 8: return "int";
 		case 9: return "i64";
@@ -18411,15 +18411,15 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 19: return "bool";
 		case 37: return "[]string";
 		case 47: return "[]int";
-		case 173: return "[]i64";
-		case 174: return "[]f64";
+		case 172: return "[]i64";
+		case 173: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
 
 u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 175: return 175;
+		case 174: return 174;
 		case 21: return 21;
 		case 8: return 8;
 		case 9: return 9;
@@ -18427,9 +18427,9 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 19: return 19;
 		case 37: return 37;
 		case 47: return 47;
+		case 172: return 172;
 		case 173: return 173;
-		case 174: return 174;
-		default: return 175;
+		default: return 174;
 	}
 }
 static char * v_typeof_interface_vphp__ITask(u32 sidx) {
@@ -18437,7 +18437,7 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	return 178;
+	return 177;
 }
 static char * v_typeof_interface_vphp__compiler__repr__PhpRepr(u32 sidx) {
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index) return "vphp.compiler.repr.PhpClassRepr";
@@ -18459,39 +18459,39 @@ static char * v_typeof_interface_vphp__compiler__repr__PhpRepr(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__compiler__repr__PhpRepr(u32 sidx) {
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index) return 266;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index) return 265;
 	if (sidx == _vphp__compiler__repr__PhpRepr_voidptr_index) return 2;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpConstRepr_index) return 262;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpInterfaceRepr_index) return 264;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpFuncRepr_index) return 259;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpEnumRepr_index) return 265;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpTaskRepr_index) return 288;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpGlobalsRepr_index) return 271;
-	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassProp_index) return 267;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpConstRepr_index) return 261;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpInterfaceRepr_index) return 263;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpFuncRepr_index) return 258;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpEnumRepr_index) return 264;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpTaskRepr_index) return 287;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpGlobalsRepr_index) return 270;
+	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassProp_index) return 266;
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassConst_index) return 322;
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpMethodRepr_index) return 325;
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpArg_index) return 327;
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpEnumCase_index) return 330;
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpGlobalField_index) return 332;
 	if (sidx == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpTaskArg_index) return 334;
-	return 272;
+	return 271;
 }
 char * v_typeof_sumtype_v__ast__Stmt(u32 sidx) {
 	switch(sidx) {
-		case 276: return "v.ast.Stmt";
+		case 275: return "v.ast.Stmt";
 		case 392: return "v.ast.AsmStmt";
 		case 393: return "v.ast.AssertStmt";
 		case 394: return "v.ast.AssignStmt";
 		case 395: return "v.ast.Block";
 		case 396: return "v.ast.BranchStmt";
 		case 397: return "v.ast.ComptimeFor";
-		case 283: return "v.ast.ConstDecl";
+		case 282: return "v.ast.ConstDecl";
 		case 398: return "v.ast.DebuggerStmt";
 		case 399: return "v.ast.DeferStmt";
 		case 400: return "v.ast.EmptyStmt";
-		case 279: return "v.ast.EnumDecl";
+		case 278: return "v.ast.EnumDecl";
 		case 401: return "v.ast.ExprStmt";
-		case 281: return "v.ast.FnDecl";
+		case 280: return "v.ast.FnDecl";
 		case 402: return "v.ast.ForCStmt";
 		case 403: return "v.ast.ForInStmt";
 		case 404: return "v.ast.ForStmt";
@@ -18500,13 +18500,13 @@ char * v_typeof_sumtype_v__ast__Stmt(u32 sidx) {
 		case 407: return "v.ast.GotoStmt";
 		case 408: return "v.ast.HashStmt";
 		case 409: return "v.ast.Import";
-		case 278: return "v.ast.InterfaceDecl";
+		case 277: return "v.ast.InterfaceDecl";
 		case 410: return "v.ast.Module";
 		case 340: return "v.ast.NodeError";
 		case 411: return "v.ast.Return";
 		case 412: return "v.ast.SemicolonStmt";
 		case 413: return "v.ast.SqlStmt";
-		case 280: return "v.ast.StructDecl";
+		case 279: return "v.ast.StructDecl";
 		case 339: return "v.ast.TypeDecl";
 		default: return "unknown v.ast.Stmt";
 	}
@@ -18514,20 +18514,20 @@ char * v_typeof_sumtype_v__ast__Stmt(u32 sidx) {
 
 u32 v_typeof_sumtype_idx_v__ast__Stmt(u32 sidx) {
 	switch(sidx) {
-		case 276: return 276;
+		case 275: return 275;
 		case 392: return 392;
 		case 393: return 393;
 		case 394: return 394;
 		case 395: return 395;
 		case 396: return 396;
 		case 397: return 397;
-		case 283: return 283;
+		case 282: return 282;
 		case 398: return 398;
 		case 399: return 399;
 		case 400: return 400;
-		case 279: return 279;
+		case 278: return 278;
 		case 401: return 401;
-		case 281: return 281;
+		case 280: return 280;
 		case 402: return 402;
 		case 403: return 403;
 		case 404: return 404;
@@ -18536,15 +18536,15 @@ u32 v_typeof_sumtype_idx_v__ast__Stmt(u32 sidx) {
 		case 407: return 407;
 		case 408: return 408;
 		case 409: return 409;
-		case 278: return 278;
+		case 277: return 277;
 		case 410: return 410;
 		case 340: return 340;
 		case 411: return 411;
 		case 412: return 412;
 		case 413: return 413;
-		case 280: return 280;
+		case 279: return 279;
 		case 339: return 339;
-		default: return 276;
+		default: return 275;
 	}
 }
 char * v_typeof_sumtype_v__ast__TypeDecl(u32 sidx) {
@@ -18602,7 +18602,7 @@ char * v_typeof_sumtype_v__ast__Expr(u32 sidx) {
 		case 370: return "v.ast.LambdaExpr";
 		case 371: return "v.ast.Likely";
 		case 372: return "v.ast.LockExpr";
-		case 286: return "v.ast.MapInit";
+		case 285: return "v.ast.MapInit";
 		case 373: return "v.ast.MatchExpr";
 		case 374: return "v.ast.Nil";
 		case 375: return "v.ast.None";
@@ -18618,8 +18618,8 @@ char * v_typeof_sumtype_v__ast__Expr(u32 sidx) {
 		case 385: return "v.ast.SpawnExpr";
 		case 386: return "v.ast.SqlExpr";
 		case 387: return "v.ast.StringInterLiteral";
-		case 285: return "v.ast.StringLiteral";
-		case 284: return "v.ast.StructInit";
+		case 284: return "v.ast.StringLiteral";
+		case 283: return "v.ast.StructInit";
 		case 388: return "v.ast.TypeNode";
 		case 389: return "v.ast.TypeOf";
 		case 390: return "v.ast.UnsafeExpr";
@@ -18663,7 +18663,7 @@ u32 v_typeof_sumtype_idx_v__ast__Expr(u32 sidx) {
 		case 370: return 370;
 		case 371: return 371;
 		case 372: return 372;
-		case 286: return 286;
+		case 285: return 285;
 		case 373: return 373;
 		case 374: return 374;
 		case 375: return 375;
@@ -18679,8 +18679,8 @@ u32 v_typeof_sumtype_idx_v__ast__Expr(u32 sidx) {
 		case 385: return 385;
 		case 386: return 386;
 		case 387: return 387;
-		case 285: return 285;
 		case 284: return 284;
+		case 283: return 283;
 		case 388: return 388;
 		case 389: return 389;
 		case 390: return 390;
@@ -18718,7 +18718,7 @@ char * v_typeof_sumtype_v__ast__Node(u32 sidx) {
 		case 423: return "v.ast.EmptyNode";
 		case 424: return "v.ast.EnumField";
 		case 391: return "v.ast.Expr";
-		case 282: return "v.ast.File";
+		case 281: return "v.ast.File";
 		case 419: return "v.ast.GlobalField";
 		case 425: return "v.ast.IfBranch";
 		case 426: return "v.ast.MatchBranch";
@@ -18726,7 +18726,7 @@ char * v_typeof_sumtype_v__ast__Node(u32 sidx) {
 		case 427: return "v.ast.Param";
 		case 421: return "v.ast.ScopeObject";
 		case 428: return "v.ast.SelectBranch";
-		case 276: return "v.ast.Stmt";
+		case 275: return "v.ast.Stmt";
 		case 429: return "v.ast.StructField";
 		case 430: return "v.ast.StructInitField";
 		default: return "unknown v.ast.Node";
@@ -18741,7 +18741,7 @@ u32 v_typeof_sumtype_idx_v__ast__Node(u32 sidx) {
 		case 423: return 423;
 		case 424: return 424;
 		case 391: return 391;
-		case 282: return 282;
+		case 281: return 281;
 		case 419: return 419;
 		case 425: return 425;
 		case 426: return 426;
@@ -18749,7 +18749,7 @@ u32 v_typeof_sumtype_idx_v__ast__Node(u32 sidx) {
 		case 427: return 427;
 		case 421: return 421;
 		case 428: return 428;
-		case 276: return 276;
+		case 275: return 275;
 		case 429: return 429;
 		case 430: return 430;
 		default: return 431;
@@ -35212,6 +35212,22 @@ string vphp__Context_arg_T_string(vphp__Context ctx, int index) {
 	
  	return (*(string*)_t4.data);
 }
+int vphp__Context_arg_T_int(vphp__Context ctx, int index) {
+	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
+	if (!vphp__ZVal_is_valid(val)) {
+		return 0;
+	}
+	#if false
+	{
+	}
+	#endif
+	_result_int _t4 = vphp__ZVal_to_v_T_int(val);
+	if (_t4.is_error) {
+		*(int*) _t4.data = 0;
+	}
+	
+ 	return (*(int*)_t4.data);
+}
 Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int index) {
 	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
 	if (!vphp__ZVal_is_valid(val)) {
@@ -35229,22 +35245,6 @@ Map_string_string vphp__Context_arg_T_Map_string_string(vphp__Context ctx, int i
 	}
 	
  	return (*(Map_string_string*)_t4.data);
-}
-int vphp__Context_arg_T_int(vphp__Context ctx, int index) {
-	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
-	if (!vphp__ZVal_is_valid(val)) {
-		return 0;
-	}
-	#if false
-	{
-	}
-	#endif
-	_result_int _t4 = vphp__ZVal_to_v_T_int(val);
-	if (_t4.is_error) {
-		*(int*) _t4.data = 0;
-	}
-	
- 	return (*(int*)_t4.data);
 }
 vphp__ZVal vphp__Context_arg_val(vphp__Context ctx, int index) {
 	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
@@ -35769,10 +35769,10 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 47 /* []int */) {
 			vphp__Context_return_val_T_Array_int(ctx, (*results._Array_int));
 		}
-		else if (results._typ == 173 /* []i64 */) {
+		else if (results._typ == 172 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 174 /* []f64 */) {
+		else if (results._typ == 173 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -35839,7 +35839,7 @@ _result_vphp__DynVal vphp__decode_val(vphp__ZVal z) {
 	if (vphp__ZVal_is_array(z)) {
 		Map_string_vphp__DynVal out = builtin__new_map(sizeof(string), sizeof(vphp__DynVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(z, out, (voidptr)		anon_fn_3035ace31b993c50_75_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(z, out, (voidptr)		anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018);
 		_result_vphp__DynVal _t6;
 		builtin___result_ok(&(vphp__DynVal[]) { vphp__dyn_map(out) }, (_result*)(&_t6), sizeof(vphp__DynVal));
 		 
@@ -36292,7 +36292,7 @@ Array_string vphp__ZVal_interface_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(interfaces, out, (voidptr)	anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_9435);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(interfaces, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_9435);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -36341,7 +36341,7 @@ Array_string vphp__ZVal_method_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_10832);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_10832);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -36356,7 +36356,7 @@ Array_string vphp__ZVal_property_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_11304);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11304);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -36375,7 +36375,7 @@ Array_string vphp__ZVal_const_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_array_string_11864);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11864);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -36608,7 +36608,7 @@ _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v) {
 		}
 		Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_76_vphp__zval_vphp__zval_mut_map_string_string_21156);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_string_21156);
 		_result_Map_string_string _t14;
 		builtin___result_ok(&(Map_string_string[]) { out }, (_result*)(&_t14), sizeof(Map_string_string));
 		 
@@ -48503,16 +48503,16 @@ void sync__WaitGroup_wait(sync__WaitGroup* wg) {
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)(void)) {
 	sync__WaitGroup_add(wg, 1);
 	// start go
-	thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731));
-	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731;
+	thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731));
+	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731;
 	arg__t1->arg1 = wg;
 	arg__t1->arg2 = f;
 	pthread_t thread__t1;
 	pthread_attr_t thread__t1_attributes;
 	pthread_attr_init(&thread__t1_attributes);
 	pthread_attr_setstacksize(&thread__t1_attributes, 8388608); // fn: 
-	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
-	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_217_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
+	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
+	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_223_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
 	pthread_detach(thread__t1);
 	// end go
 	;
@@ -50259,7 +50259,7 @@ v__ast__ComptimeCall* cc = HEAP(v__ast__ComptimeCall, _v_toheap_cc);
 	return str;
 }
 v__ast__Type v__ast__Expr_type(v__ast__Expr e) {
-	return ((e._typ == 341 /* v.ast.AnonFn */)? ((*e._v__ast__AnonFn).typ) : (e._typ == 342 /* v.ast.ArrayDecompose */)? ((*e._v__ast__ArrayDecompose).expr_type) : (e._typ == 343 /* v.ast.ArrayInit */)? ((*e._v__ast__ArrayInit).typ) : (e._typ == 344 /* v.ast.AsCast */)? ((*e._v__ast__AsCast).typ) : (e._typ == 346 /* v.ast.AtExpr */)? (_const_v__ast__string_type) : (e._typ == 347 /* v.ast.BoolLiteral */)? (_const_v__ast__bool_type) : (e._typ == 348 /* v.ast.CTempVar */)? ((*e._v__ast__CTempVar).typ) : (e._typ == 349 /* v.ast.CallExpr */)? ((*e._v__ast__CallExpr).return_type) : (e._typ == 350 /* v.ast.CastExpr */)? ((*e._v__ast__CastExpr).typ) : (e._typ == 351 /* v.ast.ChanInit */)? ((*e._v__ast__ChanInit).typ) : (e._typ == 352 /* v.ast.CharLiteral */)? (_const_v__ast__char_type) : (e._typ == 354 /* v.ast.ComptimeCall */)? ((*e._v__ast__ComptimeCall).result_type) : (e._typ == 355 /* v.ast.ComptimeSelector */)? ((*e._v__ast__ComptimeSelector).typ) : (e._typ == 357 /* v.ast.ConcatExpr */)? ((*e._v__ast__ConcatExpr).return_type) : (e._typ == 358 /* v.ast.DumpExpr */)? ((*e._v__ast__DumpExpr).expr_type) : (e._typ == 360 /* v.ast.EnumVal */)? ((*e._v__ast__EnumVal).typ) : (e._typ == 361 /* v.ast.FloatLiteral */)? (_const_v__ast__float_literal_type) : (e._typ == 363 /* v.ast.Ident */)? ((*((*e._v__ast__Ident).info.typ))) : (e._typ == 364 /* v.ast.IfExpr */)? ((*e._v__ast__IfExpr).typ) : (e._typ == 365 /* v.ast.IfGuardExpr */)? ((*e._v__ast__IfGuardExpr).expr_type) : (e._typ == 366 /* v.ast.IndexExpr */)? ((*e._v__ast__IndexExpr).typ) : (e._typ == 367 /* v.ast.InfixExpr */)? ((*e._v__ast__InfixExpr).promoted_type) : (e._typ == 368 /* v.ast.IntegerLiteral */)? (_const_v__ast__int_literal_type) : (e._typ == 369 /* v.ast.IsRefType */)? ((*e._v__ast__IsRefType).typ) : (e._typ == 370 /* v.ast.LambdaExpr */)? ((*e._v__ast__LambdaExpr).typ) : (e._typ == 371 /* v.ast.Likely */)? (v__ast__Expr_type((*e._v__ast__Likely).expr)) : (e._typ == 372 /* v.ast.LockExpr */)? ((*e._v__ast__LockExpr).typ) : (e._typ == 286 /* v.ast.MapInit */)? ((*e._v__ast__MapInit).typ) : (e._typ == 373 /* v.ast.MatchExpr */)? ((*e._v__ast__MatchExpr).return_type) : (e._typ == 374 /* v.ast.Nil */)? (_const_v__ast__voidptr_type) : (e._typ == 378 /* v.ast.ParExpr */)? (v__ast__Expr_type((*e._v__ast__ParExpr).expr)) : (e._typ == 379 /* v.ast.PostfixExpr */)? ((*e._v__ast__PostfixExpr).typ) : (e._typ == 380 /* v.ast.PrefixExpr */)? ((*e._v__ast__PrefixExpr).right_type) : (e._typ == 381 /* v.ast.RangeExpr */)? ((*e._v__ast__RangeExpr).typ) : (e._typ == 383 /* v.ast.SelectorExpr */)? ((*e._v__ast__SelectorExpr).typ) : (e._typ == 384 /* v.ast.SizeOf */)? ((*e._v__ast__SizeOf).typ) : (e._typ == 386 /* v.ast.SqlExpr */)? ((*e._v__ast__SqlExpr).typ) : (e._typ == 387 /* v.ast.StringInterLiteral */)? (_const_v__ast__string_type) : (e._typ == 285 /* v.ast.StringLiteral */)? (_const_v__ast__string_type) : (e._typ == 284 /* v.ast.StructInit */)? ((*e._v__ast__StructInit).typ) : (e._typ == 388 /* v.ast.TypeNode */)? ((*e._v__ast__TypeNode).typ) : (e._typ == 389 /* v.ast.TypeOf */)? ((*e._v__ast__TypeOf).typ) : (e._typ == 390 /* v.ast.UnsafeExpr */)? (v__ast__Expr_type((*e._v__ast__UnsafeExpr).expr)) : (_const_v__ast__void_type));
+	return ((e._typ == 341 /* v.ast.AnonFn */)? ((*e._v__ast__AnonFn).typ) : (e._typ == 342 /* v.ast.ArrayDecompose */)? ((*e._v__ast__ArrayDecompose).expr_type) : (e._typ == 343 /* v.ast.ArrayInit */)? ((*e._v__ast__ArrayInit).typ) : (e._typ == 344 /* v.ast.AsCast */)? ((*e._v__ast__AsCast).typ) : (e._typ == 346 /* v.ast.AtExpr */)? (_const_v__ast__string_type) : (e._typ == 347 /* v.ast.BoolLiteral */)? (_const_v__ast__bool_type) : (e._typ == 348 /* v.ast.CTempVar */)? ((*e._v__ast__CTempVar).typ) : (e._typ == 349 /* v.ast.CallExpr */)? ((*e._v__ast__CallExpr).return_type) : (e._typ == 350 /* v.ast.CastExpr */)? ((*e._v__ast__CastExpr).typ) : (e._typ == 351 /* v.ast.ChanInit */)? ((*e._v__ast__ChanInit).typ) : (e._typ == 352 /* v.ast.CharLiteral */)? (_const_v__ast__char_type) : (e._typ == 354 /* v.ast.ComptimeCall */)? ((*e._v__ast__ComptimeCall).result_type) : (e._typ == 355 /* v.ast.ComptimeSelector */)? ((*e._v__ast__ComptimeSelector).typ) : (e._typ == 357 /* v.ast.ConcatExpr */)? ((*e._v__ast__ConcatExpr).return_type) : (e._typ == 358 /* v.ast.DumpExpr */)? ((*e._v__ast__DumpExpr).expr_type) : (e._typ == 360 /* v.ast.EnumVal */)? ((*e._v__ast__EnumVal).typ) : (e._typ == 361 /* v.ast.FloatLiteral */)? (_const_v__ast__float_literal_type) : (e._typ == 363 /* v.ast.Ident */)? ((*((*e._v__ast__Ident).info.typ))) : (e._typ == 364 /* v.ast.IfExpr */)? ((*e._v__ast__IfExpr).typ) : (e._typ == 365 /* v.ast.IfGuardExpr */)? ((*e._v__ast__IfGuardExpr).expr_type) : (e._typ == 366 /* v.ast.IndexExpr */)? ((*e._v__ast__IndexExpr).typ) : (e._typ == 367 /* v.ast.InfixExpr */)? ((*e._v__ast__InfixExpr).promoted_type) : (e._typ == 368 /* v.ast.IntegerLiteral */)? (_const_v__ast__int_literal_type) : (e._typ == 369 /* v.ast.IsRefType */)? ((*e._v__ast__IsRefType).typ) : (e._typ == 370 /* v.ast.LambdaExpr */)? ((*e._v__ast__LambdaExpr).typ) : (e._typ == 371 /* v.ast.Likely */)? (v__ast__Expr_type((*e._v__ast__Likely).expr)) : (e._typ == 372 /* v.ast.LockExpr */)? ((*e._v__ast__LockExpr).typ) : (e._typ == 285 /* v.ast.MapInit */)? ((*e._v__ast__MapInit).typ) : (e._typ == 373 /* v.ast.MatchExpr */)? ((*e._v__ast__MatchExpr).return_type) : (e._typ == 374 /* v.ast.Nil */)? (_const_v__ast__voidptr_type) : (e._typ == 378 /* v.ast.ParExpr */)? (v__ast__Expr_type((*e._v__ast__ParExpr).expr)) : (e._typ == 379 /* v.ast.PostfixExpr */)? ((*e._v__ast__PostfixExpr).typ) : (e._typ == 380 /* v.ast.PrefixExpr */)? ((*e._v__ast__PrefixExpr).right_type) : (e._typ == 381 /* v.ast.RangeExpr */)? ((*e._v__ast__RangeExpr).typ) : (e._typ == 383 /* v.ast.SelectorExpr */)? ((*e._v__ast__SelectorExpr).typ) : (e._typ == 384 /* v.ast.SizeOf */)? ((*e._v__ast__SizeOf).typ) : (e._typ == 386 /* v.ast.SqlExpr */)? ((*e._v__ast__SqlExpr).typ) : (e._typ == 387 /* v.ast.StringInterLiteral */)? (_const_v__ast__string_type) : (e._typ == 284 /* v.ast.StringLiteral */)? (_const_v__ast__string_type) : (e._typ == 283 /* v.ast.StructInit */)? ((*e._v__ast__StructInit).typ) : (e._typ == 388 /* v.ast.TypeNode */)? ((*e._v__ast__TypeNode).typ) : (e._typ == 389 /* v.ast.TypeOf */)? ((*e._v__ast__TypeOf).typ) : (e._typ == 390 /* v.ast.UnsafeExpr */)? (v__ast__Expr_type((*e._v__ast__UnsafeExpr).expr)) : (_const_v__ast__void_type));
 }
 inline bool v__ast__Expr_is_blank_ident(v__ast__Expr expr) {
 	if ((expr)._typ == 363 /* v.ast.Ident */) {
@@ -50370,7 +50370,7 @@ v__token__Pos _t3 = (v__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,.fil
 	else if (expr._typ == 372 /* v.ast.LockExpr */) {
 		_t3 = (*expr._v__ast__LockExpr).pos;
 	}
-	else if (expr._typ == 286 /* v.ast.MapInit */) {
+	else if (expr._typ == 285 /* v.ast.MapInit */) {
 		_t3 = (*expr._v__ast__MapInit).pos;
 	}
 	else if (expr._typ == 373 /* v.ast.MatchExpr */) {
@@ -50412,10 +50412,10 @@ v__token__Pos _t3 = (v__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,.fil
 	else if (expr._typ == 387 /* v.ast.StringInterLiteral */) {
 		_t3 = (*expr._v__ast__StringInterLiteral).pos;
 	}
-	else if (expr._typ == 285 /* v.ast.StringLiteral */) {
+	else if (expr._typ == 284 /* v.ast.StringLiteral */) {
 		_t3 = (*expr._v__ast__StringLiteral).pos;
 	}
-	else if (expr._typ == 284 /* v.ast.StructInit */) {
+	else if (expr._typ == 283 /* v.ast.StructInit */) {
 		_t3 = (*expr._v__ast__StructInit).pos;
 	}
 	else if (expr._typ == 388 /* v.ast.TypeNode */) {
@@ -50464,7 +50464,7 @@ bool v__ast__Expr_is_constant(v__ast__Expr expr) {
 	else if (expr._typ == 347 /* v.ast.BoolLiteral */) {
 		_t2 = true;
 	}
-	else if (expr._typ == 285 /* v.ast.StringLiteral */) {
+	else if (expr._typ == 284 /* v.ast.StringLiteral */) {
 		_t2 = true;
 	}
 	else if (expr._typ == 367 /* v.ast.InfixExpr */) {
@@ -50492,10 +50492,10 @@ bool v__ast__Expr_is_expr(v__ast__Expr expr) {
 	return ((expr._typ == 364 /* v.ast.IfExpr */)? ((*expr._v__ast__IfExpr).is_expr) : (expr._typ == 372 /* v.ast.LockExpr */)? ((*expr._v__ast__LockExpr).is_expr) : (expr._typ == 373 /* v.ast.MatchExpr */)? ((*expr._v__ast__MatchExpr).is_expr) : (expr._typ == 382 /* v.ast.SelectExpr */)? ((*expr._v__ast__SelectExpr).is_expr) : (true));
 }
 v__ast__Type v__ast__Expr_get_pure_type(v__ast__Expr expr) {
-	return ((expr._typ == 347 /* v.ast.BoolLiteral */)? (_const_v__ast__bool_type) : (expr._typ == 352 /* v.ast.CharLiteral */)? (_const_v__ast__char_type) : (expr._typ == 361 /* v.ast.FloatLiteral */)? (_const_v__ast__f64_type) : (expr._typ == 285 /* v.ast.StringLiteral */)? (_const_v__ast__string_type) : (expr._typ == 368 /* v.ast.IntegerLiteral */)? (_const_v__ast__i64_type) : (_const_v__ast__void_type));
+	return ((expr._typ == 347 /* v.ast.BoolLiteral */)? (_const_v__ast__bool_type) : (expr._typ == 352 /* v.ast.CharLiteral */)? (_const_v__ast__char_type) : (expr._typ == 361 /* v.ast.FloatLiteral */)? (_const_v__ast__f64_type) : (expr._typ == 284 /* v.ast.StringLiteral */)? (_const_v__ast__string_type) : (expr._typ == 368 /* v.ast.IntegerLiteral */)? (_const_v__ast__i64_type) : (_const_v__ast__void_type));
 }
 bool v__ast__Expr_is_pure_literal(v__ast__Expr expr) {
-	return ((expr._typ == 347 /* v.ast.BoolLiteral */)? (true) : (expr._typ == 352 /* v.ast.CharLiteral */)? (true) : (expr._typ == 361 /* v.ast.FloatLiteral */)? (true) : (expr._typ == 285 /* v.ast.StringLiteral */)? (true) : (expr._typ == 368 /* v.ast.IntegerLiteral */)? (true) : (false));
+	return ((expr._typ == 347 /* v.ast.BoolLiteral */)? (true) : (expr._typ == 352 /* v.ast.CharLiteral */)? (true) : (expr._typ == 361 /* v.ast.FloatLiteral */)? (true) : (expr._typ == 284 /* v.ast.StringLiteral */)? (true) : (expr._typ == 368 /* v.ast.IntegerLiteral */)? (true) : (false));
 }
 bool v__ast__Expr_is_auto_deref_var(v__ast__Expr expr) {
 	return ((expr._typ == 363 /* v.ast.Ident */)? ((((*expr._v__ast__Ident).obj)._typ == 420 /* v.ast.Var */ ? ((*(*expr._v__ast__Ident).obj._v__ast__Var).is_auto_deref) : (false))) : (expr._typ == 380 /* v.ast.PrefixExpr */)? ((*expr._v__ast__PrefixExpr).op == v__token__Kind__amp && v__ast__Expr_is_auto_deref_var((*expr._v__ast__PrefixExpr).right)) : (false));
@@ -50513,7 +50513,7 @@ v__token__Pos v__ast__Node_pos(v__ast__Node node) {
 	else if (node._typ == 423 /* v.ast.EmptyNode */) {
 		return ((v__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,.file_idx = -1,.last_line = 0,});
 	}
-	else if (node._typ == 276 /* v.ast.Stmt */) {
+	else if (node._typ == 275 /* v.ast.Stmt */) {
 		v__token__Pos pos = (*((*node._v__ast__Stmt).pos));
 		if (((*node._v__ast__Stmt))._typ == 409 /* v.ast.Import */) {
 			for (int _t3 = 0; _t3 < (*(*node._v__ast__Stmt)._v__ast__Import).syms.len; ++_t3) {
@@ -50594,7 +50594,7 @@ v__token__Pos v__ast__Node_pos(v__ast__Node node) {
 		}
 		
 	}
-	else if (node._typ == 282 /* v.ast.File */) {
+	else if (node._typ == 281 /* v.ast.File */) {
 		v__token__Pos pos = ((v__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,.file_idx = -1,.last_line = 0,});
 		if ((*node._v__ast__File).stmts.len > 0) {
 			v__token__Pos first_pos = (*((*(v__ast__Stmt*)builtin__array_first((*node._v__ast__File).stmts)).pos));
@@ -50711,7 +50711,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 			}
 			return _t31;
 		}
-		else if ((*node._v__ast__Expr)._typ == 284 /* v.ast.StructInit */) {
+		else if ((*node._v__ast__Expr)._typ == 283 /* v.ast.StructInit */) {
 			Array_v__ast__Node _t35 = {0};
 			Array_v__ast__StructInitField _t35_orig = (*(*node._v__ast__Expr)._v__ast__StructInit).init_fields;
 			int _t35_len = _t35_orig.len;
@@ -50797,7 +50797,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 		else if ((*node._v__ast__Expr)._typ == 351 /* v.ast.ChanInit */) {
 			builtin__array_push((array*)&children, _MOV((v__ast__Node[]){ v__ast__Expr_to_sumtype_v__ast__Node(&(*(*node._v__ast__Expr)._v__ast__ChanInit).cap_expr, false) }));
 		}
-		else if ((*node._v__ast__Expr)._typ == 286 /* v.ast.MapInit */) {
+		else if ((*node._v__ast__Expr)._typ == 285 /* v.ast.MapInit */) {
 			Array_v__ast__Node _t66 = {0};
 			Array_v__ast__Expr _t66_orig = (*(*node._v__ast__Expr)._v__ast__MapInit).keys;
 			int _t66_len = _t66_orig.len;
@@ -50852,7 +50852,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 		else {
 		}
 		
-	} else if ((node)._typ == 276 /* v.ast.Stmt */) {
+	} else if ((node)._typ == 275 /* v.ast.Stmt */) {
 		if ((*node._v__ast__Stmt)._typ == 395 /* v.ast.Block */) {
 			Array_v__ast__Node _t84 = {0};
 			Array_v__ast__Stmt _t84_orig = (*(*node._v__ast__Stmt)._v__ast__Block).stmts;
@@ -50937,7 +50937,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 		else if ((*node._v__ast__Stmt)._typ == 393 /* v.ast.AssertStmt */) {
 			builtin__array_push((array*)&children, _MOV((v__ast__Node[]){ v__ast__Expr_to_sumtype_v__ast__Node(&(*(*node._v__ast__Stmt)._v__ast__AssertStmt).expr, false) }));
 		}
-		else if ((*node._v__ast__Stmt)._typ == 278 /* v.ast.InterfaceDecl */) {
+		else if ((*node._v__ast__Stmt)._typ == 277 /* v.ast.InterfaceDecl */) {
 			Array_v__ast__Node _t110 = {0};
 			Array_v__ast__FnDecl _t110_orig = (*(*node._v__ast__Stmt)._v__ast__InterfaceDecl).methods;
 			int _t110_len = _t110_orig.len;
@@ -50998,7 +50998,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 			}
 			return _t126;
 		}
-		else if ((*node._v__ast__Stmt)._typ == 280 /* v.ast.StructDecl */) {
+		else if ((*node._v__ast__Stmt)._typ == 279 /* v.ast.StructDecl */) {
 			Array_v__ast__Node _t130 = {0};
 			Array_v__ast__StructField _t130_orig = (*(*node._v__ast__Stmt)._v__ast__StructDecl).fields;
 			int _t130_len = _t130_orig.len;
@@ -51024,7 +51024,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 			}
 			return _t134;
 		}
-		else if ((*node._v__ast__Stmt)._typ == 283 /* v.ast.ConstDecl */) {
+		else if ((*node._v__ast__Stmt)._typ == 282 /* v.ast.ConstDecl */) {
 			Array_v__ast__Node _t138 = {0};
 			Array_v__ast__ConstField _t138_orig = (*(*node._v__ast__Stmt)._v__ast__ConstDecl).fields;
 			int _t138_len = _t138_orig.len;
@@ -51037,7 +51037,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 			}
 			return _t138;
 		}
-		else if ((*node._v__ast__Stmt)._typ == 279 /* v.ast.EnumDecl */) {
+		else if ((*node._v__ast__Stmt)._typ == 278 /* v.ast.EnumDecl */) {
 			Array_v__ast__Node _t142 = {0};
 			Array_v__ast__EnumField _t142_orig = (*(*node._v__ast__Stmt)._v__ast__EnumDecl).fields;
 			int _t142_len = _t142_orig.len;
@@ -51050,7 +51050,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 			}
 			return _t142;
 		}
-		else if ((*node._v__ast__Stmt)._typ == 281 /* v.ast.FnDecl */) {
+		else if ((*node._v__ast__Stmt)._typ == 280 /* v.ast.FnDecl */) {
 			if ((*(*node._v__ast__Stmt)._v__ast__FnDecl).is_method) {
 				builtin__array_push((array*)&children, _MOV((v__ast__Node[]){ v__ast__StructField_to_sumtype_v__ast__Node(&(*(*node._v__ast__Stmt)._v__ast__FnDecl).receiver, false) }));
 			}
@@ -51154,7 +51154,7 @@ Array_v__ast__Node v__ast__Node_children(v__ast__Node node) {
 			}
 			return _t172;
 		}
-		else if (node._typ == 282 /* v.ast.File */) {
+		else if (node._typ == 281 /* v.ast.File */) {
 			Array_v__ast__Node _t176 = {0};
 			Array_v__ast__Stmt _t176_orig = (*node._v__ast__File).stmts;
 			int _t176_len = _t176_orig.len;
@@ -51465,7 +51465,7 @@ v__ast__Expr v__ast__Expr_remove_par(v__ast__Expr* expr) {
 	return e;
 }
 bool v__ast__Expr_is_literal(v__ast__Expr expr) {
-	return ((expr._typ == 347 /* v.ast.BoolLiteral */)? (true) : (expr._typ == 352 /* v.ast.CharLiteral */)? (true) : (expr._typ == 361 /* v.ast.FloatLiteral */)? (true) : (expr._typ == 368 /* v.ast.IntegerLiteral */)? (true) : (expr._typ == 285 /* v.ast.StringLiteral */)? (true) : (expr._typ == 387 /* v.ast.StringInterLiteral */)? (true) : (expr._typ == 380 /* v.ast.PrefixExpr */)? (v__ast__Expr_is_literal((*expr._v__ast__PrefixExpr).right)) : (expr._typ == 367 /* v.ast.InfixExpr */)? (v__ast__Expr_is_literal((*expr._v__ast__InfixExpr).left) && v__ast__Expr_is_literal((*expr._v__ast__InfixExpr).right)) : (expr._typ == 378 /* v.ast.ParExpr */)? (v__ast__Expr_is_literal((*expr._v__ast__ParExpr).expr)) : (expr._typ == 350 /* v.ast.CastExpr */)? (!(*expr._v__ast__CastExpr).has_arg && v__ast__Expr_is_literal((*expr._v__ast__CastExpr).expr) && (v__ast__Type_is_any_kind_of_pointer((*expr._v__ast__CastExpr).typ) || ((*expr._v__ast__CastExpr).typ == _const_v__ast__i8_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__i16_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__i32_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__int_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__i64_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u8_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u16_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u32_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u64_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__f32_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__f64_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__char_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__bool_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__rune_type))) : (expr._typ == 384 /* v.ast.SizeOf */)? ((*expr._v__ast__SizeOf).is_type || v__ast__Expr_is_literal((*expr._v__ast__SizeOf).expr)) : (expr._typ == 369 /* v.ast.IsRefType */)? ((*expr._v__ast__IsRefType).is_type || v__ast__Expr_is_literal((*expr._v__ast__IsRefType).expr)) : (false));
+	return ((expr._typ == 347 /* v.ast.BoolLiteral */)? (true) : (expr._typ == 352 /* v.ast.CharLiteral */)? (true) : (expr._typ == 361 /* v.ast.FloatLiteral */)? (true) : (expr._typ == 368 /* v.ast.IntegerLiteral */)? (true) : (expr._typ == 284 /* v.ast.StringLiteral */)? (true) : (expr._typ == 387 /* v.ast.StringInterLiteral */)? (true) : (expr._typ == 380 /* v.ast.PrefixExpr */)? (v__ast__Expr_is_literal((*expr._v__ast__PrefixExpr).right)) : (expr._typ == 367 /* v.ast.InfixExpr */)? (v__ast__Expr_is_literal((*expr._v__ast__InfixExpr).left) && v__ast__Expr_is_literal((*expr._v__ast__InfixExpr).right)) : (expr._typ == 378 /* v.ast.ParExpr */)? (v__ast__Expr_is_literal((*expr._v__ast__ParExpr).expr)) : (expr._typ == 350 /* v.ast.CastExpr */)? (!(*expr._v__ast__CastExpr).has_arg && v__ast__Expr_is_literal((*expr._v__ast__CastExpr).expr) && (v__ast__Type_is_any_kind_of_pointer((*expr._v__ast__CastExpr).typ) || ((*expr._v__ast__CastExpr).typ == _const_v__ast__i8_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__i16_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__i32_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__int_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__i64_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u8_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u16_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u32_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__u64_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__f32_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__f64_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__char_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__bool_type || (*expr._v__ast__CastExpr).typ == _const_v__ast__rune_type))) : (expr._typ == 384 /* v.ast.SizeOf */)? ((*expr._v__ast__SizeOf).is_type || v__ast__Expr_is_literal((*expr._v__ast__SizeOf).expr)) : (expr._typ == 369 /* v.ast.IsRefType */)? ((*expr._v__ast__IsRefType).is_type || v__ast__Expr_is_literal((*expr._v__ast__IsRefType).expr)) : (false));
 }
 inline bool v__ast__Expr_is_nil(v__ast__Expr e) {
 	return (e)._typ == 374 /* v.ast.Nil */ || ((e)._typ == 390 /* v.ast.UnsafeExpr */ && ((*(v__ast__UnsafeExpr*)builtin____as_cast((e)._v__ast__UnsafeExpr,(e)._typ, 390)).expr)._typ == 374 /* v.ast.Nil */);
@@ -53481,7 +53481,7 @@ string v__ast__Expr_str(v__ast__Expr x) {
 			} // defer end
 		return _t46;
 	}
-	else if (x._typ == 286 /* v.ast.MapInit */) {
+	else if (x._typ == 285 /* v.ast.MapInit */) {
 		Array_string pairs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
 		for (int ik = 0; ik < (*x._v__ast__MapInit).keys.len; ++ik) {
 			v__ast__Expr kv = ((v__ast__Expr*)(*x._v__ast__MapInit).keys.data)[ik];
@@ -53609,7 +53609,7 @@ string v__ast__Expr_str(v__ast__Expr x) {
 			} // defer end
 		return _t61;
 	}
-	else if (x._typ == 285 /* v.ast.StringLiteral */) {
+	else if (x._typ == 284 /* v.ast.StringLiteral */) {
 		string _t62 = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("'"), 0xfe10, {.d_s = (*x._v__ast__StringLiteral).val}}, {_S("'"), 0, { .d_c = 0 }}}));
 			{ // defer begin
 				sync__stdatomic__sub_i64(&nested_expr_str_calls, 1);
@@ -53706,7 +53706,7 @@ string v__ast__Expr_str(v__ast__Expr x) {
 			} // defer end
 		return _t75;
 	}
-	else if (x._typ == 284 /* v.ast.StructInit */) {
+	else if (x._typ == 283 /* v.ast.StructInit */) {
 		string sname = v__ast__Table_sym(global_table, (*x._v__ast__StructInit).typ)->name;
 		string _t76 = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sname}}, {_S("{....}"), 0, { .d_c = 0 }}}));
 			{ // defer begin
@@ -53855,7 +53855,7 @@ string v__ast__Stmt_str(v__ast__Stmt node) {
 	else if (node._typ == 396 /* v.ast.BranchStmt */) {
 		return v__ast__BranchStmt_str(&(*node._v__ast__BranchStmt));
 	}
-	else if (node._typ == 283 /* v.ast.ConstDecl */) {
+	else if (node._typ == 282 /* v.ast.ConstDecl */) {
 		Array_string _t7 = {0};
 		Array_v__ast__ConstField _t7_orig = (*node._v__ast__ConstDecl).fields;
 		int _t7_len = _t7_orig.len;
@@ -53879,13 +53879,13 @@ string v__ast__Stmt_str(v__ast__Stmt node) {
 		res = builtin__string__plus(res, _S("}"));
 		return res;
 	}
-	else if (node._typ == 279 /* v.ast.EnumDecl */) {
+	else if (node._typ == 278 /* v.ast.EnumDecl */) {
 		return builtin__str_intp(3, _MOV((StrIntpData[]){{_S("enum "), 0xfe10, {.d_s = (*node._v__ast__EnumDecl).name}}, {_S(" { "), 0xfe07, {.d_i32 = (*node._v__ast__EnumDecl).fields.len}}, {_S(" fields }"), 0, { .d_c = 0 }}}));
 	}
 	else if (node._typ == 401 /* v.ast.ExprStmt */) {
 		return v__ast__Expr_str((*node._v__ast__ExprStmt).expr);
 	}
-	else if (node._typ == 281 /* v.ast.FnDecl */) {
+	else if (node._typ == 280 /* v.ast.FnDecl */) {
 		return builtin__str_intp(4, _MOV((StrIntpData[]){{_S("fn "), 0xfe10, {.d_s = (*node._v__ast__FnDecl).name}}, {_S("( "), 0xfe07, {.d_i32 = (*node._v__ast__FnDecl).params.len}}, {_S(" params ) { "), 0xfe07, {.d_i32 = (*node._v__ast__FnDecl).stmts.len}}, {_S(" stmts }"), 0, { .d_c = 0 }}}));
 	}
 	else if (node._typ == 403 /* v.ast.ForInStmt */) {
@@ -53971,7 +53971,7 @@ string v__ast__Stmt_str(v__ast__Stmt node) {
 		}
 		return out;
 	}
-	else if (node._typ == 280 /* v.ast.StructDecl */) {
+	else if (node._typ == 279 /* v.ast.StructDecl */) {
 		return builtin__str_intp(3, _MOV((StrIntpData[]){{_S("struct "), 0xfe10, {.d_s = (*node._v__ast__StructDecl).name}}, {_S(" { "), 0xfe07, {.d_i32 = (*node._v__ast__StructDecl).fields.len}}, {_S(" fields }"), 0, { .d_c = 0 }}}));
 	}
 	
@@ -57427,7 +57427,7 @@ Array_string v__ast__Table_dependent_names_in_expr(v__ast__Table* t, v__ast__Exp
 		_PUSH_MANY(&names, (v__ast__Table_dependent_names_in_expr(t, (*expr._v__ast__InfixExpr).left)), _t19, Array_string);
 		_PUSH_MANY(&names, (v__ast__Table_dependent_names_in_expr(t, (*expr._v__ast__InfixExpr).right)), _t20, Array_string);
 	}
-	else if (expr._typ == 286 /* v.ast.MapInit */) {
+	else if (expr._typ == 285 /* v.ast.MapInit */) {
 		for (int _t21 = 0; _t21 < (*expr._v__ast__MapInit).keys.len; ++_t21) {
 			v__ast__Expr key = ((v__ast__Expr*)(*expr._v__ast__MapInit).keys.data)[_t21];
 			_PUSH_MANY(&names, (v__ast__Table_dependent_names_in_expr(t, key)), _t22, Array_string);
@@ -57465,7 +57465,7 @@ Array_string v__ast__Table_dependent_names_in_expr(v__ast__Table* t, v__ast__Exp
 	else if (expr._typ == 383 /* v.ast.SelectorExpr */) {
 		_PUSH_MANY(&names, (v__ast__Table_dependent_names_in_expr(t, (*expr._v__ast__SelectorExpr).expr)), _t34, Array_string);
 	}
-	else if (expr._typ == 284 /* v.ast.StructInit */) {
+	else if (expr._typ == 283 /* v.ast.StructInit */) {
 		if ((*expr._v__ast__StructInit).has_update_expr) {
 			_PUSH_MANY(&names, (v__ast__Table_dependent_names_in_expr(t, (*expr._v__ast__StructInit).update_expr)), _t35, Array_string);
 		}
@@ -61742,10 +61742,10 @@ inline VV_LOC u16 v__scanner__u16_col(int col) {
 	return (col < 0 ? (((u16)(0))) : (((u16)(col))));
 }
 VV_LOC bool vphp__compiler__linker__is_php_trait_class(vphp__compiler__repr__PhpRepr el) {
-	return (el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index && (*(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 266)).is_trait;
+	return (el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index && (*(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 265)).is_trait;
 }
 VV_LOC bool vphp__compiler__linker__is_php_exported_class(vphp__compiler__repr__PhpRepr el) {
-	return (el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index && !(*(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 266)).is_trait;
+	return (el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index && !(*(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 265)).is_trait;
 }
 VV_LOC bool vphp__compiler__linker__has_property_named(Array_vphp__compiler__repr__PhpClassProp props, string name) {
 	bool _t2 = false;
@@ -61789,7 +61789,7 @@ _result_void vphp__compiler__linker__link_class_embeds(Array_vphp__compiler__rep
 	for (int _t1 = 0; _t1 < elements->len; ++_t1) {
 		vphp__compiler__repr__PhpRepr el = ((vphp__compiler__repr__PhpRepr*)elements->data)[_t1];
 		if (vphp__compiler__linker__is_php_exported_class(el)) {
-			vphp__compiler__repr__PhpClassRepr cls = *(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 266);
+			vphp__compiler__repr__PhpClassRepr cls = *(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 265);
 			builtin__map_set(&class_map, &(string[]){cls.name}, &(string[]) { cls.php_name });
 		}
 	}
@@ -61828,7 +61828,7 @@ _result_void vphp__compiler__linker__link_class_traits(Array_vphp__compiler__rep
 	for (int _t1 = 0; _t1 < elements->len; ++_t1) {
 		vphp__compiler__repr__PhpRepr el = ((vphp__compiler__repr__PhpRepr*)elements->data)[_t1];
 		if (vphp__compiler__linker__is_php_trait_class(el)) {
-			vphp__compiler__repr__PhpClassRepr trait_repr = *(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 266);
+			vphp__compiler__repr__PhpClassRepr trait_repr = *(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 265);
 			(*(vphp__compiler__repr__PhpClassRepr*)builtin__map_get_and_set((map*)&trait_map, &(string[]){trait_repr.name}, &(vphp__compiler__repr__PhpClassRepr[]){ (vphp__compiler__repr__PhpClassRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.php_name = (string){.str=(byteptr)"", .is_lit=1},.parent = (string){.str=(byteptr)"", .is_lit=1},.is_trait = 0,.is_final = 0,.is_abstract = 0,.embeds_v = builtin____new_array(0, 0, sizeof(string)),.implements_v = builtin____new_array(0, 0, sizeof(string)),.implements = builtin____new_array(0, 0, sizeof(string)),.shadow_const_name = (string){.str=(byteptr)"", .is_lit=1},.shadow_static_name = (string){.str=(byteptr)"", .is_lit=1},.shadow_const_type = (string){.str=(byteptr)"", .is_lit=1},.shadow_static_type = (string){.str=(byteptr)"", .is_lit=1},.constants = builtin____new_array(0, 0, sizeof(vphp__compiler__repr__PhpClassConst)),.properties = builtin____new_array(0, 0, sizeof(vphp__compiler__repr__PhpClassProp)),.methods = builtin____new_array(0, 0, sizeof(vphp__compiler__repr__PhpMethodRepr)),} })) = trait_repr;
 		}
 	}
@@ -61874,7 +61874,7 @@ VV_LOC void vphp__compiler__linker__link_class_shadow_statics(vphp__compiler__re
 	}
 	for (int _t1 = 0; _t1 < elements.len; ++_t1) {
 		vphp__compiler__repr__PhpRepr el = ((vphp__compiler__repr__PhpRepr*)elements.data)[_t1];
-		if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpConstRepr_index && builtin__string__eq((*(vphp__compiler__repr__PhpConstRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpConstRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 262)).name, cls->shadow_static_name)) {
+		if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpConstRepr_index && builtin__string__eq((*(vphp__compiler__repr__PhpConstRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpConstRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 261)).name, cls->shadow_static_name)) {
 			cls->shadow_static_type = (el._vphp__compiler__repr__PhpConstRepr)->v_type;
 			v__ast__Type typ = v__ast__Table_find_type(table, cls->shadow_static_type);
 			if (typ == 0) {
@@ -61900,7 +61900,7 @@ VV_LOC void vphp__compiler__linker__link_class_shadow_constants(vphp__compiler__
 	}
 	for (int _t1 = 0; _t1 < elements.len; ++_t1) {
 		vphp__compiler__repr__PhpRepr el = ((vphp__compiler__repr__PhpRepr*)elements.data)[_t1];
-		if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpConstRepr_index && builtin__string__eq((*(vphp__compiler__repr__PhpConstRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpConstRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 262)).name, cls->shadow_const_name)) {
+		if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpConstRepr_index && builtin__string__eq((*(vphp__compiler__repr__PhpConstRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpConstRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 261)).name, cls->shadow_const_name)) {
 			cls->shadow_const_type = (el._vphp__compiler__repr__PhpConstRepr)->v_type;
 			Map_string_vphp__compiler__repr__PhpConstRepr _t2 = (el._vphp__compiler__repr__PhpConstRepr)->fields;
 			int _t4 = _t2.key_values.len;
@@ -61947,10 +61947,10 @@ _result_void vphp__compiler__linker__link_class_interfaces(Array_vphp__compiler_
 	return (_result_void){0};
 }
 _option_vphp__compiler__repr__PhpClassRepr_ptr vphp__compiler__parser__parse_class_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 280 /* v.ast.StructDecl */) {
+	if ((stmt)._typ != 279 /* v.ast.StructDecl */) {
 		return (_option_vphp__compiler__repr__PhpClassRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__StructDecl struct_decl = *(v__ast__StructDecl*)builtin____as_cast((stmt)._v__ast__StructDecl,(stmt)._typ, 280);
+	v__ast__StructDecl struct_decl = *(v__ast__StructDecl*)builtin____as_cast((stmt)._v__ast__StructDecl,(stmt)._typ, 279);
 	vphp__compiler__repr__PhpClassRepr* cls = vphp__compiler__repr__new_class_repr();
 	bool _t2 = false;
 	Array_v__ast__Attr _t2_orig = struct_decl.attrs;
@@ -62175,10 +62175,10 @@ VV_LOC _result_int vphp__compiler__parser__parse_enum_case_value(v__ast__Expr ex
 	return (_result_int){ .is_error=true, .err=builtin___v_error(_S("unsupported enum literal expression")), .data={E_STRUCT} };
 }
 _option_vphp__compiler__repr__PhpConstRepr_ptr vphp__compiler__parser__parse_constant_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 283 /* v.ast.ConstDecl */) {
+	if ((stmt)._typ != 282 /* v.ast.ConstDecl */) {
 		return (_option_vphp__compiler__repr__PhpConstRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__ConstDecl const_decl = *(v__ast__ConstDecl*)builtin____as_cast((stmt)._v__ast__ConstDecl,(stmt)._typ, 283);
+	v__ast__ConstDecl const_decl = *(v__ast__ConstDecl*)builtin____as_cast((stmt)._v__ast__ConstDecl,(stmt)._typ, 282);
 	vphp__compiler__repr__PhpConstRepr* con = vphp__compiler__repr__new_const_repr();
 	bool _t2 = false;
 	Array_v__ast__Attr _t2_orig = const_decl.attrs;
@@ -62198,7 +62198,7 @@ _option_vphp__compiler__repr__PhpConstRepr_ptr vphp__compiler__parser__parse_con
 		}
 		string raw_name = builtin__string_all_after(field.name, _S("."));
 		con->name = builtin__string_to_upper(raw_name);
-		if ((field.expr)._typ == 285 /* v.ast.StringLiteral */) {
+		if ((field.expr)._typ == 284 /* v.ast.StringLiteral */) {
 			con->value = ((*field.expr._v__ast__StringLiteral)).val;
 			con->const_type = _S("string");
 		} else if ((field.expr)._typ == 368 /* v.ast.IntegerLiteral */) {
@@ -62210,7 +62210,7 @@ _option_vphp__compiler__repr__PhpConstRepr_ptr vphp__compiler__parser__parse_con
 		} else if ((field.expr)._typ == 347 /* v.ast.BoolLiteral */) {
 			con->value = (((*field.expr._v__ast__BoolLiteral)).val ? (_S("1")) : (_S("0")));
 			con->const_type = _S("bool");
-		} else if ((field.expr)._typ == 284 /* v.ast.StructInit */) {
+		} else if ((field.expr)._typ == 283 /* v.ast.StructInit */) {
 			v__ast__StructInit expr = (*field.expr._v__ast__StructInit);
 			con->const_type = _S("struct");
 			con->name = raw_name;
@@ -62222,7 +62222,7 @@ _option_vphp__compiler__repr__PhpConstRepr_ptr vphp__compiler__parser__parse_con
 			for (int _t5 = 0; _t5 < expr.init_fields.len; ++_t5) {
 				v__ast__StructInitField f = ((v__ast__StructInitField*)expr.init_fields.data)[_t5];
 				vphp__compiler__repr__PhpConstRepr sub = ((vphp__compiler__repr__PhpConstRepr){.name = builtin__string_to_upper(f.name),.value = (string){.str=(byteptr)"", .is_lit=1},.const_type = (string){.str=(byteptr)"", .is_lit=1},.v_type = (string){.str=(byteptr)"", .is_lit=1},.has_php_const = 0,.fields = builtin__new_map(sizeof(string), sizeof(vphp__compiler__repr__PhpConstRepr), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),});
-				if ((f.expr)._typ == 285 /* v.ast.StringLiteral */) {
+				if ((f.expr)._typ == 284 /* v.ast.StringLiteral */) {
 					sub.value = ((*f.expr._v__ast__StringLiteral)).val;
 					sub.const_type = _S("string");
 				} else if ((f.expr)._typ == 368 /* v.ast.IntegerLiteral */) {
@@ -62248,10 +62248,10 @@ _option_vphp__compiler__repr__PhpConstRepr_ptr vphp__compiler__parser__parse_con
 	return (_option_vphp__compiler__repr__PhpConstRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 }
 _option_vphp__compiler__repr__PhpEnumRepr_ptr vphp__compiler__parser__parse_enum_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 279 /* v.ast.EnumDecl */) {
+	if ((stmt)._typ != 278 /* v.ast.EnumDecl */) {
 		return (_option_vphp__compiler__repr__PhpEnumRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__EnumDecl enum_decl = *(v__ast__EnumDecl*)builtin____as_cast((stmt)._v__ast__EnumDecl,(stmt)._typ, 279);
+	v__ast__EnumDecl enum_decl = *(v__ast__EnumDecl*)builtin____as_cast((stmt)._v__ast__EnumDecl,(stmt)._typ, 278);
 	vphp__compiler__repr__PhpEnumRepr* enum_repr = vphp__compiler__repr__new_enum_repr();
 	bool _t2 = false;
 	Array_v__ast__Attr _t2_orig = enum_decl.attrs;
@@ -62299,10 +62299,10 @@ _option_vphp__compiler__repr__PhpEnumRepr_ptr vphp__compiler__parser__parse_enum
 	return _t10;
 }
 _option_vphp__compiler__repr__PhpFuncRepr_ptr vphp__compiler__parser__parse_function_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 281 /* v.ast.FnDecl */) {
+	if ((stmt)._typ != 280 /* v.ast.FnDecl */) {
 		return (_option_vphp__compiler__repr__PhpFuncRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__FnDecl fn_decl = *(v__ast__FnDecl*)builtin____as_cast((stmt)._v__ast__FnDecl,(stmt)._typ, 281);
+	v__ast__FnDecl fn_decl = *(v__ast__FnDecl*)builtin____as_cast((stmt)._v__ast__FnDecl,(stmt)._typ, 280);
 	vphp__compiler__repr__PhpFuncRepr* func = vphp__compiler__repr__new_func_repr();
 	if (fn_decl.is_method) {
 		return (_option_vphp__compiler__repr__PhpFuncRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
@@ -62343,10 +62343,10 @@ _option_vphp__compiler__repr__PhpFuncRepr_ptr vphp__compiler__parser__parse_func
 	return _t8;
 }
 _option_vphp__compiler__repr__PhpGlobalsRepr vphp__compiler__parser__parse_globals_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 280 /* v.ast.StructDecl */) {
+	if ((stmt)._typ != 279 /* v.ast.StructDecl */) {
 		return (_option_vphp__compiler__repr__PhpGlobalsRepr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__StructDecl struct_decl = *(v__ast__StructDecl*)builtin____as_cast((stmt)._v__ast__StructDecl,(stmt)._typ, 280);
+	v__ast__StructDecl struct_decl = *(v__ast__StructDecl*)builtin____as_cast((stmt)._v__ast__StructDecl,(stmt)._typ, 279);
 	vphp__compiler__repr__PhpGlobalsRepr globals_repr = ((vphp__compiler__repr__PhpGlobalsRepr){.name = (string){.str=(byteptr)"", .is_lit=1},.fields = builtin____new_array(0, 0, sizeof(vphp__compiler__repr__PhpGlobalField)),});
 	bool _t2 = false;
 	Array_v__ast__Attr _t2_orig = struct_decl.attrs;
@@ -62373,10 +62373,10 @@ _option_vphp__compiler__repr__PhpGlobalsRepr vphp__compiler__parser__parse_globa
 	return _t7;
 }
 _option_vphp__compiler__repr__PhpInterfaceRepr_ptr vphp__compiler__parser__parse_interface_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 278 /* v.ast.InterfaceDecl */) {
+	if ((stmt)._typ != 277 /* v.ast.InterfaceDecl */) {
 		return (_option_vphp__compiler__repr__PhpInterfaceRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__InterfaceDecl interface_decl = *(v__ast__InterfaceDecl*)builtin____as_cast((stmt)._v__ast__InterfaceDecl,(stmt)._typ, 278);
+	v__ast__InterfaceDecl interface_decl = *(v__ast__InterfaceDecl*)builtin____as_cast((stmt)._v__ast__InterfaceDecl,(stmt)._typ, 277);
 	vphp__compiler__repr__PhpInterfaceRepr* iface = vphp__compiler__repr__new_interface_repr();
 	bool _t2 = false;
 	Array_v__ast__Attr _t2_orig = interface_decl.attrs;
@@ -62424,10 +62424,10 @@ _option_vphp__compiler__repr__PhpInterfaceRepr_ptr vphp__compiler__parser__parse
 	return _t10;
 }
 _option_vphp__compiler__repr__PhpTaskRepr_ptr vphp__compiler__parser__parse_task_decl(v__ast__Stmt stmt, v__ast__Table* table) {
-	if ((stmt)._typ != 280 /* v.ast.StructDecl */) {
+	if ((stmt)._typ != 279 /* v.ast.StructDecl */) {
 		return (_option_vphp__compiler__repr__PhpTaskRepr_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	v__ast__StructDecl struct_decl = *(v__ast__StructDecl*)builtin____as_cast((stmt)._v__ast__StructDecl,(stmt)._typ, 280);
+	v__ast__StructDecl struct_decl = *(v__ast__StructDecl*)builtin____as_cast((stmt)._v__ast__StructDecl,(stmt)._typ, 279);
 	vphp__compiler__repr__PhpTaskRepr* task = vphp__compiler__repr__new_task_repr();
 	bool _t2 = false;
 	Array_v__ast__Attr _t2_orig = struct_decl.attrs;
@@ -62771,7 +62771,7 @@ v__ast__Stmt v__transformer__Transformer_stmt(v__transformer__Transformer* t, v_
 	else if (node->_typ == 397 /* v.ast.ComptimeFor */) {
 		v__transformer__Transformer_comptime_for(t, &/*mut*/(*node->_v__ast__ComptimeFor));
 	}
-	else if (node->_typ == 283 /* v.ast.ConstDecl */) {
+	else if (node->_typ == 282 /* v.ast.ConstDecl */) {
 		v__transformer__Transformer_const_decl(t, &/*mut*/(*node->_v__ast__ConstDecl));
 	}
 	else if (node->_typ == 399 /* v.ast.DeferStmt */) {
@@ -62780,7 +62780,7 @@ v__ast__Stmt v__transformer__Transformer_stmt(v__transformer__Transformer* t, v_
 			*stmt = v__transformer__Transformer_stmt(t, stmt);
 		}
 	}
-	else if (node->_typ == 279 /* v.ast.EnumDecl */) {
+	else if (node->_typ == 278 /* v.ast.EnumDecl */) {
 		v__transformer__Transformer_enum_decl(t, &/*mut*/(*node->_v__ast__EnumDecl));
 	}
 	else if (node->_typ == 401 /* v.ast.ExprStmt */) {
@@ -62800,7 +62800,7 @@ v__ast__Expr _t3 = (v__ast__Expr){._v__ast__NodeError=HEAP(v__ast__NodeError, ((
 			v__transformer__Transformer_simplify_nested_interpolation_in_sb(t, onode, (voidptr)&(*(*node->_v__ast__ExprStmt).expr._v__ast__CallExpr), (*node->_v__ast__ExprStmt).typ);
 		}
 	}
-	else if (node->_typ == 281 /* v.ast.FnDecl */) {
+	else if (node->_typ == 280 /* v.ast.FnDecl */) {
 		v__transformer__Transformer_fn_decl(t, &/*mut*/(*node->_v__ast__FnDecl));
 	}
 	else if (node->_typ == 402 /* v.ast.ForCStmt */) {
@@ -62833,7 +62833,7 @@ v__ast__Expr _t3 = (v__ast__Expr){._v__ast__NodeError=HEAP(v__ast__NodeError, ((
 	}
 	else if (node->_typ == 409 /* v.ast.Import */) {
 	}
-	else if (node->_typ == 278 /* v.ast.InterfaceDecl */) {
+	else if (node->_typ == 277 /* v.ast.InterfaceDecl */) {
 		v__transformer__Transformer_interface_decl(t, &/*mut*/(*node->_v__ast__InterfaceDecl));
 	}
 	else if (node->_typ == 410 /* v.ast.Module */) {
@@ -62848,7 +62848,7 @@ v__ast__Expr _t3 = (v__ast__Expr){._v__ast__NodeError=HEAP(v__ast__NodeError, ((
 	}
 	else if (node->_typ == 413 /* v.ast.SqlStmt */) {
 	}
-	else if (node->_typ == 280 /* v.ast.StructDecl */) {
+	else if (node->_typ == 279 /* v.ast.StructDecl */) {
 		v__transformer__Transformer_struct_decl(t, &/*mut*/(*node->_v__ast__StructDecl));
 	}
 	else if (node->_typ == 339 /* v.ast.TypeDecl */) {
@@ -63056,8 +63056,8 @@ v__ast__Expr v__transformer__Transformer_expr_stmt_match_expr(v__transformer__Tr
 					}
 				}
 			}
-			else if (cond._typ == 285 /* v.ast.StringLiteral */) {
-				if ((expr)->_typ == 285 /* v.ast.StringLiteral */) {
+			else if (cond._typ == 284 /* v.ast.StringLiteral */) {
+				if ((expr)->_typ == 284 /* v.ast.StringLiteral */) {
 					if (builtin__string__eq((*cond._v__ast__StringLiteral).val, (*expr->_v__ast__StringLiteral).val)) {
 						branch->exprs = builtin__new_array_from_c_array(1, 1, sizeof(v__ast__Expr), _MOV((v__ast__Expr[1]){v__ast__StringLiteral_to_sumtype_v__ast__Expr(&(*expr->_v__ast__StringLiteral), false)}));
 						node->branches = builtin__new_array_from_c_array(1, 1, sizeof(v__ast__MatchBranch), _MOV((v__ast__MatchBranch[1]){*branch}));
@@ -63130,7 +63130,7 @@ v__ast__Expr v__transformer__Transformer_expr(v__transformer__Transformer* t, v_
 		return *node;
 	}
 	if (node->_typ == 341 /* v.ast.AnonFn */) {
-		(*node->_v__ast__AnonFn).decl = ({ v__ast__Stmt _t2 = v__transformer__Transformer_stmt(t, HEAP(v__ast__Stmt, v__ast__FnDecl_to_sumtype_v__ast__Stmt(&(*node->_v__ast__AnonFn).decl, true))); *(v__ast__FnDecl*)builtin____as_cast(_t2._v__ast__FnDecl,_t2._typ, 281); });
+		(*node->_v__ast__AnonFn).decl = ({ v__ast__Stmt _t2 = v__transformer__Transformer_stmt(t, HEAP(v__ast__Stmt, v__ast__FnDecl_to_sumtype_v__ast__Stmt(&(*node->_v__ast__AnonFn).decl, true))); *(v__ast__FnDecl*)builtin____as_cast(_t2._v__ast__FnDecl,_t2._typ, 280); });
 	}
 	else if (node->_typ == 342 /* v.ast.ArrayDecompose */) {
 		(*node->_v__ast__ArrayDecompose).expr = v__transformer__Transformer_expr(t, &(*node->_v__ast__ArrayDecompose).expr);
@@ -63215,7 +63215,7 @@ v__ast__Expr v__transformer__Transformer_expr(v__transformer__Transformer* t, v_
 			*locked = v__transformer__Transformer_expr(t, locked);
 		}
 	}
-	else if (node->_typ == 286 /* v.ast.MapInit */) {
+	else if (node->_typ == 285 /* v.ast.MapInit */) {
 		for (int _t13 = 0; _t13 < (*node->_v__ast__MapInit).keys.len; ++_t13) {
 			v__ast__Expr* key = ((v__ast__Expr*)(*node->_v__ast__MapInit).keys.data) + _t13;
 			*key = v__transformer__Transformer_expr(t, key);
@@ -63242,7 +63242,7 @@ v__ast__Expr v__transformer__Transformer_expr(v__transformer__Transformer* t, v_
 	}
 	else if (node->_typ == 378 /* v.ast.ParExpr */) {
 		v__ast__Expr inner_expr = v__transformer__Transformer_expr(t, &(*node->_v__ast__ParExpr).expr);
-		if ((inner_expr)._typ == 368 /* v.ast.IntegerLiteral */ || (inner_expr)._typ == 361 /* v.ast.FloatLiteral */ || (inner_expr)._typ == 347 /* v.ast.BoolLiteral */ || (inner_expr)._typ == 285 /* v.ast.StringLiteral */ || (inner_expr)._typ == 387 /* v.ast.StringInterLiteral */ || (inner_expr)._typ == 352 /* v.ast.CharLiteral */ || (inner_expr)._typ == 363 /* v.ast.Ident */) {
+		if ((inner_expr)._typ == 368 /* v.ast.IntegerLiteral */ || (inner_expr)._typ == 361 /* v.ast.FloatLiteral */ || (inner_expr)._typ == 347 /* v.ast.BoolLiteral */ || (inner_expr)._typ == 284 /* v.ast.StringLiteral */ || (inner_expr)._typ == 387 /* v.ast.StringInterLiteral */ || (inner_expr)._typ == 352 /* v.ast.CharLiteral */ || (inner_expr)._typ == 363 /* v.ast.Ident */) {
 			return inner_expr;
 		}
 	}
@@ -63269,7 +63269,7 @@ v__ast__Expr v__transformer__Transformer_expr(v__transformer__Transformer* t, v_
 	}
 	else if (node->_typ == 383 /* v.ast.SelectorExpr */) {
 		(*node->_v__ast__SelectorExpr).expr = v__transformer__Transformer_expr(t, &(*node->_v__ast__SelectorExpr).expr);
-		if (((*node->_v__ast__SelectorExpr).expr)._typ == 285 /* v.ast.StringLiteral */ && builtin__fast_string_eq((*node->_v__ast__SelectorExpr).field_name, _S("len"))) {
+		if (((*node->_v__ast__SelectorExpr).expr)._typ == 284 /* v.ast.StringLiteral */ && builtin__fast_string_eq((*node->_v__ast__SelectorExpr).field_name, _S("len"))) {
 			if (!builtin__string_contains((*(*node->_v__ast__SelectorExpr).expr._v__ast__StringLiteral).val, _S("\\")) || (*(*node->_v__ast__SelectorExpr).expr._v__ast__StringLiteral).is_raw) {
 				return v__ast__IntegerLiteral_to_sumtype_v__ast__Expr(ADDR(v__ast__IntegerLiteral, (((v__ast__IntegerLiteral){.val = builtin__int_str((*(*node->_v__ast__SelectorExpr).expr._v__ast__StringLiteral).val.len),.pos = (*node->_v__ast__SelectorExpr).pos,}))), false);
 			}
@@ -63287,7 +63287,7 @@ v__ast__Expr v__transformer__Transformer_expr(v__transformer__Transformer* t, v_
 			*expr = v__transformer__Transformer_expr(t, expr);
 		}
 	}
-	else if (node->_typ == 284 /* v.ast.StructInit */) {
+	else if (node->_typ == 283 /* v.ast.StructInit */) {
 		(*node->_v__ast__StructInit).update_expr = v__transformer__Transformer_expr(t, &(*node->_v__ast__StructInit).update_expr);
 		for (int _t24 = 0; _t24 < (*node->_v__ast__StructInit).init_fields.len; ++_t24) {
 			v__ast__StructInitField* init_field = ((v__ast__StructInitField*)(*node->_v__ast__StructInit).init_fields.data) + _t24;
@@ -63327,7 +63327,7 @@ VV_LOC void v__transformer__Transformer_trans_const_value_to_literal(v__transfor
 				*expr = obj->expr;
 			} else if ((obj->expr)._typ == 361 /* v.ast.FloatLiteral */) {
 				*expr = obj->expr;
-			} else if ((obj->expr)._typ == 285 /* v.ast.StringLiteral */) {
+			} else if ((obj->expr)._typ == 284 /* v.ast.StringLiteral */) {
 				*expr = obj->expr;
 			} else if ((obj->expr)._typ == 367 /* v.ast.InfixExpr */) {
 				v__ast__Expr folded_expr = v__transformer__Transformer_infix_expr(t, (voidptr)&(*obj->expr._v__ast__InfixExpr));
@@ -63337,7 +63337,7 @@ VV_LOC void v__transformer__Transformer_trans_const_value_to_literal(v__transfor
 					*expr = folded_expr;
 				} else if ((folded_expr)._typ == 361 /* v.ast.FloatLiteral */) {
 					*expr = folded_expr;
-				} else if ((folded_expr)._typ == 285 /* v.ast.StringLiteral */) {
+				} else if ((folded_expr)._typ == 284 /* v.ast.StringLiteral */) {
 					*expr = folded_expr;
 				}
 			}
@@ -63388,8 +63388,8 @@ v__ast__Expr v__transformer__Transformer_infix_expr(v__transformer__Transformer*
 			}
 			
 		}
-		else if (node->left._typ == 285 /* v.ast.StringLiteral */) {
-			if (node->right._typ == 285 /* v.ast.StringLiteral */) {
+		else if (node->left._typ == 284 /* v.ast.StringLiteral */) {
+			if (node->right._typ == 284 /* v.ast.StringLiteral */) {
 
 				if (node->op == (v__token__Kind__eq)) {
 					return v__ast__BoolLiteral_to_sumtype_v__ast__Expr(ADDR(v__ast__BoolLiteral, (((v__ast__BoolLiteral){.val = builtin__string__eq((*node->left._v__ast__StringLiteral).val, (*node->right._v__ast__StringLiteral).val),.pos = ((v__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,.file_idx = -1,.last_line = 0,}),}))), false);
@@ -63921,7 +63921,7 @@ v__ast__Expr v__transformer__Transformer_infix_expr(v__transformer__Transformer*
 		}
 		
 		else {
-			if (!t->inside_sql && builtin__string__eq(builtin__charptr_vstring_literal(v_typeof_sumtype_v__ast__Expr( (node->left)._typ )), builtin__charptr_vstring_literal(v_typeof_sumtype_v__ast__Expr( (node->right)._typ ))) && !(node->left_type == _const_v__ast__f32_type || node->left_type == _const_v__ast__f64_type) && (node->op == v__token__Kind__eq || node->op == v__token__Kind__ne) && (node->left)._typ != 284 /* v.ast.StructInit */ && (node->right)._typ != 284 /* v.ast.StructInit */) {
+			if (!t->inside_sql && builtin__string__eq(builtin__charptr_vstring_literal(v_typeof_sumtype_v__ast__Expr( (node->left)._typ )), builtin__charptr_vstring_literal(v_typeof_sumtype_v__ast__Expr( (node->right)._typ ))) && !(node->left_type == _const_v__ast__f32_type || node->left_type == _const_v__ast__f64_type) && (node->op == v__token__Kind__eq || node->op == v__token__Kind__ne) && (node->left)._typ != 283 /* v.ast.StructInit */ && (node->right)._typ != 283 /* v.ast.StructInit */) {
 				string left_name = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = v__ast__Expr_str(node->left)}}, {_SLIT0, 0, { .d_c = 0 }}}));
 				string right_name = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = v__ast__Expr_str(node->right)}}, {_SLIT0, 0, { .d_c = 0 }}}));
 				if (builtin__string__eq(left_name, right_name)) {
@@ -64983,7 +64983,7 @@ VV_LOC _result_void v__parser__Parser_check_undefined_variables(v__parser__Parse
 			}
 		}
 	}
-	else if (val._typ == 286 /* v.ast.MapInit */) {
+	else if (val._typ == 285 /* v.ast.MapInit */) {
 		for (int _t39 = 0; _t39 < (*val._v__ast__MapInit).keys.len; ++_t39) {
 			v__ast__Expr key = ((v__ast__Expr*)(*val._v__ast__MapInit).keys.data)[_t39];
 			_result_void _t40 = v__parser__Parser_check_undefined_variables(p, names, key);
@@ -65137,7 +65137,7 @@ VV_LOC _result_void v__parser__Parser_check_undefined_variables(v__parser__Parse
  ;
 		}
 	}
-	else if (val._typ == 284 /* v.ast.StructInit */) {
+	else if (val._typ == 283 /* v.ast.StructInit */) {
 		for (int _t65 = 0; _t65 < (*val._v__ast__StructInit).init_fields.len; ++_t65) {
 			v__ast__StructInitField init_field = ((v__ast__StructInitField*)(*val._v__ast__StructInit).init_fields.data)[_t65];
 			_result_void _t66 = v__parser__Parser_check_undefined_variables(p, names, init_field.expr);
@@ -66032,12 +66032,12 @@ VV_LOC v__ast__ComptimeCall v__parser__Parser_comptime_call(v__parser__Parser* p
 		_option_v__ast__ConstField_ptr _t15;
 		if (_t14 = v__ast__Scope_find_var(p->scope, p->tok.lit), _t14.state == 0) {
 			v__ast__Var* var = *(v__ast__Var**)_t14.data;
-			if ((var->expr)._typ == 285 /* v.ast.StringLiteral */) {
+			if ((var->expr)._typ == 284 /* v.ast.StringLiteral */) {
 				literal_string_param = (*var->expr._v__ast__StringLiteral).val;
 			}
 		} else if (_t15 = v__ast__Scope_find_const(p->table->global_scope, builtin__string__plus(builtin__string__plus(p->mod, _S(".")), p->tok.lit)), _t15.state == 0) {
 			v__ast__ConstField* var = *(v__ast__ConstField**)_t15.data;
-			if ((var->expr)._typ == 285 /* v.ast.StringLiteral */) {
+			if ((var->expr)._typ == 284 /* v.ast.StringLiteral */) {
 				literal_string_param = (*var->expr._v__ast__StringLiteral).val;
 			}
 		}
@@ -67988,7 +67988,7 @@ VV_LOC v__ast__Expr v__parser__Parser_prefix_expr(v__parser__Parser* p) {
 			}
 		}
 		if ((right)._typ == 378 /* v.ast.ParExpr */) {
-			if (((*right._v__ast__ParExpr).expr)._typ == 284 /* v.ast.StructInit */) {
+			if (((*right._v__ast__ParExpr).expr)._typ == 283 /* v.ast.StructInit */) {
 				v__parser__Parser_note_with_pos(p, builtin__str_intp(3, _MOV((StrIntpData[]){{_S("unnecessary `()`, use `&"), 0xfe10, {.d_s = v__ast__Expr_str((*right._v__ast__ParExpr).expr)}}, {_S("` instead of `&("), 0xfe10, {.d_s = v__ast__Expr_str((*right._v__ast__ParExpr).expr)}}, {_S(")`"), 0, { .d_c = 0 }}})), (*right._v__ast__ParExpr).pos);
 				right = (*right._v__ast__ParExpr).expr;
 			}
@@ -68351,7 +68351,7 @@ VV_LOC Array_v__ast__CallArg v__parser__Parser_call_args(v__parser__Parser* p) {
 		if (array_decompose) {
 			expr = v__ast__ArrayDecompose_to_sumtype_v__ast__Expr(ADDR(v__ast__ArrayDecompose, (((v__ast__ArrayDecompose){.pos = v__token__Token_pos(&p->tok),.expr = expr,.expr_type = 0,.arg_type = 0,}))), false);
 		}
-		if ((expr)._typ == 284 /* v.ast.StructInit */) {
+		if ((expr)._typ == 283 /* v.ast.StructInit */) {
 			_PUSH_MANY(&(*expr._v__ast__StructInit).pre_comments, (comments), _t2, Array_v__ast__Comment);
 			comments = builtin____new_array_with_default(0, 0, sizeof(v__ast__Comment), 0);
 		}
@@ -70409,7 +70409,7 @@ VV_LOC v__ast__MatchExpr v__parser__Parser_match_expr(v__parser__Parser* p, bool
 				v__ast__Expr expr = v__parser__Parser_expr(p, 0);
 				p->inside_match_case = false;
 				p->inside_ct_match_case = false;
-				if (expr._typ == 285 /* v.ast.StringLiteral */) {
+				if (expr._typ == 284 /* v.ast.StringLiteral */) {
 					case_str = (*expr._v__ast__StringLiteral).val;
 				}
 				else if (expr._typ == 368 /* v.ast.IntegerLiteral */) {
@@ -70697,11 +70697,11 @@ VV_LOC bool v__parser__Parser_comptime_if_cond(v__parser__Parser* p, v__ast__Exp
 				}
 				
  				string left_str = (*(string*)_t9.data);
-				if (((*cond->_v__ast__InfixExpr).right)._typ != 285 /* v.ast.StringLiteral */) {
+				if (((*cond->_v__ast__InfixExpr).right)._typ != 284 /* v.ast.StringLiteral */) {
 					v__parser__Parser_error(p, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("`"), 0xfe10, {.d_s = v__ast__AtExpr_str((*(*cond->_v__ast__InfixExpr).left._v__ast__AtExpr))}}, {_S(" can only compare with string type"), 0, { .d_c = 0 }}})));
 					return false;
 				}
-				string right_str = (*(v__ast__StringLiteral*)builtin____as_cast(((*cond->_v__ast__InfixExpr).right)._v__ast__StringLiteral,((*cond->_v__ast__InfixExpr).right)._typ, 285)).val;
+				string right_str = (*(v__ast__StringLiteral*)builtin____as_cast(((*cond->_v__ast__InfixExpr).right)._v__ast__StringLiteral,((*cond->_v__ast__InfixExpr).right)._typ, 284)).val;
 				if ((*cond->_v__ast__InfixExpr).op == v__token__Kind__eq) {
 					is_true = builtin__string__eq(left_str, right_str);
 				} else if ((*cond->_v__ast__InfixExpr).op == v__token__Kind__ne) {
@@ -70713,7 +70713,7 @@ VV_LOC bool v__parser__Parser_comptime_if_cond(v__parser__Parser* p, v__ast__Exp
 				return is_true;
 			}
 			else if ((*cond->_v__ast__InfixExpr).left._typ == 363 /* v.ast.Ident */) {
-				if ((*cond->_v__ast__InfixExpr).right._typ == 285 /* v.ast.StringLiteral */) {
+				if ((*cond->_v__ast__InfixExpr).right._typ == 284 /* v.ast.StringLiteral */) {
 
 					if ((*cond->_v__ast__InfixExpr).op == (v__token__Kind__eq)) {
 						is_true = builtin__string__eq(v__ast__Ident_str((*(*cond->_v__ast__InfixExpr).left._v__ast__Ident)), v__ast__StringLiteral_str((*(*cond->_v__ast__InfixExpr).right._v__ast__StringLiteral)));
@@ -76278,7 +76278,7 @@ VV_LOC v__ast__GlobalDecl v__parser__Parser_global_decl(v__parser__Parser* p) {
 			if (expr._typ == 350 /* v.ast.CastExpr */) {
 				typ = (*expr._v__ast__CastExpr).typ;
 			}
-			else if (expr._typ == 284 /* v.ast.StructInit */) {
+			else if (expr._typ == 283 /* v.ast.StructInit */) {
 				typ = (*expr._v__ast__StructInit).typ;
 			}
 			else if (expr._typ == 343 /* v.ast.ArrayInit */) {
@@ -76305,7 +76305,7 @@ VV_LOC v__ast__GlobalDecl v__parser__Parser_global_decl(v__parser__Parser* p) {
 			else if (expr._typ == 384 /* v.ast.SizeOf */) {
 				typ = _const_v__ast__int_type;
 			}
-			else if (expr._typ == 285 /* v.ast.StringLiteral */) {
+			else if (expr._typ == 284 /* v.ast.StringLiteral */) {
 				typ = _const_v__ast__string_type;
 			}
 			else if (expr._typ == 387 /* v.ast.StringInterLiteral */) {
@@ -78690,7 +78690,7 @@ VV_LOC vphp__compiler__builder__ExportFragments vphp__compiler__Compiler_collect
 	}
 	for (int _t2 = 0; _t2 < c.elements.len; ++_t2) {
 		vphp__compiler__repr__PhpRepr el = ((vphp__compiler__repr__PhpRepr*)c.elements.data)[_t2];
-		if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index && !(*(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 266)).is_trait) {
+		if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpClassRepr_index && !(*(vphp__compiler__repr__PhpClassRepr*)builtin____as_cast((el)._vphp__compiler__repr__PhpClassRepr,v_typeof_interface_idx_vphp__compiler__repr__PhpRepr((el)._typ), 265)).is_trait) {
 			vphp__compiler__builder__ExportFragments_merge(&fragments, vphp__compiler__CGenerator_build_class_export(c_emitter, (el._vphp__compiler__repr__PhpClassRepr)));
 		} else if ((el)._typ == _vphp__compiler__repr__PhpRepr_vphp__compiler__repr__PhpEnumRepr_index) {
 			vphp__compiler__builder__ExportFragments_merge(&fragments, vphp__compiler__CGenerator_build_enum_export(c_emitter, (el._vphp__compiler__repr__PhpEnumRepr)));
@@ -78884,7 +78884,7 @@ _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c) {
 	builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  - [Compiler] \350\257\206\345\210\253\345\210\260\346\211\251\345\261\225\345\220\215: "), 0xfe10, {.d_s = c->ext_name}}, {_SLIT0, 0, { .d_c = 0 }}})));
 	for (int _t5 = 0; _t5 < all_stmts.len; ++_t5) {
 		v__ast__Stmt stmt = ((v__ast__Stmt*)all_stmts.data)[_t5];
-		if ((stmt)._typ == 278 /* v.ast.InterfaceDecl */) {
+		if ((stmt)._typ == 277 /* v.ast.InterfaceDecl */) {
 			_option_vphp__compiler__repr__PhpInterfaceRepr_ptr _t6;
 			if (_t6 = vphp__compiler__parser__parse_interface_decl(stmt, c->table), _t6.state == 0) {
 				vphp__compiler__repr__PhpInterfaceRepr* iface = *(vphp__compiler__repr__PhpInterfaceRepr**)_t6.data;
@@ -78892,7 +78892,7 @@ _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c) {
 				continue;
 			}
 		}
-		if ((stmt)._typ == 279 /* v.ast.EnumDecl */) {
+		if ((stmt)._typ == 278 /* v.ast.EnumDecl */) {
 			_option_vphp__compiler__repr__PhpEnumRepr_ptr _t8;
 			if (_t8 = vphp__compiler__parser__parse_enum_decl(stmt, c->table), _t8.state == 0) {
 				vphp__compiler__repr__PhpEnumRepr* enum_repr = *(vphp__compiler__repr__PhpEnumRepr**)_t8.data;
@@ -78903,7 +78903,7 @@ _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c) {
 				continue;
 			}
 		}
-		if ((stmt)._typ == 280 /* v.ast.StructDecl */) {
+		if ((stmt)._typ == 279 /* v.ast.StructDecl */) {
 			if ((c->globals_repr.name).len == 0) {
 				_option_vphp__compiler__repr__PhpGlobalsRepr _t11;
 				if (_t11 = vphp__compiler__parser__parse_globals_decl(stmt, c->table), _t11.state == 0) {
@@ -78922,7 +78922,7 @@ _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c) {
 	}
 	for (int _t14 = 0; _t14 < all_stmts.len; ++_t14) {
 		v__ast__Stmt stmt = ((v__ast__Stmt*)all_stmts.data)[_t14];
-		if ((stmt)._typ == 281 /* v.ast.FnDecl */) {
+		if ((stmt)._typ == 280 /* v.ast.FnDecl */) {
 			if ((*stmt._v__ast__FnDecl).is_method) {
 				string receiver_type = builtin__string_all_after(v__ast__Table_get_type_name(c->table, (*stmt._v__ast__FnDecl).receiver.typ), _S("."));
 				if (_IN_MAP(ADDR(string, receiver_type), ADDR(map, c->class_index))) {
@@ -79007,25 +79007,25 @@ _result_string vphp__compiler__Compiler_compile(vphp__compiler__Compiler* c) {
 VV_LOC void vphp__compiler__Compiler_set_extension_meta(vphp__compiler__Compiler* c, v__ast__File* file_ast) {
 	for (int _t1 = 0; _t1 < file_ast->stmts.len; ++_t1) {
 		v__ast__Stmt stmt = ((v__ast__Stmt*)file_ast->stmts.data)[_t1];
-		if ((stmt)._typ == 283 /* v.ast.ConstDecl */) {
+		if ((stmt)._typ == 282 /* v.ast.ConstDecl */) {
 			for (int _t2 = 0; _t2 < (*stmt._v__ast__ConstDecl).fields.len; ++_t2) {
 				v__ast__ConstField field = ((v__ast__ConstField*)(*stmt._v__ast__ConstDecl).fields.data)[_t2];
-				if (builtin__string_ends_with(field.name, _S("ext_config")) && (field.expr)._typ == 284 /* v.ast.StructInit */) {
+				if (builtin__string_ends_with(field.name, _S("ext_config")) && (field.expr)._typ == 283 /* v.ast.StructInit */) {
 					v__ast__StructInit expr = (*field.expr._v__ast__StructInit);
 					for (int _t3 = 0; _t3 < expr.init_fields.len; ++_t3) {
 						v__ast__StructInitField f = ((v__ast__StructInitField*)expr.init_fields.data)[_t3];
-						if (builtin__fast_string_eq(f.name, _S("name")) && (f.expr)._typ == 285 /* v.ast.StringLiteral */) {
+						if (builtin__fast_string_eq(f.name, _S("name")) && (f.expr)._typ == 284 /* v.ast.StringLiteral */) {
 							c->ext_name = ((*f.expr._v__ast__StringLiteral)).val;
-						} else if (builtin__fast_string_eq(f.name, _S("version")) && (f.expr)._typ == 285 /* v.ast.StringLiteral */) {
+						} else if (builtin__fast_string_eq(f.name, _S("version")) && (f.expr)._typ == 284 /* v.ast.StringLiteral */) {
 							c->ext_version = ((*f.expr._v__ast__StringLiteral)).val;
-						} else if (builtin__fast_string_eq(f.name, _S("description")) && (f.expr)._typ == 285 /* v.ast.StringLiteral */) {
+						} else if (builtin__fast_string_eq(f.name, _S("description")) && (f.expr)._typ == 284 /* v.ast.StringLiteral */) {
 							c->ext_description = ((*f.expr._v__ast__StringLiteral)).val;
-						} else if (builtin__fast_string_eq(f.name, _S("ini_entries")) && (f.expr)._typ == 286 /* v.ast.MapInit */) {
+						} else if (builtin__fast_string_eq(f.name, _S("ini_entries")) && (f.expr)._typ == 285 /* v.ast.MapInit */) {
 							v__ast__MapInit m_expr = (*f.expr._v__ast__MapInit);
 							for (int i = 0; i < m_expr.keys.len; ++i) {
 								v__ast__Expr key = ((v__ast__Expr*)m_expr.keys.data)[i];
 								v__ast__Expr val = (*(v__ast__Expr*)builtin__array_get(m_expr.vals, i));
-								if ((key)._typ == 285 /* v.ast.StringLiteral */ && (val)._typ == 285 /* v.ast.StringLiteral */) {
+								if ((key)._typ == 284 /* v.ast.StringLiteral */ && (val)._typ == 284 /* v.ast.StringLiteral */) {
 									string k = ((*key._v__ast__StringLiteral)).val;
 									string v = ((*val._v__ast__StringLiteral)).val;
 									builtin__map_set(&c->ini_entries, &(string[]){k}, &(string[]) { v });
@@ -79353,1444 +79353,6 @@ VV_LOC string vphp__compiler__VGenerator_gen_task_registration(vphp__compiler__V
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("        }") }));
 	builtin__array_push((array*)&out, _MOV((string[]){ _S("    })") }));
 	return Array_string_join(out, _S("\n"));
-}
-main__VSlimRequest* main__VSlimRequest_construct(main__VSlimRequest* r, string method, string raw_path, string body) {
-	r->method = method;
-	r->raw_path = raw_path;
-	multi_return_string_string mr_1456 = main__normalize_request_target(raw_path);
-	r->path = mr_1456.arg0;
-	r->query_string = mr_1456.arg1;
-	r->body = body;
-	r->scheme = _S("http");
-	r->host = _S("");
-	r->port = _S("");
-	r->protocol_version = _S("1.1");
-	r->remote_addr = _S("");
-	r->query_json = _S("{}");
-	r->headers_json = _S("{}");
-	r->cookies_json = _S("{}");
-	r->attributes_json = _S("{}");
-	r->server_json = _S("{}");
-	r->uploaded_files_json = _S("[]");
-	r->params_json = _S("{}");
-	return r;
-}
-string main__VSlimRequest_str(main__VSlimRequest* r) {
-	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = r->method}}, {_S(" "), 0xfe10, {.d_s = r->raw_path}}, {_SLIT0, 0, { .d_c = 0 }}}));
-}
-string main__VSlimRequest_query(main__VSlimRequest* r, string key) {
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, main__VSlimRequest_query_params(r)), &(string[]){key}));
-	_option_string _t2 = {0};
-	if (_t3) {
-		*((string*)&_t2.data) = *((string*)_t3);
-	} else {
-		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t2.state != 0) {
-		*(string*) _t2.data = _S("");
-	}
-	
-	return (*(string*)_t2.data);
-}
-bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key) {
-	return _IN_MAP(ADDR(string, key), ADDR(map, main__VSlimRequest_query_params(r)));
-}
-string main__VSlimRequest_header(main__VSlimRequest* r, string name) {
-	Map_string_string headers = main__VSlimRequest_headers(r);
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){main__normalize_header_name(name)}));
-	_option_string _t2 = {0};
-	if (_t3) {
-		*((string*)&_t2.data) = *((string*)_t3);
-	} else {
-		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t2.state != 0) {
-		*(string*) _t2.data = _S("");
-	}
-	
-	return (*(string*)_t2.data);
-}
-bool main__VSlimRequest_has_header(main__VSlimRequest* r, string name) {
-	Map_string_string headers = main__VSlimRequest_headers(r);
-	return _IN_MAP(ADDR(string, main__normalize_header_name(name)), ADDR(map, headers));
-}
-string main__VSlimRequest_cookie(main__VSlimRequest* r, string name) {
-	Map_string_string cookies = main__VSlimRequest_cookies(r);
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, cookies), &(string[]){name}));
-	_option_string _t2 = {0};
-	if (_t3) {
-		*((string*)&_t2.data) = *((string*)_t3);
-	} else {
-		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t2.state != 0) {
-		*(string*) _t2.data = _S("");
-	}
-	
-	return (*(string*)_t2.data);
-}
-bool main__VSlimRequest_has_cookie(main__VSlimRequest* r, string name) {
-	Map_string_string cookies = main__VSlimRequest_cookies(r);
-	return _IN_MAP(ADDR(string, name), ADDR(map, cookies));
-}
-string main__VSlimRequest_param(main__VSlimRequest* r, string name) {
-	Map_string_string params = main__VSlimRequest_params(r);
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, params), &(string[]){name}));
-	_option_string _t2 = {0};
-	if (_t3) {
-		*((string*)&_t2.data) = *((string*)_t3);
-	} else {
-		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t2.state != 0) {
-		*(string*) _t2.data = _S("");
-	}
-	
-	return (*(string*)_t2.data);
-}
-bool main__VSlimRequest_has_param(main__VSlimRequest* r, string name) {
-	Map_string_string params = main__VSlimRequest_params(r);
-	return _IN_MAP(ADDR(string, name), ADDR(map, params));
-}
-string main__VSlimRequest_attribute(main__VSlimRequest* r, string name) {
-	Map_string_string attrs = main__VSlimRequest_attributes(r);
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, attrs), &(string[]){name}));
-	_option_string _t2 = {0};
-	if (_t3) {
-		*((string*)&_t2.data) = *((string*)_t3);
-	} else {
-		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t2.state != 0) {
-		*(string*) _t2.data = _S("");
-	}
-	
-	return (*(string*)_t2.data);
-}
-bool main__VSlimRequest_has_attribute(main__VSlimRequest* r, string name) {
-	Map_string_string attrs = main__VSlimRequest_attributes(r);
-	return _IN_MAP(ADDR(string, name), ADDR(map, attrs));
-}
-string main__VSlimRequest_query_json_value(main__VSlimRequest* r) {
-	return r->query_json;
-}
-Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r) {
-	return main__parse_headers_json(r->headers_json);
-}
-Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r) {
-	if ((r->query_json).len != 0 && !builtin__fast_string_eq(r->query_json, _S("{}"))) {
-		return main__parse_name_map_json(r->query_json);
-	}
-	return main__parse_query_string(r->query_string);
-}
-Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r) {
-	return main__parse_name_map_json(r->cookies_json);
-}
-Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r) {
-	return main__parse_name_map_json(r->attributes_json);
-}
-Map_string_string main__VSlimRequest_params(main__VSlimRequest* r) {
-	return main__parse_name_map_json(r->params_json);
-}
-main__SlimRequest main__VSlimRequest_to_slim_request(main__VSlimRequest* r) {
-	return ((main__SlimRequest){.method = r->method,.path = r->path,.params = main__VSlimRequest_params(r),.query = main__VSlimRequest_query_params(r),.body = r->body,});
-}
-main__SlimApp main__new_slim_app(void) {
-	return ((main__SlimApp){.routes = builtin____new_array(0, 0, sizeof(main__SlimRoute)),.middlewares = builtin____new_array(0, 0, sizeof(main__SlimMiddleware)),});
-}
-void main__SlimApp_use(main__SlimApp* app, main__SlimResponse (*mw)(main__SlimRequest , main__SlimResponse (*)(main__SlimRequest ))) {
-	builtin__array_push((array*)&app->middlewares, _MOV((voidptr[]){ (voidptr)mw }));
-}
-void main__SlimApp_get(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("GET"),.pattern = pattern,.handler = (voidptr)handler,}) }));
-}
-void main__SlimApp_post(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("POST"),.pattern = pattern,.handler = (voidptr)handler,}) }));
-}
-void main__SlimApp_put(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("PUT"),.pattern = pattern,.handler = (voidptr)handler,}) }));
-}
-void main__SlimApp_patch(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("PATCH"),.pattern = pattern,.handler = (voidptr)handler,}) }));
-}
-void main__SlimApp_delete(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("DELETE"),.pattern = pattern,.handler = (voidptr)handler,}) }));
-}
-void main__SlimApp_any(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("*"),.pattern = pattern,.handler = (voidptr)handler,}) }));
-}
-main__SlimResponse main__SlimApp_dispatch(main__SlimApp app, main__SlimRequest req) {
-	return main__SlimApp_run_middleware(app, 0, req);
-}
-VV_LOC main__SlimResponse main__SlimApp_run_middleware(main__SlimApp app, int index, main__SlimRequest req) {
-	if (index >= app.middlewares.len) {
-		return main__SlimApp_dispatch_route(app, req);
-	}
-	main__SlimResponse (*mw) (main__SlimRequest , main__SlimResponse (*)(main__SlimRequest )) = (*(voidptr*)builtin__array_get(app.middlewares, index));
-	main__SlimResponse (*next) (main__SlimRequest) = 	builtin__closure__closure_create(anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397, (struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx){.app = app,
-		.index = index,
-	}, sizeof(struct _V_anon_fn_a63500dfc4a6a669_40_main__slimrequest__main__SlimResponse_5397_Ctx)));
-	return mw(req, (voidptr)next);
-}
-VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__SlimRequest req) {
-	string method = builtin__string_to_upper(req.method);
-	string path = main__normalize_path(req.path);
-	bool method_not_allowed = false;
-	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
-		main__SlimRoute route = ((main__SlimRoute*)app.routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_5674 = main__match_route(route.pattern, path);
-		bool ok = mr_5674.arg0;
-		Map_string_string params = mr_5674.arg1;
-		if (!ok) {
-			continue;
-		}
-		if (!builtin__fast_string_eq(route.method, _S("*")) && !builtin__string__eq(route.method, method)) {
-			method_not_allowed = true;
-			continue;
-		}
-		main__SlimRequest bound = req;
-		bound.params = builtin__map_clone(&params);
-		return route.handler(bound);
-	}
-	if (method_not_allowed) {
-		return main__method_not_allowed_response();
-	}
-	return main__not_found_response();
-}
-main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type) {
-	r->status = status;
-	r->body = body;
-	r->content_type = content_type;
-	// json.encode
-	cJSON* _t1 = json__encode_Map_string_string(builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
-		_MOV((string[1]){
-			_S("content-type"),
-		}),
-		_MOV((string[1]){
-			content_type, 
-		})
-	)
-	);
-	string _t2 = json__json_print(_t1);
-	cJSON_Delete(_t1); // del
-	r->headers_json = (_t2);
-	return r;
-}
-string main__VSlimResponse_header(main__VSlimResponse* r, string name) {
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){main__normalize_header_name(name)}));
-	_option_string _t2 = {0};
-	if (_t3) {
-		*((string*)&_t2.data) = *((string*)_t3);
-	} else {
-		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t2.state != 0) {
-		*(string*) _t2.data = _S("");
-	}
-	
-	return (*(string*)_t2.data);
-}
-bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name) {
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	return _IN_MAP(ADDR(string, main__normalize_header_name(name)), ADDR(map, headers));
-}
-main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value) {
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	builtin__map_set(&headers, &(string[]){main__normalize_header_name(name)}, &(string[]) { value });
-	main__apply_response_headers(r, headers);
-	return r;
-}
-string main__VSlimResponse_cookie_header(main__VSlimResponse* r) {
-	return main__VSlimResponse_header(r, _S("set-cookie"));
-}
-main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, string name, string value) {
-	return main__VSlimResponse_set_cookie_opts(r, name, value, _S("/"));
-}
-main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path) {
-	string cookie_path = ((path).len == 0 ? (_S("/")) : (path));
-	string header_value = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("="), 0xfe10, {.d_s = value}}, {_S("; Path="), 0xfe10, {.d_s = cookie_path}}, {_SLIT0, 0, { .d_c = 0 }}}));
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
-	main__apply_response_headers(r, headers);
-	return r;
-}
-main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name) {
-	string header_value = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("=; Path=/; Max-Age=0"), 0, { .d_c = 0 }}}));
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
-	main__apply_response_headers(r, headers);
-	return r;
-}
-main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status) {
-	r->status = status;
-	return r;
-}
-main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body) {
-	r->body = body;
-	r->content_type = _S("text/plain; charset=utf-8");
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
-	main__apply_response_headers(r, headers);
-	return r;
-}
-main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body) {
-	r->body = body;
-	r->content_type = _S("application/json; charset=utf-8");
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
-	main__apply_response_headers(r, headers);
-	return r;
-}
-main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string location) {
-	return main__VSlimResponse_redirect_with_status(r, location, 302);
-}
-main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status) {
-	r->status = status;
-	r->body = _S("");
-	Map_string_string headers = main__VSlimResponse_headers(r);
-	builtin__map_set(&headers, &(string[]){_S("location")}, &(string[]) { location });
-	if (!_IN_MAP(ADDR(string, _S("content-type")), ADDR(map, headers))) {
-		builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
-	}
-	main__apply_response_headers(r, headers);
-	return r;
-}
-Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r) {
-	return main__parse_headers_json(r->headers_json);
-}
-Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r) {
-	return builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 3, sizeof(string), sizeof(string),
-		_MOV((string[3]){
-			_S("status"),
-			_S("body"),
-			_S("content_type"),
-		}),
-		_MOV((string[3]){
-			builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = r->status}}, {_SLIT0, 0, { .d_c = 0 }}})), 
-			r->body, 
-			r->content_type, 
-		})
-	)
-	;
-}
-string main__VSlimResponse_str(main__VSlimResponse* r) {
-	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = r->status}}, {_S(" "), 0xfe10, {.d_s = r->content_type}}, {_S(" "), 0xfe10, {.d_s = r->body}}, {_SLIT0, 0, { .d_c = 0 }}}));
-}
-main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body) {
-	multi_return_string_string mr_9574 = main__normalize_request_target(raw_path);
-	string path = mr_9574.arg0;
-	string query_string = mr_9574.arg1;
-	return ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,
-		.raw_path = raw_path,
-		.path = path,
-		.body = body,
-		.query_string = query_string,
-		.query_json = _S("{}"),
-		.scheme = _S("http"),
-		.host = _S(""),
-		.port = _S(""),
-		.protocol_version = _S("1.1"),
-		.remote_addr = _S(""),
-		.headers_json = _S("{}"),
-		.cookies_json = _S("{}"),
-		.attributes_json = _S("{}"),
-		.server_json = _S("{}"),
-		.uploaded_files_json = _S("[]"),
-		.params_json = _S("{}"),
-	}, sizeof(main__VSlimRequest)));
-}
-main__VSlimRequest* main__new_vslim_request_from_envelope(Map_string_string envelope) {
-	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("method")}));
-	_option_string _t1 = {0};
-	if (_t2) {
-		*((string*)&_t1.data) = *((string*)_t2);
-	} else {
-		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t1.state != 0) {
-		*(string*) _t1.data = _S("GET");
-	}
-	
-	string method = (*(string*)_t1.data);
-	string* _t4 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("path")}));
-	_option_string _t3 = {0};
-	if (_t4) {
-		*((string*)&_t3.data) = *((string*)_t4);
-	} else {
-		_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t3.state != 0) {
-		*(string*) _t3.data = _S("/");
-	}
-	
-	string raw_path = (*(string*)_t3.data);
-	string* _t6 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("body")}));
-	_option_string _t5 = {0};
-	if (_t6) {
-		*((string*)&_t5.data) = *((string*)_t6);
-	} else {
-		_t5.state = 2; _t5.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t5.state != 0) {
-		*(string*) _t5.data = _S("");
-	}
-	
-	string body = (*(string*)_t5.data);
-	multi_return_string_string mr_10193 = main__normalize_request_target(raw_path);
-	string path = mr_10193.arg0;
-	string query_string = mr_10193.arg1;
-		string* _t9 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("query_json")}));
-		_option_string _t8 = {0};
-		if (_t9) {
-			*((string*)&_t8.data) = *((string*)_t9);
-		} else {
-			_t8.state = 2; _t8.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t8.state != 0) {
-			*(string*) _t8.data = _S("{}");
-		}
-		string* _t11 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("scheme")}));
-		_option_string _t10 = {0};
-		if (_t11) {
-			*((string*)&_t10.data) = *((string*)_t11);
-		} else {
-			_t10.state = 2; _t10.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t10.state != 0) {
-			*(string*) _t10.data = _S("http");
-		}
-		string* _t13 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("host")}));
-		_option_string _t12 = {0};
-		if (_t13) {
-			*((string*)&_t12.data) = *((string*)_t13);
-		} else {
-			_t12.state = 2; _t12.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t12.state != 0) {
-			*(string*) _t12.data = _S("");
-		}
-		string* _t15 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("port")}));
-		_option_string _t14 = {0};
-		if (_t15) {
-			*((string*)&_t14.data) = *((string*)_t15);
-		} else {
-			_t14.state = 2; _t14.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t14.state != 0) {
-			*(string*) _t14.data = _S("");
-		}
-		string* _t17 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("protocol_version")}));
-		_option_string _t16 = {0};
-		if (_t17) {
-			*((string*)&_t16.data) = *((string*)_t17);
-		} else {
-			_t16.state = 2; _t16.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t16.state != 0) {
-			*(string*) _t16.data = _S("1.1");
-		}
-		string* _t19 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("remote_addr")}));
-		_option_string _t18 = {0};
-		if (_t19) {
-			*((string*)&_t18.data) = *((string*)_t19);
-		} else {
-			_t18.state = 2; _t18.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t18.state != 0) {
-			*(string*) _t18.data = _S("");
-		}
-		string* _t21 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("headers_json")}));
-		_option_string _t20 = {0};
-		if (_t21) {
-			*((string*)&_t20.data) = *((string*)_t21);
-		} else {
-			_t20.state = 2; _t20.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t20.state != 0) {
-			*(string*) _t20.data = _S("{}");
-		}
-		string* _t23 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("cookies_json")}));
-		_option_string _t22 = {0};
-		if (_t23) {
-			*((string*)&_t22.data) = *((string*)_t23);
-		} else {
-			_t22.state = 2; _t22.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t22.state != 0) {
-			*(string*) _t22.data = _S("{}");
-		}
-		string* _t25 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("attributes_json")}));
-		_option_string _t24 = {0};
-		if (_t25) {
-			*((string*)&_t24.data) = *((string*)_t25);
-		} else {
-			_t24.state = 2; _t24.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t24.state != 0) {
-			*(string*) _t24.data = _S("{}");
-		}
-		string* _t27 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("server_json")}));
-		_option_string _t26 = {0};
-		if (_t27) {
-			*((string*)&_t26.data) = *((string*)_t27);
-		} else {
-			_t26.state = 2; _t26.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t26.state != 0) {
-			*(string*) _t26.data = _S("{}");
-		}
-		string* _t29 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("uploaded_files_json")}));
-		_option_string _t28 = {0};
-		if (_t29) {
-			*((string*)&_t28.data) = *((string*)_t29);
-		} else {
-			_t28.state = 2; _t28.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t28.state != 0) {
-			*(string*) _t28.data = _S("[]");
-		}
-		string* _t31 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("params_json")}));
-		_option_string _t30 = {0};
-		if (_t31) {
-			*((string*)&_t30.data) = *((string*)_t31);
-		} else {
-			_t30.state = 2; _t30.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t30.state != 0) {
-			*(string*) _t30.data = _S("{}");
-		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	return ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,
-		.raw_path = raw_path,
-		.path = path,
-		.body = body,
-		.query_string = query_string,
-		.query_json = (*(string*)_t8.data),
-		.scheme = (*(string*)_t10.data),
-		.host = (*(string*)_t12.data),
-		.port = (*(string*)_t14.data),
-		.protocol_version = (*(string*)_t16.data),
-		.remote_addr = (*(string*)_t18.data),
-		.headers_json = (*(string*)_t20.data),
-		.cookies_json = (*(string*)_t22.data),
-		.attributes_json = (*(string*)_t24.data),
-		.server_json = (*(string*)_t26.data),
-		.uploaded_files_json = (*(string*)_t28.data),
-		.params_json = (*(string*)_t30.data),
-	}, sizeof(main__VSlimRequest)));
-}
-main__VSlimApp* main__VSlimApp__static__demo(void) {
-	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__PhpRoute)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_group_middlewares = builtin____new_array(0, 0, sizeof(main__PhpGroupMiddleware)),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = true,}, sizeof(main__VSlimApp)));
-}
-main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path) {
-	app->base_path = main__normalize_base_path(base_path);
-	return app;
-}
-main__VSlimRouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix) {
-	return ((main__VSlimRouteGroup*)builtin__memdup(&(main__VSlimRouteGroup){.app = app,.prefix = main__normalize_group_prefix(prefix),}, sizeof(main__VSlimRouteGroup)));
-}
-main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path) {
-	main__VSlimRequest* req = main__new_vslim_request(method, raw_path, _S(""));
-	return main__VSlimApp_dispatch_request(app, req);
-}
-main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req) {
-	multi_return_main__SlimResponse_Map_string_string mr_11642 = main__dispatch_app_request_with_params(app, req);
-	main__SlimResponse res = mr_11642.arg0;
-	Map_string_string params = mr_11642.arg1;
-	{ // Unsafe block
-		main__VSlimRequest* writable = ((main__VSlimRequest*)(req));
-		// json.encode
-		cJSON* _t1 = json__encode_Map_string_string(params);
-		string _t2 = json__json_print(_t1);
-		cJSON_Delete(_t1); // del
-		writable->params_json = (_t2);
-		if (builtin__fast_string_eq(writable->attributes_json, _S("{}")) || (writable->attributes_json).len == 0) {
-			// json.encode
-			cJSON* _t3 = json__encode_Map_string_string(params);
-			string _t4 = json__json_print(_t3);
-			cJSON_Delete(_t3); // del
-			writable->attributes_json = (_t4);
-		}
-	}
-	return main__to_vslim_response(res);
-}
-main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("GET"), _S(""), pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("POST"), _S(""), pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("PUT"), _S(""), pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_patch(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("PATCH"), _S(""), pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_delete(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("DELETE"), _S(""), pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("*"), _S(""), pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_get_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("GET"), name, pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_post_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("POST"), name, pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_put_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("PUT"), name, pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_patch_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("PATCH"), name, pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_delete_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("DELETE"), name, pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
-	main__VSlimApp_add_php_route(app, _S("*"), name, pattern, handler);
-	return app;
-}
-main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler) {
-	if (vphp__ZVal_is_valid(handler) && vphp__ZVal_is_callable(handler)) {
-		builtin__array_push((array*)&app->php_middlewares, _MOV((vphp__ZVal[]){ vphp__ZVal_dup(handler) }));
-	}
-	return app;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_group(main__VSlimRouteGroup* group, string prefix) {
-	return ((main__VSlimRouteGroup*)builtin__memdup(&(main__VSlimRouteGroup){.app = group->app,.prefix = main__join_route_prefix(group->prefix, prefix),}, sizeof(main__VSlimRouteGroup)));
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_middleware(main__VSlimRouteGroup* group, vphp__ZVal handler) {
-	if (!vphp__ZVal_is_valid(handler) || !vphp__ZVal_is_callable(handler)) {
-		return group;
-	}
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		builtin__array_push((array*)&app->php_group_middlewares, _MOV((main__PhpGroupMiddleware[]){ ((main__PhpGroupMiddleware){.prefix = main__normalize_group_prefix(group->prefix),.handler = vphp__ZVal_dup(handler),}) }));
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_get(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("GET"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_post(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("POST"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_put(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("PUT"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_patch(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("PATCH"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_delete(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("DELETE"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_any(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("*"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_get_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("GET"), name, main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_post_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("POST"), name, main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_put_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("PUT"), name, main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_patch_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("PATCH"), name, main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_delete_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("DELETE"), name, main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-main__VSlimRouteGroup* main__VSlimRouteGroup_any_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
-	{ // Unsafe block
-		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		main__VSlimApp_add_php_route(app, _S("*"), name, main__join_route_prefix(group->prefix, pattern), handler);
-	}
-	return group;
-}
-string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params) {
-	return main__VSlimApp_url_for_query(app, name, params, vphp__ZVal__static__new_null());
-}
-string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query) {
-	Map_string_string params_map = main__zval_to_name_map(params);
-	Map_string_string query_map = main__zval_to_name_map(query);
-	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
-		main__PhpRoute route = ((main__PhpRoute*)app->routes.data)[_t1];
-		if (builtin__string__eq(route.name, name)) {
-			_option_string _t2 = main__render_route_url(route.pattern, &params_map, &query_map);
-			if (_t2.state != 0) {
-				*(string*) _t2.data = _S("");
-			}
-			
- 			string raw = (*(string*)_t2.data);
-			return main__VSlimApp_apply_base_path(app, raw);
-		}
-	}
-	return _S("");
-}
-string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host) {
-	return main__VSlimApp_url_for_query_abs(app, name, params, vphp__ZVal__static__new_null(), scheme, host);
-}
-string main__VSlimApp_url_for_query_abs(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query, string scheme, string host) {
-	string path = main__VSlimApp_url_for_query(app, name, params, query);
-	if ((path).len == 0) {
-		return _S("");
-	}
-	return main__join_absolute_url(scheme, host, path);
-}
-main__VSlimResponse* main__VSlimApp_redirect_to(main__VSlimApp* app, string name, vphp__ZVal params) {
-	return main__VSlimApp_redirect_to_query(app, name, params, vphp__ZVal__static__new_null());
-}
-main__VSlimResponse* main__VSlimApp_redirect_to_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query) {
-	string location = main__VSlimApp_url_for_query(app, name, params, query);
-	main__VSlimResponse* res = ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers_json = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimResponse)));
-	main__VSlimResponse_construct(res, 302, _S(""), _S("text/plain; charset=utf-8"));
-	return main__VSlimResponse_redirect(res, location);
-}
-VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler) {
-	if (!vphp__ZVal_is_valid(handler) || !vphp__ZVal_is_callable(handler)) {
-		return;
-	}
-	builtin__array_push((array*)&app->routes, _MOV((main__PhpRoute[]){ ((main__PhpRoute){.method = builtin__string_to_upper(method),.name = name,.pattern = pattern,.handler = vphp__ZVal_dup(handler),}) }));
-}
-VV_LOC main__VSlimResponse* main__to_vslim_response(main__SlimResponse res) {
-	// json.encode
-	cJSON* _t1 = json__encode_Map_string_string(res.headers);
-	string _t2 = json__json_print(_t1);
-	cJSON_Delete(_t1); // del
-	string headers_json = (_t2);
-	string* _t5 = (string*)(builtin__map_get_check(ADDR(map, res.headers), &(string[]){_S("content-type")}));
-	_option_string _t4 = {0};
-	if (_t5) {
-		*((string*)&_t4.data) = *((string*)_t5);
-	} else {
-		_t4.state = 2; _t4.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t4.state != 0) {
-		*(string*) _t4.data = _S("");
-	}
-	
-	return ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = res.status,.body = res.body,.content_type = (*(string*)_t4.data),.headers_json = headers_json,}, sizeof(main__VSlimResponse)));
-}
-VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_string headers) {
-	// json.encode
-	cJSON* _t1 = json__encode_Map_string_string(headers);
-	string _t2 = json__json_print(_t1);
-	cJSON_Delete(_t1); // del
-	r->headers_json = (_t2);
-	string* _t4 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){_S("content-type")}));
-	_option_string _t3 = {0};
-	if (_t4) {
-		*((string*)&_t3.data) = *((string*)_t4);
-	} else {
-		_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t3.state != 0) {
-		*(string*) _t3.data = r->content_type;
-	}
-	
-	r->content_type = (*(string*)_t3.data);
-}
-VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
-	if (app->routes.len > 0) {
-		multi_return_main__SlimResponse_Map_string_string_bool mr_20123 = main__dispatch_php_routes_with_params(app, req);
-		main__SlimResponse res = mr_20123.arg0;
-		Map_string_string params = mr_20123.arg1;
-		bool ok = mr_20123.arg2;
-		if (ok) {
-			return (multi_return_main__SlimResponse_Map_string_string){.arg0=res, .arg1=params};
-		}
-	}
-	if (app->use_demo) {
-		return main__dispatch_demo_request_with_params(main__VSlimRequest_to_slim_request(req));
-	}
-	return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__not_found_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	};
-}
-VV_LOC multi_return_main__SlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
-	string method = builtin__string_to_upper(req->method);
-	string path = main__normalize_path(req->path);
-	bool method_not_allowed = false;
-	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
-		main__PhpRoute route = ((main__PhpRoute*)app->routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_20600 = main__match_route(route.pattern, path);
-		bool ok = mr_20600.arg0;
-		Map_string_string params = mr_20600.arg1;
-		if (!ok) {
-			continue;
-		}
-		if (!builtin__fast_string_eq(route.method, _S("*")) && !builtin__string__eq(route.method, method)) {
-			method_not_allowed = true;
-			continue;
-		}
-		vphp__ZVal payload = main__build_php_request_object(req, params);
-		Array_vphp__ZVal route_mws = main__matching_group_middlewares(app, path);
-		vphp__ZVal res = main__dispatch_php_handler_with_middlewares(app, route_mws, payload, route.handler, 0);
-		return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=main__normalize_php_route_response(res), .arg1=params, .arg2=true};
-	}
-	if (method_not_allowed) {
-		return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=main__method_not_allowed_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, .arg2=true};
-	}
-	vphp__ZVal middleware_res = main__run_php_middlewares_only(app, main__matching_group_middlewares(app, path), req);
-	if (vphp__ZVal_is_valid(middleware_res) && !vphp__ZVal_is_null(middleware_res) && !vphp__ZVal_is_undef(middleware_res)) {
-		return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=main__normalize_php_route_response(middleware_res), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, .arg2=true};
-	}
-	return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=((main__SlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	, .arg2=false};
-}
-VV_LOC vphp__ZVal main__dispatch_php_handler_with_middlewares(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, vphp__ZVal payload, vphp__ZVal handler, int index) {
-	int total = (int)(app->php_middlewares.len + route_middlewares.len);
-	if (index >= total) {
-		if (!vphp__ZVal_is_valid(handler)) {
-			return ((vphp__ZVal){.raw = ((void*)0),});
-		}
-		return vphp__ZVal_call(handler, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload})));
-	}
-	vphp__ZVal mw = (index < app->php_middlewares.len ? ((*(vphp__ZVal*)builtin__array_get(app->php_middlewares, index))) : ((*(vphp__ZVal*)builtin__array_get(route_middlewares, (int)(index - app->php_middlewares.len)))));
-	vphp__ZVal res = vphp__ZVal_call(mw, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload})));
-	if (!vphp__ZVal_is_valid(res) || vphp__ZVal_is_null(res) || vphp__ZVal_is_undef(res)) {
-		return main__dispatch_php_handler_with_middlewares(app, route_middlewares, payload, handler, (int)(index + 1));
-	}
-	return res;
-}
-VV_LOC vphp__ZVal main__run_php_middlewares_only(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, main__VSlimRequest* req) {
-	if (app->php_middlewares.len == 0 && route_middlewares.len == 0) {
-		return ((vphp__ZVal){.raw = ((void*)0),});
-	}
-	vphp__ZVal payload = main__build_php_request_object(req, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	);
-	return main__dispatch_php_handler_with_middlewares(app, route_middlewares, payload, ((vphp__ZVal){.raw = ((void*)0),}), 0);
-}
-VV_LOC Array_vphp__ZVal main__matching_group_middlewares(main__VSlimApp* app, string path) {
-	Array_vphp__ZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
-	for (int _t1 = 0; _t1 < app->php_group_middlewares.len; ++_t1) {
-		main__PhpGroupMiddleware item = ((main__PhpGroupMiddleware*)app->php_group_middlewares.data)[_t1];
-		if (main__path_has_prefix(path, item.prefix)) {
-			builtin__array_push((array*)&out, _MOV((vphp__ZVal[]){ item.handler }));
-		}
-	}
-	return out;
-}
-VV_LOC bool main__path_has_prefix(string path, string prefix) {
-	if ((prefix).len == 0) {
-		return true;
-	}
-	if (builtin__string__eq(path, prefix)) {
-		return true;
-	}
-	return builtin__string_starts_with(path, builtin__string__plus(prefix, _S("/")));
-}
-VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params) {
-	{ // Unsafe block
-		vphp__ZVal payload = vphp__ZVal__static__new_null();
-			// json.encode
-			cJSON* _t1 = json__encode_Map_string_string(params);
-			string _t2 = json__json_print(_t1);
-			cJSON_Delete(_t1); // del
-		main__VSlimRequest* bound = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = req->method,
-			.raw_path = req->raw_path,
-			.path = req->path,
-			.body = req->body,
-			.query_string = req->query_string,
-			.query_json = req->query_json,
-			.scheme = req->scheme,
-			.host = req->host,
-			.port = req->port,
-			.protocol_version = req->protocol_version,
-			.remote_addr = req->remote_addr,
-			.headers_json = req->headers_json,
-			.cookies_json = req->cookies_json,
-			.attributes_json = req->attributes_json,
-			.server_json = req->server_json,
-			.uploaded_files_json = req->uploaded_files_json,
-			.params_json = (_t2),
-		}, sizeof(main__VSlimRequest)));
-		vphp_return_obj(payload.raw, bound, vslimrequest_ce);
-		vphp_bind_handlers(vphp_get_obj_from_zval(payload.raw), ((vphp_class_handlers*)(main__vslimrequest_handlers())));
-		return payload;
-	}
-	return (vphp__ZVal){.raw = 0,};
-}
-VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result) {
-	if (!vphp__ZVal_is_valid(result) || vphp__ZVal_is_null(result) || vphp__ZVal_is_undef(result)) {
-		return main__text_response(200, _S(""));
-	}
-	if (vphp__ZVal_is_object(result) && vphp__ZVal_is_instance_of(result, _S("VSlimResponse"))) {
-		_option_main__VSlimResponse_ptr _t2;
-		if (_t2 = vphp__ZVal_to_object_T_main__VSlimResponse(result), _t2.state == 0) {
-			main__VSlimResponse* resp = *(main__VSlimResponse**)_t2.data;
-			return ((main__SlimResponse){.status = resp->status,.body = resp->body,.headers = main__VSlimResponse_headers(resp),});
-		}
-	}
-	if (vphp__ZVal_is_string(result)) {
-		return main__text_response(200, vphp__ZVal_get_string(result));
-	}
-	if (vphp__ZVal_is_array(result)) {
-		Map_string_string headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		;
-		_result_vphp__ZVal _t5;
-		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
-			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
-			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_a63500dfc4a6a669_40_vphp__zval_vphp__zval_mut_map_string_string_24451);
-		}
-		int _t6; /* if prepend */
-		_result_vphp__ZVal _t8;
-		if (_t8 = vphp__ZVal_get(result, _S("status")), !_t8.is_error) {
-			vphp__ZVal s = *(vphp__ZVal*)_t8.data;
-			_t6 = ((int)(vphp__ZVal_to_i64(s)));
-			goto _t7;
-		};
-		{
-			_t6 = 200;
-		}
-	_t7: {};
-				int status = _t6;
-		string body = vphp__ZVal_get_or(result, _S("body"), _S(""));
-		string* _t10 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){_S("content-type")}));
-		_option_string _t9 = {0};
-		if (_t10) {
-			*((string*)&_t9.data) = *((string*)_t10);
-		} else {
-			_t9.state = 2; _t9.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t9.state != 0) {
-			*(string*) _t9.data = _S("text/plain; charset=utf-8");
-		}
-		
-		string content_type = vphp__ZVal_get_or(result, _S("content_type"), (*(string*)_t9.data));
-		if (!_IN_MAP(ADDR(string, _S("content-type")), ADDR(map, headers))) {
-			builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { content_type });
-		}
-		return ((main__SlimResponse){.status = status,.body = body,.headers = headers,});
-	}
-	return main__text_response(500, _S("Invalid route response"));
-}
-VV_LOC string main__normalize_path(string path) {
-	if (path.len == 0) {
-		return _S("/");
-	}
-	if (builtin__string_starts_with(path, _S("/"))) {
-		return path;
-	}
-	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("/"), 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}}));
-}
-VV_LOC string main__normalize_group_prefix(string prefix) {
-	if ((prefix).len == 0 || _SLIT_EQ(prefix.str, prefix.len, "/")) {
-		return _S("");
-	}
-	string out = main__normalize_path(prefix);
-	if (out.len > 1 && builtin__string_ends_with(out, _S("/"))) {
-		out = builtin__string_substr(out, 0, (int)(out.len - 1));
-	}
-	return out;
-}
-VV_LOC string main__normalize_base_path(string base_path) {
-	if ((base_path).len == 0 || _SLIT_EQ(base_path.str, base_path.len, "/")) {
-		return _S("");
-	}
-	string out = main__normalize_path(base_path);
-	if (out.len > 1 && builtin__string_ends_with(out, _S("/"))) {
-		out = builtin__string_substr(out, 0, (int)(out.len - 1));
-	}
-	return out;
-}
-VV_LOC string main__join_route_prefix(string prefix, string pattern) {
-	string base = main__normalize_group_prefix(prefix);
-	string tail = main__normalize_path(pattern);
-	if ((base).len == 0) {
-		return tail;
-	}
-	if (_SLIT_EQ(tail.str, tail.len, "/")) {
-		return base;
-	}
-	if (builtin__string_starts_with(tail, _S("/"))) {
-		tail = builtin__string_substr(tail, 1, 2147483647);
-	}
-	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = base}}, {_S("/"), 0xfe10, {.d_s = tail}}, {_SLIT0, 0, { .d_c = 0 }}}));
-}
-VV_LOC string main__VSlimApp_apply_base_path(main__VSlimApp* app, string path) {
-	string base = main__normalize_base_path(app->base_path);
-	if ((base).len == 0 || (path).len == 0) {
-		return path;
-	}
-	if (_SLIT_EQ(path.str, path.len, "/")) {
-		return base;
-	}
-	if (builtin__string_starts_with(path, _S("/"))) {
-		return builtin__string__plus(base, path);
-	}
-	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = base}}, {_S("/"), 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}}));
-}
-VV_LOC string main__join_absolute_url(string scheme, string host, string path) {
-	string clean_scheme = ((scheme).len == 0 ? (_S("http")) : (scheme));
-	string clean_host = builtin__string_trim_space(host);
-	if ((clean_host).len == 0) {
-		return path;
-	}
-	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = clean_scheme}}, {_S("://"), 0xfe10, {.d_s = clean_host}}, {_SLIT0, 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}}));
-}
-VV_LOC _option_string main__render_route_url(string pattern, Map_string_string* params, Map_string_string* query) {
-	string p = main__normalize_path(pattern);
-	Array_string parts = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	Array_string _t1 = builtin__string_split(builtin__string_trim(p, _S("/")), _S("/"));
-	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
-		string part = ((string*)_t1.data)[_t2];
-		if ((part).len == 0) {
-			continue;
-		}
-		if (builtin__string_starts_with(part, _S(":"))) {
-			string key = builtin__string_all_after(part, _S(":"));
-			if (!_IN_MAP(ADDR(string, key), params)) {
-				return (_option_string){ .state=2, .err=_const_none__, .data={E_STRUCT} };
-			}
-			builtin__array_push((array*)&parts, _MOV((string[]){ (*(string*)builtin__map_get((map*)params, &(string[]){key}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} })) }));
-			continue;
-		}
-		builtin__array_push((array*)&parts, _MOV((string[]){ builtin__string_clone(part) }));
-	}
-	string _t6; /* if prepend */
-	if (parts.len == 0) {
-		_t6 = _S("/");
-		goto _t7;
-	};
-	{
-		_t6 = builtin__string__plus(_S("/"), Array_string_join(parts, _S("/")));
-	}
-	_t7: {};
-		string path = _t6;
-	if (query->len > 0) {
-		path = builtin__string__plus(path, builtin__string__plus(_S("?"), main__encode_query_params(query)));
-	}
-	_option_string _t8;
-	builtin___option_ok(&(string[]) { path }, (_option*)(&_t8), sizeof(string));
-	 
-	return _t8;
-}
-VV_LOC string main__encode_query_params(Map_string_string* query) {
-	Array_string keys = builtin__map_keys(query);
-	if (keys.len > 0) { qsort(keys.data, keys.len, keys.element_size, (voidptr)compare_11976479745138665065_string); }
-	;
-	Array_string parts = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	for (int _t1 = 0; _t1 < keys.len; ++_t1) {
-		string key = ((string*)keys.data)[_t1];
-		builtin__array_push((array*)&parts, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = key}}, {_S("="), 0xfe10, {.d_s = (*(string*)builtin__map_get((map*)query, &(string[]){key}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} }))}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
-	}
-	return Array_string_join(parts, _S("&"));
-}
-VV_LOC multi_return_string_string main__normalize_request_target(string raw_path) {
-	string path = main__normalize_path(raw_path);
-	if (!builtin__string_contains(path, _S("?"))) {
-		return (multi_return_string_string){.arg0=path, .arg1=_S("")};
-	}
-	string base = main__normalize_path(builtin__string_all_before(path, _S("?")));
-	string query = builtin__string_all_after(path, _S("?"));
-	return (multi_return_string_string){.arg0=base, .arg1=query};
-}
-VV_LOC Map_string_string main__parse_query_string(string query_str) {
-	Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	;
-	if ((query_str).len == 0) {
-		return out;
-	}
-	Array_string _t2 = builtin__string_split(query_str, _S("&"));
-	for (int _t3 = 0; _t3 < _t2.len; ++_t3) {
-		string pair = ((string*)_t2.data)[_t3];
-		if ((pair).len == 0) {
-			continue;
-		}
-		if (builtin__string_contains(pair, _S("="))) {
-			string k = builtin__string_all_before(pair, _S("="));
-			string v = builtin__string_all_after(pair, _S("="));
-			builtin__map_set(&out, &(string[]){k}, &(string[]) { v });
-		} else {
-			builtin__map_set(&out, &(string[]){pair}, &(string[]) { _S("") });
-		}
-	}
-	return out;
-}
-VV_LOC Map_string_string main__parse_name_map_json(string raw) {
-	if ((raw).len == 0) {
-		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		;
-	}
-	// json.decode
-	cJSON* _t3 = json__json_parse(raw);
-	_result_Map_string_string _t4 = json__decode_Map_string_string(_t3);
-	cJSON_Delete(_t3); // del
-	_result_Map_string_string _t2 = (_t4);
-	if (_t2.is_error) {
-		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		;
-	}
-	
- 	Map_string_string decoded = (*(Map_string_string*)_t2.data);
-	return decoded;
-}
-VV_LOC Map_string_string main__zval_to_name_map(vphp__ZVal z) {
-	if (!vphp__ZVal_is_valid(z) || vphp__ZVal_is_null(z) || vphp__ZVal_is_undef(z)) {
-		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		;
-	}
-	_result_Map_string_string _t3 = vphp__ZVal_to_v_T_Map_string_string(z);
-	if (_t3.is_error) {
-		*(Map_string_string*) _t3.data = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		;
-	}
-	
- 	return (*(Map_string_string*)_t3.data);
-}
-VV_LOC Map_string_string main__parse_headers_json(string headers_json) {
-	Map_string_string decoded = main__parse_name_map_json(headers_json);
-	Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	;
-	int _t2 = decoded.key_values.len;
-	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
-		int _t3 = decoded.key_values.len - _t2;
-		_t2 = decoded.key_values.len;
-		if (_t3 < 0) {
-			_t1 = -1;
-			continue;
-		}
-		if (!builtin__DenseArray_has_index(&decoded.key_values, _t1)) {continue;}
-		string key = *(string*)builtin__DenseArray_key(&decoded.key_values, _t1);
-		key = builtin__string_clone(key);
-		string value = (*(string*)builtin__DenseArray_value(&decoded.key_values, _t1));
-		builtin__map_set(&out, &(string[]){main__normalize_header_name(key)}, &(string[]) { value });
-	}
-	return out;
-}
-VV_LOC string main__normalize_header_name(string name) {
-	return builtin__string_to_lower(builtin__string_trim_space(name));
-}
-VV_LOC multi_return_bool_Map_string_string main__match_route(string pattern, string path) {
-	string p = main__normalize_path(pattern);
-	string u = main__normalize_path(path);
-	if (builtin__string__eq(p, u)) {
-		return (multi_return_bool_Map_string_string){.arg0=true, .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		};
-	}
-	Array_string p_parts = builtin__string_split(builtin__string_trim(p, _S("/")), _S("/"));
-	Array_string u_parts = builtin__string_split(builtin__string_trim(u, _S("/")), _S("/"));
-	if (p_parts.len != u_parts.len) {
-		return (multi_return_bool_Map_string_string){.arg0=false, .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		};
-	}
-	Map_string_string params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	;
-	for (int i = 0; i < p_parts.len; ++i) {
-		string pp = (*(string*)builtin__array_get(p_parts, i));
-		string up = (*(string*)builtin__array_get(u_parts, i));
-		if (builtin__string_starts_with(pp, _S(":"))) {
-			builtin__map_set(&params, &(string[]){builtin__string_all_after(pp, _S(":"))}, &(string[]) { up });
-			continue;
-		}
-		if (!builtin__string__eq(pp, up)) {
-			return (multi_return_bool_Map_string_string){.arg0=false, .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			};
-		}
-	}
-	return (multi_return_bool_Map_string_string){.arg0=true, .arg1=params};
-}
-VV_LOC main__SlimResponse main__text_response(int status, string body) {
-	return ((main__SlimResponse){.status = status,.body = body,.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
-		_MOV((string[1]){
-			_S("content-type"),
-		}),
-		_MOV((string[1]){
-			_S("text/plain; charset=utf-8"), 
-		})
-	)
-	,});
-}
-VV_LOC main__SlimResponse main__json_response(int status, string json_body) {
-	return ((main__SlimResponse){.status = status,.body = json_body,.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
-		_MOV((string[1]){
-			_S("content-type"),
-		}),
-		_MOV((string[1]){
-			_S("application/json; charset=utf-8"), 
-		})
-	)
-	,});
-}
-VV_LOC main__SlimResponse main__not_found_response(void) {
-	return main__text_response(404, _S("Not Found"));
-}
-VV_LOC main__SlimResponse main__method_not_allowed_response(void) {
-	return main__text_response(405, _S("Method Not Allowed"));
-}
-VV_LOC main__SlimResponse main__internal_error_response(void) {
-	return main__text_response(500, _S("Internal Server Error"));
-}
-VV_LOC main__SlimResponse main__with_trace_id(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest )) {
-	main__SlimRequest out = req;
-	if (((*(string*)builtin__map_get(ADDR(map, out.query), &(string[]){_S("trace_id")}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} }))).len == 0) {
-		builtin__map_set(&out.query, &(string[]){_S("trace_id")}, &(string[]) { _S("trace-local-mvp") });
-	}
-	return next(out);
-}
-VV_LOC main__SlimResponse main__auth_guard(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest )) {
-	if (builtin__fast_string_eq(req.path, _S("/private"))) {
-		string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req.query), &(string[]){_S("token")}));
-		_option_string _t1 = {0};
-		if (_t2) {
-			*((string*)&_t1.data) = *((string*)_t2);
-		} else {
-			_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
-		}
-		;
-		if (_t1.state != 0) {
-			*(string*) _t1.data = _S("");
-		}
-		
-		string token = (*(string*)_t1.data);
-		if (_SLIT_NE(token.str, token.len, "ok")) {
-			return main__text_response(401, _S("Unauthorized"));
-		}
-	}
-	return next(req);
-}
-VV_LOC main__SlimResponse main__health_handler(main__SlimRequest req) {
-	{main__SlimRequest _ = req;}
-	;
-	return main__text_response(200, _S("OK"));
-}
-VV_LOC main__SlimResponse main__user_handler(main__SlimRequest req) {
-	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req.params), &(string[]){_S("id")}));
-	_option_string _t1 = {0};
-	if (_t2) {
-		*((string*)&_t1.data) = *((string*)_t2);
-	} else {
-		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t1.state != 0) {
-		*(string*) _t1.data = _S("unknown");
-	}
-	
-	string user_id = (*(string*)_t1.data);
-	string* _t4 = (string*)(builtin__map_get_check(ADDR(map, req.query), &(string[]){_S("trace_id")}));
-	_option_string _t3 = {0};
-	if (_t4) {
-		*((string*)&_t3.data) = *((string*)_t4);
-	} else {
-		_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t3.state != 0) {
-		*(string*) _t3.data = _S("");
-	}
-	
-	string trace_id = (*(string*)_t3.data);
-	return main__json_response(200, builtin__str_intp(3, _MOV((StrIntpData[]){{_S("{\"user\":\""), 0xfe10, {.d_s = user_id}}, {_S("\",\"trace\":\""), 0xfe10, {.d_s = trace_id}}, {_S("\"}"), 0, { .d_c = 0 }}})));
-}
-VV_LOC main__SlimResponse main__private_handler(main__SlimRequest req) {
-	{main__SlimRequest _ = req;}
-	;
-	return main__text_response(200, _S("secret"));
-}
-VV_LOC main__SlimResponse main__panic_handler(main__SlimRequest req) {
-	{main__SlimRequest _ = req;}
-	;
-	return main__internal_error_response();
-}
-VV_LOC main__SlimResponse main__meta_handler(main__SlimRequest req) {
-	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req.query), &(string[]){_S("trace_id")}));
-	_option_string _t1 = {0};
-	if (_t2) {
-		*((string*)&_t1.data) = *((string*)_t2);
-	} else {
-		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t1.state != 0) {
-		*(string*) _t1.data = _S("");
-	}
-	
-	string trace_id = (*(string*)_t1.data);
-	return main__json_response(200, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{\"runtime\":\"vslim\",\"bridge\":\"vphp\",\"server\":\"vhttpd\",\"trace\":\""), 0xfe10, {.d_s = trace_id}}, {_S("\"}"), 0, { .d_c = 0 }}})));
-}
-VV_LOC main__SlimApp main__new_slim_demo_app(void) {
-	main__SlimApp app = main__new_slim_app();
-	main__SlimApp_use(&app, (voidptr)main__with_trace_id);
-	main__SlimApp_use(&app, (voidptr)main__auth_guard);
-	main__SlimApp_get(&app, _S("/health"), (voidptr)main__health_handler);
-	main__SlimApp_get(&app, _S("/users/:id"), (voidptr)main__user_handler);
-	main__SlimApp_get(&app, _S("/private"), (voidptr)main__private_handler);
-	main__SlimApp_get(&app, _S("/panic"), (voidptr)main__panic_handler);
-	main__SlimApp_get(&app, _S("/meta"), (voidptr)main__meta_handler);
-	return app;
-}
-VV_LOC main__SlimRequest main__request_from_envelope(Map_string_string envelope) {
-	return main__VSlimRequest_to_slim_request(main__new_vslim_request_from_envelope(envelope));
-}
-VV_LOC main__SlimResponse main__dispatch_demo_request(main__SlimRequest req) {
-	main__SlimApp app = main__new_slim_demo_app();
-	return main__SlimApp_dispatch(app, req);
-}
-VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_demo_request_with_params(main__SlimRequest req) {
-	main__SlimApp app = main__new_slim_demo_app();
-	string method = builtin__string_to_upper(req.method);
-	string path = main__normalize_path(req.path);
-	bool method_not_allowed = false;
-	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
-		main__SlimRoute route = ((main__SlimRoute*)app.routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_31784 = main__match_route(route.pattern, path);
-		bool ok = mr_31784.arg0;
-		Map_string_string params = mr_31784.arg1;
-		if (!ok) {
-			continue;
-		}
-		if (!builtin__string__eq(route.method, method)) {
-			method_not_allowed = true;
-			continue;
-		}
-		main__SlimRequest bound = req;
-		bound.params = builtin__map_clone(&params);
-		return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__SlimApp_run_middleware(app, 0, bound), .arg1=params};
-	}
-	if (method_not_allowed) {
-		return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__method_not_allowed_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		};
-	}
-	return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__not_found_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	};
-}
-VV_LOC void main__vslim_handle_request(vphp__Context ctx) {
-	main__SlimResponse res = ((main__SlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),});
-	if (vphp__Context_num_args(ctx) == 1) {
-		Map_string_string envelope = vphp__Context_arg_T_Map_string_string(ctx, 0);
-		res = main__dispatch_demo_request(main__request_from_envelope(envelope));
-	} else {
-		string method = vphp__Context_arg_T_string(ctx, 0);
-		string raw_path = vphp__Context_arg_T_string(ctx, 1);
-		string body = (vphp__Context_num_args(ctx) > 2 ? (vphp__Context_arg_T_string(ctx, 2)) : (_S("")));
-		res = main__dispatch_demo_request(main__VSlimRequest_to_slim_request(main__new_vslim_request(method, raw_path, body)));
-	}
-	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, res.headers), &(string[]){_S("content-type")}));
-	_option_string _t1 = {0};
-	if (_t2) {
-		*((string*)&_t1.data) = *((string*)_t2);
-	} else {
-		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
-	}
-	;
-	if (_t1.state != 0) {
-		*(string*) _t1.data = _S("");
-	}
-	
-	vphp__Context_return_map_T_string(ctx, builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 3, sizeof(string), sizeof(string),
-		_MOV((string[3]){
-			_S("status"),
-			_S("body"),
-			_S("content_type"),
-		}),
-		_MOV((string[3]){
-			builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = res.status}}, {_SLIT0, 0, { .d_c = 0 }}})), 
-			res.body, 
-			(*(string*)_t1.data), 
-		})
-	)
-	);
-}
-VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx) {
-	main__vslim_handle_request(ctx);
 }
 voidptr main__vslimroutegroup_new_raw(void) {
 	return vphp__generic_new_raw_T_main__VSlimRouteGroup();
@@ -81956,6 +80518,1444 @@ VV_LOC void main__main(void) {
 	}
 	builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\342\234\205 \346\236\204\345\273\272\346\210\220\345\212\237\357\274\201"), 0xfe10, {.d_s = output_so}}, {_S(" \345\267\262\345\260\261\347\273\252\343\200\202"), 0, { .d_c = 0 }}})));
 }
+main__SlimApp main__new_slim_app(void) {
+	return ((main__SlimApp){.routes = builtin____new_array(0, 0, sizeof(main__SlimRoute)),.middlewares = builtin____new_array(0, 0, sizeof(main__SlimMiddleware)),});
+}
+void main__SlimApp_use(main__SlimApp* app, main__SlimResponse (*mw)(main__SlimRequest , main__SlimResponse (*)(main__SlimRequest ))) {
+	builtin__array_push((array*)&app->middlewares, _MOV((voidptr[]){ (voidptr)mw }));
+}
+void main__SlimApp_get(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("GET"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_post(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("POST"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_put(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("PUT"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_patch(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("PATCH"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_delete(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("DELETE"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+void main__SlimApp_any(main__SlimApp* app, string pattern, main__SlimResponse (*handler)(main__SlimRequest )) {
+	builtin__array_push((array*)&app->routes, _MOV((main__SlimRoute[]){ ((main__SlimRoute){.method = _S("*"),.pattern = pattern,.handler = (voidptr)handler,}) }));
+}
+main__SlimResponse main__SlimApp_dispatch(main__SlimApp app, main__SlimRequest req) {
+	return main__SlimApp_run_middleware(app, 0, req);
+}
+VV_LOC main__SlimResponse main__SlimApp_run_middleware(main__SlimApp app, int index, main__SlimRequest req) {
+	if (index >= app.middlewares.len) {
+		return main__SlimApp_dispatch_route(app, req);
+	}
+	main__SlimResponse (*mw) (main__SlimRequest , main__SlimResponse (*)(main__SlimRequest )) = (*(voidptr*)builtin__array_get(app.middlewares, index));
+	main__SlimResponse (*next) (main__SlimRequest) = 	builtin__closure__closure_create(anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406, (struct _V_anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406_Ctx){.app = app,
+		.index = index,
+	}, sizeof(struct _V_anon_fn_92e0265fc71deba1_43_main__slimrequest__main__SlimResponse_1406_Ctx)));
+	return mw(req, (voidptr)next);
+}
+VV_LOC main__SlimResponse main__SlimApp_dispatch_route(main__SlimApp app, main__SlimRequest req) {
+	string method = builtin__string_to_upper(req.method);
+	string path = main__normalize_path(req.path);
+	bool method_not_allowed = false;
+	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
+		main__SlimRoute route = ((main__SlimRoute*)app.routes.data)[_t1];
+		multi_return_bool_Map_string_string mr_1683 = main__match_route(route.pattern, path);
+		bool ok = mr_1683.arg0;
+		Map_string_string params = mr_1683.arg1;
+		if (!ok) {
+			continue;
+		}
+		if (!builtin__fast_string_eq(route.method, _S("*")) && !builtin__string__eq(route.method, method)) {
+			method_not_allowed = true;
+			continue;
+		}
+		main__SlimRequest bound = req;
+		bound.params = builtin__map_clone(&params);
+		return route.handler(bound);
+	}
+	if (method_not_allowed) {
+		return main__method_not_allowed_response();
+	}
+	return main__not_found_response();
+}
+VV_LOC main__SlimResponse main__with_trace_id(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest )) {
+	main__SlimRequest out = req;
+	if (((*(string*)builtin__map_get(ADDR(map, out.query), &(string[]){_S("trace_id")}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} }))).len == 0) {
+		builtin__map_set(&out.query, &(string[]){_S("trace_id")}, &(string[]) { _S("trace-local-mvp") });
+	}
+	return next(out);
+}
+VV_LOC main__SlimResponse main__auth_guard(main__SlimRequest req, main__SlimResponse (*next)(main__SlimRequest )) {
+	if (builtin__fast_string_eq(req.path, _S("/private"))) {
+		string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req.query), &(string[]){_S("token")}));
+		_option_string _t1 = {0};
+		if (_t2) {
+			*((string*)&_t1.data) = *((string*)_t2);
+		} else {
+			_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t1.state != 0) {
+			*(string*) _t1.data = _S("");
+		}
+		
+		string token = (*(string*)_t1.data);
+		if (_SLIT_NE(token.str, token.len, "ok")) {
+			return main__text_response(401, _S("Unauthorized"));
+		}
+	}
+	return next(req);
+}
+VV_LOC main__SlimResponse main__health_handler(main__SlimRequest req) {
+	{main__SlimRequest _ = req;}
+	;
+	return main__text_response(200, _S("OK"));
+}
+VV_LOC main__SlimResponse main__user_handler(main__SlimRequest req) {
+	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req.params), &(string[]){_S("id")}));
+	_option_string _t1 = {0};
+	if (_t2) {
+		*((string*)&_t1.data) = *((string*)_t2);
+	} else {
+		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t1.state != 0) {
+		*(string*) _t1.data = _S("unknown");
+	}
+	
+	string user_id = (*(string*)_t1.data);
+	string* _t4 = (string*)(builtin__map_get_check(ADDR(map, req.query), &(string[]){_S("trace_id")}));
+	_option_string _t3 = {0};
+	if (_t4) {
+		*((string*)&_t3.data) = *((string*)_t4);
+	} else {
+		_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t3.state != 0) {
+		*(string*) _t3.data = _S("");
+	}
+	
+	string trace_id = (*(string*)_t3.data);
+	return main__json_response(200, builtin__str_intp(3, _MOV((StrIntpData[]){{_S("{\"user\":\""), 0xfe10, {.d_s = user_id}}, {_S("\",\"trace\":\""), 0xfe10, {.d_s = trace_id}}, {_S("\"}"), 0, { .d_c = 0 }}})));
+}
+VV_LOC main__SlimResponse main__private_handler(main__SlimRequest req) {
+	{main__SlimRequest _ = req;}
+	;
+	return main__text_response(200, _S("secret"));
+}
+VV_LOC main__SlimResponse main__panic_handler(main__SlimRequest req) {
+	{main__SlimRequest _ = req;}
+	;
+	return main__internal_error_response();
+}
+VV_LOC main__SlimResponse main__meta_handler(main__SlimRequest req) {
+	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req.query), &(string[]){_S("trace_id")}));
+	_option_string _t1 = {0};
+	if (_t2) {
+		*((string*)&_t1.data) = *((string*)_t2);
+	} else {
+		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t1.state != 0) {
+		*(string*) _t1.data = _S("");
+	}
+	
+	string trace_id = (*(string*)_t1.data);
+	return main__json_response(200, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{\"runtime\":\"vslim\",\"bridge\":\"vphp\",\"server\":\"vhttpd\",\"trace\":\""), 0xfe10, {.d_s = trace_id}}, {_S("\"}"), 0, { .d_c = 0 }}})));
+}
+VV_LOC main__SlimApp main__new_slim_demo_app(void) {
+	main__SlimApp app = main__new_slim_app();
+	main__SlimApp_use(&app, (voidptr)main__with_trace_id);
+	main__SlimApp_use(&app, (voidptr)main__auth_guard);
+	main__SlimApp_get(&app, _S("/health"), (voidptr)main__health_handler);
+	main__SlimApp_get(&app, _S("/users/:id"), (voidptr)main__user_handler);
+	main__SlimApp_get(&app, _S("/private"), (voidptr)main__private_handler);
+	main__SlimApp_get(&app, _S("/panic"), (voidptr)main__panic_handler);
+	main__SlimApp_get(&app, _S("/meta"), (voidptr)main__meta_handler);
+	return app;
+}
+VV_LOC main__SlimResponse main__dispatch_demo_request(main__SlimRequest req) {
+	main__SlimApp app = main__new_slim_demo_app();
+	return main__SlimApp_dispatch(app, req);
+}
+VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_demo_request_with_params(main__SlimRequest req) {
+	main__SlimApp app = main__new_slim_demo_app();
+	string method = builtin__string_to_upper(req.method);
+	string path = main__normalize_path(req.path);
+	bool method_not_allowed = false;
+	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
+		main__SlimRoute route = ((main__SlimRoute*)app.routes.data)[_t1];
+		multi_return_bool_Map_string_string mr_3819 = main__match_route(route.pattern, path);
+		bool ok = mr_3819.arg0;
+		Map_string_string params = mr_3819.arg1;
+		if (!ok) {
+			continue;
+		}
+		if (!builtin__string__eq(route.method, method)) {
+			method_not_allowed = true;
+			continue;
+		}
+		main__SlimRequest bound = req;
+		bound.params = builtin__map_clone(&params);
+		return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__SlimApp_run_middleware(app, 0, bound), .arg1=params};
+	}
+	if (method_not_allowed) {
+		return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__method_not_allowed_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		};
+	}
+	return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__not_found_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	};
+}
+main__VSlimApp* main__VSlimApp__static__demo(void) {
+	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__PhpRoute)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_group_middlewares = builtin____new_array(0, 0, sizeof(main__PhpGroupMiddleware)),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = true,}, sizeof(main__VSlimApp)));
+}
+main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path) {
+	app->base_path = main__normalize_base_path(base_path);
+	return app;
+}
+main__VSlimRouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix) {
+	return ((main__VSlimRouteGroup*)builtin__memdup(&(main__VSlimRouteGroup){.app = app,.prefix = main__normalize_group_prefix(prefix),}, sizeof(main__VSlimRouteGroup)));
+}
+main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path) {
+	main__VSlimRequest* req = main__new_vslim_request(method, raw_path, _S(""));
+	return main__VSlimApp_dispatch_request(app, req);
+}
+main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req) {
+	multi_return_main__SlimResponse_Map_string_string mr_745 = main__dispatch_app_request_with_params(app, req);
+	main__SlimResponse res = mr_745.arg0;
+	Map_string_string params = mr_745.arg1;
+	{ // Unsafe block
+		main__VSlimRequest* writable = ((main__VSlimRequest*)(req));
+		// json.encode
+		cJSON* _t1 = json__encode_Map_string_string(params);
+		string _t2 = json__json_print(_t1);
+		cJSON_Delete(_t1); // del
+		writable->params_json = (_t2);
+		if (builtin__fast_string_eq(writable->attributes_json, _S("{}")) || (writable->attributes_json).len == 0) {
+			// json.encode
+			cJSON* _t3 = json__encode_Map_string_string(params);
+			string _t4 = json__json_print(_t3);
+			cJSON_Delete(_t3); // del
+			writable->attributes_json = (_t4);
+		}
+	}
+	return main__to_vslim_response(res);
+}
+main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("GET"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("POST"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PUT"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_patch(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PATCH"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_delete(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("DELETE"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("*"), _S(""), pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_get_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("GET"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_post_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("POST"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_put_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PUT"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_patch_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("PATCH"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_delete_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("DELETE"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, string pattern, vphp__ZVal handler) {
+	main__VSlimApp_add_php_route(app, _S("*"), name, pattern, handler);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler) {
+	if (vphp__ZVal_is_valid(handler) && vphp__ZVal_is_callable(handler)) {
+		builtin__array_push((array*)&app->php_middlewares, _MOV((vphp__ZVal[]){ vphp__ZVal_dup(handler) }));
+	}
+	return app;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_group(main__VSlimRouteGroup* group, string prefix) {
+	return ((main__VSlimRouteGroup*)builtin__memdup(&(main__VSlimRouteGroup){.app = group->app,.prefix = main__join_route_prefix(group->prefix, prefix),}, sizeof(main__VSlimRouteGroup)));
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_middleware(main__VSlimRouteGroup* group, vphp__ZVal handler) {
+	if (!vphp__ZVal_is_valid(handler) || !vphp__ZVal_is_callable(handler)) {
+		return group;
+	}
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		builtin__array_push((array*)&app->php_group_middlewares, _MOV((main__PhpGroupMiddleware[]){ ((main__PhpGroupMiddleware){.prefix = main__normalize_group_prefix(group->prefix),.handler = vphp__ZVal_dup(handler),}) }));
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_get(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("GET"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_post(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("POST"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_put(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PUT"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PATCH"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("DELETE"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_any(main__VSlimRouteGroup* group, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("*"), _S(""), main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_get_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("GET"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_post_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("POST"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_put_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PUT"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_patch_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("PATCH"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_delete_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("DELETE"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+main__VSlimRouteGroup* main__VSlimRouteGroup_any_named(main__VSlimRouteGroup* group, string name, string pattern, vphp__ZVal handler) {
+	{ // Unsafe block
+		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
+		main__VSlimApp_add_php_route(app, _S("*"), name, main__join_route_prefix(group->prefix, pattern), handler);
+	}
+	return group;
+}
+string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params) {
+	return main__VSlimApp_url_for_query(app, name, params, vphp__ZVal__static__new_null());
+}
+string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query) {
+	Map_string_string params_map = main__zval_to_name_map(params);
+	Map_string_string query_map = main__zval_to_name_map(query);
+	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
+		main__PhpRoute route = ((main__PhpRoute*)app->routes.data)[_t1];
+		if (builtin__string__eq(route.name, name)) {
+			_option_string _t2 = main__render_route_url(route.pattern, &params_map, &query_map);
+			if (_t2.state != 0) {
+				*(string*) _t2.data = _S("");
+			}
+			
+ 			string raw = (*(string*)_t2.data);
+			return main__VSlimApp_apply_base_path(app, raw);
+		}
+	}
+	return _S("");
+}
+string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host) {
+	return main__VSlimApp_url_for_query_abs(app, name, params, vphp__ZVal__static__new_null(), scheme, host);
+}
+string main__VSlimApp_url_for_query_abs(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query, string scheme, string host) {
+	string path = main__VSlimApp_url_for_query(app, name, params, query);
+	if ((path).len == 0) {
+		return _S("");
+	}
+	return main__join_absolute_url(scheme, host, path);
+}
+main__VSlimResponse* main__VSlimApp_redirect_to(main__VSlimApp* app, string name, vphp__ZVal params) {
+	return main__VSlimApp_redirect_to_query(app, name, params, vphp__ZVal__static__new_null());
+}
+main__VSlimResponse* main__VSlimApp_redirect_to_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query) {
+	string location = main__VSlimApp_url_for_query(app, name, params, query);
+	main__VSlimResponse* res = ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers_json = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimResponse)));
+	main__VSlimResponse_construct(res, 302, _S(""), _S("text/plain; charset=utf-8"));
+	return main__VSlimResponse_redirect(res, location);
+}
+VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler) {
+	if (!vphp__ZVal_is_valid(handler) || !vphp__ZVal_is_callable(handler)) {
+		return;
+	}
+	builtin__array_push((array*)&app->routes, _MOV((main__PhpRoute[]){ ((main__PhpRoute){.method = builtin__string_to_upper(method),.name = name,.pattern = pattern,.handler = vphp__ZVal_dup(handler),}) }));
+}
+VV_LOC multi_return_main__SlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
+	if (app->routes.len > 0) {
+		multi_return_main__SlimResponse_Map_string_string_bool mr_8795 = main__dispatch_php_routes_with_params(app, req);
+		main__SlimResponse res = mr_8795.arg0;
+		Map_string_string params = mr_8795.arg1;
+		bool ok = mr_8795.arg2;
+		if (ok) {
+			return (multi_return_main__SlimResponse_Map_string_string){.arg0=res, .arg1=params};
+		}
+	}
+	if (app->use_demo) {
+		return main__dispatch_demo_request_with_params(main__VSlimRequest_to_slim_request(req));
+	}
+	return (multi_return_main__SlimResponse_Map_string_string){.arg0=main__not_found_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	};
+}
+VV_LOC multi_return_main__SlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
+	string method = builtin__string_to_upper(req->method);
+	string path = main__normalize_path(req->path);
+	bool method_not_allowed = false;
+	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
+		main__PhpRoute route = ((main__PhpRoute*)app->routes.data)[_t1];
+		multi_return_bool_Map_string_string mr_9272 = main__match_route(route.pattern, path);
+		bool ok = mr_9272.arg0;
+		Map_string_string params = mr_9272.arg1;
+		if (!ok) {
+			continue;
+		}
+		if (!builtin__fast_string_eq(route.method, _S("*")) && !builtin__string__eq(route.method, method)) {
+			method_not_allowed = true;
+			continue;
+		}
+		vphp__ZVal payload = main__build_php_request_object(req, params);
+		Array_vphp__ZVal route_mws = main__matching_group_middlewares(app, path);
+		vphp__ZVal res = main__dispatch_php_handler_with_middlewares(app, route_mws, payload, route.handler, 0);
+		return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=main__normalize_php_route_response(res), .arg1=params, .arg2=true};
+	}
+	if (method_not_allowed) {
+		return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=main__method_not_allowed_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		, .arg2=true};
+	}
+	vphp__ZVal middleware_res = main__run_php_middlewares_only(app, main__matching_group_middlewares(app, path), req);
+	if (vphp__ZVal_is_valid(middleware_res) && !vphp__ZVal_is_null(middleware_res) && !vphp__ZVal_is_undef(middleware_res)) {
+		return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=main__normalize_php_route_response(middleware_res), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		, .arg2=true};
+	}
+	return (multi_return_main__SlimResponse_Map_string_string_bool){.arg0=((main__SlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	, .arg2=false};
+}
+VV_LOC vphp__ZVal main__dispatch_php_handler_with_middlewares(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, vphp__ZVal payload, vphp__ZVal handler, int index) {
+	int total = (int)(app->php_middlewares.len + route_middlewares.len);
+	if (index >= total) {
+		if (!vphp__ZVal_is_valid(handler)) {
+			return ((vphp__ZVal){.raw = ((void*)0),});
+		}
+		return vphp__ZVal_call(handler, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload})));
+	}
+	vphp__ZVal mw = (index < app->php_middlewares.len ? ((*(vphp__ZVal*)builtin__array_get(app->php_middlewares, index))) : ((*(vphp__ZVal*)builtin__array_get(route_middlewares, (int)(index - app->php_middlewares.len)))));
+	vphp__ZVal res = vphp__ZVal_call(mw, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload})));
+	if (!vphp__ZVal_is_valid(res) || vphp__ZVal_is_null(res) || vphp__ZVal_is_undef(res)) {
+		return main__dispatch_php_handler_with_middlewares(app, route_middlewares, payload, handler, (int)(index + 1));
+	}
+	return res;
+}
+VV_LOC vphp__ZVal main__run_php_middlewares_only(main__VSlimApp* app, Array_vphp__ZVal route_middlewares, main__VSlimRequest* req) {
+	if (app->php_middlewares.len == 0 && route_middlewares.len == 0) {
+		return ((vphp__ZVal){.raw = ((void*)0),});
+	}
+	vphp__ZVal payload = main__build_php_request_object(req, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	);
+	return main__dispatch_php_handler_with_middlewares(app, route_middlewares, payload, ((vphp__ZVal){.raw = ((void*)0),}), 0);
+}
+VV_LOC Array_vphp__ZVal main__matching_group_middlewares(main__VSlimApp* app, string path) {
+	Array_vphp__ZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
+	for (int _t1 = 0; _t1 < app->php_group_middlewares.len; ++_t1) {
+		main__PhpGroupMiddleware item = ((main__PhpGroupMiddleware*)app->php_group_middlewares.data)[_t1];
+		if (main__path_has_prefix(path, item.prefix)) {
+			builtin__array_push((array*)&out, _MOV((vphp__ZVal[]){ item.handler }));
+		}
+	}
+	return out;
+}
+VV_LOC bool main__path_has_prefix(string path, string prefix) {
+	if ((prefix).len == 0) {
+		return true;
+	}
+	if (builtin__string__eq(path, prefix)) {
+		return true;
+	}
+	return builtin__string_starts_with(path, builtin__string__plus(prefix, _S("/")));
+}
+VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params) {
+	{ // Unsafe block
+		vphp__ZVal payload = vphp__ZVal__static__new_null();
+			// json.encode
+			cJSON* _t1 = json__encode_Map_string_string(params);
+			string _t2 = json__json_print(_t1);
+			cJSON_Delete(_t1); // del
+		main__VSlimRequest* bound = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = req->method,
+			.raw_path = req->raw_path,
+			.path = req->path,
+			.body = req->body,
+			.query_string = req->query_string,
+			.query_json = req->query_json,
+			.scheme = req->scheme,
+			.host = req->host,
+			.port = req->port,
+			.protocol_version = req->protocol_version,
+			.remote_addr = req->remote_addr,
+			.headers_json = req->headers_json,
+			.cookies_json = req->cookies_json,
+			.attributes_json = req->attributes_json,
+			.server_json = req->server_json,
+			.uploaded_files_json = req->uploaded_files_json,
+			.params_json = (_t2),
+		}, sizeof(main__VSlimRequest)));
+		vphp_return_obj(payload.raw, bound, vslimrequest_ce);
+		vphp_bind_handlers(vphp_get_obj_from_zval(payload.raw), ((vphp_class_handlers*)(main__vslimrequest_handlers())));
+		return payload;
+	}
+	return (vphp__ZVal){.raw = 0,};
+}
+VV_LOC main__SlimResponse main__normalize_php_route_response(vphp__ZVal result) {
+	if (!vphp__ZVal_is_valid(result) || vphp__ZVal_is_null(result) || vphp__ZVal_is_undef(result)) {
+		return main__text_response(200, _S(""));
+	}
+	if (vphp__ZVal_is_object(result) && vphp__ZVal_is_instance_of(result, _S("VSlimResponse"))) {
+		_option_main__VSlimResponse_ptr _t2;
+		if (_t2 = vphp__ZVal_to_object_T_main__VSlimResponse(result), _t2.state == 0) {
+			main__VSlimResponse* resp = *(main__VSlimResponse**)_t2.data;
+			return ((main__SlimResponse){.status = resp->status,.body = resp->body,.headers = main__VSlimResponse_headers(resp),});
+		}
+	}
+	if (vphp__ZVal_is_string(result)) {
+		return main__text_response(200, vphp__ZVal_get_string(result));
+	}
+	if (vphp__ZVal_is_array(result)) {
+		Map_string_string headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		_result_vphp__ZVal _t5;
+		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
+			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
+			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+			, (voidptr)			anon_fn_32e34e122e926902_44_vphp__zval_vphp__zval_mut_map_string_string_13122);
+		}
+		int _t6; /* if prepend */
+		_result_vphp__ZVal _t8;
+		if (_t8 = vphp__ZVal_get(result, _S("status")), !_t8.is_error) {
+			vphp__ZVal s = *(vphp__ZVal*)_t8.data;
+			_t6 = ((int)(vphp__ZVal_to_i64(s)));
+			goto _t7;
+		};
+		{
+			_t6 = 200;
+		}
+	_t7: {};
+				int status = _t6;
+		string body = vphp__ZVal_get_or(result, _S("body"), _S(""));
+		string* _t10 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){_S("content-type")}));
+		_option_string _t9 = {0};
+		if (_t10) {
+			*((string*)&_t9.data) = *((string*)_t10);
+		} else {
+			_t9.state = 2; _t9.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t9.state != 0) {
+			*(string*) _t9.data = _S("text/plain; charset=utf-8");
+		}
+		
+		string content_type = vphp__ZVal_get_or(result, _S("content_type"), (*(string*)_t9.data));
+		if (!_IN_MAP(ADDR(string, _S("content-type")), ADDR(map, headers))) {
+			builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { content_type });
+		}
+		return ((main__SlimResponse){.status = status,.body = body,.headers = headers,});
+	}
+	return main__text_response(500, _S("Invalid route response"));
+}
+VV_LOC void main__vslim_handle_request(vphp__Context ctx) {
+	main__SlimResponse res = ((main__SlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),});
+	if (vphp__Context_num_args(ctx) == 1) {
+		Map_string_string envelope = vphp__Context_arg_T_Map_string_string(ctx, 0);
+		res = main__dispatch_demo_request(main__request_from_envelope(envelope));
+	} else {
+		string method = vphp__Context_arg_T_string(ctx, 0);
+		string raw_path = vphp__Context_arg_T_string(ctx, 1);
+		string body = (vphp__Context_num_args(ctx) > 2 ? (vphp__Context_arg_T_string(ctx, 2)) : (_S("")));
+		res = main__dispatch_demo_request(main__VSlimRequest_to_slim_request(main__new_vslim_request(method, raw_path, body)));
+	}
+	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, res.headers), &(string[]){_S("content-type")}));
+	_option_string _t1 = {0};
+	if (_t2) {
+		*((string*)&_t1.data) = *((string*)_t2);
+	} else {
+		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t1.state != 0) {
+		*(string*) _t1.data = _S("");
+	}
+	
+	vphp__Context_return_map_T_string(ctx, builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 3, sizeof(string), sizeof(string),
+		_MOV((string[3]){
+			_S("status"),
+			_S("body"),
+			_S("content_type"),
+		}),
+		_MOV((string[3]){
+			builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = res.status}}, {_SLIT0, 0, { .d_c = 0 }}})), 
+			res.body, 
+			(*(string*)_t1.data), 
+		})
+	)
+	);
+}
+VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx) {
+	main__vslim_handle_request(ctx);
+}
+main__VSlimRequest* main__VSlimRequest_construct(main__VSlimRequest* r, string method, string raw_path, string body) {
+	r->method = method;
+	r->raw_path = raw_path;
+	multi_return_string_string mr_205 = main__normalize_request_target(raw_path);
+	r->path = mr_205.arg0;
+	r->query_string = mr_205.arg1;
+	r->body = body;
+	r->scheme = _S("http");
+	r->host = _S("");
+	r->port = _S("");
+	r->protocol_version = _S("1.1");
+	r->remote_addr = _S("");
+	r->query_json = _S("{}");
+	r->headers_json = _S("{}");
+	r->cookies_json = _S("{}");
+	r->attributes_json = _S("{}");
+	r->server_json = _S("{}");
+	r->uploaded_files_json = _S("[]");
+	r->params_json = _S("{}");
+	return r;
+}
+string main__VSlimRequest_str(main__VSlimRequest* r) {
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = r->method}}, {_S(" "), 0xfe10, {.d_s = r->raw_path}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+string main__VSlimRequest_query(main__VSlimRequest* r, string key) {
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, main__VSlimRequest_query_params(r)), &(string[]){key}));
+	_option_string _t2 = {0};
+	if (_t3) {
+		*((string*)&_t2.data) = *((string*)_t3);
+	} else {
+		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+	return (*(string*)_t2.data);
+}
+bool main__VSlimRequest_has_query(main__VSlimRequest* r, string key) {
+	return _IN_MAP(ADDR(string, key), ADDR(map, main__VSlimRequest_query_params(r)));
+}
+string main__VSlimRequest_header(main__VSlimRequest* r, string name) {
+	Map_string_string headers = main__VSlimRequest_headers(r);
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){main__normalize_header_name(name)}));
+	_option_string _t2 = {0};
+	if (_t3) {
+		*((string*)&_t2.data) = *((string*)_t3);
+	} else {
+		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+	return (*(string*)_t2.data);
+}
+bool main__VSlimRequest_has_header(main__VSlimRequest* r, string name) {
+	Map_string_string headers = main__VSlimRequest_headers(r);
+	return _IN_MAP(ADDR(string, main__normalize_header_name(name)), ADDR(map, headers));
+}
+string main__VSlimRequest_cookie(main__VSlimRequest* r, string name) {
+	Map_string_string cookies = main__VSlimRequest_cookies(r);
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, cookies), &(string[]){name}));
+	_option_string _t2 = {0};
+	if (_t3) {
+		*((string*)&_t2.data) = *((string*)_t3);
+	} else {
+		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+	return (*(string*)_t2.data);
+}
+bool main__VSlimRequest_has_cookie(main__VSlimRequest* r, string name) {
+	Map_string_string cookies = main__VSlimRequest_cookies(r);
+	return _IN_MAP(ADDR(string, name), ADDR(map, cookies));
+}
+string main__VSlimRequest_param(main__VSlimRequest* r, string name) {
+	Map_string_string params = main__VSlimRequest_params(r);
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, params), &(string[]){name}));
+	_option_string _t2 = {0};
+	if (_t3) {
+		*((string*)&_t2.data) = *((string*)_t3);
+	} else {
+		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+	return (*(string*)_t2.data);
+}
+bool main__VSlimRequest_has_param(main__VSlimRequest* r, string name) {
+	Map_string_string params = main__VSlimRequest_params(r);
+	return _IN_MAP(ADDR(string, name), ADDR(map, params));
+}
+string main__VSlimRequest_attribute(main__VSlimRequest* r, string name) {
+	Map_string_string attrs = main__VSlimRequest_attributes(r);
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, attrs), &(string[]){name}));
+	_option_string _t2 = {0};
+	if (_t3) {
+		*((string*)&_t2.data) = *((string*)_t3);
+	} else {
+		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+	return (*(string*)_t2.data);
+}
+bool main__VSlimRequest_has_attribute(main__VSlimRequest* r, string name) {
+	Map_string_string attrs = main__VSlimRequest_attributes(r);
+	return _IN_MAP(ADDR(string, name), ADDR(map, attrs));
+}
+string main__VSlimRequest_query_json_value(main__VSlimRequest* r) {
+	return r->query_json;
+}
+Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r) {
+	return main__parse_headers_json(r->headers_json);
+}
+Map_string_string main__VSlimRequest_query_params(main__VSlimRequest* r) {
+	if ((r->query_json).len != 0 && !builtin__fast_string_eq(r->query_json, _S("{}"))) {
+		return main__parse_name_map_json(r->query_json);
+	}
+	return main__parse_query_string(r->query_string);
+}
+Map_string_string main__VSlimRequest_cookies(main__VSlimRequest* r) {
+	return main__parse_name_map_json(r->cookies_json);
+}
+Map_string_string main__VSlimRequest_attributes(main__VSlimRequest* r) {
+	return main__parse_name_map_json(r->attributes_json);
+}
+Map_string_string main__VSlimRequest_params(main__VSlimRequest* r) {
+	return main__parse_name_map_json(r->params_json);
+}
+main__SlimRequest main__VSlimRequest_to_slim_request(main__VSlimRequest* r) {
+	return ((main__SlimRequest){.method = r->method,.path = r->path,.params = main__VSlimRequest_params(r),.query = main__VSlimRequest_query_params(r),.body = r->body,});
+}
+main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body) {
+	multi_return_string_string mr_2858 = main__normalize_request_target(raw_path);
+	string path = mr_2858.arg0;
+	string query_string = mr_2858.arg1;
+	return ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,
+		.raw_path = raw_path,
+		.path = path,
+		.body = body,
+		.query_string = query_string,
+		.query_json = _S("{}"),
+		.scheme = _S("http"),
+		.host = _S(""),
+		.port = _S(""),
+		.protocol_version = _S("1.1"),
+		.remote_addr = _S(""),
+		.headers_json = _S("{}"),
+		.cookies_json = _S("{}"),
+		.attributes_json = _S("{}"),
+		.server_json = _S("{}"),
+		.uploaded_files_json = _S("[]"),
+		.params_json = _S("{}"),
+	}, sizeof(main__VSlimRequest)));
+}
+main__VSlimRequest* main__new_vslim_request_from_envelope(Map_string_string envelope) {
+	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("method")}));
+	_option_string _t1 = {0};
+	if (_t2) {
+		*((string*)&_t1.data) = *((string*)_t2);
+	} else {
+		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t1.state != 0) {
+		*(string*) _t1.data = _S("GET");
+	}
+	
+	string method = (*(string*)_t1.data);
+	string* _t4 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("path")}));
+	_option_string _t3 = {0};
+	if (_t4) {
+		*((string*)&_t3.data) = *((string*)_t4);
+	} else {
+		_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t3.state != 0) {
+		*(string*) _t3.data = _S("/");
+	}
+	
+	string raw_path = (*(string*)_t3.data);
+	string* _t6 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("body")}));
+	_option_string _t5 = {0};
+	if (_t6) {
+		*((string*)&_t5.data) = *((string*)_t6);
+	} else {
+		_t5.state = 2; _t5.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t5.state != 0) {
+		*(string*) _t5.data = _S("");
+	}
+	
+	string body = (*(string*)_t5.data);
+	multi_return_string_string mr_3477 = main__normalize_request_target(raw_path);
+	string path = mr_3477.arg0;
+	string query_string = mr_3477.arg1;
+		string* _t9 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("query_json")}));
+		_option_string _t8 = {0};
+		if (_t9) {
+			*((string*)&_t8.data) = *((string*)_t9);
+		} else {
+			_t8.state = 2; _t8.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t8.state != 0) {
+			*(string*) _t8.data = _S("{}");
+		}
+		string* _t11 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("scheme")}));
+		_option_string _t10 = {0};
+		if (_t11) {
+			*((string*)&_t10.data) = *((string*)_t11);
+		} else {
+			_t10.state = 2; _t10.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t10.state != 0) {
+			*(string*) _t10.data = _S("http");
+		}
+		string* _t13 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("host")}));
+		_option_string _t12 = {0};
+		if (_t13) {
+			*((string*)&_t12.data) = *((string*)_t13);
+		} else {
+			_t12.state = 2; _t12.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t12.state != 0) {
+			*(string*) _t12.data = _S("");
+		}
+		string* _t15 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("port")}));
+		_option_string _t14 = {0};
+		if (_t15) {
+			*((string*)&_t14.data) = *((string*)_t15);
+		} else {
+			_t14.state = 2; _t14.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t14.state != 0) {
+			*(string*) _t14.data = _S("");
+		}
+		string* _t17 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("protocol_version")}));
+		_option_string _t16 = {0};
+		if (_t17) {
+			*((string*)&_t16.data) = *((string*)_t17);
+		} else {
+			_t16.state = 2; _t16.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t16.state != 0) {
+			*(string*) _t16.data = _S("1.1");
+		}
+		string* _t19 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("remote_addr")}));
+		_option_string _t18 = {0};
+		if (_t19) {
+			*((string*)&_t18.data) = *((string*)_t19);
+		} else {
+			_t18.state = 2; _t18.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t18.state != 0) {
+			*(string*) _t18.data = _S("");
+		}
+		string* _t21 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("headers_json")}));
+		_option_string _t20 = {0};
+		if (_t21) {
+			*((string*)&_t20.data) = *((string*)_t21);
+		} else {
+			_t20.state = 2; _t20.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t20.state != 0) {
+			*(string*) _t20.data = _S("{}");
+		}
+		string* _t23 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("cookies_json")}));
+		_option_string _t22 = {0};
+		if (_t23) {
+			*((string*)&_t22.data) = *((string*)_t23);
+		} else {
+			_t22.state = 2; _t22.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t22.state != 0) {
+			*(string*) _t22.data = _S("{}");
+		}
+		string* _t25 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("attributes_json")}));
+		_option_string _t24 = {0};
+		if (_t25) {
+			*((string*)&_t24.data) = *((string*)_t25);
+		} else {
+			_t24.state = 2; _t24.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t24.state != 0) {
+			*(string*) _t24.data = _S("{}");
+		}
+		string* _t27 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("server_json")}));
+		_option_string _t26 = {0};
+		if (_t27) {
+			*((string*)&_t26.data) = *((string*)_t27);
+		} else {
+			_t26.state = 2; _t26.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t26.state != 0) {
+			*(string*) _t26.data = _S("{}");
+		}
+		string* _t29 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("uploaded_files_json")}));
+		_option_string _t28 = {0};
+		if (_t29) {
+			*((string*)&_t28.data) = *((string*)_t29);
+		} else {
+			_t28.state = 2; _t28.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t28.state != 0) {
+			*(string*) _t28.data = _S("[]");
+		}
+		string* _t31 = (string*)(builtin__map_get_check(ADDR(map, envelope), &(string[]){_S("params_json")}));
+		_option_string _t30 = {0};
+		if (_t31) {
+			*((string*)&_t30.data) = *((string*)_t31);
+		} else {
+			_t30.state = 2; _t30.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t30.state != 0) {
+			*(string*) _t30.data = _S("{}");
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	return ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,
+		.raw_path = raw_path,
+		.path = path,
+		.body = body,
+		.query_string = query_string,
+		.query_json = (*(string*)_t8.data),
+		.scheme = (*(string*)_t10.data),
+		.host = (*(string*)_t12.data),
+		.port = (*(string*)_t14.data),
+		.protocol_version = (*(string*)_t16.data),
+		.remote_addr = (*(string*)_t18.data),
+		.headers_json = (*(string*)_t20.data),
+		.cookies_json = (*(string*)_t22.data),
+		.attributes_json = (*(string*)_t24.data),
+		.server_json = (*(string*)_t26.data),
+		.uploaded_files_json = (*(string*)_t28.data),
+		.params_json = (*(string*)_t30.data),
+	}, sizeof(main__VSlimRequest)));
+}
+VV_LOC main__SlimRequest main__request_from_envelope(Map_string_string envelope) {
+	return main__VSlimRequest_to_slim_request(main__new_vslim_request_from_envelope(envelope));
+}
+VV_LOC Map_string_string main__parse_name_map_json(string raw) {
+	if ((raw).len == 0) {
+		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	// json.decode
+	cJSON* _t3 = json__json_parse(raw);
+	_result_Map_string_string _t4 = json__decode_Map_string_string(_t3);
+	cJSON_Delete(_t3); // del
+	_result_Map_string_string _t2 = (_t4);
+	if (_t2.is_error) {
+		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	
+ 	Map_string_string decoded = (*(Map_string_string*)_t2.data);
+	return decoded;
+}
+VV_LOC Map_string_string main__parse_headers_json(string headers_json) {
+	Map_string_string decoded = main__parse_name_map_json(headers_json);
+	Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	int _t2 = decoded.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = decoded.key_values.len - _t2;
+		_t2 = decoded.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&decoded.key_values, _t1)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&decoded.key_values, _t1);
+		key = builtin__string_clone(key);
+		string value = (*(string*)builtin__DenseArray_value(&decoded.key_values, _t1));
+		builtin__map_set(&out, &(string[]){main__normalize_header_name(key)}, &(string[]) { value });
+	}
+	return out;
+}
+main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type) {
+	r->status = status;
+	r->body = body;
+	r->content_type = content_type;
+	// json.encode
+	cJSON* _t1 = json__encode_Map_string_string(builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
+		_MOV((string[1]){
+			_S("content-type"),
+		}),
+		_MOV((string[1]){
+			content_type, 
+		})
+	)
+	);
+	string _t2 = json__json_print(_t1);
+	cJSON_Delete(_t1); // del
+	r->headers_json = (_t2);
+	return r;
+}
+string main__VSlimResponse_header(main__VSlimResponse* r, string name) {
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	string* _t3 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){main__normalize_header_name(name)}));
+	_option_string _t2 = {0};
+	if (_t3) {
+		*((string*)&_t2.data) = *((string*)_t3);
+	} else {
+		_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+	return (*(string*)_t2.data);
+}
+bool main__VSlimResponse_has_header(main__VSlimResponse* r, string name) {
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	return _IN_MAP(ADDR(string, main__normalize_header_name(name)), ADDR(map, headers));
+}
+main__VSlimResponse* main__VSlimResponse_set_header(main__VSlimResponse* r, string name, string value) {
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){main__normalize_header_name(name)}, &(string[]) { value });
+	main__apply_response_headers(r, headers);
+	return r;
+}
+string main__VSlimResponse_cookie_header(main__VSlimResponse* r) {
+	return main__VSlimResponse_header(r, _S("set-cookie"));
+}
+main__VSlimResponse* main__VSlimResponse_set_cookie(main__VSlimResponse* r, string name, string value) {
+	return main__VSlimResponse_set_cookie_opts(r, name, value, _S("/"));
+}
+main__VSlimResponse* main__VSlimResponse_set_cookie_opts(main__VSlimResponse* r, string name, string value, string path) {
+	string cookie_path = ((path).len == 0 ? (_S("/")) : (path));
+	string header_value = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("="), 0xfe10, {.d_s = value}}, {_S("; Path="), 0xfe10, {.d_s = cookie_path}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
+	main__apply_response_headers(r, headers);
+	return r;
+}
+main__VSlimResponse* main__VSlimResponse_delete_cookie(main__VSlimResponse* r, string name) {
+	string header_value = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = name}}, {_S("=; Path=/; Max-Age=0"), 0, { .d_c = 0 }}}));
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("set-cookie")}, &(string[]) { header_value });
+	main__apply_response_headers(r, headers);
+	return r;
+}
+main__VSlimResponse* main__VSlimResponse_with_status(main__VSlimResponse* r, int status) {
+	r->status = status;
+	return r;
+}
+main__VSlimResponse* main__VSlimResponse_text(main__VSlimResponse* r, string body) {
+	r->body = body;
+	r->content_type = _S("text/plain; charset=utf-8");
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
+	main__apply_response_headers(r, headers);
+	return r;
+}
+main__VSlimResponse* main__VSlimResponse_json(main__VSlimResponse* r, string body) {
+	r->body = body;
+	r->content_type = _S("application/json; charset=utf-8");
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
+	main__apply_response_headers(r, headers);
+	return r;
+}
+main__VSlimResponse* main__VSlimResponse_redirect(main__VSlimResponse* r, string location) {
+	return main__VSlimResponse_redirect_with_status(r, location, 302);
+}
+main__VSlimResponse* main__VSlimResponse_redirect_with_status(main__VSlimResponse* r, string location, int status) {
+	r->status = status;
+	r->body = _S("");
+	Map_string_string headers = main__VSlimResponse_headers(r);
+	builtin__map_set(&headers, &(string[]){_S("location")}, &(string[]) { location });
+	if (!_IN_MAP(ADDR(string, _S("content-type")), ADDR(map, headers))) {
+		builtin__map_set(&headers, &(string[]){_S("content-type")}, &(string[]) { r->content_type });
+	}
+	main__apply_response_headers(r, headers);
+	return r;
+}
+Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r) {
+	return main__parse_headers_json(r->headers_json);
+}
+Map_string_string main__VSlimResponse_as_array(main__VSlimResponse* r) {
+	return builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 3, sizeof(string), sizeof(string),
+		_MOV((string[3]){
+			_S("status"),
+			_S("body"),
+			_S("content_type"),
+		}),
+		_MOV((string[3]){
+			builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = r->status}}, {_SLIT0, 0, { .d_c = 0 }}})), 
+			r->body, 
+			r->content_type, 
+		})
+	)
+	;
+}
+string main__VSlimResponse_str(main__VSlimResponse* r) {
+	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = r->status}}, {_S(" "), 0xfe10, {.d_s = r->content_type}}, {_S(" "), 0xfe10, {.d_s = r->body}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC main__VSlimResponse* main__to_vslim_response(main__SlimResponse res) {
+	// json.encode
+	cJSON* _t1 = json__encode_Map_string_string(res.headers);
+	string _t2 = json__json_print(_t1);
+	cJSON_Delete(_t1); // del
+	string headers_json = (_t2);
+	string* _t5 = (string*)(builtin__map_get_check(ADDR(map, res.headers), &(string[]){_S("content-type")}));
+	_option_string _t4 = {0};
+	if (_t5) {
+		*((string*)&_t4.data) = *((string*)_t5);
+	} else {
+		_t4.state = 2; _t4.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t4.state != 0) {
+		*(string*) _t4.data = _S("");
+	}
+	
+	return ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = res.status,.body = res.body,.content_type = (*(string*)_t4.data),.headers_json = headers_json,}, sizeof(main__VSlimResponse)));
+}
+VV_LOC void main__apply_response_headers(main__VSlimResponse* r, Map_string_string headers) {
+	// json.encode
+	cJSON* _t1 = json__encode_Map_string_string(headers);
+	string _t2 = json__json_print(_t1);
+	cJSON_Delete(_t1); // del
+	r->headers_json = (_t2);
+	string* _t4 = (string*)(builtin__map_get_check(ADDR(map, headers), &(string[]){_S("content-type")}));
+	_option_string _t3 = {0};
+	if (_t4) {
+		*((string*)&_t3.data) = *((string*)_t4);
+	} else {
+		_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
+	}
+	;
+	if (_t3.state != 0) {
+		*(string*) _t3.data = r->content_type;
+	}
+	
+	r->content_type = (*(string*)_t3.data);
+}
+VV_LOC main__SlimResponse main__text_response(int status, string body) {
+	return ((main__SlimResponse){.status = status,.body = body,.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
+		_MOV((string[1]){
+			_S("content-type"),
+		}),
+		_MOV((string[1]){
+			_S("text/plain; charset=utf-8"), 
+		})
+	)
+	,});
+}
+VV_LOC main__SlimResponse main__json_response(int status, string json_body) {
+	return ((main__SlimResponse){.status = status,.body = json_body,.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
+		_MOV((string[1]){
+			_S("content-type"),
+		}),
+		_MOV((string[1]){
+			_S("application/json; charset=utf-8"), 
+		})
+	)
+	,});
+}
+VV_LOC main__SlimResponse main__not_found_response(void) {
+	return main__text_response(404, _S("Not Found"));
+}
+VV_LOC main__SlimResponse main__method_not_allowed_response(void) {
+	return main__text_response(405, _S("Method Not Allowed"));
+}
+VV_LOC main__SlimResponse main__internal_error_response(void) {
+	return main__text_response(500, _S("Internal Server Error"));
+}
+VV_LOC string main__normalize_path(string path) {
+	if (path.len == 0) {
+		return _S("/");
+	}
+	if (builtin__string_starts_with(path, _S("/"))) {
+		return path;
+	}
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("/"), 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC string main__normalize_group_prefix(string prefix) {
+	if ((prefix).len == 0 || _SLIT_EQ(prefix.str, prefix.len, "/")) {
+		return _S("");
+	}
+	string out = main__normalize_path(prefix);
+	if (out.len > 1 && builtin__string_ends_with(out, _S("/"))) {
+		out = builtin__string_substr(out, 0, (int)(out.len - 1));
+	}
+	return out;
+}
+VV_LOC string main__normalize_base_path(string base_path) {
+	if ((base_path).len == 0 || _SLIT_EQ(base_path.str, base_path.len, "/")) {
+		return _S("");
+	}
+	string out = main__normalize_path(base_path);
+	if (out.len > 1 && builtin__string_ends_with(out, _S("/"))) {
+		out = builtin__string_substr(out, 0, (int)(out.len - 1));
+	}
+	return out;
+}
+VV_LOC string main__join_route_prefix(string prefix, string pattern) {
+	string base = main__normalize_group_prefix(prefix);
+	string tail = main__normalize_path(pattern);
+	if ((base).len == 0) {
+		return tail;
+	}
+	if (_SLIT_EQ(tail.str, tail.len, "/")) {
+		return base;
+	}
+	if (builtin__string_starts_with(tail, _S("/"))) {
+		tail = builtin__string_substr(tail, 1, 2147483647);
+	}
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = base}}, {_S("/"), 0xfe10, {.d_s = tail}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC string main__VSlimApp_apply_base_path(main__VSlimApp* app, string path) {
+	string base = main__normalize_base_path(app->base_path);
+	if ((base).len == 0 || (path).len == 0) {
+		return path;
+	}
+	if (_SLIT_EQ(path.str, path.len, "/")) {
+		return base;
+	}
+	if (builtin__string_starts_with(path, _S("/"))) {
+		return builtin__string__plus(base, path);
+	}
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = base}}, {_S("/"), 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC string main__join_absolute_url(string scheme, string host, string path) {
+	string clean_scheme = ((scheme).len == 0 ? (_S("http")) : (scheme));
+	string clean_host = builtin__string_trim_space(host);
+	if ((clean_host).len == 0) {
+		return path;
+	}
+	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = clean_scheme}}, {_S("://"), 0xfe10, {.d_s = clean_host}}, {_SLIT0, 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC _option_string main__render_route_url(string pattern, Map_string_string* params, Map_string_string* query) {
+	string p = main__normalize_path(pattern);
+	Array_string parts = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	Array_string _t1 = builtin__string_split(builtin__string_trim(p, _S("/")), _S("/"));
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string part = ((string*)_t1.data)[_t2];
+		if ((part).len == 0) {
+			continue;
+		}
+		if (builtin__string_starts_with(part, _S(":"))) {
+			string key = builtin__string_all_after(part, _S(":"));
+			if (!_IN_MAP(ADDR(string, key), params)) {
+				return (_option_string){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+			}
+			builtin__array_push((array*)&parts, _MOV((string[]){ (*(string*)builtin__map_get((map*)params, &(string[]){key}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} })) }));
+			continue;
+		}
+		builtin__array_push((array*)&parts, _MOV((string[]){ builtin__string_clone(part) }));
+	}
+	string _t6; /* if prepend */
+	if (parts.len == 0) {
+		_t6 = _S("/");
+		goto _t7;
+	};
+	{
+		_t6 = builtin__string__plus(_S("/"), Array_string_join(parts, _S("/")));
+	}
+	_t7: {};
+		string path = _t6;
+	if (query->len > 0) {
+		path = builtin__string__plus(path, builtin__string__plus(_S("?"), main__encode_query_params(query)));
+	}
+	_option_string _t8;
+	builtin___option_ok(&(string[]) { path }, (_option*)(&_t8), sizeof(string));
+	 
+	return _t8;
+}
+VV_LOC string main__encode_query_params(Map_string_string* query) {
+	Array_string keys = builtin__map_keys(query);
+	if (keys.len > 0) { qsort(keys.data, keys.len, keys.element_size, (voidptr)compare_13292602513269992837_string); }
+	;
+	Array_string parts = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int _t1 = 0; _t1 < keys.len; ++_t1) {
+		string key = ((string*)keys.data)[_t1];
+		builtin__array_push((array*)&parts, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = key}}, {_S("="), 0xfe10, {.d_s = (*(string*)builtin__map_get((map*)query, &(string[]){key}, &(string[]){ (string){.str=(byteptr)"", .is_lit=1} }))}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	}
+	return Array_string_join(parts, _S("&"));
+}
+VV_LOC multi_return_string_string main__normalize_request_target(string raw_path) {
+	string path = main__normalize_path(raw_path);
+	if (!builtin__string_contains(path, _S("?"))) {
+		return (multi_return_string_string){.arg0=path, .arg1=_S("")};
+	}
+	string base = main__normalize_path(builtin__string_all_before(path, _S("?")));
+	string query = builtin__string_all_after(path, _S("?"));
+	return (multi_return_string_string){.arg0=base, .arg1=query};
+}
+VV_LOC Map_string_string main__parse_query_string(string query_str) {
+	Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	if ((query_str).len == 0) {
+		return out;
+	}
+	Array_string _t2 = builtin__string_split(query_str, _S("&"));
+	for (int _t3 = 0; _t3 < _t2.len; ++_t3) {
+		string pair = ((string*)_t2.data)[_t3];
+		if ((pair).len == 0) {
+			continue;
+		}
+		if (builtin__string_contains(pair, _S("="))) {
+			string k = builtin__string_all_before(pair, _S("="));
+			string v = builtin__string_all_after(pair, _S("="));
+			builtin__map_set(&out, &(string[]){k}, &(string[]) { v });
+		} else {
+			builtin__map_set(&out, &(string[]){pair}, &(string[]) { _S("") });
+		}
+	}
+	return out;
+}
+VV_LOC string main__normalize_header_name(string name) {
+	return builtin__string_to_lower(builtin__string_trim_space(name));
+}
+VV_LOC Map_string_string main__zval_to_name_map(vphp__ZVal z) {
+	if (!vphp__ZVal_is_valid(z) || vphp__ZVal_is_null(z) || vphp__ZVal_is_undef(z)) {
+		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	_result_Map_string_string _t3 = vphp__ZVal_to_v_T_Map_string_string(z);
+	if (_t3.is_error) {
+		*(Map_string_string*) _t3.data = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	
+ 	return (*(Map_string_string*)_t3.data);
+}
+VV_LOC multi_return_bool_Map_string_string main__match_route(string pattern, string path) {
+	string p = main__normalize_path(pattern);
+	string u = main__normalize_path(path);
+	if (builtin__string__eq(p, u)) {
+		return (multi_return_bool_Map_string_string){.arg0=true, .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		};
+	}
+	Array_string p_parts = builtin__string_split(builtin__string_trim(p, _S("/")), _S("/"));
+	Array_string u_parts = builtin__string_split(builtin__string_trim(u, _S("/")), _S("/"));
+	if (p_parts.len != u_parts.len) {
+		return (multi_return_bool_Map_string_string){.arg0=false, .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		};
+	}
+	Map_string_string params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	for (int i = 0; i < p_parts.len; ++i) {
+		string pp = (*(string*)builtin__array_get(p_parts, i));
+		string up = (*(string*)builtin__array_get(u_parts, i));
+		if (builtin__string_starts_with(pp, _S(":"))) {
+			builtin__map_set(&params, &(string[]){builtin__string_all_after(pp, _S(":"))}, &(string[]) { up });
+			continue;
+		}
+		if (!builtin__string__eq(pp, up)) {
+			return (multi_return_bool_Map_string_string){.arg0=false, .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+			};
+		}
+	}
+	return (multi_return_bool_Map_string_string){.arg0=true, .arg1=params};
+}
 void _vinit(int ___argc, voidptr ___argv) {
 	as_cast_type_indexes = builtin__new_array_from_c_array(122, 122, sizeof(VCastTypeIndexName), _MOV((VCastTypeIndexName[122]){
 		  (VCastTypeIndexName){.tindex = 0, .tname = _S("unknown")}
@@ -81992,7 +81992,7 @@ void _vinit(int ___argc, voidptr ___argv) {
 		, (VCastTypeIndexName){.tindex = 370, .tname = _S("v.ast.LambdaExpr")}
 		, (VCastTypeIndexName){.tindex = 371, .tname = _S("v.ast.Likely")}
 		, (VCastTypeIndexName){.tindex = 372, .tname = _S("v.ast.LockExpr")}
-		, (VCastTypeIndexName){.tindex = 286, .tname = _S("v.ast.MapInit")}
+		, (VCastTypeIndexName){.tindex = 285, .tname = _S("v.ast.MapInit")}
 		, (VCastTypeIndexName){.tindex = 373, .tname = _S("v.ast.MatchExpr")}
 		, (VCastTypeIndexName){.tindex = 374, .tname = _S("v.ast.Nil")}
 		, (VCastTypeIndexName){.tindex = 375, .tname = _S("v.ast.None")}
@@ -82008,8 +82008,8 @@ void _vinit(int ___argc, voidptr ___argv) {
 		, (VCastTypeIndexName){.tindex = 385, .tname = _S("v.ast.SpawnExpr")}
 		, (VCastTypeIndexName){.tindex = 386, .tname = _S("v.ast.SqlExpr")}
 		, (VCastTypeIndexName){.tindex = 387, .tname = _S("v.ast.StringInterLiteral")}
-		, (VCastTypeIndexName){.tindex = 285, .tname = _S("v.ast.StringLiteral")}
-		, (VCastTypeIndexName){.tindex = 284, .tname = _S("v.ast.StructInit")}
+		, (VCastTypeIndexName){.tindex = 284, .tname = _S("v.ast.StringLiteral")}
+		, (VCastTypeIndexName){.tindex = 283, .tname = _S("v.ast.StructInit")}
 		, (VCastTypeIndexName){.tindex = 388, .tname = _S("v.ast.TypeNode")}
 		, (VCastTypeIndexName){.tindex = 389, .tname = _S("v.ast.TypeOf")}
 		, (VCastTypeIndexName){.tindex = 390, .tname = _S("v.ast.UnsafeExpr")}
@@ -82033,15 +82033,15 @@ void _vinit(int ___argc, voidptr ___argv) {
 		, (VCastTypeIndexName){.tindex = 418, .tname = _S("v.ast.ConstField")}
 		, (VCastTypeIndexName){.tindex = 419, .tname = _S("v.ast.GlobalField")}
 		, (VCastTypeIndexName){.tindex = 420, .tname = _S("v.ast.Var")}
-		, (VCastTypeIndexName){.tindex = 266, .tname = _S("vphp.compiler.repr.PhpClassRepr")}
+		, (VCastTypeIndexName){.tindex = 265, .tname = _S("vphp.compiler.repr.PhpClassRepr")}
 		, (VCastTypeIndexName){.tindex = 2, .tname = _S("voidptr")}
-		, (VCastTypeIndexName){.tindex = 262, .tname = _S("vphp.compiler.repr.PhpConstRepr")}
-		, (VCastTypeIndexName){.tindex = 264, .tname = _S("vphp.compiler.repr.PhpInterfaceRepr")}
-		, (VCastTypeIndexName){.tindex = 259, .tname = _S("vphp.compiler.repr.PhpFuncRepr")}
-		, (VCastTypeIndexName){.tindex = 265, .tname = _S("vphp.compiler.repr.PhpEnumRepr")}
-		, (VCastTypeIndexName){.tindex = 65824, .tname = _S("vphp.compiler.repr.PhpTaskRepr")}
-		, (VCastTypeIndexName){.tindex = 271, .tname = _S("vphp.compiler.repr.PhpGlobalsRepr")}
-		, (VCastTypeIndexName){.tindex = 267, .tname = _S("vphp.compiler.repr.PhpClassProp")}
+		, (VCastTypeIndexName){.tindex = 261, .tname = _S("vphp.compiler.repr.PhpConstRepr")}
+		, (VCastTypeIndexName){.tindex = 263, .tname = _S("vphp.compiler.repr.PhpInterfaceRepr")}
+		, (VCastTypeIndexName){.tindex = 258, .tname = _S("vphp.compiler.repr.PhpFuncRepr")}
+		, (VCastTypeIndexName){.tindex = 264, .tname = _S("vphp.compiler.repr.PhpEnumRepr")}
+		, (VCastTypeIndexName){.tindex = 65823, .tname = _S("vphp.compiler.repr.PhpTaskRepr")}
+		, (VCastTypeIndexName){.tindex = 270, .tname = _S("vphp.compiler.repr.PhpGlobalsRepr")}
+		, (VCastTypeIndexName){.tindex = 266, .tname = _S("vphp.compiler.repr.PhpClassProp")}
 		, (VCastTypeIndexName){.tindex = 322, .tname = _S("vphp.compiler.repr.PhpClassConst")}
 		, (VCastTypeIndexName){.tindex = 325, .tname = _S("vphp.compiler.repr.PhpMethodRepr")}
 		, (VCastTypeIndexName){.tindex = 327, .tname = _S("vphp.compiler.repr.PhpArg")}
@@ -82054,13 +82054,13 @@ void _vinit(int ___argc, voidptr ___argv) {
 		, (VCastTypeIndexName){.tindex = 395, .tname = _S("v.ast.Block")}
 		, (VCastTypeIndexName){.tindex = 396, .tname = _S("v.ast.BranchStmt")}
 		, (VCastTypeIndexName){.tindex = 397, .tname = _S("v.ast.ComptimeFor")}
-		, (VCastTypeIndexName){.tindex = 283, .tname = _S("v.ast.ConstDecl")}
+		, (VCastTypeIndexName){.tindex = 282, .tname = _S("v.ast.ConstDecl")}
 		, (VCastTypeIndexName){.tindex = 398, .tname = _S("v.ast.DebuggerStmt")}
 		, (VCastTypeIndexName){.tindex = 399, .tname = _S("v.ast.DeferStmt")}
 		, (VCastTypeIndexName){.tindex = 400, .tname = _S("v.ast.EmptyStmt")}
-		, (VCastTypeIndexName){.tindex = 279, .tname = _S("v.ast.EnumDecl")}
+		, (VCastTypeIndexName){.tindex = 278, .tname = _S("v.ast.EnumDecl")}
 		, (VCastTypeIndexName){.tindex = 401, .tname = _S("v.ast.ExprStmt")}
-		, (VCastTypeIndexName){.tindex = 281, .tname = _S("v.ast.FnDecl")}
+		, (VCastTypeIndexName){.tindex = 280, .tname = _S("v.ast.FnDecl")}
 		, (VCastTypeIndexName){.tindex = 402, .tname = _S("v.ast.ForCStmt")}
 		, (VCastTypeIndexName){.tindex = 403, .tname = _S("v.ast.ForInStmt")}
 		, (VCastTypeIndexName){.tindex = 404, .tname = _S("v.ast.ForStmt")}
@@ -82069,12 +82069,12 @@ void _vinit(int ___argc, voidptr ___argv) {
 		, (VCastTypeIndexName){.tindex = 407, .tname = _S("v.ast.GotoStmt")}
 		, (VCastTypeIndexName){.tindex = 408, .tname = _S("v.ast.HashStmt")}
 		, (VCastTypeIndexName){.tindex = 409, .tname = _S("v.ast.Import")}
-		, (VCastTypeIndexName){.tindex = 278, .tname = _S("v.ast.InterfaceDecl")}
+		, (VCastTypeIndexName){.tindex = 277, .tname = _S("v.ast.InterfaceDecl")}
 		, (VCastTypeIndexName){.tindex = 410, .tname = _S("v.ast.Module")}
 		, (VCastTypeIndexName){.tindex = 411, .tname = _S("v.ast.Return")}
 		, (VCastTypeIndexName){.tindex = 412, .tname = _S("v.ast.SemicolonStmt")}
 		, (VCastTypeIndexName){.tindex = 413, .tname = _S("v.ast.SqlStmt")}
-		, (VCastTypeIndexName){.tindex = 280, .tname = _S("v.ast.StructDecl")}
+		, (VCastTypeIndexName){.tindex = 279, .tname = _S("v.ast.StructDecl")}
 		, (VCastTypeIndexName){.tindex = 339, .tname = _S("v.ast.TypeDecl")}
 		, (VCastTypeIndexName){.tindex = 506, .tname = _S("v.ast.AsmAddressing")}
 		, (VCastTypeIndexName){.tindex = 507, .tname = _S("v.ast.AsmAlias")}

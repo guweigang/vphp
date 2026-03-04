@@ -1,0 +1,100 @@
+module main
+
+import vphp
+
+pub struct SlimRequest {
+pub mut:
+	method string
+	path   string
+	params map[string]string
+	query  map[string]string
+	body   string
+}
+
+pub struct SlimResponse {
+pub mut:
+	status  int
+	body    string
+	headers map[string]string
+}
+
+pub type SlimHandler = fn (SlimRequest) SlimResponse
+pub type SlimNext = fn (SlimRequest) SlimResponse
+pub type SlimMiddleware = fn (SlimRequest, SlimNext) SlimResponse
+
+pub struct SlimRoute {
+pub:
+	method  string
+	pattern string
+	handler SlimHandler = unsafe { nil }
+}
+
+pub struct SlimApp {
+mut:
+	routes      []SlimRoute
+	middlewares []SlimMiddleware
+}
+
+struct PhpRoute {
+	method  string
+	name    string
+	pattern string
+	handler vphp.ZVal
+}
+
+struct PhpGroupMiddleware {
+	prefix  string
+	handler vphp.ZVal
+}
+
+@[heap]
+@[php_class]
+struct VSlimRouteGroup {
+mut:
+	app    &VSlimApp = unsafe { nil }
+	prefix string
+}
+
+@[heap]
+@[php_class]
+struct VSlimRequest {
+pub mut:
+	method            string
+	raw_path          string
+	path              string
+	body              string
+	query_string      string
+	query_json        string
+	scheme            string
+	host              string
+	port              string
+	protocol_version  string
+	remote_addr       string
+	headers_json      string
+	cookies_json      string
+	attributes_json   string
+	server_json       string
+	uploaded_files_json string
+	params_json       string
+}
+
+@[heap]
+@[php_class]
+struct VSlimResponse {
+pub mut:
+	status       int
+	body         string
+	content_type string
+	headers_json string
+}
+
+@[heap]
+@[php_class]
+struct VSlimApp {
+mut:
+	routes                []PhpRoute
+	php_middlewares       []vphp.ZVal
+	php_group_middlewares []PhpGroupMiddleware
+	base_path             string
+	use_demo              bool
+}
