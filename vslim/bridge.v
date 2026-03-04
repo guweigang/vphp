@@ -4,6 +4,66 @@ import vphp
 
 #include "php_bridge.h"
 
+@[export: 'VSlimRouteGroup_new_raw']
+pub fn vslimroutegroup_new_raw() voidptr {
+    return vphp.generic_new_raw[VSlimRouteGroup]()
+}
+@[export: 'VSlimRouteGroup_get_prop']
+pub fn vslimroutegroup_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &VSlimRouteGroup(ptr)
+    }
+}
+@[export: 'VSlimRouteGroup_set_prop']
+pub fn vslimroutegroup_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &VSlimRouteGroup(ptr)
+        arg := vphp.ZVal{ raw: value }
+    }
+}
+@[export: 'VSlimRouteGroup_sync_props']
+pub fn vslimroutegroup_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &VSlimRouteGroup(ptr)
+        out := vphp.ZVal{ raw: zv }
+        out.add_property_string('prefix', obj.prefix)
+    }
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_group']
+pub fn vphp_wrap_vslimroutegroup_group(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.group(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_get']
+pub fn vphp_wrap_vslimroutegroup_get(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.get(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimRouteGroup_post']
+pub fn vphp_wrap_vslimroutegroup_post(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.post(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'VSlimRouteGroup_handlers']
+pub fn vslimroutegroup_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(vslimroutegroup_get_prop)
+        write_handler: voidptr(vslimroutegroup_set_prop)
+        sync_handler:  voidptr(vslimroutegroup_sync_props)
+        new_raw:       voidptr(vslimroutegroup_new_raw)
+    } }
+}
+
 @[export: 'VSlimRequest_new_raw']
 pub fn vslimrequest_new_raw() voidptr {
     return vphp.generic_new_raw[VSlimRequest]()
@@ -444,6 +504,13 @@ pub fn vslimapp_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_VSlimApp_demo']
 pub fn vphp_wrap_vslimapp_demo(ctx vphp.Context) voidptr {
     res := VSlimApp.demo()
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_group']
+pub fn vphp_wrap_vslimapp_group(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.group(arg_0)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_dispatch']

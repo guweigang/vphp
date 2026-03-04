@@ -46,6 +46,14 @@ struct PhpRoute {
 
 @[heap]
 @[php_class]
+struct VSlimRouteGroup {
+mut:
+	app    &VSlimApp = unsafe { nil }
+	prefix string
+}
+
+@[heap]
+@[php_class]
 struct VSlimRequest {
 pub mut:
 	method string
@@ -403,6 +411,14 @@ pub fn VSlimApp.demo() &VSlimApp {
 }
 
 @[php_method]
+pub fn (app &VSlimApp) group(prefix string) &VSlimRouteGroup {
+	return &VSlimRouteGroup{
+		app: app
+		prefix: normalize_group_prefix(prefix)
+	}
+}
+
+@[php_method]
 pub fn (app &VSlimApp) dispatch(method string, raw_path string) &VSlimResponse {
 	req := new_vslim_request(method, raw_path, '')
 	return app.dispatch_request(req)
@@ -431,6 +447,32 @@ pub fn (mut app VSlimApp) get(pattern string, handler vphp.ZVal) &VSlimApp {
 pub fn (mut app VSlimApp) post(pattern string, handler vphp.ZVal) &VSlimApp {
 	app.add_php_route('POST', pattern, handler)
 	return app
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) group(prefix string) &VSlimRouteGroup {
+	return &VSlimRouteGroup{
+		app: group.app
+		prefix: join_route_prefix(group.prefix, prefix)
+	}
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) get(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('GET', join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &VSlimRouteGroup) post(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		app.add_php_route('POST', join_route_prefix(group.prefix, pattern), handler)
+	}
+	return group
 }
 
 fn (mut app VSlimApp) add_php_route(method string, pattern string, handler vphp.ZVal) {
@@ -571,6 +613,32 @@ fn normalize_path(path string) string {
 		return path
 	}
 	return '/${path}'
+}
+
+fn normalize_group_prefix(prefix string) string {
+	if prefix == '' || prefix == '/' {
+		return ''
+	}
+	mut out := normalize_path(prefix)
+	if out.len > 1 && out.ends_with('/') {
+		out = out[..out.len - 1]
+	}
+	return out
+}
+
+fn join_route_prefix(prefix string, pattern string) string {
+	base := normalize_group_prefix(prefix)
+	mut tail := normalize_path(pattern)
+	if base == '' {
+		return tail
+	}
+	if tail == '/' {
+		return base
+	}
+	if tail.starts_with('/') {
+		tail = tail[1..]
+	}
+	return '${base}/${tail}'
 }
 
 fn normalize_request_target(raw_path string) (string, string) {

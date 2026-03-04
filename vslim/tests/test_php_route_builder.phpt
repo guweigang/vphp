@@ -16,12 +16,27 @@ $app->post('/submit', function (VSlimRequest $req) {
         'body' => json_encode(['body' => $req->body, 'trace' => $req->query('trace_id') ?: 'none']),
     ];
 });
+$api = $app->group('/api');
+$api->get('/users/:id', function (VSlimRequest $req) {
+    return 'user:' . $req->param('id');
+});
+$api->group('/v1')->get('/ping', function (VSlimRequest $req) {
+    return [
+        'status' => 200,
+        'content_type' => 'application/json; charset=utf-8',
+        'body' => json_encode(['pong' => true, 'path' => $req->path]),
+    ];
+});
 
 echo $app->dispatch('GET', '/hello/codex')->body . PHP_EOL;
 $req = new VSlimRequest('POST', '/submit?trace_id=builder', 'payload');
 $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->header('x-mode') . PHP_EOL;
+echo $app->dispatch('GET', '/api/users/9')->body . PHP_EOL;
+echo $app->dispatch('GET', '/api/v1/ping')->body . PHP_EOL;
 ?>
 --EXPECT--
 Hello, codex
 201|{"body":"payload","trace":"builder"}|builder
+user:9
+{"pong":true,"path":"\/api\/v1\/ping"}
