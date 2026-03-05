@@ -1,0 +1,12 @@
+{
+  "name": "vslim/example-symfony",
+  "type": "project",
+  "require": {
+    "symfony/http-kernel": "^8.0",
+    "symfony/routing": "^8.0",
+    "symfony/http-foundation": "^8.0",
+    "symfony/event-dispatcher": "^8.0",
+    "symfony/psr-http-message-bridge": "^8.0",
+    "nyholm/psr7": "^1.8"
+  }
+}

@@ -1,4 +1,4 @@
-.PHONY: all build ext vhttpd serve test clean
+.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-vslim demo-symfony demo-laravel demo-wordpress clean
 
 BREW_PATH ?= /opt/homebrew
 DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
@@ -48,6 +48,24 @@ serve: build vhttpd
 
 test: build
 	@./run_tests.sh
+
+psr-matrix:
+	@./tests/run_psr_matrix.sh
+
+framework-matrix:
+	@./tests/run_framework_matrix.sh
+
+demo-vslim:
+	@./examples/run_demo.sh vslim
+
+demo-symfony:
+	@./examples/run_demo.sh symfony
+
+demo-laravel:
+	@./examples/run_demo.sh laravel
+
+demo-wordpress:
+	@./examples/run_demo.sh wordpress
 
 clean:
 	rm -f vslim.so $(VHTTPD_BIN)

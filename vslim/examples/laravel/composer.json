@@ -1,0 +1,9 @@
+{
+  "name": "vslim/example-laravel",
+  "type": "project",
+  "require": {
+    "laravel/framework": "^12.53",
+    "symfony/psr-http-message-bridge": "^8.0",
+    "nyholm/psr7": "^1.8"
+  }
+}

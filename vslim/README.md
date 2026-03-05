@@ -49,6 +49,62 @@ flowchart LR
 - `vphp`
   - bridge/compiler/runtime
 
+## VSlim 工作流
+
+```mermaid
+flowchart TB
+
+    subgraph HTTP["HTTP Layer"]
+        C["Client"]
+        H["vhttpd (veb)"]
+        W["php-worker.php"]
+    end
+
+    subgraph APP["VSlim Runtime (inside PHP process)"]
+        A["VSlim\\App"]
+        RG["RouteGroup"]
+        RP["RoutePath (static helpers)"]
+        RT["VSlimRoute"]
+        REQ["VSlim\\Request"]
+        RES["VSlim\\Response"]
+        HOOK["Hooks (before/after + group before/after)"]
+    end
+
+    C -->|"HTTP Request"| H
+    H -->|"Envelope(method,path,headers,body,...)"| W
+    W -->|"dispatchRequest(envelope)"| A
+
+    A -->|"build/read"| REQ
+    A -->|"normalize req.path"| RP
+    A -->|"scan routes"| RT
+    A -->|"collect matched group hooks"| HOOK
+
+    RT -->|"match ok + params"| A
+    A -->|"run before hooks"| HOOK
+    HOOK -->|"short-circuit?"| A
+    A -->|"call handler (php_callable / v_native)"| RT
+    RT -->|"handler output"| A
+    A -->|"normalize output"| RES
+    A -->|"run after hooks"| HOOK
+    A -->|"final response"| RES
+
+    RES -->|"to envelope"| W
+    W -->|"status/headers/body"| H
+    H -->|"HTTP Response"| C
+
+    A -->|"group(prefix)"| RG
+    RG -->|"prefixed route register"| A
+    RG -->|"group hooks register"| A
+
+    A -->|"url_for(name, params, query)"| RP
+    RP -->|"normalize/prefix/base-path/apply-base-path/absolute-url"| A
+```
+
+## vhttpd 规范文档
+
+- PSR-7/15 支持矩阵：[vslim/httpd/psr_support.md](/Users/guweigang/Source/vphpext/vslim/httpd/psr_support.md)
+- 错误与超时语义：[vslim/httpd/failure_model.md](/Users/guweigang/Source/vphpext/vslim/httpd/failure_model.md)
+
 ## 为什么不直接复用 veb 的 route 定义
 
 这里我们刻意没有把 `vslim` 做成 `veb` 的语法薄封装，原因不是要绕开 `veb`，而是两层职责不同：
@@ -85,8 +141,8 @@ flowchart LR
 - `SlimApp` 路由核心（纯 V）
 - middleware chain
 - 路由参数匹配
-- `VSlimRequest` 请求包装
-- `VSlimApp` / `VSlimResponse` 作为 PHP-facing façade
+- `VSlim\Request` 请求包装
+- `VSlim\App` / `VSlim\Response` 作为 PHP-facing façade
 - `vslim_handle_request()` / `vslim_demo_dispatch()` 作为稳定函数入口
 
 ## 与 vhttpd 的交互模型
@@ -107,7 +163,7 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 
 - PHP worker
   - 负责加载业务代码和 Composer 生态
-  - 调用 `vslim_handle_request(...)` 或 `VSlimApp`
+  - 调用 `vslim_handle_request(...)` 或 `VSlim\App`
 
 - `vslim`
   - 负责路由匹配、middleware、请求分发、响应封装
@@ -176,7 +232,7 @@ $response = vslim_handle_request($requestEnvelope);
 ## 当前 PHP 面
 
 ```php
-$app = VSlimApp::demo();
+$app = VSlim\App::demo();
 $res = $app->dispatch('GET', '/users/42');
 
 echo $res->status;
@@ -186,7 +242,7 @@ echo $res->body;
 也可以显式构建请求对象：
 
 ```php
-$req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
+$req = new VSlim\Request('GET', '/users/7?trace_id=from-php', '');
 $req->set_scheme('https');
 $req->set_host('demo.local');
 $req->set_remote_addr('127.0.0.1');
@@ -219,13 +275,13 @@ echo $req->cookie('sid');
 请求对象说明：
 
 - 第一版推荐优先使用 `set_*()` 方法来调整 request metadata
-- `VSlimRequest` 目前仍保留 public 字段，方便调试和过渡
+- `VSlim\Request` 目前仍保留 public 字段，方便调试和过渡
 - 但从 API 演进角度，我们会把 `set_scheme()/set_host()/set_port()/set_protocol_version()/set_remote_addr()` 视为稳定入口
 
 响应对象也提供了基础 helper：
 
 ```php
-$res = new VSlimResponse(200, 'hello', 'text/plain; charset=utf-8');
+$res = new VSlim\Response(200, 'hello', 'text/plain; charset=utf-8');
 $res->set_header('x-demo', 'yes')
     ->set_status(202)
     ->json('{"ok":true}');
@@ -248,28 +304,28 @@ echo $res->content_type;
 也可以在 PHP 侧直接 builder 路由、group 和 middleware：
 
 ```php
-$app = new VSlimApp();
+$app = new VSlim\App();
 
-$app->before(function (VSlimRequest $req) {
+$app->before(function (VSlim\Request $req) {
     if ($req->path === '/blocked') {
-        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+        return new VSlim\Response(403, 'blocked', 'text/plain; charset=utf-8');
     }
     return null;
 });
 
-$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+$app->after(function (VSlim\Request $req, VSlim\Response $res) {
     $res->set_header('x-runtime', 'vslim');
     return $res;
 });
 
 $api = $app->group('/api');
-$api->get_named('api.users.show', '/users/:id', function (VSlimRequest $req) {
+$api->get_named('api.users.show', '/users/:id', function (VSlim\Request $req) {
     return 'user:' . $req->param('id');
 });
-$api->put_named('api.users.update', '/users/:id', function (VSlimRequest $req) {
+$api->put_named('api.users.update', '/users/:id', function (VSlim\Request $req) {
     return 'updated:' . $req->param('id');
 });
-$api->any('/echo/:id', function (VSlimRequest $req) {
+$api->any('/echo/:id', function (VSlim\Request $req) {
     return $req->method . ':' . $req->param('id');
 });
 
@@ -292,16 +348,16 @@ echo $redirect->header('location');
 说明：
 
 - `before()` 用于请求进入 route handler 之前的短路逻辑
-- `after()` 用于基于 `VSlimResponse` 做统一收口
+- `after()` 用于基于 `VSlim\Response` 做统一收口
 - `middleware()` 仍然可用，但第一版只是 `before()` 的别名
 - group 也支持 `before()` / `after()`
 
 生命周期返回约定：
 
 - `before()` 返回 `null`：继续执行后续 hook / route handler
-- `before()` 返回 `VSlimResponse` / `array` / `string`：立即 short-circuit，并继续进入 `after()`
+- `before()` 返回 `VSlim\Response` / `array` / `string`：立即 short-circuit，并继续进入 `after()`
 - `after()` 返回 `null`：保留当前响应
-- `after()` 返回 `VSlimResponse` / `array` / `string`：替换当前响应
+- `after()` 返回 `VSlim\Response` / `array` / `string`：替换当前响应
 - `before()/route/after()` 中直接抛出的 PHP 异常：原样向外冒泡
 - hook 或 route 返回无法归一化的值：收敛成 `500 Invalid route response`
 
@@ -396,7 +452,7 @@ curl -i "http://127.0.0.1:19881/dispatch?method=GET&path=/go/nova"
 这条链路是：
 
 ```text
-HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
+HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 ```
 
 这个示例现在也覆盖了：
@@ -411,7 +467,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
 
 第一版建议优先围绕这几个对象使用：
 
-### `VSlimApp`
+### `VSlim\App`
 
 - app builder：
   - `get/post/put/patch/delete/any`
@@ -433,7 +489,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
   - `redirect_to(...)`
   - `redirect_to_query(...)`
 
-### `VSlimRequest`
+### `VSlim\Request`
 
 - transport facade：
   - `query(...)`
@@ -482,7 +538,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
   - `server_params()`
   - `uploaded_files()`
 
-### `VSlimResponse`
+### `VSlim\Response`
 
 - headers：
   - `set_status(...)`
@@ -507,7 +563,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
 
 - `with_status(...)` 仍然保留
 - 但第一版推荐主用 `set_status(...)`
-- 因为 `VSlimResponse` 是可变对象，不是 PSR-7 immutable response
+- 因为 `VSlim\Response` 是可变对象，不是 PSR-7 immutable response
 
 第一版我们明确承诺这些：
 
@@ -516,7 +572,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlimApp -> VSlimResponse
 - `vslim` 只做 framework layer
 - `vphp` 只做 bridge/compiler/runtime
 - request transport 统一使用结构化数组 envelope
-- PHP userland 通过 `VSlimApp` runtime builder 注册 routes / groups / hooks
+- PHP userland 通过 `VSlim\App` runtime builder 注册 routes / groups / hooks
 
 第一版明确不做这些：
 
