@@ -5,6 +5,7 @@ vhttpd worker supports streaming responses for SSE and text modes
 if (!extension_loaded("vslim")) print "skip";
 if (getenv("CODEX_SANDBOX_NETWORK_DISABLED") === "1") print "skip";
 $probe = sys_get_temp_dir() . '/vhttpd_unix_probe_' . getmypid() . '.sock';
+@unlink($probe);
 $errno = 0;
 $errstr = '';
 $server = @stream_socket_server('unix://' . $probe, $errno, $errstr);

@@ -1,10 +1,12 @@
 module main
 
 import json
+import net
 import net.http
 import net.urllib
 import net.unix
 import os
+import strings
 import sync
 import time
 import veb
@@ -293,66 +295,98 @@ fn try_decode_stream_start(raw string) ?WorkerStreamFrame {
 	return none
 }
 
-fn stream_via_sse(mut app App, mut ctx Context, mut conn unix.StreamConn, start WorkerStreamFrame, method string, path string, req_id string, trace_id string, start_ms i64) veb.Result {
-	ctx.takeover_conn()
-	ctx.res.set_status(http.status_from_int(if start.status > 0 { start.status } else { 200 }))
-	ctx.set_custom_header('x-request-id', req_id) or {}
-	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
-	apply_worker_headers(mut ctx, start.headers)
-	mut stream := sse.start_connection(mut ctx.Context)
-	for {
-		raw := read_frame(mut conn) or { break }
-		frame := json.decode(WorkerStreamFrame, raw) or { continue }
-		if frame.mode != 'stream' {
-			continue
-		}
-		if frame.event == 'chunk' {
-			stream.send_message(
-				id: frame.sse_id
-				event: frame.sse_event
-				data: frame.data
-				retry: frame.sse_retry
-			) or { break }
-			continue
-		}
-		if frame.event == 'error' {
-			app.emit('http.stream.error', {
-				'method': method.to_upper()
-				'path': normalize_path(path)
-				'request_id': req_id
-				'trace_id': trace_id
-				'error_class': frame.error_class
-				'error': frame.error
-			})
-			break
-		}
-		if frame.event == 'end' {
-			break
-		}
+fn status_reason_phrase(status int) string {
+	return match status {
+		200 { 'OK' }
+		201 { 'Created' }
+		202 { 'Accepted' }
+		204 { 'No Content' }
+		301 { 'Moved Permanently' }
+		302 { 'Found' }
+		304 { 'Not Modified' }
+		400 { 'Bad Request' }
+		401 { 'Unauthorized' }
+		403 { 'Forbidden' }
+		404 { 'Not Found' }
+		405 { 'Method Not Allowed' }
+		408 { 'Request Timeout' }
+		409 { 'Conflict' }
+		429 { 'Too Many Requests' }
+		500 { 'Internal Server Error' }
+		502 { 'Bad Gateway' }
+		503 { 'Service Unavailable' }
+		504 { 'Gateway Timeout' }
+		else { 'OK' }
 	}
-	stream.close()
-	app.emit('http.request', {
-		'method': method.to_upper()
-		'path': normalize_path(path)
-		'status': '${if start.status > 0 { start.status } else { 200 }}'
-		'request_id': req_id
-		'trace_id': trace_id
-		'duration_ms': '${time.now().unix_milli() - start_ms}'
-		'response_mode': 'stream'
-		'stream_type': 'sse'
-	})
-	return veb.no_result()
 }
 
-fn stream_via_passthrough(mut app App, mut ctx Context, mut conn unix.StreamConn, start WorkerStreamFrame, method string, path string, req_id string, trace_id string, start_ms i64) veb.Result {
+fn write_http_stream_headers(mut ctx Context, status int, content_type string, extra_headers map[string]string, chunked bool) ! {
+	mut code := status
+	if code <= 0 {
+		code = 200
+	}
+	mut sb := strings.new_builder(512)
+	sb.write_string('HTTP/1.1 ${code} ${status_reason_phrase(code)}\r\n')
+	sb.write_string('Server: veb\r\n')
+	sb.write_string('Connection: close\r\n')
+	if chunked {
+		sb.write_string('Transfer-Encoding: chunked\r\n')
+	}
+	if content_type != '' {
+		sb.write_string('Content-Type: ${content_type}\r\n')
+	}
+	for name, value in extra_headers {
+		lower := name.to_lower()
+		if lower == 'content-type' || lower == 'content-length' || lower == 'transfer-encoding' || lower == 'connection' || lower == 'server' {
+			continue
+		}
+		sb.write_string('${name}: ${value}\r\n')
+	}
+	sb.write_string('\r\n')
+	ctx.conn.write_string(sb.str())!
+}
+
+fn write_chunk(mut conn net.TcpConn, data string) ! {
+	if data.len == 0 {
+		return
+	}
+	conn.write_string('${data.len:x}\r\n')!
+	conn.write_string(data)!
+	conn.write_string('\r\n')!
+}
+
+fn write_sse_message(mut conn net.TcpConn, frame WorkerStreamFrame) ! {
+	mut sb := strings.new_builder(256)
+	if frame.sse_id != '' {
+		sb.write_string('id: ${frame.sse_id}\n')
+	}
+	if frame.sse_event != '' {
+		sb.write_string('event: ${frame.sse_event}\n')
+	}
+	if frame.data != '' {
+		sb.write_string('data: ${frame.data}\n')
+	}
+	if frame.sse_retry != 0 {
+		sb.write_string('retry: ${frame.sse_retry}\n')
+	}
+	sb.write_string('\n')
+	conn.write_string(sb.str())!
+}
+
+fn stream_via_sse(mut app App, mut ctx Context, mut conn unix.StreamConn, start WorkerStreamFrame, method string, path string, req_id string, trace_id string, start_ms i64) veb.Result {
 	ctx.takeover_conn()
-	ctx.res.set_status(http.status_from_int(if start.status > 0 { start.status } else { 200 }))
-	ctx.set_custom_header('x-request-id', req_id) or {}
-	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
-	ctx.set_custom_header('x-vhttpd-stream-mode', 'passthrough') or {}
-	apply_worker_headers(mut ctx, start.headers)
-	ctype := if start.content_type != '' { start.content_type } else { 'text/plain; charset=utf-8' }
-	ctx.send_response_to_client(ctype, '')
+	mut status := start.status
+	if status <= 0 {
+		status = 200
+	}
+	mut headers := start.headers.clone()
+	headers['x-request-id'] = req_id
+	headers['x-vhttpd-trace-id'] = trace_id
+	headers['x-accel-buffering'] = 'no'
+	ctype := if start.content_type != '' { start.content_type } else { 'text/event-stream' }
+	write_http_stream_headers(mut ctx, status, ctype, headers, false) or {
+		return veb.no_result()
+	}
 	for {
 		raw := read_frame(mut conn) or { break }
 		frame := json.decode(WorkerStreamFrame, raw) or { continue }
@@ -361,7 +395,7 @@ fn stream_via_passthrough(mut app App, mut ctx Context, mut conn unix.StreamConn
 		}
 		if frame.event == 'chunk' {
 			if method.to_upper() != 'HEAD' {
-				ctx.conn.write_string(frame.data) or { break }
+				write_sse_message(mut ctx.conn, frame) or { break }
 			}
 			continue
 		}
@@ -380,10 +414,67 @@ fn stream_via_passthrough(mut app App, mut ctx Context, mut conn unix.StreamConn
 			break
 		}
 	}
+	ctx.conn.close() or {}
 	app.emit('http.request', {
 		'method': method.to_upper()
 		'path': normalize_path(path)
-		'status': '${if start.status > 0 { start.status } else { 200 }}'
+		'status': '${status}'
+		'request_id': req_id
+		'trace_id': trace_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
+		'response_mode': 'stream'
+		'stream_type': 'sse'
+	})
+	return veb.no_result()
+}
+
+fn stream_via_passthrough(mut app App, mut ctx Context, mut conn unix.StreamConn, start WorkerStreamFrame, method string, path string, req_id string, trace_id string, start_ms i64) veb.Result {
+	ctx.takeover_conn()
+	mut status := start.status
+	if status <= 0 {
+		status = 200
+	}
+	mut headers := start.headers.clone()
+	headers['x-request-id'] = req_id
+	headers['x-vhttpd-trace-id'] = trace_id
+	headers['x-vhttpd-stream-mode'] = 'passthrough'
+	ctype := if start.content_type != '' { start.content_type } else { 'text/plain; charset=utf-8' }
+	write_http_stream_headers(mut ctx, status, ctype, headers, true) or {
+		return veb.no_result()
+	}
+	for {
+		raw := read_frame(mut conn) or { break }
+		frame := json.decode(WorkerStreamFrame, raw) or { continue }
+		if frame.mode != 'stream' {
+			continue
+		}
+		if frame.event == 'chunk' {
+			if method.to_upper() != 'HEAD' {
+				write_chunk(mut ctx.conn, frame.data) or { break }
+			}
+			continue
+		}
+		if frame.event == 'error' {
+			app.emit('http.stream.error', {
+				'method': method.to_upper()
+				'path': normalize_path(path)
+				'request_id': req_id
+				'trace_id': trace_id
+				'error_class': frame.error_class
+				'error': frame.error
+			})
+			break
+		}
+		if frame.event == 'end' {
+			break
+		}
+	}
+	ctx.conn.write_string('0\r\n\r\n') or {}
+	ctx.conn.close() or {}
+	app.emit('http.request', {
+		'method': method.to_upper()
+		'path': normalize_path(path)
+		'status': '${status}'
 		'request_id': req_id
 		'trace_id': trace_id
 		'duration_ms': '${time.now().unix_milli() - start_ms}'
