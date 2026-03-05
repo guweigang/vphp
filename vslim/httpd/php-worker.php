@@ -71,6 +71,7 @@ final class PhpWorker
 {
     private string $socketPath;
     private ?string $appBootstrapPath;
+    private int $parentPid = 0;
     /** @var resource|null */
     private $server = null;
     /** @var mixed */
@@ -83,6 +84,7 @@ final class PhpWorker
     ) {
         $this->socketPath = $socketPath;
         $this->appBootstrapPath = $appBootstrapPath;
+        $this->parentPid = (int) (getenv('VHTTPD_PARENT_PID') ?: 0);
     }
 
     public function run(): void
@@ -102,12 +104,38 @@ final class PhpWorker
         fwrite(STDOUT, "worker_started socket={$this->socketPath}\n");
 
         while (true) {
-            $conn = @stream_socket_accept($this->server, -1);
+            $conn = @stream_socket_accept($this->server, 1.0);
+            if ($conn === false) {
+                if ($this->shouldExitBecauseParentGone()) {
+                    break;
+                }
+                continue;
+            }
             if (!is_resource($conn)) {
                 continue;
             }
             $this->handleConnection($conn);
+            if ($this->shouldExitBecauseParentGone()) {
+                break;
+            }
         }
+
+        if (is_resource($this->server)) {
+            @fclose($this->server);
+        }
+    }
+
+    private function shouldExitBecauseParentGone(): bool
+    {
+        if ($this->parentPid <= 0) {
+            return false;
+        }
+        if (function_exists('posix_kill')) {
+            /** @var bool $alive */
+            $alive = @posix_kill($this->parentPid, 0);
+            return !$alive;
+        }
+        return false;
     }
 
     /** @param resource $conn */

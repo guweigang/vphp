@@ -63,16 +63,17 @@ fn cmd_with_socket(worker_cmd string, worker_socket string, pool_size int) !stri
 
 fn start_managed_worker(id int, worker_cmd string, worker_socket string, workdir string, pool_size int) !ManagedWorker {
 	cmd := cmd_with_socket(worker_cmd, worker_socket, pool_size)!
+	cmd_with_parent := 'VHTTPD_PARENT_PID=${os.getpid()} ${cmd}'
 	mut proc := os.new_process('/bin/sh')
-	proc.set_args(['-lc', cmd])
+	proc.set_args(['-lc', cmd_with_parent])
 	proc.set_work_folder(workdir)
-	proc.use_pgroup = true
+	proc.use_pgroup = false
 	proc.run()
 	wait_for_worker(worker_socket, 5000)!
 	return ManagedWorker{
 		id: id
 		socket_path: worker_socket
-		worker_cmd: cmd
+		worker_cmd: cmd_with_parent
 		proc: proc
 		last_exit_ts: 0
 		next_retry_ts: 0
@@ -85,8 +86,12 @@ fn (mut w ManagedWorker) stop() {
 		return
 	}
 	if w.proc.is_alive() {
-		w.proc.signal_pgkill()
+		w.proc.signal_term()
 		w.proc.wait()
+		if w.proc.is_alive() {
+			w.proc.signal_kill()
+			w.proc.wait()
+		}
 	}
 	w.proc.close()
 }
@@ -180,7 +185,7 @@ fn (mut app App) ensure_worker_slot(idx int) {
 	mut proc := os.new_process('/bin/sh')
 	proc.set_args(['-lc', w.worker_cmd])
 	proc.set_work_folder(app.worker_workdir)
-	proc.use_pgroup = true
+	proc.use_pgroup = false
 	proc.run()
 	wait_for_worker(w.socket_path, 1500) or {
 		w.restart_count++
