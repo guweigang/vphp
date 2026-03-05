@@ -4,6 +4,19 @@ vhttpd worker supports streaming responses for SSE and text modes
 <?php
 if (!extension_loaded("vslim")) print "skip";
 if (getenv("CODEX_SANDBOX_NETWORK_DISABLED") === "1") print "skip";
+$probe = sys_get_temp_dir() . '/vhttpd_unix_probe_' . getmypid() . '.sock';
+$errno = 0;
+$errstr = '';
+$server = @stream_socket_server('unix://' . $probe, $errno, $errstr);
+if (!is_resource($server)) {
+    print 'skip';
+}
+if (is_resource($server)) {
+    fclose($server);
+}
+if (is_file($probe)) {
+    @unlink($probe);
+}
 ?>
 --FILE--
 <?php
@@ -93,7 +106,11 @@ $txtCtx = stream_context_create([
 $txtBody = @file_get_contents($base . '/stream/text', false, $txtCtx);
 $txtHeaders = $http_response_header ?? [];
 $txtStatus = $txtHeaders[0] ?? '';
+$txtHeaderLines = implode("\n", $txtHeaders);
 echo (str_contains($txtStatus, '200') ? "txt_200\n" : "txt_bad\n");
+echo (stripos($txtHeaderLines, 'x-vhttpd-stream-mode: passthrough') !== false ? "txt_passthrough\n" : "txt_no_passthrough\n");
+echo (stripos($txtHeaderLines, 'content-type: text/plain; charset=utf-8') !== false ? "txt_plain\n" : "txt_not_plain\n");
+echo (is_string($txtBody) && !str_contains($txtBody, "event: ") && !str_contains($txtBody, "data: ") ? "txt_not_sse\n" : "txt_looks_sse\n");
 echo (trim((string) $txtBody) === "chunk-a\nchunk-b" ? "txt_ok\n" : "txt_bad_body\n");
 
 $pid = is_file($pidFile) ? (int) trim((string) file_get_contents($pidFile)) : 0;
@@ -112,6 +129,8 @@ sse_200
 sse_event
 sse_rid
 txt_200
+txt_passthrough
+txt_plain
+txt_not_sse
 txt_ok
 stopped
-
