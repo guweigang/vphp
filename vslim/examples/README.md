@@ -19,6 +19,33 @@ curl --noproxy '*' -i -H 'Host: demo.local' http://127.0.0.1:19881/api/meta
 make -C /Users/guweigang/Source/vphpext/vslim demo-vslim
 ```
 
+## AI Token Streaming 示例
+
+使用内置的流式 demo app：
+
+```bash
+cd /Users/guweigang/Source/vphpext/vslim
+VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/ai-stream-app.php make serve
+```
+
+验证 text passthrough：
+
+```bash
+curl --noproxy '*' -N "http://127.0.0.1:19881/ai/stream?prompt=hello"
+```
+
+验证 SSE：
+
+```bash
+curl --noproxy '*' -N "http://127.0.0.1:19881/ai/sse?prompt=hello"
+```
+
+一键演示：
+
+```bash
+make -C /Users/guweigang/Source/vphpext/vslim demo-ai
+```
+
 ## Framework 示例（可独立进入目录运行）
 
 - Symfony:

@@ -1,4 +1,4 @@
-.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-vslim demo-symfony demo-laravel demo-wordpress clean
+.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-vslim demo-ai demo-symfony demo-laravel demo-wordpress clean
 
 BREW_PATH ?= /opt/homebrew
 DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
@@ -57,6 +57,9 @@ framework-matrix:
 
 demo-vslim:
 	@./examples/run_demo.sh vslim
+
+demo-ai:
+	@./examples/run_demo.sh ai
 
 demo-symfony:
 	@./examples/run_demo.sh symfony

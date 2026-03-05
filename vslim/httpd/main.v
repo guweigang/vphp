@@ -352,7 +352,7 @@ fn stream_via_passthrough(mut app App, mut ctx Context, mut conn unix.StreamConn
 	ctx.set_custom_header('x-vhttpd-stream-mode', 'passthrough') or {}
 	apply_worker_headers(mut ctx, start.headers)
 	ctype := if start.content_type != '' { start.content_type } else { 'text/plain; charset=utf-8' }
-	ctx.send_response_to_client(ctype, '') or {}
+	ctx.send_response_to_client(ctype, '')
 	for {
 		raw := read_frame(mut conn) or { break }
 		frame := json.decode(WorkerStreamFrame, raw) or { continue }

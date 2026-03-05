@@ -23,6 +23,13 @@ case "${CASE}" in
       "http://${HOST}:${PORT}/api/meta"
     )
     ;;
+  ai)
+    APP_PATH="${ROOT}/examples/ai-stream-app.php"
+    URLS=(
+      "http://${HOST}:${PORT}/ai/stream?prompt=hello-from-demo"
+      "http://${HOST}:${PORT}/ai/sse?prompt=hello-from-demo"
+    )
+    ;;
   symfony)
     APP_PATH="${ROOT}/examples/symfony/app.php"
     if [ ! -f "${ROOT}/examples/symfony/vendor/autoload.php" ]; then
@@ -65,7 +72,7 @@ case "${CASE}" in
     )
     ;;
   *)
-    echo "usage: $0 [vslim|symfony|laravel|wordpress]"
+    echo "usage: $0 [vslim|ai|symfony|laravel|wordpress]"
     exit 2
     ;;
 esac
@@ -109,12 +116,23 @@ if ! wait_ready; then
 fi
 
 echo "[demo] case=${CASE}"
-for url in "${URLS[@]}"; do
-  code="$(curl --noproxy '*' -sS -o /tmp/vslim_demo_body.$$ -w '%{http_code}' "${url}")"
-  body="$(cat /tmp/vslim_demo_body.$$)"
-  rm -f /tmp/vslim_demo_body.$$
-  echo "${code} ${url}"
-  echo "${body}"
-done
+if [ "${CASE}" = "ai" ]; then
+  txt_url="${URLS[0]}"
+  sse_url="${URLS[1]}"
+  echo "200 ${txt_url}"
+  curl --noproxy '*' -sS -N "${txt_url}"
+  echo
+  echo "200 ${sse_url}"
+  curl --noproxy '*' -sS -N --max-time 2 "${sse_url}"
+  echo
+else
+  for url in "${URLS[@]}"; do
+    code="$(curl --noproxy '*' -sS -o /tmp/vslim_demo_body.$$ -w '%{http_code}' "${url}")"
+    body="$(cat /tmp/vslim_demo_body.$$)"
+    rm -f /tmp/vslim_demo_body.$$
+    echo "${code} ${url}"
+    echo "${body}"
+  done
+fi
 
 echo "[demo] done"
