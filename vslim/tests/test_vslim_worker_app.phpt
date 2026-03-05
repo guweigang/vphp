@@ -1,5 +1,5 @@
 --TEST--
-VHTTPD worker dispatches directly through a VSlimApp bootstrap
+VHTTPD worker dispatches directly through a VSlim\App bootstrap
 --SKIPIF--
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--

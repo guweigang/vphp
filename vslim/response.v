@@ -14,7 +14,7 @@ pub fn (mut r VSlimResponse) construct(status int, body string, content_type str
 @[php_method]
 pub fn (r &VSlimResponse) header(name string) string {
 	headers := r.header_values()
-	return headers[normalize_header_name(name)] or { '' }
+	return headers[VSlimRequest.normalize_header_name(name)] or { '' }
 }
 
 @[php_method]
@@ -25,13 +25,13 @@ pub fn (r &VSlimResponse) headers() map[string]string {
 @[php_method]
 pub fn (r &VSlimResponse) has_header(name string) bool {
 	headers := r.header_values()
-	return normalize_header_name(name) in headers
+	return VSlimRequest.normalize_header_name(name) in headers
 }
 
 @[php_method]
 pub fn (mut r VSlimResponse) set_header(name string, value string) &VSlimResponse {
 	mut headers := r.header_values()
-	headers[normalize_header_name(name)] = value
+	headers[VSlimRequest.normalize_header_name(name)] = value
 	apply_response_headers(mut r, headers)
 	return r
 }
@@ -164,11 +164,11 @@ pub fn (r &VSlimResponse) content_length() int {
 	return r.body.len
 }
 
-fn to_vslim_response(res SlimResponse) &VSlimResponse {
+fn to_vslim_response(res VSlimResponse) &VSlimResponse {
 	return &VSlimResponse{
 		status: res.status
 		body: res.body
-		content_type: res.headers['content-type'] or { '' }
+		content_type: res.content_type
 		headers: res.headers.clone()
 	}
 }
@@ -216,34 +216,36 @@ fn build_set_cookie_header(name string, value string, path string, domain string
 	return parts.join('; ')
 }
 
-fn text_response(status int, body string) SlimResponse {
-	return SlimResponse{
+fn text_response(status int, body string) VSlimResponse {
+	return VSlimResponse{
 		status: status
 		body: body
+		content_type: 'text/plain; charset=utf-8'
 		headers: {
 			'content-type': 'text/plain; charset=utf-8'
 		}
 	}
 }
 
-fn json_response(status int, json_body string) SlimResponse {
-	return SlimResponse{
+fn json_response(status int, json_body string) VSlimResponse {
+	return VSlimResponse{
 		status: status
 		body: json_body
+		content_type: 'application/json; charset=utf-8'
 		headers: {
 			'content-type': 'application/json; charset=utf-8'
 		}
 	}
 }
 
-fn not_found_response() SlimResponse {
+fn not_found_response() VSlimResponse {
 	return text_response(404, 'Not Found')
 }
 
-fn method_not_allowed_response() SlimResponse {
+fn method_not_allowed_response() VSlimResponse {
 	return text_response(405, 'Method Not Allowed')
 }
 
-fn internal_error_response() SlimResponse {
+fn internal_error_response() VSlimResponse {
 	return text_response(500, 'Internal Server Error')
 }

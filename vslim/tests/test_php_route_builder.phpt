@@ -1,23 +1,23 @@
 --TEST--
-VSlimApp can register PHP route handlers and dispatch them
+VSlim\App can register PHP route handlers and dispatch them
 --SKIPIF--
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
 <?php
-$app = new VSlimApp();
-$app->before(function (VSlimRequest $req) {
+$app = new VSlim\App();
+$app->before(function (VSlim\Request $req) {
     if ($req->path === '/before-only') {
         return 'before-only';
     }
     return null;
 });
-$app->middleware(function (VSlimRequest $req) {
+$app->middleware(function (VSlim\Request $req) {
     if ($req->path === '/blocked') {
-        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+        return new VSlim\Response(403, 'blocked', 'text/plain; charset=utf-8');
     }
     return null;
 });
-$app->middleware(function (VSlimRequest $req) {
+$app->middleware(function (VSlim\Request $req) {
     if ($req->path === '/submit' && $req->query('trace_id') === 'mw') {
         return [
             'status' => 202,
@@ -27,13 +27,13 @@ $app->middleware(function (VSlimRequest $req) {
     }
     return null;
 });
-$app->get('/hello/:name', function (VSlimRequest $req) {
-    return new VSlimResponse(200, 'Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
+$app->get('/hello/:name', function (VSlim\Request $req) {
+    return new VSlim\Response(200, 'Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
 });
-$app->get_named('hello.show', '/hello/:name', function (VSlimRequest $req) {
-    return new VSlimResponse(200, 'Named Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
+$app->get_named('hello.show', '/hello/:name', function (VSlim\Request $req) {
+    return new VSlim\Response(200, 'Named Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
 });
-$app->post('/submit', function (VSlimRequest $req) {
+$app->post('/submit', function (VSlim\Request $req) {
     return [
         'status' => 201,
         'content_type' => 'application/json; charset=utf-8',
@@ -41,7 +41,7 @@ $app->post('/submit', function (VSlimRequest $req) {
         'body' => json_encode(['body' => $req->body, 'trace' => $req->query('trace_id') ?: 'none']),
     ];
 });
-$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+$app->after(function (VSlim\Request $req, VSlim\Response $res) {
     if ($req->path === '/hello/codex') {
         $res->set_header('x-after', 'app');
         return $res;
@@ -49,42 +49,42 @@ $app->after(function (VSlimRequest $req, VSlimResponse $res) {
     return null;
 });
 $api = $app->group('/api');
-$api->middleware(function (VSlimRequest $req) {
+$api->middleware(function (VSlim\Request $req) {
     if ($req->path === '/api/blocked') {
         return 'group-blocked';
     }
     return null;
 });
-$api->get('/users/:id', function (VSlimRequest $req) {
+$api->get('/users/:id', function (VSlim\Request $req) {
     return 'user:' . $req->param('id');
 });
-$api->after(function (VSlimRequest $req, VSlimResponse $res) {
+$api->after(function (VSlim\Request $req, VSlim\Response $res) {
     if ($req->path === '/api/users/9') {
         $res->text('after:' . $res->body);
         return $res;
     }
     return null;
 });
-$api->get_named('api.users.show', '/members/:id', function (VSlimRequest $req) {
+$api->get_named('api.users.show', '/members/:id', function (VSlim\Request $req) {
     return 'member:' . $req->param('id');
 });
-$api->get('/blocked', function (VSlimRequest $req) {
+$api->get('/blocked', function (VSlim\Request $req) {
     return 'route-blocked';
 });
-$api->put_named('api.users.update', '/users/:id', function (VSlimRequest $req) {
+$api->put_named('api.users.update', '/users/:id', function (VSlim\Request $req) {
     return 'put:' . $req->param('id');
 });
-$api->delete('/users/:id', function (VSlimRequest $req) {
+$api->delete('/users/:id', function (VSlim\Request $req) {
     return 'delete:' . $req->param('id');
 });
-$api->patch('/users/:id', function (VSlimRequest $req) {
+$api->patch('/users/:id', function (VSlim\Request $req) {
     return 'patch:' . $req->param('id');
 });
-$api->any_named('api.echo.any', '/echo/:id', function (VSlimRequest $req) {
+$api->any_named('api.echo.any', '/echo/:id', function (VSlim\Request $req) {
     return $req->method . ':' . $req->param('id');
 });
 $v1 = $api->group('/v1');
-$v1->middleware(function (VSlimRequest $req) {
+$v1->middleware(function (VSlim\Request $req) {
     if ($req->path === '/api/v1/ping' && $req->query('trace_id') === 'group') {
         return [
             'status' => 206,
@@ -94,7 +94,7 @@ $v1->middleware(function (VSlimRequest $req) {
     }
     return null;
 });
-$v1->get('/ping', function (VSlimRequest $req) {
+$v1->get('/ping', function (VSlim\Request $req) {
     return [
         'status' => 200,
         'content_type' => 'application/json; charset=utf-8',
@@ -110,7 +110,7 @@ echo $app->url_for_abs('hello.show', ['name' => 'nova'], 'https', 'demo.local') 
 $app->set_base_path('');
 $redirect = $app->redirect_to('hello.show', ['name' => 'jump']);
 echo $redirect->status . '|' . $redirect->header('location') . '|' . $redirect->body . PHP_EOL;
-$manual = new VSlimResponse(200, 'ignored', 'text/plain; charset=utf-8');
+$manual = new VSlim\Response(200, 'ignored', 'text/plain; charset=utf-8');
 $manual->redirect_with_status('/moved', 307);
 echo $manual->status . '|' . $manual->header('location') . '|' . $manual->content_type . PHP_EOL;
 $res = $app->dispatch_body('POST', '/submit?trace_id=builder', 'payload');

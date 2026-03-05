@@ -2,61 +2,48 @@ module main
 
 import vphp
 
-pub struct SlimRequest {
+pub type VSlimHandler = fn (VSlimRequest) VSlimResponse
+pub type VSlimNext = fn (VSlimRequest) VSlimResponse
+pub type VSlimMiddleware = fn (VSlimRequest, VSlimNext) VSlimResponse
+
+pub enum VSlimRouteHandlerType {
+	v_native
+	php_callable
+}
+
+pub struct VSlimRoute {
 pub mut:
-	method string
-	path   string
-	params map[string]string
-	query  map[string]string
-	body   string
+	method       string
+	name         string
+	pattern      string
+	handler_type VSlimRouteHandlerType
+	v_handler    VSlimHandler = unsafe { nil }
+	php_handler  vphp.ZVal
 }
 
-pub struct SlimResponse {
-pub mut:
-	status  int
-	body    string
-	headers map[string]string
-}
+pub struct RoutePath {}
 
-pub type SlimHandler = fn (SlimRequest) SlimResponse
-pub type SlimNext = fn (SlimRequest) SlimResponse
-pub type SlimMiddleware = fn (SlimRequest, SlimNext) SlimResponse
-
-pub struct SlimRoute {
-pub:
-	method  string
-	pattern string
-	handler SlimHandler = unsafe { nil }
-}
-
-pub struct SlimApp {
+pub struct VSlimRuntime {
 mut:
-	routes      []SlimRoute
-	middlewares []SlimMiddleware
+	routes      []VSlimRoute
+	middlewares []VSlimMiddleware
 }
 
-struct PhpRoute {
-	method  string
-	name    string
-	pattern string
-	handler vphp.ZVal
-}
-
-struct PhpGroupHook {
+struct RouteHook {
 	prefix  string
 	handler vphp.ZVal
 }
 
 @[heap]
-@[php_class]
-struct VSlimRouteGroup {
+@[php_class: 'VSlim\\RouteGroup']
+struct RouteGroup {
 mut:
 	app    &VSlimApp = unsafe { nil }
 	prefix string
 }
 
 @[heap]
-@[php_class]
+@[php_class: 'VSlim\\Request']
 struct VSlimRequest {
 pub mut:
 	method           string
@@ -80,7 +67,7 @@ mut:
 }
 
 @[heap]
-@[php_class]
+@[php_class: 'VSlim\\Response']
 struct VSlimResponse {
 pub mut:
 	status       int
@@ -91,14 +78,14 @@ mut:
 }
 
 @[heap]
-@[php_class]
+@[php_class: 'VSlim\\App']
 struct VSlimApp {
 mut:
-	routes            []PhpRoute
+	routes            []VSlimRoute
 	php_before_hooks  []vphp.ZVal
 	php_after_hooks   []vphp.ZVal
-	php_group_before  []PhpGroupHook
-	php_group_after   []PhpGroupHook
+	php_group_before  []RouteHook
+	php_group_after   []RouteHook
 	base_path         string
 	use_demo          bool
 }

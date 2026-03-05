@@ -4,23 +4,23 @@ VSlim lifecycle hooks document response and error semantics
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
 <?php
-$app = new VSlimApp();
-$app->get('/hello', function (VSlimRequest $req) {
+$app = new VSlim\App();
+$app->get('/hello', function (VSlim\Request $req) {
     return 'route';
 });
-$app->get('/bad-route', function (VSlimRequest $req) {
+$app->get('/bad-route', function (VSlim\Request $req) {
     return 123;
 });
-$app->get('/bad-after', function (VSlimRequest $req) {
+$app->get('/bad-after', function (VSlim\Request $req) {
     return 'base-after';
 });
-$app->get('/throw-after', function (VSlimRequest $req) {
+$app->get('/throw-after', function (VSlim\Request $req) {
     return 'base-throw-after';
 });
-$app->get('/throw-route', function (VSlimRequest $req) {
+$app->get('/throw-route', function (VSlim\Request $req) {
     throw new RuntimeException('route-failed');
 });
-$app->before(function (VSlimRequest $req) {
+$app->before(function (VSlim\Request $req) {
     if ($req->path === '/short') {
         return [
             'status' => 202,
@@ -33,7 +33,7 @@ $app->before(function (VSlimRequest $req) {
     }
     return null;
 });
-$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+$app->after(function (VSlim\Request $req, VSlim\Response $res) {
     if ($req->path === '/hello') {
         return 'after:' . $res->body;
     }

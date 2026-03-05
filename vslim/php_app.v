@@ -13,15 +13,15 @@ pub fn VSlimApp.demo() &VSlimApp {
 
 @[php_method]
 pub fn (mut app VSlimApp) set_base_path(base_path string) &VSlimApp {
-	app.base_path = normalize_base_path(base_path)
+	app.base_path = RoutePath.normalize_base_path(base_path)
 	return app
 }
 
 @[php_method]
-pub fn (app &VSlimApp) group(prefix string) &VSlimRouteGroup {
-	return &VSlimRouteGroup{
+pub fn (app &VSlimApp) group(prefix string) &RouteGroup {
+	return &RouteGroup{
 		app: app
-		prefix: normalize_group_prefix(prefix)
+		prefix: RoutePath.normalize_group_prefix(prefix)
 	}
 }
 
@@ -149,27 +149,27 @@ pub fn (mut app VSlimApp) after(handler vphp.ZVal) &VSlimApp {
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) group(prefix string) &VSlimRouteGroup {
-	return &VSlimRouteGroup{
+pub fn (group &RouteGroup) group(prefix string) &RouteGroup {
+	return &RouteGroup{
 		app: group.app
-		prefix: join_route_prefix(group.prefix, prefix)
+		prefix: RoutePath.prefixed_pattern(group.prefix, prefix)
 	}
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) middleware(handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) middleware(handler vphp.ZVal) &RouteGroup {
 	return group.before(handler)
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) before(handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) before(handler vphp.ZVal) &RouteGroup {
 	if !handler.is_valid() || !handler.is_callable() {
 		return group
 	}
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.php_group_before << PhpGroupHook{
-			prefix: normalize_group_prefix(group.prefix)
+		app.php_group_before << RouteHook{
+			prefix: group.normalized_prefix()
 			handler: handler.dup()
 		}
 	}
@@ -177,14 +177,14 @@ pub fn (group &VSlimRouteGroup) before(handler vphp.ZVal) &VSlimRouteGroup {
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) after(handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) after(handler vphp.ZVal) &RouteGroup {
 	if !handler.is_valid() || !handler.is_callable() {
 		return group
 	}
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.php_group_after << PhpGroupHook{
-			prefix: normalize_group_prefix(group.prefix)
+		app.php_group_after << RouteHook{
+			prefix: group.normalized_prefix()
 			handler: handler.dup()
 		}
 	}
@@ -192,109 +192,109 @@ pub fn (group &VSlimRouteGroup) after(handler vphp.ZVal) &VSlimRouteGroup {
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) get(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) get(pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('GET', '', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('GET', '', group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) post(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) post(pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('POST', '', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('POST', '', group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) put(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) put(pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('PUT', '', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('PUT', '', group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) patch(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) patch(pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('PATCH', '', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('PATCH', '', group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) delete(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) delete(pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('DELETE', '', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('DELETE', '', group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) any(pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) any(pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('*', '', join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('*', '', group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) get_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) get_named(name string, pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('GET', name, join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('GET', name, group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) post_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) post_named(name string, pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('POST', name, join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('POST', name, group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) put_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) put_named(name string, pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('PUT', name, join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('PUT', name, group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) patch_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) patch_named(name string, pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('PATCH', name, join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('PATCH', name, group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) delete_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) delete_named(name string, pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('DELETE', name, join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('DELETE', name, group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
 
 @[php_method]
-pub fn (group &VSlimRouteGroup) any_named(name string, pattern string, handler vphp.ZVal) &VSlimRouteGroup {
+pub fn (group &RouteGroup) any_named(name string, pattern string, handler vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
-		app.add_php_route('*', name, join_route_prefix(group.prefix, pattern), handler)
+		app.add_php_route('*', name, group.prefixed_pattern(pattern), handler)
 	}
 	return group
 }
@@ -306,12 +306,12 @@ pub fn (app &VSlimApp) url_for(name string, params vphp.ZVal) string {
 
 @[php_method]
 pub fn (app &VSlimApp) url_for_query(name string, params vphp.ZVal, query vphp.ZVal) string {
-	params_map := zval_to_name_map(params)
-	query_map := zval_to_name_map(query)
+	params_map := params.to_string_map()
+	query_map := query.to_string_map()
 	for route in app.routes {
 		if route.name == name {
-			raw := render_route_url(route.pattern, &params_map, &query_map) or { '' }
-			return app.apply_base_path(raw)
+			raw := app.render_route_url(route.pattern, &params_map, &query_map) or { '' }
+			return RoutePath.apply_base_path(app.base_path, raw)
 		}
 	}
 	return ''
@@ -328,7 +328,7 @@ pub fn (app &VSlimApp) url_for_query_abs(name string, params vphp.ZVal, query vp
 	if path == '' {
 		return ''
 	}
-	return join_absolute_url(scheme, host, path)
+	return RoutePath.absolute_url(scheme, host, path)
 }
 
 @[php_method]
@@ -348,15 +348,16 @@ fn (mut app VSlimApp) add_php_route(method string, name string, pattern string, 
 	if !handler.is_valid() || !handler.is_callable() {
 		return
 	}
-	app.routes << PhpRoute{
+	app.routes << VSlimRoute{
 		method: method.to_upper()
 		name: name
 		pattern: pattern
-		handler: handler.dup()
+		handler_type: .php_callable
+		php_handler: handler.dup()
 	}
 }
 
-fn dispatch_app_request_with_params(app &VSlimApp, req &VSlimRequest) (SlimResponse, map[string]string) {
+fn dispatch_app_request_with_params(app &VSlimApp, req &VSlimRequest) (VSlimResponse, map[string]string) {
 	if app.routes.len > 0 {
 		res, params, ok := dispatch_php_routes_with_params(app, req)
 		if ok {
@@ -364,18 +365,21 @@ fn dispatch_app_request_with_params(app &VSlimApp, req &VSlimRequest) (SlimRespo
 		}
 	}
 	if app.use_demo {
-		return dispatch_demo_request_with_params(req.to_slim_request())
+		return dispatch_demo_request_with_params(req.to_vslim_request())
 	}
 	return not_found_response(), map[string]string{}
 }
 
-fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimResponse, map[string]string, bool) {
+fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (VSlimResponse, map[string]string, bool) {
 	method := req.method.to_upper()
-	path := normalize_path(req.path)
+	path := RoutePath.normalize(req.path)
 	mut method_not_allowed := false
 
 	for route in app.routes {
-		ok, params := match_route(route.pattern, path)
+		if route.handler_type != .php_callable {
+			continue
+		}
+		ok, params := route.matches(path)
 		if !ok {
 			continue
 		}
@@ -390,7 +394,7 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimRespon
 			res := normalize_php_route_response(before_res)
 			return apply_php_after_hooks(app, path, payload, res), params, true
 		}
-		raw_res := route.handler.call([payload])
+		raw_res := route.php_handler.call([payload])
 		res := normalize_php_route_response(raw_res)
 		return apply_php_after_hooks(app, path, payload, res), params, true
 	}
@@ -404,7 +408,7 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest) (SlimRespon
 		res := normalize_php_route_response(before_res)
 		return apply_php_after_hooks(app, path, payload, res), map[string]string{}, true
 	}
-	return SlimResponse{}, map[string]string{}, false
+	return VSlimResponse{}, map[string]string{}, false
 }
 
 fn dispatch_php_before_hooks(app &VSlimApp, route_before []vphp.ZVal, payload vphp.ZVal, index int) vphp.ZVal {
@@ -483,23 +487,23 @@ fn build_php_request_object(req &VSlimRequest, params map[string]string) vphp.ZV
 			uploaded_files: req.uploaded_files.clone()
 			params: params.clone()
 		}
-		C.vphp_return_obj(payload.raw, bound, C.vslimrequest_ce)
+			C.vphp_return_obj(payload.raw, bound, C.vslim__request_ce)
 		C.vphp_bind_handlers(C.vphp_get_obj_from_zval(payload.raw), &C.vphp_class_handlers(vslimrequest_handlers()))
 		return payload
 	}
 }
 
-fn build_php_response_object(res SlimResponse) vphp.ZVal {
+fn build_php_response_object(res VSlimResponse) vphp.ZVal {
 	unsafe {
 		mut payload := vphp.ZVal.new_null()
 		bound := to_vslim_response(res)
-		C.vphp_return_obj(payload.raw, bound, C.vslimresponse_ce)
+			C.vphp_return_obj(payload.raw, bound, C.vslim__response_ce)
 		C.vphp_bind_handlers(C.vphp_get_obj_from_zval(payload.raw), &C.vphp_class_handlers(vslimresponse_handlers()))
 		return payload
 	}
 }
 
-fn apply_php_after_hooks(app &VSlimApp, path string, request_payload vphp.ZVal, initial SlimResponse) SlimResponse {
+fn apply_php_after_hooks(app &VSlimApp, path string, request_payload vphp.ZVal, initial VSlimResponse) VSlimResponse {
 	if app.php_after_hooks.len == 0 && app.php_group_after.len == 0 {
 		return initial
 	}
@@ -521,15 +525,16 @@ fn apply_php_after_hooks(app &VSlimApp, path string, request_payload vphp.ZVal, 
 	return current
 }
 
-fn normalize_php_route_response(result vphp.ZVal) SlimResponse {
+fn normalize_php_route_response(result vphp.ZVal) VSlimResponse {
 	if !result.is_valid() || result.is_null() || result.is_undef() {
 		return text_response(200, '')
 	}
-	if result.is_object() && result.is_instance_of('VSlimResponse') {
+	if result.is_object() && (result.is_instance_of('VSlim\\Response') || result.is_instance_of('VSlimResponse')) {
 		if resp := result.to_object[VSlimResponse]() {
-			return SlimResponse{
+			return VSlimResponse{
 				status: resp.status
 				body: resp.body
+				content_type: resp.content_type
 				headers: resp.headers()
 			}
 		}
@@ -550,9 +555,10 @@ fn normalize_php_route_response(result vphp.ZVal) SlimResponse {
 		if 'content-type' !in headers {
 			headers['content-type'] = content_type
 		}
-		return SlimResponse{
+		return VSlimResponse{
 			status: status
 			body: body
+			content_type: headers['content-type'] or { '' }
 			headers: headers
 		}
 	}

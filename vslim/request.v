@@ -18,7 +18,7 @@ pub fn (r &VSlimRequest) str() string {
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_query(query vphp.ZVal) &VSlimRequest {
-	r.query = zval_to_name_map(query)
+	r.query = query.to_string_map()
 	return r
 }
 
@@ -31,7 +31,7 @@ pub fn (mut r VSlimRequest) set_method(method string) &VSlimRequest {
 @[php_method]
 pub fn (mut r VSlimRequest) set_target(raw_path string) &VSlimRequest {
 	r.raw_path = raw_path
-	r.path, r.query_string = normalize_request_target(raw_path)
+	r.path, r.query_string = VSlimRequest.normalize_target(raw_path)
 	return r
 }
 
@@ -73,37 +73,37 @@ pub fn (mut r VSlimRequest) set_remote_addr(remote_addr string) &VSlimRequest {
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_headers(headers vphp.ZVal) &VSlimRequest {
-	r.headers = normalize_header_map(zval_to_name_map(headers))
+	r.headers = normalize_header_map(headers.to_string_map())
 	return r
 }
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_cookies(cookies vphp.ZVal) &VSlimRequest {
-	r.cookies = zval_to_name_map(cookies)
+	r.cookies = cookies.to_string_map()
 	return r
 }
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_attributes(attributes vphp.ZVal) &VSlimRequest {
-	r.attributes = zval_to_name_map(attributes)
+	r.attributes = attributes.to_string_map()
 	return r
 }
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_server(server vphp.ZVal) &VSlimRequest {
-	r.server = zval_to_name_map(server)
+	r.server = server.to_string_map()
 	return r
 }
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_uploaded_files(uploaded_files vphp.ZVal) &VSlimRequest {
-	r.uploaded_files = zval_to_string_list(uploaded_files)
+	r.uploaded_files = uploaded_files.to_string_list()
 	return r
 }
 
 @[php_method]
 pub fn (mut r VSlimRequest) set_params(params vphp.ZVal) &VSlimRequest {
-	r.params = zval_to_name_map(params)
+	r.params = params.to_string_map()
 	return r
 }
 
@@ -130,7 +130,7 @@ pub fn (r &VSlimRequest) query_all() map[string]string {
 @[php_method]
 pub fn (r &VSlimRequest) header(name string) string {
 	headers := r.header_values()
-	return headers[normalize_header_name(name)] or { '' }
+	return headers[VSlimRequest.normalize_header_name(name)] or { '' }
 }
 
 @[php_method]
@@ -141,7 +141,7 @@ pub fn (r &VSlimRequest) headers() map[string]string {
 @[php_method]
 pub fn (r &VSlimRequest) has_header(name string) bool {
 	headers := r.header_values()
-	return normalize_header_name(name) in headers
+	return VSlimRequest.normalize_header_name(name) in headers
 }
 
 @[php_method]
@@ -275,7 +275,7 @@ fn (r &VSlimRequest) query_values() map[string]string {
 	if r.query.len > 0 {
 		return r.query.clone()
 	}
-	return parse_query_string(r.query_string)
+	return VSlimRequest.parse_query(r.query_string)
 }
 
 fn (r &VSlimRequest) cookie_values() map[string]string {
@@ -298,18 +298,30 @@ fn (r &VSlimRequest) uploaded_file_values() []string {
 	return r.uploaded_files.clone()
 }
 
-pub fn (r &VSlimRequest) to_slim_request() SlimRequest {
-	return SlimRequest{
+pub fn (r &VSlimRequest) to_vslim_request() VSlimRequest {
+	return VSlimRequest{
 		method: r.method
+		raw_path: r.raw_path
 		path: r.path
+		query_string: r.query_string
+		scheme: r.scheme
+		host: r.host
+		port: r.port
+		protocol_version: r.protocol_version
+		remote_addr: r.remote_addr
 		params: r.route_params()
 		query: r.query_params()
 		body: r.body
+		headers: r.headers()
+		cookies: r.cookies()
+		attributes: r.attributes()
+		server: r.server_params()
+		uploaded_files: r.uploaded_files()
 	}
 }
 
 pub fn new_vslim_request(method string, raw_path string, body string) &VSlimRequest {
-	path, query_string := normalize_request_target(raw_path)
+	path, query_string := VSlimRequest.normalize_target(raw_path)
 	mut req := &VSlimRequest{
 		method: method
 		raw_path: raw_path
@@ -325,7 +337,7 @@ pub fn new_vslim_request_from_zval(envelope vphp.ZVal) &VSlimRequest {
 	method := if part := envelope.get('method') { part.to_string() } else { 'GET' }
 	raw_path := if part := envelope.get('path') { part.to_string() } else { '/' }
 	body := if part := envelope.get('body') { part.to_string() } else { '' }
-	path, query_string := normalize_request_target(raw_path)
+	path, query_string := VSlimRequest.normalize_target(raw_path)
 	mut req := &VSlimRequest{
 		method: method
 		raw_path: raw_path
@@ -339,23 +351,23 @@ pub fn new_vslim_request_from_zval(envelope vphp.ZVal) &VSlimRequest {
 	req.port = if part := envelope.get('port') { part.to_string() } else { req.port }
 	req.protocol_version = if part := envelope.get('protocol_version') { part.to_string() } else { req.protocol_version }
 	req.remote_addr = if part := envelope.get('remote_addr') { part.to_string() } else { req.remote_addr }
-	req.query = if part := envelope.get('query') { zval_to_name_map(part) } else { map[string]string{} }
-	req.headers = if part := envelope.get('headers') { normalize_header_map(zval_to_name_map(part)) } else { map[string]string{} }
-	req.cookies = if part := envelope.get('cookies') { zval_to_name_map(part) } else { map[string]string{} }
-	req.attributes = if part := envelope.get('attributes') { zval_to_name_map(part) } else { map[string]string{} }
-	req.server = if part := envelope.get('server') { zval_to_name_map(part) } else { map[string]string{} }
-	req.uploaded_files = if part := envelope.get('uploaded_files') { zval_to_string_list(part) } else { []string{} }
-	req.params = if part := envelope.get('params') { zval_to_name_map(part) } else { map[string]string{} }
+	req.query = if part := envelope.get('query') { part.to_string_map() } else { map[string]string{} }
+	req.headers = if part := envelope.get('headers') { normalize_header_map(part.to_string_map()) } else { map[string]string{} }
+	req.cookies = if part := envelope.get('cookies') { part.to_string_map() } else { map[string]string{} }
+	req.attributes = if part := envelope.get('attributes') { part.to_string_map() } else { map[string]string{} }
+	req.server = if part := envelope.get('server') { part.to_string_map() } else { map[string]string{} }
+	req.uploaded_files = if part := envelope.get('uploaded_files') { part.to_string_list() } else { []string{} }
+	req.params = if part := envelope.get('params') { part.to_string_map() } else { map[string]string{} }
 	return req
 }
 
-fn request_from_envelope(envelope vphp.ZVal) SlimRequest {
-	return new_vslim_request_from_zval(envelope).to_slim_request()
+fn request_from_envelope(envelope vphp.ZVal) VSlimRequest {
+	return new_vslim_request_from_zval(envelope).to_vslim_request()
 }
 
 fn split_path_and_query(raw_path string) (string, map[string]string) {
-	path, query_str := normalize_request_target(raw_path)
-	return path, parse_query_string(query_str)
+	path, query_str := VSlimRequest.normalize_target(raw_path)
+	return path, VSlimRequest.parse_query(query_str)
 }
 
 fn apply_request_defaults(mut r VSlimRequest) {
@@ -376,7 +388,7 @@ fn apply_request_defaults(mut r VSlimRequest) {
 fn normalize_header_map(headers map[string]string) map[string]string {
 	mut out := map[string]string{}
 	for key, value in headers {
-		out[normalize_header_name(key)] = value
+		out[VSlimRequest.normalize_header_name(key)] = value
 	}
 	return out
 }

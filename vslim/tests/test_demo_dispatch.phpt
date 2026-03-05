@@ -4,7 +4,7 @@ VSlim demo app dispatches routes through the extension
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
 <?php
-$app = VSlimApp::demo();
+$app = VSlim\App::demo();
 $res = $app->dispatch('GET', '/health');
 echo $res->status . '|' . $res->body . '|' . $res->content_type . PHP_EOL;
 
@@ -29,7 +29,7 @@ echo $res->status . '|' . $res->body . '|' . $res->content_type . PHP_EOL;
 $meta = vslim_demo_dispatch('GET', '/meta');
 echo $meta['status'] . '|' . $meta['body'] . '|' . $meta['content_type'] . PHP_EOL;
 
-$req = new VSlimRequest('GET', '/users/7?trace_id=from-php', '');
+$req = new VSlim\Request('GET', '/users/7?trace_id=from-php', '');
 $res = $app->dispatch_request($req);
 echo $res->status . '|' . $res->body . '|' . $res->content_type . PHP_EOL;
 echo $req->query('trace_id') . '|' . ($req->has_query('trace_id') ? 'yes' : 'no') . PHP_EOL;
@@ -68,7 +68,7 @@ $envelope = vslim_handle_request([
 ]);
 echo $envelope['status'] . '|' . $envelope['body'] . '|' . $envelope['content_type'] . PHP_EOL;
 
-$resp = new VSlimResponse(201, 'created', 'text/plain; charset=utf-8');
+$resp = new VSlim\Response(201, 'created', 'text/plain; charset=utf-8');
 $resp->set_header('x-demo', 'yes')->set_status(202)->json('{"ok":true}');
 echo $resp->status . '|' . $resp->body . '|' . $resp->content_type . '|' . $resp->header('x-demo') . '|' . ($resp->has_header('content-type') ? 'yes' : 'no') . PHP_EOL;
 $resp->set_cookie('sid', 'cookie-202');

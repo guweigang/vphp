@@ -4,170 +4,170 @@ import vphp
 
 #include "php_bridge.h"
 
-@[export: 'VSlimRouteGroup_new_raw']
-pub fn vslimroutegroup_new_raw() voidptr {
-    return vphp.generic_new_raw[VSlimRouteGroup]()
+@[export: 'RouteGroup_new_raw']
+pub fn routegroup_new_raw() voidptr {
+    return vphp.generic_new_raw[RouteGroup]()
 }
-@[export: 'VSlimRouteGroup_get_prop']
-pub fn vslimroutegroup_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+@[export: 'RouteGroup_get_prop']
+pub fn routegroup_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
     unsafe {
         name := name_ptr.vstring_with_len(name_len).clone()
-        obj := &VSlimRouteGroup(ptr)
+        obj := &RouteGroup(ptr)
     }
 }
-@[export: 'VSlimRouteGroup_set_prop']
-pub fn vslimroutegroup_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+@[export: 'RouteGroup_set_prop']
+pub fn routegroup_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
     unsafe {
         name := name_ptr.vstring_with_len(name_len).clone()
-        mut obj := &VSlimRouteGroup(ptr)
+        mut obj := &RouteGroup(ptr)
         arg := vphp.ZVal{ raw: value }
     }
 }
-@[export: 'VSlimRouteGroup_sync_props']
-pub fn vslimroutegroup_sync_props(ptr voidptr, zv &C.zval) {
+@[export: 'RouteGroup_sync_props']
+pub fn routegroup_sync_props(ptr voidptr, zv &C.zval) {
     unsafe {
-        obj := &VSlimRouteGroup(ptr)
+        obj := &RouteGroup(ptr)
         out := vphp.ZVal{ raw: zv }
         out.add_property_string('prefix', obj.prefix)
     }
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_group']
-pub fn vphp_wrap_vslimroutegroup_group(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_group']
+pub fn vphp_wrap_routegroup_group(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     res := recv.group(arg_0)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_middleware']
-pub fn vphp_wrap_vslimroutegroup_middleware(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_middleware']
+pub fn vphp_wrap_routegroup_middleware(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg_val(0)
     res := recv.middleware(arg_0)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_before']
-pub fn vphp_wrap_vslimroutegroup_before(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_before']
+pub fn vphp_wrap_routegroup_before(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg_val(0)
     res := recv.before(arg_0)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_after']
-pub fn vphp_wrap_vslimroutegroup_after(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_after']
+pub fn vphp_wrap_routegroup_after(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg_val(0)
     res := recv.after(arg_0)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_get']
-pub fn vphp_wrap_vslimroutegroup_get(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_get']
+pub fn vphp_wrap_routegroup_get(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.get(arg_0, arg_1)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_post']
-pub fn vphp_wrap_vslimroutegroup_post(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_post']
+pub fn vphp_wrap_routegroup_post(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.post(arg_0, arg_1)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_put']
-pub fn vphp_wrap_vslimroutegroup_put(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_put']
+pub fn vphp_wrap_routegroup_put(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.put(arg_0, arg_1)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_patch']
-pub fn vphp_wrap_vslimroutegroup_patch(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_patch']
+pub fn vphp_wrap_routegroup_patch(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.patch(arg_0, arg_1)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_delete']
-pub fn vphp_wrap_vslimroutegroup_delete(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_delete']
+pub fn vphp_wrap_routegroup_delete(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.delete(arg_0, arg_1)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_any']
-pub fn vphp_wrap_vslimroutegroup_any(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_any']
+pub fn vphp_wrap_routegroup_any(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.any(arg_0, arg_1)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_get_named']
-pub fn vphp_wrap_vslimroutegroup_get_named(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_get_named']
+pub fn vphp_wrap_routegroup_get_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.get_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_post_named']
-pub fn vphp_wrap_vslimroutegroup_post_named(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_post_named']
+pub fn vphp_wrap_routegroup_post_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.post_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_put_named']
-pub fn vphp_wrap_vslimroutegroup_put_named(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_put_named']
+pub fn vphp_wrap_routegroup_put_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.put_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_patch_named']
-pub fn vphp_wrap_vslimroutegroup_patch_named(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_patch_named']
+pub fn vphp_wrap_routegroup_patch_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.patch_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_delete_named']
-pub fn vphp_wrap_vslimroutegroup_delete_named(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_delete_named']
+pub fn vphp_wrap_routegroup_delete_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.delete_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
-@[export: 'vphp_wrap_VSlimRouteGroup_any_named']
-pub fn vphp_wrap_vslimroutegroup_any_named(ptr voidptr, ctx vphp.Context) voidptr {
-    mut recv := unsafe { &VSlimRouteGroup(ptr) }
+@[export: 'vphp_wrap_RouteGroup_any_named']
+pub fn vphp_wrap_routegroup_any_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.any_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
-@[export: 'VSlimRouteGroup_handlers']
-pub fn vslimroutegroup_handlers() voidptr {
+@[export: 'RouteGroup_handlers']
+pub fn routegroup_handlers() voidptr {
     return unsafe { &C.vphp_class_handlers{
-        prop_handler:  voidptr(vslimroutegroup_get_prop)
-        write_handler: voidptr(vslimroutegroup_set_prop)
-        sync_handler:  voidptr(vslimroutegroup_sync_props)
-        new_raw:       voidptr(vslimroutegroup_new_raw)
+        prop_handler:  voidptr(routegroup_get_prop)
+        write_handler: voidptr(routegroup_set_prop)
+        sync_handler:  voidptr(routegroup_sync_props)
+        new_raw:       voidptr(routegroup_new_raw)
     } }
 }
 

@@ -4,30 +4,30 @@ VSlim hook execution order is stable
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
 <?php
-$app = new VSlimApp();
+$app = new VSlim\App();
 $trace = [];
 
-$app->before(function (VSlimRequest $req) use (&$trace) {
+$app->before(function (VSlim\Request $req) use (&$trace) {
     $trace[] = 'app-before';
     return null;
 });
 
-$app->after(function (VSlimRequest $req, VSlimResponse $res) use (&$trace) {
+$app->after(function (VSlim\Request $req, VSlim\Response $res) use (&$trace) {
     $trace[] = 'app-after';
     return null;
 });
 
 $api = $app->group('/api');
-$api->before(function (VSlimRequest $req) use (&$trace) {
+$api->before(function (VSlim\Request $req) use (&$trace) {
     $trace[] = 'group-before';
     return null;
 });
-$api->after(function (VSlimRequest $req, VSlimResponse $res) use (&$trace) {
+$api->after(function (VSlim\Request $req, VSlim\Response $res) use (&$trace) {
     $trace[] = 'group-after';
     return null;
 });
 
-$api->get('/ping', function (VSlimRequest $req) use (&$trace) {
+$api->get('/ping', function (VSlim\Request $req) use (&$trace) {
     $trace[] = 'route';
     return 'pong';
 });
