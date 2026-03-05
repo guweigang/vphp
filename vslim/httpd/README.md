@@ -72,7 +72,7 @@ It gives PHP applications a consistent runtime transport for request/response pl
 
 ```bash
 cd vslim/httpd
-v -o vhttpd main.v
+v -o vhttpd .
 ```
 
 ## Run
@@ -102,6 +102,32 @@ This gives you a single command that boots:
 - `vhttpd`
 - `php-worker.php`
 - `vslim` through the worker's loaded extension
+
+### Managed worker pool (MVP)
+
+`vhttpd` now supports a basic `1:N` managed worker mode.
+
+Key flags:
+
+- `--worker-pool-size N`
+- `--worker-socket-prefix /tmp/vslim_worker` (final sockets become `/tmp/vslim_worker_0.sock`, ...)
+- `--worker-sockets /tmp/a.sock,/tmp/b.sock` (explicit list, overrides pool-size generation)
+- `--worker-max-requests N` (restart each worker after N served requests)
+- `--worker-restart-backoff-ms 500`
+- `--worker-restart-backoff-max-ms 8000`
+
+When `--worker-pool-size > 1`, use `{socket}` placeholder in `--worker-cmd`:
+
+```bash
+./vhttpd --host 127.0.0.1 --port 19880 \
+  --pid-file /tmp/vhttpd.pid \
+  --event-log /tmp/vhttpd.events.ndjson \
+  --worker-pool-size 4 \
+  --worker-socket-prefix /tmp/vslim_worker \
+  --worker-autostart 1 \
+  --worker-max-requests 5000 \
+  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket {socket}'
+```
 
 Endpoints:
 
