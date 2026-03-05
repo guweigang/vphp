@@ -46,6 +46,31 @@ curl --noproxy '*' -N "http://127.0.0.1:19881/ai/sse?prompt=hello"
 make -C /Users/guweigang/Source/vphpext/vslim demo-ai
 ```
 
+## Ollama Cloud/Local Proxy 示例
+
+用 PHP worker 作为 client 请求 Ollama 流，再转成 vhttpd 流：
+
+```bash
+cd /Users/guweigang/Source/vphpext/vslim
+VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/ollama-proxy-app.php \
+OLLAMA_CHAT_URL=https://<your-ollama-endpoint>/api/chat \
+OLLAMA_MODEL=qwen2.5:7b-instruct \
+OLLAMA_API_KEY=<your-token> \
+make serve
+```
+
+text passthrough:
+
+```bash
+curl --noproxy '*' -N "http://127.0.0.1:19881/ollama/text?prompt=hello"
+```
+
+SSE:
+
+```bash
+curl --noproxy '*' -N "http://127.0.0.1:19881/ollama/sse?prompt=hello"
+```
+
 ## Framework 示例（可独立进入目录运行）
 
 - Symfony:
