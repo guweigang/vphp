@@ -17,6 +17,7 @@ The design rule is:
 
 - PSR-7/15 support matrix: [psr_support.md](/Users/guweigang/Source/vphpext/vslim/httpd/psr_support.md)
 - Failure/timeout model: [failure_model.md](/Users/guweigang/Source/vphpext/vslim/httpd/failure_model.md)
+- Worker transport contract: [transport_contract.md](/Users/guweigang/Source/vphpext/vslim/httpd/transport_contract.md)
 
 ## Why vhttpd uses veb but vslim keeps its own router
 
