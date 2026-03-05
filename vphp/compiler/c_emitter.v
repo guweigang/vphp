@@ -5,7 +5,8 @@ import compiler.repr
 
 pub struct CGenerator {
 pub:
-	ext_name string
+	ext_name         string
+	class_ce_by_type map[string]string
 }
 
 fn is_constructor_method(name string) bool {
@@ -148,8 +149,8 @@ fn c_string_escape(s string) string {
 const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern vphp_class_handlers* {{CLASS}}_handlers();
-    vphp_class_handlers *h = {{CLASS}}_handlers();
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
@@ -165,10 +166,10 @@ const tpl_static_factory = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void* {{V_FUNC}}(vphp_context_internal ctx);
     void* v_instance = {{V_FUNC}}(ctx);
-    vphp_return_obj(return_value, v_instance, {{LOWER_CLASS}}_ce);
+    vphp_return_obj(return_value, v_instance, {{CLASS_CE}});
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
-        extern vphp_class_handlers* {{CLASS}}_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), {{CLASS}}_handlers());
+        extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), {{HANDLER_CLASS}}_handlers());
     }
 }'
 
@@ -228,7 +229,7 @@ PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     // printf("PHP_METHOD {{CLASS}}::{{PHP_METHOD}} called, wrapper->v_ptr=%p\\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = {{V_FUNC}}(wrapper->v_ptr, ctx);
-    vphp_return_obj(return_value, v_instance, {{LOWER_RET_CLASS}}_ce);
+    vphp_return_obj(return_value, v_instance, {{RET_CLASS_CE}});
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* {{RET_CLASS}}_handlers();
         vphp_bind_handlers(Z_OBJ_P(return_value), {{RET_CLASS}}_handlers());
@@ -240,8 +241,8 @@ const tpl_default_construct = '
 PHP_METHOD({{CLASS}}, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern vphp_class_handlers* {{CLASS}}_handlers();
-    vphp_class_handlers *h = {{CLASS}}_handlers();
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
@@ -287,7 +288,6 @@ fn (g CGenerator) gen_func_c(f &repr.PhpFuncRepr) []string {
 fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	mut c := []string{}
 	c_class := r.c_name()        // C macro safe: VPhp_Task
-	lower_name := c_class.to_lower()
 	has_init := r.methods.any(is_constructor_method(it.name))
 	class_builder := g.build_class_type(r, has_init)
 
@@ -306,12 +306,13 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		returns_object := method_returns_object(r, m)
 
 		vars := {
-			'CLASS':       c_class
-			'LOWER_CLASS': lower_name
-			'PHP_METHOD':  php_name
-			'V_FUNC':      v_c_func
-			'C_TYPE':      tm.c_type
-			'PHP_RETURN':  tm.php_return
+			'CLASS':      c_class
+			'CLASS_CE':   g.ce_var_for_type(r.name)
+			'HANDLER_CLASS': r.name
+			'PHP_METHOD': php_name
+			'V_FUNC':     v_c_func
+			'C_TYPE':     tm.c_type
+			'PHP_RETURN': tm.php_return
 		}
 
 		if is_constructor_method(m.name) {
@@ -329,7 +330,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 				ret_class := tm.v_type.replace('&', '').replace('main.', '')
 				mut obj_vars := vars.clone()
 				obj_vars['RET_CLASS'] = ret_class
-				obj_vars['LOWER_RET_CLASS'] = ret_class.to_lower()
+				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(ret_class)
 				c << render_tpl(tpl_instance_object, obj_vars)
 			} else if tm.is_result {
 				c << render_tpl(tpl_instance_result, vars)
@@ -343,8 +344,8 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 
 	if !has_init {
 		vars := {
-			'CLASS':       c_class
-			'LOWER_CLASS': lower_name
+			'CLASS': c_class
+			'HANDLER_CLASS': r.name
 		}
 		c << render_tpl(tpl_default_construct, vars)
 	}
@@ -353,4 +354,24 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	c << class_builder.render_impl_postlude()
 
 	return c
+}
+
+fn (g CGenerator) ce_var_for_type(v_type string) string {
+	mut key := v_type.trim_space()
+	if key.starts_with('&') {
+		key = key[1..]
+	}
+	if key.starts_with('!') {
+		key = key[1..]
+	}
+	if key.contains('.') {
+		key = key.all_after('.')
+	}
+	if key in g.class_ce_by_type {
+		return g.class_ce_by_type[key]
+	}
+	if key.contains('\\') {
+		return '${key.replace('\\', '_').to_lower()}_ce'
+	}
+	return '${key.to_lower()}_ce'
 }

@@ -260,6 +260,83 @@ fn v_typed_object_restore(ctx vphp.Context) {
 }
 
 @[php_function]
+fn v_zval_conversion_api(ctx vphp.Context) {
+	cfg_z := vphp.ZVal.from[map[string]string]({
+		'lang':   'v'
+		'bridge': 'vphp'
+	}) or {
+		vphp.throw_exception('ZVal.from map failed: ${err.msg()}', 0)
+		return
+	}
+	cfg := cfg_z.to_v[map[string]string]() or {
+		vphp.throw_exception('to_v map failed: ${err.msg()}', 0)
+		return
+	}
+
+	mut nums_z := vphp.ZVal.new_null()
+	nums_z.from_v[[]int]([7, 8, 9]) or {
+		vphp.throw_exception('from_v list failed: ${err.msg()}', 0)
+		return
+	}
+	nums := nums_z.to_v[[]int]() or {
+		vphp.throw_exception('to_v list failed: ${err.msg()}', 0)
+		return
+	}
+
+	flag_z := vphp.ZVal.from[bool](true) or {
+		vphp.throw_exception('ZVal.from bool failed: ${err.msg()}', 0)
+		return
+	}
+	flag := flag_z.to_v[bool]() or {
+		vphp.throw_exception('to_v bool failed: ${err.msg()}', 0)
+		return
+	}
+
+	ctx.return_string('conv=${cfg['lang']}:${cfg['bridge']}:${nums.len}:${nums[0]}:${flag}')
+}
+
+@[php_function]
+fn v_unified_object_interop(ctx vphp.Context) {
+	cls := vphp.php_class('PhpUnifiedBox')
+	name_z := vphp.ZVal.from[string]('neo') or {
+		vphp.throw_exception('build name arg failed: ${err.msg()}', 0)
+		return
+	}
+	score_z := vphp.ZVal.from[int](21) or {
+		vphp.throw_exception('build score arg failed: ${err.msg()}', 0)
+		return
+	}
+	obj := cls.construct([name_z, score_z])
+	if !obj.is_object() {
+		vphp.throw_exception('construct PhpUnifiedBox failed', 0)
+		return
+	}
+
+	name := obj.prop_v[string]('name') or {
+		vphp.throw_exception('prop_v(name) failed: ${err.msg()}', 0)
+		return
+	}
+	double_score := obj.method_v[int]('doubleScore', []) or {
+		vphp.throw_exception('method_v(doubleScore) failed: ${err.msg()}', 0)
+		return
+	}
+	triple := cls.static_method_v[int]('triple', [vphp.ZVal.new_int(4)]) or {
+		vphp.throw_exception('static_method_v(triple) failed: ${err.msg()}', 0)
+		return
+	}
+	label := cls.const_v[string]('LABEL') or {
+		vphp.throw_exception('const_v(LABEL) failed: ${err.msg()}', 0)
+		return
+	}
+	upper := vphp.php_fn('strtoupper').invoke_v[string]([vphp.ZVal.new_string(name)]) or {
+		vphp.throw_exception('invoke_v(strtoupper) failed: ${err.msg()}', 0)
+		return
+	}
+
+	ctx.return_string('interop=${name}:${double_score}:${triple}:${label}:${upper}')
+}
+
+@[php_function]
 fn v_read_php_global_const(ctx vphp.Context) {
 	const_name := ctx.arg[string](0)
 	value := vphp.php_const(const_name)

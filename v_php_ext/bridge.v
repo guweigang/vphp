@@ -826,6 +826,18 @@ fn vphp_wrap_v_typed_object_restore(ctx vphp.Context) {
     v_typed_object_restore(arg_0)
 }
 
+@[export: 'vphp_wrap_v_zval_conversion_api']
+fn vphp_wrap_v_zval_conversion_api(ctx vphp.Context) {
+    arg_0 := ctx
+    v_zval_conversion_api(arg_0)
+}
+
+@[export: 'vphp_wrap_v_unified_object_interop']
+fn vphp_wrap_v_unified_object_interop(ctx vphp.Context) {
+    arg_0 := ctx
+    v_unified_object_interop(arg_0)
+}
+
 @[export: 'vphp_wrap_v_read_php_global_const']
 fn vphp_wrap_v_read_php_global_const(ctx vphp.Context) {
     arg_0 := ctx

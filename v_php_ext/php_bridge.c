@@ -134,6 +134,20 @@ PHP_FUNCTION(v_typed_object_restore) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_typed_object_restore(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_zval_conversion_api, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_zval_conversion_api(vphp_context_internal ctx);
+PHP_FUNCTION(v_zval_conversion_api) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_zval_conversion_api(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_unified_object_interop, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_unified_object_interop(vphp_context_internal ctx);
+PHP_FUNCTION(v_unified_object_interop) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_unified_object_interop(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_read_php_global_const, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_read_php_global_const(vphp_context_internal ctx);
@@ -741,8 +755,8 @@ PHP_METHOD(VPhp__Task, list) {
 PHP_METHOD(VPhp__Task, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
-    extern vphp_class_handlers* VPhp__Task_handlers();
-    vphp_class_handlers *h = VPhp__Task_handlers();
+    extern vphp_class_handlers* VPhpTask_handlers();
+    vphp_class_handlers *h = VPhpTask_handlers();
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
@@ -823,6 +837,8 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_read_php_class_constant, arginfo_v_read_php_class_constant)
     PHP_FE(v_typed_php_interop, arginfo_v_typed_php_interop)
     PHP_FE(v_typed_object_restore, arginfo_v_typed_object_restore)
+    PHP_FE(v_zval_conversion_api, arginfo_v_zval_conversion_api)
+    PHP_FE(v_unified_object_interop, arginfo_v_unified_object_interop)
     PHP_FE(v_read_php_global_const, arginfo_v_read_php_global_const)
     PHP_FE(v_php_symbol_exists, arginfo_v_php_symbol_exists)
     PHP_FE(v_include_php_file, arginfo_v_include_php_file)

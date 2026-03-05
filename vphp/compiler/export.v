@@ -7,7 +7,10 @@ import compiler.repr
 
 fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 	mut fragments := builder.ExportFragments{}
-	c_emitter := CGenerator{ ext_name: c.ext_name }
+	c_emitter := CGenerator{
+		ext_name: c.ext_name
+		class_ce_by_type: c.class_ce_map()
+	}
 
 	for el in c.elements {
 		if el is repr.PhpFuncRepr {
@@ -24,7 +27,10 @@ fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 
 fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	mut fragments := builder.ExportFragments{}
-	c_emitter := CGenerator{ ext_name: c.ext_name }
+	c_emitter := CGenerator{
+		ext_name: c.ext_name
+		class_ce_by_type: c.class_ce_map()
+	}
 
 	for el in c.elements {
 		if el is repr.PhpInterfaceRepr {
@@ -41,6 +47,19 @@ fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	}
 
 	return fragments
+}
+
+fn (c Compiler) class_ce_map() map[string]string {
+	mut m := map[string]string{}
+	for el in c.elements {
+		if el is repr.PhpClassRepr {
+			ce := '${el.c_name().to_lower()}_ce'
+			m[el.name] = ce
+			m[el.php_name] = ce
+			m[el.c_name()] = ce
+		}
+	}
+	return m
 }
 
 // ==========================================

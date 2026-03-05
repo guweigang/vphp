@@ -167,6 +167,7 @@ res := vphp.php_fn('phpversion').call([])
 | `function_exists(name)` | 判断 PHP 全局函数是否存在 |
 | `z.call(args)` | 调用 callable / 函数名 |
 | `z.call_v[T](args)` | `call(args).to_v[T]()` |
+| `z.invoke_v[T](args)` | `invoke(args).to_v[T]()`（`call_v` 语义别名） |
 | `z.call_object[T](args)` | `call(args).to_object[T]()` |
 
 ## 2. 类
@@ -198,8 +199,10 @@ article := vphp.php_class('Article').construct_object[Article]([
 | `interface_exists(name)` | 判断接口是否存在 |
 | `trait_exists(name)` | 判断 trait 是否存在 |
 | `z.construct(args)` | 从 class-string 构造对象 |
+| `z.construct_v[T](args)` | `construct(args).to_v[T]()` |
 | `z.construct_object[T](args)` | `construct(args).to_object[T]()` |
 | `z.static_method(name, args)` | 调用静态方法 |
+| `z.static_method_v[T](name, args)` | `static_method(name, args).to_v[T]()` |
 | `z.static_method_object[T](name, args)` | 期望结果是 `vphp` 对象时恢复 `&T` |
 | `z.static_prop(name)` | 读取静态属性 |
 | `z.static_prop_v[T](name)` | 读取静态属性并转成 V 值 |

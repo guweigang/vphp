@@ -5,6 +5,7 @@ This document describes the symmetric conversion APIs in `zval.v`:
 - Zend Value -> V type: `to_v[T]() !T` on `ZVal`
 - V type -> Zend Value: `from_v[T](value T) !` on `ZVal`
 - Create new value from V type: `new_zval_from[T](value T) !ZVal`
+- Preferred static constructor: `ZVal.from[T](value T) !ZVal`
 
 These APIs are strict by default and are designed to be explicit and predictable.
 
@@ -53,7 +54,7 @@ mode := cfg['mode'] or { 'standard' }
 
 ## 2. V -> Zend Value (`from_v[T]`)
 
-`from_v[T](value)` writes V value into an existing `Val`.
+`from_v[T](value)` writes V value into an existing `ZVal`.
 
 Behavior:
 - Overwrites current target value.
@@ -93,12 +94,19 @@ out.from_v[map[string]f64]({
 ## 3. Create new `ZVal` from V (`new_zval_from[T]`)
 
 `new_zval_from[T](value)` allocates a new underlying zval, then calls `from_v[T](value)`.
+`ZVal.from[T](value)` is the preferred alias with clearer call-site semantics.
 
 ### Example
 
 ```v
 arg0 := new_zval_from[string]('hello') or { return }
 arg1 := new_zval_from[int](42) or { return }
+res := callable.call([arg0, arg1])
+```
+
+```v
+arg0 := ZVal.from[string]('hello') or { return }
+arg1 := ZVal.from[int](42) or { return }
 res := callable.call([arg0, arg1])
 ```
 
@@ -139,7 +147,7 @@ Legacy getters/setters such as `to_int()`, `set_string()`, `add_assoc_*()` are s
 
 Recommended:
 - Use `to_v[T]()` for argument decoding where type safety matters.
-- Use `from_v[T]()` / `new_zval_from[T]()` for return values and payload building.
+- Use `from_v[T]()` for in-place writes and `ZVal.from[T]()` for new values.
 - Keep legacy APIs for low-level/manual bridge logic.
 
 ## 6. Error handling guidance

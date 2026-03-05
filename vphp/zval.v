@@ -763,6 +763,14 @@ pub fn (v ZVal) call_v[T](args []ZVal) !T {
 	return v.call(args).to_v[T]()
 }
 
+pub fn (v ZVal) invoke_v[T](args []ZVal) !T {
+	return v.invoke(args).to_v[T]()
+}
+
+pub fn (v ZVal) construct_v[T](args []ZVal) !T {
+	return v.construct(args).to_v[T]()
+}
+
 pub fn (v ZVal) method_v[T](method string, args []ZVal) !T {
 	return v.method(method, args).to_v[T]()
 }
@@ -777,6 +785,10 @@ pub fn (v ZVal) static_prop_v[T](name string) !T {
 
 pub fn (v ZVal) const_v[T](name string) !T {
 	return v.@const(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_method_v[T](method string, args []ZVal) !T {
+	return v.static_method(method, args).to_v[T]()
 }
 
 // -------- Typed object helpers --------
@@ -903,6 +915,22 @@ pub fn new_val_string(s string) ZVal {
 // ======== 新版清晰转换 API ========
 // Zend Value -> V:   v.to_v[T]()
 // V -> Zend Value:   v.from_v[T](x), new_zval_from[T](x)
+
+// 便捷转换：array => map<string,string>（无效/null/undef 返回空 map）
+pub fn (v ZVal) to_string_map() map[string]string {
+	if !v.is_valid() || v.is_null() || v.is_undef() {
+		return map[string]string{}
+	}
+	return v.to_v[map[string]string]() or { map[string]string{} }
+}
+
+// 便捷转换：array => []string（无效/null/undef 返回空数组）
+pub fn (v ZVal) to_string_list() []string {
+	if !v.is_valid() || v.is_null() || v.is_undef() {
+		return []string{}
+	}
+	return v.to_v[[]string]() or { []string{} }
+}
 
 // 将 Zend Value 转换为明确的 V 类型（严格校验类型）
 pub fn (v ZVal) to_v[T]() !T {
@@ -1114,6 +1142,10 @@ pub fn new_zval_from[T](value T) !ZVal {
 	}
 	out.from_v[T](value)!
 	return out
+}
+
+pub fn ZVal.from[T](value T) !ZVal {
+	return new_zval_from[T](value)!
 }
 
 // 兼容旧命名：建议改用 new_zval_from[T]
