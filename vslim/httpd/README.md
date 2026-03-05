@@ -52,6 +52,22 @@ flowchart LR
     D --> E["vphp"]
 ```
 
+## Why this matters in PHP (vs nginx + PHP-FPM)
+
+`nginx + PHP-FPM` can stream too, but stream behavior is often sensitive to buffering and timeout settings across layers.
+`vhttpd + php-worker` focuses on a unified streaming contract for PHP apps.
+
+| Dimension | nginx + PHP-FPM | vhttpd + php-worker |
+|---|---|---|
+| Streaming support | Possible, often infra-tuning heavy | First-class via worker stream frames |
+| App API shape | Framework/flush specific | Unified `WorkerStreamResponse` (`text`/`sse`) |
+| Transport semantics | Indirect through proxy/FPM behavior | Explicit `start/chunk/error/end` contract |
+| AI token streaming path | Often ad-hoc per project | Reusable runtime pattern |
+| Debug surface | Split across multiple components | Concentrated at worker boundary |
+
+This does not replace nginx by itself.
+It gives PHP applications a consistent runtime transport for request/response plus token streaming workloads.
+
 ## Build
 
 ```bash

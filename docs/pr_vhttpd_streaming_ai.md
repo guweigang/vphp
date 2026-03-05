@@ -146,6 +146,27 @@ Notes:
 3. SSE path currently closes connection explicitly after stream end; intermediaries/proxies should be validated in production topology.
 4. `test_httpd_worker_streaming.phpt` now intentionally skips on environments without Unix sockets, which can hide regressions there unless CI has at least one socket-capable runner.
 
+## Why This Matters for PHP (vs nginx + PHP-FPM)
+
+`nginx + PHP-FPM` can support SSE/chunked responses, but it typically requires per-project tuning
+across buffering and timeout layers. The value of this PR is a **unified runtime stream contract**
+for PHP apps behind `vhttpd`.
+
+| Dimension | nginx + PHP-FPM | vhttpd + php-worker (this PR) |
+|---|---|---|
+| Streaming support | Possible, often config-sensitive | First-class via worker stream frames |
+| App API shape | Framework-specific flush patterns | Unified `WorkerStreamResponse` (`text`/`sse`) |
+| Transport semantics | Indirect (proxy/buffer interactions) | Explicit contract (`start/chunk/error/end`) |
+| AI token streaming path | Usually ad-hoc per app | Standardized from PHP generator to client stream |
+| Cross-project reuse | Lower (infra + framework coupling) | Higher (same worker contract across apps) |
+| Debug surface | Split across web/proxy/FPM/app | Concentrated at `vhttpd` + worker boundary |
+
+Bottom line:
+
+- This is not "nginx replacement" by itself.
+- It is a PHP-focused runtime transport layer that reduces friction for token streaming and
+  keeps behavior consistent across apps/frameworks.
+
 ## Rollback Plan
 
 - Revert `14f5341` first if streaming transport regression appears.
