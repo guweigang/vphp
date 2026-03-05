@@ -22,7 +22,7 @@ if (is_file($probe)) {
 --FILE--
 <?php
 $root = dirname(__DIR__);
-$src = $root . '/httpd/main.v';
+$src = $root . '/httpd';
 $bin = $root . '/httpd/vhttpd';
 
 $out = [];

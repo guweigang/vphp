@@ -23,14 +23,18 @@ pub struct App {
 pub:
 	event_log string
 pub mut:
-	worker_socket          string
+	worker_sockets         []string
 	worker_read_timeout_ms int
+	worker_rr_index        int
+	worker_autostart       bool
+	worker_cmd             string
+	worker_workdir         string
+	worker_restart_backoff_ms int
+	worker_restart_backoff_max_ms int
+	worker_max_requests    int
+	managed_workers        []ManagedWorker
+	pool_mu                sync.Mutex
 	mu                     sync.Mutex
-}
-
-struct ManagedWorker {
-mut:
-	proc &os.Process = unsafe { nil }
 }
 
 struct WorkerResponse {
@@ -497,7 +501,7 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
 	req_id := resolve_request_id(ctx, path)
 	trace_id := resolve_trace_id(ctx, path)
-	mut conn := unix.connect_stream(app.worker_socket) or {
+	selected_socket := connect_any_worker(mut app) or {
 		err_msg := err.msg()
 		status, error_class := classify_worker_error(err_msg)
 		app.emit('http.request', {
@@ -515,6 +519,28 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
 		ctx.res.set_status(http.status_from_int(status))
 		return ctx.text(body_on_head)
+	}
+	mut conn := unix.connect_stream(selected_socket) or {
+		err_msg := err.msg()
+		status, error_class := classify_worker_error(err_msg)
+		app.emit('http.request', {
+			'method': method.to_upper()
+			'path':   normalize_path(path)
+			'status': '${status}'
+			'request_id': req_id
+			'trace_id': trace_id
+			'duration_ms': '${time.now().unix_milli() - start_ms}'
+			'error_class': error_class
+			'error': err_msg
+		})
+		ctx.set_custom_header('x-request-id', req_id) or {}
+		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
+		ctx.res.set_status(http.status_from_int(status))
+		return ctx.text(body_on_head)
+	}
+	defer {
+		app.on_worker_request_finished(selected_socket)
 	}
 	defer {
 		conn.close() or {}
@@ -599,48 +625,6 @@ fn parse_query_map(query_str string) map[string]string {
 	return out
 }
 
-fn wait_for_worker(socket_path string, timeout_ms int) ! {
-	deadline := time.now().add(time.millisecond * timeout_ms)
-	for time.now() < deadline {
-		mut conn := unix.connect_stream(socket_path) or {
-			time.sleep(100 * time.millisecond)
-			continue
-		}
-		conn.close() or {}
-		return
-	}
-	return error('worker socket not ready: ${socket_path}')
-}
-
-fn start_managed_worker(worker_cmd string, worker_socket string, workdir string) !ManagedWorker {
-	if worker_cmd == '' {
-		return error('empty worker command')
-	}
-	if worker_socket == '' {
-		return error('worker socket is required when autostart is enabled')
-	}
-	mut proc := os.new_process('/bin/sh')
-	proc.set_args(['-lc', worker_cmd])
-	proc.set_work_folder(workdir)
-	proc.use_pgroup = true
-	proc.run()
-	wait_for_worker(worker_socket, 5000)!
-	return ManagedWorker{
-		proc: proc
-	}
-}
-
-fn (mut w ManagedWorker) stop() {
-	if isnil(w.proc) {
-		return
-	}
-	if w.proc.is_alive() {
-		w.proc.signal_pgkill()
-		w.proc.wait()
-	}
-	w.proc.close()
-}
-
 fn apply_worker_headers(mut ctx Context, headers map[string]string) {
 	for name, value in headers {
 		lower := name.to_lower()
@@ -649,19 +633,6 @@ fn apply_worker_headers(mut ctx Context, headers map[string]string) {
 		}
 		ctx.set_custom_header(name, value) or {}
 	}
-}
-
-fn get_arg(args []string, key string, default_val string) string {
-	for i, a in args {
-		if a == key && i + 1 < args.len {
-			return args[i + 1]
-		}
-		prefix := '${key}='
-		if a.starts_with(prefix) {
-			return a.all_after(prefix)
-		}
-	}
-	return default_val
 }
 
 fn (mut app App) emit(kind string, fields map[string]string) {
@@ -704,7 +675,7 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 	path := ctx.query['path'] or { '/health' }
 	req_id := resolve_request_id(ctx, path)
 	ctx.set_custom_header('x-request-id', req_id) or {}
-	if app.worker_socket != '' {
+	if app.worker_sockets.len > 0 {
 		return proxy_worker_response(mut app, mut ctx, method, path, 'Bad Gateway')
 	}
 	mut status := 200
@@ -730,7 +701,7 @@ pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
 	path := ctx.query['path'] or { '/health' }
 	req_id := resolve_request_id(ctx, path)
 	ctx.set_custom_header('x-request-id', req_id) or {}
-	if app.worker_socket != '' {
+	if app.worker_sockets.len > 0 {
 		return proxy_worker_response(mut app, mut ctx, method, path, '')
 	}
 	mut status := 200
@@ -807,7 +778,7 @@ pub fn (mut app App) events_stream(mut ctx Context) veb.Result {
 
 @['/:path...'; get]
 pub fn (mut app App) proxy_get(mut ctx Context, path string) veb.Result {
-	if app.worker_socket == '' {
+	if app.worker_sockets.len == 0 {
 		ctx.res.set_status(.not_found)
 		return ctx.text('Not Found')
 	}
@@ -817,7 +788,7 @@ pub fn (mut app App) proxy_get(mut ctx Context, path string) veb.Result {
 
 @['/:path...'; post]
 pub fn (mut app App) proxy_post(mut ctx Context, path string) veb.Result {
-	if app.worker_socket == '' {
+	if app.worker_sockets.len == 0 {
 		ctx.res.set_status(.not_found)
 		return ctx.text('Not Found')
 	}
@@ -827,7 +798,7 @@ pub fn (mut app App) proxy_post(mut ctx Context, path string) veb.Result {
 
 @['/:path...'; put]
 pub fn (mut app App) proxy_put(mut ctx Context, path string) veb.Result {
-	if app.worker_socket == '' {
+	if app.worker_sockets.len == 0 {
 		ctx.res.set_status(.not_found)
 		return ctx.text('Not Found')
 	}
@@ -837,7 +808,7 @@ pub fn (mut app App) proxy_put(mut ctx Context, path string) veb.Result {
 
 @['/:path...'; patch]
 pub fn (mut app App) proxy_patch(mut ctx Context, path string) veb.Result {
-	if app.worker_socket == '' {
+	if app.worker_sockets.len == 0 {
 		ctx.res.set_status(.not_found)
 		return ctx.text('Not Found')
 	}
@@ -847,7 +818,7 @@ pub fn (mut app App) proxy_patch(mut ctx Context, path string) veb.Result {
 
 @['/:path...'; delete]
 pub fn (mut app App) proxy_delete(mut ctx Context, path string) veb.Result {
-	if app.worker_socket == '' {
+	if app.worker_sockets.len == 0 {
 		ctx.res.set_status(.not_found)
 		return ctx.text('Not Found')
 	}
@@ -857,64 +828,10 @@ pub fn (mut app App) proxy_delete(mut ctx Context, path string) veb.Result {
 
 @['/:path...'; head]
 pub fn (mut app App) proxy_head(mut ctx Context, path string) veb.Result {
-	if app.worker_socket == '' {
+	if app.worker_sockets.len == 0 {
 		ctx.res.set_status(.not_found)
 		return ctx.text('')
 	}
 	target := if ctx.req.url == '' { path } else { ctx.req.url }
 	return proxy_worker_response(mut app, mut ctx, 'HEAD', target, '')
-}
-
-fn run_server(args []string) {
-	host := get_arg(args, '--host', '127.0.0.1')
-	port := get_arg(args, '--port', '18081').int()
-	event_log := get_arg(args, '--event-log', '/tmp/vhttpd.events.ndjson')
-	pid_file := get_arg(args, '--pid-file', '/tmp/vhttpd.pid')
-	worker_socket := get_arg(args, '--worker-socket', '')
-	worker_read_timeout_ms := get_arg(args, '--worker-read-timeout-ms', '3000').int()
-	worker_cmd := get_arg(args, '--worker-cmd', '')
-	worker_autostart := get_arg(args, '--worker-autostart', '').trim_space() in ['1', 'true', 'yes', 'on']
-
-	os.mkdir_all(os.dir(event_log)) or {}
-	os.mkdir_all(os.dir(pid_file)) or {}
-	os.write_file(pid_file, '${os.getpid()}') or {}
-	mut managed := ManagedWorker{}
-	defer {
-		managed.stop()
-		os.rm(pid_file) or {}
-	}
-
-	if worker_autostart {
-		managed = start_managed_worker(worker_cmd, worker_socket, os.getwd()) or {
-			eprintln('worker start failed: ${err}')
-			return
-		}
-	}
-
-	mut app := &App{
-		event_log: event_log
-		worker_socket: worker_socket
-		worker_read_timeout_ms: worker_read_timeout_ms
-	}
-	app.use(request_id.middleware[Context](request_id.Config{
-		header: 'X-Request-ID'
-		generator: fn () string {
-			return 'req-${time.now().unix_micro()}'
-		}
-	}))
-	app.emit('server.started', {
-		'host': host
-		'port': '${port}'
-		'pid':  '${os.getpid()}'
-		'worker_autostart': if worker_autostart { 'true' } else { 'false' }
-	})
-
-	veb.run_at[App, Context](mut app, host: host, port: port, family: .ip) or {
-		eprintln('server failed: ${err}')
-	}
-}
-
-fn main() {
-	args := os.args[1..]
-	run_server(args)
 }

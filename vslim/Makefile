@@ -34,7 +34,7 @@ ext:
 		-I../vphp $(PHP_LDFLAGS) $(PHP_LIBS) -undefined dynamic_lookup -fvisibility=default
 
 vhttpd:
-	v -o $(VHTTPD_BIN) $(HTTPD_DIR)/main.v
+	v -o $(VHTTPD_BIN) $(HTTPD_DIR)
 
 serve: build vhttpd
 	$(VHTTPD_BIN) \
