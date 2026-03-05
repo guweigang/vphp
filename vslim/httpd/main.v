@@ -8,17 +8,22 @@ import os
 import sync
 import time
 import veb
+import veb.request_id
+import veb.sse
 
 pub struct Context {
 	veb.Context
+	request_id.RequestIdContext
 }
 
 pub struct App {
+	veb.Middleware[Context]
 pub:
 	event_log string
 pub mut:
-	worker_socket string
-	mu sync.Mutex
+	worker_socket          string
+	worker_read_timeout_ms int
+	mu                     sync.Mutex
 }
 
 struct ManagedWorker {
@@ -31,6 +36,22 @@ struct WorkerResponse {
 	status       int
 	body         string
 	headers      map[string]string
+}
+
+struct WorkerStreamFrame {
+	mode         string
+	event        string
+	id           string
+	status       int
+	stream_type  string @[json: 'stream_type']
+	content_type string @[json: 'content_type']
+	headers      map[string]string
+	data         string
+	sse_id       string @[json: 'sse_id']
+	sse_event    string @[json: 'sse_event']
+	sse_retry    int    @[json: 'sse_retry']
+	error        string
+	error_class  string @[json: 'error_class']
 }
 
 struct WorkerRequestPayload {
@@ -156,21 +177,62 @@ fn read_frame(mut conn unix.StreamConn) !string {
 	return body.bytestr()
 }
 
-fn dispatch_via_worker(socket_path string, method string, path string, req http.Request, remote_addr string) !WorkerResponse {
+fn resolve_trace_id(ctx Context, path string) string {
+	_, query_str := normalize_request_target(path)
+	query := parse_query_map(query_str)
+	if query['trace_id'] != '' {
+		return query['trace_id']
+	}
+	headers := header_map_from_request(ctx.req)
+	for key in ['x-trace-id', 'x-request-id'] {
+		if headers[key] != '' {
+			return headers[key]
+		}
+	}
+	if ctx.request_id != '' {
+		return ctx.request_id
+	}
+	return 'vhttpd-${time.now().unix_micro()}'
+}
+
+fn resolve_request_id(ctx Context, path string) string {
+	_, query_str := normalize_request_target(path)
+	query := parse_query_map(query_str)
+	if query['request_id'] != '' {
+		return query['request_id']
+	}
+	if ctx.request_id != '' {
+		return ctx.request_id
+	}
+	headers := header_map_from_request(ctx.req)
+	header_rid := headers['x-request-id']
+	if header_rid != '' {
+		return header_rid
+	}
+	return 'req-${time.now().unix_micro()}'
+}
+
+fn dispatch_via_worker(socket_path string, method string, path string, req http.Request, remote_addr string, trace_id string, req_id string, read_timeout_ms int) !WorkerResponse {
 	mut conn := unix.connect_stream(socket_path)!
+	if read_timeout_ms > 0 {
+		conn.set_read_timeout(time.millisecond * read_timeout_ms)
+	}
 	defer {
 		conn.close() or {}
 	}
 	normalized_path, query_string := normalize_request_target(path)
 	query := parse_query_map(query_string)
-	headers := header_map_from_request(req)
+	mut headers := header_map_from_request(req)
+	if headers['x-request-id'] == '' {
+		headers['x-request-id'] = req_id
+	}
 	cookies := cookie_map_from_request(req)
 	server := server_map_from_request(req, remote_addr)
 	host := server['host'] or { req.host }
 	port := server['port'] or { '' }
 	scheme := req.header.get(.x_forwarded_proto) or { 'http' }
 	payload := json.encode(WorkerRequestPayload{
-		id: 'vhttpd-${time.now().unix_micro()}'
+		id: trace_id
 		method: method.to_upper()
 		path: normalized_path
 		body: req.data
@@ -192,22 +254,227 @@ fn dispatch_via_worker(socket_path string, method string, path string, req http.
 	return resp
 }
 
+fn encode_worker_request(method string, path string, req http.Request, remote_addr string, trace_id string, req_id string) string {
+	normalized_path, query_string := normalize_request_target(path)
+	query := parse_query_map(query_string)
+	mut headers := header_map_from_request(req)
+	if headers['x-request-id'] == '' {
+		headers['x-request-id'] = req_id
+	}
+	cookies := cookie_map_from_request(req)
+	server := server_map_from_request(req, remote_addr)
+	host := server['host'] or { req.host }
+	port := server['port'] or { '' }
+	scheme := req.header.get(.x_forwarded_proto) or { 'http' }
+	return json.encode(WorkerRequestPayload{
+		id: trace_id
+		method: method.to_upper()
+		path: normalized_path
+		body: req.data
+		scheme: scheme
+		host: host
+		port: port
+		protocol_version: req.version.str().trim_left('HTTP/')
+		remote_addr: remote_addr
+		query: query
+		headers: headers
+		cookies: cookies
+		attributes: map[string]string{}
+		server: server
+		uploaded_files: []string{}
+	})
+}
+
+fn try_decode_stream_start(raw string) ?WorkerStreamFrame {
+	frame := json.decode(WorkerStreamFrame, raw) or { return none }
+	if frame.mode == 'stream' && frame.event == 'start' {
+		return frame
+	}
+	return none
+}
+
+fn stream_via_sse(mut app App, mut ctx Context, mut conn unix.StreamConn, start WorkerStreamFrame, method string, path string, req_id string, trace_id string, start_ms i64) veb.Result {
+	ctx.takeover_conn()
+	ctx.res.set_status(http.status_from_int(if start.status > 0 { start.status } else { 200 }))
+	ctx.set_custom_header('x-request-id', req_id) or {}
+	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+	apply_worker_headers(mut ctx, start.headers)
+	mut stream := sse.start_connection(mut ctx.Context)
+	for {
+		raw := read_frame(mut conn) or { break }
+		frame := json.decode(WorkerStreamFrame, raw) or { continue }
+		if frame.mode != 'stream' {
+			continue
+		}
+		if frame.event == 'chunk' {
+			stream.send_message(
+				id: frame.sse_id
+				event: frame.sse_event
+				data: frame.data
+				retry: frame.sse_retry
+			) or { break }
+			continue
+		}
+		if frame.event == 'error' {
+			app.emit('http.stream.error', {
+				'method': method.to_upper()
+				'path': normalize_path(path)
+				'request_id': req_id
+				'trace_id': trace_id
+				'error_class': frame.error_class
+				'error': frame.error
+			})
+			break
+		}
+		if frame.event == 'end' {
+			break
+		}
+	}
+	stream.close()
+	app.emit('http.request', {
+		'method': method.to_upper()
+		'path': normalize_path(path)
+		'status': '${if start.status > 0 { start.status } else { 200 }}'
+		'request_id': req_id
+		'trace_id': trace_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
+		'response_mode': 'stream'
+		'stream_type': 'sse'
+	})
+	return veb.no_result()
+}
+
+fn stream_via_passthrough(mut app App, mut ctx Context, mut conn unix.StreamConn, start WorkerStreamFrame, method string, path string, req_id string, trace_id string, start_ms i64) veb.Result {
+	ctx.takeover_conn()
+	ctx.res.set_status(http.status_from_int(if start.status > 0 { start.status } else { 200 }))
+	ctx.set_custom_header('x-request-id', req_id) or {}
+	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+	ctx.set_custom_header('x-vhttpd-stream-mode', 'passthrough') or {}
+	apply_worker_headers(mut ctx, start.headers)
+	ctype := if start.content_type != '' { start.content_type } else { 'text/plain; charset=utf-8' }
+	ctx.send_response_to_client(ctype, '') or {}
+	for {
+		raw := read_frame(mut conn) or { break }
+		frame := json.decode(WorkerStreamFrame, raw) or { continue }
+		if frame.mode != 'stream' {
+			continue
+		}
+		if frame.event == 'chunk' {
+			if method.to_upper() != 'HEAD' {
+				ctx.conn.write_string(frame.data) or { break }
+			}
+			continue
+		}
+		if frame.event == 'error' {
+			app.emit('http.stream.error', {
+				'method': method.to_upper()
+				'path': normalize_path(path)
+				'request_id': req_id
+				'trace_id': trace_id
+				'error_class': frame.error_class
+				'error': frame.error
+			})
+			break
+		}
+		if frame.event == 'end' {
+			break
+		}
+	}
+	app.emit('http.request', {
+		'method': method.to_upper()
+		'path': normalize_path(path)
+		'status': '${if start.status > 0 { start.status } else { 200 }}'
+		'request_id': req_id
+		'trace_id': trace_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
+		'response_mode': 'stream'
+		'stream_type': if start.stream_type != '' { start.stream_type } else { 'passthrough' }
+	})
+	return veb.no_result()
+}
+
+fn classify_worker_error(err_msg string) (int, string) {
+	msg := err_msg.to_lower()
+	if msg.contains('timed out') || msg.contains('timeout') {
+		return 504, 'timeout'
+	}
+	return 502, 'transport_error'
+}
+
 fn proxy_worker_response(mut app App, mut ctx Context, method string, path string, body_on_head string) veb.Result {
+	start_ms := time.now().unix_milli()
 	remote_addr := if isnil(ctx.conn) { '' } else { ctx.conn.peer_ip() or { '' } }
-	resp := dispatch_via_worker(app.worker_socket, method, path, ctx.req, remote_addr) or {
+	req_id := resolve_request_id(ctx, path)
+	trace_id := resolve_trace_id(ctx, path)
+	mut conn := unix.connect_stream(app.worker_socket) or {
+		err_msg := err.msg()
+		status, error_class := classify_worker_error(err_msg)
 		app.emit('http.request', {
 			'method': method.to_upper()
 			'path':   normalize_path(path)
-			'status': '502'
+			'status': '${status}'
+			'request_id': req_id
+			'trace_id': trace_id
+			'duration_ms': '${time.now().unix_milli() - start_ms}'
+			'error_class': error_class
+			'error': err_msg
 		})
-		ctx.res.set_status(.bad_gateway)
+		ctx.set_custom_header('x-request-id', req_id) or {}
+		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
+		ctx.res.set_status(http.status_from_int(status))
+		return ctx.text(body_on_head)
+	}
+	defer {
+		conn.close() or {}
+	}
+	if app.worker_read_timeout_ms > 0 {
+		conn.set_read_timeout(time.millisecond * app.worker_read_timeout_ms)
+	}
+	payload := encode_worker_request(method, path, ctx.req, remote_addr, trace_id, req_id)
+	write_frame(mut conn, payload) or {
+		err_msg := err.msg()
+		status, error_class := classify_worker_error(err_msg)
+		ctx.set_custom_header('x-request-id', req_id) or {}
+		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
+		ctx.res.set_status(http.status_from_int(status))
+		return ctx.text(body_on_head)
+	}
+	first_raw := read_frame(mut conn) or {
+		err_msg := err.msg()
+		status, error_class := classify_worker_error(err_msg)
+		ctx.set_custom_header('x-request-id', req_id) or {}
+		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
+		ctx.res.set_status(http.status_from_int(status))
+		return ctx.text(body_on_head)
+	}
+	if start := try_decode_stream_start(first_raw) {
+		if (start.stream_type == 'sse' || start.content_type.starts_with('text/event-stream')) && method.to_upper() != 'HEAD' {
+			return stream_via_sse(mut app, mut ctx, mut conn, start, method, path, req_id,
+				trace_id, start_ms)
+		}
+		return stream_via_passthrough(mut app, mut ctx, mut conn, start, method, path,
+			req_id, trace_id, start_ms)
+	}
+	resp := json.decode(WorkerResponse, first_raw) or {
+		ctx.set_custom_header('x-request-id', req_id) or {}
+		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+		ctx.set_custom_header('x-vhttpd-error-class', 'transport_error') or {}
+		ctx.res.set_status(http.status_from_int(502))
 		return ctx.text(body_on_head)
 	}
 	app.emit('http.request', {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${resp.status}'
+		'request_id': req_id
+		'trace_id': trace_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
 	})
+	ctx.set_custom_header('x-request-id', req_id) or {}
+	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.res.set_status(http.status_from_int(resp.status))
 	apply_worker_headers(mut ctx, resp.headers)
 	ctype := resp.headers['content-type'] or { 'text/plain; charset=utf-8' }
@@ -326,11 +593,14 @@ fn (mut app App) emit(kind string, fields map[string]string) {
 
 @[get]
 pub fn (mut app App) health(mut ctx Context) veb.Result {
+	req_id := resolve_request_id(ctx, '/health')
 	status, body, _ := dispatch_core('GET', '/health')
+	ctx.set_custom_header('x-request-id', req_id) or {}
 	app.emit('http.request', {
 		'method': 'GET'
 		'path':   '/health'
 		'status': '${status}'
+		'request_id': req_id
 	})
 	ctx.res.set_status(http.status_from_int(status))
 	return ctx.text(body)
@@ -338,8 +608,11 @@ pub fn (mut app App) health(mut ctx Context) veb.Result {
 
 @['/dispatch'; get]
 pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
+	start_ms := time.now().unix_milli()
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
+	req_id := resolve_request_id(ctx, path)
+	ctx.set_custom_header('x-request-id', req_id) or {}
 	if app.worker_socket != '' {
 		return proxy_worker_response(mut app, mut ctx, method, path, 'Bad Gateway')
 	}
@@ -351,6 +624,8 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${status}'
+		'request_id': req_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
 	})
 	ctx.res.set_status(http.status_from_int(status))
 	ctx.set_content_type(ctype)
@@ -359,8 +634,11 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 
 @['/dispatch'; head]
 pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
+	start_ms := time.now().unix_milli()
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
+	req_id := resolve_request_id(ctx, path)
+	ctx.set_custom_header('x-request-id', req_id) or {}
 	if app.worker_socket != '' {
 		return proxy_worker_response(mut app, mut ctx, method, path, '')
 	}
@@ -372,10 +650,68 @@ pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
 		'method': method.to_upper()
 		'path':   normalize_path(path)
 		'status': '${status}'
+		'request_id': req_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
 	})
 	ctx.res.set_status(http.status_from_int(status))
 	ctx.set_content_type(ctype)
 	return ctx.text(body)
+}
+
+@['/events/stream'; get]
+pub fn (mut app App) events_stream(mut ctx Context) veb.Result {
+	start_ms := time.now().unix_milli()
+	path := if ctx.req.url == '' { '/events/stream' } else { ctx.req.url }
+	req_id := resolve_request_id(ctx, path)
+	trace_id := resolve_trace_id(ctx, path)
+	mut count := (ctx.query['count'] or { '3' }).int()
+	if count < 1 {
+		count = 1
+	}
+	if count > 20 {
+		count = 20
+	}
+	mut interval_ms := (ctx.query['interval_ms'] or { '150' }).int()
+	if interval_ms < 0 {
+		interval_ms = 0
+	}
+	if interval_ms > 1000 {
+		interval_ms = 1000
+	}
+
+	ctx.takeover_conn()
+	ctx.set_custom_header('x-request-id', req_id) or {}
+	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+	ctx.set_custom_header('x-accel-buffering', 'no') or {}
+	mut stream := sse.start_connection(mut ctx.Context)
+	stream.send_message(retry: 1000) or {
+		return ctx.server_error_with_status(.not_implemented)
+	}
+	for i in 0 .. count {
+		payload := json.encode({
+			'request_id': req_id
+			'trace_id':   trace_id
+			'seq':        '${i + 1}'
+			'ts':         '${time.now().unix()}'
+		})
+		stream.send_message(id: '${req_id}-${i + 1}', event: 'ping', data: payload) or {
+			return veb.no_result()
+		}
+		if i + 1 < count && interval_ms > 0 {
+			time.sleep(time.millisecond * interval_ms)
+		}
+	}
+	stream.close()
+
+	app.emit('http.request', {
+		'method': 'GET'
+		'path': '/events/stream'
+		'status': '200'
+		'request_id': req_id
+		'trace_id': trace_id
+		'duration_ms': '${time.now().unix_milli() - start_ms}'
+	})
+	return veb.no_result()
 }
 
 @['/:path...'; get]
@@ -444,6 +780,7 @@ fn run_server(args []string) {
 	event_log := get_arg(args, '--event-log', '/tmp/vhttpd.events.ndjson')
 	pid_file := get_arg(args, '--pid-file', '/tmp/vhttpd.pid')
 	worker_socket := get_arg(args, '--worker-socket', '')
+	worker_read_timeout_ms := get_arg(args, '--worker-read-timeout-ms', '3000').int()
 	worker_cmd := get_arg(args, '--worker-cmd', '')
 	worker_autostart := get_arg(args, '--worker-autostart', '').trim_space() in ['1', 'true', 'yes', 'on']
 
@@ -466,7 +803,14 @@ fn run_server(args []string) {
 	mut app := &App{
 		event_log: event_log
 		worker_socket: worker_socket
+		worker_read_timeout_ms: worker_read_timeout_ms
 	}
+	app.use(request_id.middleware[Context](request_id.Config{
+		header: 'X-Request-ID'
+		generator: fn () string {
+			return 'req-${time.now().unix_micro()}'
+		}
+	}))
 	app.emit('server.started', {
 		'host': host
 		'port': '${port}'

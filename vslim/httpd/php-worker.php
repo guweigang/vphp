@@ -15,6 +15,58 @@ require_once __DIR__ . "/psr7_bridge.php";
  *   php httpd/php-worker.php --socket /tmp/vphp_worker.sock
  */
 
+final class WorkerStreamResponse
+{
+    public function __construct(
+        public string $streamType,
+        public iterable $chunks,
+        public int $status = 200,
+        public string $contentType = "text/plain; charset=utf-8",
+        public array $headers = [],
+    ) {
+    }
+
+    public static function sse(
+        iterable $events,
+        int $status = 200,
+        array $headers = [],
+    ): self {
+        return new self(
+            "sse",
+            $events,
+            $status,
+            "text/event-stream",
+            $headers,
+        );
+    }
+
+    public static function text(
+        iterable $chunks,
+        int $status = 200,
+        string $contentType = "text/plain; charset=utf-8",
+        array $headers = [],
+    ): self {
+        return new self("text", $chunks, $status, $contentType, $headers);
+    }
+}
+
+function vhttpd_stream_sse(
+    iterable $events,
+    int $status = 200,
+    array $headers = [],
+): WorkerStreamResponse {
+    return WorkerStreamResponse::sse($events, $status, $headers);
+}
+
+function vhttpd_stream_text(
+    iterable $chunks,
+    int $status = 200,
+    string $contentType = "text/plain; charset=utf-8",
+    array $headers = [],
+): WorkerStreamResponse {
+    return WorkerStreamResponse::text($chunks, $status, $contentType, $headers);
+}
+
 final class PhpWorker
 {
     private string $socketPath;
@@ -88,8 +140,19 @@ final class PhpWorker
                 continue;
             }
 
-            $res = $this->dispatchRequest($req);
-            $this->writeFrame($conn, json_encode($res, JSON_UNESCAPED_UNICODE));
+            $result = $this->dispatchRequestResult($req);
+            $id = (string) ($req["id"] ?? "");
+            if ($result instanceof WorkerStreamResponse) {
+                $this->writeStreamResponse($conn, $id, $result);
+                continue;
+            }
+            if (!is_array($result)) {
+                $result = $this->res($id, 500, "Internal Server Error", [
+                    "x-worker-error" => "Invalid worker response type",
+                    "x-worker-error-class" => "app_contract_error",
+                ]);
+            }
+            $this->writeFrame($conn, json_encode($result, JSON_UNESCAPED_UNICODE));
         }
 
         fclose($conn);
@@ -100,6 +163,24 @@ final class PhpWorker
      * @return array<string,mixed>
      */
     public function dispatchRequest(array $req): array
+    {
+        $id = (string) ($req["id"] ?? "");
+        $result = $this->dispatchRequestResult($req);
+        if ($result instanceof WorkerStreamResponse) {
+            return $this->res($id, 500, "Streaming response requires vhttpd stream mode", [
+                "x-worker-error-class" => "app_contract_error",
+            ]);
+        }
+        if (!is_array($result)) {
+            return $this->res($id, 500, "Internal Server Error", [
+                "x-worker-error-class" => "app_contract_error",
+            ]);
+        }
+        return $result;
+    }
+
+    /** @param array<string,mixed> $req */
+    private function dispatchRequestResult(array $req): mixed
     {
         $id = (string) ($req["id"] ?? "");
         $envelope = $this->normalizeRequestEnvelope($req);
@@ -119,6 +200,9 @@ final class PhpWorker
                     $psrRequest,
                     $envelope,
                 );
+                if ($appResult instanceof WorkerStreamResponse) {
+                    return $appResult;
+                }
                 return $this->normalizeAppResponse($id, $appResult);
             }
 
@@ -187,10 +271,95 @@ final class PhpWorker
 
             return $this->res($id, 404, "Not Found");
         } catch (Throwable $e) {
+            $errorClass = $this->classifyThrowable($e);
             return $this->res($id, 500, "Internal Server Error", [
                 "x-worker-error" => $e->getMessage(),
+                "x-worker-error-class" => $errorClass,
+                "x-worker-exception" => get_class($e),
             ]);
         }
+    }
+
+    /** @param resource $conn */
+    private function writeStreamResponse($conn, string $id, WorkerStreamResponse $stream): void
+    {
+        $headers = $this->normalizeHeaderMap($stream->headers);
+        if (!isset($headers["content-type"])) {
+            $headers["content-type"] = $stream->contentType;
+        }
+
+        $this->writeFrame(
+            $conn,
+            json_encode(
+                [
+                    "mode" => "stream",
+                    "event" => "start",
+                    "id" => $id,
+                    "status" => $stream->status,
+                    "stream_type" => $stream->streamType,
+                    "content_type" => $headers["content-type"],
+                    "headers" => $headers,
+                ],
+                JSON_UNESCAPED_UNICODE,
+            ),
+        );
+
+        try {
+            foreach ($stream->chunks as $chunk) {
+                $frame = [
+                    "mode" => "stream",
+                    "event" => "chunk",
+                    "id" => $id,
+                    "data" => "",
+                ];
+                if ($stream->streamType === "sse") {
+                    if (is_array($chunk)) {
+                        $frame["sse_id"] = (string) ($chunk["id"] ?? "");
+                        $frame["sse_event"] = (string) ($chunk["event"] ?? "");
+                        $frame["sse_retry"] = (int) ($chunk["retry"] ?? 0);
+                        $frame["data"] = (string) ($chunk["data"] ?? "");
+                    } else {
+                        $frame["sse_event"] = "message";
+                        $frame["data"] = (string) $chunk;
+                    }
+                } else {
+                    $frame["data"] = is_array($chunk)
+                        ? (string) ($chunk["data"] ?? "")
+                        : (string) $chunk;
+                }
+
+                $this->writeFrame(
+                    $conn,
+                    json_encode($frame, JSON_UNESCAPED_UNICODE),
+                );
+            }
+        } catch (Throwable $e) {
+            $this->writeFrame(
+                $conn,
+                json_encode(
+                    [
+                        "mode" => "stream",
+                        "event" => "error",
+                        "id" => $id,
+                        "error_class" => $this->classifyThrowable($e),
+                        "error" => $e->getMessage(),
+                    ],
+                    JSON_UNESCAPED_UNICODE,
+                ),
+            );
+        }
+
+        $this->writeFrame(
+            $conn,
+            json_encode(
+                [
+                    "mode" => "stream",
+                    "event" => "end",
+                    "id" => $id,
+                ],
+                JSON_UNESCAPED_UNICODE,
+            ),
+        );
     }
 
     /**
@@ -248,7 +417,14 @@ final class PhpWorker
         if (is_callable($loaded)) {
             return $this->appHandler = $loaded;
         }
-        if (is_object($loaded) && $loaded instanceof VSlimApp) {
+        $psr15Stack = $this->buildPsr15DispatcherFromBootstrap($loaded);
+        if ($psr15Stack !== null) {
+            return $this->appHandler = $psr15Stack;
+        }
+        if (is_object($loaded) && $this->isPsr15RequestHandler($loaded)) {
+            return $this->appHandler = $loaded;
+        }
+        if (is_object($loaded) && $loaded instanceof VSlim\App) {
             return $this->appHandler = $loaded;
         }
         if (function_exists("vslim_httpd_app")) {
@@ -264,12 +440,20 @@ final class PhpWorker
         ?object $psrRequest,
         array $envelope,
     ): mixed {
+        if ($this->isPsr15RequestHandler($appHandler)) {
+            if ($psrRequest === null) {
+                throw new RuntimeException(
+                    "PSR-15 handler requires a PSR-7 request object",
+                );
+            }
+            return $appHandler->handle($psrRequest);
+        }
         if (is_callable($appHandler)) {
             return $psrRequest !== null
                 ? $appHandler($psrRequest, $envelope)
                 : $appHandler($envelope);
         }
-        if (is_object($appHandler) && $appHandler instanceof VSlimApp) {
+        if (is_object($appHandler) && $appHandler instanceof VSlim\App) {
             if ($psrRequest !== null) {
                 require_once __DIR__ . "/vslim_psr7_adapter.php";
                 return VSlimPsr7Adapter::dispatch($appHandler, $psrRequest);
@@ -277,6 +461,121 @@ final class PhpWorker
             return $appHandler->dispatch_envelope($envelope);
         }
         throw new RuntimeException("Unsupported app bootstrap result");
+    }
+
+    private function isPsr15RequestHandler(mixed $value): bool
+    {
+        if (!is_object($value)) {
+            return false;
+        }
+        return interface_exists("Psr\\Http\\Server\\RequestHandlerInterface")
+            && is_a($value, "Psr\\Http\\Server\\RequestHandlerInterface");
+    }
+
+    private function isPsr15Middleware(mixed $value): bool
+    {
+        if (!is_object($value)) {
+            return false;
+        }
+        return interface_exists("Psr\\Http\\Server\\MiddlewareInterface")
+            && is_a($value, "Psr\\Http\\Server\\MiddlewareInterface");
+    }
+
+    /** @return list<object> */
+    private function normalizePsr15Middlewares(array $items): array
+    {
+        $middlewares = [];
+        foreach ($items as $item) {
+            if ($this->isPsr15Middleware($item)) {
+                $middlewares[] = $item;
+            }
+        }
+        return $middlewares;
+    }
+
+    private function buildPsr15DispatcherFromBootstrap(mixed $loaded): ?object
+    {
+        if (
+            !interface_exists("Psr\\Http\\Server\\RequestHandlerInterface") ||
+            !interface_exists("Psr\\Http\\Server\\MiddlewareInterface") ||
+            !is_array($loaded)
+        ) {
+            return null;
+        }
+
+        $handler = null;
+        $middlewaresRaw = [];
+        if (array_key_exists("handler", $loaded)) {
+            $handler = $loaded["handler"];
+        }
+        if (array_key_exists("middlewares", $loaded) && is_array($loaded["middlewares"])) {
+            $middlewaresRaw = $loaded["middlewares"];
+        } else {
+            foreach ($loaded as $value) {
+                if ($this->isPsr15Middleware($value)) {
+                    $middlewaresRaw[] = $value;
+                }
+                if ($handler === null && $this->isPsr15RequestHandler($value)) {
+                    $handler = $value;
+                }
+            }
+        }
+
+        if (!$this->isPsr15RequestHandler($handler)) {
+            return null;
+        }
+        $middlewares = $this->normalizePsr15Middlewares($middlewaresRaw);
+        if ($middlewares === []) {
+            return null;
+        }
+
+        return $this->createPsr15Dispatcher($handler, $middlewares);
+    }
+
+    /** @param list<object> $middlewares */
+    private function createPsr15Dispatcher(object $handler, array $middlewares): object
+    {
+        return new class ($handler, $middlewares) implements \Psr\Http\Server\RequestHandlerInterface {
+            /** @param list<object> $middlewares */
+            public function __construct(
+                private object $handler,
+                private array $middlewares,
+            ) {}
+
+            public function handle(\Psr\Http\Message\ServerRequestInterface $request): \Psr\Http\Message\ResponseInterface
+            {
+                return $this->dispatch($request, 0);
+            }
+
+            public function dispatch(
+                \Psr\Http\Message\ServerRequestInterface $request,
+                int $index,
+            ): \Psr\Http\Message\ResponseInterface {
+                if ($index >= count($this->middlewares)) {
+                    /** @var \Psr\Http\Server\RequestHandlerInterface $h */
+                    $h = $this->handler;
+                    return $h->handle($request);
+                }
+
+                /** @var \Psr\Http\Server\MiddlewareInterface $mw */
+                $mw = $this->middlewares[$index];
+                $next = new class ($this, $index + 1) implements \Psr\Http\Server\RequestHandlerInterface {
+                    public function __construct(
+                        private object $dispatcher,
+                        private int $nextIndex,
+                    ) {}
+
+                    public function handle(
+                        \Psr\Http\Message\ServerRequestInterface $request,
+                    ): \Psr\Http\Message\ResponseInterface {
+                        $dispatcher = $this->dispatcher;
+                        return $dispatcher->dispatch($request, $this->nextIndex);
+                    }
+                };
+
+                return $mw->process($request, $next);
+            }
+        };
     }
 
     /**
@@ -357,7 +656,7 @@ final class PhpWorker
             return $this->res($id, 200, $result);
         }
 
-        if (is_object($result) && $result instanceof VSlimResponse) {
+        if (is_object($result) && $result instanceof VSlim\Response) {
             $headers = [];
             if (function_exists("vslim_response_headers")) {
                 $headers = $this->normalizeHeaderMap((array) vslim_response_headers($result));
@@ -398,6 +697,7 @@ final class PhpWorker
 
         return $this->res($id, 500, "Internal Server Error", [
             "x-worker-error" => "Unsupported app response type",
+            "x-worker-error-class" => "app_contract_error",
         ]);
     }
 
@@ -417,6 +717,18 @@ final class PhpWorker
             }
         }
         return $out;
+    }
+
+    private function classifyThrowable(Throwable $e): string
+    {
+        if (
+            $e instanceof TypeError
+            || $e instanceof InvalidArgumentException
+            || $e instanceof LogicException
+        ) {
+            return "app_contract_error";
+        }
+        return "worker_runtime_error";
     }
 
     private function stringifyBody(mixed $body): string
