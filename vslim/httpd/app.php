@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/vslim_psr7_adapter.php';
 
-return static function (mixed $request, array $envelope = []): VSlimResponse|array {
-    $app = VSlimApp::demo();
+return static function (mixed $request, array $envelope = []): VSlim\Response|array {
+    $app = VSlim\App::demo();
 
     if (is_object($request)) {
         return VSlimPsr7Adapter::dispatch($app, $request);

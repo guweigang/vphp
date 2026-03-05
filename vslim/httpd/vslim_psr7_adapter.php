@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 final class VSlimPsr7Adapter
 {
-    public static function dispatch(VSlimApp $app, object $request): VSlimResponse
+    public static function dispatch(VSlim\App $app, object $request): VSlim\Response
     {
         $vRequest = self::toVSlimRequest($request);
         return $app->dispatch_request($vRequest);
     }
 
-    public static function toVSlimRequest(object $request): VSlimRequest
+    public static function toVSlimRequest(object $request): VSlim\Request
     {
         $method = self::readRequestMethod($request);
         $target = self::readRequestTarget($request);
         $body = self::readBody($request);
 
-        $vRequest = new VSlimRequest($method, $target, $body);
+        $vRequest = new VSlim\Request($method, $target, $body);
         $vRequest->scheme = self::readUriPart($request, 'getScheme', 'scheme', 'http');
         $vRequest->host = self::readUriPart($request, 'getHost', 'host', '');
         $vRequest->port = self::readUriPart($request, 'getPort', 'port', '');

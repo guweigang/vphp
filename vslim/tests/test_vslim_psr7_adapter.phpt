@@ -1,5 +1,5 @@
 --TEST--
-VSlim PSR-7 adapter converts requests into VSlimRequest and dispatches them
+VSlim PSR-7 adapter converts requests into VSlim\Request and dispatches them
 --SKIPIF--
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
@@ -49,7 +49,7 @@ final class TestServerRequest {
 
 require __DIR__ . '/../httpd/vslim_psr7_adapter.php';
 
-$app = VSlimApp::demo();
+$app = VSlim\App::demo();
 $req = new TestServerRequest(
     'GET',
     new TestUri('https', 'demo.local', 443, '/users/55', 'trace_id=psr-bridge'),

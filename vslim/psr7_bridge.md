@@ -91,8 +91,8 @@ This means `php-worker` becomes the compatibility seam between:
 
 `vslim` should keep:
 
-- `VSlimRequest`
-- `VSlimResponse`
+- `VSlim\Request`
+- `VSlim\Response`
 - `SlimApp`
 - middleware chain
 - route matching
@@ -102,7 +102,7 @@ These remain mutable and compact.
 On top of that, `vslim` can later add adapter entry points:
 
 - `from_psr7(ServerRequestInterface $request)`
-- `to_psr7_response(VSlimResponse $response)`
+- `to_psr7_response(VSlim\Response $response)`
 - or a PHP-side adapter class that translates between PSR-7 and `vslim_handle_request(...)`
 
 This lets `vslim` participate in PSR-7 workflows without forcing the internal model to copy PSR-7.
@@ -139,7 +139,7 @@ Examples of implementations that may be supported by userland:
 
 Deliverables:
 
-- define a `vslim` adapter that can read a PSR-7 request and produce a `VSlimResponse`
+- define a `vslim` adapter that can read a PSR-7 request and produce a `VSlim\Response`
 - optionally define a PSR-7 response adapter for outgoing responses
 
 This can live either:
@@ -278,7 +278,7 @@ full PSR-7 semantics.
 The next implementation steps should be:
 
 1. enrich the request envelope in `vhttpd`
-2. mirror those fields into `VSlimRequest`
+2. mirror those fields into `VSlim\Request`
 3. make `php-worker.php` able to build a PSR-7 request when userland provides a PSR-7 implementation
 4. add a small adapter layer around `vslim_handle_request(...)`
 

@@ -6,7 +6,7 @@ final class VHttpdPsr7Bridge
 {
     public static function canBuildServerRequest(): bool
     {
-        return self::detectFactoryKind() !== null;
+        return self::detectFactoryType() !== null;
     }
 
     /**
@@ -15,8 +15,8 @@ final class VHttpdPsr7Bridge
      */
     public static function buildServerRequest(array $envelope): ?object
     {
-        $kind = self::detectFactoryKind();
-        if ($kind === null) {
+        $type = self::detectFactoryType();
+        if ($type === null) {
             return null;
         }
 
@@ -42,9 +42,10 @@ final class VHttpdPsr7Bridge
         $uri = self::buildUri($path, $scheme, $host, $port);
         $server = self::mergeServerParams($server, $method, $path, $scheme, $host, $port, $remoteAddr, $protocolVersion, $headers);
 
-        return match ($kind) {
+        return match ($type) {
             'nyholm' => self::buildWithNyholm($method, $uri, $server, $headers, $cookies, $query, $body, $attributes, $uploadedFiles, $protocolVersion),
             'guzzle' => self::buildWithGuzzle($method, $uri, $server, $headers, $cookies, $query, $body, $attributes, $uploadedFiles, $protocolVersion),
+            'laminas' => self::buildWithLaminas($method, $uri, $server, $headers, $cookies, $query, $body, $attributes, $uploadedFiles, $protocolVersion),
             default => null,
         };
     }
@@ -61,13 +62,22 @@ final class VHttpdPsr7Bridge
         return self::normalizeNameMap($envelope[$mapKey]);
     }
 
-    private static function detectFactoryKind(): ?string
+    private static function detectFactoryType(): ?string
     {
         if (class_exists('Nyholm\\Psr7\\Factory\\Psr17Factory')) {
             return 'nyholm';
         }
         if (class_exists('GuzzleHttp\\Psr7\\HttpFactory')) {
             return 'guzzle';
+        }
+        if (
+            class_exists('Laminas\\Diactoros\\StreamFactory')
+            && (
+                class_exists('Laminas\\Diactoros\\RequestFactory')
+                || class_exists('Laminas\\Diactoros\\ServerRequest')
+            )
+        ) {
+            return 'laminas';
         }
         return null;
     }
@@ -210,6 +220,47 @@ final class VHttpdPsr7Bridge
         $request = $factory->createServerRequest($method, $uri, $server);
         $request = $request->withProtocolVersion($protocolVersion);
         $request = $request->withBody($factory->createStream($body));
+        $request = $request->withCookieParams($cookies);
+        $request = $request->withQueryParams($query);
+        $request = $request->withUploadedFiles($uploadedFiles);
+        foreach ($headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+        foreach ($attributes as $name => $value) {
+            $request = $request->withAttribute($name, $value);
+        }
+        return $request;
+    }
+
+    /**
+     * @param array<string,string> $server
+     * @param array<string,string> $headers
+     * @param array<string,string> $cookies
+     * @param array<string,string> $query
+     * @param array<string,string> $attributes
+     * @param array<int,mixed> $uploadedFiles
+     */
+    private static function buildWithLaminas(string $method, string $uri, array $server, array $headers, array $cookies, array $query, string $body, array $attributes, array $uploadedFiles, string $protocolVersion): object
+    {
+        $streamFactory = new \Laminas\Diactoros\StreamFactory();
+        if (
+            class_exists('Laminas\\Diactoros\\RequestFactory')
+            && method_exists('Laminas\\Diactoros\\RequestFactory', 'createServerRequest')
+        ) {
+            $requestFactory = new \Laminas\Diactoros\RequestFactory();
+            $request = $requestFactory->createServerRequest($method, $uri, $server);
+        } else {
+            $request = new \Laminas\Diactoros\ServerRequest(
+                $server,
+                $uploadedFiles,
+                $uri,
+                $method,
+                'php://temp',
+                $headers,
+            );
+        }
+        $request = $request->withProtocolVersion($protocolVersion);
+        $request = $request->withBody($streamFactory->createStream($body));
         $request = $request->withCookieParams($cookies);
         $request = $request->withQueryParams($query);
         $request = $request->withUploadedFiles($uploadedFiles);
