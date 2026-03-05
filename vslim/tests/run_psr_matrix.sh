@@ -14,7 +14,7 @@ if ! command -v "${COMPOSER_BIN}" >/dev/null 2>&1; then
   exit 2
 fi
 
-WORKDIR="${PSR_MATRIX_WORKDIR:-${ROOT}/.tmp/psr-matrix}"
+WORKDIR="${PSR_MATRIX_WORKDIR:-${ROOT}/examples/.runtime/psr-matrix}"
 rm -rf "${WORKDIR}"
 mkdir -p "${WORKDIR}"
 

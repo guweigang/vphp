@@ -3,7 +3,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 COMPOSER_BIN="${COMPOSER_BIN:-composer}"
-WORKDIR="${FRAMEWORK_MATRIX_WORKDIR:-${ROOT}/.tmp/framework-matrix}"
+WORKDIR="${FRAMEWORK_MATRIX_WORKDIR:-${ROOT}/examples}"
+RUNTIME_DIR="${FRAMEWORK_MATRIX_RUNTIME_DIR:-${ROOT}/examples/.runtime/framework-matrix}"
 HOST="${VHTTPD_HOST:-127.0.0.1}"
 START_PORT="${FRAMEWORK_MATRIX_START_PORT:-19910}"
 HTTPD_BIN="${ROOT}/httpd/vhttpd"
@@ -23,7 +24,7 @@ if ! command -v curl >/dev/null 2>&1; then
   exit 2
 fi
 
-mkdir -p "${WORKDIR}"
+mkdir -p "${WORKDIR}" "${RUNTIME_DIR}"
 
 wait_ready() {
   local host="$1"
@@ -207,33 +208,41 @@ PHP
 
 run_case() {
   local case_name="$1"
-  local pkg_csv="$2"
-  local app_writer="$3"
-  local route_hello="$4"
-  local route_meta="$5"
-  local framework_header="$6"
-  local expected_meta_body="$7"
-  local port="$8"
+  local route_hello="$2"
+  local route_meta="$3"
+  local framework_header="$4"
+  local expected_meta_body="$5"
+  local port="$6"
 
   local case_dir="${WORKDIR}/${case_name}"
   local app_path="${case_dir}/app.php"
-  local worker_socket="${case_dir}/worker.sock"
-  local pid_file="${case_dir}/vhttpd.pid"
-  local event_log="${case_dir}/vhttpd.events.ndjson"
-  local stdout_log="${case_dir}/vhttpd.stdout.log"
-  local worker_cmd="${case_dir}/worker.sh"
-  local hdr_file="${case_dir}/headers.txt"
-  local body_file="${case_dir}/body.txt"
+  local run_dir="${RUNTIME_DIR}/${case_name}"
+  local worker_socket="${run_dir}/worker.sock"
+  local pid_file="${run_dir}/vhttpd.pid"
+  local event_log="${run_dir}/vhttpd.events.ndjson"
+  local stdout_log="${run_dir}/vhttpd.stdout.log"
+  local worker_cmd="${run_dir}/worker.sh"
+  local hdr_file="${run_dir}/headers.txt"
+  local body_file="${run_dir}/body.txt"
 
-  rm -rf "${case_dir}"
-  mkdir -p "${case_dir}"
+  if [ ! -d "${case_dir}" ]; then
+    echo "[${case_name}] example project not found: ${case_dir}"
+    exit 1
+  fi
+  if [ ! -f "${case_dir}/composer.json" ]; then
+    echo "[${case_name}] missing composer.json: ${case_dir}/composer.json"
+    exit 1
+  fi
+  if [ ! -f "${app_path}" ]; then
+    echo "[${case_name}] missing app.php: ${app_path}"
+    exit 1
+  fi
+
+  rm -rf "${run_dir}"
+  mkdir -p "${run_dir}"
   pushd "${case_dir}" >/dev/null
 
-  "${COMPOSER_BIN}" init --name "vslim/${case_name}-framework-matrix" --no-interaction >/dev/null
-  IFS=',' read -r -a pkg_list <<<"${pkg_csv}"
-  "${COMPOSER_BIN}" require --no-interaction --no-progress --prefer-dist "${pkg_list[@]}" >/dev/null
-
-  "${app_writer}" "${app_path}"
+  "${COMPOSER_BIN}" install --no-interaction --no-progress --prefer-dist >/dev/null
 
   cat >"${worker_cmd}" <<EOF
 #!/usr/bin/env bash
@@ -296,8 +305,6 @@ make -C "${ROOT}" vhttpd >/dev/null
 
 run_case \
   "symfony" \
-  "symfony/http-kernel,symfony/routing,symfony/http-foundation,symfony/event-dispatcher,symfony/psr-http-message-bridge,nyholm/psr7" \
-  "write_symfony_app" \
   "/symfony/hello/nova" \
   "/symfony/meta" \
   "symfony" \
@@ -306,8 +313,6 @@ run_case \
 
 run_case \
   "laravel" \
-  "laravel/framework,symfony/psr-http-message-bridge,nyholm/psr7" \
-  "write_laravel_app" \
   "/laravel/hello/nova" \
   "/laravel/meta" \
   "laravel" \
