@@ -13,6 +13,11 @@ The design rule is:
 - `vslim` should stay at the framework layer
 - `vphp` should not become an HTTP helper bag
 
+## Specs
+
+- PSR-7/15 support matrix: [psr_support.md](/Users/guweigang/Source/vphpext/vslim/httpd/psr_support.md)
+- Failure/timeout model: [failure_model.md](/Users/guweigang/Source/vphpext/vslim/httpd/failure_model.md)
+
 ## Why vhttpd uses veb but vslim keeps its own router
 
 This split is intentional.
@@ -26,15 +31,17 @@ This split is intentional.
   - is not trying to replace `veb`
   - it exists to expose a runtime app builder to PHP userland
   - PHP-side APIs like:
-    - `VSlimApp->get(...)`
-    - `VSlimApp->group(...)`
-    - `VSlimApp->middleware(...)`
+    - `VSlim\App->get(...)`
+    - `VSlim\App->group(...)`
+    - `VSlim\App->middleware(...)`
     require runtime route registration, which does not fit `veb`'s compile-time route generation model
 
 So the rule for the first release is:
 
 - `veb` is the HTTP/runtime source
 - `vslim` is the runtime framework layer built on top of that transport boundary
+- request id is handled by `veb.request_id` middleware
+- SSE stream formatting/headers are handled by `veb.sse`
 
 ```mermaid
 flowchart LR
@@ -56,7 +63,8 @@ v -o vhttpd main.v
 ```bash
 ./vhttpd --host 127.0.0.1 --port 18081 \
   --pid-file /tmp/vhttpd.pid \
-  --event-log /tmp/vhttpd.events.ndjson
+  --event-log /tmp/vhttpd.events.ndjson \
+  --worker-read-timeout-ms 3000
 ```
 
 ### Managed worker mode
@@ -85,7 +93,10 @@ Endpoints:
   - `GET /hello/codex`
   - `GET /go/nova`
   - `GET /api/meta`
-- `/dispatch` is kept as a debug bridge endpoint:
+- `GET /events/stream` returns SSE ping events for observability/debug:
+  - `/events/stream?count=3&interval_ms=150`
+  - `/events/stream?request_id=req-demo`
+- `/dispatch` is kept as a debug bridge endpoint (this one uses query `method/path` on purpose):
   - `GET /dispatch?method=GET&path=/users/42`
   - `HEAD /dispatch?method=GET&path=/go/nova`
   - `GET /dispatch?method=POST&path=/health`
@@ -97,7 +108,17 @@ For local smoke tests, prefer bypassing shell/system proxies:
 curl --noproxy '*' -i http://127.0.0.1:19881/hello/codex
 curl --noproxy '*' -i http://127.0.0.1:19881/go/nova
 curl --noproxy '*' -i -H 'Host: demo.local' http://127.0.0.1:19881/api/meta
+curl --noproxy '*' -N "http://127.0.0.1:19881/events/stream?count=2&interval_ms=0&request_id=req-demo"
 ```
+
+## Request ID contract
+
+- every response includes `x-request-id`
+- request id resolve order:
+  - query `request_id`
+  - header `x-request-id`
+  - auto-generated `req-<unix_micro>`
+- `x-request-id` is also copied into event log rows for correlation
 
 ## PHP Userland scheduling
 
@@ -137,6 +158,15 @@ That keeps:
 - `vhttpd` as the `veb`-based network/runtime layer
 - `php-worker.php` as the PHP worker boundary
 - `vslim` as the framework dispatch layer
+
+## Worker streaming modes
+
+`php-worker.php` now supports stream frames, not just one-shot JSON responses:
+
+- `stream_type=sse`: forwarded as true SSE over `veb.sse`
+- `stream_type=text` (or others): passthrough mode, chunk-by-chunk to client (not buffered/aggregated)
+
+This enables AI/token streaming style workloads in addition to normal request/response handlers.
 
 ## Final request envelope
 
@@ -207,6 +237,7 @@ Current built-in factory detection covers:
 
 - `Nyholm\\Psr7\\Factory\\Psr17Factory`
 - `GuzzleHttp\\Psr7\\HttpFactory`
+- `Laminas\\Diactoros\\RequestFactory` + `Laminas\\Diactoros\\StreamFactory`
 
 This keeps `vhttpd` transport-generic while letting the worker boundary move toward PSR-7.
 
@@ -221,8 +252,8 @@ If `php-worker.php` finds an app bootstrap file (`VSLIM_HTTPD_APP` or `httpd/app
 
 `vslim_psr7_adapter.php` provides a small PHP-side bridge that can:
 
-- convert a PSR-7 style request object into `VSlimRequest`
-- dispatch that request through `VSlimApp`
+- convert a PSR-7 style request object into `VSlim\Request`
+- dispatch that request through `VSlim\App`
 - keep `vslim` native while letting `php-worker.php` speak PSR-7 at the edge
 
 `app.php` uses this adapter by default when the worker receives a PSR-7 request object.
@@ -239,10 +270,10 @@ The bootstrap file should `return` a callable. The worker will call it like this
 - with a PSR-7 request object and the raw envelope when a supported PSR-17 factory is available
 - with the raw envelope only when no PSR-7 factory is available
 
-It may also return a `VSlimApp` instance directly. In that case, the worker will:
+It may also return a `VSlim\App` instance directly. In that case, the worker will:
 
 - dispatch through `VSlimPsr7Adapter::dispatch(...)` when a PSR-7 request is available
-- otherwise hydrate a `VSlimRequest` from the envelope and call `VSlimApp->dispatch_request(...)`
+- otherwise hydrate a `VSlim\Request` from the envelope and call `VSlim\App->dispatch_request(...)`
 
 ### Simplest `vslim` app
 
@@ -252,8 +283,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/vslim_psr7_adapter.php';
 
-return static function (mixed $request, array $envelope = []): VSlimResponse|array {
-    $app = VSlimApp::demo();
+return static function (mixed $request, array $envelope = []): VSlim\Response|array {
+    $app = VSlim\App::demo();
 
     if (is_object($request)) {
         return VSlimPsr7Adapter::dispatch($app, $request);
@@ -271,16 +302,16 @@ return static function (mixed $request, array $envelope = []): VSlimResponse|arr
 };
 ```
 
-### Returning a `VSlimApp` directly
+### Returning a `VSlim\App` directly
 
 ```php
 <?php
 declare(strict_types=1);
 
-$app = new VSlimApp();
+$app = new VSlim\App();
 
-$app->get('/hello/:name', function (VSlimRequest $req) {
-    return new VSlimResponse(
+$app->get('/hello/:name', function (VSlim\Request $req) {
+    return new VSlim\Response(
         200,
         'Hello, ' . $req->param('name'),
         'text/plain; charset=utf-8'
@@ -294,12 +325,12 @@ This is the recommended first-release shape:
 
 - `vhttpd` stays close to `veb`
 - `php-worker.php` loads your bootstrap
-- your bootstrap returns a `VSlimApp`
-- `VSlimApp` owns runtime routing and hooks
+- your bootstrap returns a `VSlim\App`
+- `VSlim\App` owns runtime routing and hooks
 
 ### Lifecycle semantics
 
-When your bootstrap returns a `VSlimApp`, request flow is:
+When your bootstrap returns a `VSlim\App`, request flow is:
 
 ```text
 before hooks -> route handler -> after hooks
@@ -309,12 +340,12 @@ Return contract:
 
 - `before()` returns `null`
   - continue dispatch
-- `before()` returns `VSlimResponse` / `array` / `string`
+- `before()` returns `VSlim\Response` / `array` / `string`
   - short-circuit route dispatch
   - still flows into `after()`
 - `after()` returns `null`
   - keep current response
-- `after()` returns `VSlimResponse` / `array` / `string`
+- `after()` returns `VSlim\Response` / `array` / `string`
   - replace current response
 - `before()/route/after()` throws
   - the PHP exception is not swallowed
@@ -338,24 +369,24 @@ This ordering is covered by:
 <?php
 declare(strict_types=1);
 
-$app = new VSlimApp();
+$app = new VSlim\App();
 
-$app->before(function (VSlimRequest $req) {
+$app->before(function (VSlim\Request $req) {
     if ($req->path === '/blocked') {
-        return new VSlimResponse(403, 'blocked', 'text/plain; charset=utf-8');
+        return new VSlim\Response(403, 'blocked', 'text/plain; charset=utf-8');
     }
     return null;
 });
 
-$app->get('/hello/:name', function (VSlimRequest $req) {
-    return new VSlimResponse(
+$app->get('/hello/:name', function (VSlim\Request $req) {
+    return new VSlim\Response(
         200,
         'Hello, ' . $req->param('name'),
         'text/plain; charset=utf-8'
     );
 });
 
-$app->after(function (VSlimRequest $req, VSlimResponse $res) {
+$app->after(function (VSlim\Request $req, VSlim\Response $res) {
     $res->set_header('x-runtime', 'vslim');
     return $res;
 });
