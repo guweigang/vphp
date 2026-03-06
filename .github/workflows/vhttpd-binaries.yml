@@ -95,7 +95,10 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libcjson-dev
+          sudo apt-get install -y --no-install-recommends \
+            libcjson-dev \
+            libsodium-dev \
+            libargon2-dev
 
       - name: Install build deps (macOS)
         if: startsWith(matrix.os, 'macos')
@@ -123,7 +126,11 @@ jobs:
           PHP_INC="$(php-config --includes)"
           PHP_LDFLAGS="$(php-config --ldflags)"
           PHP_LIBS="$(php-config --libs | sed 's/-lzip//g')"
-          COMMON_WARN="-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides"
+          if [[ "${{ matrix.target }}" == linux-* ]]; then
+            COMMON_WARN="-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-override-init"
+          else
+            COMMON_WARN="-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides"
+          fi
 
           if [[ "${{ matrix.target }}" == linux-* ]]; then
             gcc -shared -fPIC ${COMMON_WARN} -DCOMPILE_DL_VSLIM=1 \
