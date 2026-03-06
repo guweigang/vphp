@@ -325,9 +325,7 @@ fn (mut app App) on_worker_request_finished(socket_path string) {
 	if w.inflight_requests > 0 {
 		w.inflight_requests--
 	}
-	if app.worker_max_requests > 0 {
-		w.served_requests++
-	}
+	w.served_requests++
 	if app.worker_max_requests > 0 && !w.draining && w.served_requests >= app.worker_max_requests {
 		w.draining = true
 		app.emit('worker.max_requests_reached', {
