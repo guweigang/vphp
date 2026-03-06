@@ -197,6 +197,7 @@ Endpoints:
 - `GET /admin/workers` returns runtime worker pool status (alive/draining/inflight/restarts)
   - on data plane port: available only when admin plane is disabled
   - on admin plane port: always available (optionally token-protected)
+- `GET /admin/stats` returns runtime counters (total/error/timeout/stream/admin actions)
 - `POST /admin/workers/restart?id=<worker_id>` restarts a single worker
 - `POST /admin/workers/restart/all` restarts all workers
 - `/dispatch` is kept as a debug bridge endpoint (this one uses query `method/path` on purpose):
@@ -237,6 +238,9 @@ Available endpoints:
   - response: `200 OK`
 - `GET /admin/workers`
   - returns worker pool runtime snapshot
+  - response content type: `application/json; charset=utf-8`
+- `GET /admin/stats`
+  - returns process-level runtime counters
   - response content type: `application/json; charset=utf-8`
 - `POST /admin/workers/restart?id=<worker_id>`
   - restart a single managed worker by ID
@@ -281,11 +285,24 @@ Port exposure model:
   - `restart_count`: restart count since startup
   - `next_retry_ts`: next retry timestamp when restart is backoff-scheduled
 
+`GET /admin/stats` response fields:
+
+- `started_at_unix`: process start timestamp (unix seconds)
+- `uptime_seconds`: server uptime in seconds
+- `http_requests_total`: total `http.request` events
+- `http_errors_total`: `status >= 400` request count
+- `http_timeouts_total`: requests classified as timeout (`error_class=timeout`)
+- `http_streams_total`: stream-mode responses count
+- `admin_actions_total`: `admin.*` events count (restart actions, etc.)
+
 Example:
 
 ```bash
 curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' \
   http://127.0.0.1:19981/admin/workers | jq .
+
+curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' \
+  http://127.0.0.1:19981/admin/stats | jq .
 
 # restart worker id=2
 curl --noproxy '*' -s -X POST -H 'x-vhttpd-admin-token: change-me' \

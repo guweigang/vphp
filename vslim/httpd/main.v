@@ -23,6 +23,7 @@ pub struct App {
 pub:
 	event_log string
 pub mut:
+	started_at_unix        i64
 	worker_sockets         []string
 	worker_read_timeout_ms int
 	worker_rr_index        int
@@ -35,6 +36,11 @@ pub mut:
 	worker_max_requests    int
 	admin_on_data_plane   bool
 	managed_workers        []ManagedWorker
+	stat_http_requests_total i64
+	stat_http_errors_total   i64
+	stat_http_timeouts_total i64
+	stat_http_streams_total  i64
+	stat_admin_actions_total i64
 	pool_mu                sync.Mutex
 	mu                     sync.Mutex
 }
@@ -114,6 +120,16 @@ struct WorkerAdminRestartAllResponse {
 	ok        bool
 	mode      string
 	restarted int
+}
+
+struct AdminRuntimeStats {
+	started_at_unix      i64
+	uptime_seconds       i64
+	http_requests_total  i64
+	http_errors_total    i64
+	http_timeouts_total  i64
+	http_streams_total   i64
+	admin_actions_total  i64
 }
 
 fn header_map_from_request(req http.Request) map[string]string {
@@ -679,6 +695,23 @@ fn (mut app App) emit(kind string, fields map[string]string) {
 	defer {
 		app.mu.unlock()
 	}
+	if kind == 'http.request' {
+		app.stat_http_requests_total++
+		status := (fields['status'] or { '0' }).int()
+		if status >= 400 {
+			app.stat_http_errors_total++
+		}
+		error_class := fields['error_class'] or { '' }
+		if error_class == 'timeout' {
+			app.stat_http_timeouts_total++
+		}
+		if (fields['response_mode'] or { '' }) == 'stream' {
+			app.stat_http_streams_total++
+		}
+	}
+	if kind.starts_with('admin.') {
+		app.stat_admin_actions_total++
+	}
 	mut row := map[string]string{}
 	row['type'] = kind
 	row['ts'] = '${time.now().unix()}'
@@ -690,6 +723,25 @@ fn (mut app App) emit(kind string, fields map[string]string) {
 		f.close()
 	}
 	f.writeln(json.encode(row)) or {}
+}
+
+fn (mut app App) admin_stats_snapshot() AdminRuntimeStats {
+	app.mu.@lock()
+	defer {
+		app.mu.unlock()
+	}
+	now := time.now().unix()
+	started := if app.started_at_unix > 0 { app.started_at_unix } else { now }
+	uptime := if now > started { now - started } else { 0 }
+	return AdminRuntimeStats{
+		started_at_unix: started
+		uptime_seconds: uptime
+		http_requests_total: app.stat_http_requests_total
+		http_errors_total: app.stat_http_errors_total
+		http_timeouts_total: app.stat_http_timeouts_total
+		http_streams_total: app.stat_http_streams_total
+		admin_actions_total: app.stat_admin_actions_total
+	}
 }
 
 @[get]
@@ -831,6 +883,29 @@ pub fn (mut app App) admin_workers(mut ctx Context) veb.Result {
 	app.emit('http.request', {
 		'method': 'GET'
 		'path': '/admin/workers'
+		'status': '200'
+		'request_id': req_id
+		'trace_id': trace_id
+	})
+	return ctx.text(body)
+}
+
+@['/admin/stats'; get]
+pub fn (mut app App) admin_stats(mut ctx Context) veb.Result {
+	if !app.admin_on_data_plane {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
+	path := if ctx.req.url == '' { '/admin/stats' } else { ctx.req.url }
+	req_id := resolve_request_id(ctx, path)
+	trace_id := resolve_trace_id(ctx, path)
+	body := json.encode(app.admin_stats_snapshot())
+	ctx.set_custom_header('x-request-id', req_id) or {}
+	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+	ctx.set_content_type('application/json; charset=utf-8')
+	app.emit('http.request', {
+		'method': 'GET'
+		'path': '/admin/stats'
 		'status': '200'
 		'request_id': req_id
 		'trace_id': trace_id

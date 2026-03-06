@@ -37,6 +37,7 @@ fn run_server(args []string) {
 
 	mut app := &App{
 		event_log: event_log
+		started_at_unix: time.now().unix()
 		worker_sockets: worker_sockets
 		worker_read_timeout_ms: worker_read_timeout_ms
 		worker_autostart: worker_autostart
