@@ -7,6 +7,29 @@ import veb.request_id
 
 const vhttpd_version = '0.1.0'
 
+const known_long_flags = [
+	'--help',
+	'--version',
+	'--config',
+	'--host',
+	'--port',
+	'--event-log',
+	'--pid-file',
+	'--worker-read-timeout-ms',
+	'--worker-cmd',
+	'--worker-autostart',
+	'--worker-restart-backoff-ms',
+	'--worker-restart-backoff-max-ms',
+	'--worker-max-requests',
+	'--worker-socket',
+	'--worker-sockets',
+	'--worker-pool-size',
+	'--worker-socket-prefix',
+	'--admin-host',
+	'--admin-port',
+	'--admin-token',
+]
+
 fn has_flag(args []string, flags []string) bool {
 	for a in args {
 		for f in flags {
@@ -45,6 +68,28 @@ fn print_vhttpd_help() {
 	println('Examples:')
 	println('  vhttpd --config /path/to/vhttpd.toml')
 	println('  vhttpd /path/to/vhttpd.toml')
+}
+
+fn validate_args(args []string) ! {
+	for arg in args {
+		if arg.len == 0 {
+			continue
+		}
+		if arg == '-h' || arg == '-v' {
+			continue
+		}
+		if arg.starts_with('--') {
+			key := if arg.contains('=') { arg.all_before('=') } else { arg }
+			if key in known_long_flags {
+				continue
+			}
+			return error('unknown option: ${arg}')
+		}
+		if arg.starts_with('-') {
+			return error('unknown option: ${arg}')
+		}
+		// positional args are allowed (e.g. config path shorthand)
+	}
 }
 
 fn run_server(args []string) {
@@ -148,6 +193,11 @@ fn main() {
 	if has_flag(args, ['--version', '-v']) {
 		println(vhttpd_version)
 		return
+	}
+	validate_args(args) or {
+		eprintln('argument error: ${err}')
+		eprintln('run `vhttpd --help` for usage.')
+		exit(2)
 	}
 	run_server(args)
 }
