@@ -60,16 +60,23 @@ jobs:
           php-config --ldflags
           php-config --libs
 
-      - name: Install and enable php-psr extension
+      - name: Build and enable php-psr extension (from source)
         shell: bash
         run: |
           set -euo pipefail
-          printf "\n" | pecl install -f psr
+          mkdir -p "${GITHUB_WORKSPACE}/.ci"
+          rm -rf "${GITHUB_WORKSPACE}/.ci/php-psr"
+          git clone --depth=1 https://github.com/jbboehr/php-psr.git "${GITHUB_WORKSPACE}/.ci/php-psr"
+          cd "${GITHUB_WORKSPACE}/.ci/php-psr"
+          phpize
+          ./configure --with-php-config="$(command -v php-config)"
+          make -j"$(getconf _NPROCESSORS_ONLN || echo 2)"
+          test -f modules/psr.so
 
           BASE_SCAN_DIR="$(php --ini | awk -F': ' '/Scan for additional .ini files in:/{print $2}')"
           CUSTOM_SCAN_DIR="${GITHUB_WORKSPACE}/.ci/php-ini"
           mkdir -p "${CUSTOM_SCAN_DIR}"
-          echo "extension=psr" > "${CUSTOM_SCAN_DIR}/99-psr.ini"
+          echo "extension=${GITHUB_WORKSPACE}/.ci/php-psr/modules/psr.so" > "${CUSTOM_SCAN_DIR}/99-psr.ini"
 
           if [[ -n "${BASE_SCAN_DIR}" && "${BASE_SCAN_DIR}" != "(none)" ]]; then
             echo "PHP_INI_SCAN_DIR=${BASE_SCAN_DIR}:${CUSTOM_SCAN_DIR}" >> "${GITHUB_ENV}"
@@ -219,7 +226,7 @@ jobs:
 
           Runtime dependency:
           - PHP 8.5.3 (ABI-compatible runtime)
-          - `psr.so` (install via `pecl install psr`, from jbboehr/php-psr)
+          - `psr.so` (from [jbboehr/php-psr](https://github.com/jbboehr/php-psr), can be built via `phpize && ./configure && make`)
 
           Check `SHA256SUMS.txt` to verify downloads.
           NOTES
