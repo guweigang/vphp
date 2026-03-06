@@ -62,8 +62,8 @@
 
 ## Real Package Matrix
 
-- 回归命令：`make -C /Users/guweigang/Source/vphpext/vslim psr-matrix`
-- 若 `composer` 不在默认 PATH，可指定：`COMPOSER_BIN=/abs/path/to/composer make -C /Users/guweigang/Source/vphpext/vslim psr-matrix`
+- 回归命令：`make -C /Users/guweigang/Source/vphpext/vhttpd psr-matrix`
+- 若 `composer` 不在默认 PATH，可指定：`COMPOSER_BIN=/abs/path/to/composer make -C /Users/guweigang/Source/vphpext/vhttpd psr-matrix`
 - 脚本位置：`vslim/tests/run_psr_matrix.sh`
 - 覆盖包：
   - `nyholm/psr7`

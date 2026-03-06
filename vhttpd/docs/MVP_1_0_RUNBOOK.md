@@ -3,8 +3,8 @@
 ## 1. Build
 
 ```bash
-cd /Users/guweigang/Source/vphpext/vslim
-make build vhttpd
+cd /Users/guweigang/Source/vphpext/vhttpd
+make vhttpd
 ```
 
 ## 2. Start (TOML only)
@@ -12,7 +12,7 @@ make build vhttpd
 推荐：直接用 examples 里的 TOML。
 
 ```bash
-cd /Users/guweigang/Source/vphpext/vslim
+cd /Users/guweigang/Source/vphpext/vhttpd
 ./vhttpd --config /Users/guweigang/Source/vphpext/vhttpd/examples/config/laravel.toml
 ```
 
@@ -106,7 +106,7 @@ token = ""
 
 ```bash
 # 1) build
-make -C /Users/guweigang/Source/vphpext/vslim vhttpd
+make -C /Users/guweigang/Source/vphpext/vhttpd vhttpd
 
 # 2) admin split + token
 #    启动后验证 data plane /admin/* 为 404，admin plane 可访问

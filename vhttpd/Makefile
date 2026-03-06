@@ -1,4 +1,4 @@
-.PHONY: vhttpd demo-vslim demo-ai demo-symfony demo-laravel demo-wordpress
+.PHONY: vhttpd demo-vslim demo-ai demo-symfony demo-laravel demo-wordpress psr-matrix
 
 ROOT := $(CURDIR)
 SRC_DIR := $(ROOT)/src
@@ -21,3 +21,6 @@ demo-laravel:
 
 demo-wordpress:
 	@$(ROOT)/examples/run_demo.sh wordpress
+
+psr-matrix:
+	@$(MAKE) -C $(ROOT)/../vslim psr-matrix
