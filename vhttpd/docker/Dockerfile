@@ -43,4 +43,5 @@ RUN make -C /app/vslim build \
 
 EXPOSE 19881 19981
 
-CMD ["/app/vhttpd/vhttpd", "--config", "/app/vhttpd/docker/config/hello.toml"]
+ENTRYPOINT ["/app/vhttpd/vhttpd"]
+CMD ["--config", "/app/vhttpd/docker/config/hello.toml"]

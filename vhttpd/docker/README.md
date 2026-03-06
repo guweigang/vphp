@@ -13,7 +13,7 @@ docker build -t vhttpd-dev:latest -f /Users/guweigang/Source/vphpext/vhttpd/dock
 ```bash
 docker run --rm -p 19881:19881 -p 19981:19981 \
   vhttpd-dev:latest \
-  /app/vhttpd/vhttpd --config /app/vhttpd/docker/config/hello.toml
+  --config /app/vhttpd/docker/config/hello.toml
 ```
 
 ## Run laravel config (4 workers)
@@ -21,18 +21,25 @@ docker run --rm -p 19881:19881 -p 19981:19981 \
 ```bash
 docker run --rm -p 19886:19886 -p 19986:19986 \
   vhttpd-dev:latest \
-  /app/vhttpd/vhttpd --config /app/vhttpd/docker/config/laravel.toml
+  --config /app/vhttpd/docker/config/laravel.toml
 ```
 
 ## One-command helper
 
 ```bash
-bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh
+bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh --config /app/vhttpd/docker/config/hello.toml
 ```
 
-Override config in helper:
+Run wrapper as command:
 
 ```bash
-VHTTPD_CONFIG_IN_CONTAINER=/app/vhttpd/docker/config/laravel.toml \
-  bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh
+/Users/guweigang/Source/vphpext/vhttpd/docker/vhttpd --config /app/vhttpd/docker/config/laravel.toml
+```
+
+Optional port mapping overrides for helper/wrapper:
+
+```bash
+VHTTPD_DOCKER_PORT_MAP=19886:19886 \
+VHTTPD_DOCKER_ADMIN_PORT_MAP=19986:19986 \
+  bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh --config /app/vhttpd/docker/config/laravel.toml
 ```

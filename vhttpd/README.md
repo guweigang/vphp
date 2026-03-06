@@ -86,13 +86,19 @@ cd /Users/guweigang/Source/vphpext
 docker build -t vhttpd-dev:latest -f /Users/guweigang/Source/vphpext/vhttpd/docker/Dockerfile .
 docker run --rm -p 19881:19881 -p 19981:19981 \
   vhttpd-dev:latest \
-  /app/vhttpd/vhttpd --config /app/vhttpd/docker/config/hello.toml
+  --config /app/vhttpd/docker/config/hello.toml
 ```
 
-One-command helper:
+Run as a CLI command from this repo:
 
 ```bash
-bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh
+bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh --help
+```
+
+Or use the wrapper:
+
+```bash
+/Users/guweigang/Source/vphpext/vhttpd/docker/vhttpd --config /app/vhttpd/docker/config/hello.toml
 ```
 
 ## Run
