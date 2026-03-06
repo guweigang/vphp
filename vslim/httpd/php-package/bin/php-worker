@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+$autoload = null;
+$dir = __DIR__;
+for ($i = 0; $i < 6; $i++) {
+    $candidate = $dir . '/autoload.php';
+    if (is_file($candidate)) {
+        $autoload = $candidate;
+        break;
+    }
+    $dir = dirname($dir);
+}
+
+if ($autoload !== null) {
+    require_once $autoload;
+} else {
+    require_once __DIR__ . '/../src/Psr7Bridge.php';
+    require_once __DIR__ . '/../src/SlimPsr7Adapter.php';
+    require_once __DIR__ . '/../src/PhpWorker/StreamResponse.php';
+    require_once __DIR__ . '/../src/PhpWorker/Server.php';
+    require_once __DIR__ . '/../src/legacy_aliases.php';
+}
+
+$argv = $_SERVER['argv'] ?? [];
+$socket = \VHttpd\PhpWorker\parseSocketFromArgv($argv);
+$worker = new \VHttpd\PhpWorker\Server($socket);
+$worker->run();

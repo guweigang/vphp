@@ -62,7 +62,7 @@ flowchart LR
 | Dimension | nginx + PHP-FPM | vhttpd + php-worker |
 |---|---|---|
 | Streaming support | Possible, often infra-tuning heavy | First-class via worker stream frames |
-| App API shape | Framework/flush specific | Unified `WorkerStreamResponse` (`text`/`sse`) |
+| App API shape | Framework/flush specific | Unified `VHttpd\\PhpWorker\\StreamResponse` (`text`/`sse`) |
 | Transport semantics | Indirect through proxy/FPM behavior | Explicit `start/chunk/error/end` contract |
 | AI token streaming path | Often ad-hoc per project | Reusable runtime pattern |
 | Debug surface | Split across multiple components | Concentrated at worker boundary |
@@ -382,10 +382,19 @@ Primary classes:
 - `VHttpd\\Manager`
 - `VHttpd\\Psr7Bridge`
 - `VHttpd\\SlimPsr7Adapter`
+- `VHttpd\\PhpWorker\\Server`
+- `VHttpd\\PhpWorker\\Client`
+- `VHttpd\\PhpWorker\\StreamResponse`
+
+Composer bin entrypoints:
+
+- `vendor/bin/php-worker`
+- `vendor/bin/php-worker-client`
 
 Backward compatibility:
 
 - legacy class names (`VHttpd\\VHttpdManager`, `VHttpd\\VHttpdPsr7Bridge`, `VHttpd\\VSlimPsr7Adapter`, and global variants) remain available via `class_alias`.
+- legacy worker aliases (`VHttpd\\PhpWorker\\PhpWorker`, `PhpWorker`, `VHttpd\\PhpWorker\\WorkerStreamResponse`, `WorkerStreamResponse`) remain available via `class_alias`.
 - existing scripts that `require` old files continue to work.
 
 ## Current direction

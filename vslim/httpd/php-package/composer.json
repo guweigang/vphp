@@ -1,6 +1,6 @@
 {
   "name": "vphpext/vhttpd-php",
-  "description": "VHttpd PHP bridge package (manager, PSR-7 bridge, VSlim adapter)",
+  "description": "VHttpd PHP runtime package (manager, PSR-7 bridge, VSlim adapter, php-worker)",
   "type": "library",
   "license": "MIT",
   "require": {
@@ -13,6 +13,10 @@
     "files": [
       "src/legacy_aliases.php"
     ]
+  },
+  "bin": [
+    "bin/php-worker",
+    "bin/php-worker-client"
   },
   "suggest": {
     "nyholm/psr7": "PSR-17 factory support",

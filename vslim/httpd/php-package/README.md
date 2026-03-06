@@ -32,12 +32,22 @@ Primary classes:
 - `VHttpd\\Manager`
 - `VHttpd\\Psr7Bridge`
 - `VHttpd\\SlimPsr7Adapter`
+- `VHttpd\\PhpWorker\\Server`
+- `VHttpd\\PhpWorker\\Client`
+- `VHttpd\\PhpWorker\\StreamResponse`
+
+Composer bin entrypoints:
+
+- `vendor/bin/php-worker`
+- `vendor/bin/php-worker-client`
 
 Compatibility aliases are provided for legacy names:
 
 - `VHttpd\\VHttpdManager`, `VHttpdManager`
 - `VHttpd\\VHttpdPsr7Bridge`, `VHttpdPsr7Bridge`
 - `VHttpd\\VSlimPsr7Adapter`, `VSlimPsr7Adapter`
+- `VHttpd\\PhpWorker\\PhpWorker`, `PhpWorker`
+- `VHttpd\\PhpWorker\\WorkerStreamResponse`, `WorkerStreamResponse`
 
 ## Publish workflow (subtree split)
 
