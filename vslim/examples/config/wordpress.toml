@@ -10,7 +10,7 @@ event_log = "/tmp/vhttpd_wordpress.events.ndjson"
 autostart = true
 read_timeout_ms = 3000
 socket = "/tmp/vslim_wordpress.sock"
-cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_wordpress.sock"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php"
 
 [worker.env]
 VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/wordpress/app.php"
