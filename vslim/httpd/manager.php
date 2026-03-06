@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VHttpd;
 
-final class VHttpdManager
+final class Manager
 {
     private string $bin;
     private string $host;
@@ -124,6 +124,9 @@ final class VHttpdManager
     }
 }
 
+if (!\class_exists(\VHttpd\VHttpdManager::class, false)) {
+    \class_alias(\VHttpd\Manager::class, \VHttpd\VHttpdManager::class);
+}
 if (!\class_exists('VHttpdManager', false)) {
-    \class_alias(\VHttpd\VHttpdManager::class, 'VHttpdManager');
+    \class_alias(\VHttpd\Manager::class, 'VHttpdManager');
 }

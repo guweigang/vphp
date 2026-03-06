@@ -8,7 +8,7 @@ return static function (mixed $request, array $envelope = []): VSlim\Response|ar
     $app = VSlim\App::demo();
 
     if (is_object($request)) {
-        return \VHttpd\VSlimPsr7Adapter::dispatch($app, $request);
+        return \VHttpd\SlimPsr7Adapter::dispatch($app, $request);
     }
 
     if (is_array($request)) {

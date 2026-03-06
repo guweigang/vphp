@@ -350,7 +350,7 @@ Use `manager.php`:
 <?php
 require __DIR__ . '/manager.php';
 
-$mgr = new VHttpdManager(
+$mgr = new VHttpd\Manager(
     __DIR__ . '/vhttpd',
     '127.0.0.1',
     18081,
@@ -379,13 +379,13 @@ Composer package:
 
 Primary classes:
 
-- `VHttpd\\VHttpdManager`
-- `VHttpd\\VHttpdPsr7Bridge`
-- `VHttpd\\VSlimPsr7Adapter`
+- `VHttpd\\Manager`
+- `VHttpd\\Psr7Bridge`
+- `VHttpd\\SlimPsr7Adapter`
 
 Backward compatibility:
 
-- legacy global class names (`VHttpdManager`, `VHttpdPsr7Bridge`, `VSlimPsr7Adapter`) remain available via `class_alias`.
+- legacy class names (`VHttpd\\VHttpdManager`, `VHttpd\\VHttpdPsr7Bridge`, `VHttpd\\VSlimPsr7Adapter`, and global variants) remain available via `class_alias`.
 - existing scripts that `require` old files continue to work.
 
 ## Current direction
@@ -418,7 +418,7 @@ and `net.http.Request`. This is the transport contract for:
 
 - `vhttpd -> php-worker.php`
 - `php-worker.php -> vslim_handle_request(...)`
-- `VSlimPsr7Adapter::toWorkerEnvelope(...)`
+- `SlimPsr7Adapter::toWorkerEnvelope(...)`
 
 Current envelope shape:
 
@@ -515,7 +515,7 @@ The bootstrap file should `return` a callable. The worker will call it like this
 
 It may also return a `VSlim\App` instance directly. In that case, the worker will:
 
-- dispatch through `VSlimPsr7Adapter::dispatch(...)` when a PSR-7 request is available
+- dispatch through `SlimPsr7Adapter::dispatch(...)` when a PSR-7 request is available
 - otherwise hydrate a `VSlim\Request` from the envelope and call `VSlim\App->dispatch_request(...)`
 
 ### Simplest `vslim` app
@@ -530,7 +530,7 @@ return static function (mixed $request, array $envelope = []): VSlim\Response|ar
     $app = VSlim\App::demo();
 
     if (is_object($request)) {
-        return VSlimPsr7Adapter::dispatch($app, $request);
+        return \VHttpd\SlimPsr7Adapter::dispatch($app, $request);
     }
 
     if (is_array($request)) {

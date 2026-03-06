@@ -220,8 +220,8 @@ final class PhpWorker
         try {
             $appHandler = $this->loadAppHandler();
             if ($appHandler !== null) {
-                $psrRequest = VHttpdPsr7Bridge::canBuildServerRequest()
-                    ? VHttpdPsr7Bridge::buildServerRequest($envelope)
+                $psrRequest = \VHttpd\Psr7Bridge::canBuildServerRequest()
+                    ? \VHttpd\Psr7Bridge::buildServerRequest($envelope)
                     : null;
                 $appResult = $this->dispatchLoadedApp(
                     $appHandler,
@@ -253,8 +253,8 @@ final class PhpWorker
                 }
             }
 
-            if (VHttpdPsr7Bridge::canBuildServerRequest()) {
-                $psrRequest = VHttpdPsr7Bridge::buildServerRequest($envelope);
+            if (\VHttpd\Psr7Bridge::canBuildServerRequest()) {
+                $psrRequest = \VHttpd\Psr7Bridge::buildServerRequest($envelope);
                 if ($psrRequest !== null) {
                     return $this->resJson($id, 200, [
                         "psr7" => true,
@@ -484,7 +484,7 @@ final class PhpWorker
         if (is_object($appHandler) && $appHandler instanceof VSlim\App) {
             if ($psrRequest !== null) {
                 require_once __DIR__ . "/vslim_psr7_adapter.php";
-                return VSlimPsr7Adapter::dispatch($appHandler, $psrRequest);
+                return \VHttpd\SlimPsr7Adapter::dispatch($appHandler, $psrRequest);
             }
             return $appHandler->dispatch_envelope($envelope);
         }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VHttpd;
 
-final class VHttpdManager
+final class Manager
 {
     private string $bin;
     private string $host;

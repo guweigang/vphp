@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VHttpd;
 
-final class VHttpdPsr7Bridge
+final class Psr7Bridge
 {
     public static function canBuildServerRequest(): bool
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VHttpd;
 
-final class VSlimPsr7Adapter
+final class SlimPsr7Adapter
 {
     public static function dispatch(VSlim\App $app, object $request): VSlim\Response
     {
@@ -252,6 +252,9 @@ final class VSlimPsr7Adapter
     }
 }
 
+if (!\class_exists(\VHttpd\VSlimPsr7Adapter::class, false)) {
+    \class_alias(\VHttpd\SlimPsr7Adapter::class, \VHttpd\VSlimPsr7Adapter::class);
+}
 if (!\class_exists('VSlimPsr7Adapter', false)) {
-    \class_alias(\VHttpd\VSlimPsr7Adapter::class, 'VSlimPsr7Adapter');
+    \class_alias(\VHttpd\SlimPsr7Adapter::class, 'VSlimPsr7Adapter');
 }

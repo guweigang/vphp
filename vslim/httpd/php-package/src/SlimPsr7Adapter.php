@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VHttpd;
 
-final class VSlimPsr7Adapter
+final class SlimPsr7Adapter
 {
     public static function dispatch(VSlim\App $app, object $request): VSlim\Response
     {

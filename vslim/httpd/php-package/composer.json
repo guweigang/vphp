@@ -9,7 +9,10 @@
   "autoload": {
     "psr-4": {
       "VHttpd\\": "src/"
-    }
+    },
+    "files": [
+      "src/legacy_aliases.php"
+    ]
   },
   "suggest": {
     "nyholm/psr7": "PSR-17 factory support",
