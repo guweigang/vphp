@@ -128,6 +128,12 @@ Run with config:
 ./vhttpd --config /Users/guweigang/Source/vphpext/vslim/httpd/vhttpd.toml
 ```
 
+Shorthand is also supported:
+
+```bash
+./vhttpd /Users/guweigang/Source/vphpext/vslim/httpd/vhttpd.toml
+```
+
 `[worker.env]` entries are injected into the php-worker process environment, so they are readable via `getenv()` in PHP.
 
 ### Managed worker mode

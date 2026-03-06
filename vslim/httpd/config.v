@@ -94,6 +94,17 @@ fn load_vhttpd_config(args []string) !VhttpdConfig {
 		config_path = os.getenv('VHTTPD_CONFIG')
 	}
 	if config_path == '' {
+		for a in args {
+			if a.starts_with('--') {
+				continue
+			}
+			if a.to_lower().ends_with('.toml') {
+				config_path = a
+				break
+			}
+		}
+	}
+	if config_path == '' {
 		return default_vhttpd_config()
 	}
 	text := os.read_file(config_path)!
