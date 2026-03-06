@@ -5,6 +5,48 @@ import time
 import veb
 import veb.request_id
 
+const vhttpd_version = '0.1.0'
+
+fn has_flag(args []string, flags []string) bool {
+	for a in args {
+		for f in flags {
+			if a == f {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+fn print_vhttpd_help() {
+	println('vhttpd ${vhttpd_version}')
+	println('')
+	println('Usage:')
+	println('  vhttpd [--config <file.toml>] [options]')
+	println('  vhttpd <file.toml>')
+	println('')
+	println('Common options:')
+	println('  --help, -h')
+	println('  --version, -v')
+	println('  --config <path>              TOML config file')
+	println('  --host <host>                Data plane host')
+	println('  --port <port>                Data plane port')
+	println('  --admin-host <host>          Admin plane host')
+	println('  --admin-port <port>          Admin plane port')
+	println('  --admin-token <token>        Admin API token')
+	println('  --event-log <path>           Event log path')
+	println('  --pid-file <path>            PID file path')
+	println('  --worker-autostart <0|1>')
+	println('  --worker-cmd <command>')
+	println('  --worker-socket <path>       Single worker socket')
+	println('  --worker-pool-size <N>       Managed worker pool size')
+	println('  --worker-socket-prefix <p>   Prefix for pool sockets')
+	println('')
+	println('Examples:')
+	println('  vhttpd --config /path/to/vhttpd.toml')
+	println('  vhttpd /path/to/vhttpd.toml')
+}
+
 fn run_server(args []string) {
 	cfg := load_vhttpd_config(args) or {
 		eprintln('config load failed: ${err}')
@@ -17,8 +59,7 @@ fn run_server(args []string) {
 	worker_read_timeout_ms := arg_int_or(args, '--worker-read-timeout-ms', cfg.worker.read_timeout_ms)
 	worker_cmd := arg_string_or(args, '--worker-cmd', cfg.worker.cmd)
 	worker_autostart := arg_bool_or(args, '--worker-autostart', cfg.worker.autostart)
-	worker_restart_backoff_ms := arg_int_or(args, '--worker-restart-backoff-ms',
-		cfg.worker.restart_backoff_ms)
+	worker_restart_backoff_ms := arg_int_or(args, '--worker-restart-backoff-ms', cfg.worker.restart_backoff_ms)
 	worker_restart_backoff_max_ms := arg_int_or(args, '--worker-restart-backoff-max-ms',
 		cfg.worker.restart_backoff_max_ms)
 	worker_max_requests := arg_int_or(args, '--worker-max-requests', cfg.worker.max_requests)
@@ -36,18 +77,18 @@ fn run_server(args []string) {
 	os.write_file(pid_file, '${os.getpid()}') or {}
 
 	mut app := &App{
-		event_log: event_log
-		started_at_unix: time.now().unix()
-		worker_sockets: worker_sockets
-		worker_read_timeout_ms: worker_read_timeout_ms
-		worker_autostart: worker_autostart
-		worker_cmd: worker_cmd
-		worker_env: cfg.worker.env.clone()
-		worker_workdir: workdir
-		worker_restart_backoff_ms: worker_restart_backoff_ms
+		event_log:                     event_log
+		started_at_unix:               time.now().unix()
+		worker_sockets:                worker_sockets
+		worker_read_timeout_ms:        worker_read_timeout_ms
+		worker_autostart:              worker_autostart
+		worker_cmd:                    worker_cmd
+		worker_env:                    cfg.worker.env.clone()
+		worker_workdir:                workdir
+		worker_restart_backoff_ms:     worker_restart_backoff_ms
 		worker_restart_backoff_max_ms: worker_restart_backoff_max_ms
-		worker_max_requests: worker_max_requests
-		admin_on_data_plane: !admin_enabled
+		worker_max_requests:           worker_max_requests
+		admin_on_data_plane:           !admin_enabled
 	}
 	defer {
 		stop_worker_pool(mut app.managed_workers)
@@ -55,34 +96,35 @@ fn run_server(args []string) {
 	}
 
 	if worker_autostart {
-		app.managed_workers = start_worker_pool(worker_cmd, app.worker_env, worker_sockets, workdir) or {
+		app.managed_workers = start_worker_pool(worker_cmd, app.worker_env, worker_sockets,
+			workdir) or {
 			eprintln('worker start failed: ${err}')
 			return
 		}
 		for w in app.managed_workers {
 			app.emit('worker.started', {
-				'worker_id': '${w.id}'
-				'socket': w.socket_path
+				'worker_id':     '${w.id}'
+				'socket':        w.socket_path
 				'restart_count': '${w.restart_count}'
 			})
 		}
 	}
 
 	app.use(request_id.middleware[Context](request_id.Config{
-		header: 'X-Request-ID'
+		header:    'X-Request-ID'
 		generator: fn () string {
 			return 'req-${time.now().unix_micro()}'
 		}
 	}))
 	app.emit('server.started', {
-		'host': host
-		'port': '${port}'
-		'pid': '${os.getpid()}'
+		'host':             host
+		'port':             '${port}'
+		'pid':              '${os.getpid()}'
 		'worker_autostart': if worker_autostart { 'true' } else { 'false' }
 		'worker_pool_size': '${worker_sockets.len}'
-		'admin_enabled': if admin_enabled { 'true' } else { 'false' }
-		'admin_host': if admin_enabled { admin_host } else { '' }
-		'admin_port': if admin_enabled { '${admin_port}' } else { '' }
+		'admin_enabled':    if admin_enabled { 'true' } else { 'false' }
+		'admin_host':       if admin_enabled { admin_host } else { '' }
+		'admin_port':       if admin_enabled { '${admin_port}' } else { '' }
 	})
 	if admin_enabled {
 		go run_admin_server(app, admin_host, admin_port, admin_token)
@@ -99,5 +141,13 @@ fn run_server(args []string) {
 
 fn main() {
 	args := os.args[1..]
+	if has_flag(args, ['--help', '-h']) {
+		print_vhttpd_help()
+		return
+	}
+	if has_flag(args, ['--version', '-v']) {
+		println(vhttpd_version)
+		return
+	}
 	run_server(args)
 }
