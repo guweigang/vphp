@@ -197,6 +197,8 @@ Endpoints:
 - `GET /admin/workers` returns runtime worker pool status (alive/draining/inflight/restarts)
   - on data plane port: available only when admin plane is disabled
   - on admin plane port: always available (optionally token-protected)
+- `POST /admin/workers/restart?id=<worker_id>` restarts a single worker
+- `POST /admin/workers/restart/all` restarts all workers
 - `/dispatch` is kept as a debug bridge endpoint (this one uses query `method/path` on purpose):
   - `GET /dispatch?method=GET&path=/users/42`
   - `HEAD /dispatch?method=GET&path=/go/nova`
@@ -225,9 +227,8 @@ curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' http://127.0.0.1:1998
 
 Scope in current MVP:
 
-- control plane is **read-only**
-- no mutating endpoints yet (no manual restart/scale/shutdown endpoint)
-- main purpose is runtime observability and debugging
+- control plane supports runtime observability plus worker restart operations
+- scale in/out and graceful shutdown orchestration are still external responsibilities
 
 Available endpoints:
 
@@ -237,6 +238,12 @@ Available endpoints:
 - `GET /admin/workers`
   - returns worker pool runtime snapshot
   - response content type: `application/json; charset=utf-8`
+- `POST /admin/workers/restart?id=<worker_id>`
+  - restart a single managed worker by ID
+  - returns updated worker runtime state in JSON
+- `POST /admin/workers/restart/all`
+  - restart all managed workers in the pool
+  - returns number of restarted workers
 
 Auth model:
 
@@ -279,6 +286,14 @@ Example:
 ```bash
 curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' \
   http://127.0.0.1:19981/admin/workers | jq .
+
+# restart worker id=2
+curl --noproxy '*' -s -X POST -H 'x-vhttpd-admin-token: change-me' \
+  'http://127.0.0.1:19981/admin/workers/restart?id=2' | jq .
+
+# restart all workers
+curl --noproxy '*' -s -X POST -H 'x-vhttpd-admin-token: change-me' \
+  'http://127.0.0.1:19981/admin/workers/restart/all' | jq .
 ```
 
 ## Request ID contract

@@ -402,6 +402,50 @@ fn connect_any_worker(mut app App) !string {
 	return error(last_err)
 }
 
+fn worker_admin_status_from(mut w ManagedWorker) WorkerAdminStatus {
+	return WorkerAdminStatus{
+		id: w.id
+		socket: w.socket_path
+		alive: if isnil(w.proc) { false } else { w.proc.is_alive() }
+		draining: w.draining
+		inflight_requests: w.inflight_requests
+		served_requests: w.served_requests
+		restart_count: w.restart_count
+		next_retry_ts: w.next_retry_ts
+	}
+}
+
+fn (mut app App) restart_worker_by_id(worker_id int) !WorkerAdminStatus {
+	if !app.worker_autostart || app.managed_workers.len == 0 {
+		return error('worker pool is not enabled')
+	}
+	mut idx := -1
+	for i, w in app.managed_workers {
+		if w.id == worker_id {
+			idx = i
+			break
+		}
+	}
+	if idx < 0 {
+		return error('worker id not found: ${worker_id}')
+	}
+	app.restart_worker_slot_now(idx, 'admin_restart')
+	mut w := app.managed_workers[idx]
+	return worker_admin_status_from(mut w)
+}
+
+fn (mut app App) restart_all_workers() int {
+	if !app.worker_autostart || app.managed_workers.len == 0 {
+		return 0
+	}
+	mut restarted := 0
+	for i in 0 .. app.managed_workers.len {
+		app.restart_worker_slot_now(i, 'admin_restart_all')
+		restarted++
+	}
+	return restarted
+}
+
 fn (mut app App) worker_admin_snapshot() WorkerPoolAdminStatus {
 	app.pool_mu.@lock()
 	defer {
@@ -410,16 +454,7 @@ fn (mut app App) worker_admin_snapshot() WorkerPoolAdminStatus {
 	mut workers := []WorkerAdminStatus{cap: app.managed_workers.len}
 	for worker in app.managed_workers {
 		mut w := worker
-		workers << WorkerAdminStatus{
-			id: w.id
-			socket: w.socket_path
-			alive: if isnil(w.proc) { false } else { w.proc.is_alive() }
-			draining: w.draining
-			inflight_requests: w.inflight_requests
-			served_requests: w.served_requests
-			restart_count: w.restart_count
-			next_retry_ts: w.next_retry_ts
-		}
+		workers << worker_admin_status_from(mut w)
 	}
 	return WorkerPoolAdminStatus{
 		worker_autostart: app.worker_autostart
