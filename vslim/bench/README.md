@@ -8,6 +8,34 @@ Install k6:
 brew install k6
 ```
 
+## 0) One-command host regression
+
+This script runs an end-to-end host check:
+
+- build `vhttpd`
+- start `vhttpd` with managed worker pool (`POOL_SIZE`, default `4`)
+- run short + stream k6 benchmarks
+- send `SIGINT` to `vhttpd`
+- verify no `php-worker.php` process is left for this run
+
+Run:
+
+```bash
+bash /Users/guweigang/Source/vphpext/vslim/bench/run_host_regression.sh
+```
+
+Tune:
+
+```bash
+PORT=19882 POOL_SIZE=6 bash /Users/guweigang/Source/vphpext/vslim/bench/run_host_regression.sh
+```
+
+Skip k6 and only verify lifecycle:
+
+```bash
+RUN_K6=0 bash /Users/guweigang/Source/vphpext/vslim/bench/run_host_regression.sh
+```
+
 ## 1) Short request benchmark
 
 Default target:
