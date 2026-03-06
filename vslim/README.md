@@ -104,6 +104,7 @@ flowchart TB
 
 - PSR-7/15 支持矩阵：[vhttpd/docs/psr_support.md](/Users/guweigang/Source/vphpext/vhttpd/docs/psr_support.md)
 - 错误与超时语义：[vhttpd/docs/failure_model.md](/Users/guweigang/Source/vphpext/vhttpd/docs/failure_model.md)
+- ORM 集成建议：[docs/orm.md](/Users/guweigang/Source/vphpext/vslim/docs/orm.md)
 
 ## 为什么不直接复用 veb 的 route 定义
 
@@ -144,15 +145,19 @@ flowchart TB
 - `VSlim\Request` 请求包装
 - `VSlim\App` / `VSlim\Response` 作为 PHP-facing façade
 - `vslim_handle_request()` / `vslim_demo_dispatch()` 作为稳定函数入口
-- PSR-11 compatible global container (`VSlim\\Container`, via `vphpext/vhttpd` PHP package)
+- PSR-11 compatible container (`VSlim\\Container`, provided by `vslim.so`, requires `psr` extension)
 
-## PSR-11 container (global)
+## PSR-11 container
 
-`VSlim` now provides a PSR-11 compatible container class in PHP userland:
+`VSlim` now provides a PSR-11 compatible container directly from `vslim.so`:
 
 - `VSlim\\Container` implements `Psr\\Container\\ContainerInterface`
 - `VSlim\\Container\\NotFoundException` implements `Psr\\Container\\NotFoundExceptionInterface`
 - `VSlim\\Container\\ContainerException` implements `Psr\\Container\\ContainerExceptionInterface`
+
+Runtime requirement:
+
+- `psr` extension (for `Psr\\Container\\*` interfaces)
 
 Minimal usage:
 
@@ -164,10 +169,7 @@ use VSlim\Container;
 $container = new Container();
 $container->set('app.name', 'vslim');
 $container->factory('clock', fn () => new DateTimeImmutable('now'));
-
-Container::setGlobal($container);
-$global = Container::requireGlobal();
-echo $global->get('app.name');
+echo $container->get('app.name');
 ```
 
 ## 与 vhttpd 的交互模型
