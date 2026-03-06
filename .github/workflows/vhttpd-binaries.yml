@@ -2,6 +2,11 @@ name: Build vhttpd binaries
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Optional tag to publish release assets (example: vhttpd-0.1.0)"
+        required: false
+        type: string
   push:
     branches: [main]
     tags:
@@ -123,10 +128,22 @@ jobs:
   release:
     name: Publish release assets
     needs: build
-    if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.release_tag != ''
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve release tag
+        id: release_meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG_INPUT="${{ github.event.inputs.release_tag }}"
+          if [[ -n "${TAG_INPUT}" ]]; then
+            echo "tag=${TAG_INPUT}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
@@ -137,10 +154,28 @@ jobs:
         run: |
           set -euo pipefail
           find release-artifacts -type f -name '*.tar.gz' -print0 | sort -z | xargs -0 sha256sum > release-artifacts/SHA256SUMS.txt
+          cat > release-artifacts/RELEASE_HEADER.md <<'NOTES'
+          ## Release assets
+
+          This release publishes prebuilt artifacts for:
+          - linux-amd64
+          - macos-amd64
+          - macos-arm64
+
+          Each tarball includes:
+          - `vhttpd`
+          - `vslim.so`
+
+          Check `SHA256SUMS.txt` to verify downloads.
+          NOTES
 
       - name: Publish GitHub release assets
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          name: vhttpd ${{ steps.release_meta.outputs.tag }}
+          generate_release_notes: true
+          body_path: release-artifacts/RELEASE_HEADER.md
           files: |
             release-artifacts/**/*.tar.gz
             release-artifacts/SHA256SUMS.txt
