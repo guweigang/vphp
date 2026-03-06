@@ -539,6 +539,7 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 		ctx.res.set_status(http.status_from_int(status))
 		return ctx.text(body_on_head)
 	}
+	app.on_worker_request_started(selected_socket)
 	defer {
 		app.on_worker_request_finished(selected_socket)
 	}

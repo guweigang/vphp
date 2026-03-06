@@ -14,6 +14,8 @@ mut:
 	last_exit_ts  i64
 	next_retry_ts i64
 	served_requests i64
+	inflight_requests i64
+	draining bool
 }
 
 fn get_arg(args []string, key string, default_val string) string {
@@ -78,6 +80,8 @@ fn start_managed_worker(id int, worker_cmd string, worker_socket string, workdir
 		last_exit_ts: 0
 		next_retry_ts: 0
 		served_requests: 0
+		inflight_requests: 0
+		draining: false
 	}
 }
 
@@ -267,6 +271,8 @@ fn (mut app App) restart_worker_slot_now(idx int, reason string) {
 	w.last_exit_ts = now
 	w.next_retry_ts = 0
 	w.served_requests = 0
+	w.inflight_requests = 0
+	w.draining = false
 	app.managed_workers[idx] = w
 	app.emit('worker.restarted', {
 		'worker_id': '${w.id}'
@@ -276,8 +282,8 @@ fn (mut app App) restart_worker_slot_now(idx int, reason string) {
 	})
 }
 
-fn (mut app App) on_worker_request_finished(socket_path string) {
-	if !app.worker_autostart || app.worker_max_requests <= 0 || app.managed_workers.len == 0 {
+fn (mut app App) on_worker_request_started(socket_path string) {
+	if !app.worker_autostart || app.managed_workers.len == 0 {
 		return
 	}
 	idx := app.worker_index_by_socket(socket_path)
@@ -285,15 +291,36 @@ fn (mut app App) on_worker_request_finished(socket_path string) {
 		return
 	}
 	mut w := app.managed_workers[idx]
-	w.served_requests++
+	w.inflight_requests++
 	app.managed_workers[idx] = w
-	if w.served_requests >= app.worker_max_requests {
+}
+
+fn (mut app App) on_worker_request_finished(socket_path string) {
+	if !app.worker_autostart || app.managed_workers.len == 0 {
+		return
+	}
+	idx := app.worker_index_by_socket(socket_path)
+	if idx < 0 {
+		return
+	}
+	mut w := app.managed_workers[idx]
+	if w.inflight_requests > 0 {
+		w.inflight_requests--
+	}
+	if app.worker_max_requests > 0 {
+		w.served_requests++
+	}
+	if app.worker_max_requests > 0 && !w.draining && w.served_requests >= app.worker_max_requests {
+		w.draining = true
 		app.emit('worker.max_requests_reached', {
 			'worker_id': '${w.id}'
 			'socket': w.socket_path
 			'served_requests': '${w.served_requests}'
 			'max_requests': '${app.worker_max_requests}'
 		})
+	}
+	app.managed_workers[idx] = w
+	if w.draining && w.inflight_requests == 0 {
 		app.restart_worker_slot_now(idx, 'max_requests_reached')
 	}
 }
@@ -327,10 +354,22 @@ fn connect_any_worker(mut app App) !string {
 		return error('worker not configured')
 	}
 	mut last_err := 'worker unavailable'
+	mut draining_ready := []int{}
 	for _ in 0 .. app.worker_sockets.len {
 		socket_path := app.next_worker_socket() or { break }
-		if app.worker_autostart && app.worker_index_by_socket(socket_path) >= 0 {
-			return socket_path
+		if app.worker_autostart {
+			idx := app.worker_index_by_socket(socket_path)
+			if idx >= 0 {
+				w := app.managed_workers[idx]
+				if w.draining {
+					if w.inflight_requests == 0 {
+						draining_ready << idx
+					}
+					last_err = 'all workers draining'
+					continue
+				}
+				return socket_path
+			}
 		}
 		mut probe_conn := unix.connect_stream(socket_path) or {
 			last_err = err.msg()
@@ -338,6 +377,11 @@ fn connect_any_worker(mut app App) !string {
 		}
 		probe_conn.close() or {}
 		return socket_path
+	}
+	if app.worker_autostart {
+		for idx in draining_ready {
+			app.restart_worker_slot_now(idx, 'drain_complete')
+		}
 	}
 	return error(last_err)
 }
