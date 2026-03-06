@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace VHttpd;
+
 final class VHttpdManager
 {
     private string $bin;
@@ -122,3 +124,6 @@ final class VHttpdManager
     }
 }
 
+if (!\class_exists('VHttpdManager', false)) {
+    \class_alias(\VHttpd\VHttpdManager::class, 'VHttpdManager');
+}

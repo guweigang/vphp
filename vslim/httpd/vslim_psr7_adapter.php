@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace VHttpd;
+
 final class VSlimPsr7Adapter
 {
     public static function dispatch(VSlim\App $app, object $request): VSlim\Response
@@ -248,4 +250,8 @@ final class VSlimPsr7Adapter
         }
         return $default;
     }
+}
+
+if (!\class_exists('VSlimPsr7Adapter', false)) {
+    \class_alias(\VHttpd\VSlimPsr7Adapter::class, 'VSlimPsr7Adapter');
 }

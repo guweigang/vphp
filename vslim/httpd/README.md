@@ -19,6 +19,7 @@ The design rule is:
 - Failure/timeout model: [failure_model.md](/Users/guweigang/Source/vphpext/vslim/httpd/failure_model.md)
 - Worker transport contract: [transport_contract.md](/Users/guweigang/Source/vphpext/vslim/httpd/transport_contract.md)
 - MVP 1.0 operations runbook (TOML-first): [MVP_1_0_RUNBOOK.md](/Users/guweigang/Source/vphpext/vslim/httpd/MVP_1_0_RUNBOOK.md)
+- Docker usage: [docker/README.md](/Users/guweigang/Source/vphpext/vslim/httpd/docker/README.md)
 
 ## Why vhttpd uses veb but vslim keeps its own router
 
@@ -74,6 +75,24 @@ It gives PHP applications a consistent runtime transport for request/response pl
 ```bash
 cd vslim/httpd
 v -o vhttpd .
+```
+
+## Docker (developer-first)
+
+Build and run with containerized toolchain/runtime:
+
+```bash
+cd /Users/guweigang/Source/vphpext
+docker build -t vhttpd-dev:latest -f /Users/guweigang/Source/vphpext/vslim/httpd/docker/Dockerfile .
+docker run --rm -p 19881:19881 -p 19981:19981 \
+  vhttpd-dev:latest \
+  /app/vslim/httpd/vhttpd --config /app/vslim/httpd/docker/config/hello.toml
+```
+
+One-command helper:
+
+```bash
+bash /Users/guweigang/Source/vphpext/vslim/httpd/docker/run.sh
 ```
 
 ## Run
@@ -347,6 +366,26 @@ if ($mgr->waitUntilReady()) {
 print_r($mgr->events(20));
 $mgr->stop();
 ```
+
+## PHP package and namespace
+
+`httpd` 目录下的 PHP 依赖支持统一命名空间根：`VHttpd\\*`。
+
+Composer package:
+
+- file: [composer.json](/Users/guweigang/Source/vphpext/vslim/httpd/composer.json)
+- package name: `vphpext/vhttpd`
+
+Primary classes:
+
+- `VHttpd\\VHttpdManager`
+- `VHttpd\\VHttpdPsr7Bridge`
+- `VHttpd\\VSlimPsr7Adapter`
+
+Backward compatibility:
+
+- legacy global class names (`VHttpdManager`, `VHttpdPsr7Bridge`, `VSlimPsr7Adapter`) remain available via `class_alias`.
+- existing scripts that `require` old files continue to work.
 
 ## Current direction
 

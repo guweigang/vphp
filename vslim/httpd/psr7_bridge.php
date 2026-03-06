@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace VHttpd;
+
 final class VHttpdPsr7Bridge
 {
     public static function canBuildServerRequest(): bool
@@ -272,4 +274,8 @@ final class VHttpdPsr7Bridge
         }
         return $request;
     }
+}
+
+if (!\class_exists('VHttpdPsr7Bridge', false)) {
+    \class_alias(\VHttpd\VHttpdPsr7Bridge::class, 'VHttpdPsr7Bridge');
 }

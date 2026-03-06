@@ -1,0 +1,26 @@
+{
+  "name": "vphpext/vhttpd",
+  "description": "PHP runtime bridge utilities for vhttpd (manager, PSR-7 bridge, VSlim adapter)",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "classmap": [
+      "manager.php",
+      "psr7_bridge.php",
+      "vslim_psr7_adapter.php"
+    ],
+    "files": [
+      "manager.php",
+      "psr7_bridge.php",
+      "vslim_psr7_adapter.php"
+    ]
+  },
+  "suggest": {
+    "nyholm/psr7": "PSR-17 factory support",
+    "guzzlehttp/psr7": "PSR-17 factory support",
+    "laminas/laminas-diactoros": "PSR-17 factory support"
+  }
+}
