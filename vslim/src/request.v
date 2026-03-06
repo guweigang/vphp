@@ -123,6 +123,34 @@ pub fn (r &VSlimRequest) has_query(key string) bool {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) input(key string) string {
+	inputs := r.input_values()
+	return inputs[key] or { '' }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) input_or(key string, default_value string) string {
+	inputs := r.input_values()
+	return inputs[key] or { default_value }
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) has_input(key string) bool {
+	inputs := r.input_values()
+	return key in inputs
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) all_inputs() map[string]string {
+	return r.input_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) parsed_body() map[string]string {
+	return r.parsed_body_values()
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) query_all() map[string]string {
 	return r.query_params()
 }
@@ -276,6 +304,40 @@ fn (r &VSlimRequest) query_values() map[string]string {
 		return r.query.clone()
 	}
 	return VSlimRequest.parse_query(r.query_string)
+}
+
+fn (r &VSlimRequest) input_values() map[string]string {
+	mut out := r.query_values()
+	body := r.parsed_body_values()
+	for key, value in body {
+		out[key] = value
+	}
+	return out
+}
+
+fn (r &VSlimRequest) parsed_body_values() map[string]string {
+	mut out := map[string]string{}
+	body := r.body.trim_space()
+	if body == '' {
+		return out
+	}
+	content_type := r.content_type().to_lower()
+	is_json := content_type.contains('application/json') || body.starts_with('{') || body.starts_with('[')
+	if is_json {
+		decoded := vphp.php_fn('json_decode').call([
+			vphp.ZVal.new_string(body),
+			vphp.ZVal.new_bool(true),
+		])
+		if decoded.is_array() {
+			return decoded.to_string_map()
+		}
+		return out
+	}
+	is_form := content_type.contains('application/x-www-form-urlencoded') || body.contains('=')
+	if is_form {
+		return VSlimRequest.parse_query(body)
+	}
+	return out
 }
 
 fn (r &VSlimRequest) cookie_values() map[string]string {

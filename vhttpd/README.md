@@ -1,17 +1,16 @@
-# VHTTPD (CLI + Userland Scheduler)
+# VHTTPD (Standalone Runtime for PHP Apps)
 
-This is the **Scheme 2** prototype:
+`vhttpd` is an independent HTTP runtime built on `veb`.
 
-- HTTP server runs as a standalone V CLI process built directly on `veb`.
-- PHP Userland controls lifecycle and reads events.
-- `vphp` stays generic; framework/server logic now lives with `vslim`.
+- HTTP server runs as a standalone V CLI process.
+- PHP userland controls app bootstrap and request handling through workers.
+- `vhttpd` can front any PHP application shape (custom app, framework app, or adapter-based app).
 
-The design rule is:
+Core design rule:
 
-- `veb` is the HTTP source of truth
-- `vhttpd` should stay thin and reuse `veb` / `http` / `urllib`
-- `vslim` should stay at the framework layer
-- `vphp` should not become an HTTP helper bag
+- `veb` is the HTTP source of truth.
+- `vhttpd` stays thin and reuses `veb` / `http` / `urllib`.
+- `vhttpd` focuses on transport, worker orchestration, streaming, and observability.
 
 ## Specs
 
@@ -23,37 +22,26 @@ The design rule is:
 - veb reuse roadmap (1.1): [VEB_REUSE_1_1_PLAN.md](/Users/guweigang/Source/vphpext/vhttpd/docs/VEB_REUSE_1_1_PLAN.md)
 - Binary build workflow: [vhttpd-binaries.yml](/Users/guweigang/Source/vphpext/.github/workflows/vhttpd-binaries.yml)
 
-## Why vhttpd uses veb but vslim keeps its own router
+## Why vhttpd stays close to veb
 
-This split is intentional.
+This boundary is intentional.
 
 - `vhttpd`
-  - should stay as close to `veb` as possible
-  - `veb.Context`, `http.Request`, `urllib`, and `http.Cookie` are the source of truth
-  - this is where we want to benefit from V's HTTP/runtime stack
+  - stays as close to `veb` as possible
+  - uses `veb.Context`, `http.Request`, `urllib`, and `http.Cookie` as source of truth
+  - benefits directly from V's HTTP/runtime stack
 
-- `vslim`
-  - is not trying to replace `veb`
-  - it exists to expose a runtime app builder to PHP userland
-  - PHP-side APIs like:
-    - `VSlim\App->get(...)`
-    - `VSlim\App->group(...)`
-    - `VSlim\App->middleware(...)`
-    require runtime route registration, which does not fit `veb`'s compile-time route generation model
+Release rule:
 
-So the rule for the first release is:
-
-- `veb` is the HTTP/runtime source
-- `vslim` is the runtime framework layer built on top of that transport boundary
-- request id is handled by `veb.request_id` middleware
-- SSE stream formatting/headers are handled by `veb.sse`
+- `veb` remains the HTTP/runtime source.
+- request id is handled by `veb.request_id` middleware.
+- SSE stream formatting/headers are handled by `veb.sse`.
 
 ```mermaid
 flowchart LR
     A["Client"] --> B["vhttpd (veb)"]
     B --> C["php-worker"]
-    C --> D["vslim"]
-    D --> E["vphp"]
+    C --> D["PHP App / Framework"]
 ```
 
 ## Why this matters in PHP (vs nginx + PHP-FPM)
@@ -176,7 +164,7 @@ Shorthand is also supported:
 
 ### Managed worker mode
 
-`vhttpd` can also supervise the PHP worker directly:
+`vhttpd` can also supervise PHP workers directly:
 
 ```bash
 ./vhttpd --host 127.0.0.1 --port 19880 \
@@ -191,7 +179,7 @@ This gives you a single command that boots:
 
 - `vhttpd`
 - `php-worker.php`
-- `vslim` through the worker's loaded extension
+- your PHP application entry
 
 ### Managed worker pool (MVP)
 
