@@ -107,6 +107,17 @@ jobs:
               -undefined dynamic_lookup -fvisibility=default
           fi
 
+      - name: Smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -d extension="$(pwd)/dist/vslim.so" -r 'if (!extension_loaded("vslim")) { fwrite(STDERR, "vslim extension not loaded\n"); exit(1);} echo "vslim extension loaded\n";'
+          ./dist/vhttpd --help >/dev/null
+          if ./dist/vhttpd -1 >/dev/null 2>&1; then
+            echo "expected unknown option to fail"
+            exit 1
+          fi
+
       - name: Package artifact
         shell: bash
         run: |
