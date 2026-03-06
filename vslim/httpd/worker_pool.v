@@ -67,7 +67,7 @@ fn start_managed_worker(id int, worker_cmd string, worker_socket string, workdir
 	mut proc := os.new_process('/bin/sh')
 	proc.set_args(['-lc', cmd_with_parent])
 	proc.set_work_folder(workdir)
-	proc.use_pgroup = false
+	proc.use_pgroup = true
 	proc.run()
 	wait_for_worker(worker_socket, 5000)!
 	return ManagedWorker{
@@ -87,11 +87,15 @@ fn (mut w ManagedWorker) stop() {
 	}
 	if w.proc.is_alive() {
 		w.proc.signal_term()
-		w.proc.wait()
+		time.sleep(200 * time.millisecond)
+		if w.proc.is_alive() {
+			w.proc.signal_pgkill()
+			time.sleep(100 * time.millisecond)
+		}
 		if w.proc.is_alive() {
 			w.proc.signal_kill()
-			w.proc.wait()
 		}
+		w.proc.wait()
 	}
 	w.proc.close()
 }
@@ -185,7 +189,7 @@ fn (mut app App) ensure_worker_slot(idx int) {
 	mut proc := os.new_process('/bin/sh')
 	proc.set_args(['-lc', w.worker_cmd])
 	proc.set_work_folder(app.worker_workdir)
-	proc.use_pgroup = false
+	proc.use_pgroup = true
 	proc.run()
 	wait_for_worker(w.socket_path, 1500) or {
 		w.restart_count++
@@ -325,6 +329,9 @@ fn connect_any_worker(mut app App) !string {
 	mut last_err := 'worker unavailable'
 	for _ in 0 .. app.worker_sockets.len {
 		socket_path := app.next_worker_socket() or { break }
+		if app.worker_autostart && app.worker_index_by_socket(socket_path) >= 0 {
+			return socket_path
+		}
 		mut probe_conn := unix.connect_stream(socket_path) or {
 			last_err = err.msg()
 			continue
