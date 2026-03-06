@@ -46,8 +46,41 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5.3'
           coverage: none
+
+      - name: Verify PHP 8.5.3 toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -v
+          php -r 'if (PHP_VERSION !== "8.5.3") { fwrite(STDERR, "Expected PHP 8.5.3, got " . PHP_VERSION . "\n"); exit(1);} echo "PHP version ok: " . PHP_VERSION . "\n";'
+          php-config --version
+          php-config --includes
+          php-config --ldflags
+          php-config --libs
+
+      - name: Install and enable php-psr extension
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf "\n" | pecl install -f psr
+
+          BASE_SCAN_DIR="$(php --ini | awk -F': ' '/Scan for additional .ini files in:/{print $2}')"
+          CUSTOM_SCAN_DIR="${GITHUB_WORKSPACE}/.ci/php-ini"
+          mkdir -p "${CUSTOM_SCAN_DIR}"
+          echo "extension=psr" > "${CUSTOM_SCAN_DIR}/99-psr.ini"
+
+          if [[ -n "${BASE_SCAN_DIR}" && "${BASE_SCAN_DIR}" != "(none)" ]]; then
+            echo "PHP_INI_SCAN_DIR=${BASE_SCAN_DIR}:${CUSTOM_SCAN_DIR}" >> "${GITHUB_ENV}"
+            export PHP_INI_SCAN_DIR="${BASE_SCAN_DIR}:${CUSTOM_SCAN_DIR}"
+          else
+            echo "PHP_INI_SCAN_DIR=${CUSTOM_SCAN_DIR}" >> "${GITHUB_ENV}"
+            export PHP_INI_SCAN_DIR="${CUSTOM_SCAN_DIR}"
+          fi
+
+          php -m | grep -i '^psr$'
+          php -r 'if (!interface_exists("Psr\\Container\\ContainerInterface")) { fwrite(STDERR, "psr interfaces missing\n"); exit(1);} echo "psr extension ready\n";'
 
       - name: Install build deps (Linux)
         if: startsWith(matrix.os, 'ubuntu')
@@ -111,7 +144,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          php -d extension="$(pwd)/dist/vslim.so" -r 'if (!extension_loaded("vslim")) { fwrite(STDERR, "vslim extension not loaded\n"); exit(1);} echo "vslim extension loaded\n";'
+          php -d extension="$(pwd)/dist/vslim.so" -r '
+            if (!extension_loaded("psr")) { fwrite(STDERR, "psr extension not loaded\n"); exit(1); }
+            if (!interface_exists("Psr\\Container\\ContainerInterface")) { fwrite(STDERR, "PSR-11 interface missing\n"); exit(1); }
+            if (!extension_loaded("vslim")) { fwrite(STDERR, "vslim extension not loaded\n"); exit(1); }
+            $c = new VSlim\Container();
+            if (!($c instanceof Psr\Container\ContainerInterface)) { fwrite(STDERR, "VSlim\\\\Container is not PSR-11 compatible\n"); exit(1); }
+            echo "vslim extension loaded with psr dependency\n";
+          '
           ./dist/vhttpd --help >/dev/null
           if ./dist/vhttpd -1 >/dev/null 2>&1; then
             echo "expected unknown option to fail"
@@ -176,6 +216,10 @@ jobs:
           Each tarball includes:
           - `vhttpd`
           - `vslim.so`
+
+          Runtime dependency:
+          - PHP 8.5.3 (ABI-compatible runtime)
+          - `psr.so` (install via `pecl install psr`, from jbboehr/php-psr)
 
           Check `SHA256SUMS.txt` to verify downloads.
           NOTES
