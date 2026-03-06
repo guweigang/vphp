@@ -1,0 +1,18 @@
+[server]
+host = "127.0.0.1"
+port = 19885
+
+[files]
+pid_file = "/tmp/vhttpd_symfony.pid"
+event_log = "/tmp/vhttpd_symfony.events.ndjson"
+
+[worker]
+autostart = true
+read_timeout_ms = 3000
+socket = "/tmp/vslim_symfony.sock"
+cmd = "VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/symfony/app.php php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_symfony.sock"
+
+[admin]
+host = "127.0.0.1"
+port = 19985
+token = ""

@@ -1,0 +1,18 @@
+[server]
+host = "127.0.0.1"
+port = 19883
+
+[files]
+pid_file = "/tmp/vhttpd_stream_bench.pid"
+event_log = "/tmp/vhttpd_stream_bench.events.ndjson"
+
+[worker]
+autostart = true
+read_timeout_ms = 15000
+socket = "/tmp/vslim_stream_bench.sock"
+cmd = "VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/stream-bench-app.php php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_stream_bench.sock"
+
+[admin]
+host = "127.0.0.1"
+port = 19983
+token = ""

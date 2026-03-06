@@ -1,5 +1,36 @@
 # VSlim Examples
 
+## TOML 一键启动（推荐）
+
+先编译：
+
+```bash
+cd /Users/guweigang/Source/vphpext/vslim
+make build vhttpd
+```
+
+然后直接：
+
+```bash
+./httpd/vhttpd --config /Users/guweigang/Source/vphpext/vslim/examples/config/hello.toml
+```
+
+已提供配置：
+
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/hello.toml`
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/ai-stream.toml`
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/stream-bench.toml`
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/ollama-proxy.toml`
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/symfony.toml`
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/laravel.toml`
+- `/Users/guweigang/Source/vphpext/vslim/examples/config/wordpress.toml`
+
+说明：
+
+- `symfony.toml` / `laravel.toml` 需要先安装各自 `vendor` 依赖
+- `wordpress.toml` 需要把 `VSLIM_WP_ROOT=/ABS/PATH/TO/WORDPRESS` 改成真实路径
+- `ollama-proxy.toml` 里 `OLLAMA_CHAT_URL / OLLAMA_MODEL / OLLAMA_API_KEY` 可按需改
+
 ## 快速开始（VSlim 原生）
 
 ```bash
