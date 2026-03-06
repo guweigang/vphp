@@ -30,9 +30,9 @@
   - PSR-7/PSR-15 worker path
   - worker streaming
 - Added runnable framework examples:
-  - `vslim/examples/laravel`
-  - `vslim/examples/symfony`
-  - `vslim/examples/wordpress`
+  - `vhttpd/examples/laravel`
+  - `vhttpd/examples/symfony`
+  - `vhttpd/examples/wordpress`
 - Matrix scripts now use `examples/*` projects instead of `vslim/.tmp`.
 
 ## 4) Current Repo State
@@ -60,10 +60,10 @@ make -C /Users/guweigang/Source/vphpext/vslim serve
 
 - Example demos:
 ```bash
-make -C /Users/guweigang/Source/vphpext/vslim demo-vslim
-make -C /Users/guweigang/Source/vphpext/vslim demo-symfony
-make -C /Users/guweigang/Source/vphpext/vslim demo-laravel
-VSLIM_WP_ROOT=/abs/path/to/wordpress make -C /Users/guweigang/Source/vphpext/vslim demo-wordpress
+make -C /Users/guweigang/Source/vphpext/vhttpd demo-vslim
+make -C /Users/guweigang/Source/vphpext/vhttpd demo-symfony
+make -C /Users/guweigang/Source/vphpext/vhttpd demo-laravel
+VSLIM_WP_ROOT=/abs/path/to/wordpress make -C /Users/guweigang/Source/vphpext/vhttpd demo-wordpress
 ```
 
 - Matrix checks:
@@ -74,7 +74,7 @@ bash /Users/guweigang/Source/vphpext/vslim/tests/run_framework_matrix.sh
 
 ## 6) Suggested Next Work
 - Add true non-SSE chunked semantics verification test (network-enabled env).
-- Add one end-to-end AI token streaming demo app in `vslim/examples`.
+- Add one end-to-end AI token streaming demo app in `vhttpd/examples`.
 - Tighten docs:
   - transport contract versioning
   - stream frame schema

@@ -38,7 +38,7 @@ That conflicts with progressive body streaming semantics.
 
 Added:
 
-- `vslim/httpd/transport_contract.md`
+- `vhttpd/docs/transport_contract.md`
 
 Includes:
 
@@ -50,13 +50,13 @@ Includes:
 
 Also linked in:
 
-- `vslim/httpd/README.md`
+- `vhttpd/README.md`
 
 ### 2. AI Streaming Demo
 
 Added:
 
-- `vslim/examples/ai-stream-app.php`
+- `vhttpd/examples/ai-stream-app.php`
 
 Provides endpoints:
 
@@ -65,15 +65,15 @@ Provides endpoints:
 
 Integrated into demo tooling:
 
-- `vslim/examples/run_demo.sh` (`ai` case)
-- `vslim/Makefile` (`demo-ai`)
-- `vslim/examples/README.md` usage docs
+- `vhttpd/examples/run_demo.sh` (`ai` case)
+- `vhttpd/Makefile` (`demo-ai`)
+- `vhttpd/examples/README.md` usage docs
 
 ### 3. Streaming Transport Fix in vhttpd
 
 Updated:
 
-- `vslim/httpd/main.v`
+- `vhttpd/src/main.v`
 
 Key changes:
 
@@ -106,7 +106,7 @@ Added:
 ### Local/unit-style checks
 
 ```bash
-php -l /Users/guweigang/Source/vphpext/vslim/examples/ai-stream-app.php
+php -l /Users/guweigang/Source/vphpext/vhttpd/examples/ai-stream-app.php
 cd /Users/guweigang/Source/vphpext/vslim
 TEST_PHP_EXECUTABLE="$(which php)" php ../v_php_ext/run-tests.php -q --show-all -d extension=./vslim.so tests/test_ai_stream_demo_app.phpt
 ```
@@ -119,7 +119,7 @@ Expected:
 ### Host end-to-end demo
 
 ```bash
-make -C /Users/guweigang/Source/vphpext/vslim demo-ai
+make -C /Users/guweigang/Source/vphpext/vhttpd demo-ai
 ```
 
 Expected:
@@ -175,12 +175,12 @@ Bottom line:
 ## Impacted Files
 
 - `docs/handoff.md`
-- `vslim/httpd/transport_contract.md`
-- `vslim/httpd/README.md`
-- `vslim/httpd/main.v`
-- `vslim/examples/ai-stream-app.php`
-- `vslim/examples/README.md`
-- `vslim/examples/run_demo.sh`
-- `vslim/Makefile`
+- `vhttpd/docs/transport_contract.md`
+- `vhttpd/README.md`
+- `vhttpd/src/main.v`
+- `vhttpd/examples/ai-stream-app.php`
+- `vhttpd/examples/README.md`
+- `vhttpd/examples/run_demo.sh`
+- `vhttpd/Makefile`
 - `vslim/tests/test_ai_stream_demo_app.phpt`
 - `vslim/tests/test_httpd_worker_streaming.phpt`

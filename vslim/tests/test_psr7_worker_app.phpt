@@ -86,9 +86,11 @@ namespace {
 
     putenv('VSLIM_HTTPD_APP=' . __DIR__ . '/fixtures/psr7_app_fixture.php');
     define('VSLIM_HTTPD_WORKER_NOAUTO', true);
-    require __DIR__ . '/../httpd/php-worker.php';
+    $autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) { echo "autoload_missing\n"; exit; }
+require_once $autoload;
 
-    $worker = new PhpWorker('/tmp/vslim_worker_test.sock');
+    $worker = new \VHttpd\PhpWorker\Server('/tmp/vslim_worker_test.sock');
     $res = $worker->dispatchRequest([
         'id' => 'req-1',
         'method' => 'GET',

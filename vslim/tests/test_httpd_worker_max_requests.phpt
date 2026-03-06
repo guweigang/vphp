@@ -23,7 +23,7 @@ if (is_file($probe)) {
 <?php
 $root = dirname(__DIR__);
 $src = $root . '/httpd';
-$bin = $root . '/httpd/vhttpd';
+$bin = $root . '/../vhttpd/vhttpd';
 
 $out = [];
 $code = 0;
@@ -42,9 +42,9 @@ $pidFile = $tmp . '/vhttpd.pid';
 $eventLog = $tmp . '/events.ndjson';
 $stdoutLog = $tmp . '/stdout.log';
 $workerSock = $tmp . '/worker.sock';
-$workerPhp = $root . '/httpd/php-worker.php';
+$workerPhp = $root . '/../vhttpd/php/php-worker.php';
 $extSo = $root . '/vslim.so';
-$app = $root . '/examples/hello-app.php';
+$app = $root . '/../vhttpd/examples/hello-app.php';
 
 $workerCmd = sprintf(
     'VSLIM_HTTPD_APP=%s php -d extension=%s %s --socket %s',

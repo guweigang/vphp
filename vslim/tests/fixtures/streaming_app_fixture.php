@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-return static function (mixed $request, array $envelope = []): WorkerStreamResponse|array {
+return static function (mixed $request, array $envelope = []): \VHttpd\PhpWorker\StreamResponse|array {
     $path = (string) ($envelope["path"] ?? "/");
 
     if (str_starts_with($path, "/stream/sse")) {
@@ -18,7 +18,7 @@ return static function (mixed $request, array $envelope = []): WorkerStreamRespo
                 "data" => json_encode(["seq" => 2, "request_id" => $rid], JSON_UNESCAPED_UNICODE),
             ];
         })();
-        return WorkerStreamResponse::sse($events, 200, [
+        return \VHttpd\PhpWorker\StreamResponse::sse($events, 200, [
             "x-stream-source" => "php-worker",
         ]);
     }
@@ -28,7 +28,7 @@ return static function (mixed $request, array $envelope = []): WorkerStreamRespo
             yield "chunk-a\n";
             yield "chunk-b\n";
         })();
-        return WorkerStreamResponse::text(
+        return \VHttpd\PhpWorker\StreamResponse::text(
             $chunks,
             200,
             "text/plain; charset=utf-8",

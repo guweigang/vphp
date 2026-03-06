@@ -15,7 +15,6 @@ if ($case === '') {
 }
 
 require_once $autoload;
-require_once dirname(__DIR__) . '/httpd/psr7_bridge.php';
 
 $req = VHttpdPsr7Bridge::buildServerRequest([
     'method' => 'PATCH',

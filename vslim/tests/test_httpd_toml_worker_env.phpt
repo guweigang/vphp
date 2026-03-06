@@ -23,7 +23,7 @@ if (is_file($probe)) {
 <?php
 $root = dirname(__DIR__);
 $src = $root . '/httpd';
-$bin = $root . '/httpd/vhttpd';
+$bin = $root . '/../vhttpd/vhttpd';
 
 $out = [];
 $code = 0;
@@ -75,7 +75,7 @@ event_log = "{$eventLog}"
 autostart = true
 read_timeout_ms = 3000
 socket = "{$socket}"
-cmd = "php -d extension={$root}/vslim.so {$root}/httpd/php-worker.php --socket {$socket}"
+cmd = "php -d extension={$root}/vslim.so {$root}/../vhttpd/php/php-worker.php --socket {$socket}"
 
 [worker.env]
 VSLIM_HTTPD_APP = "{$appPath}"

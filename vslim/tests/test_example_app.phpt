@@ -4,11 +4,13 @@ VSlim example app shows named routes and redirects
 <?php if (!extension_loaded("vslim")) print "skip"; ?>
 --FILE--
 <?php
-putenv('VSLIM_HTTPD_APP=' . dirname(__DIR__) . '/examples/hello-app.php');
+putenv('VSLIM_HTTPD_APP=' . dirname(__DIR__) . '/../vhttpd/examples/hello-app.php');
 define('VSLIM_HTTPD_WORKER_NOAUTO', true);
-require __DIR__ . '/../httpd/php-worker.php';
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) { echo "autoload_missing\n"; exit; }
+require_once $autoload;
 
-$worker = new PhpWorker('/tmp/vslim_worker_test.sock');
+$worker = new \VHttpd\PhpWorker\Server('/tmp/vslim_worker_test.sock');
 
 $hello = $worker->dispatchRequest([
     'id' => 'hello',

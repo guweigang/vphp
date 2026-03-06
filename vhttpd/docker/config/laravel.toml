@@ -1,0 +1,22 @@
+[server]
+host = "0.0.0.0"
+port = 19886
+
+[files]
+pid_file = "/tmp/vhttpd_laravel.pid"
+event_log = "/tmp/vhttpd_laravel.events.ndjson"
+
+[worker]
+autostart = true
+pool_size = 4
+socket_prefix = "/tmp/vslim_laravel_worker"
+read_timeout_ms = 3000
+cmd = "php -d extension=/app/vslim/vslim.so /app/vhttpd/php/php-worker.php"
+
+[worker.env]
+VSLIM_HTTPD_APP = "/app/vhttpd/examples/laravel/app.php"
+
+[admin]
+host = "0.0.0.0"
+port = 19986
+token = ""

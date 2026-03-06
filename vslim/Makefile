@@ -1,4 +1,4 @@
-.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-vslim demo-ai demo-symfony demo-laravel demo-wordpress clean
+.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix clean
 
 BREW_PATH ?= /opt/homebrew
 DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
@@ -7,14 +7,15 @@ PHP_LDFLAGS := $(shell php-config --ldflags)
 PHP_LIBS := $(shell php-config --libs | sed 's/-lzip//g')
 EXT_C := $(firstword $(wildcard vphp_ext_*.c))
 ROOT := $(CURDIR)
-HTTPD_DIR := $(ROOT)/httpd
-VHTTPD_BIN := $(HTTPD_DIR)/vhttpd
+VHTTPD_ROOT ?= $(abspath $(ROOT)/../vhttpd)
+SRC_DIR := $(VHTTPD_ROOT)/src
+VHTTPD_BIN := $(VHTTPD_ROOT)/vhttpd
 VHTTPD_PORT ?= 19881
 VHTTPD_HOST ?= 127.0.0.1
 VHTTPD_PID_FILE ?= /tmp/vslim_vhttpd.pid
 VHTTPD_EVENT_LOG ?= /tmp/vslim_vhttpd.events.ndjson
 VSLIM_WORKER_SOCKET ?= /tmp/vslim_worker.sock
-VSLIM_WORKER_CMD := php -d extension=$(ROOT)/vslim.so $(HTTPD_DIR)/php-worker.php --socket $(VSLIM_WORKER_SOCKET)
+VSLIM_WORKER_CMD := php -d extension=$(ROOT)/vslim.so $(VHTTPD_ROOT)/php/php-worker.php --socket $(VSLIM_WORKER_SOCKET)
 
 all: build
 
@@ -34,7 +35,7 @@ ext:
 		-I../vphp $(PHP_LDFLAGS) $(PHP_LIBS) -undefined dynamic_lookup -fvisibility=default
 
 vhttpd:
-	v -o $(VHTTPD_BIN) $(HTTPD_DIR)
+	v -o $(VHTTPD_BIN) $(SRC_DIR)
 
 serve: build vhttpd
 	$(VHTTPD_BIN) \
@@ -54,21 +55,6 @@ psr-matrix:
 
 framework-matrix:
 	@./tests/run_framework_matrix.sh
-
-demo-vslim:
-	@./examples/run_demo.sh vslim
-
-demo-ai:
-	@./examples/run_demo.sh ai
-
-demo-symfony:
-	@./examples/run_demo.sh symfony
-
-demo-laravel:
-	@./examples/run_demo.sh laravel
-
-demo-wordpress:
-	@./examples/run_demo.sh wordpress
 
 clean:
 	rm -f vslim.so $(VHTTPD_BIN)

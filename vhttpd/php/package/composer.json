@@ -1,0 +1,26 @@
+{
+  "name": "vphpext/vhttpd",
+  "description": "VHttpd PHP runtime package (manager, PSR-7 bridge, VSlim adapter, php-worker)",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "VHttpd\\": "src/"
+    },
+    "files": [
+      "src/legacy_aliases.php"
+    ]
+  },
+  "bin": [
+    "bin/php-worker",
+    "bin/php-worker-client"
+  },
+  "suggest": {
+    "nyholm/psr7": "PSR-17 factory support",
+    "guzzlehttp/psr7": "PSR-17 factory support",
+    "laminas/laminas-diactoros": "PSR-17 factory support"
+  }
+}

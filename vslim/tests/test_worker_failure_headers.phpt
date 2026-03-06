@@ -5,10 +5,12 @@ php-worker failure responses include stable error class headers
 --FILE--
 <?php
 define('VSLIM_HTTPD_WORKER_NOAUTO', true);
-require __DIR__ . '/../httpd/php-worker.php';
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) { echo "autoload_missing\n"; exit; }
+require_once $autoload;
 
 putenv('VSLIM_HTTPD_APP=' . __DIR__ . '/fixtures/throwing_app_fixture.php');
-$worker = new PhpWorker('/tmp/vslim_worker_test.sock');
+$worker = new \VHttpd\PhpWorker\Server('/tmp/vslim_worker_test.sock');
 $panic = $worker->dispatchRequest([
     'id' => 'req-panic',
     'method' => 'GET',
@@ -29,7 +31,7 @@ $panic = $worker->dispatchRequest([
 echo $panic['status'] . '|' . $panic['headers']['x-worker-error-class'] . PHP_EOL;
 
 putenv('VSLIM_HTTPD_APP=' . __DIR__ . '/fixtures/invalid_app_fixture.php');
-$worker2 = new PhpWorker('/tmp/vslim_worker_test.sock');
+$worker2 = new \VHttpd\PhpWorker\Server('/tmp/vslim_worker_test.sock');
 $bad = $worker2->dispatchRequest([
     'id' => 'req-contract',
     'method' => 'GET',

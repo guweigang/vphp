@@ -102,8 +102,8 @@ flowchart TB
 
 ## vhttpd 规范文档
 
-- PSR-7/15 支持矩阵：[vslim/httpd/psr_support.md](/Users/guweigang/Source/vphpext/vslim/httpd/psr_support.md)
-- 错误与超时语义：[vslim/httpd/failure_model.md](/Users/guweigang/Source/vphpext/vslim/httpd/failure_model.md)
+- PSR-7/15 支持矩阵：[vhttpd/docs/psr_support.md](/Users/guweigang/Source/vphpext/vhttpd/docs/psr_support.md)
+- 错误与超时语义：[vhttpd/docs/failure_model.md](/Users/guweigang/Source/vphpext/vhttpd/docs/failure_model.md)
 
 ## 为什么不直接复用 veb 的 route 定义
 
@@ -401,9 +401,9 @@ make test
 HTTP runtime 相关文件现在在：
 
 - [/Users/guweigang/Source/vphpext/vslim/psr7_bridge.md](/Users/guweigang/Source/vphpext/vslim/psr7_bridge.md)
-- [/Users/guweigang/Source/vphpext/vslim/httpd/main.v](/Users/guweigang/Source/vphpext/vslim/httpd/main.v)
-- [/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php](/Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php)
-- [/Users/guweigang/Source/vphpext/vslim/httpd/README.md](/Users/guweigang/Source/vphpext/vslim/httpd/README.md)
+- [/Users/guweigang/Source/vphpext/vhttpd/src/main.v](/Users/guweigang/Source/vphpext/vhttpd/src/main.v)
+- [/Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php](/Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php)
+- [/Users/guweigang/Source/vphpext/vhttpd/README.md](/Users/guweigang/Source/vphpext/vhttpd/README.md)
 
 开发时最顺手的入口是：
 
@@ -421,16 +421,16 @@ make vhttpd
 ```
 
 2. 编写一个最小 worker app，例如：
-   [/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php](/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php)
+   [/Users/guweigang/Source/vphpext/vhttpd/examples/hello-app.php](/Users/guweigang/Source/vphpext/vhttpd/examples/hello-app.php)
 
 把它拷到：
 
-- [/Users/guweigang/Source/vphpext/vslim/httpd/app.php](/Users/guweigang/Source/vphpext/vslim/httpd/app.php)
+- [/Users/guweigang/Source/vphpext/vhttpd/php/app.php](/Users/guweigang/Source/vphpext/vhttpd/php/app.php)
 
 或者通过环境变量指定：
 
 ```bash
-export VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php
+export VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vhttpd/examples/hello-app.php
 ```
 
 3. 启动服务

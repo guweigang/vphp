@@ -9,7 +9,7 @@ if (getenv("CODEX_SANDBOX_NETWORK_DISABLED") === "1") print "skip";
 <?php
 $root = dirname(__DIR__);
 $src = $root . '/httpd';
-$bin = $root . '/httpd/vhttpd';
+$bin = $root . '/../vhttpd/vhttpd';
 
 $out = [];
 $code = 0;
@@ -28,7 +28,7 @@ $pidFile = $tmp . '/vhttpd.pid';
 $eventLog = $tmp . '/events.ndjson';
 $stdoutLog = $tmp . '/stdout.log';
 $workerSock = $tmp . '/worker.sock';
-$workerPhp = $root . '/httpd/php-worker.php';
+$workerPhp = $root . '/../vhttpd/php/php-worker.php';
 $extSo = $root . '/vslim.so';
 $slowApp = $root . '/tests/fixtures/slow_app_fixture.php';
 

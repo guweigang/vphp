@@ -8,9 +8,9 @@ if (getenv("CODEX_SANDBOX_NETWORK_DISABLED") === "1") print "skip";
 --FILE--
 <?php
 $root = dirname(__DIR__);
-$src = $root . '/httpd';
-$bin = $root . '/httpd/vhttpd';
-$mgrFile = $root . '/httpd/manager.php';
+$src = $root . '/../vhttpd/src';
+$bin = $root . '/../vhttpd/vhttpd';
+$autoload = $root . '/vendor/autoload.php';
 
 $out = [];
 $code = 0;
@@ -21,7 +21,11 @@ if ($code !== 0) {
     exit;
 }
 
-require $mgrFile;
+if (!is_file($autoload)) {
+    echo "autoload_missing\n";
+    exit;
+}
+require_once $autoload;
 
 $port = 19590 + random_int(0, 200);
 $tmp = sys_get_temp_dir() . '/vhttpd_sse_' . getmypid() . '_' . $port;

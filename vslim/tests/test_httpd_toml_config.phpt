@@ -9,7 +9,7 @@ if (getenv("CODEX_SANDBOX_NETWORK_DISABLED") === "1") print "skip";
 <?php
 $root = dirname(__DIR__);
 $src = $root . '/httpd';
-$bin = $root . '/httpd/vhttpd';
+$bin = $root . '/../vhttpd/vhttpd';
 
 $out = [];
 $code = 0;

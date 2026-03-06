@@ -73,7 +73,12 @@ namespace {
         }
     }
 
-    require __DIR__ . '/../httpd/psr7_bridge.php';
+    $autoload = dirname(__DIR__) . '/vendor/autoload.php';
+    if (!is_file($autoload)) {
+        echo "autoload_missing\n";
+        exit;
+    }
+    require_once $autoload;
 
     $req = VHttpdPsr7Bridge::buildServerRequest([
         'method' => 'POST',

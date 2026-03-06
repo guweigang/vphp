@@ -47,7 +47,12 @@ final class TestServerRequest {
     public function getBody(): TestBody { return $this->body; }
 }
 
-require __DIR__ . '/../httpd/vslim_psr7_adapter.php';
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    echo "autoload_missing\n";
+    exit;
+}
+require_once $autoload;
 
 $app = VSlim\App::demo();
 $req = new TestServerRequest(
