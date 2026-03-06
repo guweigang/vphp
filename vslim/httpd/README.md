@@ -115,6 +115,9 @@ Key flags:
 - `--worker-max-requests N` (restart each worker after N served requests)
 - `--worker-restart-backoff-ms 500`
 - `--worker-restart-backoff-max-ms 8000`
+- `--admin-host 127.0.0.1` (control plane bind host, disabled when `--admin-port` is `0`)
+- `--admin-port 19981` (control plane port; when enabled, `/admin/*` is removed from data plane port)
+- `--admin-token your-secret` (optional header/query token for admin plane)
 
 When `--worker-pool-size > 1`, use `{socket}` placeholder in `--worker-cmd`:
 
@@ -140,6 +143,8 @@ Endpoints:
   - `/events/stream?count=3&interval_ms=150`
   - `/events/stream?request_id=req-demo`
 - `GET /admin/workers` returns runtime worker pool status (alive/draining/inflight/restarts)
+  - on data plane port: available only when admin plane is disabled
+  - on admin plane port: always available (optionally token-protected)
 - `/dispatch` is kept as a debug bridge endpoint (this one uses query `method/path` on purpose):
   - `GET /dispatch?method=GET&path=/users/42`
   - `HEAD /dispatch?method=GET&path=/go/nova`
@@ -153,6 +158,15 @@ curl --noproxy '*' -i http://127.0.0.1:19881/hello/codex
 curl --noproxy '*' -i http://127.0.0.1:19881/go/nova
 curl --noproxy '*' -i -H 'Host: demo.local' http://127.0.0.1:19881/api/meta
 curl --noproxy '*' -N "http://127.0.0.1:19881/events/stream?count=2&interval_ms=0&request_id=req-demo"
+
+# Admin plane on separate port (recommended for production)
+./vhttpd --host 0.0.0.0 --port 19881 \
+  --admin-host 127.0.0.1 --admin-port 19981 \
+  --admin-token change-me \
+  --worker-pool-size 4 --worker-socket-prefix /tmp/vslim_worker --worker-autostart 1 \
+  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket {socket}'
+
+curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' http://127.0.0.1:19981/admin/workers
 ```
 
 ## Request ID contract

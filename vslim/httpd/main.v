@@ -32,6 +32,7 @@ pub mut:
 	worker_restart_backoff_ms int
 	worker_restart_backoff_max_ms int
 	worker_max_requests    int
+	admin_on_data_plane   bool
 	managed_workers        []ManagedWorker
 	pool_mu                sync.Mutex
 	mu                     sync.Mutex
@@ -799,6 +800,10 @@ pub fn (mut app App) events_stream(mut ctx Context) veb.Result {
 
 @['/admin/workers'; get]
 pub fn (mut app App) admin_workers(mut ctx Context) veb.Result {
+	if !app.admin_on_data_plane {
+		ctx.res.set_status(.not_found)
+		return ctx.text('Not Found')
+	}
 	path := if ctx.req.url == '' { '/admin/workers' } else { ctx.req.url }
 	req_id := resolve_request_id(ctx, path)
 	trace_id := resolve_trace_id(ctx, path)
