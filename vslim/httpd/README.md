@@ -221,6 +221,66 @@ curl --noproxy '*' -N "http://127.0.0.1:19881/events/stream?count=2&interval_ms=
 curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' http://127.0.0.1:19981/admin/workers
 ```
 
+## Admin API (Control Plane)
+
+Scope in current MVP:
+
+- control plane is **read-only**
+- no mutating endpoints yet (no manual restart/scale/shutdown endpoint)
+- main purpose is runtime observability and debugging
+
+Available endpoints:
+
+- `GET /health`
+  - admin plane liveness check
+  - response: `200 OK`
+- `GET /admin/workers`
+  - returns worker pool runtime snapshot
+  - response content type: `application/json; charset=utf-8`
+
+Auth model:
+
+- when `--admin-token` (or `[admin].token`) is empty:
+  - admin endpoints are open on admin port
+- when token is set:
+  - send header `x-vhttpd-admin-token: <token>`
+  - or query `?admin_token=<token>`
+  - missing/invalid token returns `403 Forbidden`
+
+Port exposure model:
+
+- with `--admin-port 0` (disabled):
+  - `/admin/*` is served on data plane port
+- with `--admin-port > 0` (enabled):
+  - `/admin/*` is removed from data plane (`404`)
+  - `/admin/*` is served only on admin plane host/port
+
+`GET /admin/workers` response fields:
+
+- top-level:
+  - `worker_autostart`: whether managed worker mode is enabled
+  - `worker_pool_size`: configured socket/pool size
+  - `worker_rr_index`: current round-robin cursor
+  - `worker_max_requests`: restart threshold (`0` means disabled)
+  - `worker_sockets`: resolved worker socket list
+  - `workers`: per-worker runtime states
+- per worker item:
+  - `id`: worker index
+  - `socket`: unix socket path
+  - `alive`: process liveness
+  - `draining`: whether worker is marked drain-only
+  - `inflight_requests`: active in-progress requests
+  - `served_requests`: total served requests (cumulative)
+  - `restart_count`: restart count since startup
+  - `next_retry_ts`: next retry timestamp when restart is backoff-scheduled
+
+Example:
+
+```bash
+curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' \
+  http://127.0.0.1:19981/admin/workers | jq .
+```
+
 ## Request ID contract
 
 - every response includes `x-request-id`
