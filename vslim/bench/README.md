@@ -1,5 +1,18 @@
 # k6 Benchmarks
 
+## Variable convention
+
+Primary variables now use `VHTTPD_*` prefix. Legacy names are still accepted for compatibility.
+
+- `VHTTPD_BASE_URL` (legacy: `BASE_URL`)
+- `VHTTPD_BENCH_PATH` (legacy: `PATH_UNDER_TEST`)
+- `VHTTPD_STREAM_PATH` (legacy: `STREAM_PATH`)
+- `VHTTPD_STREAM_MODE` (legacy: `STREAM_MODE`)
+- `VHTTPD_WORKER_POOL_SIZE` (legacy: `POOL_SIZE`)
+- `VHTTPD_BENCH_RUN_K6` (legacy: `RUN_K6`)
+- `VHTTPD_APP_BOOTSTRAP` (legacy in script: `APP_BOOTSTRAP`)
+- `VHTTPD_HOST`, `VHTTPD_PORT` (legacy: `HOST`, `PORT`)
+
 ## Prerequisite
 
 Install k6:
@@ -36,12 +49,19 @@ Skip k6 and only verify lifecycle:
 RUN_K6=0 bash /Users/guweigang/Source/vphpext/vslim/bench/run_host_regression.sh
 ```
 
+Using unified names:
+
+```bash
+VHTTPD_PORT=19882 VHTTPD_WORKER_POOL_SIZE=6 bash /Users/guweigang/Source/vphpext/vslim/bench/run_host_regression.sh
+VHTTPD_BENCH_RUN_K6=0 bash /Users/guweigang/Source/vphpext/vslim/bench/run_host_regression.sh
+```
+
 ## 1) Short request benchmark
 
 Default target:
 
-- `BASE_URL=http://127.0.0.1:19881`
-- `PATH_UNDER_TEST=/laravel/hello/guweigang`
+- `VHTTPD_BASE_URL=http://127.0.0.1:19881`
+- `VHTTPD_BENCH_PATH=/laravel/hello/guweigang`
 
 Run:
 
@@ -52,7 +72,7 @@ k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_short.js
 Custom path:
 
 ```bash
-BASE_URL=http://127.0.0.1:19881 PATH_UNDER_TEST=/health \
+VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_BENCH_PATH=/health \
 k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_short.js
 ```
 
@@ -68,14 +88,14 @@ VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/stream-bench-app.
 SSE default:
 
 ```bash
-BASE_URL=http://127.0.0.1:19881 STREAM_MODE=sse STREAM_PATH='/bench/stream?mode=sse&tokens=80&interval_ms=5&chunk_size=24' \
+VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_STREAM_MODE=sse VHTTPD_STREAM_PATH='/bench/stream?mode=sse&tokens=80&interval_ms=5&chunk_size=24' \
 k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_stream.js
 ```
 
 Text stream:
 
 ```bash
-BASE_URL=http://127.0.0.1:19881 STREAM_MODE=text STREAM_PATH='/bench/stream?mode=text&tokens=80&interval_ms=5&chunk_size=24' \
+VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_STREAM_MODE=text VHTTPD_STREAM_PATH='/bench/stream?mode=text&tokens=80&interval_ms=5&chunk_size=24' \
 k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_stream.js
 ```
 
@@ -90,8 +110,8 @@ SSE:
 ```bash
 for i in 0 1 5; do
   echo "=== SSE interval_ms=$i ==="
-  BASE_URL=http://127.0.0.1:19881 STREAM_MODE=sse \
-  STREAM_PATH="/bench/stream?mode=sse&tokens=80&interval_ms=$i&chunk_size=24" \
+  VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_STREAM_MODE=sse \
+  VHTTPD_STREAM_PATH="/bench/stream?mode=sse&tokens=80&interval_ms=$i&chunk_size=24" \
   k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_stream.js
 done
 ```
@@ -101,8 +121,8 @@ Text:
 ```bash
 for i in 0 1 5; do
   echo "=== TEXT interval_ms=$i ==="
-  BASE_URL=http://127.0.0.1:19881 STREAM_MODE=text \
-  STREAM_PATH="/bench/stream?mode=text&tokens=80&interval_ms=$i&chunk_size=24" \
+  VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_STREAM_MODE=text \
+  VHTTPD_STREAM_PATH="/bench/stream?mode=text&tokens=80&interval_ms=$i&chunk_size=24" \
   k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_stream.js
 done
 ```
@@ -114,8 +134,8 @@ SSE:
 ```bash
 for t in 40 80 160; do
   echo "=== SSE tokens=$t ==="
-  BASE_URL=http://127.0.0.1:19881 STREAM_MODE=sse \
-  STREAM_PATH="/bench/stream?mode=sse&tokens=$t&interval_ms=5&chunk_size=24" \
+  VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_STREAM_MODE=sse \
+  VHTTPD_STREAM_PATH="/bench/stream?mode=sse&tokens=$t&interval_ms=5&chunk_size=24" \
   k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_stream.js
 done
 ```
@@ -125,8 +145,8 @@ Text:
 ```bash
 for t in 40 80 160; do
   echo "=== TEXT tokens=$t ==="
-  BASE_URL=http://127.0.0.1:19881 STREAM_MODE=text \
-  STREAM_PATH="/bench/stream?mode=text&tokens=$t&interval_ms=5&chunk_size=24" \
+  VHTTPD_BASE_URL=http://127.0.0.1:19881 VHTTPD_STREAM_MODE=text \
+  VHTTPD_STREAM_PATH="/bench/stream?mode=text&tokens=$t&interval_ms=5&chunk_size=24" \
   k6 run /Users/guweigang/Source/vphpext/vslim/bench/k6_stream.js
 done
 ```

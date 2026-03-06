@@ -8,11 +8,11 @@ WORKER_PHP="$ROOT_DIR/httpd/php-worker.php"
 VSLIM_SO="$ROOT_DIR/vslim.so"
 APP_BOOTSTRAP_DEFAULT="$ROOT_DIR/examples/stream-bench-app.php"
 
-HOST="${HOST:-127.0.0.1}"
-PORT="${PORT:-19881}"
-POOL_SIZE="${POOL_SIZE:-4}"
-RUN_K6="${RUN_K6:-1}"
-BUILD_FIRST="${BUILD_FIRST:-1}"
+HOST="${VHTTPD_HOST:-${HOST:-127.0.0.1}}"
+PORT="${VHTTPD_PORT:-${PORT:-19881}}"
+POOL_SIZE="${VHTTPD_WORKER_POOL_SIZE:-${POOL_SIZE:-4}}"
+RUN_K6="${VHTTPD_BENCH_RUN_K6:-${RUN_K6:-1}}"
+BUILD_FIRST="${VHTTPD_BENCH_BUILD_FIRST:-${BUILD_FIRST:-1}}"
 
 if [[ ! -x "$HTTPD_BIN" || "$BUILD_FIRST" == "1" ]]; then
   echo "[1/6] building vhttpd"
@@ -29,7 +29,7 @@ pid_file="$tmp_dir/vhttpd.pid"
 event_log="$tmp_dir/events.ndjson"
 stdout_log="$tmp_dir/stdout.log"
 worker_socket_prefix="$tmp_dir/worker"
-app_bootstrap="${APP_BOOTSTRAP:-$APP_BOOTSTRAP_DEFAULT}"
+app_bootstrap="${VHTTPD_APP_BOOTSTRAP:-${APP_BOOTSTRAP:-$APP_BOOTSTRAP_DEFAULT}}"
 
 q() {
   printf '%q' "$1"
@@ -87,12 +87,12 @@ fi
 
 if [[ "$RUN_K6" == "1" ]]; then
   echo "[4/6] running short benchmark"
-  BASE_URL="$base_url" PATH_UNDER_TEST='/bench/health' \
+  VHTTPD_BASE_URL="$base_url" VHTTPD_BENCH_PATH='/bench/health' \
     k6 run "$BENCH_DIR/k6_short.js"
 
   echo "[5/6] running stream benchmark"
-  BASE_URL="$base_url" STREAM_MODE='sse' \
-  STREAM_PATH='/bench/stream?mode=sse&tokens=80&interval_ms=5&chunk_size=24' \
+  VHTTPD_BASE_URL="$base_url" VHTTPD_STREAM_MODE='sse' \
+  VHTTPD_STREAM_PATH='/bench/stream?mode=sse&tokens=80&interval_ms=5&chunk_size=24' \
     k6 run "$BENCH_DIR/k6_stream.js"
 else
   echo "[4/6] RUN_K6=0, skipping k6 benchmarks"

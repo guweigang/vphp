@@ -1,10 +1,13 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:19881";
+const BASE_URL =
+  __ENV.VHTTPD_BASE_URL || __ENV.BASE_URL || "http://127.0.0.1:19881";
 const STREAM_PATH =
-  __ENV.STREAM_PATH || "/bench/stream?mode=sse&tokens=80&interval_ms=5&chunk_size=24";
-const MODE = __ENV.STREAM_MODE || "sse"; // sse | text
+  __ENV.VHTTPD_STREAM_PATH ||
+  __ENV.STREAM_PATH ||
+  "/bench/stream?mode=sse&tokens=80&interval_ms=5&chunk_size=24";
+const MODE = __ENV.VHTTPD_STREAM_MODE || __ENV.STREAM_MODE || "sse"; // sse | text
 
 export const options = {
   scenarios: {

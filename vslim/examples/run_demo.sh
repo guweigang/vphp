@@ -10,13 +10,15 @@ PID_FILE="/tmp/vslim_demo_${CASE}.pid"
 EVENT_LOG="/tmp/vslim_demo_${CASE}.events.ndjson"
 STDOUT_LOG="/tmp/vslim_demo_${CASE}.stdout.log"
 
-APP_PATH=""
+APP_BOOTSTRAP="${VHTTPD_APP_BOOTSTRAP:-}"
 WORKER_ENV=""
 declare -a URLS=()
 
 case "${CASE}" in
   vslim)
-    APP_PATH="${ROOT}/examples/hello-app.php"
+    if [ -z "${APP_BOOTSTRAP}" ]; then
+      APP_BOOTSTRAP="${ROOT}/examples/hello-app.php"
+    fi
     URLS=(
       "http://${HOST}:${PORT}/hello/codex"
       "http://${HOST}:${PORT}/go/nova"
@@ -24,14 +26,18 @@ case "${CASE}" in
     )
     ;;
   ai)
-    APP_PATH="${ROOT}/examples/ai-stream-app.php"
+    if [ -z "${APP_BOOTSTRAP}" ]; then
+      APP_BOOTSTRAP="${ROOT}/examples/ai-stream-app.php"
+    fi
     URLS=(
       "http://${HOST}:${PORT}/ai/stream?prompt=hello-from-demo"
       "http://${HOST}:${PORT}/ai/sse?prompt=hello-from-demo"
     )
     ;;
   symfony)
-    APP_PATH="${ROOT}/examples/symfony/app.php"
+    if [ -z "${APP_BOOTSTRAP}" ]; then
+      APP_BOOTSTRAP="${ROOT}/examples/symfony/app.php"
+    fi
     if [ ! -f "${ROOT}/examples/symfony/vendor/autoload.php" ]; then
       echo "[demo] symfony dependencies missing"
       echo "run: cd ${ROOT}/examples/symfony && /Users/guweigang/bin/composer install"
@@ -43,7 +49,9 @@ case "${CASE}" in
     )
     ;;
   laravel)
-    APP_PATH="${ROOT}/examples/laravel/app.php"
+    if [ -z "${APP_BOOTSTRAP}" ]; then
+      APP_BOOTSTRAP="${ROOT}/examples/laravel/app.php"
+    fi
     if [ ! -f "${ROOT}/examples/laravel/vendor/autoload.php" ]; then
       echo "[demo] laravel dependencies missing"
       echo "run: cd ${ROOT}/examples/laravel && /Users/guweigang/bin/composer install"
@@ -55,7 +63,9 @@ case "${CASE}" in
     )
     ;;
   wordpress)
-    APP_PATH="${ROOT}/examples/wordpress/app.php"
+    if [ -z "${APP_BOOTSTRAP}" ]; then
+      APP_BOOTSTRAP="${ROOT}/examples/wordpress/app.php"
+    fi
     WP_ROOT="${VSLIM_WP_ROOT:-}"
     if [ -z "${WP_ROOT}" ]; then
       echo "[demo] VSLIM_WP_ROOT is required for wordpress demo"
@@ -107,7 +117,7 @@ make -C "${ROOT}" vhttpd >/dev/null
   --event-log "${EVENT_LOG}" \
   --worker-socket "${SOCKET}" \
   --worker-autostart 1 \
-  --worker-cmd "${WORKER_ENV} VSLIM_HTTPD_APP='${APP_PATH}' php -d extension='${ROOT}/vslim.so' '${ROOT}/httpd/php-worker.php' --socket '${SOCKET}'" \
+  --worker-cmd "${WORKER_ENV} VSLIM_HTTPD_APP='${APP_BOOTSTRAP}' php -d extension='${ROOT}/vslim.so' '${ROOT}/httpd/php-worker.php' --socket '${SOCKET}'" \
   >"${STDOUT_LOG}" 2>&1 &
 
 if ! wait_ready; then
