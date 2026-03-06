@@ -296,13 +296,24 @@ PHP_FUNCTION(v_get_alerts) {
     vphp_wrap_v_get_alerts(ctx);
 }
 zend_class_entry *contentcontract_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 1)
+ZEND_ARG_INFO(0, x)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 1)
+ZEND_ARG_INFO(0, x)
 ZEND_END_ARG_INFO()
 static const zend_function_entry contentcontract_methods[] = {
     ZEND_RAW_FENTRY("save", NULL, arginfo_contentcontract_save, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
     ZEND_RAW_FENTRY("get_formatted_title", NULL, arginfo_contentcontract_get_formatted_title, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
+    PHP_FE_END
+};
+
+zend_class_entry *demo__contracts__aliascontract_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_demo__contracts__aliascontract_ping, 0, 0, 1)
+ZEND_ARG_INFO(0, x)
+ZEND_END_ARG_INFO()
+static const zend_function_entry demo__contracts__aliascontract_methods[] = {
+    ZEND_RAW_FENTRY("ping", NULL, arginfo_demo__contracts__aliascontract_ping, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
     PHP_FE_END
 };
 
@@ -341,7 +352,9 @@ static const zend_function_entry abstractreport_methods[] = {
 };
 
 zend_class_entry *dailyreport_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_construct, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, summary, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_dailyreport_summarize, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -375,7 +388,8 @@ static const zend_function_entry dailyreport_methods[] = {
 zend_class_entry *author_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_author___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_author_create, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_author_create, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_author_get_name, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -420,7 +434,8 @@ static const zend_function_entry author_methods[] = {
 zend_class_entry *post_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_post___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_post_set_author, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_post_set_author, 0, 0, 1)
+ZEND_ARG_INFO(0, author)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_post_get_author, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -468,21 +483,27 @@ static const zend_function_entry post_methods[] = {
 };
 
 zend_class_entry *article_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_construct, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_internal_format, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_create, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_create, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_get_formatted_title, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_article_save, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_dump_properties, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_dump_properties, 0, 0, 1)
+ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_process_with_callback, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_process_with_callback, 0, 0, 1)
+ZEND_ARG_INFO(0, callback)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_article_restore_author, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_article_restore_author, 0, 0, 1)
+ZEND_ARG_INFO(0, author_val)
 ZEND_END_ARG_INFO()
 PHP_METHOD(Article, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -574,7 +595,9 @@ static const zend_function_entry article_methods[] = {
 zend_class_entry *story_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_story___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_story_create, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_story_create, 0, 0, 2)
+ZEND_ARG_INFO(0, author)
+ZEND_ARG_TYPE_INFO(0, chapters, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_story_tell, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -616,8 +639,87 @@ static const zend_function_entry story_methods[] = {
     PHP_FE_END
 };
 
+zend_class_entry *demo__contracts__aliasbase_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_demo__contracts__aliasbase_construct, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, label, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(Demo__Contracts__AliasBase, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* AliasBase_handlers();
+    vphp_class_handlers *h = AliasBase_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void vphp_wrap_AliasBase_construct(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    vphp_wrap_AliasBase_construct(v_ptr, ctx);
+}
+static const zend_function_entry demo__contracts__aliasbase_methods[] = {
+    PHP_ME(Demo__Contracts__AliasBase, __construct, arginfo_demo__contracts__aliasbase_construct, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
+zend_class_entry *aliasworker_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_aliasworker_construct, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, label, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_aliasworker_save, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_aliasworker_get_formatted_title, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_aliasworker_ping, 0, 0, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(AliasWorker, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* AliasWorker_handlers();
+    vphp_class_handlers *h = AliasWorker_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void vphp_wrap_AliasWorker_construct(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    vphp_wrap_AliasWorker_construct(v_ptr, ctx);
+}
+PHP_METHOD(AliasWorker, save) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_AliasWorker_save(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_AliasWorker_save(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(AliasWorker, get_formatted_title) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_AliasWorker_get_formatted_title(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_AliasWorker_get_formatted_title(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(AliasWorker, ping) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_AliasWorker_ping(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_AliasWorker_ping(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry aliasworker_methods[] = {
+    PHP_ME(AliasWorker, __construct, arginfo_aliasworker_construct, ZEND_ACC_PUBLIC)
+    PHP_ME(AliasWorker, save, arginfo_aliasworker_save, ZEND_ACC_PUBLIC)
+    PHP_ME(AliasWorker, get_formatted_title, arginfo_aliasworker_get_formatted_title, ZEND_ACC_PUBLIC)
+    PHP_ME(AliasWorker, ping, arginfo_aliasworker_ping, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 zend_class_entry *readonlyrecord_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_readonlyrecord_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_readonlyrecord_construct, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_readonlyrecord_reveal, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -649,7 +751,8 @@ static const zend_function_entry readonlyrecord_methods[] = {
 };
 
 zend_class_entry *traitpost_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_traitpost_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_traitpost_construct, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_traitpost_summary, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -727,11 +830,14 @@ static const zend_function_entry articlestatus_methods[] = {
 zend_class_entry *vphp__task_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_spawn, 0, 0, 1)
+ZEND_ARG_INFO(0, ctx)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_wait, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_wait, 0, 0, 1)
+ZEND_ARG_INFO(0, ctx)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_list, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vphp__task_list, 0, 0, 1)
+ZEND_ARG_INFO(0, ctx)
 ZEND_END_ARG_INFO()
 PHP_METHOD(VPhp__Task, spawn) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -772,7 +878,8 @@ static const zend_function_entry vphp__task_methods[] = {
 };
 
 zend_class_entry *stringablebox_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_stringablebox_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_stringablebox_construct, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_stringablebox_str, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
@@ -876,6 +983,10 @@ PHP_MINIT_FUNCTION(vphptest) {
         contentcontract_ce = zend_register_internal_interface(&ce);
     }
     {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "Demo\\Contracts\\AliasContract", demo__contracts__aliascontract_methods);
+        demo__contracts__aliascontract_ce = zend_register_internal_interface(&ce);
+    }
+    {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "AbstractReport", abstractreport_methods);
         abstractreport_ce = zend_register_internal_class(&ce);
         abstractreport_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
@@ -884,7 +995,12 @@ PHP_MINIT_FUNCTION(vphptest) {
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "DailyReport", dailyreport_methods);
-        dailyreport_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "abstractreport", sizeof("abstractreport")-1));
+        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "abstractreport", sizeof("abstractreport")-1);
+        if (!parent_ce) {
+            vphp_throw("parent class AbstractReport not found for DailyReport", 0);
+            return FAILURE;
+        }
+        dailyreport_ce = zend_register_internal_class_ex(&ce, parent_ce);
         dailyreport_ce->create_object = vphp_create_object_handler;
         zend_declare_property_string(dailyreport_ce, "summary", sizeof("summary")-1, "", ZEND_ACC_PUBLIC);
     }
@@ -903,9 +1019,19 @@ PHP_MINIT_FUNCTION(vphptest) {
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Article", article_methods);
-        article_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
+        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1);
+        if (!parent_ce) {
+            vphp_throw("parent class Post not found for Article", 0);
+            return FAILURE;
+        }
+        article_ce = zend_register_internal_class_ex(&ce, parent_ce);
         article_ce->create_object = vphp_create_object_handler;
-        zend_class_implements(article_ce, 1, contentcontract_ce);
+        zend_class_entry *iface_0_ce = zend_hash_str_find_ptr(CG(class_table), "contentcontract", sizeof("contentcontract")-1);
+        if (!iface_0_ce) {
+            vphp_throw("interface ContentContract not found for Article", 0);
+            return FAILURE;
+        }
+        zend_class_implements(article_ce, 1, iface_0_ce);
         zend_declare_class_constant_long(article_ce, "MAX_TITLE_LEN", sizeof("MAX_TITLE_LEN")-1, 1024);
         zend_declare_class_constant_string(article_ce, "NAME", sizeof("NAME")-1, "Samantha Black");
         zend_declare_class_constant_long(article_ce, "AGE", sizeof("AGE")-1, 24);
@@ -918,9 +1044,42 @@ PHP_MINIT_FUNCTION(vphptest) {
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "Story", story_methods);
-        story_ce = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1));
+        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "post", sizeof("post")-1);
+        if (!parent_ce) {
+            vphp_throw("parent class Post not found for Story", 0);
+            return FAILURE;
+        }
+        story_ce = zend_register_internal_class_ex(&ce, parent_ce);
         story_ce->create_object = vphp_create_object_handler;
         zend_declare_property_long(story_ce, "chapter_count", sizeof("chapter_count")-1, 0, ZEND_ACC_PUBLIC);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "Demo\\Contracts\\AliasBase", demo__contracts__aliasbase_methods);
+        demo__contracts__aliasbase_ce = zend_register_internal_class(&ce);
+        demo__contracts__aliasbase_ce->create_object = vphp_create_object_handler;
+        zend_declare_property_string(demo__contracts__aliasbase_ce, "label", sizeof("label")-1, "", ZEND_ACC_PUBLIC);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "AliasWorker", aliasworker_methods);
+        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "demo\\contracts\\aliasbase", sizeof("demo\\contracts\\aliasbase")-1);
+        if (!parent_ce) {
+            vphp_throw("parent class Demo\\\\Contracts\\\\AliasBase not found for AliasWorker", 0);
+            return FAILURE;
+        }
+        aliasworker_ce = zend_register_internal_class_ex(&ce, parent_ce);
+        aliasworker_ce->create_object = vphp_create_object_handler;
+        zend_class_entry *iface_0_ce = zend_hash_str_find_ptr(CG(class_table), "contentcontract", sizeof("contentcontract")-1);
+        if (!iface_0_ce) {
+            vphp_throw("interface ContentContract not found for AliasWorker", 0);
+            return FAILURE;
+        }
+        zend_class_entry *iface_1_ce = zend_hash_str_find_ptr(CG(class_table), "demo\\contracts\\aliascontract", sizeof("demo\\contracts\\aliascontract")-1);
+        if (!iface_1_ce) {
+            vphp_throw("interface Demo\\\\Contracts\\\\AliasContract not found for AliasWorker", 0);
+            return FAILURE;
+        }
+        zend_class_implements(aliasworker_ce, 2, iface_0_ce, iface_1_ce);
+        zend_declare_property_string(aliasworker_ce, "title", sizeof("title")-1, "", ZEND_ACC_PUBLIC);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "ReadonlyRecord", readonlyrecord_methods);

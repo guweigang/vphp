@@ -78,11 +78,21 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 	return flags
 }
 
+fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
+	mut out := []builder.ClassMethodArg{}
+	for arg in args {
+		out << builder.ClassMethodArg{
+			name: arg.name
+			type_: arg.v_type
+		}
+	}
+	return out
+}
+
 fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_interface_builder(r.php_name, r.c_name())
 	for m in r.methods {
-		class_builder.add_abstract_method(php_method_name(m.name), '${r.c_name().to_lower()}_${m.name}',
-			visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT')
+		class_builder.add_abstract_method(php_method_name(m.name), '${r.c_name().to_lower()}_${m.name}', visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args))
 	}
 	return class_builder
 }
@@ -90,7 +100,7 @@ fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassB
 fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_enum_builder(r.php_name, r.c_name())
 	class_builder.add_class_flag('ZEND_ACC_FINAL')
-	class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PRIVATE')
+	class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PRIVATE', []builder.ClassMethodArg{})
 	for case_ in r.cases {
 		class_builder.add_constant(case_.name, 'int', case_.value)
 	}
@@ -113,7 +123,7 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		class_builder.add_property(prop.name, prop.v_type, visibility_to_property_flags(prop))
 	}
 	if !has_init {
-		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC')
+		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', 'ZEND_ACC_PUBLIC', []builder.ClassMethodArg{})
 	}
 	for m in r.methods {
 		php_name := php_method_name(m.name)
@@ -123,9 +133,9 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		}
 		c_func := '${r.c_name().to_lower()}_${m.name}'
 		if m.is_abstract {
-			class_builder.add_abstract_method(php_name, c_func, flags + ' | ZEND_ACC_ABSTRACT')
+			class_builder.add_abstract_method(php_name, c_func, flags + ' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args))
 		} else {
-			class_builder.add_method(php_name, c_func, flags)
+			class_builder.add_method(php_name, c_func, flags, method_args_to_builder(m.args))
 		}
 	}
 	return class_builder

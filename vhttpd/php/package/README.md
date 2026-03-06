@@ -37,6 +37,9 @@ Primary classes:
 - `VHttpd\\PhpWorker\\StreamResponse`
 - `VHttpd\\DbGateway\\PDO` (experimental)
 - `VHttpd\\DbGateway\\PDOStatement` (experimental)
+- `VSlim\\Container` (PSR-11, provided by `vslim.so` when `psr` extension is enabled)
+- `VSlim\\Container\\NotFoundException` (provided by `vslim.so`)
+- `VSlim\\Container\\ContainerException` (provided by `vslim.so`)
 
 Composer bin entrypoints:
 
@@ -76,6 +79,25 @@ try {
     $db->rollBack();
     throw $e;
 }
+```
+
+## VSlim global container (PSR-11)
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use VSlim\Container;
+
+$container = new Container();
+$container->set('app.name', 'vslim-demo');
+$container->factory('clock', fn () => new DateTimeImmutable('now'));
+
+Container::setGlobal($container);
+
+$global = Container::requireGlobal();
+echo $global->get('app.name') . PHP_EOL;
 ```
 
 ## Publish workflow (subtree split)

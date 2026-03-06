@@ -151,6 +151,7 @@ pub fn (mut c Compiler) compile() !string {
 
 	linker.link_class_shadows(mut c.elements, c.table)
 	linker.link_class_traits(mut c.elements)!
+	linker.link_class_parents(mut c.elements)
 	linker.link_class_embeds(mut c.elements)!
 	linker.link_class_interfaces(mut c.elements)!
 

@@ -445,6 +445,129 @@ pub fn story_handlers() voidptr {
     } }
 }
 
+@[export: 'AliasBase_new_raw']
+pub fn aliasbase_new_raw() voidptr {
+    return vphp.generic_new_raw[AliasBase]()
+}
+@[export: 'AliasBase_get_prop']
+pub fn aliasbase_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &AliasBase(ptr)
+        if name == 'label' {
+            vphp.return_val_raw(rv, obj.label)
+            return
+        }
+    }
+}
+@[export: 'AliasBase_set_prop']
+pub fn aliasbase_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &AliasBase(ptr)
+        arg := vphp.ZVal{ raw: value }
+        if name == 'label' {
+            obj.label = arg.get_string()
+            return
+        }
+    }
+}
+@[export: 'AliasBase_sync_props']
+pub fn aliasbase_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &AliasBase(ptr)
+        out := vphp.ZVal{ raw: zv }
+        out.add_property_string('label', obj.label)
+    }
+}
+@[export: 'vphp_wrap_AliasBase_construct']
+pub fn vphp_wrap_aliasbase_construct(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &AliasBase(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.construct(arg_0)
+    return voidptr(res)
+}
+@[export: 'AliasBase_handlers']
+pub fn aliasbase_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(aliasbase_get_prop)
+        write_handler: voidptr(aliasbase_set_prop)
+        sync_handler:  voidptr(aliasbase_sync_props)
+        new_raw:       voidptr(aliasbase_new_raw)
+    } }
+}
+
+@[export: 'AliasWorker_new_raw']
+pub fn aliasworker_new_raw() voidptr {
+    return vphp.generic_new_raw[AliasWorker]()
+}
+@[export: 'AliasWorker_get_prop']
+pub fn aliasworker_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &AliasWorker(ptr)
+        if name == 'title' {
+            vphp.return_val_raw(rv, obj.title)
+            return
+        }
+    }
+}
+@[export: 'AliasWorker_set_prop']
+pub fn aliasworker_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &AliasWorker(ptr)
+        arg := vphp.ZVal{ raw: value }
+        if name == 'title' {
+            obj.title = arg.get_string()
+            return
+        }
+    }
+}
+@[export: 'AliasWorker_sync_props']
+pub fn aliasworker_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &AliasWorker(ptr)
+        out := vphp.ZVal{ raw: zv }
+        out.add_property_string('title', obj.title)
+    }
+}
+@[export: 'vphp_wrap_AliasWorker_construct']
+pub fn vphp_wrap_aliasworker_construct(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &AliasWorker(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.construct(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_AliasWorker_save']
+pub fn vphp_wrap_aliasworker_save(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &AliasWorker(ptr) }
+    res := recv.save()
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_AliasWorker_get_formatted_title']
+pub fn vphp_wrap_aliasworker_get_formatted_title(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &AliasWorker(ptr) }
+    res := recv.get_formatted_title()
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_AliasWorker_ping']
+pub fn vphp_wrap_aliasworker_ping(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &AliasWorker(ptr) }
+    res := recv.ping()
+    ctx.return_val[string](res)
+}
+@[export: 'AliasWorker_handlers']
+pub fn aliasworker_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(aliasworker_get_prop)
+        write_handler: voidptr(aliasworker_set_prop)
+        sync_handler:  voidptr(aliasworker_sync_props)
+        new_raw:       voidptr(aliasworker_new_raw)
+    } }
+}
+
 @[export: 'ReadonlyRecord_new_raw']
 pub fn readonlyrecord_new_raw() voidptr {
     return vphp.generic_new_raw[ReadonlyRecord]()

@@ -32,37 +32,71 @@ PHP_FUNCTION(vslim_response_headers) {
 zend_class_entry *vslim__routegroup_ce = NULL;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_group, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_group, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, prefix, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_middleware, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_middleware, 0, 0, 1)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_before, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_before, 0, 0, 1)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_after, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_after, 0, 0, 1)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_get, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_get, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_post, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_post, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_put, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_put, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_patch, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_patch, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_delete, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_delete, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_any, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_any, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_get_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_get_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_post_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_post_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_put_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_put_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_patch_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_patch_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_delete_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_delete_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_any_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_any_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(VSlim__RouteGroup, group) {
@@ -354,79 +388,109 @@ static const zend_function_entry vslim__routegroup_methods[] = {
 };
 
 zend_class_entry *vslim__request_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_construct, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, method, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, raw_path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_vslim__request_str, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_query, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_query, 0, 0, 1)
+ZEND_ARG_INFO(0, query)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_method, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_method, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, method, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_target, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_target, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, raw_path, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_body, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_body, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_scheme, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_scheme, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, scheme, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_host, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_host, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, host, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_port, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_port, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, port, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_protocol_version, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_protocol_version, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, protocol_version, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_remote_addr, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_remote_addr, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, remote_addr, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_headers, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_headers, 0, 0, 1)
+ZEND_ARG_INFO(0, headers)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_cookies, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_cookies, 0, 0, 1)
+ZEND_ARG_INFO(0, cookies)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_attributes, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_attributes, 0, 0, 1)
+ZEND_ARG_INFO(0, attributes)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_server, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_server, 0, 0, 1)
+ZEND_ARG_INFO(0, server)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_uploaded_files, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_uploaded_files, 0, 0, 1)
+ZEND_ARG_INFO(0, uploaded_files)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_params, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_set_params, 0, 0, 1)
+ZEND_ARG_INFO(0, params)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_query, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_query, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_query_params, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_query, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_query, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_query_all, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_header, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_header, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_headers, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_header, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_header, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_content_type, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_cookie, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_cookie, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_cookies, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_cookie, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_cookie, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_param, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_param, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_route_params, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_param, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_param, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_attribute, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_attribute, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_attributes, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_attribute, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_attribute, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_server_value, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_server_value, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_server_params, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_server, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_has_server, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_uploaded_file_count, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -1001,41 +1065,71 @@ static const zend_function_entry vslim__request_methods[] = {
 };
 
 zend_class_entry *vslim__response_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_construct, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_construct, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, content_type, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_header, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_header, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_headers, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_has_header, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_has_header, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_header, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_header, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, value, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_content_type, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_content_type, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, content_type, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_cookie_header, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_cookie, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_cookie, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, value, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_cookie_opts, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_cookie_opts, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, value, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, path, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_cookie_full, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_cookie_full, 0, 0, 8)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, value, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, domain, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, max_age, IS_LONG, 0)
+ZEND_ARG_TYPE_INFO(0, secure, _IS_BOOL, 0)
+ZEND_ARG_TYPE_INFO(0, http_only, _IS_BOOL, 0)
+ZEND_ARG_TYPE_INFO(0, same_site, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_delete_cookie, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_delete_cookie, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_status, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_status, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_with_status, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_with_status, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_text, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_text, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_json, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_json, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_html, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_html, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_redirect, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_redirect, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, location, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_redirect_with_status, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_redirect_with_status, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, location, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_headers_all, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -1350,59 +1444,120 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_demo, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_set_base_path, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_set_base_path, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, base_path, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_group, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_group, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, prefix, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, method, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, raw_path, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_body, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_body, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, method, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, raw_path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_request, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_request, 0, 0, 1)
+ZEND_ARG_INFO(0, req)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_envelope, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_envelope, 0, 0, 1)
+ZEND_ARG_INFO(0, envelope)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_get, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_get, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_post, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_post, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_put, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_put, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_patch, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_patch, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_delete, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_delete, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_any, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_any, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_get_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_get_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_post_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_post_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_put_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_put_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_patch_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_patch_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_delete_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_delete_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_any_named, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_any_named, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_middleware, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_middleware, 0, 0, 1)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_before, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_before, 0, 0, 1)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_after, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_after, 0, 0, 1)
+ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for_query, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for_query, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
+ZEND_ARG_INFO(0, query)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for_abs, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for_abs, 0, 0, 4)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
+ZEND_ARG_TYPE_INFO(0, scheme, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, host, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for_query_abs, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for_query_abs, 0, 0, 5)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
+ZEND_ARG_INFO(0, query)
+ZEND_ARG_TYPE_INFO(0, scheme, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, host, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_redirect_to, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_redirect_to, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_redirect_to_query, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_redirect_to_query, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
+ZEND_ARG_INFO(0, query)
 ZEND_END_ARG_INFO()
 PHP_METHOD(VSlim__App, demo) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -1860,6 +2015,133 @@ static const zend_function_entry vslim__app_methods[] = {
     PHP_FE_END
 };
 
+zend_class_entry *vslim__container__containerexception_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container__containerexception___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(VSlim__Container__ContainerException, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* VSlimContainerException_handlers();
+    vphp_class_handlers *h = VSlimContainerException_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+}
+
+static const zend_function_entry vslim__container__containerexception_methods[] = {
+    PHP_ME(VSlim__Container__ContainerException, __construct, arginfo_vslim__container__containerexception___construct, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
+zend_class_entry *vslim__container__notfoundexception_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container__notfoundexception___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(VSlim__Container__NotFoundException, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* VSlimContainerNotFoundException_handlers();
+    vphp_class_handlers *h = VSlimContainerNotFoundException_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+}
+
+static const zend_function_entry vslim__container__notfoundexception_methods[] = {
+    PHP_ME(VSlim__Container__NotFoundException, __construct, arginfo_vslim__container__notfoundexception___construct, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
+zend_class_entry *vslim__container_ce = NULL;
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container_construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container_set, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, id, IS_STRING, 0)
+ZEND_ARG_INFO(0, value)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container_factory, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, id, IS_STRING, 0)
+ZEND_ARG_INFO(0, callable)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container_has, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, id, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__container_get, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, id, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+PHP_METHOD(VSlim__Container, __construct) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern vphp_class_handlers* VSlimContainer_handlers();
+    vphp_class_handlers *h = VSlimContainer_handlers();
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    wrapper->v_ptr = h->new_raw();
+    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
+    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    extern void vphp_wrap_VSlimContainer_construct(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    vphp_wrap_VSlimContainer_construct(v_ptr, ctx);
+}
+
+PHP_METHOD(VSlim__Container, set) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimContainer_set(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__Container::set called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimContainer_set(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__container_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimContainer_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimContainer_handlers());
+    }
+}
+
+
+PHP_METHOD(VSlim__Container, factory) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimContainer_factory(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__Container::factory called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimContainer_factory(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__container_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimContainer_handlers();
+        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimContainer_handlers());
+    }
+}
+
+PHP_METHOD(VSlim__Container, has) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimContainer_has(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimContainer_has(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Container, get) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void VSlimContainer_get(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_NULL();
+    VSlimContainer_get(wrapper->v_ptr, ctx);
+}
+static const zend_function_entry vslim__container_methods[] = {
+    PHP_ME(VSlim__Container, __construct, arginfo_vslim__container_construct, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Container, set, arginfo_vslim__container_set, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Container, factory, arginfo_vslim__container_factory, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Container, has, arginfo_vslim__container_has, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Container, get, arginfo_vslim__container_get, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 ZEND_BEGIN_MODULE_GLOBALS(vslim)
     zend_long request_count;
 ZEND_END_MODULE_GLOBALS(vslim)
@@ -1928,6 +2210,52 @@ PHP_MINIT_FUNCTION(vslim) {
         zend_declare_property_null(vslim__app_ce, "php_group_after", sizeof("php_group_after")-1, ZEND_ACC_PROTECTED);
         zend_declare_property_string(vslim__app_ce, "base_path", sizeof("base_path")-1, "", ZEND_ACC_PROTECTED);
         zend_declare_property_bool(vslim__app_ce, "use_demo", sizeof("use_demo")-1, 0, ZEND_ACC_PROTECTED);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "VSlim\\Container\\ContainerException", vslim__container__containerexception_methods);
+        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "exception", sizeof("exception")-1);
+        if (!parent_ce) {
+            vphp_throw("parent class Exception not found for VSlim\\Container\\ContainerException", 0);
+            return FAILURE;
+        }
+        vslim__container__containerexception_ce = zend_register_internal_class_ex(&ce, parent_ce);
+        vslim__container__containerexception_ce->create_object = vphp_create_object_handler;
+        zend_class_entry *iface_0_ce = zend_hash_str_find_ptr(CG(class_table), "psr\\container\\containerexceptioninterface", sizeof("psr\\container\\containerexceptioninterface")-1);
+        if (!iface_0_ce) {
+            vphp_throw("interface Psr\\\\Container\\\\ContainerExceptionInterface not found for VSlim\\Container\\ContainerException", 0);
+            return FAILURE;
+        }
+        zend_class_implements(vslim__container__containerexception_ce, 1, iface_0_ce);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "VSlim\\Container\\NotFoundException", vslim__container__notfoundexception_methods);
+        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "vslim\\container\\containerexception", sizeof("vslim\\container\\containerexception")-1);
+        if (!parent_ce) {
+            vphp_throw("parent class VSlim\\\\Container\\\\ContainerException not found for VSlim\\Container\\NotFoundException", 0);
+            return FAILURE;
+        }
+        vslim__container__notfoundexception_ce = zend_register_internal_class_ex(&ce, parent_ce);
+        vslim__container__notfoundexception_ce->create_object = vphp_create_object_handler;
+        zend_class_entry *iface_0_ce = zend_hash_str_find_ptr(CG(class_table), "psr\\container\\notfoundexceptioninterface", sizeof("psr\\container\\notfoundexceptioninterface")-1);
+        if (!iface_0_ce) {
+            vphp_throw("interface Psr\\\\Container\\\\NotFoundExceptionInterface not found for VSlim\\Container\\NotFoundException", 0);
+            return FAILURE;
+        }
+        zend_class_implements(vslim__container__notfoundexception_ce, 1, iface_0_ce);
+    }
+    {   zend_class_entry ce;
+        INIT_CLASS_ENTRY(ce, "VSlim\\Container", vslim__container_methods);
+        vslim__container_ce = zend_register_internal_class(&ce);
+        vslim__container_ce->create_object = vphp_create_object_handler;
+        zend_class_entry *iface_0_ce = zend_hash_str_find_ptr(CG(class_table), "psr\\container\\containerinterface", sizeof("psr\\container\\containerinterface")-1);
+        if (!iface_0_ce) {
+            vphp_throw("interface Psr\\\\Container\\\\ContainerInterface not found for VSlim\\Container", 0);
+            return FAILURE;
+        }
+        zend_class_implements(vslim__container_ce, 1, iface_0_ce);
+        zend_declare_property_null(vslim__container_ce, "entries", sizeof("entries")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslim__container_ce, "factories", sizeof("factories")-1, ZEND_ACC_PROTECTED);
+        zend_declare_property_null(vslim__container_ce, "resolved", sizeof("resolved")-1, ZEND_ACC_PROTECTED);
     }
     return SUCCESS;
 }

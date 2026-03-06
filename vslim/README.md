@@ -144,6 +144,31 @@ flowchart TB
 - `VSlim\Request` 请求包装
 - `VSlim\App` / `VSlim\Response` 作为 PHP-facing façade
 - `vslim_handle_request()` / `vslim_demo_dispatch()` 作为稳定函数入口
+- PSR-11 compatible global container (`VSlim\\Container`, via `vphpext/vhttpd` PHP package)
+
+## PSR-11 container (global)
+
+`VSlim` now provides a PSR-11 compatible container class in PHP userland:
+
+- `VSlim\\Container` implements `Psr\\Container\\ContainerInterface`
+- `VSlim\\Container\\NotFoundException` implements `Psr\\Container\\NotFoundExceptionInterface`
+- `VSlim\\Container\\ContainerException` implements `Psr\\Container\\ContainerExceptionInterface`
+
+Minimal usage:
+
+```php
+<?php
+
+use VSlim\Container;
+
+$container = new Container();
+$container->set('app.name', 'vslim');
+$container->factory('clock', fn () => new DateTimeImmutable('now'));
+
+Container::setGlobal($container);
+$global = Container::requireGlobal();
+echo $global->get('app.name');
+```
 
 ## 与 vhttpd 的交互模型
 

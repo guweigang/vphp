@@ -33,6 +33,10 @@ pub fn throw_exception(msg string, code int) {
 	unsafe { C.vphp_throw(&char(msg.str), code) }
 }
 
+pub fn throw_exception_class(class_name string, msg string, code int) {
+	unsafe { C.vphp_throw_class(&char(class_name.str), &char(msg.str), code) }
+}
+
 // 抛出带稳定错误分类前缀的 PHP 异常
 pub fn throw_interop_error(class InteropErrorClass, msg string, code int) {
 	throw_exception('[${class.str()}] ${msg}', code)

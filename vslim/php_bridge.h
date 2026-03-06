@@ -17,4 +17,7 @@ extern zend_class_entry *vslim__routegroup_ce;
 extern zend_class_entry *vslim__request_ce;
 extern zend_class_entry *vslim__response_ce;
 extern zend_class_entry *vslim__app_ce;
+extern zend_class_entry *vslim__container__containerexception_ce;
+extern zend_class_entry *vslim__container__notfoundexception_ce;
+extern zend_class_entry *vslim__container_ce;
 #endif

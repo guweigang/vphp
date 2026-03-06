@@ -21,6 +21,16 @@ zval *vphp_get_arg_ptr(zend_execute_data *ex, uint32_t index) {
 void vphp_throw(char *msg, int code) {
   zend_throw_exception(NULL, msg, (zend_long)code);
 }
+void vphp_throw_class(char *class_name, char *msg, int code) {
+  zend_class_entry *ce = NULL;
+  zend_string *cls = NULL;
+  if (class_name != NULL) {
+    cls = zend_string_init(class_name, strlen(class_name), 0);
+    ce = zend_lookup_class(cls);
+    zend_string_release(cls);
+  }
+  zend_throw_exception(ce, msg, (zend_long)code);
+}
 void vphp_error(int level, char *msg) { php_error(level, "%s", msg); }
 #define VPHP_MAGIC 0x56504850
 #include <stdbool.h>

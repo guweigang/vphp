@@ -2,16 +2,23 @@ import os
 import vphp.compiler
 
 fn main() {
-	source_dir := 'src'
+	project_root := os.dir(os.real_path(@FILE))
+	source_dir := os.join_path(project_root, 'src')
 	mut target_files := []string{}
+	os.chdir(project_root) or {
+		eprintln('❌ 无法切换到项目目录: ${project_root}')
+		return
+	}
 
 	if os.args.len > 1 && os.args[1].ends_with('.v') {
-		target_files = os.args[1..].clone()
+		for arg in os.args[1..] {
+			target_files << os.real_path(arg)
+		}
 	} else {
 		files := os.ls(source_dir) or { []string{} }
 		for f in files {
 			if f.ends_with('.v') && f != 'build.v' && f != 'bridge.v' && f != 'mod.v' && !f.ends_with('_test.v') {
-				target_files << os.join_path(source_dir, f)
+				target_files << os.real_path(os.join_path(source_dir, f))
 			}
 		}
 	}
@@ -33,13 +40,21 @@ fn main() {
 		eprintln('❌ 代码生成失败: ${err}')
 		return
 	}
+	generated_bridge := os.join_path(project_root, 'bridge.v')
+	src_bridge := os.join_path(source_dir, 'bridge.v')
+	if os.exists(generated_bridge) {
+		os.cp(generated_bridge, src_bridge) or {
+			eprintln('❌ 同步桥接代码失败: ${err}')
+			return
+		}
+	}
 
 	disabled_warnings := '-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides'
 	brew_path := '/opt/homebrew'
 	os.setenv('C_INCLUDE_PATH', '${brew_path}/include/cjson', true)
 
-	transpiled_c := 'vphp_ext_${ext_name}.c'
-	output_so := '${ext_name}.so'
+	transpiled_c := os.join_path(project_root, 'vphp_ext_${ext_name}.c')
+	output_so := os.join_path(project_root, '${ext_name}.so')
 	println('🛠️  2. 转译 V 逻辑为 C -> ${transpiled_c}')
 	os.rm(output_so) or {}
 

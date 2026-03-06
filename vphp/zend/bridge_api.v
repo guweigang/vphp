@@ -16,6 +16,7 @@ pub fn C.vphp_get_active_globals() voidptr
 // ===== 2. 框架与异常 =====
 pub fn C.vphp_init_registry()
 pub fn C.vphp_throw(msg &char, code int)
+pub fn C.vphp_throw_class(class_name &char, msg &char, code int)
 pub fn C.vphp_error(int, &char)
 
 // ===== 3. zval 类型检测 =====

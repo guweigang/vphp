@@ -48,6 +48,7 @@ zval *vphp_get_arg_ptr(zend_execute_data *ex, uint32_t index);
 zval *vphp_new_zval(void);
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item);
 void vphp_throw(char *msg, int code);
+void vphp_throw_class(char *class_name, char *msg, int code);
 void vphp_error(int level, char *msg);
 bool vphp_has_exception(void);
 void vphp_init_registry(void);

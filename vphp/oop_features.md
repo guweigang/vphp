@@ -281,6 +281,27 @@ Current limitation:
 - implicit structural satisfaction is not auto-exported as PHP `implements`
 - method signature validation is currently soft; Zend-side relationship is established, but compile-time semantic validation can still be improved
 
+### `@[php_implements: '...']`
+
+Use `@[php_implements: 'InterfaceName']` on `@[php_class]` when you need a PHP-side interface
+relationship driven by a string name.
+
+```v
+@[php_class]
+@[php_implements: 'JsonSerializable']
+struct Payload {}
+```
+
+Resolution rule:
+
+- if the string matches a V-exported `@[php_interface]` symbol, it is mapped to that interface's PHP name
+- otherwise it is treated as a direct PHP interface name (for example `JsonSerializable` or namespaced names)
+- V `implements` and `@[php_implements]` can be used together; duplicates are merged
+
+Note:
+
+- interface lookup is performed during class registration; names must be available in the class table at that time
+
 ## `@[php_abstract]`
 
 `@[php_abstract]` works on both classes and methods.
@@ -326,6 +347,19 @@ Explicit form:
 @[php_extends: 'Post']
 struct Article {
 	Post
+}
+```
+
+String form also supports V symbol mapping, including renamed PHP class names:
+
+```v
+@[php_class: 'Demo\\Contracts\\AliasBase']
+struct AliasBase {}
+
+@[php_class]
+@[php_extends: 'AliasBase']
+struct AliasWorker {
+	AliasBase
 }
 ```
 

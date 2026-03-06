@@ -3,6 +3,21 @@ module parser
 import v.ast
 import compiler.repr
 
+fn normalize_attr_value(raw string) string {
+	return raw.trim_space().trim("'\"")
+}
+
+fn parse_attr_list(raw string) []string {
+	mut out := []string{}
+	for part in raw.split(',') {
+		name := normalize_attr_value(part)
+		if name != '' {
+			out << name
+		}
+	}
+	return out
+}
+
 pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 	if stmt !is ast.StructDecl {
 		return none
@@ -21,7 +36,7 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 		cls.php_name = cls.name
 	}
 	if attr := struct_decl.attrs.find_first('php_extends') {
-		cls.parent = attr.arg
+		cls.parent = normalize_attr_value(attr.arg)
 	}
 	for attr in struct_decl.attrs {
 		if attr.name == 'php_const' {
@@ -30,6 +45,8 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 			cls.shadow_static_name = attr.arg
 		} else if attr.name == 'php_abstract' {
 			cls.is_abstract = true
+		} else if attr.name == 'php_implements' {
+			cls.implements_attr << parse_attr_list(attr.arg)
 		}
 	}
 	if struct_decl.is_implements {

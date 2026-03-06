@@ -3,6 +3,13 @@ module linker
 import v.ast
 import compiler.repr
 
+fn strip_module_name(name string) string {
+	if name.contains('.') {
+		return name.all_after_last('.')
+	}
+	return name
+}
+
 fn is_php_trait_class(el repr.PhpRepr) bool {
 	return el is repr.PhpClassRepr && el.is_trait
 }
@@ -66,6 +73,31 @@ pub fn link_class_embeds(mut elements []repr.PhpRepr) ! {
 				el.parent = embedded_php_classes[0]
 			}
 
+			elements[i] = el
+		}
+	}
+}
+
+pub fn link_class_parents(mut elements []repr.PhpRepr) {
+	mut class_map := map[string]string{}
+	for el in elements {
+		if is_php_exported_class(el) {
+			cls := el as repr.PhpClassRepr
+			class_map[cls.name] = cls.php_name
+		}
+	}
+
+	for i in 0 .. elements.len {
+		mut el := elements[i]
+		if mut el is repr.PhpClassRepr {
+			if el.is_trait || el.parent == '' {
+				elements[i] = el
+				continue
+			}
+			parent_name := strip_module_name(el.parent)
+			if parent_name in class_map {
+				el.parent = class_map[parent_name]
+			}
 			elements[i] = el
 		}
 	}

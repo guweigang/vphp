@@ -1094,6 +1094,143 @@ pub fn vslimapp_handlers() voidptr {
     } }
 }
 
+@[export: 'VSlimContainerException_new_raw']
+pub fn vslimcontainerexception_new_raw() voidptr {
+    return vphp.generic_new_raw[VSlimContainerException]()
+}
+@[export: 'VSlimContainerException_get_prop']
+pub fn vslimcontainerexception_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &VSlimContainerException(ptr)
+    }
+}
+@[export: 'VSlimContainerException_set_prop']
+pub fn vslimcontainerexception_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &VSlimContainerException(ptr)
+        arg := vphp.ZVal{ raw: value }
+    }
+}
+@[export: 'VSlimContainerException_sync_props']
+pub fn vslimcontainerexception_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &VSlimContainerException(ptr)
+        out := vphp.ZVal{ raw: zv }
+    }
+}
+@[export: 'VSlimContainerException_handlers']
+pub fn vslimcontainerexception_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(vslimcontainerexception_get_prop)
+        write_handler: voidptr(vslimcontainerexception_set_prop)
+        sync_handler:  voidptr(vslimcontainerexception_sync_props)
+        new_raw:       voidptr(vslimcontainerexception_new_raw)
+    } }
+}
+
+@[export: 'VSlimContainerNotFoundException_new_raw']
+pub fn vslimcontainernotfoundexception_new_raw() voidptr {
+    return vphp.generic_new_raw[VSlimContainerNotFoundException]()
+}
+@[export: 'VSlimContainerNotFoundException_get_prop']
+pub fn vslimcontainernotfoundexception_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &VSlimContainerNotFoundException(ptr)
+    }
+}
+@[export: 'VSlimContainerNotFoundException_set_prop']
+pub fn vslimcontainernotfoundexception_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &VSlimContainerNotFoundException(ptr)
+        arg := vphp.ZVal{ raw: value }
+    }
+}
+@[export: 'VSlimContainerNotFoundException_sync_props']
+pub fn vslimcontainernotfoundexception_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &VSlimContainerNotFoundException(ptr)
+        out := vphp.ZVal{ raw: zv }
+    }
+}
+@[export: 'VSlimContainerNotFoundException_handlers']
+pub fn vslimcontainernotfoundexception_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(vslimcontainernotfoundexception_get_prop)
+        write_handler: voidptr(vslimcontainernotfoundexception_set_prop)
+        sync_handler:  voidptr(vslimcontainernotfoundexception_sync_props)
+        new_raw:       voidptr(vslimcontainernotfoundexception_new_raw)
+    } }
+}
+
+@[export: 'VSlimContainer_new_raw']
+pub fn vslimcontainer_new_raw() voidptr {
+    return vphp.generic_new_raw[VSlimContainer]()
+}
+@[export: 'VSlimContainer_get_prop']
+pub fn vslimcontainer_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        obj := &VSlimContainer(ptr)
+    }
+}
+@[export: 'VSlimContainer_set_prop']
+pub fn vslimcontainer_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+    unsafe {
+        name := name_ptr.vstring_with_len(name_len).clone()
+        mut obj := &VSlimContainer(ptr)
+        arg := vphp.ZVal{ raw: value }
+    }
+}
+@[export: 'VSlimContainer_sync_props']
+pub fn vslimcontainer_sync_props(ptr voidptr, zv &C.zval) {
+    unsafe {
+        obj := &VSlimContainer(ptr)
+        out := vphp.ZVal{ raw: zv }
+    }
+}
+@[export: 'vphp_wrap_VSlimContainer_construct']
+pub fn vphp_wrap_vslimcontainer_construct(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimContainer(ptr) }
+    res := recv.construct()
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimContainer_set']
+pub fn vphp_wrap_vslimcontainer_set(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimContainer(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.set(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimContainer_factory']
+pub fn vphp_wrap_vslimcontainer_factory(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimContainer(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.factory(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimContainer_has']
+pub fn vphp_wrap_vslimcontainer_has(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimContainer(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.has(arg_0)
+    ctx.return_val[bool](res)
+}
+@[export: 'VSlimContainer_handlers']
+pub fn vslimcontainer_handlers() voidptr {
+    return unsafe { &C.vphp_class_handlers{
+        prop_handler:  voidptr(vslimcontainer_get_prop)
+        write_handler: voidptr(vslimcontainer_set_prop)
+        sync_handler:  voidptr(vslimcontainer_sync_props)
+        new_raw:       voidptr(vslimcontainer_new_raw)
+    } }
+}
+
 @[export: 'vphp_wrap_vslim_handle_request']
 fn vphp_wrap_vslim_handle_request(ctx vphp.Context) {
     arg_0 := ctx

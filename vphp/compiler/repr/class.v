@@ -10,6 +10,7 @@ pub mut:
 	is_abstract bool
 	embeds_v   []string
 	implements_v []string
+	implements_attr []string
 	implements []string
 	shadow_const_name string  // 绑定的影子常量名，如 "article_consts"
 	shadow_static_name string // 新增：绑定的影子静态属性名，如 "article_statics"

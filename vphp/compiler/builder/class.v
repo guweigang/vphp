@@ -26,6 +26,13 @@ pub:
 	c_func      string
 	flags       string
 	is_abstract bool
+	args        []ClassMethodArg
+}
+
+pub struct ClassMethodArg {
+pub:
+	name  string
+	type_ string
 }
 
 pub struct ClassBuilder {
@@ -96,22 +103,24 @@ pub fn (mut b ClassBuilder) add_constant(name string, type_ string, value string
 	return b
 }
 
-pub fn (mut b ClassBuilder) add_method(php_name string, c_func string, flags string) &ClassBuilder {
+pub fn (mut b ClassBuilder) add_method(php_name string, c_func string, flags string, args []ClassMethodArg) &ClassBuilder {
 	b.methods << ClassMethod{
 		php_name: php_name
 		c_func: c_func
 		flags: flags
 		is_abstract: false
+		args: args
 	}
 	return b
 }
 
-pub fn (mut b ClassBuilder) add_abstract_method(php_name string, c_func string, flags string) &ClassBuilder {
+pub fn (mut b ClassBuilder) add_abstract_method(php_name string, c_func string, flags string, args []ClassMethodArg) &ClassBuilder {
 	b.methods << ClassMethod{
 		php_name: php_name
 		c_func: c_func
 		flags: flags
 		is_abstract: true
+		args: args
 	}
 	return b
 }
@@ -136,13 +145,31 @@ pub fn (b &ClassBuilder) render_impl_postlude() string {
 	return b.render_methods_array()
 }
 
+fn arg_type_code(v_type string) string {
+	return match v_type {
+		'string' { 'IS_STRING' }
+		'int', 'i64' { 'IS_LONG' }
+		'bool' { '_IS_BOOL' }
+		'f64', 'f32' { 'IS_DOUBLE' }
+		else { '' }
+	}
+}
+
 	pub fn (b &ClassBuilder) render_arginfo_defs() string {
 		mut res := []string{}
 		for m in b.methods {
 			if m.php_name == '__toString' {
 				res << 'ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_${m.c_func}, 0, 0, IS_STRING, 0)'
 			} else {
-				res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, 0)'
+				res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, ${m.args.len})'
+			}
+			for arg in m.args {
+				type_code := arg_type_code(arg.type_)
+				if type_code != '' {
+					res << 'ZEND_ARG_TYPE_INFO(0, ${arg.name}, ${type_code}, 0)'
+				} else {
+					res << 'ZEND_ARG_INFO(0, ${arg.name})'
+				}
 			}
 			res << 'ZEND_END_ARG_INFO()'
 		}
@@ -179,7 +206,13 @@ pub fn (b &ClassBuilder) render_minit() string {
 		else {
 			if b.parent != '' {
 				lower_parent := b.parent.to_lower()
-				res << '        ${ce_ptr} = zend_register_internal_class_ex(&ce, zend_hash_str_find_ptr(CG(class_table), "${lower_parent}", sizeof("${lower_parent}")-1));'
+				parent_display := b.parent.replace('\\', '\\\\')
+				res << '        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "${lower_parent}", sizeof("${lower_parent}")-1);'
+				res << '        if (!parent_ce) {'
+				res << '            vphp_throw("parent class ${parent_display} not found for ${b.php_name}", 0);'
+				res << '            return FAILURE;'
+				res << '        }'
+				res << '        ${ce_ptr} = zend_register_internal_class_ex(&ce, parent_ce);'
 			} else {
 				res << '        ${ce_ptr} = zend_register_internal_class(&ce);'
 			}
@@ -194,8 +227,16 @@ pub fn (b &ClassBuilder) render_minit() string {
 	}
 	if b.interfaces.len > 0 {
 		mut args := []string{}
-		for iface in b.interfaces {
-			args << '${iface.replace('\\', '_').to_lower()}_ce'
+		for i, iface in b.interfaces {
+			lower_iface := iface.to_lower()
+			iface_display := iface.replace('\\', '\\\\')
+			iface_var := 'iface_${i}_ce'
+			res << '        zend_class_entry *${iface_var} = zend_hash_str_find_ptr(CG(class_table), "${lower_iface}", sizeof("${lower_iface}")-1);'
+			res << '        if (!${iface_var}) {'
+			res << '            vphp_throw("interface ${iface_display} not found for ${b.php_name}", 0);'
+			res << '            return FAILURE;'
+			res << '        }'
+			args << iface_var
 		}
 		res << '        zend_class_implements(${ce_ptr}, ${b.interfaces.len}, ${args.join(', ')});'
 	}
