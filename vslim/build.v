@@ -2,15 +2,16 @@ import os
 import vphp.compiler
 
 fn main() {
+	source_dir := 'src'
 	mut target_files := []string{}
 
 	if os.args.len > 1 && os.args[1].ends_with('.v') {
 		target_files = os.args[1..].clone()
 	} else {
-		files := os.ls('.') or { []string{} }
+		files := os.ls(source_dir) or { []string{} }
 		for f in files {
 			if f.ends_with('.v') && f != 'build.v' && f != 'bridge.v' && f != 'mod.v' && !f.ends_with('_test.v') {
-				target_files << f
+				target_files << os.join_path(source_dir, f)
 			}
 		}
 	}
@@ -42,7 +43,7 @@ fn main() {
 	println('🛠️  2. 转译 V 逻辑为 C -> ${transpiled_c}')
 	os.rm(output_so) or {}
 
-	v_res := os.execute('v -nocache -enable-globals -gc none -path ".:..:@vlib" -shared -o ${transpiled_c} .')
+	v_res := os.execute('v -nocache -enable-globals -gc none -path ".:..:@vlib" -shared -o ${transpiled_c} ${source_dir}')
 	if v_res.exit_code != 0 {
 		println('❌ V 编译失败: ${v_res.output}')
 		return
