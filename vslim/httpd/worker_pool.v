@@ -385,3 +385,32 @@ fn connect_any_worker(mut app App) !string {
 	}
 	return error(last_err)
 }
+
+fn (mut app App) worker_admin_snapshot() WorkerPoolAdminStatus {
+	app.pool_mu.@lock()
+	defer {
+		app.pool_mu.unlock()
+	}
+	mut workers := []WorkerAdminStatus{cap: app.managed_workers.len}
+	for worker in app.managed_workers {
+		mut w := worker
+		workers << WorkerAdminStatus{
+			id: w.id
+			socket: w.socket_path
+			alive: if isnil(w.proc) { false } else { w.proc.is_alive() }
+			draining: w.draining
+			inflight_requests: w.inflight_requests
+			served_requests: w.served_requests
+			restart_count: w.restart_count
+			next_retry_ts: w.next_retry_ts
+		}
+	}
+	return WorkerPoolAdminStatus{
+		worker_autostart: app.worker_autostart
+		worker_pool_size: app.worker_sockets.len
+		worker_rr_index: app.worker_rr_index
+		worker_max_requests: app.worker_max_requests
+		worker_sockets: app.worker_sockets.clone()
+		workers: workers
+	}
+}

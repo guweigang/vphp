@@ -139,6 +139,7 @@ Endpoints:
 - `GET /events/stream` returns SSE ping events for observability/debug:
   - `/events/stream?count=3&interval_ms=150`
   - `/events/stream?request_id=req-demo`
+- `GET /admin/workers` returns runtime worker pool status (alive/draining/inflight/restarts)
 - `/dispatch` is kept as a debug bridge endpoint (this one uses query `method/path` on purpose):
   - `GET /dispatch?method=GET&path=/users/42`
   - `HEAD /dispatch?method=GET&path=/go/nova`

@@ -78,6 +78,26 @@ struct WorkerRequestPayload {
 	uploaded_files   []string
 }
 
+struct WorkerAdminStatus {
+	id               int
+	socket           string
+	alive            bool
+	draining         bool
+	inflight_requests i64
+	served_requests  i64
+	restart_count    int
+	next_retry_ts    i64
+}
+
+struct WorkerPoolAdminStatus {
+	worker_autostart  bool
+	worker_pool_size  int
+	worker_rr_index   int
+	worker_max_requests int
+	worker_sockets    []string
+	workers           []WorkerAdminStatus
+}
+
 fn header_map_from_request(req http.Request) map[string]string {
 	mut out := map[string]string{}
 	for key in req.header.keys() {
@@ -775,6 +795,25 @@ pub fn (mut app App) events_stream(mut ctx Context) veb.Result {
 		'duration_ms': '${time.now().unix_milli() - start_ms}'
 	})
 	return veb.no_result()
+}
+
+@['/admin/workers'; get]
+pub fn (mut app App) admin_workers(mut ctx Context) veb.Result {
+	path := if ctx.req.url == '' { '/admin/workers' } else { ctx.req.url }
+	req_id := resolve_request_id(ctx, path)
+	trace_id := resolve_trace_id(ctx, path)
+	body := json.encode(app.worker_admin_snapshot())
+	ctx.set_custom_header('x-request-id', req_id) or {}
+	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
+	ctx.set_content_type('application/json; charset=utf-8')
+	app.emit('http.request', {
+		'method': 'GET'
+		'path': '/admin/workers'
+		'status': '200'
+		'request_id': req_id
+		'trace_id': trace_id
+	})
+	return ctx.text(body)
 }
 
 @['/:path...'; get]
