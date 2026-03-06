@@ -34,6 +34,17 @@ struct RouteHook {
 	handler vphp.ZVal
 }
 
+struct MiddlewareChain {
+mut:
+	app               &VSlimApp = unsafe { nil }
+	path              string
+	middlewares       []vphp.ZVal
+	route_handler     vphp.ZVal
+	index             int
+	has_terminal      bool
+	terminal_response VSlimResponse
+}
+
 @[heap]
 @[php_class: 'VSlim\\RouteGroup']
 struct RouteGroup {
@@ -84,8 +95,13 @@ mut:
 	routes            []VSlimRoute
 	php_before_hooks  []vphp.ZVal
 	php_after_hooks   []vphp.ZVal
+	php_middlewares   []vphp.ZVal
 	php_group_before  []RouteHook
 	php_group_after   []RouteHook
+	php_group_middle  []RouteHook
+	not_found_handler vphp.ZVal
+	error_handler     vphp.ZVal
+	container_ref     &VSlimContainer = unsafe { nil }
 	base_path         string
 	use_demo          bool
 }

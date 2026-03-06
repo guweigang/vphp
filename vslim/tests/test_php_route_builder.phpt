@@ -11,13 +11,13 @@ $app->before(function (VSlim\Request $req) {
     }
     return null;
 });
-$app->middleware(function (VSlim\Request $req) {
+$app->middleware(function (VSlim\Request $req, callable $next) {
     if ($req->path === '/blocked') {
         return new VSlim\Response(403, 'blocked', 'text/plain; charset=utf-8');
     }
-    return null;
+    return $next($req);
 });
-$app->middleware(function (VSlim\Request $req) {
+$app->middleware(function (VSlim\Request $req, callable $next) {
     if ($req->path === '/submit' && $req->query('trace_id') === 'mw') {
         return [
             'status' => 202,
@@ -25,7 +25,7 @@ $app->middleware(function (VSlim\Request $req) {
             'body' => 'middleware:' . $req->body,
         ];
     }
-    return null;
+    return $next($req);
 });
 $app->get('/hello/:name', function (VSlim\Request $req) {
     return new VSlim\Response(200, 'Hello, ' . $req->param('name'), 'text/plain; charset=utf-8');
@@ -49,11 +49,11 @@ $app->after(function (VSlim\Request $req, VSlim\Response $res) {
     return null;
 });
 $api = $app->group('/api');
-$api->middleware(function (VSlim\Request $req) {
+$api->middleware(function (VSlim\Request $req, callable $next) {
     if ($req->path === '/api/blocked') {
         return 'group-blocked';
     }
-    return null;
+    return $next($req);
 });
 $api->get('/users/:id', function (VSlim\Request $req) {
     return 'user:' . $req->param('id');
@@ -84,7 +84,7 @@ $api->any_named('api.echo.any', '/echo/:id', function (VSlim\Request $req) {
     return $req->method . ':' . $req->param('id');
 });
 $v1 = $api->group('/v1');
-$v1->middleware(function (VSlim\Request $req) {
+$v1->middleware(function (VSlim\Request $req, callable $next) {
     if ($req->path === '/api/v1/ping' && $req->query('trace_id') === 'group') {
         return [
             'status' => 206,
@@ -92,7 +92,7 @@ $v1->middleware(function (VSlim\Request $req) {
             'body' => 'group-middleware',
         ];
     }
-    return null;
+    return $next($req);
 });
 $v1->get('/ping', function (VSlim\Request $req) {
     return [

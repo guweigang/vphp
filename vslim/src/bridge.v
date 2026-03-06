@@ -83,6 +83,22 @@ pub fn vphp_wrap_routegroup_put(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.put(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_RouteGroup_head']
+pub fn vphp_wrap_routegroup_head(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.head(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_options']
+pub fn vphp_wrap_routegroup_options(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.options(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_RouteGroup_patch']
 pub fn vphp_wrap_routegroup_patch(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &RouteGroup(ptr) }
@@ -105,6 +121,15 @@ pub fn vphp_wrap_routegroup_any(ptr voidptr, ctx vphp.Context) voidptr {
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.any(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_map']
+pub fn vphp_wrap_routegroup_map(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    arg_0 := ctx.arg_val(0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.map(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_RouteGroup_get_named']
@@ -134,6 +159,24 @@ pub fn vphp_wrap_routegroup_put_named(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.put_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_RouteGroup_head_named']
+pub fn vphp_wrap_routegroup_head_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.head_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_options_named']
+pub fn vphp_wrap_routegroup_options_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.options_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_RouteGroup_patch_named']
 pub fn vphp_wrap_routegroup_patch_named(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &RouteGroup(ptr) }
@@ -159,6 +202,16 @@ pub fn vphp_wrap_routegroup_any_named(ptr voidptr, ctx vphp.Context) voidptr {
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.any_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_map_named']
+pub fn vphp_wrap_routegroup_map_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    arg_0 := ctx.arg_val(0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg[string](2)
+    arg_3 := ctx.arg_val(3)
+    res := recv.map_named(arg_0, arg_1, arg_2, arg_3)
     return voidptr(res)
 }
 @[export: 'RouteGroup_handlers']
@@ -426,6 +479,40 @@ pub fn vphp_wrap_vslimrequest_has_query(ptr voidptr, ctx vphp.Context)  {
     arg_0 := ctx.arg[string](0)
     res := recv.has_query(arg_0)
     ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_input']
+pub fn vphp_wrap_vslimrequest_input(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.input(arg_0)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_input_or']
+pub fn vphp_wrap_vslimrequest_input_or(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.input_or(arg_0, arg_1)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_has_input']
+pub fn vphp_wrap_vslimrequest_has_input(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.has_input(arg_0)
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_all_inputs']
+pub fn vphp_wrap_vslimrequest_all_inputs(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.all_inputs()
+    ctx.return_val[map[string]string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_parsed_body']
+pub fn vphp_wrap_vslimrequest_parsed_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    res := recv.parsed_body()
+    ctx.return_val[map[string]string](res)
 }
 @[export: 'vphp_wrap_VSlimRequest_query_all']
 pub fn vphp_wrap_vslimrequest_query_all(ptr voidptr, ctx vphp.Context)  {
@@ -868,6 +955,25 @@ pub fn vphp_wrap_vslimapp_set_base_path(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.set_base_path(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_has_container']
+pub fn vphp_wrap_vslimapp_has_container(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    res := recv.has_container()
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimApp_set_container']
+pub fn vphp_wrap_vslimapp_set_container(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := unsafe { &VSlimContainer(ctx.arg_raw_obj(0)) }
+    res := recv.set_container(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_container']
+pub fn vphp_wrap_vslimapp_container(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    res := recv.container()
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_group']
 pub fn vphp_wrap_vslimapp_group(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
@@ -930,6 +1036,22 @@ pub fn vphp_wrap_vslimapp_put(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.put(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_head']
+pub fn vphp_wrap_vslimapp_head(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.head(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_options']
+pub fn vphp_wrap_vslimapp_options(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.options(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_patch']
 pub fn vphp_wrap_vslimapp_patch(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
@@ -952,6 +1074,15 @@ pub fn vphp_wrap_vslimapp_any(ptr voidptr, ctx vphp.Context) voidptr {
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.any(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_map']
+pub fn vphp_wrap_vslimapp_map(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.map(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_get_named']
@@ -981,6 +1112,24 @@ pub fn vphp_wrap_vslimapp_put_named(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.put_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_head_named']
+pub fn vphp_wrap_vslimapp_head_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.head_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_options_named']
+pub fn vphp_wrap_vslimapp_options_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.options_named(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_patch_named']
 pub fn vphp_wrap_vslimapp_patch_named(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
@@ -1008,6 +1157,16 @@ pub fn vphp_wrap_vslimapp_any_named(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.any_named(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_map_named']
+pub fn vphp_wrap_vslimapp_map_named(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg[string](2)
+    arg_3 := ctx.arg_val(3)
+    res := recv.map_named(arg_0, arg_1, arg_2, arg_3)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_middleware']
 pub fn vphp_wrap_vslimapp_middleware(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
@@ -1027,6 +1186,34 @@ pub fn vphp_wrap_vslimapp_after(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
     arg_0 := ctx.arg_val(0)
     res := recv.after(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_set_not_found_handler']
+pub fn vphp_wrap_vslimapp_set_not_found_handler(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_not_found_handler(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_not_found']
+pub fn vphp_wrap_vslimapp_not_found(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.not_found(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_set_error_handler']
+pub fn vphp_wrap_vslimapp_set_error_handler(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.set_error_handler(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_error']
+pub fn vphp_wrap_vslimapp_error(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg_val(0)
+    res := recv.error(arg_0)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_url_for']
@@ -1083,6 +1270,32 @@ pub fn vphp_wrap_vslimapp_redirect_to_query(ptr voidptr, ctx vphp.Context) voidp
     arg_2 := ctx.arg_val(2)
     res := recv.redirect_to_query(arg_0, arg_1, arg_2)
     return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_route_count']
+pub fn vphp_wrap_vslimapp_route_count(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    res := recv.route_count()
+    ctx.return_val[int](res)
+}
+@[export: 'vphp_wrap_VSlimApp_route_names']
+pub fn vphp_wrap_vslimapp_route_names(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    res := recv.route_names()
+    ctx.return_val[[]string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_has_route_name']
+pub fn vphp_wrap_vslimapp_has_route_name(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.has_route_name(arg_0)
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimApp_allowed_methods_for']
+pub fn vphp_wrap_vslimapp_allowed_methods_for(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.allowed_methods_for(arg_0)
+    ctx.return_val[[]string](res)
 }
 @[export: 'VSlimApp_handlers']
 pub fn vslimapp_handlers() voidptr {
@@ -1247,5 +1460,11 @@ fn vphp_wrap_vslim_demo_dispatch(ctx vphp.Context) {
 fn vphp_wrap_vslim_response_headers(ctx vphp.Context) {
     arg_0 := ctx
     vslim_response_headers(arg_0)
+}
+
+@[export: 'vphp_wrap_vslim_middleware_next']
+fn vphp_wrap_vslim_middleware_next(ctx vphp.Context) {
+    arg_0 := ctx
+    vslim_middleware_next(arg_0)
 }
 

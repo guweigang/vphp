@@ -1,10 +1,14 @@
 # vslim
 
-`vslim` 是一个独立于 `v_php_ext` 的示例扩展，用来验证一条更清晰的路线：
+`vslim` 是一个面向 PHP 开发者提供 Slim-inspired API。
+
+它可以独立对接外部生态（ORM、中间件、PSR 接口等），不依赖 `vhttpd` 才能使用。
+
+当前仓库同时提供 `vhttpd`，用于演示可选的 HTTP runtime 对接路径。
 
 - `vphp` 提供 Zend binding、编译器和 runtime
-- `vslim` 提供面向 PHP 开发者的 Slim-inspired 框架 API
-- `vhttpd` 提供 HTTP runtime，并且**尽量直接复用 `veb`**
+- `vslim` 提供框架层 API（路由、request/response、hook、容器）
+- `vhttpd` 提供独立的 HTTP runtime（可选集成）
 
 一句话说：
 
@@ -18,17 +22,16 @@
   - 只做 PHP <-> V bridge、编译器和 runtime
   - 不承载 HTTP 通用能力
 
-- `vhttpd`
-  - 尽量直接站在 `veb` 上
-  - 优先使用 `veb.Context`、`http.Request`、`urllib`、`http.Cookie`
-  - 不重复实现 HTTP 解析和 server lifecycle
-
 - `vslim`
   - 只做 framework layer
   - 路由、middleware、request/response facade、reverse routing
   - 不把自己做成第二个 runtime
 
-## 四层结构
+- `PHP 生态层`
+  - ORM、中间件、PSR 接口、第三方包通过 Composer 接入
+  - `vslim` 作为框架扩展与其协作，不绑定特定 HTTP runtime
+
+## 可选联动结构（示例）
 
 ```mermaid
 flowchart LR
@@ -41,7 +44,7 @@ flowchart LR
 - `veb`
   - HTTP/runtime 源头
 - `vhttpd`
-  - 贴着 `veb` 做 transport 和 worker forwarding
+  - 独立 runtime，可选作为 `vslim` 的前置入口
 - `php-worker`
   - PHP userland 与 PSR-7 边界
 - `vslim`
@@ -172,9 +175,9 @@ $container->factory('clock', fn () => new DateTimeImmutable('now'));
 echo $container->get('app.name');
 ```
 
-## 与 vhttpd 的交互模型
+## 可选与 vhttpd 的交互模型
 
-推荐的交互边界是：
+如果你选择 `vhttpd` 作为 runtime，推荐交互边界是：
 
 ```text
 Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
@@ -376,22 +379,24 @@ echo $redirect->header('location');
 
 - `before()` 用于请求进入 route handler 之前的短路逻辑
 - `after()` 用于基于 `VSlim\Response` 做统一收口
-- `middleware()` 仍然可用，但第一版只是 `before()` 的别名
-- group 也支持 `before()` / `after()`
+- `middleware()` 是独立链路，签名为 `function (VSlim\Request $req, callable $next)`
+- group 也支持 `before()` / `after()` / `middleware()`
 
 生命周期返回约定：
 
 - `before()` 返回 `null`：继续执行后续 hook / route handler
 - `before()` 返回 `VSlim\Response` / `array` / `string`：立即 short-circuit，并继续进入 `after()`
+- `middleware()` 必须返回 `VSlim\Response` / `array` / `string`（可直接 `return $next($req)`）
+- `middleware()` 返回 `VSlim\Response` / `array` / `string`：立即 short-circuit，并继续进入 `after()`
 - `after()` 返回 `null`：保留当前响应
 - `after()` 返回 `VSlim\Response` / `array` / `string`：替换当前响应
-- `before()/route/after()` 中直接抛出的 PHP 异常：原样向外冒泡
+- `before()/middleware()/route/after()` 中直接抛出的 PHP 异常：原样向外冒泡
 - hook 或 route 返回无法归一化的值：收敛成 `500 Invalid route response`
 
 执行顺序：
 
 ```text
-app before -> matching group before -> route -> app after -> matching group after
+app before -> matching group before -> app middleware -> matching group middleware -> route/not-found -> app after -> matching group after
 ```
 
 这个顺序已经由测试固定：
@@ -496,14 +501,28 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 
 ### `VSlim\App`
 
+- route handler accepts:
+  - callable
+  - container service id (`string`, resolved via `VSlim\Container`)
+  - class name string (`string`, auto-instantiated with no-arg constructor when service missing)
+  - `[service_id]` array (service callable / `__invoke`)
+  - `[service_id, method]` array (resolved via `VSlim\Container`)
 - app builder：
-  - `get/post/put/patch/delete/any`
-  - `get_named/post_named/...`
+  - `get/post/put/patch/delete/head/options/any`
+  - `map(...)`
+  - `get_named/post_named/put_named/patch_named/delete_named/head_named/options_named/any_named`
+  - `map_named(...)`
   - `group(...)`
 - lifecycle：
   - `before(...)`
   - `after(...)`
-  - `middleware(...)` (`before()` 的别名)
+  - `middleware(...)` (独立 middleware 链，支持 `$next`)
+  - `set_not_found_handler(...)` / `not_found(...)`
+  - `set_error_handler(...)` / `error(...)`
+- container：
+  - `has_container()`
+  - `container()` (lazy create `VSlim\Container`)
+  - `set_container(VSlim\Container $container)`
 - dispatch：
   - `dispatch(...)`
   - `dispatch_body(...)`
@@ -515,6 +534,11 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `url_for_query_abs(...)`
   - `redirect_to(...)`
   - `redirect_to_query(...)`
+- route metadata：
+  - `route_count()`
+  - `route_names()`
+  - `has_route_name(...)`
+  - `allowed_methods_for(...)`
 
 ### `VSlim\Request`
 

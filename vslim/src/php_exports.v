@@ -40,3 +40,26 @@ fn vslim_response_headers(ctx vphp.Context) {
 	}
 	ctx.return_map(map[string]string{})
 }
+
+@[php_function]
+fn vslim_middleware_next(ctx vphp.Context) {
+	if ctx.num_args() < 1 {
+		ctx.return_map({
+			'status': '500'
+			'body': 'Middleware next requires a VSlim\\Request argument'
+			'content_type': 'text/plain; charset=utf-8'
+		})
+		return
+	}
+	req_payload := ctx.arg_raw(0)
+	raw := invoke_active_middleware_next(req_payload)
+	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
+		ctx.return_map({
+			'status': '500'
+			'body': 'Middleware chain is not initialized'
+			'content_type': 'text/plain; charset=utf-8'
+		})
+		return
+	}
+	ctx.return_zval(raw)
+}
