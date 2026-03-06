@@ -9,7 +9,8 @@ event_log = "/tmp/vhttpd_laravel.events.ndjson"
 [worker]
 autostart = true
 read_timeout_ms = 3000
-socket = "/tmp/vslim_laravel.sock"
+pool_size = 4
+socket_prefix = "/tmp/vslim_laravel_worker"
 cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php"
 
 [worker.env]
