@@ -24,6 +24,7 @@ struct WorkerConfig {
 	pool_size               int      = 1 @[toml: 'pool_size']
 	socket_prefix           string   @[toml: 'socket_prefix']
 	sockets                 []string
+	env                     map[string]string
 }
 
 struct AdminConfig {

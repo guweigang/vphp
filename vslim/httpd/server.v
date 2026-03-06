@@ -41,6 +41,7 @@ fn run_server(args []string) {
 		worker_read_timeout_ms: worker_read_timeout_ms
 		worker_autostart: worker_autostart
 		worker_cmd: worker_cmd
+		worker_env: cfg.worker.env.clone()
 		worker_workdir: workdir
 		worker_restart_backoff_ms: worker_restart_backoff_ms
 		worker_restart_backoff_max_ms: worker_restart_backoff_max_ms
@@ -53,7 +54,7 @@ fn run_server(args []string) {
 	}
 
 	if worker_autostart {
-		app.managed_workers = start_worker_pool(worker_cmd, worker_sockets, workdir) or {
+		app.managed_workers = start_worker_pool(worker_cmd, app.worker_env, worker_sockets, workdir) or {
 			eprintln('worker start failed: ${err}')
 			return
 		}

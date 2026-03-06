@@ -10,7 +10,10 @@ event_log = "/tmp/vhttpd_hello.events.ndjson"
 autostart = true
 read_timeout_ms = 3000
 socket = "/tmp/vslim_hello.sock"
-cmd = "VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_hello.sock"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_hello.sock"
+
+[worker.env]
+VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php"
 
 [admin]
 host = "127.0.0.1"

@@ -30,6 +30,7 @@ make build vhttpd
 - `symfony.toml` / `laravel.toml` 需要先安装各自 `vendor` 依赖
 - `wordpress.toml` 需要把 `VSLIM_WP_ROOT=/ABS/PATH/TO/WORDPRESS` 改成真实路径
 - `ollama-proxy.toml` 里 `OLLAMA_CHAT_URL / OLLAMA_MODEL / OLLAMA_API_KEY` 可按需改
+- 这些变量都在 `[worker.env]`，会传给 php-worker，可在 PHP 里直接 `getenv('KEY')`
 
 ## 快速开始（VSlim 原生）
 

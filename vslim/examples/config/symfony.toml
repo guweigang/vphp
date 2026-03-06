@@ -10,7 +10,10 @@ event_log = "/tmp/vhttpd_symfony.events.ndjson"
 autostart = true
 read_timeout_ms = 3000
 socket = "/tmp/vslim_symfony.sock"
-cmd = "VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/symfony/app.php php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_symfony.sock"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_symfony.sock"
+
+[worker.env]
+VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/symfony/app.php"
 
 [admin]
 host = "127.0.0.1"

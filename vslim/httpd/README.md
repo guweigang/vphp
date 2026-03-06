@@ -112,6 +112,10 @@ restart_backoff_ms = 500
 restart_backoff_max_ms = 8000
 cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket {socket}"
 
+[worker.env]
+VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php"
+APP_ENV = "dev"
+
 [admin]
 host = "127.0.0.1"
 port = 19981
@@ -123,6 +127,8 @@ Run with config:
 ```bash
 ./vhttpd --config /Users/guweigang/Source/vphpext/vslim/httpd/vhttpd.toml
 ```
+
+`[worker.env]` entries are injected into the php-worker process environment, so they are readable via `getenv()` in PHP.
 
 ### Managed worker mode
 

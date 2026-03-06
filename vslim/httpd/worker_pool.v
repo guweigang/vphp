@@ -8,6 +8,7 @@ struct ManagedWorker {
 	id          int
 	socket_path string
 	worker_cmd  string
+	worker_env  map[string]string
 mut:
 	proc          &os.Process = unsafe { nil }
 	restart_count int
@@ -63,11 +64,21 @@ fn cmd_with_socket(worker_cmd string, worker_socket string, pool_size int) !stri
 	return worker_cmd
 }
 
-fn start_managed_worker(id int, worker_cmd string, worker_socket string, workdir string, pool_size int) !ManagedWorker {
+fn merge_worker_env(base map[string]string, extra map[string]string) map[string]string {
+	mut merged := base.clone()
+	for k, v in extra {
+		merged[k] = v
+	}
+	return merged
+}
+
+fn start_managed_worker(id int, worker_cmd string, worker_env map[string]string, worker_socket string, workdir string, pool_size int) !ManagedWorker {
 	cmd := cmd_with_socket(worker_cmd, worker_socket, pool_size)!
-	cmd_with_parent := 'VHTTPD_PARENT_PID=${os.getpid()} ${cmd}'
+	mut merged_env := merge_worker_env(os.environ(), worker_env)
+	merged_env['VHTTPD_PARENT_PID'] = '${os.getpid()}'
 	mut proc := os.new_process('/bin/sh')
-	proc.set_args(['-lc', cmd_with_parent])
+	proc.set_args(['-lc', cmd])
+	proc.set_environment(merged_env)
 	proc.set_work_folder(workdir)
 	proc.use_pgroup = true
 	proc.run()
@@ -75,7 +86,8 @@ fn start_managed_worker(id int, worker_cmd string, worker_socket string, workdir
 	return ManagedWorker{
 		id: id
 		socket_path: worker_socket
-		worker_cmd: cmd_with_parent
+		worker_cmd: cmd
+		worker_env: merged_env
 		proc: proc
 		last_exit_ts: 0
 		next_retry_ts: 0
@@ -153,13 +165,13 @@ fn resolve_worker_sockets_with_defaults(args []string, default_worker_socket str
 	return sockets
 }
 
-fn start_worker_pool(worker_cmd string, worker_sockets []string, workdir string) ![]ManagedWorker {
+fn start_worker_pool(worker_cmd string, worker_env map[string]string, worker_sockets []string, workdir string) ![]ManagedWorker {
 	if worker_sockets.len == 0 {
 		return []ManagedWorker{}
 	}
 	mut workers := []ManagedWorker{}
 	for i, socket_path in worker_sockets {
-		worker := start_managed_worker(i, worker_cmd, socket_path, workdir, worker_sockets.len)!
+		worker := start_managed_worker(i, worker_cmd, worker_env, socket_path, workdir, worker_sockets.len)!
 		workers << worker
 	}
 	return workers
@@ -196,6 +208,7 @@ fn (mut app App) ensure_worker_slot(idx int) {
 	delay_ms := restart_backoff_ms(w.restart_count, app.worker_restart_backoff_ms, app.worker_restart_backoff_max_ms)
 	mut proc := os.new_process('/bin/sh')
 	proc.set_args(['-lc', w.worker_cmd])
+	proc.set_environment(w.worker_env)
 	proc.set_work_folder(app.worker_workdir)
 	proc.use_pgroup = true
 	proc.run()
@@ -253,6 +266,7 @@ fn (mut app App) restart_worker_slot_now(idx int, reason string) {
 	delay_ms := restart_backoff_ms(w.restart_count, app.worker_restart_backoff_ms, app.worker_restart_backoff_max_ms)
 	mut proc := os.new_process('/bin/sh')
 	proc.set_args(['-lc', w.worker_cmd])
+	proc.set_environment(w.worker_env)
 	proc.set_work_folder(app.worker_workdir)
 	proc.use_pgroup = true
 	proc.run()

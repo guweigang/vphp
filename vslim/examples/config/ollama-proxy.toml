@@ -10,7 +10,13 @@ event_log = "/tmp/vhttpd_ollama_proxy.events.ndjson"
 autostart = true
 read_timeout_ms = 60000
 socket = "/tmp/vslim_ollama_proxy.sock"
-cmd = "VSLIM_HTTPD_APP=/Users/guweigang/Source/vphpext/vslim/examples/ollama-proxy-app.php OLLAMA_CHAT_URL=http://localhost:11434/api/chat OLLAMA_MODEL=qwen2.5:7b-instruct OLLAMA_API_KEY= php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_ollama_proxy.sock"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket /tmp/vslim_ollama_proxy.sock"
+
+[worker.env]
+VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/ollama-proxy-app.php"
+OLLAMA_CHAT_URL = "http://localhost:11434/api/chat"
+OLLAMA_MODEL = "qwen2.5:7b-instruct"
+OLLAMA_API_KEY = ""
 
 [admin]
 host = "127.0.0.1"

@@ -28,6 +28,7 @@ pub mut:
 	worker_rr_index        int
 	worker_autostart       bool
 	worker_cmd             string
+	worker_env             map[string]string
 	worker_workdir         string
 	worker_restart_backoff_ms int
 	worker_restart_backoff_max_ms int

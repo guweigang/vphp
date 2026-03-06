@@ -16,6 +16,9 @@ restart_backoff_ms = 500
 restart_backoff_max_ms = 8000
 cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket {socket}"
 
+[worker.env]
+VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/hello-app.php"
+
 [admin]
 host = "127.0.0.1"
 port = 19981
