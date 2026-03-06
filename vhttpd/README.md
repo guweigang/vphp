@@ -117,6 +117,9 @@ Or use the wrapper:
 
 - load order: defaults -> TOML config -> CLI args
 - precedence: CLI args always override config file values
+- variable expansion in TOML string fields:
+  - `${section.key}` (for example `${server.port}`)
+  - `${env.NAME}` and `${env.NAME:-default}`
 
 Example:
 
@@ -126,13 +129,13 @@ host = "0.0.0.0"
 port = 19881
 
 [files]
-pid_file = "/tmp/vhttpd.pid"
-event_log = "/tmp/vhttpd.events.ndjson"
+pid_file = "/tmp/vhttpd_${server.port}.pid"
+event_log = "/tmp/vhttpd_${server.port}.events.ndjson"
 
 [worker]
 autostart = true
 pool_size = 4
-socket_prefix = "/tmp/vslim_worker"
+socket_prefix = "${env.VHTTPD_SOCKET_PREFIX:-/tmp/vslim_worker}"
 read_timeout_ms = 3000
 max_requests = 5000
 restart_backoff_ms = 500
@@ -148,6 +151,8 @@ host = "127.0.0.1"
 port = 19981
 token = "change-me"
 ```
+
+Note: variable expansion currently applies to TOML string fields.
 
 Run with config:
 

@@ -3,14 +3,14 @@ host = "127.0.0.1"
 port = 19881
 
 [files]
-pid_file = "/tmp/vhttpd.pid"
-event_log = "/tmp/vhttpd.events.ndjson"
+pid_file = "/tmp/vhttpd_${server.port}.pid"
+event_log = "/tmp/vhttpd_${server.port}.events.ndjson"
 
 [worker]
 read_timeout_ms = 3000
 autostart = true
 pool_size = 4
-socket_prefix = "/tmp/vslim_worker"
+socket_prefix = "${env.VHTTPD_SOCKET_PREFIX:-/tmp/vslim_worker}"
 max_requests = 5000
 restart_backoff_ms = 500
 restart_backoff_max_ms = 8000
