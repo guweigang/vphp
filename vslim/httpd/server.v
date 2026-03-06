@@ -6,22 +6,29 @@ import veb
 import veb.request_id
 
 fn run_server(args []string) {
-	host := get_arg(args, '--host', '127.0.0.1')
-	port := get_arg(args, '--port', '18081').int()
-	event_log := get_arg(args, '--event-log', '/tmp/vhttpd.events.ndjson')
-	pid_file := get_arg(args, '--pid-file', '/tmp/vhttpd.pid')
-	worker_read_timeout_ms := get_arg(args, '--worker-read-timeout-ms', '3000').int()
-	worker_cmd := get_arg(args, '--worker-cmd', '')
-	worker_autostart := get_arg(args, '--worker-autostart', '').trim_space() in ['1', 'true', 'yes', 'on']
-	worker_restart_backoff_ms := get_arg(args, '--worker-restart-backoff-ms', '500').int()
-	worker_restart_backoff_max_ms := get_arg(args, '--worker-restart-backoff-max-ms', '8000').int()
-	worker_max_requests := get_arg(args, '--worker-max-requests', '0').int()
-	admin_host_arg := get_arg(args, '--admin-host', '').trim_space()
-	admin_port := get_arg(args, '--admin-port', '0').int()
-	admin_token := get_arg(args, '--admin-token', '')
+	cfg := load_vhttpd_config(args) or {
+		eprintln('config load failed: ${err}')
+		return
+	}
+	host := arg_string_or(args, '--host', cfg.server.host)
+	port := arg_int_or(args, '--port', cfg.server.port)
+	event_log := arg_string_or(args, '--event-log', cfg.files.event_log)
+	pid_file := arg_string_or(args, '--pid-file', cfg.files.pid_file)
+	worker_read_timeout_ms := arg_int_or(args, '--worker-read-timeout-ms', cfg.worker.read_timeout_ms)
+	worker_cmd := arg_string_or(args, '--worker-cmd', cfg.worker.cmd)
+	worker_autostart := arg_bool_or(args, '--worker-autostart', cfg.worker.autostart)
+	worker_restart_backoff_ms := arg_int_or(args, '--worker-restart-backoff-ms',
+		cfg.worker.restart_backoff_ms)
+	worker_restart_backoff_max_ms := arg_int_or(args, '--worker-restart-backoff-max-ms',
+		cfg.worker.restart_backoff_max_ms)
+	worker_max_requests := arg_int_or(args, '--worker-max-requests', cfg.worker.max_requests)
+	admin_host_arg := arg_string_or(args, '--admin-host', cfg.admin.host).trim_space()
+	admin_port := arg_int_or(args, '--admin-port', cfg.admin.port)
+	admin_token := arg_string_or(args, '--admin-token', cfg.admin.token)
 	admin_enabled := admin_port > 0
 	admin_host := if admin_host_arg == '' { '127.0.0.1' } else { admin_host_arg }
-	worker_sockets := resolve_worker_sockets(args)
+	worker_sockets := resolve_worker_sockets_with_defaults(args, cfg.worker.socket, cfg.worker.pool_size,
+		cfg.worker.socket_prefix, cfg.worker.sockets.join(','))
 	workdir := os.getwd()
 
 	os.mkdir_all(os.dir(event_log)) or {}

@@ -84,6 +84,46 @@ v -o vhttpd .
   --worker-read-timeout-ms 3000
 ```
 
+### TOML config (recommended)
+
+`vhttpd` now supports `--config` (and `VHTTPD_CONFIG`) using V's native TOML module.
+
+- load order: defaults -> TOML config -> CLI args
+- precedence: CLI args always override config file values
+
+Example:
+
+```toml
+[server]
+host = "0.0.0.0"
+port = 19881
+
+[files]
+pid_file = "/tmp/vhttpd.pid"
+event_log = "/tmp/vhttpd.events.ndjson"
+
+[worker]
+autostart = true
+pool_size = 4
+socket_prefix = "/tmp/vslim_worker"
+read_timeout_ms = 3000
+max_requests = 5000
+restart_backoff_ms = 500
+restart_backoff_max_ms = 8000
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/httpd/php-worker.php --socket {socket}"
+
+[admin]
+host = "127.0.0.1"
+port = 19981
+token = "change-me"
+```
+
+Run with config:
+
+```bash
+./vhttpd --config /Users/guweigang/Source/vphpext/vslim/httpd/vhttpd.toml
+```
+
 ### Managed worker mode
 
 `vhttpd` can also supervise the PHP worker directly:
