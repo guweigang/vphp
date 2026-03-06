@@ -6,3 +6,4 @@ tests/*.log
 tests/*.out
 tests/*.php
 tests/*.sh
+vhttpd/examples/laravel/vendor/
