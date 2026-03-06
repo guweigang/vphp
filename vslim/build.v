@@ -40,14 +40,6 @@ fn main() {
 		eprintln('❌ 代码生成失败: ${err}')
 		return
 	}
-	generated_bridge := os.join_path(project_root, 'bridge.v')
-	src_bridge := os.join_path(source_dir, 'bridge.v')
-	if os.exists(generated_bridge) {
-		os.cp(generated_bridge, src_bridge) or {
-			eprintln('❌ 同步桥接代码失败: ${err}')
-			return
-		}
-	}
 
 	disabled_warnings := '-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides'
 	brew_path := '/opt/homebrew'

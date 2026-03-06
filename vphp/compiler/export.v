@@ -131,9 +131,23 @@ fn (mut c Compiler) generate_c() ! {
 // 3. 生成 V 胶水代码 (_task_glue.v)
 // ==========================================
 fn (mut c Compiler) generate_v_glue() ! {
-    v_glue := VGenerator{ ext_name: c.ext_name, globals_repr: c.globals_repr }
-    v_code := v_glue.generate(mut c.elements)
-    os.write_file('bridge.v', v_code)!
+	v_glue := VGenerator{
+		ext_name: c.ext_name
+		globals_repr: c.globals_repr
+	}
+	v_code := v_glue.generate(mut c.elements)
+	os.write_file(c.bridge_output_path(), v_code)!
+}
+
+fn (c Compiler) bridge_output_path() string {
+	if c.target_files.len == 0 {
+		return 'bridge.v'
+	}
+	target_dir := os.dir(c.target_files[0])
+	if target_dir == '' {
+		return 'bridge.v'
+	}
+	return os.join_path(target_dir, 'bridge.v')
 }
 
 // ==========================================
