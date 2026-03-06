@@ -375,6 +375,7 @@ Composer package:
 
 - file: [composer.json](/Users/guweigang/Source/vphpext/vslim/httpd/composer.json)
 - package name: `vphpext/vhttpd`
+- dedicated Packagist root (recommended): [php-package](/Users/guweigang/Source/vphpext/vslim/httpd/php-package) with [php-package/composer.json](/Users/guweigang/Source/vphpext/vslim/httpd/php-package/composer.json)
 
 Primary classes:
 
