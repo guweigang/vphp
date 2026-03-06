@@ -19,6 +19,7 @@ The design rule is:
 - Failure/timeout model: [failure_model.md](/Users/guweigang/Source/vphpext/vhttpd/docs/failure_model.md)
 - Worker transport contract: [transport_contract.md](/Users/guweigang/Source/vphpext/vhttpd/docs/transport_contract.md)
 - MVP 1.0 operations runbook (TOML-first): [MVP_1_0_RUNBOOK.md](/Users/guweigang/Source/vphpext/vhttpd/docs/MVP_1_0_RUNBOOK.md)
+- veb reuse roadmap (1.1): [VEB_REUSE_1_1_PLAN.md](/Users/guweigang/Source/vphpext/vhttpd/docs/VEB_REUSE_1_1_PLAN.md)
 - Binary build workflow: [vhttpd-binaries.yml](/Users/guweigang/Source/vphpext/.github/workflows/vhttpd-binaries.yml)
 
 ## Why vhttpd uses veb but vslim keeps its own router
