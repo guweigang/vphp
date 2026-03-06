@@ -400,7 +400,7 @@ make test
 
 HTTP runtime 相关文件现在在：
 
-- [/Users/guweigang/Source/vphpext/vslim/psr7_bridge.md](/Users/guweigang/Source/vphpext/vslim/psr7_bridge.md)
+- [/Users/guweigang/Source/vphpext/vslim/docs/psr7_bridge.md](/Users/guweigang/Source/vphpext/vslim/docs/psr7_bridge.md)
 - [/Users/guweigang/Source/vphpext/vhttpd/src/main.v](/Users/guweigang/Source/vphpext/vhttpd/src/main.v)
 - [/Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php](/Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php)
 - [/Users/guweigang/Source/vphpext/vhttpd/README.md](/Users/guweigang/Source/vphpext/vhttpd/README.md)
@@ -583,4 +583,4 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 
 更细的范围说明见：
 
-- [/Users/guweigang/Source/vphpext/vslim/release_v1.md](/Users/guweigang/Source/vphpext/vslim/release_v1.md)
+- [/Users/guweigang/Source/vphpext/vslim/docs/release_v1.md](/Users/guweigang/Source/vphpext/vslim/docs/release_v1.md)
