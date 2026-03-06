@@ -176,18 +176,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bundle="vhttpd-${{ matrix.target }}"
-          mkdir -p "$bundle"
-          cp dist/vhttpd "$bundle/"
-          cp dist/vslim.so "$bundle/"
-          cp vhttpd/README.md "$bundle/README.md"
-          tar -czf "$bundle.tar.gz" "$bundle"
+          vhttpd_bundle="vhttpd-${{ matrix.target }}"
+          vslim_bundle="vslim-${{ matrix.target }}"
+
+          mkdir -p "$vhttpd_bundle" "$vslim_bundle"
+          cp dist/vhttpd "$vhttpd_bundle/"
+          cp vhttpd/README.md "$vhttpd_bundle/README.md"
+          cp dist/vslim.so "$vslim_bundle/"
+
+          tar -czf "$vhttpd_bundle.tar.gz" "$vhttpd_bundle"
+          tar -czf "$vslim_bundle.tar.gz" "$vslim_bundle"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vhttpd-${{ matrix.target }}
-          path: vhttpd-${{ matrix.target }}.tar.gz
+          name: bundles-${{ matrix.target }}
+          path: |
+            vhttpd-${{ matrix.target }}.tar.gz
+            vslim-${{ matrix.target }}.tar.gz
           if-no-files-found: error
 
   release:
@@ -227,9 +233,9 @@ jobs:
           - macos-amd64
           - macos-arm64
 
-          Each tarball includes:
-          - `vhttpd`
-          - `vslim.so`
+          Published tarballs:
+          - `vhttpd-<target>.tar.gz` (contains `vhttpd`)
+          - `vslim-<target>.tar.gz` (contains `vslim.so`)
 
           Runtime dependency:
           - PHP 8.5.3 (ABI-compatible runtime)
