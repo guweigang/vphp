@@ -19,7 +19,7 @@ The design rule is:
 - Failure/timeout model: [failure_model.md](/Users/guweigang/Source/vphpext/vhttpd/docs/failure_model.md)
 - Worker transport contract: [transport_contract.md](/Users/guweigang/Source/vphpext/vhttpd/docs/transport_contract.md)
 - MVP 1.0 operations runbook (TOML-first): [MVP_1_0_RUNBOOK.md](/Users/guweigang/Source/vphpext/vhttpd/docs/MVP_1_0_RUNBOOK.md)
-- Docker usage: [docker/README.md](/Users/guweigang/Source/vphpext/vhttpd/docker/README.md)
+- Binary build workflow: [vhttpd-binaries.yml](/Users/guweigang/Source/vphpext/.github/workflows/vhttpd-binaries.yml)
 
 ## Why vhttpd uses veb but vslim keeps its own router
 
@@ -77,29 +77,17 @@ cd vhttpd
 make vhttpd
 ```
 
-## Docker (developer-first)
+## CI Binaries
 
-Build and run with containerized toolchain/runtime:
-current Dockerfile pins to official `php:8.5.3-cli-bookworm` and uses a multi-stage build for a cleaner runtime image.
+GitHub Actions can build direct executables for:
 
-```bash
-cd /Users/guweigang/Source/vphpext
-docker build -t vhttpd-dev:latest -f /Users/guweigang/Source/vphpext/vhttpd/docker/Dockerfile .
-docker run --rm -p 19881:19881 -p 19981:19981 \
-  vhttpd-dev:latest \
-  --config /app/vhttpd/docker/config/hello.toml
-```
+- Linux (`linux-amd64`)
+- macOS (`macos-amd64`, `macos-arm64`)
 
-Run as a CLI command from this repo:
+Workflow file:
 
-```bash
-bash /Users/guweigang/Source/vphpext/vhttpd/docker/run.sh --help
-```
-
-Or use the wrapper:
-
-```bash
-/Users/guweigang/Source/vphpext/vhttpd/docker/vhttpd --config /app/vhttpd/docker/config/hello.toml
+```text
+.github/workflows/vhttpd-binaries.yml
 ```
 
 ## Run
