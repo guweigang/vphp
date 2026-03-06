@@ -140,7 +140,7 @@ read_timeout_ms = 3000
 max_requests = 5000
 restart_backoff_ms = 500
 restart_backoff_max_ms = 8000
-cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php --socket {socket}"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php"
 
 [worker.env]
 VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vhttpd/examples/hello-app.php"
@@ -178,7 +178,7 @@ Shorthand is also supported:
   --event-log /tmp/vhttpd.events.ndjson \
   --worker-socket /tmp/vslim_worker.sock \
   --worker-autostart 1 \
-  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php --socket /tmp/vslim_worker.sock'
+  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php'
 ```
 
 This gives you a single command that boots:
@@ -203,7 +203,8 @@ Key flags:
 - `--admin-port 19981` (control plane port; when enabled, `/admin/*` is removed from data plane port)
 - `--admin-token your-secret` (optional header/query token for admin plane)
 
-When `--worker-pool-size > 1`, use `{socket}` placeholder in `--worker-cmd`:
+When `--worker-pool-size > 1`, `vhttpd` auto-injects `--socket` into `--worker-cmd` when absent.
+`{socket}` placeholder is optional and only needed if you want explicit inline control.
 
 ```bash
 ./vhttpd --host 127.0.0.1 --port 19880 \
@@ -213,7 +214,7 @@ When `--worker-pool-size > 1`, use `{socket}` placeholder in `--worker-cmd`:
   --worker-socket-prefix /tmp/vslim_worker \
   --worker-autostart 1 \
   --worker-max-requests 5000 \
-  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php --socket {socket}'
+  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php'
 ```
 
 Endpoints:
@@ -251,7 +252,7 @@ curl --noproxy '*' -N "http://127.0.0.1:19881/events/stream?count=2&interval_ms=
   --admin-host 127.0.0.1 --admin-port 19981 \
   --admin-token change-me \
   --worker-pool-size 4 --worker-socket-prefix /tmp/vslim_worker --worker-autostart 1 \
-  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php --socket {socket}'
+  --worker-cmd 'php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php'
 
 curl --noproxy '*' -s -H 'x-vhttpd-admin-token: change-me' http://127.0.0.1:19981/admin/workers
 ```

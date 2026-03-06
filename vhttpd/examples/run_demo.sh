@@ -118,7 +118,7 @@ make -C "${ROOT}" vhttpd >/dev/null
   --event-log "${EVENT_LOG}" \
   --worker-socket "${SOCKET}" \
   --worker-autostart 1 \
-  --worker-cmd "${WORKER_ENV} VSLIM_HTTPD_APP='${APP_BOOTSTRAP}' php -d extension='${VSLIM_ROOT}/vslim.so' '${ROOT}/php/php-worker.php' --socket '${SOCKET}'" \
+  --worker-cmd "${WORKER_ENV} VSLIM_HTTPD_APP='${APP_BOOTSTRAP}' php -d extension='${VSLIM_ROOT}/vslim.so' '${ROOT}/php/php-worker.php'" \
   >"${STDOUT_LOG}" 2>&1 &
 
 if ! wait_ready; then

@@ -37,7 +37,7 @@ q() {
   printf '%q' "$1"
 }
 
-worker_cmd="VSLIM_HTTPD_APP=$(q "$app_bootstrap") php -d extension=$(q "$VSLIM_SO") $(q "$WORKER_PHP") --socket {socket}"
+worker_cmd="VSLIM_HTTPD_APP=$(q "$app_bootstrap") php -d extension=$(q "$VSLIM_SO") $(q "$WORKER_PHP")"
 
 server_pid=""
 

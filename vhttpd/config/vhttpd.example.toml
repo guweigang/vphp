@@ -14,7 +14,7 @@ socket_prefix = "${env.VHTTPD_SOCKET_PREFIX:-/tmp/vslim_worker}"
 max_requests = 5000
 restart_backoff_ms = 500
 restart_backoff_max_ms = 8000
-cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php --socket {socket}"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vhttpd/php/php-worker.php"
 
 [worker.env]
 VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vhttpd/examples/hello-app.php"

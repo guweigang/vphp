@@ -56,7 +56,7 @@ fn cmd_with_socket(worker_cmd string, worker_socket string, pool_size int) !stri
 		return worker_cmd.replace('{socket}', worker_socket)
 	}
 	if pool_size > 1 && worker_cmd.contains('--socket') {
-		return error('worker-cmd for pool mode must use {socket} placeholder when --socket is present')
+		return error('worker-cmd for pool mode should omit --socket (auto-injected) or use {socket} placeholder')
 	}
 	if !worker_cmd.contains('--socket') {
 		return '${worker_cmd} --socket ${worker_socket}'
