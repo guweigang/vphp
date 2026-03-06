@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace VHttpd\DbGateway;
 
 use RuntimeException;
+use VHttpd\PhpWorker\Client as WorkerClient;
 
 /**
  * PDO-like client for vhttpd DB gateway over unix socket frames.
@@ -169,8 +170,26 @@ final class PdoLikeClient
             'args' => $args,
         ];
 
-        $this->writeFrame($request);
-        $resp = $this->readFrame();
+        if (!is_resource($this->conn)) {
+            throw new RuntimeException('connection_not_open');
+        }
+
+        $json = json_encode($request, JSON_UNESCAPED_UNICODE);
+        if (!is_string($json)) {
+            throw new RuntimeException('json_encode_failed');
+        }
+
+        WorkerClient::writeFrame($this->conn, $json);
+        $raw = WorkerClient::readFrame($this->conn);
+        if (!is_string($raw) || $raw === '') {
+            $this->close();
+            throw new RuntimeException('db_gateway_empty_response');
+        }
+
+        $resp = json_decode($raw, true);
+        if (!is_array($resp)) {
+            throw new RuntimeException('db_gateway_invalid_response_json');
+        }
 
         $ok = (bool) ($resp['ok'] ?? false);
         if ($ok) {
@@ -182,72 +201,6 @@ final class PdoLikeClient
         $code = (string) ($err['code'] ?? 'DB_GATEWAY_ERROR');
         $message = (string) ($err['message'] ?? 'db gateway call failed');
         throw new RuntimeException("{$code}: {$message}");
-    }
-
-    /** @param array<string,mixed> $payload */
-    private function writeFrame(array $payload): void
-    {
-        if (!is_resource($this->conn)) {
-            throw new RuntimeException('connection_not_open');
-        }
-
-        $json = json_encode($payload, JSON_UNESCAPED_UNICODE);
-        if (!is_string($json)) {
-            throw new RuntimeException('json_encode_failed');
-        }
-
-        $packet = pack('N', strlen($json)) . $json;
-        $written = fwrite($this->conn, $packet);
-        if (!is_int($written) || $written !== strlen($packet)) {
-            $this->close();
-            throw new RuntimeException('db_gateway_write_failed');
-        }
-    }
-
-    /** @return array<string,mixed> */
-    private function readFrame(): array
-    {
-        if (!is_resource($this->conn)) {
-            throw new RuntimeException('connection_not_open');
-        }
-
-        $header = $this->readExactly(4);
-        $lenInfo = unpack('Nlen', $header);
-        $size = (int) ($lenInfo['len'] ?? 0);
-        if ($size <= 0 || $size > 16 * 1024 * 1024) {
-            $this->close();
-            throw new RuntimeException('db_gateway_invalid_frame_size');
-        }
-
-        $raw = $this->readExactly($size);
-        $decoded = json_decode($raw, true);
-        if (!is_array($decoded)) {
-            throw new RuntimeException('db_gateway_invalid_response_json');
-        }
-
-        return $decoded;
-    }
-
-    private function readExactly(int $len): string
-    {
-        if (!is_resource($this->conn)) {
-            throw new RuntimeException('connection_not_open');
-        }
-
-        $buf = '';
-        while (strlen($buf) < $len) {
-            $chunk = fread($this->conn, $len - strlen($buf));
-            if ($chunk === '' || $chunk === false) {
-                $meta = stream_get_meta_data($this->conn);
-                $this->close();
-                if (($meta['timed_out'] ?? false) === true) {
-                    throw new RuntimeException('db_gateway_read_timeout');
-                }
-                throw new RuntimeException('db_gateway_unexpected_eof');
-            }
-            $buf .= $chunk;
-        }
-        return $buf;
     }
 
     /**
