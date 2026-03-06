@@ -35,8 +35,8 @@ Primary classes:
 - `VHttpd\\PhpWorker\\Server`
 - `VHttpd\\PhpWorker\\Client`
 - `VHttpd\\PhpWorker\\StreamResponse`
-- `VHttpd\\DbGateway\\PdoLikeClient` (experimental)
-- `VHttpd\\DbGateway\\Statement` (experimental)
+- `VHttpd\\DbGateway\\PDO` (experimental)
+- `VHttpd\\DbGateway\\PDOStatement` (experimental)
 
 Composer bin entrypoints:
 
@@ -58,12 +58,13 @@ Compatibility aliases are provided for legacy names:
 
 declare(strict_types=1);
 
-use VHttpd\DbGateway\PdoLikeClient;
+use VHttpd\DbGateway\PDO;
 
-$db = new PdoLikeClient('/tmp/vhttpd_db.sock');
+$db = new PDO('/tmp/vhttpd_db.sock');
 $db->ping();
 
-$stmt = $db->query('SELECT id, name FROM users WHERE id = ?', [123]);
+$stmt = $db->prepare('SELECT id, name FROM users WHERE id = ?');
+$stmt->execute([123]);
 $row = $stmt->fetch();
 
 $db->beginTransaction();

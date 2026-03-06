@@ -7,17 +7,7 @@ namespace VHttpd\DbGateway;
 use RuntimeException;
 use VHttpd\PhpWorker\Client as WorkerClient;
 
-/**
- * PDO-like client for vhttpd DB gateway over unix socket frames.
- *
- * Expected request shape:
- * - {"id":"...","op":"db.query|db.execute|db.begin|db.commit|db.rollback","args":{...}}
- *
- * Expected response shape:
- * - {"ok":true,"result":{...}}
- * - {"ok":false,"error":{"code":"...","message":"..."}}
- */
-final class PdoLikeClient
+class PDO
 {
     /** @var resource|null */
     private $conn = null;
@@ -110,28 +100,32 @@ final class PdoLikeClient
         return true;
     }
 
-    public function query(string $sql, array $bindings = [], int $timeoutMs = 1000): Statement
+    public function prepare(string $sql): PDOStatement
     {
-        $args = [
-            'sql' => $sql,
-            'bindings' => array_values($bindings),
-            'timeout_ms' => $timeoutMs,
-        ];
-        if ($this->txId !== null) {
-            $args['tx_id'] = $this->txId;
-        }
+        return new PDOStatement($this, $sql);
+    }
 
-        $result = $this->call('db.query', $args);
-        $rows = $this->normalizeRows($result['rows'] ?? []);
-        return new Statement(
-            $rows,
-            (int) ($result['row_count'] ?? count($rows)),
-            isset($result['last_insert_id']) ? (string) $result['last_insert_id'] : null,
-        );
+    public function query(string $sql, ?array $params = null): PDOStatement
+    {
+        $stmt = $this->prepare($sql);
+        $stmt->execute($params ?? []);
+        return $stmt;
+    }
+
+    public function exec(string $sql, ?array $params = null): int
+    {
+        return $this->execute($sql, $params ?? []);
     }
 
     public function execute(string $sql, array $bindings = [], int $timeoutMs = 1000): int
     {
+        $result = $this->gatewayExecute($sql, $bindings, $timeoutMs);
+        return (int) ($result['affected_rows'] ?? 0);
+    }
+
+    /** @return array<string,mixed> */
+    public function gatewayExecute(string $sql, array $bindings = [], int $timeoutMs = 1000): array
+    {
         $args = [
             'sql' => $sql,
             'bindings' => array_values($bindings),
@@ -140,10 +134,29 @@ final class PdoLikeClient
         if ($this->txId !== null) {
             $args['tx_id'] = $this->txId;
         }
-
         $result = $this->call('db.execute', $args);
         $this->lastInsertId = isset($result['last_insert_id']) ? (string) $result['last_insert_id'] : null;
-        return (int) ($result['affected_rows'] ?? 0);
+        return $result;
+    }
+
+    /** @return array<string,mixed> */
+    public function gatewayQuery(string $sql, array $bindings = [], int $timeoutMs = 1000): array
+    {
+        $args = [
+            'sql' => $sql,
+            'bindings' => array_values($bindings),
+            'timeout_ms' => $timeoutMs,
+        ];
+        if ($this->txId !== null) {
+            $args['tx_id'] = $this->txId;
+        }
+        return $this->call('db.query', $args);
+    }
+
+    public function isQuerySql(string $sql): bool
+    {
+        $prefix = strtoupper(strtok(ltrim($sql), " \t\r\n(") ?: '');
+        return in_array($prefix, ['SELECT', 'SHOW', 'DESCRIBE', 'EXPLAIN', 'WITH', 'PRAGMA'], true);
     }
 
     public function lastInsertId(): ?string
@@ -201,28 +214,5 @@ final class PdoLikeClient
         $code = (string) ($err['code'] ?? 'DB_GATEWAY_ERROR');
         $message = (string) ($err['message'] ?? 'db gateway call failed');
         throw new RuntimeException("{$code}: {$message}");
-    }
-
-    /**
-     * @param mixed $rows
-     * @return list<array<string,mixed>>
-     */
-    private function normalizeRows(mixed $rows): array
-    {
-        if (!is_array($rows)) {
-            return [];
-        }
-        $out = [];
-        foreach ($rows as $row) {
-            if (!is_array($row)) {
-                continue;
-            }
-            $normalized = [];
-            foreach ($row as $k => $v) {
-                $normalized[(string) $k] = $v;
-            }
-            $out[] = $normalized;
-        }
-        return $out;
     }
 }
