@@ -1,5 +1,9 @@
 # vhttpd Docker Usage
 
+Base image is pinned to official `php:8.5.3-cli-bookworm` with a multi-stage build:
+- builder stage compiles `vslim.so` and `vhttpd`
+- runtime stage keeps only runtime dependencies and build artifacts
+
 ## Build image
 
 ```bash

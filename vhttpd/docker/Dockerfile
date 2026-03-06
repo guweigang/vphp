@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM php:8.5.3-cli-bookworm AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -9,11 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     pkg-config \
     make \
-    php-cli \
-    php-dev \
-    php-xml \
-    php-mbstring \
-    php-curl \
     libcjson-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -40,6 +35,22 @@ RUN make -C /app/vslim build \
       $(php-config --libs | sed 's/-lzip//g') \
       -lcjson -fvisibility=default \
     && make -C /app/vhttpd vhttpd
+
+FROM php:8.5.3-cli-bookworm
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcjson1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=builder /app/vhttpd/vhttpd /app/vhttpd/vhttpd
+COPY --from=builder /app/vhttpd/config /app/vhttpd/config
+COPY --from=builder /app/vhttpd/docker/config /app/vhttpd/docker/config
+COPY --from=builder /app/vhttpd/examples /app/vhttpd/examples
+COPY --from=builder /app/vhttpd/php /app/vhttpd/php
+COPY --from=builder /app/vslim/vslim.so /app/vslim/vslim.so
 
 EXPOSE 19881 19981
 

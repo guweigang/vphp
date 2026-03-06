@@ -80,6 +80,7 @@ make vhttpd
 ## Docker (developer-first)
 
 Build and run with containerized toolchain/runtime:
+current Dockerfile pins to official `php:8.5.3-cli-bookworm` and uses a multi-stage build for a cleaner runtime image.
 
 ```bash
 cd /Users/guweigang/Source/vphpext
