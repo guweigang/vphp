@@ -142,16 +142,27 @@ fn run_server(args []string) {
 
 	if worker_autostart {
 		app.managed_workers = start_worker_pool(worker_cmd, app.worker_env, worker_sockets,
-			workdir) or {
-			eprintln('worker start failed: ${err}')
-			return
+			workdir)
+		if app.managed_workers.len == 0 && worker_sockets.len > 0 {
+			eprintln('worker pool is empty after startup; server will stay up and keep retrying')
 		}
-		for w in app.managed_workers {
-			app.emit('worker.started', {
-				'worker_id':     '${w.id}'
-				'socket':        w.socket_path
-				'restart_count': '${w.restart_count}'
-			})
+		for worker in app.managed_workers {
+			mut w := worker
+			if !isnil(w.proc) && w.proc.is_alive() {
+				app.emit('worker.started', {
+					'worker_id':     '${w.id}'
+					'socket':        w.socket_path
+					'restart_count': '${w.restart_count}'
+				})
+			} else {
+				app.emit('worker.restart_scheduled', {
+					'worker_id': '${w.id}'
+					'socket': w.socket_path
+					'restart_count': '${w.restart_count}'
+					'next_retry_ts': '${w.next_retry_ts}'
+					'reason': 'initial_start_failed'
+				})
+			}
 		}
 	}
 

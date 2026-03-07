@@ -18,7 +18,7 @@
   "bin": [
     "bin/php-worker",
     "bin/php-worker-client"
-  },
+  ],
   "suggest": {
     "nyholm/psr7": "PSR-17 factory support",
     "guzzlehttp/psr7": "PSR-17 factory support",

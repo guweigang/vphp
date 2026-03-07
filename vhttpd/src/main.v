@@ -90,6 +90,8 @@ struct WorkerAdminStatus {
 	id               int
 	socket           string
 	alive            bool
+	pid              int
+	rss_kb           i64
 	draining         bool
 	inflight_requests i64
 	served_requests  i64
@@ -568,7 +570,6 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 			'error_class': error_class
 			'error': err_msg
 		})
-		ctx.set_custom_header('x-request-id', req_id) or {}
 		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
 		ctx.res.set_status(http.status_from_int(status))
@@ -587,7 +588,6 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 			'error_class': error_class
 			'error': err_msg
 		})
-		ctx.set_custom_header('x-request-id', req_id) or {}
 		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
 		ctx.res.set_status(http.status_from_int(status))
@@ -607,7 +607,6 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 	write_frame(mut conn, payload) or {
 		err_msg := err.msg()
 		status, error_class := classify_worker_error(err_msg)
-		ctx.set_custom_header('x-request-id', req_id) or {}
 		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
 		ctx.res.set_status(http.status_from_int(status))
@@ -616,7 +615,6 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 	first_raw := read_frame(mut conn) or {
 		err_msg := err.msg()
 		status, error_class := classify_worker_error(err_msg)
-		ctx.set_custom_header('x-request-id', req_id) or {}
 		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 		ctx.set_custom_header('x-vhttpd-error-class', error_class) or {}
 		ctx.res.set_status(http.status_from_int(status))
@@ -631,7 +629,6 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 			req_id, trace_id, start_ms)
 	}
 	resp := json.decode(WorkerResponse, first_raw) or {
-		ctx.set_custom_header('x-request-id', req_id) or {}
 		ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 		ctx.set_custom_header('x-vhttpd-error-class', 'transport_error') or {}
 		ctx.res.set_status(http.status_from_int(502))
@@ -645,7 +642,6 @@ fn proxy_worker_response(mut app App, mut ctx Context, method string, path strin
 		'trace_id': trace_id
 		'duration_ms': '${time.now().unix_milli() - start_ms}'
 	})
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.res.set_status(http.status_from_int(resp.status))
 	apply_worker_headers(mut ctx, resp.headers)
@@ -748,7 +744,6 @@ fn (mut app App) admin_stats_snapshot() AdminRuntimeStats {
 pub fn (mut app App) health(mut ctx Context) veb.Result {
 	req_id := resolve_request_id(ctx, '/health')
 	status, body, _ := dispatch_core('GET', '/health')
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	app.emit('http.request', {
 		'method': 'GET'
 		'path':   '/health'
@@ -765,7 +760,6 @@ pub fn (mut app App) dispatch(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
 	req_id := resolve_request_id(ctx, path)
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	if app.worker_sockets.len > 0 {
 		return proxy_worker_response(mut app, mut ctx, method, path, 'Bad Gateway')
 	}
@@ -791,7 +785,6 @@ pub fn (mut app App) dispatch_head(mut ctx Context) veb.Result {
 	method := ctx.query['method'] or { 'GET' }
 	path := ctx.query['path'] or { '/health' }
 	req_id := resolve_request_id(ctx, path)
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	if app.worker_sockets.len > 0 {
 		return proxy_worker_response(mut app, mut ctx, method, path, '')
 	}
@@ -833,7 +826,6 @@ pub fn (mut app App) events_stream(mut ctx Context) veb.Result {
 	}
 
 	ctx.takeover_conn()
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.set_custom_header('x-accel-buffering', 'no') or {}
 	mut stream := sse.start_connection(mut ctx.Context)
@@ -877,7 +869,6 @@ pub fn (mut app App) admin_workers(mut ctx Context) veb.Result {
 	req_id := resolve_request_id(ctx, path)
 	trace_id := resolve_trace_id(ctx, path)
 	body := json.encode(app.worker_admin_snapshot())
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.set_content_type('application/json; charset=utf-8')
 	app.emit('http.request', {
@@ -900,7 +891,6 @@ pub fn (mut app App) admin_stats(mut ctx Context) veb.Result {
 	req_id := resolve_request_id(ctx, path)
 	trace_id := resolve_trace_id(ctx, path)
 	body := json.encode(app.admin_stats_snapshot())
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.set_content_type('application/json; charset=utf-8')
 	app.emit('http.request', {
@@ -922,7 +912,6 @@ pub fn (mut app App) admin_restart_worker(mut ctx Context) veb.Result {
 	path := if ctx.req.url == '' { '/admin/workers/restart' } else { ctx.req.url }
 	req_id := resolve_request_id(ctx, path)
 	trace_id := resolve_trace_id(ctx, path)
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.set_content_type('application/json; charset=utf-8')
 	id_raw := (ctx.query['id'] or { '' }).trim_space()
@@ -963,7 +952,6 @@ pub fn (mut app App) admin_restart_all_workers(mut ctx Context) veb.Result {
 	path := if ctx.req.url == '' { '/admin/workers/restart/all' } else { ctx.req.url }
 	req_id := resolve_request_id(ctx, path)
 	trace_id := resolve_trace_id(ctx, path)
-	ctx.set_custom_header('x-request-id', req_id) or {}
 	ctx.set_custom_header('x-vhttpd-trace-id', trace_id) or {}
 	ctx.set_content_type('application/json; charset=utf-8')
 	restarted := app.restart_all_workers()

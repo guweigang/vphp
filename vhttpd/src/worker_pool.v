@@ -97,6 +97,23 @@ fn start_managed_worker(id int, worker_cmd string, worker_env map[string]string,
 	}
 }
 
+fn build_managed_worker_slot(id int, worker_cmd string, worker_env map[string]string, worker_socket string, pool_size int) !ManagedWorker {
+	cmd := cmd_with_socket(worker_cmd, worker_socket, pool_size)!
+	mut merged_env := merge_worker_env(os.environ(), worker_env)
+	merged_env['VHTTPD_PARENT_PID'] = '${os.getpid()}'
+	return ManagedWorker{
+		id: id
+		socket_path: worker_socket
+		worker_cmd: cmd
+		worker_env: merged_env
+		last_exit_ts: 0
+		next_retry_ts: 0
+		served_requests: 0
+		inflight_requests: 0
+		draining: false
+	}
+}
+
 fn (mut w ManagedWorker) stop() {
 	if isnil(w.proc) {
 		return
@@ -165,13 +182,25 @@ fn resolve_worker_sockets_with_defaults(args []string, default_worker_socket str
 	return sockets
 }
 
-fn start_worker_pool(worker_cmd string, worker_env map[string]string, worker_sockets []string, workdir string) ![]ManagedWorker {
+fn start_worker_pool(worker_cmd string, worker_env map[string]string, worker_sockets []string, workdir string) []ManagedWorker {
 	if worker_sockets.len == 0 {
 		return []ManagedWorker{}
 	}
 	mut workers := []ManagedWorker{}
 	for i, socket_path in worker_sockets {
-		worker := start_managed_worker(i, worker_cmd, worker_env, socket_path, workdir, worker_sockets.len)!
+		mut slot := build_managed_worker_slot(i, worker_cmd, worker_env, socket_path, worker_sockets.len) or {
+			eprintln('worker slot init failed [${i}] ${socket_path}: ${err.msg()}')
+			continue
+		}
+		worker := start_managed_worker(i, worker_cmd, worker_env, socket_path, workdir, worker_sockets.len) or {
+			now := time.now().unix_milli()
+			slot.restart_count = 1
+			slot.last_exit_ts = now
+			slot.next_retry_ts = now + 500
+			workers << slot
+			eprintln('worker start failed [${i}] ${socket_path}: ${err.msg()}')
+			continue
+		}
 		workers << worker
 	}
 	return workers
@@ -403,16 +432,36 @@ fn connect_any_worker(mut app App) !string {
 }
 
 fn worker_admin_status_from(mut w ManagedWorker) WorkerAdminStatus {
+	pid := if isnil(w.proc) { 0 } else { w.proc.pid }
 	return WorkerAdminStatus{
 		id: w.id
 		socket: w.socket_path
 		alive: if isnil(w.proc) { false } else { w.proc.is_alive() }
+		pid: pid
+		rss_kb: worker_rss_kb(pid)
 		draining: w.draining
 		inflight_requests: w.inflight_requests
 		served_requests: w.served_requests
 		restart_count: w.restart_count
 		next_retry_ts: w.next_retry_ts
 	}
+}
+
+fn worker_rss_kb(pid int) i64 {
+	if pid <= 0 {
+		return 0
+	}
+	// `ps -o rss=` is portable across macOS/Linux and returns RSS in KB.
+	cmd := 'ps -o rss= -p ${pid}'
+	res := os.execute(cmd)
+	if res.exit_code != 0 {
+		return 0
+	}
+	rss_raw := res.output.trim_space()
+	if rss_raw == '' {
+		return 0
+	}
+	return rss_raw.i64()
 }
 
 fn (mut app App) restart_worker_by_id(worker_id int) !WorkerAdminStatus {

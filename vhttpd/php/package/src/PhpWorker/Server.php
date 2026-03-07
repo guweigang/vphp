@@ -44,7 +44,25 @@ final class Server
 
         $this->server = @stream_socket_server($uri, $errno, $errstr);
         if (!is_resource($this->server)) {
+            $extra = '';
+            $transports = @stream_get_transports();
+            if (!is_array($transports) || !in_array('unix', $transports, true)) {
+                $extra = ' (unix transport unavailable in current PHP runtime)';
+            } elseif ($this->socketPath === '') {
+                $extra = ' (empty --socket path)';
+            } elseif (str_starts_with($this->socketPath, '/')) {
+                $dir = dirname($this->socketPath);
+                if (!is_dir($dir)) {
+                    $extra = " (socket directory missing: {$dir})";
+                }
+            }
+            if ($extra === '' && $errstr === '' && $errno === 0) {
+                $extra = ' (runtime refused unix socket creation; verify sandbox/SELinux/AppArmor policy and write permission)';
+            }
             fwrite(STDERR, "worker_start_failed: {$errstr} ({$errno})\n");
+            if ($extra !== '') {
+                fwrite(STDERR, "worker_start_hint:{$extra}\n");
+            }
             exit(1);
         }
 
@@ -62,7 +80,12 @@ final class Server
             if (!is_resource($conn)) {
                 continue;
             }
-            $this->handleConnection($conn);
+            try {
+                $this->handleConnection($conn);
+            } catch (Throwable $e) {
+                fwrite(STDERR, "worker_connection_error: " . $e->getMessage() . "\n");
+                @fclose($conn);
+            }
             if ($this->shouldExitBecauseParentGone()) {
                 break;
             }
@@ -116,7 +139,21 @@ final class Server
                 continue;
             }
 
-            $result = $this->dispatchRequestResult($req);
+            try {
+                $result = $this->dispatchRequestResult($req);
+            } catch (Throwable $fatal) {
+                $id = (string) ($req["id"] ?? "");
+                $safe = $this->res($id, 500, "Internal Server Error", [
+                    "x-worker-error" => $fatal->getMessage(),
+                    "x-worker-error-class" => "worker_runtime_error",
+                    "x-worker-exception" => get_class($fatal),
+                ]);
+                $this->writeFrame(
+                    $conn,
+                    json_encode($safe, JSON_UNESCAPED_UNICODE),
+                );
+                continue;
+            }
             $id = (string) ($req["id"] ?? "");
             if ($result instanceof StreamResponse) {
                 $this->writeStreamResponse($conn, $id, $result);
@@ -179,7 +216,16 @@ final class Server
                 if ($appResult instanceof StreamResponse) {
                     return $appResult;
                 }
-                return $this->normalizeAppResponse($id, $appResult);
+                try {
+                    return $this->normalizeAppResponse($id, $appResult);
+                } catch (Throwable $normalizeError) {
+                    return $this->res($id, 500, "Internal Server Error", [
+                        "x-worker-error" => "Failed to normalize app response: " . $normalizeError->getMessage(),
+                        "x-worker-error-class" => "app_contract_error",
+                        "x-worker-exception" => get_class($normalizeError),
+                        "x-worker-result-type" => is_object($appResult) ? get_class($appResult) : gettype($appResult),
+                    ]);
+                }
             }
 
             if (function_exists("vslim_handle_request")) {
@@ -631,22 +677,37 @@ final class Server
             return $this->res($id, 200, $result);
         }
 
+        if (is_object($result) && $result instanceof VSlim\App) {
+            return $this->res($id, 500, "Internal Server Error", [
+                "x-worker-error" => "App bootstrap returned VSlim\\\\App instance as response",
+                "x-worker-error-class" => "app_contract_error",
+            ]);
+        }
+
         if (is_object($result) && $result instanceof VSlim\Response) {
-            $headers = [];
-            if (function_exists("vslim_response_headers")) {
-                $headers = $this->normalizeHeaderMap((array) vslim_response_headers($result));
+            try {
+                $headers = [];
+                if (function_exists("vslim_response_headers")) {
+                    $headers = $this->normalizeHeaderMap((array) vslim_response_headers($result));
+                }
+                $body = (string) ($result->body ?? "");
+                $contentType =
+                    (string) ($result->content_type ??
+                        ($headers["content-type"] ?? "text/plain; charset=utf-8"));
+                return $this->buildNormalizedResponse(
+                    $id,
+                    (int) ($result->status ?? 200),
+                    $body,
+                    $headers,
+                    $contentType,
+                );
+            } catch (Throwable $e) {
+                return $this->res($id, 500, "Internal Server Error", [
+                    "x-worker-error" => "Invalid VSlim response object: " . $e->getMessage(),
+                    "x-worker-error-class" => "app_contract_error",
+                    "x-worker-exception" => get_class($e),
+                ]);
             }
-            $body = (string) ($result->body ?? "");
-            $contentType =
-                (string) ($result->content_type ??
-                    ($headers["content-type"] ?? "text/plain; charset=utf-8"));
-            return $this->buildNormalizedResponse(
-                $id,
-                (int) ($result->status ?? 200),
-                $body,
-                $headers,
-                $contentType,
-            );
         }
 
         if (

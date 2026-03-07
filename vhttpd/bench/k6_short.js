@@ -2,7 +2,7 @@ import http from "k6/http";
 import { check, sleep } from "k6";
 
 const BASE_URL =
-  __ENV.VHTTPD_BASE_URL || __ENV.BASE_URL || "http://127.0.0.1:19881";
+  __ENV.VHTTPD_BASE_URL || __ENV.BASE_URL || "http://127.0.0.1:19886";
 const PATH =
   __ENV.VHTTPD_BENCH_PATH ||
   __ENV.PATH_UNDER_TEST ||
