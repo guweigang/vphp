@@ -1,7 +1,7 @@
 .PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-self-test demo-verify mvp-check clean
 
 BREW_PATH ?= /opt/homebrew
-DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
+DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides -Wno-unused-value
 PHP_INC := $(shell php-config --includes)
 PHP_LDFLAGS := $(shell php-config --ldflags | awk '{for (i = 1; i <= NF; i++) { t = $$i; if (substr(t,1,2) == "-L") { p = substr(t,3); cmd = "test -d \"" p "\""; if (system(cmd) != 0) continue; } printf "%s ", t; }}')
 PHP_LIBS := $(shell php-config --libs | sed 's/-lzip//g')

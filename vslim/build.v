@@ -59,7 +59,7 @@ fn main() {
 		return
 	}
 
-	disabled_warnings := '-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides'
+	disabled_warnings := '-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides -Wno-unused-value'
 	brew_path := '/opt/homebrew'
 	os.setenv('C_INCLUDE_PATH', '${brew_path}/include/cjson', true)
 
