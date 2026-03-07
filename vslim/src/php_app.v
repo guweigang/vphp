@@ -279,6 +279,18 @@ pub fn (mut app VSlimApp) map(methods vphp.ZVal, pattern string, handler vphp.ZV
 }
 
 @[php_method]
+pub fn (mut app VSlimApp) resource(resource_path string, controller string) &VSlimApp {
+	register_resource_routes(mut app, resource_path, controller, true)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) api_resource(resource_path string, controller string) &VSlimApp {
+	register_resource_routes(mut app, resource_path, controller, false)
+	return app
+}
+
+@[php_method]
 pub fn (mut app VSlimApp) get_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
 	app.add_php_route('GET', name, pattern, handler)
 	return app
@@ -531,6 +543,24 @@ pub fn (group &RouteGroup) map(methods vphp.ZVal, pattern string, handler vphp.Z
 		for method in normalize_methods(vphp.BorrowedZVal.from_zval(methods)) {
 			app.add_php_route(method, '', group.prefixed_pattern(pattern), handler)
 		}
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) resource(resource_path string, controller string) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		register_resource_routes(mut app, group.prefixed_pattern(resource_path), controller, true)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) api_resource(resource_path string, controller string) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		register_resource_routes(mut app, group.prefixed_pattern(resource_path), controller, false)
 	}
 	return group
 }
@@ -1335,6 +1365,69 @@ fn request_with_method(req &VSlimRequest, method string) VSlimRequest {
 		uploaded_files: req.uploaded_files.clone()
 		params: req.params.clone()
 	}
+}
+
+fn register_resource_routes(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool) {
+	clean_controller := controller.trim_space()
+	path := normalize_resource_path(raw_resource_path)
+	if clean_controller == '' || path == '' {
+		return
+	}
+	base_name := resource_name_from_path(path)
+	handler_index := make_resource_handler(clean_controller, 'index')
+	handler_show := make_resource_handler(clean_controller, 'show')
+	handler_store := make_resource_handler(clean_controller, 'store')
+	handler_update := make_resource_handler(clean_controller, 'update')
+	handler_destroy := make_resource_handler(clean_controller, 'destroy')
+	handler_create := make_resource_handler(clean_controller, 'create')
+	handler_edit := make_resource_handler(clean_controller, 'edit')
+	if !handler_index.is_valid() || !handler_show.is_valid() || !handler_store.is_valid() || !handler_update.is_valid() || !handler_destroy.is_valid() {
+		return
+	}
+	id_path := '${path}/:id'
+	app.add_php_route('GET', '${base_name}.index', path, handler_index)
+	if include_page_routes && handler_create.is_valid() {
+		app.add_php_route('GET', '${base_name}.create', '${path}/create', handler_create)
+	}
+	app.add_php_route('POST', '${base_name}.store', path, handler_store)
+	app.add_php_route('GET', '${base_name}.show', id_path, handler_show)
+	if include_page_routes && handler_edit.is_valid() {
+		app.add_php_route('GET', '${base_name}.edit', '${id_path}/edit', handler_edit)
+	}
+	app.add_php_route('PUT', '${base_name}.update', id_path, handler_update)
+	app.add_php_route('PATCH', '${base_name}.update', id_path, handler_update)
+	app.add_php_route('DELETE', '${base_name}.destroy', id_path, handler_destroy)
+}
+
+fn make_resource_handler(controller string, action string) vphp.ZVal {
+	handler := vphp.new_zval_from[[]string]([controller, action]) or { return vphp.ZVal.new_null() }
+	return handler
+}
+
+fn normalize_resource_path(path string) string {
+	mut clean := path.trim_space()
+	if clean == '' {
+		return ''
+	}
+	if !clean.starts_with('/') {
+		clean = '/${clean}'
+	}
+	clean = clean.trim_right('/')
+	if clean == '' {
+		return '/'
+	}
+	return clean
+}
+
+fn resource_name_from_path(path string) string {
+	mut clean := path.trim_space()
+	if clean.starts_with('/') {
+		clean = clean[1..]
+	}
+	if clean == '' {
+		return 'resource'
+	}
+	return clean.replace('/', '.')
 }
 
 fn resolve_effective_method(req &VSlimRequest) string {

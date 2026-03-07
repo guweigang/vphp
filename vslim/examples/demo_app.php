@@ -60,8 +60,36 @@ if (!class_exists('DemoUserController', false)) {
                     'user' => $this->svc->find($req->param('id')),
                     'trace' => $req->query('trace_id') ?: '',
                 ], JSON_UNESCAPED_UNICODE),
-            ];
-        }
+        ];
+    }
+
+    public function index(VSlim\Request $req): array
+    {
+        return [
+            'status' => 200,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'ok' => true,
+                'from' => 'container-controller',
+                'action' => 'index',
+                'trace' => $req->trace_id(),
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    }
+
+    public function store(VSlim\Request $req): array
+    {
+        return [
+            'status' => 201,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'ok' => true,
+                'from' => 'container-controller',
+                'action' => 'store',
+                'payload' => $req->all_inputs(),
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    }
 
     public function update(VSlim\Request $req): array
     {
@@ -73,8 +101,49 @@ if (!class_exists('DemoUserController', false)) {
                     'from' => 'container-controller',
                     'result' => $this->svc->save($req->param('id'), $req->method, $req->all_inputs()),
                 ], JSON_UNESCAPED_UNICODE),
-            ];
-        }
+        ];
+    }
+
+    public function destroy(VSlim\Request $req): array
+    {
+        return [
+            'status' => 200,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'ok' => true,
+                'from' => 'container-controller',
+                'action' => 'destroy',
+                'id' => $req->param('id'),
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    }
+
+    public function create(VSlim\Request $req): array
+    {
+        return [
+            'status' => 200,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'ok' => true,
+                'from' => 'container-controller',
+                'action' => 'create',
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    }
+
+    public function edit(VSlim\Request $req): array
+    {
+        return [
+            'status' => 200,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'ok' => true,
+                'from' => 'container-controller',
+                'action' => 'edit',
+                'id' => $req->param('id'),
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    }
     }
 }
 
@@ -149,7 +218,7 @@ function build_demo_app(): VSlim\App
             'content_type' => 'application/json; charset=utf-8',
             'body' => json_encode([
                 'name' => 'vslim-demo',
-                'routes' => 'GET /health, GET /hello/:name, GET /mvc/home/:name, POST /forms/echo, GET /api/users/:id, GET /debug/routes, GET /debug/route-conflicts',
+                'routes' => 'GET /health, GET /hello/:name, GET /mvc/home/:name, POST /forms/echo, GET /api/users/:id, GET /rest/users, GET /debug/routes, GET /debug/route-conflicts',
             ], JSON_UNESCAPED_UNICODE),
         ];
     });
@@ -182,6 +251,7 @@ function build_demo_app(): VSlim\App
     $api = $app->group('/api');
     $api->get_named('api.users.show', '/users/:id', [DemoUserController::class, 'show']);
     $api->map(['PUT', 'PATCH'], '/users/:id', [DemoUserController::class, 'update']);
+    $app->resource('/rest/users', DemoUserController::class);
 
     $debug = $app->group('/debug');
     $debug->get('/routes', function () use ($app) {
@@ -285,6 +355,9 @@ function run_self_test(): void
 
     $r2 = $app->dispatch('GET', '/api/users/7?token=demo-token');
     echo "GET /api/users/7 => {$r2->status} {$r2->body}\n";
+
+    $r2c = $app->dispatch('GET', '/rest/users/7');
+    echo "GET /rest/users/7 => {$r2c->status} {$r2c->body}\n";
 
     $r2b = $app->dispatch('GET', '/mvc/home/codex?trace_id=mvc-self-test');
     echo "GET /mvc/home/codex => {$r2b->status} " . substr($r2b->body, 0, 64) . "...\n";

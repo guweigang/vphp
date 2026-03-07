@@ -170,6 +170,26 @@ pub fn vphp_wrap_routegroup_map(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.map(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_RouteGroup_resource']
+pub fn vphp_wrap_routegroup_resource(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.resource(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_api_resource']
+pub fn vphp_wrap_routegroup_api_resource(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.api_resource(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_RouteGroup_get_named']
 pub fn vphp_wrap_routegroup_get_named(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &RouteGroup(ptr) }
@@ -1537,6 +1557,26 @@ pub fn vphp_wrap_vslimapp_map(ptr voidptr, ctx vphp.Context) voidptr {
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.map(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_resource']
+pub fn vphp_wrap_vslimapp_resource(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.resource(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_api_resource']
+pub fn vphp_wrap_vslimapp_api_resource(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.api_resource(arg_0, arg_1)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_get_named']
