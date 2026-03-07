@@ -733,6 +733,10 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 {{reduce:scores|acc+item|0}} <!-- 自定义表达式 + 初始值(seed) -->
 ```
 
+调试模式：
+- 设置 `VSLIM_VIEW_DEBUG=1` 后，`reduce` 表达式解析失败会输出错误占位文本（便于定位模板问题）
+- 默认关闭，保持生产环境静默兼容行为
+
 局部模板与布局：
 
 ```html

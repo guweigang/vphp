@@ -8205,7 +8205,7 @@ VV_LOC string main__render_raw_value_tokens(string source, Map_string_string dat
 VV_LOC string main__render_function_tokens(string source, Map_string_string scalars, Map_string_Array_string lists);
 VV_LOC string main__replace_function_tokens_by_prefix(string source, string prefix, Map_string_string scalars, Map_string_Array_string lists);
 VV_LOC string main__eval_template_function(string fn_name, string payload, Map_string_string scalars, Map_string_Array_string lists);
-VV_LOC string main__reduce_template_values(Array_string items, string reducer, string seed);
+VV_LOC multi_return_string_string main__reduce_template_values(Array_string items, string reducer, string seed);
 VV_LOC _option_f64 main__apply_named_reducer(string name, f64 acc, f64 item);
 VV_LOC _result_f64 main__eval_reduce_expr(string expr, f64 acc, f64 item);
 VV_LOC _result_f64 main__ReduceExprParser_parse_expr(main__ReduceExprParser* p);
@@ -8219,6 +8219,7 @@ VV_LOC string main__format_reduced_number(f64 value);
 VV_LOC bool main__is_numeric_template_value(string raw);
 VV_LOC multi_return_string_string main__split_function_args(string payload);
 VV_LOC multi_return_string_string_string main__split_reduce_args(string payload);
+VV_LOC bool main__is_view_debug_enabled(void);
 VV_LOC string main__template_scalar_value(string path, Map_string_string scalars);
 VV_LOC Array_string main__template_list_values(string path, Map_string_string scalars, Map_string_Array_string lists);
 VV_LOC string main__render_if_blocks(string source, Map_string_string scalars, Map_string_Array_string lists);
@@ -8229,8 +8230,8 @@ VV_LOC Array_Map_string_string main__collect_object_loop_locals_from_block(strin
 VV_LOC Array_string main__extract_item_field_tokens(string block);
 VV_LOC multi_return_Map_string_string_Map_string_Array_string main__extract_template_data(vphp__ZVal data);
 VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_string_string* scalars, Map_string_Array_string* lists, int depth);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_21863(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22349(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22297(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22783(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
 VV_LOC string main__alias_template_key(string path);
 VV_LOC bool main__is_numeric_path_segment(string part);
 VV_LOC bool main__is_template_list(vphp__ZVal value);
@@ -10463,7 +10464,7 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_map_string_str
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_21863(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22297(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
 	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
 	if ((key_name).len == 0) {
 		return;
@@ -10471,7 +10472,7 @@ VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){key_name}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22349(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22783(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
 	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
 	if ((key_name).len == 0) {
 		return;
@@ -48658,16 +48659,22 @@ VV_LOC string main__eval_template_function(string fn_name, string payload, Map_s
 		string reducer = mr_8943.arg1;
 		string seed = mr_8943.arg2;
 		Array_string items = main__template_list_values(path, scalars, lists);
-		return main__reduce_template_values(items, reducer, seed);
+		multi_return_string_string mr_9046 = main__reduce_template_values(items, reducer, seed);
+		string value = mr_9046.arg0;
+		string err_msg = mr_9046.arg1;
+		if ((err_msg).len != 0 && main__is_view_debug_enabled()) {
+			return builtin__str_intp(4, _MOV((StrIntpData[]){{_S("[vslim.reduce.error reducer=\""), 0xfe10, {.d_s = reducer}}, {_S("\" seed=\""), 0xfe10, {.d_s = seed}}, {_S("\" reason=\""), 0xfe10, {.d_s = err_msg}}, {_S("\"]"), 0, { .d_c = 0 }}}));
+		}
+		return value;
 	}
 	else {
 		return _S("");
 	}
 	return (string){.str=(byteptr)"", .is_lit=1};
 }
-VV_LOC string main__reduce_template_values(Array_string items, string reducer, string seed) {
+VV_LOC multi_return_string_string main__reduce_template_values(Array_string items, string reducer, string seed) {
 	if (items.len == 0 && (builtin__string_trim_space(seed)).len == 0) {
-		return _S("");
+		return (multi_return_string_string){.arg0=_S(""), .arg1=_S("")};
 	}
 	string reducer_expr = builtin__string_trim_space(reducer);
 	if ((reducer_expr).len == 0) {
@@ -48690,15 +48697,16 @@ VV_LOC string main__reduce_template_values(Array_string items, string reducer, s
 			count++;
 		}
 		if (count == 0) {
-			return _S("");
+			return (multi_return_string_string){.arg0=_S(""), .arg1=_S("")};
 		}
-		return main__format_reduced_number((f64)(sum / ((f64)(count))));
+		return (multi_return_string_string){.arg0=main__format_reduced_number((f64)(sum / ((f64)(count)))), .arg1=_S("")};
 	}
 	f64 acc = 0.0;
 	if ((builtin__string_trim_space(seed)).len != 0 && main__is_numeric_template_value(builtin__string_trim_space(seed))) {
 		acc = builtin__string_f64(builtin__string_trim_space(seed));
 	}
 	bool seen = (builtin__string_trim_space(seed)).len != 0;
+	string last_err = _S("");
 	for (int _t5 = 0; _t5 < items.len; ++_t5) {
 		string item = ((string*)items.data)[_t5];
 		string raw = builtin__string_trim_space(item);
@@ -48722,6 +48730,8 @@ VV_LOC string main__reduce_template_values(Array_string items, string reducer, s
 		} else {
 			_result_f64 _t7 = main__eval_reduce_expr(reducer_expr, acc, value);
 			if (_t7.is_error) {
+				IError err = _t7.err;
+				last_err = IError_name_table[err._typ]._method_msg(err._object);
 				*(f64*) _t7.data = acc;
 			}
 			
@@ -48729,9 +48739,9 @@ VV_LOC string main__reduce_template_values(Array_string items, string reducer, s
 		}
 	}
 	if (!seen) {
-		return _S("");
+		return (multi_return_string_string){.arg0=_S(""), .arg1=last_err};
 	}
-	return main__format_reduced_number(acc);
+	return (multi_return_string_string){.arg0=main__format_reduced_number(acc), .arg1=last_err};
 }
 VV_LOC _option_f64 main__apply_named_reducer(string name, f64 acc, f64 item) {
 	string _t1 = builtin__string_to_lower(builtin__string_trim_space(name));
@@ -49078,6 +49088,16 @@ VV_LOC multi_return_string_string_string main__split_reduce_args(string payload)
 	string reducer = (parts.len >= 2 ? (builtin__string_trim_space((*(string*)builtin__array_get(parts, 1)))) : (_S("acc+item")));
 	string seed = (parts.len >= 3 ? (builtin__string_trim_space((*(string*)builtin__array_get(parts, 2)))) : (_S("")));
 	return (multi_return_string_string_string){.arg0=path, .arg1=reducer, .arg2=seed};
+}
+VV_LOC bool main__is_view_debug_enabled(void) {
+	_option_string _t1 = os__getenv_opt(_S("VSLIM_VIEW_DEBUG"));
+	if (_t1.state != 0) {
+		*(string*) _t1.data = _S("");
+	}
+	
+ 	string raw = (*(string*)_t1.data);
+	string flag = builtin__string_to_lower(builtin__string_trim_space(raw));
+	return (_SLIT_EQ(flag.str, flag.len, "1") || _SLIT_EQ(flag.str, flag.len, "true") || _SLIT_EQ(flag.str, flag.len, "yes") || _SLIT_EQ(flag.str, flag.len, "on"));
 }
 VV_LOC string main__template_scalar_value(string path, Map_string_string scalars) {
 	string key = builtin__string_trim_space(path);
@@ -49445,7 +49465,7 @@ VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_s
 			return;
 		}
 		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_21863);
+		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22297);
 		int _t3 = children.key_values.len;
 		for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
 			int _t4 = children.key_values.len - _t3;
@@ -49465,7 +49485,7 @@ VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_s
 	}
 	if (vphp__ZVal_is_object(value)) {
 		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22349);
+		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22783);
 		int _t6 = children.key_values.len;
 		for (int _t5 = 0; _t5 < _t6; ++_t5 ) {
 			int _t7 = children.key_values.len - _t6;

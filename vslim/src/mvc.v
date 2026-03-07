@@ -304,7 +304,11 @@ fn eval_template_function(fn_name string, payload string, scalars map[string]str
 		'reduce' {
 			path, reducer, seed := split_reduce_args(payload)
 			items := template_list_values(path, scalars, lists)
-			return reduce_template_values(items, reducer, seed)
+			value, err_msg := reduce_template_values(items, reducer, seed)
+			if err_msg != '' && is_view_debug_enabled() {
+				return '[vslim.reduce.error reducer="${reducer}" seed="${seed}" reason="${err_msg}"]'
+			}
+			return value
 		}
 		else {
 			return ''
@@ -312,9 +316,9 @@ fn eval_template_function(fn_name string, payload string, scalars map[string]str
 	}
 }
 
-fn reduce_template_values(items []string, reducer string, seed string) string {
+fn reduce_template_values(items []string, reducer string, seed string) (string, string) {
 	if items.len == 0 && seed.trim_space() == '' {
-		return ''
+		return '', ''
 	}
 	mut reducer_expr := reducer.trim_space()
 	if reducer_expr == '' {
@@ -336,15 +340,16 @@ fn reduce_template_values(items []string, reducer string, seed string) string {
 			count++
 		}
 		if count == 0 {
-			return ''
+			return '', ''
 		}
-		return format_reduced_number(sum / f64(count))
+		return format_reduced_number(sum / f64(count)), ''
 	}
 	mut acc := 0.0
 	if seed.trim_space() != '' && is_numeric_template_value(seed.trim_space()) {
 		acc = seed.trim_space().f64()
 	}
 	mut seen := seed.trim_space() != ''
+	mut last_err := ''
 	for item in items {
 		raw := item.trim_space()
 		if !is_numeric_template_value(raw) {
@@ -363,13 +368,16 @@ fn reduce_template_values(items []string, reducer string, seed string) string {
 		if named := apply_named_reducer(reducer_expr, acc, value) {
 			acc = named
 		} else {
-			acc = eval_reduce_expr(reducer_expr, acc, value) or { acc }
+			acc = eval_reduce_expr(reducer_expr, acc, value) or {
+				last_err = err.msg()
+				acc
+			}
 		}
 	}
 	if !seen {
-		return ''
+		return '', last_err
 	}
-	return format_reduced_number(acc)
+	return format_reduced_number(acc), last_err
 }
 
 fn apply_named_reducer(name string, acc f64, item f64) ?f64 {
@@ -580,6 +588,12 @@ fn split_reduce_args(payload string) (string, string, string) {
 	reducer := if parts.len >= 2 { parts[1].trim_space() } else { 'acc+item' }
 	seed := if parts.len >= 3 { parts[2].trim_space() } else { '' }
 	return path, reducer, seed
+}
+
+fn is_view_debug_enabled() bool {
+	raw := os.getenv_opt('VSLIM_VIEW_DEBUG') or { '' }
+	flag := raw.trim_space().to_lower()
+	return flag in ['1', 'true', 'yes', 'on']
 }
 
 fn template_scalar_value(path string, scalars map[string]string) string {
