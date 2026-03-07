@@ -19,22 +19,22 @@ struct VSlimContainerNotFoundException {}
 @[php_implements: 'Psr\\Container\\ContainerInterface']
 struct VSlimContainer {
 mut:
-	entries   map[string]vphp.ZVal
-	factories map[string]vphp.ZVal
-	resolved  map[string]vphp.ZVal
+	entries   map[string]vphp.PersistentOwnedZVal
+	factories map[string]vphp.PersistentOwnedZVal
+	resolved  map[string]vphp.PersistentOwnedZVal
 }
 
 @[php_method]
 pub fn (mut c VSlimContainer) construct() &VSlimContainer {
-	c.entries = map[string]vphp.ZVal{}
-	c.factories = map[string]vphp.ZVal{}
-	c.resolved = map[string]vphp.ZVal{}
+	c.entries = map[string]vphp.PersistentOwnedZVal{}
+	c.factories = map[string]vphp.PersistentOwnedZVal{}
+	c.resolved = map[string]vphp.PersistentOwnedZVal{}
 	return &c
 }
 
 @[php_method]
 pub fn (mut c VSlimContainer) set(id string, value vphp.ZVal) &VSlimContainer {
-	c.entries[id] = value.dup()
+	c.entries[id] = vphp.PersistentOwnedZVal.from_zval(value)
 	c.factories.delete(id)
 	c.resolved.delete(id)
 	return &c
@@ -46,7 +46,7 @@ pub fn (mut c VSlimContainer) factory(id string, callable vphp.ZVal) &VSlimConta
 		throw_container_exception('factory for "${id}" must be callable')
 		return &c
 	}
-	c.factories[id] = callable.dup()
+	c.factories[id] = vphp.PersistentOwnedZVal.from_zval(callable)
 	c.entries.delete(id)
 	c.resolved.delete(id)
 	return &c
@@ -64,18 +64,18 @@ pub fn (c &VSlimContainer) get(id string) {}
 
 fn (mut c VSlimContainer) get_entry(id string) !vphp.ZVal {
 	if id in c.resolved {
-		return c.resolved[id].dup()
+		return c.resolved[id].clone_request_owned().to_zval()
 	}
 	if id in c.entries {
-		return c.entries[id].dup()
+		return c.entries[id].clone_request_owned().to_zval()
 	}
 	if id in c.factories {
-		factory := c.factories[id]
-		res := factory.call([])
+		factory := c.factories[id].to_zval()
+		res := factory.call_owned_request([])
 		if !res.is_valid() {
 			return error('factory "${id}" returned invalid value')
 		}
-		c.resolved[id] = res.dup()
+		c.resolved[id] = vphp.PersistentOwnedZVal.from_zval(res)
 		return res
 	}
 	return error('entry "${id}" not found')
@@ -103,4 +103,24 @@ fn throw_not_found(id string) {
 
 fn throw_container_exception(msg string) {
 	vphp.throw_exception_class('VSlim\\Container\\ContainerException', msg, 0)
+}
+
+fn (mut c VSlimContainer) free() {
+	for _, entry in c.entries {
+		mut z := entry
+		z.release()
+	}
+	for _, factory in c.factories {
+		mut z := factory
+		z.release()
+	}
+	for _, resolved in c.resolved {
+		mut z := resolved
+		z.release()
+	}
+	unsafe {
+		c.entries.free()
+		c.factories.free()
+		c.resolved.free()
+	}
 }

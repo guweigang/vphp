@@ -1,14 +1,131 @@
 module vphp
 
 // ============================================
-// ZVal — PHP zval 的 V 侧完整封装
-// 支持 PHP 的所有数据类型：
-// null, bool, int, float, string, array, object, resource, callable
+// ZVal — low-level bridge wrapper around Zend zval
+// NOTE:
+// - This type is intended for vphp bridge internals.
+// - Extension/framework code should prefer typed wrappers in lifecycle.v:
+//   BorrowedZVal / RequestOwnedZVal / PersistentOwnedZVal.
 // ============================================
 
 pub struct ZVal {
 pub mut:
-	raw &C.zval
+	raw   &C.zval
+	owned bool
+}
+
+pub struct RuntimeCounters {
+pub:
+	autorelease_len int
+	owned_len       int
+	obj_registry_len u32
+	rev_registry_len u32
+}
+
+fn invalid_zval() ZVal {
+	return unsafe {
+		ZVal{
+			raw: 0
+		}
+	}
+}
+
+fn adopt_raw_with_ownership(raw &C.zval, ownership OwnershipKind) ZVal {
+	if raw == 0 {
+		return invalid_zval()
+	}
+	mut out := unsafe {
+		ZVal{
+			raw: raw
+			owned: true
+		}
+	}
+	if ownership == .owned_request {
+		autorelease_add(out.raw)
+	}
+	return out
+}
+
+fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
+	if src == 0 {
+		return invalid_zval()
+	}
+	mut out := ZVal{
+		raw: C.vphp_new_zval()
+		owned: true
+	}
+	C.ZVAL_COPY(out.raw, src)
+	if ownership == .owned_request {
+		autorelease_add(out.raw)
+	}
+	return out
+}
+
+fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
+	if rv == 0 {
+		return invalid_zval()
+	}
+	if res == 0 {
+		C.vphp_release_zval(rv)
+		return invalid_zval()
+	}
+	if usize(res) == usize(rv) {
+		return adopt_raw_with_ownership(rv, ownership)
+	}
+	C.vphp_release_zval(rv)
+	if ownership == .borrowed {
+		return unsafe {
+			ZVal{
+				raw: res
+			}
+		}
+	}
+	return clone_raw_with_ownership(res, ownership)
+}
+
+pub fn autorelease_mark() int {
+	return C.vphp_autorelease_mark()
+}
+
+fn autorelease_add(z &C.zval) {
+	if z == 0 {
+		return
+	}
+	C.vphp_autorelease_add(z)
+}
+
+fn autorelease_forget(z &C.zval) {
+	if z == 0 {
+		return
+	}
+	C.vphp_autorelease_forget(z)
+}
+
+pub fn autorelease_drain(mark int) {
+	C.vphp_autorelease_drain(mark)
+}
+
+// Request scope helpers for frameworks (supports nested scopes).
+pub fn request_scope_enter() int {
+	return autorelease_mark()
+}
+
+pub fn request_scope_leave(mark int) {
+	autorelease_drain(mark)
+}
+
+pub fn runtime_counters() RuntimeCounters {
+	mut ar := 0
+	mut owned := 0
+	mut obj_reg := u32(0)
+	mut rev_reg := u32(0)
+	C.vphp_runtime_counters(&ar, &owned, &obj_reg, &rev_reg)
+	return RuntimeCounters{
+		autorelease_len: ar
+		owned_len: owned
+		obj_registry_len: obj_reg
+		rev_registry_len: rev_reg
+	}
 }
 
 // ======== 空值检查 ========
@@ -279,23 +396,41 @@ pub fn (v ZVal) add_property_bool(key string, val bool) {
 
 // 通用属性获取：返回一个新的 ZVal
 pub fn (v ZVal) get_prop(name string) ZVal {
+	return v.prop_owned_request(name)
+}
+
+pub fn (v ZVal) prop_borrowed(name string) ZVal {
 	if !v.is_object() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
+		return invalid_zval()
 	}
 	obj := C.vphp_get_obj_from_zval(v.raw)
-	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
+	rv := C.vphp_new_zval()
 	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
-	return ZVal{
-		raw: res
+	return adopt_read_result(rv, res, .borrowed)
+}
+
+pub fn (v ZVal) prop_owned_request(name string) ZVal {
+	if !v.is_object() {
+		return invalid_zval()
 	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .owned_request)
+}
+
+pub fn (v ZVal) prop_owned_persistent(name string) ZVal {
+	if !v.is_object() {
+		return invalid_zval()
+	}
+	obj := C.vphp_get_obj_from_zval(v.raw)
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .owned_persistent)
 }
 
 pub fn (v ZVal) prop(name string) ZVal {
-	return v.get_prop(name)
+	return v.prop_owned_request(name)
 }
 
 pub fn (v ZVal) set_prop(name string, value ZVal) {
@@ -576,171 +711,312 @@ pub fn (v ZVal) const_exists(name string) bool {
 // -------- Base actions --------
 
 // 调用对象方法：$obj->method(args...)
-pub fn (v ZVal) method(method string, args []ZVal) ZVal {
+pub fn (v ZVal) method_owned_request(method string, args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_object() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
+		return invalid_zval()
 	}
 
 	unsafe {
-		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
+		}
 		mut p_args := &&C.zval(nil)
-		if args.len > 0 {
-			p_args = &args[0].raw
+		if argv.len > 0 {
+			p_args = &argv[0]
 		}
 
 		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len,
 			p_args)
 		if res == -1 {
-			return ZVal{
-				raw: 0
-			}
+			C.vphp_release_zval(retval)
+			return invalid_zval()
 		}
-		return ZVal{
-			raw: retval
-		}
+		return adopt_raw_with_ownership(retval, .owned_request)
 	}
 }
 
-// 调用 callable（闭包、匿名函数、函数名字符串等）
-pub fn (v ZVal) call(args []ZVal) ZVal {
-	if v.raw == 0 {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
+pub fn (v ZVal) method_owned_persistent(method string, args []ZVal) ZVal {
+	if v.raw == 0 || !v.is_object() {
+		return invalid_zval()
+	}
+	unsafe {
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
 		}
+		mut p_args := &&C.zval(nil)
+		if argv.len > 0 {
+			p_args = &argv[0]
+		}
+		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len, p_args)
+		if res == -1 {
+			C.vphp_release_zval(retval)
+			return invalid_zval()
+		}
+		return adopt_raw_with_ownership(retval, .owned_persistent)
+	}
+}
+
+pub fn (v ZVal) method(method string, args []ZVal) ZVal {
+	return v.method_owned_request(method, args)
+}
+
+// 调用 callable（闭包、匿名函数、函数名字符串等）
+pub fn (v ZVal) call_owned_request(args []ZVal) ZVal {
+	if v.raw == 0 {
+		return invalid_zval()
 	}
 
 	unsafe {
-		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
+		}
 		mut p_args := &&C.zval(nil)
-		if args.len > 0 {
-			p_args = &args[0].raw
+		if argv.len > 0 {
+			p_args = &argv[0]
 		}
 
 		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
 		if res == -1 {
-			return ZVal{
-				raw: 0
-			}
+			C.vphp_release_zval(retval)
+			return invalid_zval()
 		}
-		return ZVal{
-			raw: retval
-		}
+		return adopt_raw_with_ownership(retval, .owned_request)
 	}
+}
+
+pub fn (v ZVal) call_owned_persistent(args []ZVal) ZVal {
+	if v.raw == 0 {
+		return invalid_zval()
+	}
+	unsafe {
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
+		}
+		mut p_args := &&C.zval(nil)
+		if argv.len > 0 {
+			p_args = &argv[0]
+		}
+		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
+		if res == -1 {
+			C.vphp_release_zval(retval)
+			return invalid_zval()
+		}
+		return adopt_raw_with_ownership(retval, .owned_persistent)
+	}
+}
+
+pub fn (v ZVal) call(args []ZVal) ZVal {
+	return v.call_owned_request(args)
 }
 
 pub fn (v ZVal) dup() ZVal {
 	if v.raw == 0 {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
+		return invalid_zval()
 	}
-	unsafe {
-		out := ZVal{
-			raw: C.vphp_new_zval()
-		}
-		C.ZVAL_COPY(out.raw, v.raw)
-		return out
+	return clone_raw_with_ownership(v.raw, .owned_request)
+}
+
+pub fn (mut v ZVal) release() {
+	if v.raw == 0 || !v.owned {
+		return
 	}
+	autorelease_forget(v.raw)
+	unsafe { C.vphp_release_zval(v.raw) }
+	v.raw = unsafe { nil }
+	v.owned = false
+}
+
+// Duplicate and keep beyond current autorelease scope.
+pub fn (v ZVal) dup_persistent() ZVal {
+	mut out := v.dup()
+	autorelease_forget(out.raw)
+	return out
 }
 
 pub fn (v ZVal) construct(args []ZVal) ZVal {
+	return v.construct_owned_request(args)
+}
+
+pub fn (v ZVal) construct_owned_request(args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_string() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
+		return invalid_zval()
 	}
 
 	unsafe {
-		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
+		}
 		mut p_args := &&C.zval(nil)
-		if args.len > 0 {
-			p_args = &args[0].raw
+		if argv.len > 0 {
+			p_args = &argv[0]
 		}
 
 		res := C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
 			args.len, p_args)
 		if res == -1 {
-			return ZVal{
-				raw: 0
-			}
+			C.vphp_release_zval(retval)
+			return invalid_zval()
 		}
-		return ZVal{
-			raw: retval
-		}
+		return adopt_raw_with_ownership(retval, .owned_request)
 	}
 }
 
-pub fn (v ZVal) static_method(method string, args []ZVal) ZVal {
+pub fn (v ZVal) construct_owned_persistent(args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_string() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
+		return invalid_zval()
+	}
+	unsafe {
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
 		}
+		mut p_args := &&C.zval(nil)
+		if argv.len > 0 {
+			p_args = &argv[0]
+		}
+		res := C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
+			args.len, p_args)
+		if res == -1 {
+			C.vphp_release_zval(retval)
+			return invalid_zval()
+		}
+		return adopt_raw_with_ownership(retval, .owned_persistent)
+	}
+}
+
+pub fn (v ZVal) static_method_owned_request(method string, args []ZVal) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
 	}
 
 	unsafe {
-		mut retval := &C.zval(malloc(int(sizeof(C.zval))))
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
+		}
 		mut p_args := &&C.zval(nil)
-		if args.len > 0 {
-			p_args = &args[0].raw
+		if argv.len > 0 {
+			p_args = &argv[0]
 		}
 
 		res := C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
 			&char(method.str), method.len, retval, args.len, p_args)
 		if res == -1 {
-			return ZVal{
-				raw: 0
-			}
+			C.vphp_release_zval(retval)
+			return invalid_zval()
 		}
-		return ZVal{
-			raw: retval
-		}
+		return adopt_raw_with_ownership(retval, .owned_request)
 	}
+}
+
+pub fn (v ZVal) static_method_owned_persistent(method string, args []ZVal) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
+	}
+	unsafe {
+		mut retval := C.vphp_new_zval()
+		mut argv := []&C.zval{cap: args.len}
+		for arg in args {
+			argv << arg.raw
+		}
+		mut p_args := &&C.zval(nil)
+		if argv.len > 0 {
+			p_args = &argv[0]
+		}
+		res := C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+			&char(method.str), method.len, retval, args.len, p_args)
+		if res == -1 {
+			C.vphp_release_zval(retval)
+			return invalid_zval()
+		}
+		return adopt_raw_with_ownership(retval, .owned_persistent)
+	}
+}
+
+pub fn (v ZVal) static_method(method string, args []ZVal) ZVal {
+	return v.static_method_owned_request(method, args)
+}
+
+pub fn (v ZVal) static_prop_borrowed(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
+	}
+
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .borrowed)
+}
+
+pub fn (v ZVal) static_prop_owned_request(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
+	}
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .owned_request)
+}
+
+pub fn (v ZVal) static_prop_owned_persistent(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
+	}
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .owned_persistent)
 }
 
 pub fn (v ZVal) static_prop(name string) ZVal {
+	return v.static_prop_owned_request(name)
+}
+
+pub fn (v ZVal) const_borrowed(name string) ZVal {
 	if v.raw == 0 || !v.is_string() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
+		return invalid_zval()
 	}
 
-	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
-	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
 		&char(name.str), name.len, rv)
-	return ZVal{
-		raw: res
+	return adopt_read_result(rv, res, .borrowed)
+}
+
+pub fn (v ZVal) const_owned_request(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
 	}
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .owned_request)
+}
+
+pub fn (v ZVal) const_owned_persistent(name string) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
+	}
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, .owned_persistent)
 }
 
 pub fn (v ZVal) @const(name string) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
-	}
-
-	mut rv := unsafe { &C.zval(C.malloc(sizeof(C.zval))) }
-	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
-	return ZVal{
-		raw: res
-	}
+	return v.const_owned_request(name)
 }
 
 // 兼容旧命名：建议改用 `.@const(...)`
@@ -763,32 +1039,108 @@ pub fn (v ZVal) call_v[T](args []ZVal) !T {
 	return v.call(args).to_v[T]()
 }
 
+pub fn (v ZVal) call_owned_request_v[T](args []ZVal) !T {
+	return v.call_owned_request(args).to_v[T]()
+}
+
+pub fn (v ZVal) call_owned_persistent_v[T](args []ZVal) !T {
+	return v.call_owned_persistent(args).to_v[T]()
+}
+
 pub fn (v ZVal) invoke_v[T](args []ZVal) !T {
 	return v.invoke(args).to_v[T]()
+}
+
+pub fn (v ZVal) invoke_owned_request_v[T](args []ZVal) !T {
+	return v.call_owned_request_v[T](args)
+}
+
+pub fn (v ZVal) invoke_owned_persistent_v[T](args []ZVal) !T {
+	return v.call_owned_persistent_v[T](args)
 }
 
 pub fn (v ZVal) construct_v[T](args []ZVal) !T {
 	return v.construct(args).to_v[T]()
 }
 
+pub fn (v ZVal) construct_owned_request_v[T](args []ZVal) !T {
+	return v.construct_owned_request(args).to_v[T]()
+}
+
+pub fn (v ZVal) construct_owned_persistent_v[T](args []ZVal) !T {
+	return v.construct_owned_persistent(args).to_v[T]()
+}
+
 pub fn (v ZVal) method_v[T](method string, args []ZVal) !T {
 	return v.method(method, args).to_v[T]()
+}
+
+pub fn (v ZVal) method_owned_request_v[T](method string, args []ZVal) !T {
+	return v.method_owned_request(method, args).to_v[T]()
+}
+
+pub fn (v ZVal) method_owned_persistent_v[T](method string, args []ZVal) !T {
+	return v.method_owned_persistent(method, args).to_v[T]()
 }
 
 pub fn (v ZVal) prop_v[T](name string) !T {
 	return v.prop(name).to_v[T]()
 }
 
+pub fn (v ZVal) prop_borrowed_v[T](name string) !T {
+	return v.prop_borrowed(name).to_v[T]()
+}
+
+pub fn (v ZVal) prop_owned_request_v[T](name string) !T {
+	return v.prop_owned_request(name).to_v[T]()
+}
+
+pub fn (v ZVal) prop_owned_persistent_v[T](name string) !T {
+	return v.prop_owned_persistent(name).to_v[T]()
+}
+
 pub fn (v ZVal) static_prop_v[T](name string) !T {
 	return v.static_prop(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_prop_borrowed_v[T](name string) !T {
+	return v.static_prop_borrowed(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_prop_owned_request_v[T](name string) !T {
+	return v.static_prop_owned_request(name).to_v[T]()
+}
+
+pub fn (v ZVal) static_prop_owned_persistent_v[T](name string) !T {
+	return v.static_prop_owned_persistent(name).to_v[T]()
 }
 
 pub fn (v ZVal) const_v[T](name string) !T {
 	return v.@const(name).to_v[T]()
 }
 
+pub fn (v ZVal) const_borrowed_v[T](name string) !T {
+	return v.const_borrowed(name).to_v[T]()
+}
+
+pub fn (v ZVal) const_owned_request_v[T](name string) !T {
+	return v.const_owned_request(name).to_v[T]()
+}
+
+pub fn (v ZVal) const_owned_persistent_v[T](name string) !T {
+	return v.const_owned_persistent(name).to_v[T]()
+}
+
 pub fn (v ZVal) static_method_v[T](method string, args []ZVal) !T {
 	return v.static_method(method, args).to_v[T]()
+}
+
+pub fn (v ZVal) static_method_owned_request_v[T](method string, args []ZVal) !T {
+	return v.static_method_owned_request(method, args).to_v[T]()
+}
+
+pub fn (v ZVal) static_method_owned_persistent_v[T](method string, args []ZVal) !T {
+	return v.static_method_owned_persistent(method, args).to_v[T]()
 }
 
 // -------- Typed object helpers --------
@@ -799,20 +1151,64 @@ pub fn (v ZVal) call_object[T](args []ZVal) ?&T {
 	return v.call(args).to_object[T]()
 }
 
+pub fn (v ZVal) call_owned_request_object[T](args []ZVal) ?&T {
+	return v.call_owned_request(args).to_object[T]()
+}
+
+pub fn (v ZVal) call_owned_persistent_object[T](args []ZVal) ?&T {
+	return v.call_owned_persistent(args).to_object[T]()
+}
+
 pub fn (v ZVal) method_object[T](method string, args []ZVal) ?&T {
 	return v.method(method, args).to_object[T]()
+}
+
+pub fn (v ZVal) method_owned_request_object[T](method string, args []ZVal) ?&T {
+	return v.method_owned_request(method, args).to_object[T]()
+}
+
+pub fn (v ZVal) method_owned_persistent_object[T](method string, args []ZVal) ?&T {
+	return v.method_owned_persistent(method, args).to_object[T]()
 }
 
 pub fn (v ZVal) prop_object[T](name string) ?&T {
 	return v.prop(name).to_object[T]()
 }
 
+pub fn (v ZVal) prop_borrowed_object[T](name string) ?&T {
+	return v.prop_borrowed(name).to_object[T]()
+}
+
+pub fn (v ZVal) prop_owned_request_object[T](name string) ?&T {
+	return v.prop_owned_request(name).to_object[T]()
+}
+
+pub fn (v ZVal) prop_owned_persistent_object[T](name string) ?&T {
+	return v.prop_owned_persistent(name).to_object[T]()
+}
+
 pub fn (v ZVal) construct_object[T](args []ZVal) ?&T {
 	return v.construct(args).to_object[T]()
 }
 
+pub fn (v ZVal) construct_owned_request_object[T](args []ZVal) ?&T {
+	return v.construct_owned_request(args).to_object[T]()
+}
+
+pub fn (v ZVal) construct_owned_persistent_object[T](args []ZVal) ?&T {
+	return v.construct_owned_persistent(args).to_object[T]()
+}
+
 pub fn (v ZVal) static_method_object[T](method string, args []ZVal) ?&T {
 	return v.static_method(method, args).to_object[T]()
+}
+
+pub fn (v ZVal) static_method_owned_request_object[T](method string, args []ZVal) ?&T {
+	return v.static_method_owned_request(method, args).to_object[T]()
+}
+
+pub fn (v ZVal) static_method_owned_persistent_object[T](method string, args []ZVal) ?&T {
+	return v.static_method_owned_persistent(method, args).to_object[T]()
 }
 
 // 兼容旧命名：建议改用 `.const_v[T](...)`
@@ -839,8 +1235,10 @@ pub fn ZVal.new_null() ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_null(z)
+		autorelease_add(z)
 		return ZVal{
 			raw: z
+			owned: true
 		}
 	}
 }
@@ -850,8 +1248,10 @@ pub fn ZVal.new_int(n i64) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_lval(z, n)
+		autorelease_add(z)
 		return ZVal{
 			raw: z
+			owned: true
 		}
 	}
 }
@@ -861,8 +1261,10 @@ pub fn ZVal.new_float(f f64) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_double(z, f)
+		autorelease_add(z)
 		return ZVal{
 			raw: z
+			owned: true
 		}
 	}
 }
@@ -872,8 +1274,10 @@ pub fn ZVal.new_bool(b bool) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_bool(z, b)
+		autorelease_add(z)
 		return ZVal{
 			raw: z
+			owned: true
 		}
 	}
 }
@@ -881,8 +1285,11 @@ pub fn ZVal.new_bool(b bool) ZVal {
 // 创建一个 string ZVal
 pub fn ZVal.new_string(s string) ZVal {
 	unsafe {
+		z := C.vphp_new_str(&char(s.str))
+		autorelease_add(z)
 		return ZVal{
-			raw: C.vphp_new_str(&char(s.str))
+			raw: z
+			owned: true
 		}
 	}
 }
@@ -1139,7 +1546,9 @@ pub fn (v ZVal) from_v[T](value T) ! {
 pub fn new_zval_from[T](value T) !ZVal {
 	mut out := ZVal{
 		raw: C.vphp_new_zval()
+		owned: true
 	}
+	autorelease_add(out.raw)
 	out.from_v[T](value)!
 	return out
 }

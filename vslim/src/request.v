@@ -324,9 +324,9 @@ fn (r &VSlimRequest) parsed_body_values() map[string]string {
 	content_type := r.content_type().to_lower()
 	is_json := content_type.contains('application/json') || body.starts_with('{') || body.starts_with('[')
 	if is_json {
-		decoded := vphp.php_fn('json_decode').call([
-			vphp.ZVal.new_string(body),
-			vphp.ZVal.new_bool(true),
+		decoded := vphp.php_fn('json_decode').call_owned_request([
+			vphp.RequestOwnedZVal.new_string(body).to_zval(),
+			vphp.RequestOwnedZVal.new_bool(true).to_zval(),
 		])
 		if decoded.is_array() {
 			return decoded.to_string_map()
