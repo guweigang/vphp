@@ -1412,6 +1412,7 @@ mut:
 	names       map[string]string
 	name_prefix string
 	param_name  string
+	shallow     bool
 }
 
 fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool, options ResourceRouteOptions) {
@@ -1434,7 +1435,8 @@ fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path str
 		return
 	}
 	id_param := normalize_resource_param_name(opts.param_name)
-	id_path := '${path}/:${id_param}'
+	member_base_path := if opts.shallow { shallow_member_base_path(path) } else { path }
+	id_path := '${member_base_path}/:${id_param}'
 	if should_include_resource_action(opts, 'index', actions) {
 		app.add_php_route('GET', resource_route_name(opts, base_name, 'index'), path, handler_index)
 	}
@@ -1498,6 +1500,7 @@ fn parse_resource_options(options vphp.BorrowedZVal) ResourceRouteOptions {
 		names: map[string]string{}
 		name_prefix: ''
 		param_name: 'id'
+		shallow: false
 	}
 	if !options.is_valid() || !options.is_array() {
 		return out
@@ -1511,6 +1514,10 @@ fn parse_resource_options(options vphp.BorrowedZVal) ResourceRouteOptions {
 	param_raw := options.to_zval().get('param') or { vphp.ZVal.new_null() }
 	if param_raw.is_valid() && !param_raw.is_null() && !param_raw.is_undef() {
 		out.param_name = normalize_resource_param_name(param_raw.to_string())
+	}
+	shallow_raw := options.to_zval().get('shallow') or { vphp.ZVal.new_null() }
+	if shallow_raw.is_valid() && !shallow_raw.is_null() && !shallow_raw.is_undef() {
+		out.shallow = parse_resource_bool_option(shallow_raw)
 	}
 	for action in parse_action_list(only_raw) {
 		out.only[action] = true
@@ -1542,6 +1549,33 @@ fn normalize_resource_param_name(param_name string) string {
 		return 'id'
 	}
 	return clean
+}
+
+fn parse_resource_bool_option(raw vphp.ZVal) bool {
+	if raw.is_bool() {
+		return raw.to_bool()
+	}
+	if raw.is_long() {
+		return raw.to_i64() != 0
+	}
+	if raw.is_string() {
+		value := raw.to_string().trim_space().to_lower()
+		return value in ['1', 'true', 'yes', 'on']
+	}
+	return false
+}
+
+fn shallow_member_base_path(path string) string {
+	mut clean := normalize_resource_path(path)
+	if clean == '' || clean == '/' {
+		return clean
+	}
+	segments := clean.trim_left('/').split('/').filter(it.len > 0)
+	if segments.len == 0 {
+		return clean
+	}
+	last_segment := segments[segments.len - 1]
+	return '/${last_segment}'
 }
 
 fn parse_action_list(raw vphp.ZVal) []string {

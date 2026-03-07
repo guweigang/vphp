@@ -739,6 +739,13 @@ $api->resource_opts('/products', ProductController::class, [
     'except' => ['create', 'edit'],
     'name_prefix' => 'v1.products',
 ]);
+
+// nested + shallow member routes:
+$app->resource_opts('/photos/:photo_id/comments', CommentController::class, [
+    'only' => ['index', 'show'],
+    'param' => 'comment_id',
+    'shallow' => true, // show/update/destroy -> /comments/:comment_id
+]);
 ```
 
 说明：

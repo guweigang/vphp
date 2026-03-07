@@ -3662,6 +3662,7 @@ struct main__ResourceRouteOptions {
 	Map_string_string names;
 	string name_prefix;
 	string param_name;
+	bool shallow;
 };
 
 struct main__VSlimRuntime {
@@ -8091,6 +8092,8 @@ VV_LOC string main__normalize_resource_path(string path);
 VV_LOC string main__resource_name_from_path(string path);
 VV_LOC main__ResourceRouteOptions main__parse_resource_options(vphp__BorrowedZVal options);
 VV_LOC string main__normalize_resource_param_name(string param_name);
+VV_LOC bool main__parse_resource_bool_option(vphp__ZVal raw);
+VV_LOC string main__shallow_member_base_path(string path);
 VV_LOC Array_string main__parse_action_list(vphp__ZVal raw);
 VV_LOC bool main__should_include_resource_action(main__ResourceRouteOptions opts, string action, Array_string all_actions);
 VV_LOC string main__resource_route_name(main__ResourceRouteOptions opts, string base_name, string action);
@@ -8100,7 +8103,7 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_52965(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_53928(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
@@ -9976,7 +9979,7 @@ VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_36081(void) {
 	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_52965(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_53928(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -47172,7 +47175,7 @@ VV_LOC main__VSlimRequest main__request_with_method(main__VSlimRequest* req, str
 	});
 }
 VV_LOC void main__register_resource_routes(main__VSlimApp* app, string raw_resource_path, string controller, bool include_page_routes) {
-	main__register_resource_routes_with_options(app, raw_resource_path, controller, include_page_routes, ((main__ResourceRouteOptions){.only = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.except = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.names = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.name_prefix = (string){.str=(byteptr)"", .is_lit=1},.param_name = (string){.str=(byteptr)"", .is_lit=1},}));
+	main__register_resource_routes_with_options(app, raw_resource_path, controller, include_page_routes, ((main__ResourceRouteOptions){.only = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.except = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.names = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.name_prefix = (string){.str=(byteptr)"", .is_lit=1},.param_name = (string){.str=(byteptr)"", .is_lit=1},.shallow = 0,}));
 }
 VV_LOC void main__register_resource_routes_with_options(main__VSlimApp* app, string raw_resource_path, string controller, bool include_page_routes, main__ResourceRouteOptions options) {
 	string clean_controller = builtin__string_trim_space(controller);
@@ -47194,7 +47197,8 @@ VV_LOC void main__register_resource_routes_with_options(main__VSlimApp* app, str
 		return;
 	}
 	string id_param = main__normalize_resource_param_name(opts.param_name);
-	string id_path = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = path}}, {_S("/:"), 0xfe10, {.d_s = id_param}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	string member_base_path = (opts.shallow ? (main__shallow_member_base_path(path)) : (path));
+	string id_path = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = member_base_path}}, {_S("/:"), 0xfe10, {.d_s = id_param}}, {_SLIT0, 0, { .d_c = 0 }}}));
 	if (main__should_include_resource_action(opts, _S("index"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("GET"), main__resource_route_name(opts, base_name, _S("index")), path, handler_index);
 	}
@@ -47253,10 +47257,17 @@ VV_LOC string main__resource_name_from_path(string path) {
 	return builtin__string_replace(clean, _S("/"), _S("."));
 }
 VV_LOC main__ResourceRouteOptions main__parse_resource_options(vphp__BorrowedZVal options) {
-	main__ResourceRouteOptions out = ((main__ResourceRouteOptions){.only = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	,.except = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	,.names = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	,.name_prefix = _S(""),.param_name = _S("id"),});
+	main__ResourceRouteOptions out = ((main__ResourceRouteOptions){
+		.only = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		,
+		.except = builtin__new_map(sizeof(string), sizeof(bool), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		,
+		.names = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		,
+		.name_prefix = _S(""),
+		.param_name = _S("id"),
+		.shallow = false,
+	});
 	if (!vphp__BorrowedZVal_is_valid(options) || !vphp__BorrowedZVal_is_array(options)) {
 		return out;
 	}
@@ -47290,50 +47301,59 @@ VV_LOC main__ResourceRouteOptions main__parse_resource_options(vphp__BorrowedZVa
 	if (vphp__ZVal_is_valid(param_raw) && !vphp__ZVal_is_null(param_raw) && !vphp__ZVal_is_undef(param_raw)) {
 		out.param_name = main__normalize_resource_param_name(vphp__ZVal_to_string(param_raw));
 	}
-	Array_string _t6 = main__parse_action_list(only_raw);
-	for (int _t7 = 0; _t7 < _t6.len; ++_t7) {
-		string action = ((string*)_t6.data)[_t7];
-		builtin__map_set(&out.only, &(string[]){action}, &(bool[]) { true });
-	}
-	Array_string _t8 = main__parse_action_list(except_raw);
-	for (int _t9 = 0; _t9 < _t8.len; ++_t9) {
-		string action = ((string*)_t8.data)[_t9];
-		builtin__map_set(&out.except, &(string[]){action}, &(bool[]) { true });
-	}
-	_result_vphp__ZVal _t10 = vphp__ZVal_get(vphp__BorrowedZVal_to_zval(options), _S("names"));
-	if (_t10.is_error) {
-		*(vphp__ZVal*) _t10.data = vphp__ZVal__static__new_null();
+	_result_vphp__ZVal _t6 = vphp__ZVal_get(vphp__BorrowedZVal_to_zval(options), _S("shallow"));
+	if (_t6.is_error) {
+		*(vphp__ZVal*) _t6.data = vphp__ZVal__static__new_null();
 	}
 	
- 	vphp__ZVal names_raw = (*(vphp__ZVal*)_t10.data);
+ 	vphp__ZVal shallow_raw = (*(vphp__ZVal*)_t6.data);
+	if (vphp__ZVal_is_valid(shallow_raw) && !vphp__ZVal_is_null(shallow_raw) && !vphp__ZVal_is_undef(shallow_raw)) {
+		out.shallow = main__parse_resource_bool_option(shallow_raw);
+	}
+	Array_string _t7 = main__parse_action_list(only_raw);
+	for (int _t8 = 0; _t8 < _t7.len; ++_t8) {
+		string action = ((string*)_t7.data)[_t8];
+		builtin__map_set(&out.only, &(string[]){action}, &(bool[]) { true });
+	}
+	Array_string _t9 = main__parse_action_list(except_raw);
+	for (int _t10 = 0; _t10 < _t9.len; ++_t10) {
+		string action = ((string*)_t9.data)[_t10];
+		builtin__map_set(&out.except, &(string[]){action}, &(bool[]) { true });
+	}
+	_result_vphp__ZVal _t11 = vphp__ZVal_get(vphp__BorrowedZVal_to_zval(options), _S("names"));
+	if (_t11.is_error) {
+		*(vphp__ZVal*) _t11.data = vphp__ZVal__static__new_null();
+	}
+	
+ 	vphp__ZVal names_raw = (*(vphp__ZVal*)_t11.data);
 	if (vphp__ZVal_is_valid(names_raw) && vphp__ZVal_is_array(names_raw)) {
-		Map_string_string _t11 = vphp__ZVal_to_string_map(names_raw);
-		int _t13 = _t11.key_values.len;
-		for (int _t12 = 0; _t12 < _t13; ++_t12 ) {
-			int _t14 = _t11.key_values.len - _t13;
-			_t13 = _t11.key_values.len;
-			if (_t14 < 0) {
-				_t12 = -1;
+		Map_string_string _t12 = vphp__ZVal_to_string_map(names_raw);
+		int _t14 = _t12.key_values.len;
+		for (int _t13 = 0; _t13 < _t14; ++_t13 ) {
+			int _t15 = _t12.key_values.len - _t14;
+			_t14 = _t12.key_values.len;
+			if (_t15 < 0) {
+				_t13 = -1;
 				continue;
 			}
-			if (!builtin__DenseArray_has_index(&_t11.key_values, _t12)) {continue;}
-			string key = *(string*)builtin__DenseArray_key(&_t11.key_values, _t12);
+			if (!builtin__DenseArray_has_index(&_t12.key_values, _t13)) {continue;}
+			string key = *(string*)builtin__DenseArray_key(&_t12.key_values, _t13);
 			key = builtin__string_clone(key);
-			string value = (*(string*)builtin__DenseArray_value(&_t11.key_values, _t12));
+			string value = (*(string*)builtin__DenseArray_value(&_t12.key_values, _t13));
 			if ((builtin__string_trim_space(key)).len != 0 && (builtin__string_trim_space(value)).len != 0) {
 				builtin__map_set(&out.names, &(string[]){builtin__string_trim_space(key)}, &(string[]) { builtin__string_trim_space(value) });
 			}
 		}
 	}
-	Array_string _t15 = builtin__new_array_from_c_array(7, 7, sizeof(string), _MOV((string[7]){_S("index"), _S("create"), _S("store"), _S("show"), _S("edit"), _S("update"), _S("destroy")}));
-	for (int _t16 = 0; _t16 < _t15.len; ++_t16) {
-		string action = ((string*)_t15.data)[_t16];
-		_result_vphp__ZVal _t17 = vphp__ZVal_get(vphp__BorrowedZVal_to_zval(options), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("name_"), 0xfe10, {.d_s = action}}, {_SLIT0, 0, { .d_c = 0 }}})));
-		if (_t17.is_error) {
-			*(vphp__ZVal*) _t17.data = vphp__ZVal__static__new_null();
+	Array_string _t16 = builtin__new_array_from_c_array(7, 7, sizeof(string), _MOV((string[7]){_S("index"), _S("create"), _S("store"), _S("show"), _S("edit"), _S("update"), _S("destroy")}));
+	for (int _t17 = 0; _t17 < _t16.len; ++_t17) {
+		string action = ((string*)_t16.data)[_t17];
+		_result_vphp__ZVal _t18 = vphp__ZVal_get(vphp__BorrowedZVal_to_zval(options), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("name_"), 0xfe10, {.d_s = action}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		if (_t18.is_error) {
+			*(vphp__ZVal*) _t18.data = vphp__ZVal__static__new_null();
 		}
 		
- 		vphp__ZVal alt = (*(vphp__ZVal*)_t17.data);
+ 		vphp__ZVal alt = (*(vphp__ZVal*)_t18.data);
 		if (vphp__ZVal_is_valid(alt) && !vphp__ZVal_is_null(alt) && !vphp__ZVal_is_undef(alt) && (builtin__string_trim_space(vphp__ZVal_to_string(alt))).len != 0) {
 			builtin__map_set(&out.names, &(string[]){action}, &(string[]) { builtin__string_trim_space(vphp__ZVal_to_string(alt)) });
 		}
@@ -47346,6 +47366,42 @@ VV_LOC string main__normalize_resource_param_name(string param_name) {
 		return _S("id");
 	}
 	return clean;
+}
+VV_LOC bool main__parse_resource_bool_option(vphp__ZVal raw) {
+	if (vphp__ZVal_is_bool(raw)) {
+		return vphp__ZVal_to_bool(raw);
+	}
+	if (vphp__ZVal_is_long(raw)) {
+		return vphp__ZVal_to_i64(raw) != 0;
+	}
+	if (vphp__ZVal_is_string(raw)) {
+		string value = builtin__string_to_lower(builtin__string_trim_space(vphp__ZVal_to_string(raw)));
+		return (_SLIT_EQ(value.str, value.len, "1") || _SLIT_EQ(value.str, value.len, "true") || _SLIT_EQ(value.str, value.len, "yes") || _SLIT_EQ(value.str, value.len, "on"));
+	}
+	return false;
+}
+VV_LOC string main__shallow_member_base_path(string path) {
+	string clean = main__normalize_resource_path(path);
+	if ((clean).len == 0 || _SLIT_EQ(clean.str, clean.len, "/")) {
+		return clean;
+	}
+	Array_string _t2 = {0};
+	Array_string _t2_orig = builtin__string_split(builtin__string_trim_left(clean, _S("/")), _S("/"));
+	int _t2_len = _t2_orig.len;
+	_t2 = builtin____new_array(0, _t2_len, sizeof(string));
+
+	for (int _t3 = 0; _t3 < _t2_len; ++_t3) {
+		string it = ((string*) _t2_orig.data)[_t3];
+		if (it.len > 0) {
+			builtin__array_push((array*)&_t2, &it);
+		}
+	}
+	Array_string segments =_t2;
+	if (segments.len == 0) {
+		return clean;
+	}
+	string last_segment = (*(string*)builtin__array_get(segments, (int)(segments.len - 1)));
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("/"), 0xfe10, {.d_s = last_segment}}, {_SLIT0, 0, { .d_c = 0 }}}));
 }
 VV_LOC Array_string main__parse_action_list(vphp__ZVal raw) {
 	if (!vphp__ZVal_is_valid(raw) || vphp__ZVal_is_null(raw) || vphp__ZVal_is_undef(raw)) {
@@ -47507,7 +47563,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_52965);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_53928);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
