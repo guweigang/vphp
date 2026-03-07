@@ -554,6 +554,8 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `all_inputs()`
   - `header(...)`
   - `headers()`
+  - `request_id()`
+  - `trace_id()`
   - `cookie(...)`
   - `cookies()`
   - `attribute(...)`
@@ -616,6 +618,8 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - headers：
   - `set_status(...)`
   - `set_header(...)`
+  - `with_request_id(...)`
+  - `with_trace_id(...)`
   - `header(...)`
   - `has_header(...)`
   - `set_content_type(...)`

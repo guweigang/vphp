@@ -37,6 +37,26 @@ pub fn (mut r VSlimResponse) set_header(name string, value string) &VSlimRespons
 }
 
 @[php_method]
+pub fn (mut r VSlimResponse) with_request_id(request_id string) &VSlimResponse {
+	if request_id == '' {
+		return r
+	}
+	return r.set_header('x-request-id', request_id)
+}
+
+@[php_method]
+pub fn (mut r VSlimResponse) with_trace_id(trace_id string) &VSlimResponse {
+	if trace_id == '' {
+		return r
+	}
+	r.set_header('x-trace-id', trace_id)
+	if !r.has_header('x-vhttpd-trace-id') {
+		r.set_header('x-vhttpd-trace-id', trace_id)
+	}
+	return r
+}
+
+@[php_method]
 pub fn (mut r VSlimResponse) set_content_type(content_type string) &VSlimResponse {
 	r.content_type = content_type
 	mut headers := r.header_values()

@@ -745,6 +745,22 @@ pub fn vphp_wrap_vslimrequest_content_type(ptr voidptr, ctx vphp.Context)  {
     res := recv.content_type()
     ctx.return_val[string](res)
 }
+@[export: 'vphp_wrap_VSlimRequest_request_id']
+pub fn vphp_wrap_vslimrequest_request_id(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.request_id()
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_trace_id']
+pub fn vphp_wrap_vslimrequest_trace_id(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.trace_id()
+    ctx.return_val[string](res)
+}
 @[export: 'vphp_wrap_VSlimRequest_cookie']
 pub fn vphp_wrap_vslimrequest_cookie(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }
@@ -1056,6 +1072,24 @@ pub fn vphp_wrap_vslimresponse_set_header(ptr voidptr, ctx vphp.Context) voidptr
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     res := recv.set_header(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimResponse_with_request_id']
+pub fn vphp_wrap_vslimresponse_with_request_id(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.with_request_id(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimResponse_with_trace_id']
+pub fn vphp_wrap_vslimresponse_with_trace_id(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimResponse(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    res := recv.with_trace_id(arg_0)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimResponse_set_content_type']

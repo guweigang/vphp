@@ -144,6 +144,7 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 	if trace_on {
 		vslim_trace_mem_log(req, 'dispatch.after_core', trace_base)
 	}
+	propagate_request_trace_headers(req, mut res)
 	if resolve_effective_method(req) == 'HEAD' {
 		res.body = ''
 	}
@@ -158,6 +159,22 @@ pub fn (app &VSlimApp) dispatch_request(req &VSlimRequest) &VSlimResponse {
 		vslim_trace_mem_log(req, 'dispatch.before_return', trace_base)
 	}
 	return to_vslim_response(res)
+}
+
+fn propagate_request_trace_headers(req &VSlimRequest, mut res VSlimResponse) {
+	rid := req.request_id()
+	if rid != '' && !res.has_header('x-request-id') {
+		res.set_header('x-request-id', rid)
+	}
+	tid := req.trace_id()
+	if tid != '' {
+		if !res.has_header('x-trace-id') {
+			res.set_header('x-trace-id', tid)
+		}
+		if !res.has_header('x-vhttpd-trace-id') {
+			res.set_header('x-vhttpd-trace-id', tid)
+		}
+	}
 }
 
 @[php_method]

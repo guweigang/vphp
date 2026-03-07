@@ -265,6 +265,44 @@ pub fn (r &VSlimRequest) content_type() string {
 }
 
 @[php_method]
+pub fn (r &VSlimRequest) request_id() string {
+	header_id := r.header('x-request-id')
+	if header_id != '' {
+		return header_id
+	}
+	attr_id := r.attribute('request_id')
+	if attr_id != '' {
+		return attr_id
+	}
+	query_id := r.query('request_id')
+	if query_id != '' {
+		return query_id
+	}
+	return ''
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) trace_id() string {
+	mut trace := r.header('x-vhttpd-trace-id')
+	if trace != '' {
+		return trace
+	}
+	trace = r.header('x-trace-id')
+	if trace != '' {
+		return trace
+	}
+	trace = r.query('trace_id')
+	if trace != '' {
+		return trace
+	}
+	trace = r.attribute('trace_id')
+	if trace != '' {
+		return trace
+	}
+	return r.request_id()
+}
+
+@[php_method]
 pub fn (r &VSlimRequest) cookie(name string) string {
 	cookies := r.cookie_values()
 	return cookies[name] or { '' }

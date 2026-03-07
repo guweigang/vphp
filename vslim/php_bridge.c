@@ -631,6 +631,10 @@ ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_content_type, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_request_id, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_trace_id, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_cookie, 0, 0, 1)
 ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
@@ -1112,6 +1116,22 @@ PHP_METHOD(VSlim__Request, content_type) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimRequest_content_type(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(VSlim__Request, request_id) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_request_id(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_request_id(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, trace_id) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_trace_id(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_trace_id(wrapper->v_ptr, ctx);
+}
 PHP_METHOD(VSlim__Request, cookie) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -1327,6 +1347,8 @@ static const zend_function_entry vslim__request_methods[] = {
     PHP_ME(VSlim__Request, headers, arginfo_vslim__request_headers, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, has_header, arginfo_vslim__request_has_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, content_type, arginfo_vslim__request_content_type, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, request_id, arginfo_vslim__request_request_id, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, trace_id, arginfo_vslim__request_trace_id, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, cookie, arginfo_vslim__request_cookie, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, cookies, arginfo_vslim__request_cookies, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, has_cookie, arginfo_vslim__request_has_cookie, ZEND_ACC_PUBLIC)
@@ -1369,6 +1391,12 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_header, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, value, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_with_request_id, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, request_id, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_with_trace_id, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, trace_id, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__response_set_content_type, 0, 0, 1)
 ZEND_ARG_TYPE_INFO(0, content_type, IS_STRING, 0)
@@ -1471,6 +1499,38 @@ PHP_METHOD(VSlim__Response, set_header) {
     // printf("PHP_METHOD VSlim__Response::set_header called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = vphp_wrap_VSlimResponse_set_header(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__response_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
+    }
+}
+
+
+PHP_METHOD(VSlim__Response, with_request_id) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimResponse_with_request_id(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__Response::with_request_id called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimResponse_with_request_id(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__response_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
+    }
+}
+
+
+PHP_METHOD(VSlim__Response, with_trace_id) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimResponse_with_trace_id(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__Response::with_trace_id called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimResponse_with_trace_id(wrapper->v_ptr, ctx);
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
@@ -1708,6 +1768,8 @@ static const zend_function_entry vslim__response_methods[] = {
     PHP_ME(VSlim__Response, headers, arginfo_vslim__response_headers, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Response, has_header, arginfo_vslim__response_has_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Response, set_header, arginfo_vslim__response_set_header, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Response, with_request_id, arginfo_vslim__response_with_request_id, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Response, with_trace_id, arginfo_vslim__response_with_trace_id, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Response, set_content_type, arginfo_vslim__response_set_content_type, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Response, cookie_header, arginfo_vslim__response_cookie_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Response, set_cookie, arginfo_vslim__response_set_cookie, ZEND_ACC_PUBLIC)
