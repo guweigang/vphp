@@ -13,7 +13,7 @@ $body = $view->render('view_control_flow.html', [
     'show_desc' => '0',
     'title' => 'Hello',
     'desc' => 'Should not render',
-    'tags' => 'go,<b>x</b>,php',
+    'tags' => ['go', '<b>x</b>', 'php'],
 ]);
 
 echo (str_contains($body, '<h1>Hello</h1>') ? 'if-ok' : 'if-miss') . PHP_EOL;

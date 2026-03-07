@@ -91,35 +91,45 @@ pub fn (view &VSlimView) asset(path string) string {
 
 @[php_method]
 pub fn (view &VSlimView) render(template string, data vphp.ZVal) string {
-	return view.render_map(template, data.to_string_map())
+	scalars, lists := extract_template_data(data)
+	return view.render_maps(template, scalars, lists)
 }
 
 pub fn (view &VSlimView) render_map(template string, data map[string]string) string {
-	return view.render_map_with_depth(template, data, 0)
+	return view.render_maps(template, data, map[string][]string{})
 }
 
-fn (view &VSlimView) render_map_with_depth(template string, data map[string]string, depth int) string {
+fn (view &VSlimView) render_maps(template string, scalars map[string]string, lists map[string][]string) string {
+	return view.render_map_with_depth(template, scalars, lists, 0)
+}
+
+fn (view &VSlimView) render_map_with_depth(template string, scalars map[string]string, lists map[string][]string, depth int) string {
 	if depth > 8 {
 		return ''
 	}
 	path := view.resolve_template_path(template)
 	source := os.read_file(path) or { return '' }
-	return view.render_source(source, data, depth)
+	return view.render_source(source, scalars, lists, depth)
 }
 
 @[php_method]
 pub fn (view &VSlimView) render_with_layout(template string, layout string, data vphp.ZVal) string {
-	return view.render_map_with_layout(template, layout, data.to_string_map())
+	scalars, lists := extract_template_data(data)
+	return view.render_maps_with_layout(template, layout, scalars, lists)
 }
 
 pub fn (view &VSlimView) render_map_with_layout(template string, layout string, data map[string]string) string {
-	content := view.render_map_with_depth(template, data, 0)
+	return view.render_maps_with_layout(template, layout, data, map[string][]string{})
+}
+
+pub fn (view &VSlimView) render_maps_with_layout(template string, layout string, scalars map[string]string, lists map[string][]string) string {
+	content := view.render_map_with_depth(template, scalars, lists, 0)
 	if content == '' {
 		return ''
 	}
 	layout_path := view.resolve_template_path(layout)
 	layout_source := os.read_file(layout_path) or { return content }
-	layout_rendered := view.render_source(layout_source, data, 0)
+	layout_rendered := view.render_source(layout_source, scalars, lists, 0)
 	return replace_slot_tokens(layout_rendered, 'content', content)
 }
 
@@ -149,13 +159,13 @@ pub fn (view &VSlimView) render_response_with_layout(template string, layout str
 	}
 }
 
-fn (view &VSlimView) render_source(source string, data map[string]string, depth int) string {
+fn (view &VSlimView) render_source(source string, scalars map[string]string, lists map[string][]string, depth int) string {
 	mut out := source
-	out = view.render_include_tokens(out, data, depth)
-	out = render_if_blocks(out, data)
-	out = render_for_blocks(out, data)
-	out = render_raw_value_tokens(out, data)
-	for key, value in data {
+	out = view.render_include_tokens(out, scalars, lists, depth)
+	out = render_if_blocks(out, scalars, lists)
+	out = render_for_blocks(out, scalars, lists)
+	out = render_raw_value_tokens(out, scalars)
+	for key, value in scalars {
 		escaped := escape_html_text(value)
 		out = out.replace('{{${key}}}', escaped)
 		out = out.replace('{{ ${key} }}', escaped)
@@ -163,7 +173,7 @@ fn (view &VSlimView) render_source(source string, data map[string]string, depth 
 	return render_asset_tokens(out, view.assets_prefix())
 }
 
-fn (view &VSlimView) render_include_tokens(source string, data map[string]string, depth int) string {
+fn (view &VSlimView) render_include_tokens(source string, scalars map[string]string, lists map[string][]string, depth int) string {
 	mut out := source
 	for {
 		start := out.index('{{include:') or { break }
@@ -171,7 +181,7 @@ fn (view &VSlimView) render_include_tokens(source string, data map[string]string
 		token_end := start + end + 2
 		token := out[start..token_end]
 		partial := token.replace('{{include:', '').replace('}}', '').trim_space()
-		replacement := view.render_map_with_depth(partial, data, depth + 1)
+		replacement := view.render_map_with_depth(partial, scalars, lists, depth + 1)
 		out = out.replace(token, replacement)
 	}
 	return out
@@ -231,7 +241,7 @@ fn render_raw_value_tokens(source string, data map[string]string) string {
 	return out
 }
 
-fn render_if_blocks(source string, data map[string]string) string {
+fn render_if_blocks(source string, scalars map[string]string, lists map[string][]string) string {
 	mut out := source
 	for {
 		start := out.index('{{if:') or { break }
@@ -255,14 +265,20 @@ fn render_if_blocks(source string, data map[string]string) string {
 			true_block = block[..else_pos]
 			false_block = block[else_pos + else_token_spaced.len..]
 		}
-		val := data[key] or { '' }
-		replacement := if is_truthy_template_value(val) { true_block } else { false_block }
+		mut truthy := false
+		if key in lists {
+			unsafe { truthy = lists[key].len > 0 }
+		} else {
+			val := scalars[key] or { '' }
+			truthy = is_truthy_template_value(val)
+		}
+		replacement := if truthy { true_block } else { false_block }
 		out = out[..start] + replacement + out[close_end..]
 	}
 	return out
 }
 
-fn render_for_blocks(source string, data map[string]string) string {
+fn render_for_blocks(source string, scalars map[string]string, lists map[string][]string) string {
 	mut out := source
 	for {
 		start := out.index('{{for:') or { break }
@@ -275,8 +291,12 @@ fn render_for_blocks(source string, data map[string]string) string {
 		close_start := key_end + close_rel
 		close_end := close_start + close_token.len
 		block := out[key_end..close_start]
-		raw := data[key] or { '' }
-		items := parse_for_items(raw)
+		items := if key in lists {
+			unsafe { lists[key].clone() }
+		} else {
+			raw := scalars[key] or { '' }
+			parse_for_items(raw)
+		}
 		mut rendered := ''
 		for idx, item in items {
 			mut part := block
@@ -292,6 +312,29 @@ fn render_for_blocks(source string, data map[string]string) string {
 		out = out[..start] + rendered + out[close_end..]
 	}
 	return out
+}
+
+fn extract_template_data(data vphp.ZVal) (map[string]string, map[string][]string) {
+	mut scalars := map[string]string{}
+	mut lists := map[string][]string{}
+	if !data.is_valid() || !data.is_array() {
+		return scalars, lists
+	}
+	items := data.fold[map[string]vphp.ZVal](map[string]vphp.ZVal{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc map[string]vphp.ZVal) {
+		k := key.to_string().trim_space()
+		if k == '' {
+			return
+		}
+		acc[k] = val
+	})
+	for k, val in items {
+		if val.is_array() {
+			lists[k] = val.to_string_list()
+		} else {
+			scalars[k] = val.to_string()
+		}
+	}
+	return scalars, lists
 }
 
 fn parse_for_items(raw string) []string {

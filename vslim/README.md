@@ -718,7 +718,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 
 说明：
 - `if` 目前是 key truthy 判断（`'',0,false,no,off,null` 视为 false）
-- `for` 目前按逗号分隔字符串迭代（`item/index`）
+- `for` 支持数组（优先）和逗号分隔字符串（`item/index`）
 
 局部模板与布局：
 
