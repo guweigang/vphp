@@ -19,6 +19,16 @@ fn v_greet(name string) string {
 }
 
 @[php_function]
+fn v_float_const() f64 {
+	return 1.5
+}
+
+@[php_function]
+fn v_float_id(x f64) f64 {
+	return x
+}
+
+@[php_function]
 fn v_pure_map_test(k string, v string) map[string]string {
 	return {
 		k: v

@@ -155,13 +155,26 @@ fn arg_type_code(v_type string) string {
 	}
 }
 
+fn method_required_args(m ClassMethod) int {
+	mut required := m.args.len
+	if m.args.len == 0 {
+		return required
+	}
+	last := m.args[m.args.len - 1]
+	is_zval := last.type_ == 'vphp.ZVal' || last.type_ == 'ZVal'
+	if is_zval && last.name == 'default_value' {
+		required--
+	}
+	return required
+}
+
 	pub fn (b &ClassBuilder) render_arginfo_defs() string {
 		mut res := []string{}
 		for m in b.methods {
 			if m.php_name == '__toString' {
 				res << 'ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_${m.c_func}, 0, 0, IS_STRING, 0)'
 			} else {
-				res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, ${m.args.len})'
+				res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, ${method_required_args(m)})'
 			}
 			for arg in m.args {
 				type_code := arg_type_code(arg.type_)

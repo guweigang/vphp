@@ -1465,7 +1465,12 @@ pub fn (v ZVal) to_v[T]() !T {
 // 将 V 类型写入 Zend Value
 pub fn (v ZVal) from_v[T](value T) ! {
 	$if T is ZVal {
-		return error('from_v[ZVal] is not supported; convert to a concrete V type first')
+		if !value.is_valid() {
+			v.set_null()
+			return
+		}
+		unsafe { C.ZVAL_COPY(v.raw, value.raw) }
+		return
 	}
 	$if T is bool {
 		v.set_bool(value)

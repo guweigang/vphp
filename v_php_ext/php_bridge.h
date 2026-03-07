@@ -12,6 +12,8 @@ extern void* vphp_get_active_globals();
 
 PHP_FUNCTION(v_add);
 PHP_FUNCTION(v_greet);
+PHP_FUNCTION(v_float_const);
+PHP_FUNCTION(v_float_id);
 PHP_FUNCTION(v_pure_map_test);
 PHP_FUNCTION(v_process_list);
 PHP_FUNCTION(v_test_map);

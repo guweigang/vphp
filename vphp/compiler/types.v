@@ -16,6 +16,8 @@ pub fn TypeMap.get_type(v_type string) TypeMap {
 	return match clean_type {
 		'int'    { TypeMap{'int', 'int', 'RETURN_LONG', false} }
 		'i64'    { TypeMap{'i64', 'long long', 'RETURN_LONG', false} }
+		'f32'    { TypeMap{'f32', 'double', 'RETURN_DOUBLE', false} }
+		'f64'    { TypeMap{'f64', 'double', 'RETURN_DOUBLE', false} }
 		'bool'   { TypeMap{'bool', 'bool', 'RETURN_BOOL', false} }
 		'string' { TypeMap{'string', 'v_string', 'VPHP_RETURN_STRING', false} }
 

@@ -1102,6 +1102,23 @@ fn vphp_wrap_v_greet(ctx vphp.Context) {
     ctx.return_val[string](res)
 }
 
+@[export: 'vphp_wrap_v_float_const']
+fn vphp_wrap_v_float_const(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := v_float_const()
+    ctx.return_val[f64](res)
+}
+
+@[export: 'vphp_wrap_v_float_id']
+fn vphp_wrap_v_float_id(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[f64](0)
+    res := v_float_id(arg_0)
+    ctx.return_val[f64](res)
+}
+
 @[export: 'vphp_wrap_v_pure_map_test']
 fn vphp_wrap_v_pure_map_test(ctx vphp.Context) {
     vphp_ar_mark := vphp.autorelease_mark()

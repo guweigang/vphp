@@ -25,6 +25,20 @@ PHP_FUNCTION(v_greet) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_greet(ctx);
 }
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_float_const, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_float_const(vphp_context_internal ctx);
+PHP_FUNCTION(v_float_const) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_float_const(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_float_id, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_float_id(vphp_context_internal ctx);
+PHP_FUNCTION(v_float_id) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_float_id(ctx);
+}
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_pure_map_test, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_pure_map_test(vphp_context_internal ctx);
@@ -938,6 +952,8 @@ PHP_INI_END()
 static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_add, arginfo_v_add)
     PHP_FE(v_greet, arginfo_v_greet)
+    PHP_FE(v_float_const, arginfo_v_float_const)
+    PHP_FE(v_float_id, arginfo_v_float_id)
     PHP_FE(v_pure_map_test, arginfo_v_pure_map_test)
     PHP_FE(v_process_list, arginfo_v_process_list)
     PHP_FE(v_test_map, arginfo_v_test_map)
