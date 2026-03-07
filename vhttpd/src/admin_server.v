@@ -182,7 +182,7 @@ fn run_admin_server(shared_app &App, host string, port int, token string) {
 		admin_token: token
 		shared: unsafe { shared_app }
 	}
-	veb.run_at[AdminApp, Context](mut admin, host: host, port: port, family: .ip) or {
+	veb.run_at[AdminApp, Context](mut admin, host: host, port: port, family: .ip, show_startup_message: false) or {
 		eprintln('admin server failed: ${err}')
 	}
 }

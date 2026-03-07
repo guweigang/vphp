@@ -188,9 +188,13 @@ fn run_server(args []string) {
 			'host': admin_host
 			'port': '${admin_port}'
 		})
+		println('[vhttpd] Control Plane (admin): http://${admin_host}:${admin_port}/admin')
+	} else {
+		println('[vhttpd] Control Plane (admin): disabled (served on Data Plane /admin)')
 	}
+	println('[vhttpd] Data Plane: http://${host}:${port}/')
 
-	veb.run_at[App, Context](mut app, host: host, port: port, family: .ip) or {
+	veb.run_at[App, Context](mut app, host: host, port: port, family: .ip, show_startup_message: false) or {
 		eprintln('server failed: ${err}')
 	}
 }
