@@ -144,6 +144,12 @@ APP_ENV = "dev"
 host = "127.0.0.1"
 port = 19981
 token = "change-me"
+
+[assets]
+enabled = false
+prefix = "/assets"
+root = "/Users/guweigang/Source/vphpext/vhttpd/examples/public"
+cache_control = "public, max-age=3600"
 ```
 
 Note: variable expansion currently applies to TOML string fields.
@@ -218,6 +224,10 @@ Endpoints:
   - `GET /hello/codex`
   - `GET /go/nova`
   - `GET /api/meta`
+- optional static assets (when `[assets].enabled=true`) are served directly by `veb` on data plane:
+  - implemented via `veb.StaticHandler` (`mount_static_folder_at`)
+  - `GET /assets/app.js`
+  - `HEAD /assets/app.js`
 - `GET /events/stream` returns SSE ping events for observability/debug:
   - `/events/stream?count=3&interval_ms=150`
   - `/events/stream?request_id=req-demo`

@@ -20,6 +20,7 @@ pub struct Context {
 
 pub struct App {
 	veb.Middleware[Context]
+	veb.StaticHandler
 pub:
 	event_log string
 pub mut:
@@ -35,6 +36,11 @@ pub mut:
 	worker_restart_backoff_max_ms int
 	worker_max_requests    int
 	admin_on_data_plane   bool
+	assets_enabled        bool
+	assets_prefix         string
+	assets_root           string
+	assets_root_real      string
+	assets_cache_control  string
 	managed_workers        []ManagedWorker
 	stat_http_requests_total i64
 	stat_http_errors_total   i64
@@ -180,6 +186,20 @@ fn normalize_path(path string) string {
 		return path
 	}
 	return '/${path}'
+}
+
+fn normalize_assets_prefix(raw string) string {
+	mut prefix := raw.trim_space()
+	if prefix == '' {
+		return '/assets'
+	}
+	if !prefix.starts_with('/') {
+		prefix = '/${prefix}'
+	}
+	for prefix.len > 1 && prefix.ends_with('/') {
+		prefix = prefix[..prefix.len - 1]
+	}
+	return prefix
 }
 
 fn dispatch_core(method string, path string) (int, string, string) {

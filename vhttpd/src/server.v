@@ -108,6 +108,11 @@ fn run_server(args []string) {
 	worker_restart_backoff_max_ms := arg_int_or(args, '--worker-restart-backoff-max-ms',
 		cfg.worker.restart_backoff_max_ms)
 	worker_max_requests := arg_int_or(args, '--worker-max-requests', cfg.worker.max_requests)
+	assets_enabled := cfg.assets.enabled
+	assets_prefix := normalize_assets_prefix(cfg.assets.prefix)
+	assets_root := cfg.assets.root
+	assets_root_real := if assets_root.trim_space() == '' { '' } else { os.real_path(assets_root) }
+	assets_cache_control := cfg.assets.cache_control
 	admin_host_arg := arg_string_or(args, '--admin-host', cfg.admin.host).trim_space()
 	admin_port := arg_int_or(args, '--admin-port', cfg.admin.port)
 	admin_token := arg_string_or(args, '--admin-token', cfg.admin.token)
@@ -134,6 +139,11 @@ fn run_server(args []string) {
 		worker_restart_backoff_max_ms: worker_restart_backoff_max_ms
 		worker_max_requests:           worker_max_requests
 		admin_on_data_plane:           !admin_enabled
+		assets_enabled:                assets_enabled
+		assets_prefix:                 assets_prefix
+		assets_root:                   assets_root
+		assets_root_real:              assets_root_real
+		assets_cache_control:          assets_cache_control
 	}
 	defer {
 		stop_worker_pool(mut app.managed_workers)
@@ -165,6 +175,11 @@ fn run_server(args []string) {
 			}
 		}
 	}
+	if app.assets_enabled && app.assets_root_real != '' {
+		app.mount_static_folder_at(app.assets_root_real, app.assets_prefix) or {
+			eprintln('assets mount failed: ${err}')
+		}
+	}
 
 	app.use(request_id.middleware[Context](request_id.Config{
 		header:    'X-Request-ID'
@@ -172,6 +187,20 @@ fn run_server(args []string) {
 			return 'req-${time.now().unix_micro()}'
 		}
 	}))
+	if app.assets_enabled && app.assets_cache_control.trim_space() != '' {
+		assets_prefix_mw := app.assets_prefix
+		cache_control := app.assets_cache_control
+		app.use(handler: fn [assets_prefix_mw, cache_control] (mut ctx Context) bool {
+			mut url := ctx.req.url
+			if q := url.index('?') {
+				url = url[..q]
+			}
+			if url == assets_prefix_mw || url.starts_with('${assets_prefix_mw}/') {
+				ctx.set_custom_header('cache-control', cache_control) or {}
+			}
+			return true
+		})
+	}
 	app.emit('server.started', {
 		'host':             host
 		'port':             '${port}'
@@ -191,6 +220,11 @@ fn run_server(args []string) {
 		println('[vhttpd] Control Plane (admin): http://${admin_host}:${admin_port}/admin')
 	} else {
 		println('[vhttpd] Control Plane (admin): disabled (served on Data Plane /admin)')
+	}
+	if app.assets_enabled && app.assets_root_real != '' {
+		println('[vhttpd] Assets: ${app.assets_prefix} -> ${app.assets_root_real}')
+	} else {
+		println('[vhttpd] Assets: disabled')
 	}
 	println('[vhttpd] Data Plane: http://${host}:${port}/')
 

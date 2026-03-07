@@ -20,3 +20,9 @@ VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/demo_app.php"
 host = "127.0.0.1"
 port = 19988
 token = ""
+
+[assets]
+enabled = true
+prefix = "/assets"
+root = "/Users/guweigang/Source/vphpext/vslim/examples/public"
+cache_control = "public, max-age=3600"

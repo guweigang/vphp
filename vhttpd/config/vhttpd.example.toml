@@ -23,3 +23,9 @@ VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vhttpd/examples/hello-app.php
 host = "127.0.0.1"
 port = 19981
 token = "change-me"
+
+[assets]
+enabled = false
+prefix = "/assets"
+root = "/Users/guweigang/Source/vphpext/vhttpd/examples/public"
+cache_control = "public, max-age=3600"

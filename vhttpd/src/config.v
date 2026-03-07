@@ -37,12 +37,21 @@ mut:
 	token string
 }
 
+struct AssetsConfig {
+mut:
+	enabled       bool
+	prefix        string = '/assets'
+	root          string
+	cache_control string = 'public, max-age=3600' @[toml: 'cache_control']
+}
+
 struct VhttpdConfig {
 mut:
 	server ServerConfig
 	files  FilesConfig
 	worker WorkerConfig
 	admin  AdminConfig
+	assets AssetsConfig
 }
 
 fn default_vhttpd_config() VhttpdConfig {
@@ -156,6 +165,12 @@ fn resolve_config_variables(mut cfg VhttpdConfig) ! {
 			changed)!
 		cfg.admin.token, changed = expand_config_string(cfg.admin.token, vars, env_map,
 			changed)!
+		cfg.assets.prefix, changed = expand_config_string(cfg.assets.prefix, vars, env_map,
+			changed)!
+		cfg.assets.root, changed = expand_config_string(cfg.assets.root, vars, env_map,
+			changed)!
+		cfg.assets.cache_control, changed = expand_config_string(cfg.assets.cache_control,
+			vars, env_map, changed)!
 		if !changed {
 			return
 		}
@@ -181,6 +196,10 @@ fn build_config_variable_map(cfg VhttpdConfig) map[string]string {
 		'admin.host':                    cfg.admin.host
 		'admin.port':                    '${cfg.admin.port}'
 		'admin.token':                   cfg.admin.token
+		'assets.enabled':                '${cfg.assets.enabled}'
+		'assets.prefix':                 cfg.assets.prefix
+		'assets.root':                   cfg.assets.root
+		'assets.cache_control':          cfg.assets.cache_control
 	}
 }
 

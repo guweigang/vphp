@@ -49,3 +49,17 @@ BASE_URL=http://127.0.0.1:19888 ROUTE_MODE=health k6 run /Users/guweigang/Source
 
 - 开启 `VSLIM_TRACE_MEM` 会带来可观开销，QPS 与延迟都会变差。
 - 建议线上默认关闭 trace，仅在诊断时按需打开（并设置较大的采样间隔）。
+
+## 静态资源（Assets）验证
+
+`vslim-demo.toml` 已启用：
+
+- `prefix = /assets`
+- `root = /Users/guweigang/Source/vphpext/vslim/examples/public`
+
+快速验证：
+
+```bash
+curl --noproxy '*' -i http://127.0.0.1:19888/assets/hello.txt
+curl --noproxy '*' -I http://127.0.0.1:19888/assets/app.js
+```
