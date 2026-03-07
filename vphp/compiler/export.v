@@ -119,6 +119,8 @@ fn (mut c Compiler) generate_c() ! {
 	res.write_string(mod_builder.render_functions_table())
 	res.write_string(mod_builder.render_minit())
 	res.write_string(mod_builder.render_mshutdown())
+	res.write_string(mod_builder.render_rinit())
+	res.write_string(mod_builder.render_rshutdown())
 	res.write_string(mod_builder.render_minfo())
 	res.write_string(mod_builder.render_globals_getter())
 	res.write_string(mod_builder.render_module_entry())

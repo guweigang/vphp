@@ -33,3 +33,25 @@ pub fn init_framework(module_number int) {
     C.vphp_init_resource_system(module_number)
   }
 }
+
+@[export: 'vphp_framework_shutdown']
+pub fn vphp_framework_shutdown() {
+	unsafe {
+		C.vphp_autorelease_shutdown()
+		C.vphp_shutdown_registry()
+	}
+}
+
+@[export: 'vphp_framework_request_startup']
+pub fn vphp_framework_request_startup() {
+	unsafe {
+		C.vphp_request_startup()
+	}
+}
+
+@[export: 'vphp_framework_request_shutdown']
+pub fn vphp_framework_request_shutdown() {
+	unsafe {
+		C.vphp_request_shutdown()
+	}
+}

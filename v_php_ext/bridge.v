@@ -8,6 +8,19 @@ import vphp
 pub fn abstractreport_new_raw() voidptr {
     return vphp.generic_new_raw[AbstractReport]()
 }
+@[export: 'AbstractReport_free_raw']
+pub fn abstractreport_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[AbstractReport](ptr)
+}
+@[export: 'AbstractReport_cleanup_raw']
+pub fn abstractreport_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+}
 @[export: 'AbstractReport_get_prop']
 pub fn abstractreport_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
     unsafe {
@@ -42,12 +55,16 @@ pub fn abstractreport_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_AbstractReport_label']
 pub fn vphp_wrap_abstractreport_label(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &AbstractReport(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.label()
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_AbstractReport_summarize']
 pub fn vphp_wrap_abstractreport_summarize(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &AbstractReport(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.summarize()
     ctx.return_val[string](res)
 }
@@ -58,12 +75,27 @@ pub fn abstractreport_handlers() voidptr {
         write_handler: voidptr(abstractreport_set_prop)
         sync_handler:  voidptr(abstractreport_sync_props)
         new_raw:       voidptr(abstractreport_new_raw)
+        cleanup_raw:   voidptr(abstractreport_cleanup_raw)
+        free_raw:      voidptr(abstractreport_free_raw)
     } }
 }
 
 @[export: 'DailyReport_new_raw']
 pub fn dailyreport_new_raw() voidptr {
     return vphp.generic_new_raw[DailyReport]()
+}
+@[export: 'DailyReport_free_raw']
+pub fn dailyreport_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[DailyReport](ptr)
+}
+@[export: 'DailyReport_cleanup_raw']
+pub fn dailyreport_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'DailyReport_get_prop']
 pub fn dailyreport_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -99,6 +131,8 @@ pub fn dailyreport_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_DailyReport_construct']
 pub fn vphp_wrap_dailyreport_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &DailyReport(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     res := recv.construct(arg_0, arg_1)
@@ -107,6 +141,8 @@ pub fn vphp_wrap_dailyreport_construct(ptr voidptr, ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_DailyReport_summarize']
 pub fn vphp_wrap_dailyreport_summarize(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &DailyReport(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.summarize()
     ctx.return_val[string](res)
 }
@@ -117,12 +153,27 @@ pub fn dailyreport_handlers() voidptr {
         write_handler: voidptr(dailyreport_set_prop)
         sync_handler:  voidptr(dailyreport_sync_props)
         new_raw:       voidptr(dailyreport_new_raw)
+        cleanup_raw:   voidptr(dailyreport_cleanup_raw)
+        free_raw:      voidptr(dailyreport_free_raw)
     } }
 }
 
 @[export: 'Author_new_raw']
 pub fn author_new_raw() voidptr {
     return vphp.generic_new_raw[Author]()
+}
+@[export: 'Author_free_raw']
+pub fn author_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[Author](ptr)
+}
+@[export: 'Author_cleanup_raw']
+pub fn author_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'Author_get_prop']
 pub fn author_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -157,6 +208,8 @@ pub fn author_sync_props(ptr voidptr, zv &C.zval) {
 }
 @[export: 'vphp_wrap_Author_create']
 pub fn vphp_wrap_author_create(ctx vphp.Context) voidptr {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     res := Author.create(arg_0)
     return voidptr(res)
@@ -164,6 +217,8 @@ pub fn vphp_wrap_author_create(ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_Author_get_name']
 pub fn vphp_wrap_author_get_name(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Author(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.get_name()
     ctx.return_val[string](res)
 }
@@ -174,12 +229,27 @@ pub fn author_handlers() voidptr {
         write_handler: voidptr(author_set_prop)
         sync_handler:  voidptr(author_sync_props)
         new_raw:       voidptr(author_new_raw)
+        cleanup_raw:   voidptr(author_cleanup_raw)
+        free_raw:      voidptr(author_free_raw)
     } }
 }
 
 @[export: 'Post_new_raw']
 pub fn post_new_raw() voidptr {
     return vphp.generic_new_raw[Post]()
+}
+@[export: 'Post_free_raw']
+pub fn post_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[Post](ptr)
+}
+@[export: 'Post_cleanup_raw']
+pub fn post_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'Post_get_prop']
 pub fn post_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -215,12 +285,16 @@ pub fn post_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_Post_set_author']
 pub fn vphp_wrap_post_set_author(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Post(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := unsafe { &Author(ctx.arg_raw_obj(0)) }
     recv.set_author(arg_0)
 }
 @[export: 'vphp_wrap_Post_get_author']
 pub fn vphp_wrap_post_get_author(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &Post(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.get_author()
     return voidptr(res)
 }
@@ -231,12 +305,27 @@ pub fn post_handlers() voidptr {
         write_handler: voidptr(post_set_prop)
         sync_handler:  voidptr(post_sync_props)
         new_raw:       voidptr(post_new_raw)
+        cleanup_raw:   voidptr(post_cleanup_raw)
+        free_raw:      voidptr(post_free_raw)
     } }
 }
 
 @[export: 'Article_new_raw']
 pub fn article_new_raw() voidptr {
     return vphp.generic_new_raw[Article]()
+}
+@[export: 'Article_free_raw']
+pub fn article_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[Article](ptr)
+}
+@[export: 'Article_cleanup_raw']
+pub fn article_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'Article_get_prop']
 pub fn article_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -290,7 +379,6 @@ pub fn article_sync_props(ptr voidptr, zv &C.zval) {
         out.add_property_long('id', i64(obj.id))
         out.add_property_string('title', obj.title)
         out.add_property_bool('is_top', obj.is_top)
-        out.add_property_string('content', obj.content)
     }
 }
 pub fn Article.consts() ArticleConsts {
@@ -313,6 +401,8 @@ pub fn Article.sync_statics_from_php(ctx vphp.Context) {
 @[export: 'vphp_wrap_Article_construct']
 pub fn vphp_wrap_article_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &Article(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[int](1)
     Article.sync_statics_from_php(ctx)
@@ -323,6 +413,8 @@ pub fn vphp_wrap_article_construct(ptr voidptr, ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_Article_internal_format']
 pub fn vphp_wrap_article_internal_format(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     Article.sync_statics_from_php(ctx)
     res := recv.internal_format()
     Article.sync_statics_to_php(ctx)
@@ -330,6 +422,8 @@ pub fn vphp_wrap_article_internal_format(ptr voidptr, ctx vphp.Context)  {
 }
 @[export: 'vphp_wrap_Article_create']
 pub fn vphp_wrap_article_create(ctx vphp.Context) voidptr {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     Article.sync_statics_from_php(ctx)
     res := Article.create(arg_0)
@@ -339,6 +433,8 @@ pub fn vphp_wrap_article_create(ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_Article_get_formatted_title']
 pub fn vphp_wrap_article_get_formatted_title(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     Article.sync_statics_from_php(ctx)
     res := recv.get_formatted_title()
     Article.sync_statics_to_php(ctx)
@@ -347,6 +443,8 @@ pub fn vphp_wrap_article_get_formatted_title(ptr voidptr, ctx vphp.Context)  {
 @[export: 'vphp_wrap_Article_save']
 pub fn vphp_wrap_article_save(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     Article.sync_statics_from_php(ctx)
     res := recv.save()
     Article.sync_statics_to_php(ctx)
@@ -355,6 +453,8 @@ pub fn vphp_wrap_article_save(ptr voidptr, ctx vphp.Context)  {
 @[export: 'vphp_wrap_Article_dump_properties']
 pub fn vphp_wrap_article_dump_properties(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg_val(0)
     Article.sync_statics_from_php(ctx)
     recv.dump_properties(arg_0)
@@ -363,6 +463,8 @@ pub fn vphp_wrap_article_dump_properties(ptr voidptr, ctx vphp.Context)  {
 @[export: 'vphp_wrap_Article_process_with_callback']
 pub fn vphp_wrap_article_process_with_callback(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Article(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg_val(0)
     Article.sync_statics_from_php(ctx)
     res := recv.process_with_callback(arg_0)
@@ -371,6 +473,8 @@ pub fn vphp_wrap_article_process_with_callback(ptr voidptr, ctx vphp.Context)  {
 }
 @[export: 'vphp_wrap_Article_restore_author']
 pub fn vphp_wrap_article_restore_author(ctx vphp.Context) voidptr {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg_val(0)
     Article.sync_statics_from_php(ctx)
     res := Article.restore_author(arg_0)
@@ -384,12 +488,27 @@ pub fn article_handlers() voidptr {
         write_handler: voidptr(article_set_prop)
         sync_handler:  voidptr(article_sync_props)
         new_raw:       voidptr(article_new_raw)
+        cleanup_raw:   voidptr(article_cleanup_raw)
+        free_raw:      voidptr(article_free_raw)
     } }
 }
 
 @[export: 'Story_new_raw']
 pub fn story_new_raw() voidptr {
     return vphp.generic_new_raw[Story]()
+}
+@[export: 'Story_free_raw']
+pub fn story_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[Story](ptr)
+}
+@[export: 'Story_cleanup_raw']
+pub fn story_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'Story_get_prop']
 pub fn story_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -424,6 +543,8 @@ pub fn story_sync_props(ptr voidptr, zv &C.zval) {
 }
 @[export: 'vphp_wrap_Story_create']
 pub fn vphp_wrap_story_create(ctx vphp.Context) voidptr {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := unsafe { &Author(ctx.arg_raw_obj(0)) }
     arg_1 := ctx.arg[int](1)
     res := Story.create(arg_0, arg_1)
@@ -432,6 +553,8 @@ pub fn vphp_wrap_story_create(ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_Story_tell']
 pub fn vphp_wrap_story_tell(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &Story(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.tell()
     ctx.return_val[string](res)
 }
@@ -442,12 +565,27 @@ pub fn story_handlers() voidptr {
         write_handler: voidptr(story_set_prop)
         sync_handler:  voidptr(story_sync_props)
         new_raw:       voidptr(story_new_raw)
+        cleanup_raw:   voidptr(story_cleanup_raw)
+        free_raw:      voidptr(story_free_raw)
     } }
 }
 
 @[export: 'AliasBase_new_raw']
 pub fn aliasbase_new_raw() voidptr {
     return vphp.generic_new_raw[AliasBase]()
+}
+@[export: 'AliasBase_free_raw']
+pub fn aliasbase_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[AliasBase](ptr)
+}
+@[export: 'AliasBase_cleanup_raw']
+pub fn aliasbase_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'AliasBase_get_prop']
 pub fn aliasbase_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -483,6 +621,8 @@ pub fn aliasbase_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_AliasBase_construct']
 pub fn vphp_wrap_aliasbase_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &AliasBase(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     res := recv.construct(arg_0)
     return voidptr(res)
@@ -494,12 +634,27 @@ pub fn aliasbase_handlers() voidptr {
         write_handler: voidptr(aliasbase_set_prop)
         sync_handler:  voidptr(aliasbase_sync_props)
         new_raw:       voidptr(aliasbase_new_raw)
+        cleanup_raw:   voidptr(aliasbase_cleanup_raw)
+        free_raw:      voidptr(aliasbase_free_raw)
     } }
 }
 
 @[export: 'AliasWorker_new_raw']
 pub fn aliasworker_new_raw() voidptr {
     return vphp.generic_new_raw[AliasWorker]()
+}
+@[export: 'AliasWorker_free_raw']
+pub fn aliasworker_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[AliasWorker](ptr)
+}
+@[export: 'AliasWorker_cleanup_raw']
+pub fn aliasworker_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'AliasWorker_get_prop']
 pub fn aliasworker_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -535,6 +690,8 @@ pub fn aliasworker_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_AliasWorker_construct']
 pub fn vphp_wrap_aliasworker_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &AliasWorker(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     res := recv.construct(arg_0, arg_1)
@@ -543,18 +700,24 @@ pub fn vphp_wrap_aliasworker_construct(ptr voidptr, ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_AliasWorker_save']
 pub fn vphp_wrap_aliasworker_save(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &AliasWorker(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.save()
     ctx.return_val[bool](res)
 }
 @[export: 'vphp_wrap_AliasWorker_get_formatted_title']
 pub fn vphp_wrap_aliasworker_get_formatted_title(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &AliasWorker(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.get_formatted_title()
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_AliasWorker_ping']
 pub fn vphp_wrap_aliasworker_ping(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &AliasWorker(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.ping()
     ctx.return_val[string](res)
 }
@@ -565,12 +728,27 @@ pub fn aliasworker_handlers() voidptr {
         write_handler: voidptr(aliasworker_set_prop)
         sync_handler:  voidptr(aliasworker_sync_props)
         new_raw:       voidptr(aliasworker_new_raw)
+        cleanup_raw:   voidptr(aliasworker_cleanup_raw)
+        free_raw:      voidptr(aliasworker_free_raw)
     } }
 }
 
 @[export: 'ReadonlyRecord_new_raw']
 pub fn readonlyrecord_new_raw() voidptr {
     return vphp.generic_new_raw[ReadonlyRecord]()
+}
+@[export: 'ReadonlyRecord_free_raw']
+pub fn readonlyrecord_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[ReadonlyRecord](ptr)
+}
+@[export: 'ReadonlyRecord_cleanup_raw']
+pub fn readonlyrecord_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'ReadonlyRecord_get_prop']
 pub fn readonlyrecord_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -606,12 +784,13 @@ pub fn readonlyrecord_sync_props(ptr voidptr, zv &C.zval) {
         out := vphp.ZVal{ raw: zv }
         out.add_property_long('created_at', i64(obj.created_at))
         out.add_property_string('title', obj.title)
-        out.add_property_string('internal_note', obj.internal_note)
     }
 }
 @[export: 'vphp_wrap_ReadonlyRecord_construct']
 pub fn vphp_wrap_readonlyrecord_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &ReadonlyRecord(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     res := recv.construct(arg_0)
     return voidptr(res)
@@ -619,6 +798,8 @@ pub fn vphp_wrap_readonlyrecord_construct(ptr voidptr, ctx vphp.Context) voidptr
 @[export: 'vphp_wrap_ReadonlyRecord_reveal']
 pub fn vphp_wrap_readonlyrecord_reveal(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &ReadonlyRecord(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.reveal()
     ctx.return_val[string](res)
 }
@@ -629,12 +810,27 @@ pub fn readonlyrecord_handlers() voidptr {
         write_handler: voidptr(readonlyrecord_set_prop)
         sync_handler:  voidptr(readonlyrecord_sync_props)
         new_raw:       voidptr(readonlyrecord_new_raw)
+        cleanup_raw:   voidptr(readonlyrecord_cleanup_raw)
+        free_raw:      voidptr(readonlyrecord_free_raw)
     } }
 }
 
 @[export: 'TraitPost_new_raw']
 pub fn traitpost_new_raw() voidptr {
     return vphp.generic_new_raw[TraitPost]()
+}
+@[export: 'TraitPost_free_raw']
+pub fn traitpost_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[TraitPost](ptr)
+}
+@[export: 'TraitPost_cleanup_raw']
+pub fn traitpost_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'TraitPost_get_prop']
 pub fn traitpost_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -683,12 +879,13 @@ pub fn traitpost_sync_props(ptr voidptr, zv &C.zval) {
         out.add_property_string('title', obj.title)
         out.add_property_string('slug', obj.slug)
         out.add_property_long('visits', i64(obj.visits))
-        out.add_property_string('internal_note', obj.internal_note)
     }
 }
 @[export: 'vphp_wrap_TraitPost_construct']
 pub fn vphp_wrap_traitpost_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &TraitPost(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     res := recv.construct(arg_0)
     return voidptr(res)
@@ -696,24 +893,32 @@ pub fn vphp_wrap_traitpost_construct(ptr voidptr, ctx vphp.Context) voidptr {
 @[export: 'vphp_wrap_TraitPost_summary']
 pub fn vphp_wrap_traitpost_summary(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &TraitPost(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.summary()
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_TraitPost_bump']
 pub fn vphp_wrap_traitpost_bump(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &TraitPost(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.bump()
     ctx.return_val[int](res)
 }
 @[export: 'vphp_wrap_TraitPost_trait_only']
 pub fn vphp_wrap_traitpost_trait_only(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &TraitPost(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.trait_only()
     ctx.return_val[string](res)
 }
 @[export: 'vphp_wrap_TraitPost_internal_trait']
 pub fn vphp_wrap_traitpost_internal_trait(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &TraitPost(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.internal_trait()
     ctx.return_val[string](res)
 }
@@ -724,12 +929,27 @@ pub fn traitpost_handlers() voidptr {
         write_handler: voidptr(traitpost_set_prop)
         sync_handler:  voidptr(traitpost_sync_props)
         new_raw:       voidptr(traitpost_new_raw)
+        cleanup_raw:   voidptr(traitpost_cleanup_raw)
+        free_raw:      voidptr(traitpost_free_raw)
     } }
 }
 
 @[export: 'VPhpTask_new_raw']
 pub fn vphptask_new_raw() voidptr {
     return vphp.generic_new_raw[VPhpTask]()
+}
+@[export: 'VPhpTask_free_raw']
+pub fn vphptask_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[VPhpTask](ptr)
+}
+@[export: 'VPhpTask_cleanup_raw']
+pub fn vphptask_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'VPhpTask_get_prop']
 pub fn vphptask_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -755,16 +975,22 @@ pub fn vphptask_sync_props(ptr voidptr, zv &C.zval) {
 }
 @[export: 'vphp_wrap_VPhpTask_spawn']
 pub fn vphp_wrap_vphptask_spawn(ctx vphp.Context)  {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     VPhpTask.@spawn(arg_0)
 }
 @[export: 'vphp_wrap_VPhpTask_wait']
 pub fn vphp_wrap_vphptask_wait(ctx vphp.Context)  {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     VPhpTask.wait(arg_0)
 }
 @[export: 'vphp_wrap_VPhpTask_list']
 pub fn vphp_wrap_vphptask_list(ctx vphp.Context)  {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     VPhpTask.list(arg_0)
 }
@@ -775,12 +1001,27 @@ pub fn vphptask_handlers() voidptr {
         write_handler: voidptr(vphptask_set_prop)
         sync_handler:  voidptr(vphptask_sync_props)
         new_raw:       voidptr(vphptask_new_raw)
+        cleanup_raw:   voidptr(vphptask_cleanup_raw)
+        free_raw:      voidptr(vphptask_free_raw)
     } }
 }
 
 @[export: 'StringableBox_new_raw']
 pub fn stringablebox_new_raw() voidptr {
     return vphp.generic_new_raw[StringableBox]()
+}
+@[export: 'StringableBox_free_raw']
+pub fn stringablebox_free_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
+    vphp.generic_free_raw[StringableBox](ptr)
+}
+@[export: 'StringableBox_cleanup_raw']
+pub fn stringablebox_cleanup_raw(ptr voidptr) {
+    if ptr == 0 {
+        return
+    }
 }
 @[export: 'StringableBox_get_prop']
 pub fn stringablebox_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
@@ -816,6 +1057,8 @@ pub fn stringablebox_sync_props(ptr voidptr, zv &C.zval) {
 @[export: 'vphp_wrap_StringableBox_construct']
 pub fn vphp_wrap_stringablebox_construct(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &StringableBox(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     res := recv.construct(arg_0)
     return voidptr(res)
@@ -823,6 +1066,8 @@ pub fn vphp_wrap_stringablebox_construct(ptr voidptr, ctx vphp.Context) voidptr 
 @[export: 'vphp_wrap_StringableBox_str']
 pub fn vphp_wrap_stringablebox_str(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &StringableBox(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     res := recv.str()
     ctx.return_val[string](res)
 }
@@ -833,11 +1078,15 @@ pub fn stringablebox_handlers() voidptr {
         write_handler: voidptr(stringablebox_set_prop)
         sync_handler:  voidptr(stringablebox_sync_props)
         new_raw:       voidptr(stringablebox_new_raw)
+        cleanup_raw:   voidptr(stringablebox_cleanup_raw)
+        free_raw:      voidptr(stringablebox_free_raw)
     } }
 }
 
 @[export: 'vphp_wrap_v_add']
 fn vphp_wrap_v_add(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[i64](0)
     arg_1 := ctx.arg[i64](1)
     res := v_add(arg_0, arg_1)
@@ -846,6 +1095,8 @@ fn vphp_wrap_v_add(ctx vphp.Context) {
 
 @[export: 'vphp_wrap_v_greet']
 fn vphp_wrap_v_greet(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     res := v_greet(arg_0)
     ctx.return_val[string](res)
@@ -853,6 +1104,8 @@ fn vphp_wrap_v_greet(ctx vphp.Context) {
 
 @[export: 'vphp_wrap_v_pure_map_test']
 fn vphp_wrap_v_pure_map_test(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[string](1)
     res := v_pure_map_test(arg_0, arg_1)
@@ -861,228 +1114,312 @@ fn vphp_wrap_v_pure_map_test(ctx vphp.Context) {
 
 @[export: 'vphp_wrap_v_process_list']
 fn vphp_wrap_v_process_list(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_process_list(arg_0)
 }
 
 @[export: 'vphp_wrap_v_test_map']
 fn vphp_wrap_v_test_map(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_test_map(arg_0)
 }
 
 @[export: 'vphp_wrap_v_get_config']
 fn vphp_wrap_v_get_config(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_get_config(arg_0)
 }
 
 @[export: 'vphp_wrap_v_get_user']
 fn vphp_wrap_v_get_user(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_get_user(arg_0)
 }
 
 @[export: 'vphp_wrap_v_call_back']
 fn vphp_wrap_v_call_back(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_call_back(arg_0)
 }
 
 @[export: 'vphp_wrap_v_complex_test']
 fn vphp_wrap_v_complex_test(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_complex_test(arg_0)
 }
 
 @[export: 'vphp_wrap_v_analyze_user_object']
 fn vphp_wrap_v_analyze_user_object(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_analyze_user_object(arg_0)
 }
 
 @[export: 'vphp_wrap_v_mutate_user_object']
 fn vphp_wrap_v_mutate_user_object(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_mutate_user_object(arg_0)
 }
 
 @[export: 'vphp_wrap_v_check_user_object_props']
 fn vphp_wrap_v_check_user_object_props(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_check_user_object_props(arg_0)
 }
 
 @[export: 'vphp_wrap_v_construct_php_object']
 fn vphp_wrap_v_construct_php_object(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_construct_php_object(arg_0)
 }
 
 @[export: 'vphp_wrap_v_call_php_static_method']
 fn vphp_wrap_v_call_php_static_method(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_call_php_static_method(arg_0)
 }
 
 @[export: 'vphp_wrap_v_mutate_php_static_prop']
 fn vphp_wrap_v_mutate_php_static_prop(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_mutate_php_static_prop(arg_0)
 }
 
 @[export: 'vphp_wrap_v_read_php_class_constant']
 fn vphp_wrap_v_read_php_class_constant(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_read_php_class_constant(arg_0)
 }
 
 @[export: 'vphp_wrap_v_typed_php_interop']
 fn vphp_wrap_v_typed_php_interop(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_typed_php_interop(arg_0)
 }
 
 @[export: 'vphp_wrap_v_typed_object_restore']
 fn vphp_wrap_v_typed_object_restore(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_typed_object_restore(arg_0)
 }
 
 @[export: 'vphp_wrap_v_zval_conversion_api']
 fn vphp_wrap_v_zval_conversion_api(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_zval_conversion_api(arg_0)
 }
 
 @[export: 'vphp_wrap_v_unified_object_interop']
 fn vphp_wrap_v_unified_object_interop(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_unified_object_interop(arg_0)
 }
 
+@[export: 'vphp_wrap_v_unified_ownership_interop']
+fn vphp_wrap_v_unified_ownership_interop(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx
+    v_unified_ownership_interop(arg_0)
+}
+
 @[export: 'vphp_wrap_v_read_php_global_const']
 fn vphp_wrap_v_read_php_global_const(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_read_php_global_const(arg_0)
 }
 
 @[export: 'vphp_wrap_v_php_symbol_exists']
 fn vphp_wrap_v_php_symbol_exists(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_php_symbol_exists(arg_0)
 }
 
 @[export: 'vphp_wrap_v_include_php_file']
 fn vphp_wrap_v_include_php_file(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_include_php_file(arg_0)
 }
 
 @[export: 'vphp_wrap_v_include_php_file_once']
 fn vphp_wrap_v_include_php_file_once(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_include_php_file_once(arg_0)
 }
 
 @[export: 'vphp_wrap_v_include_php_module_demo']
 fn vphp_wrap_v_include_php_module_demo(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_include_php_module_demo(arg_0)
 }
 
 @[export: 'vphp_wrap_v_php_object_meta']
 fn vphp_wrap_v_php_object_meta(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_php_object_meta(arg_0)
 }
 
 @[export: 'vphp_wrap_v_php_object_introspection']
 fn vphp_wrap_v_php_object_introspection(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_php_object_introspection(arg_0)
 }
 
 @[export: 'vphp_wrap_v_trigger_user_action']
 fn vphp_wrap_v_trigger_user_action(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_trigger_user_action(arg_0)
 }
 
 @[export: 'vphp_wrap_v_call_php_closure']
 fn vphp_wrap_v_call_php_closure(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_call_php_closure(arg_0)
 }
 
 @[export: 'vphp_wrap_v_test_globals']
 fn vphp_wrap_v_test_globals(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_test_globals(arg_0)
 }
 
 @[export: 'vphp_wrap_v_get_v_closure']
 fn vphp_wrap_v_get_v_closure(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_get_v_closure(arg_0)
 }
 
 @[export: 'vphp_wrap_v_get_v_closure_auto']
 fn vphp_wrap_v_get_v_closure_auto(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_get_v_closure_auto(arg_0)
 }
 
 @[export: 'vphp_wrap_v_iter_helpers_demo']
 fn vphp_wrap_v_iter_helpers_demo(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_iter_helpers_demo(arg_0)
 }
 
 @[export: 'vphp_wrap_v_iterable_object_demo']
 fn vphp_wrap_v_iterable_object_demo(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_iterable_object_demo(arg_0)
 }
 
 @[export: 'vphp_wrap_v_reverse_string']
 fn vphp_wrap_v_reverse_string(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_reverse_string(arg_0)
 }
 
 @[export: 'vphp_wrap_v_logic_main']
 fn vphp_wrap_v_logic_main(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_logic_main(arg_0)
 }
 
 @[export: 'vphp_wrap_v_new_coach']
 fn vphp_wrap_v_new_coach(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_new_coach(arg_0)
 }
 
 @[export: 'vphp_wrap_v_new_db']
 fn vphp_wrap_v_new_db(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_new_db(arg_0)
 }
 
 @[export: 'vphp_wrap_v_check_res']
 fn vphp_wrap_v_check_res(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_check_res(arg_0)
 }
 
 @[export: 'vphp_wrap_v_analyze_fitness_data']
 fn vphp_wrap_v_analyze_fitness_data(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_analyze_fitness_data(arg_0)
 }
 
 @[export: 'vphp_wrap_v_get_alerts']
 fn vphp_wrap_v_get_alerts(ctx vphp.Context) {
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
     arg_0 := ctx
     v_get_alerts(arg_0)
 }

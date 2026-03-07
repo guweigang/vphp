@@ -8,6 +8,9 @@ typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
+extern void vphp_framework_shutdown(void);
+extern void vphp_framework_request_startup(void);
+extern void vphp_framework_request_shutdown(void);
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_add, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_v_add(vphp_context_internal ctx);
@@ -147,6 +150,13 @@ extern void vphp_wrap_v_unified_object_interop(vphp_context_internal ctx);
 PHP_FUNCTION(v_unified_object_interop) {
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     vphp_wrap_v_unified_object_interop(ctx);
+}
+ZEND_BEGIN_ARG_INFO_EX(arginfo_v_unified_ownership_interop, 0, 0, 0)
+ZEND_END_ARG_INFO()
+extern void vphp_wrap_v_unified_ownership_interop(vphp_context_internal ctx);
+PHP_FUNCTION(v_unified_ownership_interop) {
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_wrap_v_unified_ownership_interop(ctx);
 }
 ZEND_BEGIN_ARG_INFO_EX(arginfo_v_read_php_global_const, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -341,7 +351,7 @@ PHP_METHOD(AbstractReport, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry abstractreport_methods[] = {
@@ -366,7 +376,7 @@ PHP_METHOD(DailyReport, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_DailyReport_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_DailyReport_construct(v_ptr, ctx);
@@ -401,7 +411,7 @@ PHP_METHOD(Author, create) {
     vphp_return_obj(return_value, v_instance, author_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* Author_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), Author_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), Author_handlers(), 1);
     }
 }
 PHP_METHOD(Author, get_name) {
@@ -421,7 +431,7 @@ PHP_METHOD(Author, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry author_methods[] = {
@@ -459,7 +469,7 @@ PHP_METHOD(Post, get_author) {
     vphp_return_obj(return_value, v_instance, author_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* Author_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), Author_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), Author_handlers(), 0);
     }
 }
 
@@ -472,7 +482,7 @@ PHP_METHOD(Post, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry post_methods[] = {
@@ -513,7 +523,7 @@ PHP_METHOD(Article, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_Article_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_Article_construct(v_ptr, ctx);
@@ -534,7 +544,7 @@ PHP_METHOD(Article, create) {
     vphp_return_obj(return_value, v_instance, article_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* Article_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), Article_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), Article_handlers(), 1);
     }
 }
 PHP_METHOD(Article, get_formatted_title) {
@@ -577,7 +587,7 @@ PHP_METHOD(Article, restore_author) {
     vphp_return_obj(return_value, v_instance, article_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* Article_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), Article_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), Article_handlers(), 1);
     }
 }
 static const zend_function_entry article_methods[] = {
@@ -609,7 +619,7 @@ PHP_METHOD(Story, create) {
     vphp_return_obj(return_value, v_instance, story_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* Story_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), Story_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), Story_handlers(), 1);
     }
 }
 PHP_METHOD(Story, tell) {
@@ -629,7 +639,7 @@ PHP_METHOD(Story, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry story_methods[] = {
@@ -651,7 +661,7 @@ PHP_METHOD(Demo__Contracts__AliasBase, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_AliasBase_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_AliasBase_construct(v_ptr, ctx);
@@ -680,7 +690,7 @@ PHP_METHOD(AliasWorker, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_AliasWorker_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_AliasWorker_construct(v_ptr, ctx);
@@ -731,7 +741,7 @@ PHP_METHOD(ReadonlyRecord, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_ReadonlyRecord_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_ReadonlyRecord_construct(v_ptr, ctx);
@@ -770,7 +780,7 @@ PHP_METHOD(TraitPost, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_TraitPost_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_TraitPost_construct(v_ptr, ctx);
@@ -866,7 +876,7 @@ PHP_METHOD(VPhp__Task, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry vphp__task_methods[] = {
@@ -891,7 +901,7 @@ PHP_METHOD(StringableBox, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_StringableBox_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_StringableBox_construct(v_ptr, ctx);
@@ -946,6 +956,7 @@ static const zend_function_entry vphptest_functions[] = {
     PHP_FE(v_typed_object_restore, arginfo_v_typed_object_restore)
     PHP_FE(v_zval_conversion_api, arginfo_v_zval_conversion_api)
     PHP_FE(v_unified_object_interop, arginfo_v_unified_object_interop)
+    PHP_FE(v_unified_ownership_interop, arginfo_v_unified_ownership_interop)
     PHP_FE(v_read_php_global_const, arginfo_v_read_php_global_const)
     PHP_FE(v_php_symbol_exists, arginfo_v_php_symbol_exists)
     PHP_FE(v_include_php_file, arginfo_v_include_php_file)
@@ -1121,6 +1132,15 @@ PHP_MINIT_FUNCTION(vphptest) {
 }
 PHP_MSHUTDOWN_FUNCTION(vphptest) {
     UNREGISTER_INI_ENTRIES();
+    vphp_framework_shutdown();
+    return SUCCESS;
+}
+PHP_RINIT_FUNCTION(vphptest) {
+    vphp_framework_request_startup();
+    return SUCCESS;
+}
+PHP_RSHUTDOWN_FUNCTION(vphptest) {
+    vphp_framework_request_shutdown();
     return SUCCESS;
 }
 PHP_MINFO_FUNCTION(vphptest) {
@@ -1141,7 +1161,7 @@ void* vphp_get_active_globals() {
 }
 zend_module_entry vphptest_module_entry = {
     STANDARD_MODULE_HEADER, "vphptest", vphptest_functions,
-    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), NULL, NULL, PHP_MINFO(vphptest), "0.1.0",
+    PHP_MINIT(vphptest), PHP_MSHUTDOWN(vphptest), PHP_RINIT(vphptest), PHP_RSHUTDOWN(vphptest), PHP_MINFO(vphptest), "0.1.0",
     PHP_MODULE_GLOBALS(vphptest),
     (void (*)(void*)) php_vphptest_init_globals,
     NULL,

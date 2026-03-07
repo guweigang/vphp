@@ -15,6 +15,7 @@ pub fn C.vphp_get_active_globals() voidptr
 
 // ===== 2. 框架与异常 =====
 pub fn C.vphp_init_registry()
+pub fn C.vphp_shutdown_registry()
 pub fn C.vphp_throw(msg &char, code int)
 pub fn C.vphp_throw_class(class_name &char, msg &char, code int)
 pub fn C.vphp_error(int, &char)
@@ -43,6 +44,15 @@ pub fn C.vphp_set_strval(z &C.zval, str &char, len int)
 pub fn C.vphp_set_null(z &C.zval)
 pub fn C.vphp_new_zval() &C.zval
 pub fn C.vphp_new_str(s &char) &C.zval
+pub fn C.vphp_release_zval(z &C.zval)
+pub fn C.vphp_autorelease_mark() int
+pub fn C.vphp_autorelease_add(z &C.zval)
+pub fn C.vphp_autorelease_forget(z &C.zval)
+pub fn C.vphp_autorelease_drain(mark int)
+pub fn C.vphp_runtime_counters(autorelease_len &int, owned_len &int, obj_registry_len &u32, rev_registry_len &u32)
+pub fn C.vphp_request_startup()
+pub fn C.vphp_request_shutdown()
+pub fn C.vphp_autorelease_shutdown()
 pub fn C.vphp_convert_to_string(z &C.zval)
 
 // ===== 6. 数组操作 =====
@@ -80,10 +90,15 @@ pub fn C.vphp_add_property_double(obj &C.zval, name &char, val f64)
 @[typedef]
 pub struct C.vphp_object_wrapper {
 pub:
+	magic          u32
 	v_ptr          voidptr
+	owns_v_ptr     int
+	cleanup_raw    voidptr
+	free_raw       voidptr
 	prop_handler   voidptr
-	sync_handler   voidptr
 	write_handler  voidptr
+	sync_handler   voidptr
+	bind_handler   voidptr
 	std            C.zend_object
 }
 
@@ -91,6 +106,7 @@ pub fn C.vphp_obj_from_obj(obj &C.zend_object) &C.vphp_object_wrapper
 pub fn C.vphp_register_object(v_ptr voidptr, obj &C.zend_object)
 pub fn C.vphp_return_obj(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry)
 pub fn C.vphp_bind_handlers(obj &C.zend_object, handlers voidptr)
+pub fn C.vphp_bind_handlers_with_ownership(obj &C.zend_object, handlers voidptr, owns_v_ptr int)
 
 // ===== 8. 闭包 & 调用 =====
 pub fn C.vphp_call_php_func(name &char, len int, retval &C.zval, p_count int, params &&C.zval) int

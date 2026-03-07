@@ -310,8 +310,9 @@ pub fn encode_val(v DynVal, mut out ZVal) ! {
 		.list_ {
 			out.array_init()
 			for item in v.list {
+				mut sub_raw := C.zval{}
 				mut sub := ZVal{
-					raw: C.vphp_new_zval()
+					raw: &sub_raw
 				}
 				encode_val(item, mut sub)!
 				out.add_next_val(sub)
@@ -320,8 +321,9 @@ pub fn encode_val(v DynVal, mut out ZVal) ! {
 		.map_ {
 			out.array_init()
 			for k, item in v.map {
+				mut sub_raw := C.zval{}
 				mut sub := ZVal{
-					raw: C.vphp_new_zval()
+					raw: &sub_raw
 				}
 				encode_val(item, mut sub)!
 				C.vphp_array_add_assoc_zval(out.raw, &char(k.str), sub.raw)
@@ -339,7 +341,9 @@ pub fn encode_val(v DynVal, mut out ZVal) ! {
 pub fn new_zval_from_val(v DynVal) !ZVal {
 	mut out := ZVal{
 		raw: C.vphp_new_zval()
+		owned: true
 	}
+	autorelease_add(out.raw)
 	encode_val(v, mut out)!
 	return out
 }

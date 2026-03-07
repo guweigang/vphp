@@ -306,7 +306,7 @@ fn v_unified_object_interop(ctx vphp.Context) {
 		vphp.throw_exception('build score arg failed: ${err.msg()}', 0)
 		return
 	}
-	obj := cls.construct([name_z, score_z])
+	obj := cls.construct_owned_request([name_z, score_z])
 	if !obj.is_object() {
 		vphp.throw_exception('construct PhpUnifiedBox failed', 0)
 		return
@@ -316,15 +316,15 @@ fn v_unified_object_interop(ctx vphp.Context) {
 		vphp.throw_exception('prop_v(name) failed: ${err.msg()}', 0)
 		return
 	}
-	double_score := obj.method_v[int]('doubleScore', []) or {
+	double_score := obj.method_owned_request('doubleScore', []).to_v[int]() or {
 		vphp.throw_exception('method_v(doubleScore) failed: ${err.msg()}', 0)
 		return
 	}
-	triple := cls.static_method_v[int]('triple', [vphp.ZVal.new_int(4)]) or {
+	triple := cls.static_method_owned_request('triple', [vphp.ZVal.new_int(4)]).to_v[int]() or {
 		vphp.throw_exception('static_method_v(triple) failed: ${err.msg()}', 0)
 		return
 	}
-	label := cls.const_v[string]('LABEL') or {
+	label := cls.const_owned_request('LABEL').to_v[string]() or {
 		vphp.throw_exception('const_v(LABEL) failed: ${err.msg()}', 0)
 		return
 	}
@@ -334,6 +334,41 @@ fn v_unified_object_interop(ctx vphp.Context) {
 	}
 
 	ctx.return_string('interop=${name}:${double_score}:${triple}:${label}:${upper}')
+}
+
+@[php_function]
+fn v_unified_ownership_interop(ctx vphp.Context) {
+	cls := vphp.php_class('PhpUnifiedBox')
+	obj_req := cls.construct_owned_request([
+		vphp.ZVal.new_string('req'),
+		vphp.ZVal.new_int(5),
+	])
+	if !obj_req.is_object() {
+		vphp.throw_exception('construct_owned_request failed', 0)
+		return
+	}
+	req_score := obj_req.method_owned_request('doubleScore', []).to_v[int]() or {
+		vphp.throw_exception('method_owned_request failed: ${err.msg()}', 0)
+		return
+	}
+
+	mut up_call := vphp.php_fn('strtoupper').call_owned_persistent([vphp.ZVal.new_string('persist')])
+	if !up_call.is_valid() {
+		vphp.throw_exception('call_owned_persistent failed', 0)
+		return
+	}
+	up := up_call.to_v[string]() or {
+		vphp.throw_exception('persistent to_v failed: ${err.msg()}', 0)
+		return
+	}
+	up_call.release()
+
+	const_b := cls.const_borrowed('LABEL').to_v[string]() or {
+		vphp.throw_exception('const_borrowed failed: ${err.msg()}', 0)
+		return
+	}
+
+	ctx.return_string('ownership=${req_score}:${up}:${const_b}')
 }
 
 @[php_function]

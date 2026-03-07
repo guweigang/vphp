@@ -129,10 +129,28 @@ pub fn (b &ModuleBuilder) render_minit() string {
 
 // 渲染 MSHUTDOWN (如果需要卸载 INI)
 pub fn (b &ModuleBuilder) render_mshutdown() string {
-	if b.ini_entries.len == 0 { return '' }
 	mut res := strings.new_builder(256)
 	res.write_string('PHP_MSHUTDOWN_FUNCTION(${b.ext_name}) {\n')
-	res.write_string('    UNREGISTER_INI_ENTRIES();\n')
+	if b.ini_entries.len > 0 {
+		res.write_string('    UNREGISTER_INI_ENTRIES();\n')
+	}
+	res.write_string('    vphp_framework_shutdown();\n')
+	res.write_string('    return SUCCESS;\n}\n')
+	return res.str()
+}
+
+pub fn (b &ModuleBuilder) render_rinit() string {
+	mut res := strings.new_builder(128)
+	res.write_string('PHP_RINIT_FUNCTION(${b.ext_name}) {\n')
+	res.write_string('    vphp_framework_request_startup();\n')
+	res.write_string('    return SUCCESS;\n}\n')
+	return res.str()
+}
+
+pub fn (b &ModuleBuilder) render_rshutdown() string {
+	mut res := strings.new_builder(128)
+	res.write_string('PHP_RSHUTDOWN_FUNCTION(${b.ext_name}) {\n')
+	res.write_string('    vphp_framework_request_shutdown();\n')
 	res.write_string('    return SUCCESS;\n}\n')
 	return res.str()
 }
@@ -158,12 +176,12 @@ pub fn (b &ModuleBuilder) render_minfo() string {
 // 渲染模块结构体定义
 pub fn (b &ModuleBuilder) render_module_entry() string {
 	mut res := strings.new_builder(512)
-	mshutdown := if b.ini_entries.len > 0 { 'PHP_MSHUTDOWN(${b.ext_name})' } else { 'NULL' }
+	mshutdown := 'PHP_MSHUTDOWN(${b.ext_name})'
 	ginit := if b.globals.name != '' { 'php_${b.ext_name}_init_globals' } else { 'NULL' }
 	
 	res.write_string('zend_module_entry ${b.ext_name}_module_entry = {\n')
 	res.write_string('    STANDARD_MODULE_HEADER, "${b.ext_name}", ${b.ext_name}_functions,\n')
-	res.write_string('    PHP_MINIT(${b.ext_name}), ${mshutdown}, NULL, NULL, PHP_MINFO(${b.ext_name}), "${b.version}",\n')
+	res.write_string('    PHP_MINIT(${b.ext_name}), ${mshutdown}, PHP_RINIT(${b.ext_name}), PHP_RSHUTDOWN(${b.ext_name}), PHP_MINFO(${b.ext_name}), "${b.version}",\n')
 	res.write_string('    PHP_MODULE_GLOBALS(${b.ext_name}),\n')
 	res.write_string('    (void (*)(void*)) ${ginit},\n')
 	res.write_string('    NULL,\n') // GSHUTDOWN
@@ -203,5 +221,8 @@ typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
+extern void vphp_framework_shutdown(void);
+extern void vphp_framework_request_startup(void);
+extern void vphp_framework_request_shutdown(void);
 '
 }

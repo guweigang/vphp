@@ -50,6 +50,8 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
     // 基础包装器
     out << "@[export: 'vphp_wrap_${f.name}']"
     out << "fn vphp_wrap_${f.name}(ctx vphp.Context) {"
+    out << "    vphp_ar_mark := vphp.autorelease_mark()"
+    out << "    defer { vphp.autorelease_drain(vphp_ar_mark) }"
     
     mut arg_names := []string{}
     for i, arg in f.args {
@@ -91,6 +93,25 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     out << "@[export: '${r.name}_new_raw']"
     out << "pub fn ${lower_name}_new_raw() voidptr {"
     out << "    return vphp.generic_new_raw[${r.name}]()"
+    out << "}"
+    out << "@[export: '${r.name}_free_raw']"
+    out << "pub fn ${lower_name}_free_raw(ptr voidptr) {"
+    out << "    if ptr == 0 {"
+    out << "        return"
+    out << "    }"
+    out << "    vphp.generic_free_raw[${r.name}](ptr)"
+    out << "}"
+    out << "@[export: '${r.name}_cleanup_raw']"
+    out << "pub fn ${lower_name}_cleanup_raw(ptr voidptr) {"
+    out << "    if ptr == 0 {"
+    out << "        return"
+    out << "    }"
+    if r.has_free_method {
+        out << "    unsafe {"
+        out << "        mut obj := &${r.name}(ptr)"
+        out << "        obj.free()"
+        out << "    }"
+    }
     out << "}"
 
     // B. 属性读取
@@ -194,10 +215,10 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     out << "    unsafe {"
     out << "        obj := &${r.name}(ptr)"
     out << "        out := vphp.ZVal{ raw: zv }"
-    for prop in r.properties {
-        if prop.is_static {
-            continue
-        }
+	for prop in r.properties {
+		if prop.is_static || prop.visibility != 'public' {
+			continue
+		}
         match prop.v_type {
             'string' {
                 out << "        out.add_property_string('${prop.name}', obj.${prop.name})"
@@ -270,6 +291,8 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
             out << "pub fn vphp_wrap_${lower_name}_${m.name}(ptr voidptr, ctx vphp.Context) ${ret_decl} {"
             out << "    mut recv := unsafe { &${r.name}(ptr) }"
         }
+        out << "    vphp_ar_mark := vphp.autorelease_mark()"
+        out << "    defer { vphp.autorelease_drain(vphp_ar_mark) }"
 
         mut arg_names := []string{}
         for i, arg in m.args {
@@ -330,6 +353,8 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
     out << "        write_handler: voidptr(${lower_name}_set_prop)"
     out << "        sync_handler:  voidptr(${lower_name}_sync_props)"
     out << "        new_raw:       voidptr(${lower_name}_new_raw)"
+    out << "        cleanup_raw:   voidptr(${lower_name}_cleanup_raw)"
+    out << "        free_raw:      voidptr(${lower_name}_free_raw)"
     out << "    } }"
     out << "}"
 

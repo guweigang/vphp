@@ -86,6 +86,16 @@ pub fn generic_new_raw[T]() voidptr {
 	return unsafe { &T{} }
 }
 
+// 泛型释放器：与 generic_new_raw 配套。
+pub fn generic_free_raw[T](ptr voidptr) {
+	if ptr == 0 {
+		return
+	}
+	unsafe {
+		free(&T(ptr))
+	}
+}
+
 // 泛型连体分配器 (新：用于 @[php_class])
 pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
     return unsafe { C.vphp_allocate_contiguous_object(ce, sizeof(T)) }

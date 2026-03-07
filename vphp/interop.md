@@ -8,6 +8,29 @@
 
 推荐把这份文档当成使用手册来查。
 
+## 所有权速查（新）
+
+`ZVal` 的 bridge action 现在有显式所有权版本：
+
+- 默认入口：`request-owned`（请求结束自动释放）
+- `*_owned_persistent`：跨请求/长期持有，需手动 `release()`
+- `*_borrowed`：只借用 Zend 内部值，不持有
+
+默认方法（`call/method/construct/static_method/static_prop/prop/@const`）都等价于 `*_owned_request`。
+
+typed helper 也有对应版本：
+
+- `*_owned_request_v[T]`
+- `*_owned_persistent_v[T]`
+- `*_borrowed_v[T]`（适用于 `prop/static_prop/const`）
+- object helper 同理：`*_owned_request_object[T]` 等
+
+`vphp` 还提供了类型封装，便于在框架内部做约束：
+
+- `BorrowedZVal`
+- `RequestOwnedZVal`
+- `PersistentOwnedZVal`
+
 ## 定义权与所有权模型
 
 理解 `vphp` interop 时，最重要的一点是先区分：
@@ -165,7 +188,9 @@ res := vphp.php_fn('phpversion').call([])
 | --- | --- |
 | `php_fn(name)` | 获取一个可调用的 PHP 函数引用 |
 | `function_exists(name)` | 判断 PHP 全局函数是否存在 |
-| `z.call(args)` | 调用 callable / 函数名 |
+| `z.call(args)` | 调用 callable（request-owned） |
+| `z.call_owned_request(args)` | 显式 request-owned |
+| `z.call_owned_persistent(args)` | 显式 persistent-owned |
 | `z.call_v[T](args)` | `call(args).to_v[T]()` |
 | `z.invoke_v[T](args)` | `invoke(args).to_v[T]()`（`call_v` 语义别名） |
 | `z.call_object[T](args)` | `call(args).to_object[T]()` |
@@ -198,15 +223,25 @@ article := vphp.php_class('Article').construct_object[Article]([
 | `class_exists(name)` | 判断类是否存在 |
 | `interface_exists(name)` | 判断接口是否存在 |
 | `trait_exists(name)` | 判断 trait 是否存在 |
-| `z.construct(args)` | 从 class-string 构造对象 |
+| `z.construct(args)` | 构造对象（request-owned） |
+| `z.construct_owned_request(args)` | 显式 request-owned |
+| `z.construct_owned_persistent(args)` | 显式 persistent-owned |
 | `z.construct_v[T](args)` | `construct(args).to_v[T]()` |
 | `z.construct_object[T](args)` | `construct(args).to_object[T]()` |
-| `z.static_method(name, args)` | 调用静态方法 |
+| `z.static_method(name, args)` | 调用静态方法（request-owned） |
+| `z.static_method_owned_request(name, args)` | 显式 request-owned |
+| `z.static_method_owned_persistent(name, args)` | 显式 persistent-owned |
 | `z.static_method_v[T](name, args)` | `static_method(name, args).to_v[T]()` |
 | `z.static_method_object[T](name, args)` | 期望结果是 `vphp` 对象时恢复 `&T` |
-| `z.static_prop(name)` | 读取静态属性 |
+| `z.static_prop(name)` | 读取静态属性（request-owned） |
+| `z.static_prop_borrowed(name)` | 借用静态属性 |
+| `z.static_prop_owned_request(name)` | 显式 request-owned |
+| `z.static_prop_owned_persistent(name)` | 显式 persistent-owned |
 | `z.static_prop_v[T](name)` | 读取静态属性并转成 V 值 |
-| `z.@const(name)` | 读取类常量 |
+| `z.@const(name)` | 读取类常量（request-owned） |
+| `z.const_borrowed(name)` | 借用类常量 |
+| `z.const_owned_request(name)` | 显式 request-owned |
+| `z.const_owned_persistent(name)` | 显式 persistent-owned |
 | `z.const_v[T](name)` | 读取类常量并转成 V 值 |
 | `z.const_names()` | 获取类常量名列表 |
 | `z.const_exists(name)` | 判断类常量是否存在 |
@@ -235,10 +270,15 @@ name := obj.prop_v[string]('name')!
 
 | API | 说明 |
 | --- | --- |
-| `z.method(name, args)` | 调用实例方法 |
+| `z.method(name, args)` | 调用实例方法（request-owned） |
+| `z.method_owned_request(name, args)` | 显式 request-owned |
+| `z.method_owned_persistent(name, args)` | 显式 persistent-owned |
 | `z.method_v[T](name, args)` | `method(name, args).to_v[T]()` |
 | `z.method_object[T](name, args)` | `method(name, args).to_object[T]()` |
-| `z.prop(name)` | 读取属性 |
+| `z.prop(name)` | 读取属性（request-owned） |
+| `z.prop_borrowed(name)` | 借用属性 |
+| `z.prop_owned_request(name)` | 显式 request-owned |
+| `z.prop_owned_persistent(name)` | 显式 persistent-owned |
 | `z.prop_v[T](name)` | `prop(name).to_v[T]()` |
 | `z.prop_object[T](name)` | `prop(name).to_object[T]()` |
 | `z.set_prop(name, value)` | 写属性 |

@@ -75,7 +75,7 @@ pub fn task_spawn(ctx Context) {
 	t := spawn task_inst.run()
 
 	unsafe {
-		mut res := &AsyncResult(malloc(int(sizeof(AsyncResult))))
+		mut res := &AsyncResult(C.emalloc(usize(sizeof(AsyncResult))))
 		res.handle = t
 		ctx.return_res(res, 'v_task')
 	}
@@ -107,3 +107,5 @@ pub fn task_wait(ctx Context) {
 		}
 	}
 }
+
+fn C.emalloc(size usize) voidptr

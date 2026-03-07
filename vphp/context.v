@@ -76,6 +76,30 @@ pub fn (ctx Context) arg_raw(index int) ZVal {
 	}
 }
 
+pub fn (ctx Context) arg_borrowed(index int) BorrowedValue {
+	return borrow(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_borrowed_zval(index int) BorrowedZVal {
+	return borrow_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_owned_request(index int) OwnedValue {
+	return own_request(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_owned_request_zval(index int) RequestOwnedZVal {
+	return own_request_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_owned_persistent(index int) OwnedValue {
+	return own_persistent(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_owned_persistent_zval(index int) PersistentOwnedZVal {
+	return own_persistent_zval(ctx.arg_raw(index))
+}
+
 pub fn (ctx Context) arg[T](index int) T {
 	val := ctx.arg_raw(index)
 	if !val.is_valid() {
@@ -177,8 +201,9 @@ pub fn (ctx Context) return_list[T](list []T) {
 		} $else $if T is int || T is i64 {
 			out.push_long(i64(item))
 		} $else {
+			mut sub_raw := C.zval{}
 			mut sub := ZVal{
-				raw: C.vphp_new_zval()
+				raw: &sub_raw
 			}
 			sub.array_init()
 			$for field in T.fields {
@@ -324,7 +349,7 @@ pub fn get_static_prop[T](ce voidptr, name string) T {
 }
 
 pub fn (ctx Context) wrap_closure[T](v_cb T) {
-	mut saved_cb := unsafe { &T(C.malloc(usize(sizeof(T)))) }
+	mut saved_cb := unsafe { &T(C.emalloc(usize(sizeof(T)))) }
 	unsafe {
 		*saved_cb = v_cb
 	}
@@ -332,4 +357,4 @@ pub fn (ctx Context) wrap_closure[T](v_cb T) {
 }
 
 // ======== 运行时 FFI 辅助 ========
-fn C.malloc(size usize) voidptr
+fn C.emalloc(size usize) voidptr

@@ -164,7 +164,7 @@ const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     {{V_FUNC}}(v_ptr, ctx);
@@ -179,7 +179,7 @@ const tpl_static_factory = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     vphp_return_obj(return_value, v_instance, {{CLASS_CE}});
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), {{HANDLER_CLASS}}_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), {{HANDLER_CLASS}}_handlers(), 1);
     }
 }'
 
@@ -242,7 +242,7 @@ PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     vphp_return_obj(return_value, v_instance, {{RET_CLASS_CE}});
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* {{RET_CLASS}}_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), {{RET_CLASS}}_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), {{RET_CLASS}}_handlers(), 0);
     }
 }
 '
@@ -256,7 +256,7 @@ PHP_METHOD({{CLASS}}, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 '
 

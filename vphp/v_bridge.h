@@ -8,6 +8,9 @@
 typedef struct {
   uint32_t magic;
   void *v_ptr;
+  int owns_v_ptr;
+  void (*cleanup_raw)(void *);
+  void (*free_raw)(void *);
   void (*prop_handler)(void *, char *, int, zval *);
   void (*write_handler)(void *, char *, int, zval *);
   void (*sync_handler)(void *, zval *);
@@ -21,6 +24,8 @@ typedef struct {
   void *write_handler;
   void *sync_handler;
   void *(*new_raw)();
+  void (*cleanup_raw)(void *);
+  void (*free_raw)(void *);
 } vphp_class_handlers;
 
 typedef struct {
@@ -41,11 +46,24 @@ zend_object *vphp_create_object_handler(zend_class_entry *ce);
 void vphp_init_resource_system(int module_number);
 HashTable *vphp_get_properties(zend_object *object);
 void vphp_bind_handlers(zend_object *obj, vphp_class_handlers *h);
+void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
+                                       int owns_v_ptr);
 
 // 参数、值与返回 (由 V 侧代码引用)
 uint32_t vphp_get_num_args(zend_execute_data *ex);
 zval *vphp_get_arg_ptr(zend_execute_data *ex, uint32_t index);
 zval *vphp_new_zval(void);
+void vphp_release_zval(zval *z);
+int vphp_autorelease_mark(void);
+void vphp_autorelease_add(zval *z);
+void vphp_autorelease_forget(zval *z);
+void vphp_autorelease_drain(int mark);
+void vphp_runtime_counters(int *autorelease_len, int *owned_len,
+                           unsigned int *obj_registry_len,
+                           unsigned int *rev_registry_len);
+void vphp_request_startup(void);
+void vphp_request_shutdown(void);
+void vphp_autorelease_shutdown(void);
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item);
 void vphp_throw(char *msg, int code);
 void vphp_throw_class(char *class_name, char *msg, int code);

@@ -87,6 +87,9 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 }
 
 pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.Table) {
+	if stmt.name == 'free' && stmt.is_method {
+		cls.has_free_method = true
+	}
 	if !stmt.attrs.any(it.name == 'php_method') {
 		return
 	}
