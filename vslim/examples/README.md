@@ -63,3 +63,24 @@ BASE_URL=http://127.0.0.1:19888 ROUTE_MODE=health k6 run /Users/guweigang/Source
 curl --noproxy '*' -i http://127.0.0.1:19888/assets/hello.txt
 curl --noproxy '*' -I http://127.0.0.1:19888/assets/app.js
 ```
+
+## Demo 一键验收
+
+脚本：`verify_demo.sh`
+
+用途：
+
+- 端到端验证 demo app 的关键链路
+- 覆盖 `health / hello / api / forms / debug(routes/conflicts)`
+
+运行前先确保 `vhttpd` 已按 `vslim-demo.toml` 启动并监听 `127.0.0.1:19888`。
+
+```bash
+/Users/guweigang/Source/vphpext/vslim/examples/verify_demo.sh
+```
+
+或指定目标地址：
+
+```bash
+BASE_URL=http://127.0.0.1:19888 /Users/guweigang/Source/vphpext/vslim/examples/verify_demo.sh
+```
