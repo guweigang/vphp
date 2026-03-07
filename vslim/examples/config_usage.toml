@@ -1,0 +1,13 @@
+[app]
+name = "vslim-demo"
+env = "dev"
+port = 19888
+debug = true
+ratio = 1.5
+
+[db]
+driver = "pgsql"
+hosts = ["127.0.0.1", "127.0.0.2"]
+
+[feature]
+flags = ["stream", "mvc", "config"]

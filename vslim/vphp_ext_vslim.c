@@ -22,6 +22,12 @@ typedef struct vphp__ZValOwnership vphp__ZValOwnership;
 typedef struct vphp__ITask vphp__ITask;
 typedef struct net__http__Downloader net__http__Downloader;
 typedef struct net__http__Handler net__http__Handler;
+typedef struct x__json2__JsonEncoder x__json2__JsonEncoder;
+typedef struct x__json2__Encodable x__json2__Encodable;
+typedef struct x__json2__StringDecoder x__json2__StringDecoder;
+typedef struct x__json2__NumberDecoder x__json2__NumberDecoder;
+typedef struct x__json2__BooleanDecoder x__json2__BooleanDecoder;
+typedef struct x__json2__NullDecoder x__json2__NullDecoder;
 typedef struct net__Dialer net__Dialer;
 typedef struct net__Connection net__Connection;
 typedef struct io__Reader io__Reader;
@@ -30,13 +36,25 @@ typedef struct io__RandomReader io__RandomReader;
 typedef struct io__ReaderWriter io__ReaderWriter;
 typedef struct io__RandomWriter io__RandomWriter;
 typedef struct rand__PRNG rand__PRNG;
+typedef struct toml__ast__walker__Visitor toml__ast__walker__Visitor;
+typedef struct toml__ast__walker__Modifier toml__ast__walker__Modifier;
 typedef struct none none;
+typedef struct toml__Any toml__Any;
 typedef struct vphp__TaskResult vphp__TaskResult;
+typedef struct toml__ast__Value toml__ast__Value;
+typedef struct toml__to__DocOrAny toml__to__DocOrAny;
+typedef struct x__json2__Any x__json2__Any;
+typedef struct toml__ast__Key toml__ast__Key;
+typedef struct toml__ast__DateTimeType toml__ast__DateTimeType;
+typedef struct x__json2__LinkedList_T_x__json2__ValueInfo x__json2__LinkedList_T_x__json2__ValueInfo;
+typedef struct x__json2__LinkedList_T_x__json2__StructFieldInfo x__json2__LinkedList_T_x__json2__StructFieldInfo;
 typedef struct vphp__ForeachPack_T_Map_string_vphp__DynVal vphp__ForeachPack_T_Map_string_vphp__DynVal;
 typedef struct vphp__ForeachPack_T_Array_string vphp__ForeachPack_T_Array_string;
 typedef struct vphp__ForeachPack_T_Map_string_string vphp__ForeachPack_T_Map_string_string;
 typedef struct vphp__ForeachPack_T_Map_string_vphp__ZVal vphp__ForeachPack_T_Map_string_vphp__ZVal;
 typedef struct _option_net__urllib__Userinfo _option_net__urllib__Userinfo;
+typedef struct x__json2__Node_T_x__json2__ValueInfo x__json2__Node_T_x__json2__ValueInfo;
+typedef struct x__json2__Node_T_x__json2__StructFieldInfo x__json2__Node_T_x__json2__StructFieldInfo;
 
 // BEGIN_multi_return_typedefs
 typedef struct multi_return_u32_u32 multi_return_u32_u32;
@@ -67,8 +85,13 @@ typedef struct multi_return_net__http__Method_net__urllib__URL_net__http__Versio
 typedef struct multi_return_Map_string_string_Map_string_Array_net__http__FileData multi_return_Map_string_string_Map_string_Array_net__http__FileData;
 typedef struct multi_return_string_int_string multi_return_string_int_string;
 typedef struct multi_return_u64_u64 multi_return_u64_u64;
+typedef struct multi_return_toml__token__Token_int multi_return_toml__token__Token_int;
+typedef struct multi_return_toml__parser__DottedKey_toml__parser__DottedKey multi_return_toml__parser__DottedKey_toml__parser__DottedKey;
+typedef struct multi_return_toml__ast__Key_toml__ast__Value multi_return_toml__ast__Key_toml__ast__Value;
+typedef struct multi_return_toml__parser__DottedKey_toml__ast__Value multi_return_toml__parser__DottedKey_toml__ast__Value;
 typedef struct multi_return_int_net__Addr multi_return_int_net__Addr;
 typedef struct multi_return_string_u16 multi_return_string_u16;
+typedef struct multi_return_string_int_int multi_return_string_int_int;
 typedef struct multi_return_os__File_string multi_return_os__File_string;
 typedef struct multi_return_u64_u8 multi_return_u64_u8;
 typedef struct multi_return_ref_sync__SpinLock_ref_sync__Subscription multi_return_ref_sync__SpinLock_ref_sync__Subscription;
@@ -99,7 +122,10 @@ typedef struct InputRuneIterator InputRuneIterator;
 typedef struct DenseArray DenseArray;
 typedef struct map map;
 typedef struct VAssertMetaInfo VAssertMetaInfo;
+typedef struct FunctionParam FunctionParam;
+typedef struct FunctionData FunctionData;
 typedef struct FieldData FieldData;
+typedef struct VariantData VariantData;
 typedef struct SortedMap SortedMap;
 typedef struct mapnode mapnode;
 typedef struct string string;
@@ -137,6 +163,8 @@ typedef struct io__NotExpected io__NotExpected;
 typedef struct io__ReadAllConfig io__ReadAllConfig;
 typedef struct io__ReaderWriterImpl io__ReaderWriterImpl;
 typedef struct net__http__chunked__ChunkScanner net__http__chunked__ChunkScanner;
+typedef struct toml__token__Pos toml__token__Pos;
+typedef struct toml__token__Token toml__token__Token;
 typedef union net__conv__ConversionUnion net__conv__ConversionUnion;
 typedef struct sync__stdatomic__AtomicVal sync__stdatomic__AtomicVal;
 typedef struct rand__buffer__PRNGBuffer rand__buffer__PRNGBuffer;
@@ -184,10 +212,39 @@ typedef struct math__DivResult math__DivResult;
 typedef struct math__ChebSeries math__ChebSeries;
 typedef union math__U32_F32 math__U32_F32;
 typedef union math__U64_F64 math__U64_F64;
+typedef struct x__json2__Node x__json2__Node;
+typedef struct x__json2__ValueInfo x__json2__ValueInfo;
+typedef struct x__json2__StructFieldInfo x__json2__StructFieldInfo;
+typedef struct x__json2__DecoderOptions x__json2__DecoderOptions;
+typedef struct x__json2__Decoder x__json2__Decoder;
+typedef struct x__json2__LinkedList x__json2__LinkedList;
+typedef struct x__json2__JsonDecodeError x__json2__JsonDecodeError;
+typedef struct x__json2__EncoderOptions x__json2__EncoderOptions;
+typedef struct x__json2__Encoder x__json2__Encoder;
+typedef struct x__json2__Token x__json2__Token;
+typedef struct x__json2__Null x__json2__Null;
+typedef struct encoding__utf8__RangeTable encoding__utf8__RangeTable;
+typedef struct encoding__utf8__Range16 encoding__utf8__Range16;
+typedef struct encoding__utf8__Range32 encoding__utf8__Range32;
+typedef struct toml__input__Config toml__input__Config;
 typedef struct rand__config__PRNGConfigStruct rand__config__PRNGConfigStruct;
 typedef struct rand__config__NormalConfigStruct rand__config__NormalConfigStruct;
 typedef struct rand__config__ShuffleConfigStruct rand__config__ShuffleConfigStruct;
 typedef struct rand__wyrand__WyRandRNG rand__wyrand__WyRandRNG;
+typedef struct toml__ast__Root toml__ast__Root;
+typedef struct toml__ast__Comment toml__ast__Comment;
+typedef struct toml__ast__Null toml__ast__Null;
+typedef struct toml__ast__Quoted toml__ast__Quoted;
+typedef struct toml__ast__Bare toml__ast__Bare;
+typedef struct toml__ast__Bool toml__ast__Bool;
+typedef struct toml__ast__Number toml__ast__Number;
+typedef struct toml__ast__Date toml__ast__Date;
+typedef struct toml__ast__Time toml__ast__Time;
+typedef struct toml__ast__DateTime toml__ast__DateTime;
+typedef struct toml__ast__EOF toml__ast__EOF;
+typedef struct toml__scanner__Scanner toml__scanner__Scanner;
+typedef struct toml__scanner__State toml__scanner__State;
+typedef struct toml__scanner__Config toml__scanner__Config;
 typedef struct rand__UUIDSession rand__UUIDSession;
 typedef struct sync__Subscription sync__Subscription;
 typedef struct sync__Channel sync__Channel;
@@ -204,6 +261,7 @@ typedef struct sync__ThreadLocalStorage sync__ThreadLocalStorage;
 typedef struct sync__WaitGroup sync__WaitGroup;
 typedef struct io__util__TempFileOptions io__util__TempFileOptions;
 typedef struct io__util__TempDirOptions io__util__TempDirOptions;
+typedef struct toml__ast__walker__Inspector toml__ast__walker__Inspector;
 typedef union net__AddrData net__AddrData;
 typedef struct net__Ip6 net__Ip6;
 typedef struct net__Ip net__Ip;
@@ -221,8 +279,17 @@ typedef struct net__ListenOptions net__ListenOptions;
 typedef struct net__TcpSocket net__TcpSocket;
 typedef struct net__UdpSocket net__UdpSocket;
 typedef struct net__UdpConn net__UdpConn;
+typedef struct toml__checker__Checker toml__checker__Checker;
+typedef struct toml__decoder__Decoder toml__decoder__Decoder;
+typedef struct toml__parser__Parser toml__parser__Parser;
+typedef struct toml__parser__Config toml__parser__Config;
 typedef struct net__openssl__SSLConn net__openssl__SSLConn;
 typedef struct net__openssl__SSLConnectConfig net__openssl__SSLConnectConfig;
+typedef struct toml__Null toml__Null;
+typedef struct toml__DateTime toml__DateTime;
+typedef struct toml__Date toml__Date;
+typedef struct toml__Time toml__Time;
+typedef struct toml__Doc toml__Doc;
 typedef struct net__ssl__SSLDialer net__ssl__SSLDialer;
 typedef struct net__ssl__SSLConn net__ssl__SSLConn;
 typedef struct net__ssl__SSLConnectConfig net__ssl__SSLConnectConfig;
@@ -265,6 +332,7 @@ typedef struct main__VSlimRequest main__VSlimRequest;
 typedef struct main__VSlimResponse main__VSlimResponse;
 typedef struct main__VSlimApp main__VSlimApp;
 typedef struct main__VSlimView main__VSlimView;
+typedef struct main__VSlimConfig main__VSlimConfig;
 typedef struct main__VSlimController main__VSlimController;
 typedef struct _result_void _result_void;
 typedef struct _result_int _result_int;
@@ -305,8 +373,12 @@ typedef struct _result_os__DiskUsage _result_os__DiskUsage;
 typedef struct _result_os__Pipe _result_os__Pipe;
 typedef struct _result_os__IOCapture _result_os__IOCapture;
 typedef struct _result_anon_fn_os__signal _result_anon_fn_os__signal;
-typedef struct _result_usize _result_usize;
+typedef struct _result_x__json2__Any _result_x__json2__Any;
 typedef struct _result_f32 _result_f32;
+typedef struct _result_usize _result_usize;
+typedef struct _result_toml__scanner__Scanner_ptr _result_toml__scanner__Scanner_ptr;
+typedef struct _result_toml__scanner__Scanner _result_toml__scanner__Scanner;
+typedef struct _result_toml__token__Token _result_toml__token__Token;
 typedef struct _result_multi_return_f64_f64 _result_multi_return_f64_f64;
 typedef struct _result_multi_return_os__File_string _result_multi_return_os__File_string;
 typedef struct _result_multi_return_string_string _result_multi_return_string_string;
@@ -321,8 +393,25 @@ typedef struct _result_net__TcpSocket _result_net__TcpSocket;
 typedef struct _result_net__TcpListener_ptr _result_net__TcpListener_ptr;
 typedef struct _result_net__UdpConn_ptr _result_net__UdpConn_ptr;
 typedef struct _result_net__UdpSocket_ptr _result_net__UdpSocket_ptr;
+typedef struct _result_multi_return_string_int_int _result_multi_return_string_int_int;
+typedef struct _result_toml__ast__Root_ptr _result_toml__ast__Root_ptr;
+typedef struct _result_multi_return_toml__token__Token_int _result_multi_return_toml__token__Token_int;
+typedef struct _result_Map_string_toml__ast__Value_ptr _result_Map_string_toml__ast__Value_ptr;
+typedef struct _result_Array_toml__ast__Value _result_Array_toml__ast__Value;
+typedef struct _result_toml__parser__DottedKey _result_toml__parser__DottedKey;
+typedef struct _result_toml__ast__Key _result_toml__ast__Key;
+typedef struct _result_multi_return_toml__parser__DottedKey_toml__ast__Value _result_multi_return_toml__parser__DottedKey_toml__ast__Value;
+typedef struct _result_multi_return_toml__ast__Key_toml__ast__Value _result_multi_return_toml__ast__Key_toml__ast__Value;
+typedef struct _result_toml__ast__Bool _result_toml__ast__Bool;
+typedef struct _result_toml__ast__Value _result_toml__ast__Value;
+typedef struct _result_toml__ast__Bare _result_toml__ast__Bare;
+typedef struct _result_toml__ast__DateTimeType _result_toml__ast__DateTimeType;
+typedef struct _result_toml__ast__Date _result_toml__ast__Date;
+typedef struct _result_toml__ast__Time _result_toml__ast__Time;
 typedef struct _result_net__openssl__SSLError _result_net__openssl__SSLError;
 typedef struct _result_net__openssl__SSLConn_ptr _result_net__openssl__SSLConn_ptr;
+typedef struct _result_toml__Any _result_toml__Any;
+typedef struct _result_toml__Doc _result_toml__Doc;
 typedef struct _result_net__ssl__SSLConn_ptr _result_net__ssl__SSLConn_ptr;
 typedef struct _result_net__http__Response _result_net__http__Response;
 typedef struct _result_net__http__Cookie _result_net__http__Cookie;
@@ -340,6 +429,8 @@ typedef struct _option_string _option_string;
 typedef struct _option_anon_fn_vphp__context__vphp__ITask _option_anon_fn_vphp__context__vphp__ITask;
 typedef struct _option_main__VSlimResponse_ptr _option_main__VSlimResponse_ptr;
 typedef struct _option_net__Addr _option_net__Addr;
+typedef struct _option_toml__ast__Value _option_toml__ast__Value;
+typedef struct _option_toml__Any _option_toml__Any;
 typedef struct _option_net__http__Cookie _option_net__http__Cookie;
 typedef struct _option_net__TcpConn_ptr _option_net__TcpConn_ptr;
 typedef struct _option_f64 _option_f64;
@@ -2475,6 +2566,12 @@ static inline unsigned char atomic_fetch_xor_byte(unsigned char* x, unsigned cha
 #define _const_os__s_ixoth 1
 #define _const_math__shift 52
 #define _const_math__bias 1023
+#define _const_x__json2__max_context_length 50
+#define _const_x__json2__tab_width 8
+#define _const_encoding__utf8__p_c 1
+#define _const_encoding__utf8__p_z 16
+#define _const_encoding__utf8__p_lo 96
+#define _const_encoding__utf8__p_l_mask 96
 #define _const_rand__wyrand__seed_len 2
 #define _const_io__util__retries 10000
 #define _const_net__max_ip_len 24
@@ -2631,6 +2728,32 @@ typedef enum {
 }  net__urllib__EncodingMode;
 
 typedef enum {
+	toml__token__Kind__unknown, // 
+	toml__token__Kind__eof, // +1
+	toml__token__Kind__bare, // +2
+	toml__token__Kind__boolean, // +3
+	toml__token__Kind__number, // +4
+	toml__token__Kind__quoted, // +5
+	toml__token__Kind__plus, // +6
+	toml__token__Kind__minus, // +7
+	toml__token__Kind__underscore, // +8
+	toml__token__Kind__comma, // +9
+	toml__token__Kind__colon, // +10
+	toml__token__Kind__hash, // +11
+	toml__token__Kind__assign, // +12
+	toml__token__Kind__lcbr, // +13
+	toml__token__Kind__rcbr, // +14
+	toml__token__Kind__lsbr, // +15
+	toml__token__Kind__rsbr, // +16
+	toml__token__Kind__nl, // +17
+	toml__token__Kind__cr, // +18
+	toml__token__Kind__tab, // +19
+	toml__token__Kind__whitespace, // +20
+	toml__token__Kind__period, // +21
+	toml__token__Kind___end_, // +22
+}  toml__token__Kind;
+
+typedef enum {
 	vphp__InteropErrorClass__worker_runtime_error, // 
 	vphp__InteropErrorClass__app_contract_error, // +1
 	vphp__InteropErrorClass__invalid_argument, // +2
@@ -2753,6 +2876,32 @@ typedef enum {
 	os__Signal__pwr = 30, // 30
 	os__Signal__sys = 31, // 31
 }  os__Signal;
+
+typedef enum {
+	x__json2__TokenKind__none, // 
+	x__json2__TokenKind__error, // +1
+	x__json2__TokenKind__str, // +2
+	x__json2__TokenKind__float, // +3
+	x__json2__TokenKind__int, // +4
+	x__json2__TokenKind__null, // +5
+	x__json2__TokenKind__bool, // +6
+	x__json2__TokenKind__eof, // +7
+	x__json2__TokenKind__comma = 44, // 44
+	x__json2__TokenKind__colon = 58, // 58
+	x__json2__TokenKind__lsbr = 91, // 91
+	x__json2__TokenKind__rsbr = 93, // 93
+	x__json2__TokenKind__lcbr = 123, // 123
+	x__json2__TokenKind__rcbr = 125, // 125
+}  x__json2__TokenKind;
+
+typedef enum {
+	x__json2__ValueKind__array, // 
+	x__json2__ValueKind__object, // +1
+	x__json2__ValueKind__string, // +2
+	x__json2__ValueKind__number, // +3
+	x__json2__ValueKind__boolean, // +4
+	x__json2__ValueKind__null, // +5
+}  x__json2__ValueKind;
 
 typedef enum {
 	sync__BufferElemStat__unused = 0, // 0
@@ -3106,6 +3255,7 @@ struct IError {
 		os__FileNotOpenedError* _os__FileNotOpenedError;
 		os__SizeOfTypeIs0Error* _os__SizeOfTypeIs0Error;
 		os__ExecutableNotFoundError* _os__ExecutableNotFoundError;
+		x__json2__JsonDecodeError* _x__json2__JsonDecodeError;
 		net__http__HeaderKeyError* _net__http__HeaderKeyError;
 		net__http__UnexpectedExtraAttributeError* _net__http__UnexpectedExtraAttributeError;
 		net__http__MultiplePathAttributesError* _net__http__MultiplePathAttributesError;
@@ -3174,12 +3324,15 @@ typedef array Array_u8;
 typedef array Array_voidptr;
 typedef array Array_VCastTypeIndexName;
 typedef array Array_int;
+typedef array Array_FunctionParam;
 typedef array Array_rune;
 typedef string Array_fixed_string_11 [11];
 typedef voidptr Array_fixed_voidptr_11 [11];
 typedef array Array_RepIndex;
 typedef map Map_string_string;
 typedef array Array_Map_string_string;
+typedef map Map_string_toml__Any;
+typedef array Array_toml__Any;
 typedef map Map_string_vphp__PersistentOwnedZVal;
 typedef map Map_string_Array_string;
 typedef map Map_string_bool;
@@ -3203,6 +3356,20 @@ typedef map Map_string_vphp__DynVal;
 typedef map Map_string_i64;
 typedef map Map_string_f64;
 typedef array Array_C__zval_ptr;
+typedef array Array_f32;
+typedef array Array_u64;
+typedef array Array_toml__DateTime;
+typedef array Array_toml__Date;
+typedef array Array_toml__Time;
+typedef map Map_string_f32;
+typedef map Map_string_u64;
+typedef map Map_string_toml__DateTime;
+typedef map Map_string_toml__Date;
+typedef map Map_string_toml__Time;
+typedef array Array_toml__ast__Value;
+typedef map Map_string_toml__ast__Value;
+typedef map Map_string_x__json2__Any;
+typedef array Array_x__json2__Any;
 typedef array Array_char_ptr;
 typedef int Array_fixed_int_3 [3];
 typedef array Array_os__Signal;
@@ -3219,6 +3386,12 @@ typedef array Array_net__http__Cookie;
 typedef chan chan_net__TcpConn_ptr;
 typedef array Array___v_thread;
 typedef array Array_net__urllib__QueryValue;
+typedef array Array_toml__ast__Comment;
+typedef array Array_toml__parser__DottedKey;
+typedef array Array_toml__token__Token;
+typedef array Array_toml__token__Kind;
+typedef map Map_K_V;
+typedef map Map_U_V;
 typedef u8 Array_fixed_u8_8 [8];
 typedef u8 Array_fixed_u8_4 [4];
 typedef u8 Array_fixed_u8_16 [16];
@@ -3233,6 +3406,8 @@ typedef array Array_sync__Subscription;
 typedef chan chan_bool;
 typedef array Array_chan_bool;
 typedef u8 Array_fixed_u8_63 [63];
+typedef array Array_encoding__utf8__Range16;
+typedef array Array_encoding__utf8__Range32;
 typedef u8 Array_fixed_u8_5 [5];
 typedef u8 Array_fixed_u8_25 [25];
 typedef u8 Array_fixed_u8_12 [12];
@@ -3263,11 +3438,14 @@ typedef char Array_fixed_char_1024 [1024];
 typedef int Array_fixed_int_12 [12];
 typedef int Array_fixed_int_13 [13];
 typedef int Array_fixed_int_123 [123];
+typedef u8 Array_fixed_u8_364 [364];
 typedef u8 Array_fixed_u8_4096 [4096];
 typedef u8 Array_fixed_u8_1024 [1024];
 typedef int Array_fixed_int_2 [2];
 typedef array Array_os__ProcessState;
 typedef int Array_fixed_int_6 [6];
+typedef rune Array_fixed_rune_4 [4];
+typedef int Array_fixed_int_256 [256];
 typedef u16 Array_fixed_u16_8 [8];
 typedef int Array_fixed_int_4 [4];
 typedef char Array_fixed_char_24 [24];
@@ -3283,6 +3461,7 @@ typedef array Array_void;
 typedef Array_u8 strings__Builder;
 typedef i64 time__Duration;
 #define C__time_t time_t
+typedef Array_string toml__parser__DottedKey;
 typedef usize term__termios__TcFlag;
 typedef usize term__termios__Speed;
 typedef u8 term__termios__Cc;
@@ -3308,6 +3487,7 @@ typedef _result_int (*net__http__FnReceiveChunk)(voidptr,u8*,int);
 typedef void (*anon_fn_mut_net__http__server)(net__http__Server*);
 typedef void (*anon_fn_)();
 typedef void (*anon_fn_voidptr)(voidptr);
+typedef _result_void (*toml__ast__walker__InspectorFn)(toml__ast__Value*,voidptr);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__dynval)(vphp__ZVal,vphp__ZVal,Map_string_vphp__DynVal*);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_array_string)(vphp__ZVal,vphp__ZVal,Array_string*);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__zval)(vphp__ZVal,vphp__ZVal,Map_string_vphp__ZVal*);
@@ -3333,6 +3513,53 @@ struct net__http__Handler {
 	union {
 		void* _object;
 		net__http__DebugHandler* _net__http__DebugHandler;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
+struct x__json2__JsonEncoder {
+	union {
+		void* _object;
+		time__Time* _time__Time;
+		voidptr* _voidptr;
+		x__json2__Null* _x__json2__Null;
+	};
+	u32 _typ;
+};
+struct x__json2__Encodable {
+	union {
+		void* _object;
+		x__json2__Any* _x__json2__Any;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
+struct x__json2__StringDecoder {
+	union {
+		void* _object;
+		time__Time* _time__Time;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
+struct x__json2__NumberDecoder {
+	union {
+		void* _object;
+		time__Time* _time__Time;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
+struct x__json2__BooleanDecoder {
+	union {
+		void* _object;
+	};
+	u32 _typ;
+};
+struct x__json2__NullDecoder {
+	union {
+		void* _object;
+		x__json2__Null* _x__json2__Null;
 		voidptr* _voidptr;
 	};
 	u32 _typ;
@@ -3396,6 +3623,23 @@ struct rand__PRNG {
 	};
 	u32 _typ;
 };
+struct toml__ast__walker__Visitor {
+	union {
+		void* _object;
+		toml__ast__walker__Inspector* _toml__ast__walker__Inspector;
+		voidptr* _voidptr;
+		toml__checker__Checker* _toml__checker__Checker;
+	};
+	u32 _typ;
+};
+struct toml__ast__walker__Modifier {
+	union {
+		void* _object;
+		toml__decoder__Decoder* _toml__decoder__Decoder;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
 // #start sorted_symbols
 struct none {
 	E_STRUCT_DECL;
@@ -3437,6 +3681,55 @@ struct main__VSlimContainerNotFoundException {
 	E_STRUCT_DECL;
 };
 
+// Union sum type toml__Any = 
+//          |  130 = toml__Date
+//          |  132 = toml__DateTime
+//          |  129 = toml__Null
+//          |  131 = toml__Time
+//          |  128 = Array_toml__Any
+//          |   19 = bool
+//          |   16 = f32
+//          |   17 = f64
+//          |    9 = i64
+//          |    8 = int
+//          |  127 = Map_string_toml__Any
+//          |   21 = string
+//          |   14 = u64
+struct toml__Any {
+	union {
+		toml__Date* _toml__Date;
+		toml__DateTime* _toml__DateTime;
+		toml__Null* _toml__Null;
+		toml__Time* _toml__Time;
+		Array_toml__Any* _Array_toml__Any;
+		bool* _bool;
+		f32* _f32;
+		f64* _f64;
+		i64* _i64;
+		int* _int;
+		Map_string_toml__Any* _Map_string_toml__Any;
+		string* _string;
+		u64* _u64;
+	};
+	u32 _typ;
+};
+
+struct toml__Null {
+	E_STRUCT_DECL;
+};
+
+struct toml__Date {
+	string date;
+};
+
+struct toml__Time {
+	string time;
+};
+
+struct toml__DateTime {
+	string datetime;
+};
+
 // Union sum type vphp__TaskResult = 
 //          |   21 = string
 //          |    8 = int
@@ -3445,8 +3738,8 @@ struct main__VSlimContainerNotFoundException {
 //          |   19 = bool
 //          |   37 = Array_string
 //          |   47 = Array_int
-//          |  206 = Array_i64
-//          |  207 = Array_f64
+//          |  214 = Array_i64
+//          |  215 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -3460,6 +3753,96 @@ struct vphp__TaskResult {
 		Array_f64* _Array_f64;
 	};
 	u32 _typ;
+};
+
+struct toml__Doc {
+	toml__ast__Root* ast;
+};
+
+struct toml__input__Config {
+	string text;
+	string file_path;
+};
+
+// Union sum type toml__ast__Value = 
+//          |  293 = toml__ast__Bool
+//          |  288 = toml__ast__Date
+//          |  290 = toml__ast__DateTime
+//          |  285 = toml__ast__Null
+//          |  292 = toml__ast__Number
+//          |  291 = toml__ast__Quoted
+//          |  289 = toml__ast__Time
+//          |  286 = Array_toml__ast__Value
+//          |  287 = Map_string_toml__ast__Value
+struct toml__ast__Value {
+	union {
+		toml__ast__Bool* _toml__ast__Bool;
+		toml__ast__Date* _toml__ast__Date;
+		toml__ast__DateTime* _toml__ast__DateTime;
+		toml__ast__Null* _toml__ast__Null;
+		toml__ast__Number* _toml__ast__Number;
+		toml__ast__Quoted* _toml__ast__Quoted;
+		toml__ast__Time* _toml__ast__Time;
+		Array_toml__ast__Value* _Array_toml__ast__Value;
+		Map_string_toml__ast__Value* _Map_string_toml__ast__Value;
+	};
+	u32 _typ;
+};
+
+// Union sum type toml__to__DocOrAny = 
+//          |  126 = toml__Any
+//          |  280 = toml__Doc
+struct toml__to__DocOrAny {
+	union {
+		toml__Any* _toml__Any;
+		toml__Doc* _toml__Doc;
+	};
+	u32 _typ;
+};
+
+// Union sum type x__json2__Any = 
+//          |  298 = Array_x__json2__Any
+//          |   19 = bool
+//          |   17 = f64
+//          |   16 = f32
+//          |    9 = i64
+//          |    8 = int
+//          |    7 = i32
+//          |    6 = i16
+//          |    5 = i8
+//          |  297 = Map_string_x__json2__Any
+//          |   21 = string
+//          |  359 = time__Time
+//          |   14 = u64
+//          |   13 = u32
+//          |   12 = u16
+//          |   11 = u8
+//          |  296 = x__json2__Null
+struct x__json2__Any {
+	union {
+		Array_x__json2__Any* _Array_x__json2__Any;
+		bool* _bool;
+		f64* _f64;
+		f32* _f32;
+		i64* _i64;
+		int* _int;
+		i32* _i32;
+		i16* _i16;
+		i8* _i8;
+		Map_string_x__json2__Any* _Map_string_x__json2__Any;
+		string* _string;
+		time__Time* _time__Time;
+		u64* _u64;
+		u32* _u32;
+		u16* _u16;
+		u8* _u8;
+		x__json2__Null* _x__json2__Null;
+	};
+	u32 _typ;
+};
+
+struct x__json2__Null {
+	E_STRUCT_DECL;
 };
 
 struct os__Eof {
@@ -3508,6 +3891,48 @@ struct net__http__DebugHandler {
 struct net__urllib__QueryValue {
 	string key;
 	string value;
+};
+
+// Union sum type toml__ast__Key = 
+//          |  455 = toml__ast__Bare
+//          |  293 = toml__ast__Bool
+//          |  285 = toml__ast__Null
+//          |  292 = toml__ast__Number
+//          |  291 = toml__ast__Quoted
+struct toml__ast__Key {
+	union {
+		toml__ast__Bare* _toml__ast__Bare;
+		toml__ast__Bool* _toml__ast__Bool;
+		toml__ast__Null* _toml__ast__Null;
+		toml__ast__Number* _toml__ast__Number;
+		toml__ast__Quoted* _toml__ast__Quoted;
+	};
+	u32 _typ;
+	string* text;
+	toml__token__Pos* pos;
+};
+
+// Union sum type toml__ast__DateTimeType = 
+//          |  288 = toml__ast__Date
+//          |  290 = toml__ast__DateTime
+//          |  289 = toml__ast__Time
+struct toml__ast__DateTimeType {
+	union {
+		toml__ast__Date* _toml__ast__Date;
+		toml__ast__DateTime* _toml__ast__DateTime;
+		toml__ast__Time* _toml__ast__Time;
+	};
+	u32 _typ;
+	string* text;
+	toml__token__Pos* pos;
+};
+
+struct toml__checker__Checker {
+	toml__scanner__Scanner* scanner;
+};
+
+struct toml__decoder__Decoder {
+	toml__scanner__Scanner* scanner;
 };
 
 struct net__TCPDialer {
@@ -3576,6 +4001,20 @@ struct VAssertMetaInfo {
 	bool has_msg;
 };
 
+struct FunctionParam {
+	int typ;
+	string name;
+};
+
+struct FunctionData {
+	string name;
+	string location;
+	Array_string attrs;
+	Array_FunctionParam args;
+	int return_type;
+	int typ;
+};
+
 struct FieldData {
 	string name;
 	int typ;
@@ -3594,6 +4033,10 @@ struct FieldData {
 	bool is_struct;
 	bool is_alias;
 	u8 indirections;
+};
+
+struct VariantData {
+	int typ;
 };
 
 struct SortedMap {
@@ -3687,6 +4130,12 @@ struct main__VSlimContainer {
 	Map_string_vphp__PersistentOwnedZVal resolved;
 };
 
+struct main__VSlimConfig {
+	string path;
+	bool loaded;
+	toml__Any root;
+};
+
 struct main__ReduceExprParser {
 	string src;
 	int pos;
@@ -3772,6 +4221,23 @@ struct vphp__RuntimeCounters {
 	int owned_len;
 	u32 obj_registry_len;
 	u32 rev_registry_len;
+};
+
+struct toml__ast__Root {
+	toml__input__Config input;
+	Array_toml__ast__Comment comments;
+	toml__ast__Value table;
+};
+
+struct toml__scanner__Config {
+	toml__input__Config input;
+	bool tokenize_formatting;
+};
+
+struct toml__parser__Config {
+	toml__scanner__Scanner* scanner;
+	bool run_checks;
+	bool decode_values;
 };
 
 struct os__Command {
@@ -3994,6 +4460,85 @@ struct net__urllib__Values {
 	int len;
 };
 
+struct toml__token__Pos {
+	int len;
+	int line_nr;
+	int pos;
+	int col;
+};
+
+struct toml__scanner__State {
+	int col;
+	int line_nr;
+	int pos;
+};
+
+struct toml__token__Token {
+	toml__token__Kind kind;
+	string lit;
+	int col;
+	int line_nr;
+	int pos;
+	int len;
+};
+
+struct x__json2__ValueInfo {
+	int position;
+	x__json2__ValueKind value_kind;
+	int length;
+};
+
+struct x__json2__StructFieldInfo {
+	voidptr field_name_str;
+	int field_name_len;
+	voidptr json_name_ptr;
+	int json_name_len;
+	bool is_omitempty;
+	bool is_skip;
+	bool is_required;
+	bool is_raw;
+	bool is_decoded;
+};
+
+struct x__json2__DecoderOptions {
+	bool strict;
+};
+
+struct x__json2__LinkedList_T_x__json2__ValueInfo {
+	x__json2__Node_T_x__json2__ValueInfo* head;
+	x__json2__Node_T_x__json2__ValueInfo* tail;
+	int len;
+};
+
+struct x__json2__JsonDecodeError {
+	Error Error;
+	string context;
+	string message;
+	int line;
+	int character;
+};
+
+struct x__json2__LinkedList_T_x__json2__StructFieldInfo {
+	x__json2__Node_T_x__json2__StructFieldInfo* head;
+	x__json2__Node_T_x__json2__StructFieldInfo* tail;
+	int len;
+};
+
+struct x__json2__EncoderOptions {
+	bool prettify;
+	string indent_string;
+	string newline_string;
+	bool enum_as_int;
+	bool escape_unicode;
+};
+
+struct x__json2__Token {
+	Array_u8 lit;
+	x__json2__TokenKind kind;
+	int line;
+	int col;
+};
+
 struct strings__textscanner__TextScanner {
 	string input;
 	int ilen;
@@ -4140,6 +4685,29 @@ struct rand__buffer__PRNGBuffer {
 	u64 buffer;
 };
 
+struct toml__ast__walker__Inspector {
+	toml__ast__walker__InspectorFn inspector_callback;
+	voidptr data;
+};
+
+struct encoding__utf8__RangeTable {
+	Array_encoding__utf8__Range16 r16;
+	Array_encoding__utf8__Range32 r32;
+	int latin_offset;
+};
+
+struct encoding__utf8__Range16 {
+	u16 lo;
+	u16 hi;
+	u16 stride;
+};
+
+struct encoding__utf8__Range32 {
+	u32 lo;
+	u32 hi;
+	u32 stride;
+};
+
 struct vphp__ForeachPack_T_Map_string_vphp__DynVal {
 	anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__dynval cb;
 	Map_string_vphp__DynVal ctx;
@@ -4207,6 +4775,39 @@ struct vphp__DynVal {
 	vphp__DynValData data;
 	Array_vphp__DynVal list;
 	Map_string_vphp__DynVal map;
+};
+
+struct toml__ast__Null {
+	string text;
+	toml__token__Pos pos;
+};
+
+struct toml__ast__Date {
+	string text;
+	toml__token__Pos pos;
+};
+
+struct toml__ast__Time {
+	string text;
+	int offset;
+	toml__token__Pos pos;
+};
+
+struct toml__ast__Quoted {
+	string text;
+	toml__token__Pos pos;
+	bool is_multiline;
+	u8 quote;
+};
+
+struct toml__ast__Number {
+	toml__token__Pos pos;
+	string text;
+};
+
+struct toml__ast__Bool {
+	string text;
+	toml__token__Pos pos;
 };
 
 struct os__FileMode {
@@ -4295,6 +4896,70 @@ struct net__urllib__URL {
 struct net__urllib__ParseAuthorityRes {
 	_option_net__urllib__Userinfo user;
 	string host;
+};
+
+struct toml__ast__Comment {
+	string text;
+	toml__token__Pos pos;
+};
+
+struct toml__ast__Bare {
+	string text;
+	toml__token__Pos pos;
+};
+
+struct toml__ast__EOF {
+	toml__token__Pos pos;
+};
+
+struct toml__scanner__Scanner {
+	toml__scanner__Config config;
+	string text;
+	int col;
+	int line_nr;
+	int pos;
+	int header_len;
+	bool is_left_of_assign;
+};
+
+struct toml__parser__Parser {
+	toml__parser__Config config;
+	toml__scanner__Scanner* scanner;
+	toml__token__Token prev_tok;
+	toml__token__Token tok;
+	toml__token__Token peek_tok;
+	Array_toml__token__Token tokens;
+	bool skip_next;
+	Map_string_toml__ast__Value root_map;
+	toml__parser__DottedKey root_map_key;
+	bool value_is_immutable;
+	Array_toml__parser__DottedKey immutable;
+	Array_toml__parser__DottedKey explicit_declared;
+	Array_toml__parser__DottedKey explicit_declared_array_of_tables;
+	Array_toml__parser__DottedKey implicit_declared;
+	toml__parser__DottedKey last_aot;
+	int last_aot_index;
+	toml__ast__Root* ast_root;
+};
+
+struct x__json2__Decoder {
+	string json;
+	bool strict;
+	x__json2__LinkedList_T_x__json2__ValueInfo values_info;
+	int checker_idx;
+	x__json2__Node_T_x__json2__ValueInfo* current_node;
+};
+
+struct x__json2__Node_T_x__json2__ValueInfo {
+	x__json2__ValueInfo value;
+	x__json2__Node_T_x__json2__ValueInfo* next;
+};
+
+struct x__json2__Encoder {
+	x__json2__EncoderOptions EncoderOptions;
+	int level;
+	string prefix;
+	Array_u8 output;
 };
 
 struct net__ssl__SSLConnectConfig {
@@ -4404,6 +5069,11 @@ struct sync__WaitGroup {
 	sync__Semaphore sem;
 };
 
+struct x__json2__Node_T_x__json2__StructFieldInfo {
+	x__json2__StructFieldInfo value;
+	x__json2__Node_T_x__json2__StructFieldInfo* next;
+};
+
 struct main__VSlimApp {
 	Array_main__VSlimRoute routes;
 	Array_vphp__PersistentOwnedZVal php_before_hooks;
@@ -4415,6 +5085,7 @@ struct main__VSlimApp {
 	vphp__PersistentOwnedZVal not_found_handler;
 	vphp__PersistentOwnedZVal error_handler;
 	main__VSlimContainer* container_ref;
+	main__VSlimConfig* config_ref;
 	string base_path;
 	bool use_demo;
 	bool error_response_json;
@@ -4456,6 +5127,13 @@ struct main__ResourceRouteOptions {
 	string param_name;
 	bool shallow;
 	vphp__PersistentOwnedZVal missing_handler;
+};
+
+struct toml__ast__DateTime {
+	string text;
+	toml__token__Pos pos;
+	toml__ast__Date date;
+	toml__ast__Time time;
 };
 
 struct os__FileInfo {
@@ -4795,6 +5473,26 @@ struct multi_return_u64_u64 {
 	u64 arg1;
 };
 
+struct multi_return_toml__token__Token_int {
+	toml__token__Token arg0;
+	int arg1;
+};
+
+struct multi_return_toml__parser__DottedKey_toml__parser__DottedKey {
+	toml__parser__DottedKey arg0;
+	toml__parser__DottedKey arg1;
+};
+
+struct multi_return_toml__ast__Key_toml__ast__Value {
+	toml__ast__Key arg0;
+	toml__ast__Value arg1;
+};
+
+struct multi_return_toml__parser__DottedKey_toml__ast__Value {
+	toml__parser__DottedKey arg0;
+	toml__ast__Value arg1;
+};
+
 struct multi_return_int_net__Addr {
 	int arg0;
 	net__Addr arg1;
@@ -4803,6 +5501,12 @@ struct multi_return_int_net__Addr {
 struct multi_return_string_u16 {
 	string arg0;
 	u16 arg1;
+};
+
+struct multi_return_string_int_int {
+	string arg0;
+	int arg1;
+	int arg2;
 };
 
 struct multi_return_os__File_string {
@@ -4828,11 +5532,11 @@ typedef struct thread_arg_vphp__ITask_run {
 	vphp__ITask arg0;
 } thread_arg_vphp__ITask_run;
 
-typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731 {
+typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731 {
 	void (*fn) (sync__WaitGroup*, void (*) ());
 	sync__WaitGroup* arg1;
 	void (*arg2) ();
-} thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731;
+} thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731;
 
 typedef struct thread_arg_net__http__HandlerWorker_process_requests {
 	void (*fn) (net__http__HandlerWorker*);
@@ -4840,8 +5544,12 @@ typedef struct thread_arg_net__http__HandlerWorker_process_requests {
 } thread_arg_net__http__HandlerWorker_process_requests;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
+static bool Array_fixed_rune_4_contains(Array_fixed_rune_4 a, rune v);
+static bool Array_rune_contains(Array_rune a, rune v);
+static bool Array_toml__token__Kind_contains(Array_toml__token__Kind a, toml__token__Kind v);
 static bool Array_net__http__Status_contains(Array_net__http__Status a, net__http__Status v);
 static int Array_string_index(Array_string a, string v);
+static int Array_toml__parser__DottedKey_index(Array_toml__parser__DottedKey a, toml__parser__DottedKey v);
 
 // V Option_xxx definitions:
 struct _option_rune {
@@ -4890,6 +5598,18 @@ struct _option_net__Addr {
 	byte state;
 	IError err;
 	byte data[sizeof(net__Addr) > 1 ? sizeof(net__Addr) : 1];
+};
+
+struct _option_toml__ast__Value {
+	byte state;
+	IError err;
+	byte data[sizeof(toml__ast__Value) > 1 ? sizeof(toml__ast__Value) : 1];
+};
+
+struct _option_toml__Any {
+	byte state;
+	IError err;
+	byte data[sizeof(toml__Any) > 1 ? sizeof(toml__Any) : 1];
 };
 
 struct _option_net__http__Cookie {
@@ -5158,16 +5878,40 @@ struct _result_anon_fn_os__signal {
 	byte data[sizeof(void*) > 1 ? sizeof(void*) : 1];
 };
 
-struct _result_usize {
+struct _result_x__json2__Any {
 	bool is_error;
 	IError err;
-	byte data[sizeof(usize) > 1 ? sizeof(usize) : 1];
+	byte data[sizeof(x__json2__Any) > 1 ? sizeof(x__json2__Any) : 1];
 };
 
 struct _result_f32 {
 	bool is_error;
 	IError err;
 	byte data[sizeof(f32) > 1 ? sizeof(f32) : 1];
+};
+
+struct _result_usize {
+	bool is_error;
+	IError err;
+	byte data[sizeof(usize) > 1 ? sizeof(usize) : 1];
+};
+
+struct _result_toml__scanner__Scanner_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__scanner__Scanner*) > 1 ? sizeof(toml__scanner__Scanner*) : 1];
+};
+
+struct _result_toml__scanner__Scanner {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__scanner__Scanner) > 1 ? sizeof(toml__scanner__Scanner) : 1];
+};
+
+struct _result_toml__token__Token {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__token__Token) > 1 ? sizeof(toml__token__Token) : 1];
 };
 
 struct _result_multi_return_f64_f64 {
@@ -5254,6 +5998,96 @@ struct _result_net__UdpSocket_ptr {
 	byte data[sizeof(net__UdpSocket*) > 1 ? sizeof(net__UdpSocket*) : 1];
 };
 
+struct _result_multi_return_string_int_int {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_string_int_int) > 1 ? sizeof(multi_return_string_int_int) : 1];
+};
+
+struct _result_toml__ast__Root_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Root*) > 1 ? sizeof(toml__ast__Root*) : 1];
+};
+
+struct _result_multi_return_toml__token__Token_int {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_toml__token__Token_int) > 1 ? sizeof(multi_return_toml__token__Token_int) : 1];
+};
+
+struct _result_Map_string_toml__ast__Value_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(Map_string_toml__ast__Value*) > 1 ? sizeof(Map_string_toml__ast__Value*) : 1];
+};
+
+struct _result_Array_toml__ast__Value {
+	bool is_error;
+	IError err;
+	byte data[sizeof(Array_toml__ast__Value) > 1 ? sizeof(Array_toml__ast__Value) : 1];
+};
+
+struct _result_toml__parser__DottedKey {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__parser__DottedKey) > 1 ? sizeof(toml__parser__DottedKey) : 1];
+};
+
+struct _result_toml__ast__Key {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Key) > 1 ? sizeof(toml__ast__Key) : 1];
+};
+
+struct _result_multi_return_toml__parser__DottedKey_toml__ast__Value {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_toml__parser__DottedKey_toml__ast__Value) > 1 ? sizeof(multi_return_toml__parser__DottedKey_toml__ast__Value) : 1];
+};
+
+struct _result_multi_return_toml__ast__Key_toml__ast__Value {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_toml__ast__Key_toml__ast__Value) > 1 ? sizeof(multi_return_toml__ast__Key_toml__ast__Value) : 1];
+};
+
+struct _result_toml__ast__Bool {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Bool) > 1 ? sizeof(toml__ast__Bool) : 1];
+};
+
+struct _result_toml__ast__Value {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Value) > 1 ? sizeof(toml__ast__Value) : 1];
+};
+
+struct _result_toml__ast__Bare {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Bare) > 1 ? sizeof(toml__ast__Bare) : 1];
+};
+
+struct _result_toml__ast__DateTimeType {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__DateTimeType) > 1 ? sizeof(toml__ast__DateTimeType) : 1];
+};
+
+struct _result_toml__ast__Date {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Date) > 1 ? sizeof(toml__ast__Date) : 1];
+};
+
+struct _result_toml__ast__Time {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__ast__Time) > 1 ? sizeof(toml__ast__Time) : 1];
+};
+
 struct _result_net__openssl__SSLError {
 	bool is_error;
 	IError err;
@@ -5264,6 +6098,18 @@ struct _result_net__openssl__SSLConn_ptr {
 	bool is_error;
 	IError err;
 	byte data[sizeof(net__openssl__SSLConn*) > 1 ? sizeof(net__openssl__SSLConn*) : 1];
+};
+
+struct _result_toml__Any {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__Any) > 1 ? sizeof(toml__Any) : 1];
+};
+
+struct _result_toml__Doc {
+	bool is_error;
+	IError err;
+	byte data[sizeof(toml__Doc) > 1 ? sizeof(toml__Doc) : 1];
 };
 
 struct _result_net__ssl__SSLConn_ptr {
@@ -5324,13 +6170,31 @@ struct _result_multi_return_int_int {
 // V definitions:
 static char * v_typeof_interface_IError(u32 sidx);
 u32 v_typeof_interface_idx_IError(u32 sidx);
+char * v_typeof_sumtype_toml__Any(u32);
 char * v_typeof_sumtype_vphp__TaskResult(u32);
 static char * v_typeof_interface_vphp__ITask(u32 sidx);
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx);
+char * v_typeof_sumtype_toml__ast__Value(u32);
+char * v_typeof_sumtype_toml__to__DocOrAny(u32);
+char * v_typeof_sumtype_x__json2__Any(u32);
 static char * v_typeof_interface_net__http__Downloader(u32 sidx);
 u32 v_typeof_interface_idx_net__http__Downloader(u32 sidx);
 static char * v_typeof_interface_net__http__Handler(u32 sidx);
 u32 v_typeof_interface_idx_net__http__Handler(u32 sidx);
+char * v_typeof_sumtype_toml__ast__Key(u32);
+char * v_typeof_sumtype_toml__ast__DateTimeType(u32);
+static char * v_typeof_interface_x__json2__JsonEncoder(u32 sidx);
+u32 v_typeof_interface_idx_x__json2__JsonEncoder(u32 sidx);
+static char * v_typeof_interface_x__json2__Encodable(u32 sidx);
+u32 v_typeof_interface_idx_x__json2__Encodable(u32 sidx);
+static char * v_typeof_interface_x__json2__StringDecoder(u32 sidx);
+u32 v_typeof_interface_idx_x__json2__StringDecoder(u32 sidx);
+static char * v_typeof_interface_x__json2__NumberDecoder(u32 sidx);
+u32 v_typeof_interface_idx_x__json2__NumberDecoder(u32 sidx);
+static char * v_typeof_interface_x__json2__BooleanDecoder(u32 sidx);
+u32 v_typeof_interface_idx_x__json2__BooleanDecoder(u32 sidx);
+static char * v_typeof_interface_x__json2__NullDecoder(u32 sidx);
+u32 v_typeof_interface_idx_x__json2__NullDecoder(u32 sidx);
 static char * v_typeof_interface_net__Dialer(u32 sidx);
 u32 v_typeof_interface_idx_net__Dialer(u32 sidx);
 static char * v_typeof_interface_net__Connection(u32 sidx);
@@ -5341,6 +6205,10 @@ static char * v_typeof_interface_io__Writer(u32 sidx);
 u32 v_typeof_interface_idx_io__Writer(u32 sidx);
 static char * v_typeof_interface_rand__PRNG(u32 sidx);
 u32 v_typeof_interface_idx_rand__PRNG(u32 sidx);
+static char * v_typeof_interface_toml__ast__walker__Visitor(u32 sidx);
+u32 v_typeof_interface_idx_toml__ast__walker__Visitor(u32 sidx);
+static char * v_typeof_interface_toml__ast__walker__Modifier(u32 sidx);
+u32 v_typeof_interface_idx_toml__ast__walker__Modifier(u32 sidx);
 // end of definitions #endif
 strings__Builder strings__new_builder(int initial_size);
 Array_u8 strings__Builder_reuse_as_plain_u8_array(strings__Builder* b);
@@ -5639,7 +6507,9 @@ VV_LOC array builtin____new_array_noscan(int mylen, int cap, int elm_size);
 VV_LOC array builtin____new_array_with_default_noscan(int mylen, int cap, int elm_size, voidptr val);
 VV_LOC array builtin____new_array_with_multi_default_noscan(int mylen, int cap, int elm_size, voidptr val);
 VV_LOC array builtin____new_array_with_array_default_noscan(int mylen, int cap, int elm_size, array val, int depth);
+VV_LOC void builtin__array_insert_noscan(array* a, int i, voidptr val);
 VV_LOC void builtin__array_prepend_noscan(array* a, voidptr val);
+VV_LOC voidptr builtin__array_pop_noscan(array* a);
 VV_LOC void builtin__array_push_noscan(array* a, voidptr val);
 VV_LOC void builtin__array_push_many_noscan(array* a, voidptr val, int size);
 void builtin__print_backtrace(void);
@@ -6312,6 +7182,10 @@ VV_LOC u8 net__http__chunked__unhex(u8 c);
 VV_LOC void net__http__chunked__ChunkScanner_skip_crlf(net__http__chunked__ChunkScanner* s);
 VV_LOC _result_string net__http__chunked__ChunkScanner_read_chunk(net__http__chunked__ChunkScanner* s, u32 chunksize);
 _result_string net__http__chunked__decode(string text);
+toml__token__Pos toml__token__Token_pos(toml__token__Token* tok);
+bool toml__util__is_key_char(u8 c);
+bool toml__util__is_ascii_control_character(u8 byte_char);
+bool toml__util__is_illegal_ascii_control_character(u8 byte_char);
 f32 net__conv__htonf32(f32 host);
 f64 net__conv__htonf64(f64 host);
 u64 net__conv__hton64(u64 host);
@@ -6333,6 +7207,8 @@ void sync__stdatomic__store_u64(u64* ptr, u64 val);
 u64 sync__stdatomic__load_u64(u64* ptr);
 void sync__stdatomic__store_i64(i64* ptr, i64 val);
 i64 sync__stdatomic__load_i64(i64* ptr);
+bool encoding__utf8__validate__utf8_string(string s);
+bool encoding__utf8__validate__utf8_data(u8* data, int len);
 vphp__Context vphp__Context__static__new(zend_execute_data* ex, zval* ret);
 vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
 int vphp__Context_num_args(vphp__Context ctx);
@@ -6349,6 +7225,7 @@ vphp__PersistentOwnedZVal vphp__Context_arg_owned_persistent_zval(vphp__Context 
 string vphp__Context_arg_T_string(vphp__Context ctx, int index);
 int vphp__Context_arg_T_int(vphp__Context ctx, int index);
 bool vphp__Context_arg_T_bool(vphp__Context ctx, int index);
+f64 vphp__Context_arg_T_f64(vphp__Context ctx, int index);
 vphp__ZVal vphp__Context_arg_val(vphp__Context ctx, int index);
 voidptr vphp__Context_arg_raw_obj(vphp__Context ctx, int index);
 void vphp__Context_return_null(vphp__Context ctx);
@@ -6370,8 +7247,10 @@ void vphp__Context_return_val_T_Array_i64(vphp__Context ctx, Array_i64 val);
 void vphp__Context_return_val_T_Array_f64(vphp__Context ctx, Array_f64 val);
 void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val);
 void vphp__Context_return_val_T_Array_Map_string_string(vphp__Context ctx, Array_Map_string_string val);
+void vphp__Context_return_val_T_vphp__ZVal(vphp__Context ctx, vphp__ZVal val);
 void vphp__Context_return_map_T_string(vphp__Context ctx, Map_string_string m);
 void vphp__Context_return_object(vphp__Context ctx, Map_string_string props);
+void vphp__Context_return_struct_T_vphp__ZVal(vphp__Context ctx, vphp__ZVal s);
 void vphp__return_val_raw_T_string(zval* ret, string val);
 void vphp__return_val_raw_T_i64(zval* ret, i64 val);
 void vphp__return_zval_raw(zval* ret, vphp__ZVal val);
@@ -6499,6 +7378,7 @@ voidptr vphp__generic_new_raw_T_main__VSlimRequest(void);
 voidptr vphp__generic_new_raw_T_main__VSlimResponse(void);
 voidptr vphp__generic_new_raw_T_main__VSlimApp(void);
 voidptr vphp__generic_new_raw_T_main__VSlimView(void);
+voidptr vphp__generic_new_raw_T_main__VSlimConfig(void);
 voidptr vphp__generic_new_raw_T_main__VSlimController(void);
 voidptr vphp__generic_new_raw_T_main__VSlimContainerException(void);
 voidptr vphp__generic_new_raw_T_main__VSlimContainerNotFoundException(void);
@@ -6508,6 +7388,7 @@ void vphp__generic_free_raw_T_main__VSlimRequest(voidptr ptr);
 void vphp__generic_free_raw_T_main__VSlimResponse(voidptr ptr);
 void vphp__generic_free_raw_T_main__VSlimApp(voidptr ptr);
 void vphp__generic_free_raw_T_main__VSlimView(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimConfig(voidptr ptr);
 void vphp__generic_free_raw_T_main__VSlimController(voidptr ptr);
 void vphp__generic_free_raw_T_main__VSlimContainerException(voidptr ptr);
 void vphp__generic_free_raw_T_main__VSlimContainerNotFoundException(voidptr ptr);
@@ -6532,7 +7413,7 @@ vphp__DynVal vphp__dyn_map(Map_string_vphp__DynVal v);
 vphp__DynVal vphp__dyn_object_ref(voidptr ptr);
 vphp__DynVal vphp__dyn_resource_ref(voidptr ptr);
 _result_vphp__DynVal vphp__decode_val(vphp__ZVal z);
-VV_LOC void anon_fn_3035ace31b993c50_82_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m);
+VV_LOC void anon_fn_3035ace31b993c50_83_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m);
 _result_void vphp__encode_val(vphp__DynVal v, vphp__ZVal* out);
 _result_vphp__ZVal vphp__new_zval_from_val(vphp__DynVal v);
 VV_LOC vphp__ZVal vphp__invalid_zval(void);
@@ -6617,18 +7498,18 @@ string vphp__ZVal_parent_class_name(vphp__ZVal v);
 bool vphp__ZVal_is_internal_class(vphp__ZVal v);
 bool vphp__ZVal_is_user_class(vphp__ZVal v);
 Array_string vphp__ZVal_interface_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_12188(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_12188(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_is_instance_of(vphp__ZVal v, string name);
 bool vphp__ZVal_is_subclass_of(vphp__ZVal v, string name);
 bool vphp__ZVal_implements_interface(vphp__ZVal v, string name);
 bool vphp__ZVal_method_exists(vphp__ZVal v, string name);
 bool vphp__ZVal_property_exists(vphp__ZVal v, string name);
 Array_string vphp__ZVal_method_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_13585(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_13585(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_property_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_14057(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_14057(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_const_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_14617(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_14617(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_const_exists(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_method_owned_request(vphp__ZVal v, string method, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_method_owned_persistent(vphp__ZVal v, string method, Array_vphp__ZVal args);
@@ -6670,11 +7551,12 @@ vphp__ZVal vphp__new_val_string(string s);
 Map_string_string vphp__ZVal_to_string_map(vphp__ZVal v);
 Array_string vphp__ZVal_to_string_list(vphp__ZVal v);
 _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_map_string_string_33384(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_map_string_string_33384(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
 _result_Array_string vphp__ZVal_to_v_T_Array_string(vphp__ZVal v);
 _result_string vphp__ZVal_to_v_T_string(vphp__ZVal v);
 _result_int vphp__ZVal_to_v_T_int(vphp__ZVal v);
 _result_bool vphp__ZVal_to_v_T_bool(vphp__ZVal v);
+_result_f64 vphp__ZVal_to_v_T_f64(vphp__ZVal v);
 _result_void vphp__ZVal_from_v_T_Array_string(vphp__ZVal v, Array_string value);
 _result_void vphp__ZVal_from_v_T_string(vphp__ZVal v, string value);
 _result_void vphp__ZVal_from_v_T_int(vphp__ZVal v, int value);
@@ -6686,6 +7568,7 @@ _result_void vphp__ZVal_from_v_T_Array_i64(vphp__ZVal v, Array_i64 value);
 _result_void vphp__ZVal_from_v_T_Array_f64(vphp__ZVal v, Array_f64 value);
 _result_void vphp__ZVal_from_v_T_Map_string_string(vphp__ZVal v, Map_string_string value);
 _result_void vphp__ZVal_from_v_T_Array_Map_string_string(vphp__ZVal v, Array_Map_string_string value);
+_result_void vphp__ZVal_from_v_T_vphp__ZVal(vphp__ZVal v, vphp__ZVal value);
 _result_vphp__ZVal vphp__new_zval_from_T_Map_string_string(Map_string_string value);
 _result_vphp__ZVal vphp__new_zval_from_T_Array_string(Array_string value);
 _option_main__VSlimResponse_ptr vphp__ZVal_to_object_T_main__VSlimResponse(vphp__ZVal v);
@@ -7106,10 +7989,196 @@ f64 math__f64_from_bits(u64 b);
 f64 math__with_set_low_word(f64 f, u32 lo);
 f64 math__with_set_high_word(f64 f, u32 hi);
 u32 math__get_high_word(f64 f);
+VV_LOC _result_void x__json2__Decoder_increment(x__json2__Decoder* checker, string message);
+VV_LOC _result_void x__json2__Decoder_skip_whitespace(x__json2__Decoder* checker, string message);
+VV_LOC _result_void x__json2__Decoder_check_json_format(x__json2__Decoder* checker);
+VV_LOC _result_void x__json2__Decoder_check_string(x__json2__Decoder* checker);
+VV_LOC _result_void x__json2__Decoder_check_number(x__json2__Decoder* checker);
+VV_LOC _result_void x__json2__Decoder_check_boolean(x__json2__Decoder* checker);
+VV_LOC _result_void x__json2__Decoder_check_null(x__json2__Decoder* checker);
+VV_LOC _result_void x__json2__Decoder_check_array(x__json2__Decoder* checker);
+VV_LOC _result_void x__json2__Decoder_check_object(x__json2__Decoder* checker);
+VV_LOC void x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list, x__json2__ValueInfo value);
+VV_LOC void x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list, x__json2__StructFieldInfo value);
+VV_LOC x__json2__ValueInfo* x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list);
+VV_LOC x__json2__StructFieldInfo* x__json2__LinkedList_T_x__json2__StructFieldInfo_last_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list);
+VV_LOC string x__json2__LinkedList_T_x__json2__ValueInfo_str(x__json2__LinkedList_T_x__json2__ValueInfo* list);
+VV_LOC string x__json2__LinkedList_T_x__json2__ValueInfo_str_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list);
+VV_LOC string x__json2__LinkedList_T_x__json2__StructFieldInfo_str_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list);
+VV_LOC void x__json2__LinkedList_T_x__json2__ValueInfo_free_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list);
+VV_LOC void x__json2__LinkedList_T_x__json2__StructFieldInfo_free_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list);
+VV_LOC string x__json2__JsonDecodeError_msg(x__json2__JsonDecodeError e);
+VV_LOC _result_void x__json2__Decoder_checker_error(x__json2__Decoder* checker, string message);
+VV_LOC _result_void x__json2__Decoder_decode_error(x__json2__Decoder* decoder, string message);
+_result_x__json2__Any x__json2__decode_T_x__json2__Any(string val, x__json2__DecoderOptions params);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_Array_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_bool(x__json2__Decoder* decoder, bool* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_f64(x__json2__Decoder* decoder, f64* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_f32(x__json2__Decoder* decoder, f32* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i64(x__json2__Decoder* decoder, i64* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_int(x__json2__Decoder* decoder, int* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i32(x__json2__Decoder* decoder, i32* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i16(x__json2__Decoder* decoder, i16* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i8(x__json2__Decoder* decoder, i8* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_Map_string_x__json2__Any(x__json2__Decoder* decoder, Map_string_x__json2__Any* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_string(x__json2__Decoder* decoder, string* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_time__Time(x__json2__Decoder* decoder, time__Time* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u64(x__json2__Decoder* decoder, u64* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u32(x__json2__Decoder* decoder, u32* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u16(x__json2__Decoder* decoder, u16* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u8(x__json2__Decoder* decoder, u8* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_x__json2__Null(x__json2__Decoder* decoder, x__json2__Null* val);
+VV_LOC _result_void x__json2__Decoder_decode_value_T_IError(x__json2__Decoder* decoder, IError* val);
+VV_LOC _result_void x__json2__Decoder_decode_string_T_string(x__json2__Decoder* decoder, string* val);
+VV_LOC _result_void x__json2__Decoder_decode_array_T_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any* val);
+VV_LOC _result_void x__json2__Decoder_decode_map_T_string_x__json2__Any(x__json2__Decoder* decoder, Map_string_x__json2__Any* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_f64(x__json2__Decoder* decoder, f64* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_f32(x__json2__Decoder* decoder, f32* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i64(x__json2__Decoder* decoder, i64* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_int(x__json2__Decoder* decoder, int* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i32(x__json2__Decoder* decoder, i32* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i16(x__json2__Decoder* decoder, i16* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i8(x__json2__Decoder* decoder, i8* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u64(x__json2__Decoder* decoder, u64* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u32(x__json2__Decoder* decoder, u32* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u16(x__json2__Decoder* decoder, u16* val);
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u8(x__json2__Decoder* decoder, u8* val);
+VV_LOC _result_f64 x__json2__Decoder_decode_number_from_string_T_f64(x__json2__Decoder* decoder);
+VV_LOC _result_f32 x__json2__Decoder_decode_number_from_string_T_f32(x__json2__Decoder* decoder);
+VV_LOC _result_i64 x__json2__Decoder_decode_number_from_string_T_i64(x__json2__Decoder* decoder);
+VV_LOC _result_int x__json2__Decoder_decode_number_from_string_T_int(x__json2__Decoder* decoder);
+VV_LOC _result_i32 x__json2__Decoder_decode_number_from_string_T_i32(x__json2__Decoder* decoder);
+VV_LOC _result_i16 x__json2__Decoder_decode_number_from_string_T_i16(x__json2__Decoder* decoder);
+VV_LOC _result_i8 x__json2__Decoder_decode_number_from_string_T_i8(x__json2__Decoder* decoder);
+VV_LOC _result_u64 x__json2__Decoder_decode_number_from_string_T_u64(x__json2__Decoder* decoder);
+VV_LOC _result_u32 x__json2__Decoder_decode_number_from_string_T_u32(x__json2__Decoder* decoder);
+VV_LOC _result_u16 x__json2__Decoder_decode_number_from_string_T_u16(x__json2__Decoder* decoder);
+VV_LOC _result_u8 x__json2__Decoder_decode_number_from_string_T_u8(x__json2__Decoder* decoder);
+VV_LOC Array_x__json2__Any x__json2__copy_type_T_Array_x__json2__Any(Array_x__json2__Any _t);
+VV_LOC bool x__json2__copy_type_T_bool(bool _t);
+VV_LOC f64 x__json2__copy_type_T_f64(f64 _t);
+VV_LOC f32 x__json2__copy_type_T_f32(f32 _t);
+VV_LOC i64 x__json2__copy_type_T_i64(i64 _t);
+VV_LOC int x__json2__copy_type_T_int(int _t);
+VV_LOC i32 x__json2__copy_type_T_i32(i32 _t);
+VV_LOC i16 x__json2__copy_type_T_i16(i16 _t);
+VV_LOC i8 x__json2__copy_type_T_i8(i8 _t);
+VV_LOC Map_string_x__json2__Any x__json2__copy_type_T_Map_string_x__json2__Any(Map_string_x__json2__Any _t);
+VV_LOC string x__json2__copy_type_T_string(string _t);
+VV_LOC time__Time x__json2__copy_type_T_time__Time(time__Time _t);
+VV_LOC u64 x__json2__copy_type_T_u64(u64 _t);
+VV_LOC u32 x__json2__copy_type_T_u32(u32 _t);
+VV_LOC u16 x__json2__copy_type_T_u16(u16 _t);
+VV_LOC u8 x__json2__copy_type_T_u8(u8 _t);
+VV_LOC x__json2__Null x__json2__copy_type_T_x__json2__Null(x__json2__Null _t);
+VV_LOC _result_x__json2__Any x__json2__Decoder_get_decoded_sumtype_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype);
+VV_LOC bool x__json2__Decoder_check_element_type_valid_T_Array_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any element, x__json2__Node_T_x__json2__ValueInfo* current_node);
+VV_LOC bool x__json2__Decoder_check_element_type_valid_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any element, x__json2__Node_T_x__json2__ValueInfo* current_node);
+VV_LOC x__json2__Any x__json2__get_array_element_type_T_x__json2__Any(Array_x__json2__Any _arr);
+VV_LOC bool x__json2__Decoder_check_array_type_valid_T_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any arr, x__json2__Node_T_x__json2__ValueInfo* current_node);
+VV_LOC bool x__json2__Decoder_get_array_type_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype);
+VV_LOC x__json2__Any x__json2__get_map_element_type_T_string_x__json2__Any(Map_string_x__json2__Any _m);
+VV_LOC bool x__json2__Decoder_check_map_type_valid_T_Map_string_x__json2__Any(x__json2__Decoder* decoder, Map_string_x__json2__Any m, x__json2__Node_T_x__json2__ValueInfo* current_node);
+VV_LOC bool x__json2__Decoder_get_map_type_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype);
+VV_LOC bool x__json2__Decoder_check_struct_type_valid_T_time__Time(x__json2__Decoder* decoder, time__Time s, x__json2__Node_T_x__json2__ValueInfo current_node);
+VV_LOC bool x__json2__Decoder_check_struct_type_valid_T_x__json2__Null(x__json2__Decoder* decoder, x__json2__Null s, x__json2__Node_T_x__json2__ValueInfo current_node);
+VV_LOC bool x__json2__Decoder_get_struct_type_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype);
+VV_LOC _result_void x__json2__Decoder_init_sumtype_by_value_kind_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any* val, x__json2__ValueInfo value_info);
+VV_LOC _result_void x__json2__Decoder_decode_sumtype_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any* val);
+_result_x__json2__Any x__json2__raw_decode(string src);
+string x__json2__encode_T_x__json2__Any(x__json2__Any val, x__json2__EncoderOptions config);
+VV_LOC void x__json2__Encoder_encode_value_T_x__json2__Any(x__json2__Encoder* encoder, x__json2__Any val);
+VV_LOC void x__json2__Encoder_encode_value_T_Array_x__json2__Any(x__json2__Encoder* encoder, Array_x__json2__Any val);
+VV_LOC void x__json2__Encoder_encode_value_T_bool(x__json2__Encoder* encoder, bool val);
+VV_LOC void x__json2__Encoder_encode_value_T_f64(x__json2__Encoder* encoder, f64 val);
+VV_LOC void x__json2__Encoder_encode_value_T_f32(x__json2__Encoder* encoder, f32 val);
+VV_LOC void x__json2__Encoder_encode_value_T_i64(x__json2__Encoder* encoder, i64 val);
+VV_LOC void x__json2__Encoder_encode_value_T_int(x__json2__Encoder* encoder, int val);
+VV_LOC void x__json2__Encoder_encode_value_T_i32(x__json2__Encoder* encoder, i32 val);
+VV_LOC void x__json2__Encoder_encode_value_T_i16(x__json2__Encoder* encoder, i16 val);
+VV_LOC void x__json2__Encoder_encode_value_T_i8(x__json2__Encoder* encoder, i8 val);
+VV_LOC void x__json2__Encoder_encode_value_T_Map_string_x__json2__Any(x__json2__Encoder* encoder, Map_string_x__json2__Any val);
+VV_LOC void x__json2__Encoder_encode_value_T_string(x__json2__Encoder* encoder, string val);
+VV_LOC void x__json2__Encoder_encode_value_T_time__Time(x__json2__Encoder* encoder, time__Time val);
+VV_LOC void x__json2__Encoder_encode_value_T_u64(x__json2__Encoder* encoder, u64 val);
+VV_LOC void x__json2__Encoder_encode_value_T_u32(x__json2__Encoder* encoder, u32 val);
+VV_LOC void x__json2__Encoder_encode_value_T_u16(x__json2__Encoder* encoder, u16 val);
+VV_LOC void x__json2__Encoder_encode_value_T_u8(x__json2__Encoder* encoder, u8 val);
+VV_LOC void x__json2__Encoder_encode_value_T_x__json2__Null(x__json2__Encoder* encoder, x__json2__Null val);
+VV_LOC void x__json2__Encoder_encode_string(x__json2__Encoder* encoder, string val);
+VV_LOC void x__json2__Encoder_encode_boolean(x__json2__Encoder* encoder, bool val);
+VV_LOC void x__json2__Encoder_encode_number_T_f64(x__json2__Encoder* encoder, f64 val);
+VV_LOC void x__json2__Encoder_encode_number_T_f32(x__json2__Encoder* encoder, f32 val);
+VV_LOC void x__json2__Encoder_encode_number_T_i64(x__json2__Encoder* encoder, i64 val);
+VV_LOC void x__json2__Encoder_encode_number_T_i32(x__json2__Encoder* encoder, i32 val);
+VV_LOC void x__json2__Encoder_encode_number_T_i16(x__json2__Encoder* encoder, i16 val);
+VV_LOC void x__json2__Encoder_encode_number_T_i8(x__json2__Encoder* encoder, i8 val);
+VV_LOC void x__json2__Encoder_encode_number_T_u64(x__json2__Encoder* encoder, u64 val);
+VV_LOC void x__json2__Encoder_encode_number_T_u32(x__json2__Encoder* encoder, u32 val);
+VV_LOC void x__json2__Encoder_encode_number_T_u16(x__json2__Encoder* encoder, u16 val);
+VV_LOC void x__json2__Encoder_encode_number_T_u8(x__json2__Encoder* encoder, u8 val);
+VV_LOC void x__json2__Encoder_encode_array_T_x__json2__Any(x__json2__Encoder* encoder, Array_x__json2__Any val);
+VV_LOC void x__json2__Encoder_encode_map_T_x__json2__Any(x__json2__Encoder* encoder, Map_string_x__json2__Any val);
+VV_LOC void x__json2__Encoder_encode_sumtype_T_x__json2__Any(x__json2__Encoder* encoder, x__json2__Any val);
+VV_LOC void x__json2__Encoder_encode_custom_T_time__Time(x__json2__Encoder* encoder, time__Time val);
+VV_LOC void x__json2__Encoder_encode_custom_T_x__json2__Null(x__json2__Encoder* encoder, x__json2__Null val);
+VV_LOC void x__json2__Encoder_increment_level(x__json2__Encoder* encoder);
+VV_LOC void x__json2__Encoder_decrement_level(x__json2__Encoder* encoder);
+VV_LOC void x__json2__Encoder_add_indent(x__json2__Encoder* encoder);
+string Map_string_x__json2__Any_str(Map_string_x__json2__Any f);
+string Array_x__json2__Any_str(Array_x__json2__Any f);
+string x__json2__Any_str(x__json2__Any f);
+string x__json2__Any_json_str(x__json2__Any f);
+string x__json2__Any_prettify_json_str(x__json2__Any f);
+i8 x__json2__Any_i8(x__json2__Any f);
+i16 x__json2__Any_i16(x__json2__Any f);
+int x__json2__Any_int(x__json2__Any f);
+i32 x__json2__Any_i32(x__json2__Any f);
+i64 x__json2__Any_i64(x__json2__Any f);
+u8 x__json2__Any_u8(x__json2__Any f);
+u16 x__json2__Any_u16(x__json2__Any f);
+u32 x__json2__Any_u32(x__json2__Any f);
+u64 x__json2__Any_u64(x__json2__Any f);
+f32 x__json2__Any_f32(x__json2__Any f);
+f64 x__json2__Any_f64(x__json2__Any f);
+bool x__json2__Any_bool(x__json2__Any f);
+Array_x__json2__Any x__json2__Any_arr(x__json2__Any f);
+Array_x__json2__Any x__json2__Any_as_array(x__json2__Any f);
+Map_string_x__json2__Any x__json2__Any_as_map(x__json2__Any f);
+Map_string_string x__json2__Any_as_map_of_strings(x__json2__Any f);
+_result_time__Time x__json2__Any_to_time(x__json2__Any f);
+int x__json2__Token_full_col(x__json2__Token t);
+void x__json2__Null_from_json_null(x__json2__Null* n);
+string x__json2__Null_to_json(x__json2__Null n);
+bool encoding__utf8__validate_str(string str);
+bool encoding__utf8__validate(u8* data, int len);
+VV_LOC bool encoding__utf8__is_excluding_latin(encoding__utf8__RangeTable* table, rune r);
+VV_LOC bool encoding__utf8__is_16(Array_encoding__utf8__Range16 ranges, u16 r);
+VV_LOC bool encoding__utf8__is_32(Array_encoding__utf8__Range32 ranges, u32 r);
+int encoding__utf8__len(string s);
+rune encoding__utf8__get_rune(string s, int index);
+string encoding__utf8__raw_index(string s, int index);
+string encoding__utf8__reverse(string s);
+string encoding__utf8__to_upper(string s);
+string encoding__utf8__to_lower(string s);
+bool encoding__utf8__is_punct(string s, int index);
+bool encoding__utf8__is_control(rune r);
+bool encoding__utf8__is_letter(rune r);
+bool encoding__utf8__is_space(rune r);
+bool encoding__utf8__is_number(rune r);
+bool encoding__utf8__is_rune_punct(rune r);
+bool encoding__utf8__is_global_punct(string s, int index);
+bool encoding__utf8__is_rune_global_punct(rune r);
+VV_LOC int encoding__utf8__utf8_to_lower(int in_cp);
+VV_LOC int encoding__utf8__utf8_to_upper(int in_cp);
+VV_LOC string encoding__utf8__convert_case(string s, bool upper_flag);
+VV_LOC rune encoding__utf8__find_punct_in_table(rune in_code, Array_rune in_table);
 VV_LOC u32 rand__seed__nr_next(u32 prev);
 Array_u32 rand__seed__time_seed_array(int count);
 u32 rand__seed__time_seed_32(void);
 u64 rand__seed__time_seed_64(void);
+_result_string toml__input__Config_read_input(toml__input__Config c);
 VV_LOC _result_usize runtime__free_memory_impl(void);
 int runtime__nr_jobs(void);
 bool runtime__is_32bit(void);
@@ -7127,6 +8196,49 @@ u32 rand__wyrand__WyRandRNG_u32(rand__wyrand__WyRandRNG* rng);
 int rand__wyrand__WyRandRNG_block_size(rand__wyrand__WyRandRNG* rng);
 void rand__wyrand__WyRandRNG_free(rand__wyrand__WyRandRNG* rng);
 u64 rand__wyrand__WyRandRNG_u64(rand__wyrand__WyRandRNG* rng);
+string toml__ast__Root_str(toml__ast__Root _v_toheap_r);
+string toml__ast__Key_str(toml__ast__Key k);
+string toml__ast__Value_str(toml__ast__Value v);
+string toml__ast__DateTimeType_str(toml__ast__DateTimeType dtt);
+string toml__ast__Comment_str(toml__ast__Comment c);
+string toml__ast__Null_str(toml__ast__Null n);
+string toml__ast__Quoted_str(toml__ast__Quoted q);
+string toml__ast__Bare_str(toml__ast__Bare b);
+string toml__ast__Bool_str(toml__ast__Bool b);
+string toml__ast__Number_str(toml__ast__Number n);
+i64 toml__ast__Number_i64(toml__ast__Number n);
+f64 toml__ast__Number_f64(toml__ast__Number n);
+string toml__ast__Date_str(toml__ast__Date d);
+string toml__ast__Time_str(toml__ast__Time t);
+string toml__ast__DateTime_str(toml__ast__DateTime dt);
+string toml__ast__EOF_str(toml__ast__EOF e);
+_result_toml__scanner__Scanner_ptr toml__scanner__new_scanner(toml__scanner__Config config);
+_result_toml__scanner__Scanner toml__scanner__new_simple(toml__scanner__Config config);
+_result_toml__scanner__Scanner toml__scanner__new_simple_text(string text);
+_result_toml__scanner__Scanner toml__scanner__new_simple_file(string path);
+_result_toml__token__Token toml__scanner__Scanner_scan(toml__scanner__Scanner* s);
+void toml__scanner__Scanner_free(toml__scanner__Scanner* s);
+int toml__scanner__Scanner_remaining(toml__scanner__Scanner* s);
+u32 toml__scanner__Scanner_next(toml__scanner__Scanner* s);
+void toml__scanner__Scanner_skip(toml__scanner__Scanner* s);
+void toml__scanner__Scanner_skip_n(toml__scanner__Scanner* s, int n);
+u32 toml__scanner__Scanner_at(toml__scanner__Scanner* s);
+VV_LOC bool toml__scanner__Scanner_at_crlf(toml__scanner__Scanner* s);
+u32 toml__scanner__Scanner_peek(toml__scanner__Scanner* s, int n);
+void toml__scanner__Scanner_reset(toml__scanner__Scanner* s);
+VV_LOC toml__token__Token toml__scanner__Scanner_new_token(toml__scanner__Scanner* s, toml__token__Kind kind, string lit, int len);
+VV_LOC _result_string toml__scanner__Scanner_ignore_line(toml__scanner__Scanner* s);
+VV_LOC void toml__scanner__Scanner_inc_line_number(toml__scanner__Scanner* s);
+VV_LOC string toml__scanner__Scanner_extract_key(toml__scanner__Scanner* s);
+VV_LOC _result_string toml__scanner__Scanner_extract_string(toml__scanner__Scanner* s);
+VV_LOC _result_string toml__scanner__Scanner_extract_multiline_string(toml__scanner__Scanner* s);
+VV_LOC multi_return_string_int toml__scanner__Scanner_handle_escapes(toml__scanner__Scanner* s, u8 quote, bool is_multiline);
+VV_LOC _result_string toml__scanner__Scanner_extract_number(toml__scanner__Scanner* s);
+VV_LOC _result_string toml__scanner__Scanner_extract_nan_or_inf_number(toml__scanner__Scanner* s);
+string toml__scanner__Scanner_excerpt(toml__scanner__Scanner* s, int pos, int margin);
+toml__scanner__State toml__scanner__Scanner_state(toml__scanner__Scanner* s);
+VV_LOC _result_void toml__scanner__Scanner_validate_and_skip_headers(toml__scanner__Scanner* s);
+VV_LOC _result_void toml__scanner__Scanner_check_utf16_or_32_bom(toml__scanner__Scanner* s);
 VV_LOC f64 rand__msqrt(f64 a);
 VV_LOC f64 rand__mlog(f64 a);
 VV_LOC multi_return_f64_int rand__frexp(f64 x);
@@ -7293,13 +8405,17 @@ void sync__WaitGroup_add(sync__WaitGroup* wg, int delta);
 void sync__WaitGroup_done(sync__WaitGroup* wg);
 void sync__WaitGroup_wait(sync__WaitGroup* wg);
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)());
-VV_LOC void anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
+VV_LOC void anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
 u64 sync__thread_id(void);
 _result_multi_return_os__File_string io__util__temp_file(io__util__TempFileOptions tfo);
 VV_LOC _result_string io__util__error_for_temporary_folder(string fn_name, string d);
 _result_string io__util__temp_dir(io__util__TempDirOptions tdo);
 VV_LOC string io__util__random_number(void);
 VV_LOC _result_multi_return_string_string io__util__prefix_and_suffix(string pattern);
+_result_void toml__ast__walker__Inspector_visit(toml__ast__walker__Inspector* i, toml__ast__Value* value);
+_result_void toml__ast__walker__inspect(toml__ast__Value* value, voidptr data, _result_void (*inspector_callback)(toml__ast__Value* value, voidptr data));
+_result_void toml__ast__walker__walk(toml__ast__walker__Visitor visitor, toml__ast__Value* value);
+_result_void toml__ast__walker__walk_and_modify(toml__ast__walker__Modifier modifier, toml__ast__Value* value);
 net__Addr net__new_ip6(u16 port, Array_fixed_u8_16 addr);
 net__Addr net__new_ip(u16 port, Array_fixed_u8_4 addr);
 VV_LOC _result_net__Addr net__temp_unix(void);
@@ -7440,6 +8556,90 @@ _result_bool net__UdpSocket_select(net__UdpSocket* s, net__Select test, time__Du
 _option_net__Addr net__UdpSocket_remote(net__UdpSocket* s);
 _result_u16 net__validate_port(int port);
 _result_multi_return_string_u16 net__split_address(string addr);
+VV_LOC _result_time__Time toml__checker__toml_parse_time(string s);
+_result_void toml__checker__Checker_check(toml__checker__Checker* c, toml__ast__Value* n);
+VV_LOC _result_void toml__checker__Checker_visit(toml__checker__Checker* c, toml__ast__Value* value);
+VV_LOC string toml__checker__Checker_excerpt(toml__checker__Checker* c, toml__token__Pos tp);
+VV_LOC bool toml__checker__is_hex_bin_oct_prefixed(string hbo);
+VV_LOC bool toml__checker__has_repeating(string str, Array_rune repeats);
+VV_LOC _result_void toml__checker__Checker_check_number(toml__checker__Checker* c, toml__ast__Number num);
+VV_LOC bool toml__checker__Checker_is_valid_binary_literal(toml__checker__Checker* c, string num);
+VV_LOC bool toml__checker__Checker_is_valid_octal_literal(toml__checker__Checker* c, string num);
+VV_LOC bool toml__checker__Checker_is_valid_hex_literal(toml__checker__Checker* c, string num);
+VV_LOC _result_void toml__checker__Checker_check_boolean(toml__checker__Checker* c, toml__ast__Bool b);
+VV_LOC _result_void toml__checker__Checker_check_date_time(toml__checker__Checker* c, toml__ast__DateTime dt);
+VV_LOC _result_void toml__checker__Checker_check_date(toml__checker__Checker* c, toml__ast__Date date);
+VV_LOC _result_void toml__checker__Checker_check_time(toml__checker__Checker* c, toml__ast__Time t);
+_result_void toml__checker__Checker_check_quoted(toml__checker__Checker* c, toml__ast__Quoted q);
+VV_LOC _result_void toml__checker__Checker_check_quoted_escapes(toml__checker__Checker* c, toml__ast__Quoted q);
+VV_LOC _result_void toml__checker__Checker_check_utf8_validity(toml__checker__Checker* c, toml__ast__Quoted q);
+VV_LOC _result_void toml__checker__validate_utf8_codepoint_string(string str);
+VV_LOC _result_void toml__checker__Checker_check_unicode_escape(toml__checker__Checker* c, string esc_unicode);
+_result_void toml__checker__Checker_check_comment(toml__checker__Checker* c, toml__ast__Comment comment);
+_result_void toml__decoder__Decoder_decode(toml__decoder__Decoder _v_toheap_d, toml__ast__Value* n);
+VV_LOC _result_void toml__decoder__Decoder_modify(toml__decoder__Decoder d, toml__ast__Value* value);
+VV_LOC _result_void toml__decoder__Decoder_decode_quoted(toml__decoder__Decoder d, toml__ast__Quoted* q);
+VV_LOC _result_void toml__decoder__Decoder_decode_number(toml__decoder__Decoder d, toml__ast__Number* n);
+_result_void toml__decoder__decode_quoted_escapes(toml__ast__Quoted* q);
+VV_LOC _result_multi_return_string_int_int toml__decoder__decode_unicode_escape(string esc_unicode);
+VV_LOC _result_void toml__decoder__Decoder_decode_date_time(toml__decoder__Decoder d, toml__ast__DateTime* dt);
+string toml__parser__DottedKey_str(toml__parser__DottedKey dk);
+VV_LOC bool toml__parser__DottedKey_starts_with(toml__parser__DottedKey dk, toml__parser__DottedKey target);
+VV_LOC bool Array_toml__parser__DottedKey_has(Array_toml__parser__DottedKey a, toml__parser__DottedKey target);
+toml__parser__Parser toml__parser__new_parser(toml__parser__Config config);
+_result_void toml__parser__Parser_init(toml__parser__Parser* p);
+VV_LOC _result_void toml__parser__Parser_run_checker(toml__parser__Parser* p);
+VV_LOC _result_void toml__parser__Parser_run_decoder(toml__parser__Parser* p);
+_result_toml__ast__Root_ptr toml__parser__Parser_parse(toml__parser__Parser* p);
+VV_LOC _result_void toml__parser__Parser_next(toml__parser__Parser* p);
+VV_LOC _result_toml__token__Token toml__parser__Parser_peek(toml__parser__Parser* p, int n);
+VV_LOC _result_void toml__parser__Parser_check(toml__parser__Parser* p, toml__token__Kind check_token);
+VV_LOC _result_void toml__parser__Parser_peek_for_correct_line_ending_or_fail(toml__parser__Parser* p);
+VV_LOC _result_void toml__parser__Parser_check_one_of(toml__parser__Parser* p, Array_toml__token__Kind tokens);
+VV_LOC void toml__parser__Parser_ignore_while(toml__parser__Parser* p, Array_toml__token__Kind tokens);
+VV_LOC void toml__parser__Parser_ignore_while_peek(toml__parser__Parser* p, Array_toml__token__Kind tokens);
+VV_LOC _result_multi_return_toml__token__Token_int toml__parser__Parser_peek_over(toml__parser__Parser* p, int i, Array_toml__token__Kind tokens);
+VV_LOC bool toml__parser__Parser_is_at(toml__parser__Parser* p, toml__token__Kind expected_token);
+VV_LOC _result_void toml__parser__Parser_expect(toml__parser__Parser* p, toml__token__Kind expected_token);
+VV_LOC toml__parser__DottedKey toml__parser__Parser_build_abs_dotted_key(toml__parser__Parser* p, toml__parser__DottedKey key);
+VV_LOC toml__parser__DottedKey toml__parser__todo_msvc_astring2dkey(Array_string s);
+VV_LOC _result_void toml__parser__Parser_check_immutable(toml__parser__Parser* p, toml__parser__DottedKey key);
+VV_LOC _result_void toml__parser__Parser_check_explicitly_declared(toml__parser__Parser* p, toml__parser__DottedKey key);
+VV_LOC _result_void toml__parser__Parser_check_explicitly_declared_array_of_tables(toml__parser__Parser* p, toml__parser__DottedKey key);
+VV_LOC _result_void toml__parser__Parser_check_implicitly_declared(toml__parser__Parser* p, toml__parser__DottedKey key);
+_result_Map_string_toml__ast__Value_ptr toml__parser__Parser_find_table(toml__parser__Parser* p);
+_result_void toml__parser__Parser_allocate_table(toml__parser__Parser* p, toml__parser__DottedKey key);
+multi_return_toml__parser__DottedKey_toml__parser__DottedKey toml__parser__Parser_sub_table_key(toml__parser__Parser* p, toml__parser__DottedKey key);
+_result_Map_string_toml__ast__Value_ptr toml__parser__Parser_find_sub_table(toml__parser__Parser* p, toml__parser__DottedKey key);
+_result_Map_string_toml__ast__Value_ptr toml__parser__Parser_find_in_table(toml__parser__Parser* p, Map_string_toml__ast__Value* table, toml__parser__DottedKey key);
+VV_LOC bool toml__parser__is_all_tables(Map_string_toml__ast__Value table, toml__parser__DottedKey dotted_key);
+_result_Array_toml__ast__Value toml__parser__Parser_find_array_of_tables(toml__parser__Parser* p);
+_result_void toml__parser__Parser_allocate_in_table(toml__parser__Parser* p, Map_string_toml__ast__Value* table, toml__parser__DottedKey key);
+_result_toml__parser__DottedKey toml__parser__Parser_dotted_key(toml__parser__Parser* p);
+_result_void toml__parser__Parser_root_table(toml__parser__Parser* p);
+VV_LOC string toml__parser__Parser_excerpt(toml__parser__Parser* p);
+_result_void toml__parser__Parser_table_contents(toml__parser__Parser* p, Map_string_toml__ast__Value* tbl);
+_result_void toml__parser__Parser_inline_table(toml__parser__Parser* p, Map_string_toml__ast__Value* tbl);
+_result_void toml__parser__Parser_array_of_tables(toml__parser__Parser* p, Map_string_toml__ast__Value* table);
+_result_Array_toml__ast__Value toml__parser__Parser_array_of_tables_contents(toml__parser__Parser* p);
+_result_void toml__parser__Parser_double_array_of_tables(toml__parser__Parser* p, Map_string_toml__ast__Value* table);
+_result_Array_toml__ast__Value toml__parser__Parser_double_array_of_tables_contents(toml__parser__Parser* p, toml__parser__DottedKey target_key);
+_result_Array_toml__ast__Value toml__parser__Parser_array(toml__parser__Parser* p);
+toml__ast__Comment toml__parser__Parser_comment(toml__parser__Parser* p);
+_result_toml__ast__Key toml__parser__Parser_key(toml__parser__Parser* p);
+_result_multi_return_toml__ast__Key_toml__ast__Value toml__parser__Parser_key_value(toml__parser__Parser* p);
+_result_multi_return_toml__parser__DottedKey_toml__ast__Value toml__parser__Parser_dotted_key_value(toml__parser__Parser* p);
+_result_toml__ast__Value toml__parser__Parser_value(toml__parser__Parser* p);
+_result_toml__ast__Value toml__parser__Parser_number_or_date(toml__parser__Parser* p);
+_result_toml__ast__Bare toml__parser__Parser_bare(toml__parser__Parser* p);
+toml__ast__Quoted toml__parser__Parser_quoted(toml__parser__Parser* p);
+_result_toml__ast__Bool toml__parser__Parser_boolean(toml__parser__Parser* p);
+toml__ast__Number toml__parser__Parser_number(toml__parser__Parser* p);
+_result_toml__ast__DateTimeType toml__parser__Parser_date_time(toml__parser__Parser* p);
+_result_toml__ast__Date toml__parser__Parser_date(toml__parser__Parser* p);
+_result_toml__ast__Time toml__parser__Parser_time(toml__parser__Parser* p);
+void toml__parser__Parser_undo_special_case_01(toml__parser__Parser* p, toml__parser__DottedKey dotted_key);
+toml__ast__EOF toml__parser__Parser_eof(toml__parser__Parser* p);
 VV_LOC string C__SSL_str(SSL* s);
 VV_LOC string C__SSL_CTX_str(SSL_CTX* c);
 VV_LOC void net__openssl__init(void);
@@ -7462,9 +8662,48 @@ VV_LOC _result_bool net__openssl__select(int handle, net__openssl__Select test, 
 VV_LOC _result_void net__openssl__wait_for(int handle, net__openssl__Select what, time__Duration timeout);
 VV_LOC _result_void net__openssl__SSLConn_wait_for_write(net__openssl__SSLConn* s, time__Duration timeout);
 VV_LOC _result_void net__openssl__SSLConn_wait_for_read(net__openssl__SSLConn* s, time__Duration timeout);
+string toml__Any_string(toml__Any a);
+string toml__Any_to_toml(toml__Any a);
+int toml__Any_int(toml__Any a);
+i64 toml__Any_i64(toml__Any a);
+u64 toml__Any_u64(toml__Any a);
+f32 toml__Any_f32(toml__Any a);
+f64 toml__Any_f64(toml__Any a);
+Array_toml__Any toml__Any_array(toml__Any a);
+Map_string_toml__Any toml__Any_as_map(toml__Any a);
+bool toml__Any_bool(toml__Any a);
+toml__Date toml__Any_date(toml__Any a);
+toml__Time toml__Any_time(toml__Any a);
+toml__DateTime toml__Any_datetime(toml__Any a);
+toml__Any toml__Any_default_to(toml__Any a, toml__Any value);
+toml__Any Map_string_toml__Any_value(Map_string_toml__Any m, string key);
+Map_string_string Map_string_toml__Any_as_strings(Map_string_toml__Any m);
+string Map_string_toml__Any_to_toml(Map_string_toml__Any m);
+string Map_string_toml__Any_to_inline_toml(Map_string_toml__Any m);
+toml__Any Array_toml__Any_value(Array_toml__Any a, string key);
+Array_string Array_toml__Any_as_strings(Array_toml__Any a);
+string Array_toml__Any_to_toml(Array_toml__Any a);
+toml__Any toml__Any_value(toml__Any a, string key);
+_result_toml__Any toml__Any_value_opt(toml__Any a, string key);
+VV_LOC toml__Any toml__Any_value_(toml__Any a, toml__Any value, Array_string key);
+string toml__DateTime_str(toml__DateTime dt);
+string toml__Date_str(toml__Date d);
+string toml__Time_str(toml__Time t);
+_result_toml__Doc toml__parse_file(string path);
+_result_toml__Doc toml__parse_text(string text);
+_result_Array_string toml__parse_dotted_key(string key);
+VV_LOC multi_return_string_int toml__parse_array_key(string key);
+toml__Any toml__Doc_to_any(toml__Doc d);
+toml__Any toml__Doc_value(toml__Doc d, string key);
+_result_toml__Any toml__Doc_value_opt(toml__Doc d, string key);
+VV_LOC toml__Any toml__Doc_value_(toml__Doc d, toml__ast__Value value, Array_string key);
+toml__Any toml__ast_to_any(toml__ast__Value value);
 net__Dialer net__ssl__new_ssl_dialer(net__ssl__SSLConnectConfig config);
 _result_net__Connection net__ssl__SSLDialer_dial(net__ssl__SSLDialer d, string address);
 _result_net__ssl__SSLConn_ptr net__ssl__new_ssl_conn(net__ssl__SSLConnectConfig config);
+string toml__to__json(toml__to__DocOrAny doa);
+VV_LOC string toml__to__any_to_json(toml__Any a);
+x__json2__Any toml__to__json_any(toml__Any a);
 _result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, string username, string password);
 _result_net__ssl__SSLConn_ptr net__socks__socks5_ssl_dial(string proxy_url, string host, string username, string password);
 net__Dialer net__socks__new_socks5_dialer(net__Dialer base, string proxy_address, string username, string password);
@@ -7918,6 +9157,16 @@ voidptr main__vphp_wrap_vslimapp_set_container(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_set_container(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_set_container
 voidptr main__vphp_wrap_vslimapp_container(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_container(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_container
+void main__vphp_wrap_vslimapp_has_config(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimApp_has_config(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_has_config
+voidptr main__vphp_wrap_vslimapp_set_config(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_set_config(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_set_config
+voidptr main__vphp_wrap_vslimapp_config(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_config(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_config
+voidptr main__vphp_wrap_vslimapp_load_config(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_load_config(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_load_config
+voidptr main__vphp_wrap_vslimapp_load_config_text(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_load_config_text(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_load_config_text
 voidptr main__vphp_wrap_vslimapp_group(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_group(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_group
 voidptr main__vphp_wrap_vslimapp_dispatch(voidptr ptr, vphp__Context ctx);
@@ -8064,6 +9313,52 @@ voidptr main__vphp_wrap_vslimview_render_response_with_layout(voidptr ptr, vphp_
 VV_EXP voidptr vphp_wrap_VSlimView_render_response_with_layout(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimview_render_response_with_layout
 voidptr main__vslimview_handlers(void);
 VV_EXP voidptr VSlimView_handlers(void); // exported fn main.vslimview_handlers
+voidptr main__vslimconfig_new_raw(void);
+VV_EXP voidptr VSlimConfig_new_raw(void); // exported fn main.vslimconfig_new_raw
+void main__vslimconfig_free_raw(voidptr ptr);
+VV_EXP void VSlimConfig_free_raw(voidptr ptr); // exported fn main.vslimconfig_free_raw
+void main__vslimconfig_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimConfig_cleanup_raw(voidptr ptr); // exported fn main.vslimconfig_cleanup_raw
+void main__vslimconfig_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
+VV_EXP void VSlimConfig_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimconfig_get_prop
+void main__vslimconfig_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
+VV_EXP void VSlimConfig_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value); // exported fn main.vslimconfig_set_prop
+void main__vslimconfig_sync_props(voidptr ptr, zval* zv);
+VV_EXP void VSlimConfig_sync_props(voidptr ptr, zval* zv); // exported fn main.vslimconfig_sync_props
+voidptr main__vphp_wrap_vslimconfig_construct(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimConfig_construct(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_construct
+voidptr main__vphp_wrap_vslimconfig_load(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimConfig_load(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_load
+voidptr main__vphp_wrap_vslimconfig_load_text(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimConfig_load_text(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_load_text
+void main__vphp_wrap_vslimconfig_is_loaded(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_is_loaded(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_is_loaded
+void main__vphp_wrap_vslimconfig_path(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_path(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_path
+void main__vphp_wrap_vslimconfig_has(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_has(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_has
+void main__vphp_wrap_vslimconfig_get_string(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_string(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_string
+void main__vphp_wrap_vslimconfig_get_int(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_int(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_int
+void main__vphp_wrap_vslimconfig_get_bool(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_bool(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_bool
+void main__vphp_wrap_vslimconfig_get_float(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_float(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_float
+void main__vphp_wrap_vslimconfig_get_string_list(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_string_list(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_string_list
+void main__vphp_wrap_vslimconfig_get_json(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_json(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_json
+void main__vphp_wrap_vslimconfig_get(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get
+void main__vphp_wrap_vslimconfig_get_map(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_map(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_map
+void main__vphp_wrap_vslimconfig_get_list(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_get_list(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_get_list
+void main__vphp_wrap_vslimconfig_all_json(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimConfig_all_json(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimconfig_all_json
+voidptr main__vslimconfig_handlers(void);
+VV_EXP voidptr VSlimConfig_handlers(void); // exported fn main.vslimconfig_handlers
 voidptr main__vslimcontroller_new_raw(void);
 VV_EXP voidptr VSlimController_new_raw(void); // exported fn main.vslimcontroller_new_raw
 void main__vslimcontroller_free_raw(voidptr ptr);
@@ -8162,6 +9457,30 @@ VV_LOC void main__vphp_wrap_vslim_response_headers(vphp__Context ctx);
 VV_EXP void vphp_wrap_vslim_response_headers(vphp__Context ctx); // exported fn main.vphp_wrap_vslim_response_headers
 VV_LOC void main__vphp_wrap_vslim_middleware_next(vphp__Context ctx);
 VV_EXP void vphp_wrap_vslim_middleware_next(vphp__Context ctx); // exported fn main.vphp_wrap_vslim_middleware_next
+main__VSlimConfig* main__VSlimConfig_construct(main__VSlimConfig* c);
+main__VSlimConfig* main__VSlimConfig_load(main__VSlimConfig* c, string path);
+main__VSlimConfig* main__VSlimConfig_load_text(main__VSlimConfig* c, string text);
+bool main__VSlimConfig_is_loaded(main__VSlimConfig* c);
+string main__VSlimConfig_path(main__VSlimConfig* c);
+bool main__VSlimConfig_has(main__VSlimConfig* c, string key);
+string main__VSlimConfig_get_string(main__VSlimConfig* c, string key, string default_value);
+int main__VSlimConfig_get_int(main__VSlimConfig* c, string key, int default_value);
+bool main__VSlimConfig_get_bool(main__VSlimConfig* c, string key, bool default_value);
+f64 main__VSlimConfig_get_float(main__VSlimConfig* c, string key, f64 default_value);
+Array_string main__VSlimConfig_get_string_list(main__VSlimConfig* c, string key);
+string main__VSlimConfig_get_json(main__VSlimConfig* c, string key, string default_json);
+vphp__ZVal main__VSlimConfig_get(main__VSlimConfig* c, string key, vphp__ZVal default_value);
+vphp__ZVal main__VSlimConfig_get_map(main__VSlimConfig* c, string key, vphp__ZVal default_value);
+vphp__ZVal main__VSlimConfig_get_list(main__VSlimConfig* c, string key, vphp__ZVal default_value);
+string main__VSlimConfig_all_json(main__VSlimConfig* c);
+VV_LOC _option_toml__Any main__VSlimConfig_value_opt(main__VSlimConfig* c, string key);
+VV_LOC string main__toml_any_to_json(toml__Any value);
+VV_LOC vphp__ZVal main__empty_array_zval(void);
+VV_LOC vphp__ZVal main__default_or_empty(vphp__ZVal default_value);
+VV_LOC vphp__ZVal main__toml_any_to_zval(toml__Any value);
+VV_LOC vphp__ZVal main__toml_map_to_zval(Map_string_toml__Any input);
+VV_LOC vphp__ZVal main__toml_list_to_zval(Array_toml__Any input);
+VV_LOC void main__VSlimConfig_free(main__VSlimConfig* c);
 main__VSlimContainer* main__VSlimContainer_construct(main__VSlimContainer* c);
 main__VSlimContainer* main__VSlimContainer_set(main__VSlimContainer* c, string id, vphp__ZVal value);
 main__VSlimContainer* main__VSlimContainer_factory(main__VSlimContainer* c, string id, vphp__ZVal callable);
@@ -8230,8 +9549,8 @@ VV_LOC Array_Map_string_string main__collect_object_loop_locals_from_block(strin
 VV_LOC Array_string main__extract_item_field_tokens(string block);
 VV_LOC multi_return_Map_string_string_Map_string_Array_string main__extract_template_data(vphp__ZVal data);
 VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_string_string* scalars, Map_string_Array_string* lists, int depth);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_44_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_44_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
 VV_LOC string main__alias_template_key(string path);
 VV_LOC bool main__is_numeric_path_segment(string part);
 VV_LOC bool main__is_template_list(vphp__ZVal value);
@@ -8265,6 +9584,12 @@ main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_pa
 bool main__VSlimApp_has_container(main__VSlimApp* app);
 main__VSlimApp* main__VSlimApp_set_container(main__VSlimApp* app, main__VSlimContainer* container);
 main__VSlimContainer* main__VSlimApp_container(main__VSlimApp* app);
+bool main__VSlimApp_has_config(main__VSlimApp* app);
+main__VSlimApp* main__VSlimApp_set_config(main__VSlimApp* app, main__VSlimConfig* config);
+main__VSlimConfig* main__VSlimApp_config(main__VSlimApp* app);
+main__VSlimApp* main__VSlimApp_load_config(main__VSlimApp* app, string path);
+main__VSlimApp* main__VSlimApp_load_config_text(main__VSlimApp* app, string text);
+VV_LOC void main__VSlimApp_sync_config_to_container(main__VSlimApp* app);
 main__RouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix);
 main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method, string raw_path);
 main__VSlimResponse* main__VSlimApp_dispatch_body(main__VSlimApp* app, string method, string raw_path, string body);
@@ -8373,13 +9698,13 @@ VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* ap
 VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, main__VSlimResponse _v_toheap_terminal);
 VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal);
 VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__BorrowedZVal payload);
-struct _V_anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021_Ctx {
+struct _V_anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282_Ctx {
 	vphp__BorrowedZVal payload;
 	vphp__RequestOwnedZVal mw;
 };
 
-struct _V_anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021_Ctx;
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021(void);
+struct _V_anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282_Ctx;
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282(void);
 VV_LOC vphp__ZVal main__with_active_middleware_chain(main__MiddlewareChain* chain, vphp__ZVal (*invoke)());
 VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal _request_payload);
 VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__BorrowedZVal request_payload, main__VSlimResponse _v_toheap_initial);
@@ -8413,7 +9738,7 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61767(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_45_vphp__zval_vphp__zval_mut_map_string_string_63028(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
@@ -8555,13 +9880,13 @@ void main__VSlimRuntime_delete(main__VSlimRuntime* app, string pattern, main__VS
 void main__VSlimRuntime_any(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest ));
 main__VSlimResponse main__VSlimRuntime_dispatch(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req);
 VV_LOC main__VSlimResponse main__VSlimRuntime_run_middleware(main__VSlimRuntime app, int index, main__VSlimRequest _v_toheap_req);
-struct _V_anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967_Ctx {
+struct _V_anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967_Ctx {
 	main__VSlimRuntime app;
 	int index;
 };
 
-struct _V_anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967_Ctx;
-VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967(main__VSlimRequest _v_toheap_r);
+struct _V_anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967_Ctx;
+VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967(main__VSlimRequest _v_toheap_r);
 VV_LOC main__VSlimResponse main__VSlimRuntime_dispatch_route(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req);
 VV_LOC main__VSlimResponse main__with_trace_id(main__VSlimRequest _v_toheap_req, main__VSlimResponse (*next)(main__VSlimRequest ));
 VV_LOC main__VSlimResponse main__auth_guard(main__VSlimRequest _v_toheap_req, main__VSlimResponse (*next)(main__VSlimRequest ));
@@ -8579,13 +9904,83 @@ static string time__FormatTime_str(time__FormatTime it);
 static string time__FormatDate_str(time__FormatDate it);
 string _option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it);
 string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it, int indent_count);
+static string x__json2__ValueKind_str(x__json2__ValueKind it);
+static string x__json2__ValueInfo_str(x__json2__ValueInfo it);
+static string indent_x__json2__ValueInfo_str(x__json2__ValueInfo it, int indent_count);
+static string x__json2__StructFieldInfo_str(x__json2__StructFieldInfo it);
+static string indent_x__json2__StructFieldInfo_str(x__json2__StructFieldInfo it, int indent_count);
+static string toml__input__Config_str(toml__input__Config it);
+static string indent_toml__input__Config_str(toml__input__Config it, int indent_count);
+static string toml__token__Pos_str(toml__token__Pos it);
+static string indent_toml__token__Pos_str(toml__token__Pos it, int indent_count);
 static string net__TcpSocket_str(net__TcpSocket it);
 static string indent_net__TcpSocket_str(net__TcpSocket it, int indent_count);
+static string Array_rune_str(Array_rune a);
+static string indent_Array_rune_str(Array_rune a, int indent_count);
+static string toml__token__Kind_str(toml__token__Kind it);
+static string Array_toml__token__Kind_str(Array_toml__token__Kind a);
+static string indent_Array_toml__token__Kind_str(Array_toml__token__Kind a, int indent_count);
 static string net__openssl__SSLError_str(net__openssl__SSLError it);
+static string toml__Any_str(toml__Any x);
+static string indent_toml__Any_str(toml__Any x, int indent_count);
 static string main__VSlimRouteHandlerType_str(main__VSlimRouteHandlerType it);
 static string net__Socket_str(net__Socket it);
 static string indent_net__Socket_str(net__Socket it, int indent_count);
+static string toml__Null_str(toml__Null it);
+static string indent_toml__Null_str(toml__Null it, int indent_count);
+static string Array_toml__Any_str(Array_toml__Any a);
+static string indent_Array_toml__Any_str(Array_toml__Any a, int indent_count);
+static string Map_string_toml__Any_str(Map_string_toml__Any m);
+static string indent_Map_string_toml__Any_str(Map_string_toml__Any m, int indent_count);
+x__json2__Any Array_x__json2__Any_to_sumtype_x__json2__Any(Array_x__json2__Any* x, bool is_mut);
+x__json2__Any bool_to_sumtype_x__json2__Any(bool* x, bool is_mut);
+x__json2__Any f64_to_sumtype_x__json2__Any(f64* x, bool is_mut);
+x__json2__Any f32_to_sumtype_x__json2__Any(f32* x, bool is_mut);
+x__json2__Any i64_to_sumtype_x__json2__Any(i64* x, bool is_mut);
+x__json2__Any int_to_sumtype_x__json2__Any(int* x, bool is_mut);
+x__json2__Any i32_to_sumtype_x__json2__Any(i32* x, bool is_mut);
+x__json2__Any i16_to_sumtype_x__json2__Any(i16* x, bool is_mut);
+x__json2__Any i8_to_sumtype_x__json2__Any(i8* x, bool is_mut);
+x__json2__Any Map_string_x__json2__Any_to_sumtype_x__json2__Any(Map_string_x__json2__Any* x, bool is_mut);
+x__json2__Any string_to_sumtype_x__json2__Any(string* x, bool is_mut);
+x__json2__Any time__Time_to_sumtype_x__json2__Any(time__Time* x, bool is_mut);
+x__json2__Any u64_to_sumtype_x__json2__Any(u64* x, bool is_mut);
+x__json2__Any u32_to_sumtype_x__json2__Any(u32* x, bool is_mut);
+x__json2__Any u16_to_sumtype_x__json2__Any(u16* x, bool is_mut);
+x__json2__Any u8_to_sumtype_x__json2__Any(u8* x, bool is_mut);
+x__json2__Any x__json2__Null_to_sumtype_x__json2__Any(x__json2__Null* x, bool is_mut);
+toml__ast__Value Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(Map_string_toml__ast__Value* x, bool is_mut);
+toml__ast__Value toml__ast__Bool_to_sumtype_toml__ast__Value(toml__ast__Bool* x, bool is_mut);
+toml__ast__Value Array_toml__ast__Value_to_sumtype_toml__ast__Value(Array_toml__ast__Value* x, bool is_mut);
+toml__ast__Value toml__ast__Null_to_sumtype_toml__ast__Value(toml__ast__Null* x, bool is_mut);
+toml__ast__Value toml__ast__Quoted_to_sumtype_toml__ast__Value(toml__ast__Quoted* x, bool is_mut);
+toml__ast__Key toml__ast__Null_to_sumtype_toml__ast__Key(toml__ast__Null* x, bool is_mut);
+toml__ast__Key toml__ast__Bare_to_sumtype_toml__ast__Key(toml__ast__Bare* x, bool is_mut);
+toml__ast__Key toml__ast__Number_to_sumtype_toml__ast__Key(toml__ast__Number* x, bool is_mut);
+toml__ast__Key toml__ast__Bool_to_sumtype_toml__ast__Key(toml__ast__Bool* x, bool is_mut);
+toml__ast__Key toml__ast__Quoted_to_sumtype_toml__ast__Key(toml__ast__Quoted* x, bool is_mut);
+toml__ast__Value toml__ast__Date_to_sumtype_toml__ast__Value(toml__ast__Date* x, bool is_mut);
+toml__ast__Value toml__ast__Time_to_sumtype_toml__ast__Value(toml__ast__Time* x, bool is_mut);
+toml__ast__Value toml__ast__DateTime_to_sumtype_toml__ast__Value(toml__ast__DateTime* x, bool is_mut);
+toml__ast__Value toml__ast__Number_to_sumtype_toml__ast__Value(toml__ast__Number* x, bool is_mut);
+toml__ast__DateTimeType toml__ast__Date_to_sumtype_toml__ast__DateTimeType(toml__ast__Date* x, bool is_mut);
+toml__ast__DateTimeType toml__ast__DateTime_to_sumtype_toml__ast__DateTimeType(toml__ast__DateTime* x, bool is_mut);
+toml__ast__DateTimeType toml__ast__Time_to_sumtype_toml__ast__DateTimeType(toml__ast__Time* x, bool is_mut);
+toml__Any Map_string_toml__Any_to_sumtype_toml__Any(Map_string_toml__Any* x, bool is_mut);
+toml__Any Array_toml__Any_to_sumtype_toml__Any(Array_toml__Any* x, bool is_mut);
+toml__Any toml__Null_to_sumtype_toml__Any(toml__Null* x, bool is_mut);
+toml__Any toml__Date_to_sumtype_toml__Any(toml__Date* x, bool is_mut);
+toml__Any toml__Time_to_sumtype_toml__Any(toml__Time* x, bool is_mut);
+toml__Any toml__DateTime_to_sumtype_toml__Any(toml__DateTime* x, bool is_mut);
+toml__Any string_to_sumtype_toml__Any(string* x, bool is_mut);
+toml__Any u64_to_sumtype_toml__Any(u64* x, bool is_mut);
+toml__Any f64_to_sumtype_toml__Any(f64* x, bool is_mut);
+toml__Any i64_to_sumtype_toml__Any(i64* x, bool is_mut);
+toml__Any bool_to_sumtype_toml__Any(bool* x, bool is_mut);
+toml__to__DocOrAny toml__Any_to_sumtype_toml__to__DocOrAny(toml__Any* x, bool is_mut);
 bool Array_rune_arr_eq(Array_rune a, Array_rune b);
+bool toml__parser__DottedKey_alias_eq(toml__parser__DottedKey a, toml__parser__DottedKey b);
+bool Array_string_arr_eq(Array_string a, Array_string b);
 
 // V global/const non-precomputed definitions:
 string _const_math__bits__overflow_error; // a string literal, inited later
@@ -8606,6 +10001,12 @@ string _const_os__dot_str; // a string literal, inited later
 string _const_os__path_separator; // a string literal, inited later
 string _const_os__path_delimiter; // a string literal, inited later
 string _const_os__path_devnull; // a string literal, inited later
+string _const_x__json2__true_string; // a string literal, inited later
+string _const_x__json2__false_string; // a string literal, inited later
+string _const_x__json2__null_in_string; // a string literal, inited later
+string _const_x__json2__true_in_string; // a string literal, inited later
+string _const_x__json2__false_in_string; // a string literal, inited later
+string _const_x__json2__float_zero_in_string; // a string literal, inited later
 string _const_rand__ulid_encoding; // a string literal, inited later
 string _const_rand__english_letters; // a string literal, inited later
 string _const_rand__hex_chars; // a string literal, inited later
@@ -9018,6 +10419,28 @@ Array_fixed_int_123 _const_encoding__base64__index = {0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 
 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 63, 
 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51}; // fixed array const
+Array_fixed_u8_364 _const_encoding__utf8__validate__utf8d = {((u8)(0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 
+7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 
+7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 
+8, 8, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
+2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
+10, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 
+11, 6, 6, 6, 5, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 
+0, 12, 24, 36, 60, 96, 84, 12, 12, 12, 48, 72, 12, 12, 12, 12, 
+12, 12, 12, 12, 12, 12, 12, 12, 12, 0, 12, 12, 12, 12, 12, 0, 
+12, 0, 12, 12, 12, 24, 12, 12, 12, 12, 12, 24, 12, 24, 12, 12, 
+12, 12, 12, 12, 12, 12, 12, 24, 12, 12, 12, 12, 12, 24, 12, 12, 
+12, 12, 12, 12, 12, 24, 12, 12, 12, 12, 12, 12, 12, 12, 12, 36, 
+12, 36, 12, 12, 12, 36, 12, 12, 12, 12, 12, 36, 12, 36, 12, 12, 12, 36, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12}; // fixed array const
 vphp__TaskRegistry* g_registry; // global 6
 
 int _const_os__o_rdonly; // inited later
@@ -9162,8 +10585,18 @@ const f64 _const_math__tan_dp3 = 3.061616997868383e-17; // precomputed2
 const f64 _const_math__tan_lossth = 1.073741824e+09; // precomputed2
 Array_f64 _const_math__tanh_p; // inited later
 Array_f64 _const_math__tanh_q; // inited later
+Array_fixed_rune_4 _const_x__json2__whitespace_chars = {' ', '\t', '\n', '\r'}; // fixed array const
+x__json2__Null _const_x__json2__null; // inited later
+rune _const_encoding__utf8__max_latin_1; // inited later
+encoding__utf8__RangeTable _const_encoding__utf8__letter_table; // inited later
+encoding__utf8__RangeTable _const_encoding__utf8__white_space_table; // inited later
+encoding__utf8__RangeTable _const_encoding__utf8__number_table; // inited later
+Array_rune _const_encoding__utf8__unicode_punct_western; // inited later
+Array_rune _const_encoding__utf8__unicode_punct; // inited later
 const u64 _const_rand__wyrand__wyp0 = 3257665815644502181U; // precomputed2
 const u64 _const_rand__wyrand__wyp1 = 10067880064238660809U; // precomputed2
+Array_rune _const_toml__scanner__digit_extras; // inited later
+u32 _const_toml__scanner__end_of_text; // inited later
 const f64 _const_rand__sqrt2 = 1.4142135623730951; // precomputed2
 rand__PRNG* default_rng; // global 6
 
@@ -9195,6 +10628,11 @@ int _const_net__error_eintr; // inited later
 Array_net__SocketOption _const_net__opts_bool; // inited later
 Array_net__SocketOption _const_net__opts_int; // inited later
 Array_net__SocketOption _const_net__opts_can_set; // inited later
+Array_rune _const_toml__checker__allowed_basic_escape_chars; // inited later
+Array_toml__token__Kind _const_toml__parser__all_formatting; // inited later
+Array_toml__token__Kind _const_toml__parser__space_formatting; // inited later
+Array_toml__token__Kind _const_toml__parser__keys_and_space_formatting; // inited later
+toml__Any _const_toml__null; // inited later
 const u8 _const_net__socks__socks_version5 = 5; // precomputed2
 const u8 _const_net__socks__addr_type_ipv4 = 1; // precomputed2
 const u8 _const_net__socks__addr_type_fqdn = 3; // precomputed2
@@ -9217,6 +10655,22 @@ time__Duration _const_time__microsecond; // inited later
 Array_string _const_os__args; // inited later
 math__ChebSeries _const_math__sin_cs; // inited later
 math__ChebSeries _const_math__cos_cs; // inited later
+Array_fixed_int_256 _const_encoding__utf8__props = {_const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, 
+_const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, 
+(16 | 128), (2 | 128), (2 | 128), (2 | 128), (8 | 128), (2 | 128), (2 | 128), (2 | 128), (2 | 128), (2 | 128), (2 | 128), (8 | 128), (2 | 128), (2 | 128), (2 | 128), (2 | 128), 
+(4 | 128), (4 | 128), (4 | 128), (4 | 128), (4 | 128), (4 | 128), (4 | 128), (4 | 128), (4 | 128), (4 | 128), (2 | 128), (2 | 128), (8 | 128), (8 | 128), (8 | 128), (2 | 128), 
+(2 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), 
+(32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (2 | 128), (2 | 128), (2 | 128), (8 | 128), (2 | 128), 
+(8 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), 
+(64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (2 | 128), (8 | 128), (2 | 128), (8 | 128), _const_encoding__utf8__p_c, 
+_const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, 
+_const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, _const_encoding__utf8__p_c, 
+_const_encoding__utf8__p_z, (2 | 128), (8 | 128), (8 | 128), (8 | 128), (8 | 128), (8 | 128), (2 | 128), (8 | 128), (8 | 128), (_const_encoding__utf8__p_lo | 128), (2 | 128), (8 | 128), 0, (8 | 128), (8 | 128), 
+(8 | 128), (8 | 128), (4 | 128), (4 | 128), (8 | 128), (64 | 128), (2 | 128), (2 | 128), (8 | 128), (4 | 128), (_const_encoding__utf8__p_lo | 128), (2 | 128), (4 | 128), (4 | 128), (4 | 128), (2 | 128), 
+(32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), 
+(32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (8 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (32 | 128), (64 | 128), 
+(64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), 
+(64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (8 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128), (64 | 128)}; // fixed array const
 time__Duration _const_net__infinite_timeout; // inited later
 int _const_builtin__closure__closure_size; // inited later
 time__Duration _const_time__millisecond; // inited later
@@ -9255,13 +10709,15 @@ static IError I_os__SizeOfTypeIs0Error_to_Interface_IError(os__SizeOfTypeIs0Erro
 const u32 _IError_os__SizeOfTypeIs0Error_index = 10;
 static IError I_os__ExecutableNotFoundError_to_Interface_IError(os__ExecutableNotFoundError* x);
 const u32 _IError_os__ExecutableNotFoundError_index = 11;
+static IError I_x__json2__JsonDecodeError_to_Interface_IError(x__json2__JsonDecodeError* x);
+const u32 _IError_x__json2__JsonDecodeError_index = 12;
 static IError I_net__http__HeaderKeyError_to_Interface_IError(net__http__HeaderKeyError* x);
-const u32 _IError_net__http__HeaderKeyError_index = 12;
+const u32 _IError_net__http__HeaderKeyError_index = 13;
 static IError I_net__http__UnexpectedExtraAttributeError_to_Interface_IError(net__http__UnexpectedExtraAttributeError* x);
-const u32 _IError_net__http__UnexpectedExtraAttributeError_index = 13;
+const u32 _IError_net__http__UnexpectedExtraAttributeError_index = 14;
 static IError I_net__http__MultiplePathAttributesError_to_Interface_IError(net__http__MultiplePathAttributesError* x);
-const u32 _IError_net__http__MultiplePathAttributesError_index = 14;
-// ^^^ number of types for interface IError: 15
+const u32 _IError_net__http__MultiplePathAttributesError_index = 15;
+// ^^^ number of types for interface IError: 16
 
 // Methods wrapper for interface "IError"
 static inline int builtin__None___code_Interface_IError_method_wrapper(None__* err) {
@@ -9330,6 +10786,12 @@ static inline int builtin__os__ExecutableNotFoundError_code_Interface_IError_met
 static inline string os__ExecutableNotFoundError_msg_Interface_IError_method_wrapper(os__ExecutableNotFoundError* err) {
 	return os__ExecutableNotFoundError_msg(*err);
 }
+static inline int builtin__x__json2__JsonDecodeError_code_Interface_IError_method_wrapper(x__json2__JsonDecodeError* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string x__json2__JsonDecodeError_msg_Interface_IError_method_wrapper(x__json2__JsonDecodeError* e) {
+	return x__json2__JsonDecodeError_msg(*e);
+}
 static inline int net__http__HeaderKeyError_code_Interface_IError_method_wrapper(net__http__HeaderKeyError* err) {
 	return net__http__HeaderKeyError_code(*err);
 }
@@ -9354,7 +10816,7 @@ struct _IError_interface_methods {
 	string (*_method_msg)(void* _);
 };
 
-struct _IError_interface_methods IError_name_table[15] = {
+struct _IError_interface_methods IError_name_table[16] = {
 	{
 		._method_code = (void*) builtin__None___code_Interface_IError_method_wrapper,
 		._method_msg = (void*) builtin__None___msg_Interface_IError_method_wrapper,
@@ -9402,6 +10864,10 @@ struct _IError_interface_methods IError_name_table[15] = {
 	{
 		._method_code = (void*) builtin__os__ExecutableNotFoundError_code_Interface_IError_method_wrapper,
 		._method_msg = (void*) os__ExecutableNotFoundError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__x__json2__JsonDecodeError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) x__json2__JsonDecodeError_msg_Interface_IError_method_wrapper,
 	},
 	{
 		._method_code = (void*) net__http__HeaderKeyError_code_Interface_IError_method_wrapper,
@@ -9523,6 +10989,15 @@ static inline IError I_os__ExecutableNotFoundError_to_Interface_IError(os__Execu
 return (IError) {
 		._os__ExecutableNotFoundError = x,
 		._typ = _IError_os__ExecutableNotFoundError_index,
+	};
+}
+
+// Casting functions for converting "x__json2__JsonDecodeError" to interface "IError"
+
+static inline IError I_x__json2__JsonDecodeError_to_Interface_IError(x__json2__JsonDecodeError* x) {
+return (IError) {
+		._x__json2__JsonDecodeError = x,
+		._typ = _IError_x__json2__JsonDecodeError_index,
 	};
 }
 
@@ -9666,6 +11141,240 @@ static inline net__http__Handler I_voidptr_to_Interface_net__http__Handler(voidp
 return (net__http__Handler) {
 		._voidptr = x,
 		._typ = _net__http__Handler_voidptr_index,
+	};
+}
+
+static x__json2__JsonEncoder I_time__Time_to_Interface_x__json2__JsonEncoder(time__Time* x);
+const u32 _x__json2__JsonEncoder_time__Time_index = 0;
+static x__json2__JsonEncoder I_voidptr_to_Interface_x__json2__JsonEncoder(voidptr* x);
+const u32 _x__json2__JsonEncoder_voidptr_index = 1;
+static x__json2__JsonEncoder I_x__json2__Null_to_Interface_x__json2__JsonEncoder(x__json2__Null* x);
+const u32 _x__json2__JsonEncoder_x__json2__Null_index = 2;
+// ^^^ number of types for interface x__json2__JsonEncoder: 3
+
+// Methods wrapper for interface "x__json2__JsonEncoder"
+static inline string time__Time_to_json_Interface_x__json2__JsonEncoder_method_wrapper(time__Time* t) {
+	return time__Time_to_json(*t);
+}
+static inline string x__json2__Null_to_json_Interface_x__json2__JsonEncoder_method_wrapper(x__json2__Null* n) {
+	return x__json2__Null_to_json(*n);
+}
+
+struct _x__json2__JsonEncoder_interface_methods {
+	string (*_method_to_json)(void* _);
+};
+
+struct _x__json2__JsonEncoder_interface_methods x__json2__JsonEncoder_name_table[3] = {
+	{
+		._method_to_json = (void*) time__Time_to_json_Interface_x__json2__JsonEncoder_method_wrapper,
+	},
+	{
+		._method_to_json = (void*) 0,
+	},
+	{
+		._method_to_json = (void*) x__json2__Null_to_json_Interface_x__json2__JsonEncoder_method_wrapper,
+	},
+};
+
+
+// Casting functions for converting "time__Time" to interface "x__json2__JsonEncoder"
+
+static inline x__json2__JsonEncoder I_time__Time_to_Interface_x__json2__JsonEncoder(time__Time* x) {
+return (x__json2__JsonEncoder) {
+		._time__Time = x,
+		._typ = _x__json2__JsonEncoder_time__Time_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "x__json2__JsonEncoder"
+
+static inline x__json2__JsonEncoder I_voidptr_to_Interface_x__json2__JsonEncoder(voidptr* x) {
+return (x__json2__JsonEncoder) {
+		._voidptr = x,
+		._typ = _x__json2__JsonEncoder_voidptr_index,
+	};
+}
+
+// Casting functions for converting "x__json2__Null" to interface "x__json2__JsonEncoder"
+
+static inline x__json2__JsonEncoder I_x__json2__Null_to_Interface_x__json2__JsonEncoder(x__json2__Null* x) {
+return (x__json2__JsonEncoder) {
+		._x__json2__Null = x,
+		._typ = _x__json2__JsonEncoder_x__json2__Null_index,
+	};
+}
+
+static x__json2__Encodable I_x__json2__Any_to_Interface_x__json2__Encodable(x__json2__Any* x);
+const u32 _x__json2__Encodable_x__json2__Any_index = 0;
+static x__json2__Encodable I_voidptr_to_Interface_x__json2__Encodable(voidptr* x);
+const u32 _x__json2__Encodable_voidptr_index = 1;
+// ^^^ number of types for interface x__json2__Encodable: 2
+
+// Methods wrapper for interface "x__json2__Encodable"
+static inline string x__json2__Any_json_str_Interface_x__json2__Encodable_method_wrapper(x__json2__Any* f) {
+	return x__json2__Any_json_str(*f);
+}
+
+struct _x__json2__Encodable_interface_methods {
+	string (*_method_json_str)(void* _);
+};
+
+struct _x__json2__Encodable_interface_methods x__json2__Encodable_name_table[2] = {
+	{
+		._method_json_str = (void*) x__json2__Any_json_str_Interface_x__json2__Encodable_method_wrapper,
+	},
+	{
+		._method_json_str = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "x__json2__Any" to interface "x__json2__Encodable"
+
+static inline x__json2__Encodable I_x__json2__Any_to_Interface_x__json2__Encodable(x__json2__Any* x) {
+return (x__json2__Encodable) {
+		._x__json2__Any = x,
+		._typ = _x__json2__Encodable_x__json2__Any_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "x__json2__Encodable"
+
+static inline x__json2__Encodable I_voidptr_to_Interface_x__json2__Encodable(voidptr* x) {
+return (x__json2__Encodable) {
+		._voidptr = x,
+		._typ = _x__json2__Encodable_voidptr_index,
+	};
+}
+
+static x__json2__StringDecoder I_time__Time_to_Interface_x__json2__StringDecoder(time__Time* x);
+const u32 _x__json2__StringDecoder_time__Time_index = 0;
+static x__json2__StringDecoder I_voidptr_to_Interface_x__json2__StringDecoder(voidptr* x);
+const u32 _x__json2__StringDecoder_voidptr_index = 1;
+// ^^^ number of types for interface x__json2__StringDecoder: 2
+
+// Methods wrapper for interface "x__json2__StringDecoder"
+
+struct _x__json2__StringDecoder_interface_methods {
+	_result_void (*_method_from_json_string)(void* _, string raw_string);
+};
+
+struct _x__json2__StringDecoder_interface_methods x__json2__StringDecoder_name_table[2] = {
+	{
+		._method_from_json_string = (void*) time__Time_from_json_string,
+	},
+	{
+		._method_from_json_string = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "time__Time" to interface "x__json2__StringDecoder"
+
+static inline x__json2__StringDecoder I_time__Time_to_Interface_x__json2__StringDecoder(time__Time* x) {
+return (x__json2__StringDecoder) {
+		._time__Time = x,
+		._typ = _x__json2__StringDecoder_time__Time_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "x__json2__StringDecoder"
+
+static inline x__json2__StringDecoder I_voidptr_to_Interface_x__json2__StringDecoder(voidptr* x) {
+return (x__json2__StringDecoder) {
+		._voidptr = x,
+		._typ = _x__json2__StringDecoder_voidptr_index,
+	};
+}
+
+static x__json2__NumberDecoder I_time__Time_to_Interface_x__json2__NumberDecoder(time__Time* x);
+const u32 _x__json2__NumberDecoder_time__Time_index = 0;
+static x__json2__NumberDecoder I_voidptr_to_Interface_x__json2__NumberDecoder(voidptr* x);
+const u32 _x__json2__NumberDecoder_voidptr_index = 1;
+// ^^^ number of types for interface x__json2__NumberDecoder: 2
+
+// Methods wrapper for interface "x__json2__NumberDecoder"
+
+struct _x__json2__NumberDecoder_interface_methods {
+	_result_void (*_method_from_json_number)(void* _, string raw_number);
+};
+
+struct _x__json2__NumberDecoder_interface_methods x__json2__NumberDecoder_name_table[2] = {
+	{
+		._method_from_json_number = (void*) time__Time_from_json_number,
+	},
+	{
+		._method_from_json_number = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "time__Time" to interface "x__json2__NumberDecoder"
+
+static inline x__json2__NumberDecoder I_time__Time_to_Interface_x__json2__NumberDecoder(time__Time* x) {
+return (x__json2__NumberDecoder) {
+		._time__Time = x,
+		._typ = _x__json2__NumberDecoder_time__Time_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "x__json2__NumberDecoder"
+
+static inline x__json2__NumberDecoder I_voidptr_to_Interface_x__json2__NumberDecoder(voidptr* x) {
+return (x__json2__NumberDecoder) {
+		._voidptr = x,
+		._typ = _x__json2__NumberDecoder_voidptr_index,
+	};
+}
+
+// ^^^ number of types for interface x__json2__BooleanDecoder: 0
+
+// Methods wrapper for interface "x__json2__BooleanDecoder"
+
+struct _x__json2__BooleanDecoder_interface_methods {
+	void (*_method_from_json_boolean)(void* _, bool boolean_value);
+};
+
+struct _x__json2__BooleanDecoder_interface_methods x__json2__BooleanDecoder_name_table[1];
+
+
+static x__json2__NullDecoder I_x__json2__Null_to_Interface_x__json2__NullDecoder(x__json2__Null* x);
+const u32 _x__json2__NullDecoder_x__json2__Null_index = 0;
+static x__json2__NullDecoder I_voidptr_to_Interface_x__json2__NullDecoder(voidptr* x);
+const u32 _x__json2__NullDecoder_voidptr_index = 1;
+// ^^^ number of types for interface x__json2__NullDecoder: 2
+
+// Methods wrapper for interface "x__json2__NullDecoder"
+
+struct _x__json2__NullDecoder_interface_methods {
+	void (*_method_from_json_null)(void* _);
+};
+
+struct _x__json2__NullDecoder_interface_methods x__json2__NullDecoder_name_table[2] = {
+	{
+		._method_from_json_null = (void*) x__json2__Null_from_json_null,
+	},
+	{
+		._method_from_json_null = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "x__json2__Null" to interface "x__json2__NullDecoder"
+
+static inline x__json2__NullDecoder I_x__json2__Null_to_Interface_x__json2__NullDecoder(x__json2__Null* x) {
+return (x__json2__NullDecoder) {
+		._x__json2__Null = x,
+		._typ = _x__json2__NullDecoder_x__json2__Null_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "x__json2__NullDecoder"
+
+static inline x__json2__NullDecoder I_voidptr_to_Interface_x__json2__NullDecoder(voidptr* x) {
+return (x__json2__NullDecoder) {
+		._voidptr = x,
+		._typ = _x__json2__NullDecoder_voidptr_index,
 	};
 }
 
@@ -10188,6 +11897,103 @@ return (rand__PRNG) {
 	};
 }
 
+static toml__ast__walker__Visitor I_toml__ast__walker__Inspector_to_Interface_toml__ast__walker__Visitor(toml__ast__walker__Inspector* x);
+const u32 _toml__ast__walker__Visitor_toml__ast__walker__Inspector_index = 0;
+static toml__ast__walker__Visitor I_voidptr_to_Interface_toml__ast__walker__Visitor(voidptr* x);
+const u32 _toml__ast__walker__Visitor_voidptr_index = 1;
+static toml__ast__walker__Visitor I_toml__checker__Checker_to_Interface_toml__ast__walker__Visitor(toml__checker__Checker* x);
+const u32 _toml__ast__walker__Visitor_toml__checker__Checker_index = 2;
+// ^^^ number of types for interface toml__ast__walker__Visitor: 3
+
+// Methods wrapper for interface "toml__ast__walker__Visitor"
+
+struct _toml__ast__walker__Visitor_interface_methods {
+	_result_void (*_method_visit)(void* _, toml__ast__Value* value);
+};
+
+struct _toml__ast__walker__Visitor_interface_methods toml__ast__walker__Visitor_name_table[3] = {
+	{
+		._method_visit = (void*) toml__ast__walker__Inspector_visit,
+	},
+	{
+		._method_visit = (void*) 0,
+	},
+	{
+		._method_visit = (void*) toml__checker__Checker_visit,
+	},
+};
+
+
+// Casting functions for converting "toml__ast__walker__Inspector" to interface "toml__ast__walker__Visitor"
+
+static inline toml__ast__walker__Visitor I_toml__ast__walker__Inspector_to_Interface_toml__ast__walker__Visitor(toml__ast__walker__Inspector* x) {
+return (toml__ast__walker__Visitor) {
+		._toml__ast__walker__Inspector = x,
+		._typ = _toml__ast__walker__Visitor_toml__ast__walker__Inspector_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "toml__ast__walker__Visitor"
+
+static inline toml__ast__walker__Visitor I_voidptr_to_Interface_toml__ast__walker__Visitor(voidptr* x) {
+return (toml__ast__walker__Visitor) {
+		._voidptr = x,
+		._typ = _toml__ast__walker__Visitor_voidptr_index,
+	};
+}
+
+// Casting functions for converting "toml__checker__Checker" to interface "toml__ast__walker__Visitor"
+
+static inline toml__ast__walker__Visitor I_toml__checker__Checker_to_Interface_toml__ast__walker__Visitor(toml__checker__Checker* x) {
+return (toml__ast__walker__Visitor) {
+		._toml__checker__Checker = x,
+		._typ = _toml__ast__walker__Visitor_toml__checker__Checker_index,
+	};
+}
+
+static toml__ast__walker__Modifier I_toml__decoder__Decoder_to_Interface_toml__ast__walker__Modifier(toml__decoder__Decoder* x);
+const u32 _toml__ast__walker__Modifier_toml__decoder__Decoder_index = 0;
+static toml__ast__walker__Modifier I_voidptr_to_Interface_toml__ast__walker__Modifier(voidptr* x);
+const u32 _toml__ast__walker__Modifier_voidptr_index = 1;
+// ^^^ number of types for interface toml__ast__walker__Modifier: 2
+
+// Methods wrapper for interface "toml__ast__walker__Modifier"
+static inline _result_void toml__decoder__Decoder_modify_Interface_toml__ast__walker__Modifier_method_wrapper(toml__decoder__Decoder* d, toml__ast__Value* value) {
+	return toml__decoder__Decoder_modify(*d, value);
+}
+
+struct _toml__ast__walker__Modifier_interface_methods {
+	_result_void (*_method_modify)(void* _, toml__ast__Value* value);
+};
+
+struct _toml__ast__walker__Modifier_interface_methods toml__ast__walker__Modifier_name_table[2] = {
+	{
+		._method_modify = (void*) toml__decoder__Decoder_modify_Interface_toml__ast__walker__Modifier_method_wrapper,
+	},
+	{
+		._method_modify = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "toml__decoder__Decoder" to interface "toml__ast__walker__Modifier"
+
+static inline toml__ast__walker__Modifier I_toml__decoder__Decoder_to_Interface_toml__ast__walker__Modifier(toml__decoder__Decoder* x) {
+return (toml__ast__walker__Modifier) {
+		._toml__decoder__Decoder = x,
+		._typ = _toml__ast__walker__Modifier_toml__decoder__Decoder_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "toml__ast__walker__Modifier"
+
+static inline toml__ast__walker__Modifier I_voidptr_to_Interface_toml__ast__walker__Modifier(voidptr* x) {
+return (toml__ast__walker__Modifier) {
+		._voidptr = x,
+		._typ = _toml__ast__walker__Modifier_voidptr_index,
+	};
+}
+
 
 // V sort fn definitions:
 VV_LOC  int compare_11835712493692648452_RepIndex_by_idx(RepIndex* a, RepIndex* b) {
@@ -10251,7 +12057,7 @@ static inline _option_net__TcpConn_ptr __Option_chan_net__TcpConn_ptr_popval(cha
 // V gowrappers waiter fns:
 vphp__TaskResult __v_thread_vphp__TaskResult_wait(__v_thread_vphp__TaskResult thread);
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
-void* anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731 *arg);
+void* anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731 *arg);
 void __v_thread_wait(__v_thread thread);
 void* net__http__HandlerWorker_process_requests_thread_wrapper(thread_arg_net__http__HandlerWorker_process_requests *arg);
 
@@ -10294,7 +12100,86 @@ string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it
 	}
 	return _S("Option(none)");
 }
+static string x__json2__ValueKind_str(x__json2__ValueKind it) { /* gen_str_for_enum */
+	switch(it) {
+		case x__json2__ValueKind__array: return _S("array");
+		case x__json2__ValueKind__object: return _S("object");
+		case x__json2__ValueKind__string: return _S("string");
+		case x__json2__ValueKind__number: return _S("number");
+		case x__json2__ValueKind__boolean: return _S("boolean");
+		case x__json2__ValueKind__null: return _S("null");
+		default: return _S("unknown enum value");
+	}
+}
+static string x__json2__ValueInfo_str(x__json2__ValueInfo it) { return indent_x__json2__ValueInfo_str(it, 0);}
+static string x__json2__StructFieldInfo_str(x__json2__StructFieldInfo it) { return indent_x__json2__StructFieldInfo_str(it, 0);}
+static string toml__input__Config_str(toml__input__Config it) { return indent_toml__input__Config_str(it, 0);}
+static string toml__token__Pos_str(toml__token__Pos it) { return indent_toml__token__Pos_str(it, 0);}
 static string net__TcpSocket_str(net__TcpSocket it) { return indent_net__TcpSocket_str(it, 0);}
+static string Array_rune_str(Array_rune a) { return indent_Array_rune_str(a, 0);}
+static string indent_Array_rune_str(Array_rune a, int indent_count) {
+	strings__Builder sb = strings__new_builder(2 + a.len * 10);
+	strings__Builder_write_string(&sb, _S("["));
+	for (int i = 0; i < a.len; ++i) {
+		rune it = *(rune*)builtin__array_get(a, i);
+		string x = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("`"), 0xfe10, {.d_s = builtin__rune_str(it) }}, {_S("`"), 0, {.d_c = 0 }}}));
+
+		strings__Builder_write_string(&sb, x);
+		if (i < a.len-1) {
+			strings__Builder_write_string(&sb, _S(", "));
+		}
+	}
+	strings__Builder_write_string(&sb, _S("]"));
+	string res = strings__Builder_str(&sb);
+	strings__Builder_free(&sb);
+	return res;
+}
+static string toml__token__Kind_str(toml__token__Kind it) { /* gen_str_for_enum */
+	switch(it) {
+		case toml__token__Kind__unknown: return _S("unknown");
+		case toml__token__Kind__eof: return _S("eof");
+		case toml__token__Kind__bare: return _S("bare");
+		case toml__token__Kind__boolean: return _S("boolean");
+		case toml__token__Kind__number: return _S("number");
+		case toml__token__Kind__quoted: return _S("quoted");
+		case toml__token__Kind__plus: return _S("plus");
+		case toml__token__Kind__minus: return _S("minus");
+		case toml__token__Kind__underscore: return _S("underscore");
+		case toml__token__Kind__comma: return _S("comma");
+		case toml__token__Kind__colon: return _S("colon");
+		case toml__token__Kind__hash: return _S("hash");
+		case toml__token__Kind__assign: return _S("assign");
+		case toml__token__Kind__lcbr: return _S("lcbr");
+		case toml__token__Kind__rcbr: return _S("rcbr");
+		case toml__token__Kind__lsbr: return _S("lsbr");
+		case toml__token__Kind__rsbr: return _S("rsbr");
+		case toml__token__Kind__nl: return _S("nl");
+		case toml__token__Kind__cr: return _S("cr");
+		case toml__token__Kind__tab: return _S("tab");
+		case toml__token__Kind__whitespace: return _S("whitespace");
+		case toml__token__Kind__period: return _S("period");
+		case toml__token__Kind___end_: return _S("_end_");
+		default: return _S("unknown enum value");
+	}
+}
+static string Array_toml__token__Kind_str(Array_toml__token__Kind a) { return indent_Array_toml__token__Kind_str(a, 0);}
+static string indent_Array_toml__token__Kind_str(Array_toml__token__Kind a, int indent_count) {
+	strings__Builder sb = strings__new_builder(2 + a.len * 10);
+	strings__Builder_write_string(&sb, _S("["));
+	for (int i = 0; i < a.len; ++i) {
+		toml__token__Kind it = *(toml__token__Kind*)builtin__array_get(a, i);
+		strings__Builder_write_string(&sb, _S(""));
+		string x = toml__token__Kind_str(it);
+		strings__Builder_write_string(&sb, x);
+		if (i < a.len-1) {
+			strings__Builder_write_string(&sb, _S(", "));
+		}
+	}
+	strings__Builder_write_string(&sb, _S("]"));
+	string res = strings__Builder_str(&sb);
+	strings__Builder_free(&sb);
+	return res;
+}
 static string net__openssl__SSLError_str(net__openssl__SSLError it) { /* gen_str_for_enum */
 		if(it == net__openssl__SSLError__ssl_error_none){ return _S("ssl_error_none"); }
 		if(it == net__openssl__SSLError__ssl_error_ssl){ return _S("ssl_error_ssl"); }
@@ -10309,6 +12194,7 @@ static string net__openssl__SSLError_str(net__openssl__SSLError it) { /* gen_str
 		if(it == net__openssl__SSLError__ssl_error_want_async_job){ return _S("ssl_error_want_async_job"); }
 		return _S("unknown enum value");
 }
+static string toml__Any_str(toml__Any x) { return indent_toml__Any_str(x, 0); }
 static string main__VSlimRouteHandlerType_str(main__VSlimRouteHandlerType it) { /* gen_str_for_enum */
 	switch(it) {
 		case main__VSlimRouteHandlerType__v_native: return _S("v_native");
@@ -10317,8 +12203,105 @@ static string main__VSlimRouteHandlerType_str(main__VSlimRouteHandlerType it) { 
 	}
 }
 static string net__Socket_str(net__Socket it) { return indent_net__Socket_str(it, 0);}
+static string toml__Null_str(toml__Null it) { return indent_toml__Null_str(it, 0);}
+static string Array_toml__Any_str(Array_toml__Any a) { return indent_Array_toml__Any_str(a, 0);}
+static string indent_Array_toml__Any_str(Array_toml__Any a, int indent_count) {
+	strings__Builder sb = strings__new_builder(2 + a.len * 10);
+	strings__Builder_write_string(&sb, _S("["));
+	for (int i = 0; i < a.len; ++i) {
+		toml__Any it = *(toml__Any*)builtin__array_get(a, i);
+		string x = indent_toml__Any_str(it, indent_count);
+		strings__Builder_write_string(&sb, x);
+		if (i < a.len-1) {
+			strings__Builder_write_string(&sb, _S(", "));
+		}
+	}
+	strings__Builder_write_string(&sb, _S("]"));
+	string res = strings__Builder_str(&sb);
+	strings__Builder_free(&sb);
+	return res;
+}
+static string Map_string_toml__Any_str(Map_string_toml__Any m) { return indent_Map_string_toml__Any_str(m, 0);}
+static string indent_Map_string_toml__Any_str(Map_string_toml__Any m, int indent_count) { /* gen_str_for_map */
+	strings__Builder sb = strings__new_builder(2 + m.key_values.len * 10);
+	strings__Builder_write_string(&sb, _S("{"));
+	bool is_first = true;
+	for (int i = 0; i < m.key_values.len; ++i) {
+		if (!builtin__DenseArray_has_index(&m.key_values, i)) { continue; }
+		else if (!is_first) { strings__Builder_write_string(&sb, _S(", ")); }
+		string key = *(string*)builtin__DenseArray_key(&m.key_values, i);
+		strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("'"), 0xfe10, {.d_s = key}},{_S("'"), 0, {.d_c = 0 }}})));
+		strings__Builder_write_string(&sb, _S(": "));
+		strings__Builder_write_string(&sb, indent_toml__Any_str(*(toml__Any*)builtin__DenseArray_value(&m.key_values, i), indent_count));
+		is_first = false;
+	}
+	strings__Builder_write_string(&sb, _S("}"));
+	string res = strings__Builder_str(&sb);
+	strings__Builder_free(&sb);
+	return res;
+}
 
 // V auto functions:
+string indent_x__json2__ValueInfo_str(x__json2__ValueInfo it, int indent_count) {
+	string indents = builtin__string_repeat(_S("    "), indent_count);
+	string _t1 = x__json2__ValueKind_str((it.value_kind));
+	string res = builtin__str_intp( 15, _MOV((StrIntpData[]){
+		{_S("json2.ValueInfo{\n"), 0, {.d_c=0}},
+		{_SLIT0, 0xfe10, {.d_s=indents}}, {_S("    position: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.position}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    value_kind: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=_t1}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    length: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.length}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("}"), 0, {.d_c=0}},
+	}));
+	builtin__string_free(&_t1);
+	builtin__string_free(&indents);
+	return res;
+}
+
+string indent_x__json2__StructFieldInfo_str(x__json2__StructFieldInfo it, int indent_count) {
+	string indents = builtin__string_repeat(_S("    "), indent_count);
+	string res = builtin__str_intp( 39, _MOV((StrIntpData[]){
+		{_S("json2.StructFieldInfo{\n"), 0, {.d_c=0}},
+		{_SLIT0, 0xfe10, {.d_s=indents}}, {_S("    field_name_str: "), 0, {.d_c=0}}, {_S(""), 17, {.d_p=(voidptr) it.field_name_str}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    field_name_len: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.field_name_len}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    json_name_ptr: "), 0, {.d_c=0}}, {_S(""), 17, {.d_p=(voidptr) it.json_name_ptr}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    json_name_len: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.json_name_len}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    is_omitempty: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=it.is_omitempty ? _S("true") : _S("false")}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    is_skip: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=it.is_skip ? _S("true") : _S("false")}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    is_required: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=it.is_required ? _S("true") : _S("false")}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    is_raw: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=it.is_raw ? _S("true") : _S("false")}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    is_decoded: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=it.is_decoded ? _S("true") : _S("false")}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("}"), 0, {.d_c=0}},
+	}));
+	builtin__string_free(&indents);
+	return res;
+}
+
+string indent_toml__input__Config_str(toml__input__Config it, int indent_count) {
+	string indents = builtin__string_repeat(_S("    "), indent_count);
+	string res = builtin__str_intp( 11, _MOV((StrIntpData[]){
+		{_S("input.Config{\n"), 0, {.d_c=0}},
+		{_SLIT0, 0xfe10, {.d_s=indents}}, {_S("    text: "), 0, {.d_c=0}}, {_S("'"), 16, {.d_s=it.text}}, {_S("'"), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    file_path: "), 0, {.d_c=0}}, {_S("'"), 16, {.d_s=it.file_path}}, {_S("'"), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("}"), 0, {.d_c=0}},
+	}));
+	builtin__string_free(&indents);
+	return res;
+}
+
+string indent_toml__token__Pos_str(toml__token__Pos it, int indent_count) {
+	string indents = builtin__string_repeat(_S("    "), indent_count);
+	string res = builtin__str_intp( 19, _MOV((StrIntpData[]){
+		{_S("token.Pos{\n"), 0, {.d_c=0}},
+		{_SLIT0, 0xfe10, {.d_s=indents}}, {_S("    len: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.len}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    line_nr: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.line_nr}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    pos: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.pos}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("    col: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.col}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("}"), 0, {.d_c=0}},
+	}));
+	builtin__string_free(&indents);
+	return res;
+}
+
 string indent_net__TcpSocket_str(net__TcpSocket it, int indent_count) {
 	string indents = builtin__string_repeat(_S("    "), indent_count);
 	string _t1 = indent_net__Socket_str(it.Socket, indent_count + 1);
@@ -10332,6 +12315,64 @@ string indent_net__TcpSocket_str(net__TcpSocket it, int indent_count) {
 	return res;
 }
 
+static string indent_toml__Any_str(toml__Any x, int indent_count) {
+	switch(x._typ) {
+		case 130: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = toml__Date_str(*(toml__Date*)x._toml__Date)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 132: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = toml__DateTime_str(*(toml__DateTime*)x._toml__DateTime)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 129: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = indent_toml__Null_str(*(toml__Null*)x._toml__Null, indent_count)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 131: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = toml__Time_str(*(toml__Time*)x._toml__Time)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 128: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = indent_Array_toml__Any_str(*(Array_toml__Any*)x._Array_toml__Any, indent_count)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 19: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = builtin__bool_str(*(bool*)x._bool)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 16: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = builtin__f32_str(*(f32*)x._f32)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 17: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = builtin__f64_str(*(f64*)x._f64)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 9: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = builtin__i64_str(*(i64*)x._i64)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 8: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = builtin__int_str(*(int*)x._int)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 127: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = indent_Map_string_toml__Any_str(*(Map_string_toml__Any*)x._Map_string_toml__Any, indent_count)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		case 21: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any('"), 0xfe10, {.d_s = builtin__string_str(*(string*)x._string)}},
+				{_S("')"), 0, {.d_c = 0 }}
+			}));
+		case 14: return builtin__str_intp(2, _MOV((StrIntpData[]){
+				{_S("toml.Any("), 0xfe10, {.d_s = builtin__u64_str(*(u64*)x._u64)}},
+				{_S(")"), 0, {.d_c = 0 }}
+			}));
+		default: return _S("unknown sum type value");
+	}
+}
+
 string indent_net__Socket_str(net__Socket it, int indent_count) {
 	string indents = builtin__string_repeat(_S("    "), indent_count);
 	string res = builtin__str_intp( 7, _MOV((StrIntpData[]){
@@ -10341,6 +12382,286 @@ string indent_net__Socket_str(net__Socket it, int indent_count) {
 	}));
 	builtin__string_free(&indents);
 	return res;
+}
+
+string indent_toml__Null_str(toml__Null it, int indent_count) {
+	return _S("toml.Null{}");
+}
+
+x__json2__Any Array_x__json2__Any_to_sumtype_x__json2__Any(Array_x__json2__Any* x, bool is_mut) {
+	Array_x__json2__Any* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Array_x__json2__Any)); }
+	return (x__json2__Any){ ._Array_x__json2__Any = ptr, ._typ = 298};
+}
+
+x__json2__Any bool_to_sumtype_x__json2__Any(bool* x, bool is_mut) {
+	bool* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(bool)); }
+	return (x__json2__Any){ ._bool = ptr, ._typ = 19};
+}
+
+x__json2__Any f64_to_sumtype_x__json2__Any(f64* x, bool is_mut) {
+	f64* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(f64)); }
+	return (x__json2__Any){ ._f64 = ptr, ._typ = 17};
+}
+
+x__json2__Any f32_to_sumtype_x__json2__Any(f32* x, bool is_mut) {
+	f32* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(f32)); }
+	return (x__json2__Any){ ._f32 = ptr, ._typ = 16};
+}
+
+x__json2__Any i64_to_sumtype_x__json2__Any(i64* x, bool is_mut) {
+	i64* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(i64)); }
+	return (x__json2__Any){ ._i64 = ptr, ._typ = 9};
+}
+
+x__json2__Any int_to_sumtype_x__json2__Any(int* x, bool is_mut) {
+	int* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(int)); }
+	return (x__json2__Any){ ._int = ptr, ._typ = 8};
+}
+
+x__json2__Any i32_to_sumtype_x__json2__Any(i32* x, bool is_mut) {
+	i32* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(i32)); }
+	return (x__json2__Any){ ._i32 = ptr, ._typ = 7};
+}
+
+x__json2__Any i16_to_sumtype_x__json2__Any(i16* x, bool is_mut) {
+	i16* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(i16)); }
+	return (x__json2__Any){ ._i16 = ptr, ._typ = 6};
+}
+
+x__json2__Any i8_to_sumtype_x__json2__Any(i8* x, bool is_mut) {
+	i8* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(i8)); }
+	return (x__json2__Any){ ._i8 = ptr, ._typ = 5};
+}
+
+x__json2__Any Map_string_x__json2__Any_to_sumtype_x__json2__Any(Map_string_x__json2__Any* x, bool is_mut) {
+	Map_string_x__json2__Any* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Map_string_x__json2__Any)); }
+	return (x__json2__Any){ ._Map_string_x__json2__Any = ptr, ._typ = 297};
+}
+
+x__json2__Any string_to_sumtype_x__json2__Any(string* x, bool is_mut) {
+	string* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(string)); }
+	return (x__json2__Any){ ._string = ptr, ._typ = 21};
+}
+
+x__json2__Any time__Time_to_sumtype_x__json2__Any(time__Time* x, bool is_mut) {
+	time__Time* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(time__Time)); }
+	return (x__json2__Any){ ._time__Time = ptr, ._typ = 359};
+}
+
+x__json2__Any u64_to_sumtype_x__json2__Any(u64* x, bool is_mut) {
+	u64* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(u64)); }
+	return (x__json2__Any){ ._u64 = ptr, ._typ = 14};
+}
+
+x__json2__Any u32_to_sumtype_x__json2__Any(u32* x, bool is_mut) {
+	u32* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(u32)); }
+	return (x__json2__Any){ ._u32 = ptr, ._typ = 13};
+}
+
+x__json2__Any u16_to_sumtype_x__json2__Any(u16* x, bool is_mut) {
+	u16* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(u16)); }
+	return (x__json2__Any){ ._u16 = ptr, ._typ = 12};
+}
+
+x__json2__Any u8_to_sumtype_x__json2__Any(u8* x, bool is_mut) {
+	u8* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(u8)); }
+	return (x__json2__Any){ ._u8 = ptr, ._typ = 11};
+}
+
+x__json2__Any x__json2__Null_to_sumtype_x__json2__Any(x__json2__Null* x, bool is_mut) {
+	x__json2__Null* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(x__json2__Null)); }
+	return (x__json2__Any){ ._x__json2__Null = ptr, ._typ = 296};
+}
+
+toml__ast__Value Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(Map_string_toml__ast__Value* x, bool is_mut) {
+	Map_string_toml__ast__Value* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Map_string_toml__ast__Value)); }
+	return (toml__ast__Value){ ._Map_string_toml__ast__Value = ptr, ._typ = 287};
+}
+
+toml__ast__Value toml__ast__Bool_to_sumtype_toml__ast__Value(toml__ast__Bool* x, bool is_mut) {
+	toml__ast__Bool* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Bool)); }
+	return (toml__ast__Value){ ._toml__ast__Bool = ptr, ._typ = 293};
+}
+
+toml__ast__Value Array_toml__ast__Value_to_sumtype_toml__ast__Value(Array_toml__ast__Value* x, bool is_mut) {
+	Array_toml__ast__Value* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Array_toml__ast__Value)); }
+	return (toml__ast__Value){ ._Array_toml__ast__Value = ptr, ._typ = 286};
+}
+
+toml__ast__Value toml__ast__Null_to_sumtype_toml__ast__Value(toml__ast__Null* x, bool is_mut) {
+	toml__ast__Null* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Null)); }
+	return (toml__ast__Value){ ._toml__ast__Null = ptr, ._typ = 285};
+}
+
+toml__ast__Value toml__ast__Quoted_to_sumtype_toml__ast__Value(toml__ast__Quoted* x, bool is_mut) {
+	toml__ast__Quoted* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Quoted)); }
+	return (toml__ast__Value){ ._toml__ast__Quoted = ptr, ._typ = 291};
+}
+
+toml__ast__Key toml__ast__Null_to_sumtype_toml__ast__Key(toml__ast__Null* x, bool is_mut) {
+	toml__ast__Null* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Null)); }
+	return (toml__ast__Key){ ._toml__ast__Null = ptr, ._typ = 285, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Null, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Null, pos))};
+}
+
+toml__ast__Key toml__ast__Bare_to_sumtype_toml__ast__Key(toml__ast__Bare* x, bool is_mut) {
+	toml__ast__Bare* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Bare)); }
+	return (toml__ast__Key){ ._toml__ast__Bare = ptr, ._typ = 455, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Bare, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Bare, pos))};
+}
+
+toml__ast__Key toml__ast__Number_to_sumtype_toml__ast__Key(toml__ast__Number* x, bool is_mut) {
+	toml__ast__Number* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Number)); }
+	return (toml__ast__Key){ ._toml__ast__Number = ptr, ._typ = 292, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Number, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Number, pos))};
+}
+
+toml__ast__Key toml__ast__Bool_to_sumtype_toml__ast__Key(toml__ast__Bool* x, bool is_mut) {
+	toml__ast__Bool* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Bool)); }
+	return (toml__ast__Key){ ._toml__ast__Bool = ptr, ._typ = 293, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Bool, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Bool, pos))};
+}
+
+toml__ast__Key toml__ast__Quoted_to_sumtype_toml__ast__Key(toml__ast__Quoted* x, bool is_mut) {
+	toml__ast__Quoted* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Quoted)); }
+	return (toml__ast__Key){ ._toml__ast__Quoted = ptr, ._typ = 291, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Quoted, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Quoted, pos))};
+}
+
+toml__ast__Value toml__ast__Date_to_sumtype_toml__ast__Value(toml__ast__Date* x, bool is_mut) {
+	toml__ast__Date* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Date)); }
+	return (toml__ast__Value){ ._toml__ast__Date = ptr, ._typ = 288};
+}
+
+toml__ast__Value toml__ast__Time_to_sumtype_toml__ast__Value(toml__ast__Time* x, bool is_mut) {
+	toml__ast__Time* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Time)); }
+	return (toml__ast__Value){ ._toml__ast__Time = ptr, ._typ = 289};
+}
+
+toml__ast__Value toml__ast__DateTime_to_sumtype_toml__ast__Value(toml__ast__DateTime* x, bool is_mut) {
+	toml__ast__DateTime* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__DateTime)); }
+	return (toml__ast__Value){ ._toml__ast__DateTime = ptr, ._typ = 290};
+}
+
+toml__ast__Value toml__ast__Number_to_sumtype_toml__ast__Value(toml__ast__Number* x, bool is_mut) {
+	toml__ast__Number* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Number)); }
+	return (toml__ast__Value){ ._toml__ast__Number = ptr, ._typ = 292};
+}
+
+toml__ast__DateTimeType toml__ast__Date_to_sumtype_toml__ast__DateTimeType(toml__ast__Date* x, bool is_mut) {
+	toml__ast__Date* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Date)); }
+	return (toml__ast__DateTimeType){ ._toml__ast__Date = ptr, ._typ = 288, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Date, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Date, pos))};
+}
+
+toml__ast__DateTimeType toml__ast__DateTime_to_sumtype_toml__ast__DateTimeType(toml__ast__DateTime* x, bool is_mut) {
+	toml__ast__DateTime* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__DateTime)); }
+	return (toml__ast__DateTimeType){ ._toml__ast__DateTime = ptr, ._typ = 290, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__DateTime, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__DateTime, pos))};
+}
+
+toml__ast__DateTimeType toml__ast__Time_to_sumtype_toml__ast__DateTimeType(toml__ast__Time* x, bool is_mut) {
+	toml__ast__Time* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__ast__Time)); }
+	return (toml__ast__DateTimeType){ ._toml__ast__Time = ptr, ._typ = 289, .text = (string*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Time, text)), .pos = (toml__token__Pos*)((char*)ptr + __offsetof_ptr(ptr, toml__ast__Time, pos))};
+}
+
+toml__Any Map_string_toml__Any_to_sumtype_toml__Any(Map_string_toml__Any* x, bool is_mut) {
+	Map_string_toml__Any* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Map_string_toml__Any)); }
+	return (toml__Any){ ._Map_string_toml__Any = ptr, ._typ = 127};
+}
+
+toml__Any Array_toml__Any_to_sumtype_toml__Any(Array_toml__Any* x, bool is_mut) {
+	Array_toml__Any* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(Array_toml__Any)); }
+	return (toml__Any){ ._Array_toml__Any = ptr, ._typ = 128};
+}
+
+toml__Any toml__Null_to_sumtype_toml__Any(toml__Null* x, bool is_mut) {
+	toml__Null* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__Null)); }
+	return (toml__Any){ ._toml__Null = ptr, ._typ = 129};
+}
+
+toml__Any toml__Date_to_sumtype_toml__Any(toml__Date* x, bool is_mut) {
+	toml__Date* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__Date)); }
+	return (toml__Any){ ._toml__Date = ptr, ._typ = 130};
+}
+
+toml__Any toml__Time_to_sumtype_toml__Any(toml__Time* x, bool is_mut) {
+	toml__Time* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__Time)); }
+	return (toml__Any){ ._toml__Time = ptr, ._typ = 131};
+}
+
+toml__Any toml__DateTime_to_sumtype_toml__Any(toml__DateTime* x, bool is_mut) {
+	toml__DateTime* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__DateTime)); }
+	return (toml__Any){ ._toml__DateTime = ptr, ._typ = 132};
+}
+
+toml__Any string_to_sumtype_toml__Any(string* x, bool is_mut) {
+	string* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(string)); }
+	return (toml__Any){ ._string = ptr, ._typ = 21};
+}
+
+toml__Any u64_to_sumtype_toml__Any(u64* x, bool is_mut) {
+	u64* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(u64)); }
+	return (toml__Any){ ._u64 = ptr, ._typ = 14};
+}
+
+toml__Any f64_to_sumtype_toml__Any(f64* x, bool is_mut) {
+	f64* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(f64)); }
+	return (toml__Any){ ._f64 = ptr, ._typ = 17};
+}
+
+toml__Any i64_to_sumtype_toml__Any(i64* x, bool is_mut) {
+	i64* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(i64)); }
+	return (toml__Any){ ._i64 = ptr, ._typ = 9};
+}
+
+toml__Any bool_to_sumtype_toml__Any(bool* x, bool is_mut) {
+	bool* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(bool)); }
+	return (toml__Any){ ._bool = ptr, ._typ = 19};
+}
+
+toml__to__DocOrAny toml__Any_to_sumtype_toml__to__DocOrAny(toml__Any* x, bool is_mut) {
+	toml__Any* ptr = x;
+	if (!is_mut) { ptr = builtin__memdup(x, sizeof(toml__Any)); }
+	return (toml__to__DocOrAny){ ._toml__Any = ptr, ._typ = 126};
 }
 
 static bool Array_u8_contains(Array_u8 a, u8 v) {
@@ -10355,6 +12676,33 @@ static bool Array_u8_contains(Array_u8 a, u8 v) {
 static bool Array_string_contains(Array_string a, string v) {
 	for (int i = 0; i < a.len; ++i) {
 		if (builtin__fast_string_eq(((string*)a.data)[i], v)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool Array_fixed_rune_4_contains(Array_fixed_rune_4 a, rune v) {
+	for (int i = 0; i < 4; ++i) {
+		if (a[i] == v) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool Array_rune_contains(Array_rune a, rune v) {
+	for (int i = 0; i < a.len; ++i) {
+		if (((rune*)a.data)[i] == v) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool Array_toml__token__Kind_contains(Array_toml__token__Kind a, toml__token__Kind v) {
+	for (int i = 0; i < a.len; ++i) {
+		if (((toml__token__Kind*)a.data)[i] == v) {
 			return true;
 		}
 	}
@@ -10380,6 +12728,16 @@ static int Array_string_index(Array_string a, string v) {
 	return -1;
 }
 
+static int Array_toml__parser__DottedKey_index(Array_toml__parser__DottedKey a, toml__parser__DottedKey v) {
+	toml__parser__DottedKey* pelem = a.data;
+	for (int i = 0; i < a.len; ++i, ++pelem) {
+		if (toml__parser__DottedKey_alias_eq(*pelem, v)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 inline bool Array_rune_arr_eq(Array_rune a, Array_rune b) {
 	if (a.len != b.len) {
 		return false;
@@ -10390,6 +12748,22 @@ inline bool Array_rune_arr_eq(Array_rune a, Array_rune b) {
 		}
 	}
 	return true;
+}
+
+inline bool Array_string_arr_eq(Array_string a, Array_string b) {
+	if (a.len != b.len) {
+		return false;
+	}
+	for (int i = 0; i < a.len; ++i) {
+		if (!builtin__string__eq(*((string*)((byte*)a.data+(i*a.element_size))), *((string*)((byte*)b.data+(i*b.element_size))))) {
+			return false;
+		}
+	}
+	return true;
+}
+
+inline bool toml__parser__DottedKey_alias_eq(toml__parser__DottedKey a, toml__parser__DottedKey b) {
+	return Array_string_arr_eq(a, b);
 }
 
 
@@ -10411,7 +12785,7 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 	builtin___v_free(arg);
 	return ret_ptr;
 }
-void* anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731 *arg) {
+void* anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731 *arg) {
 	arg->fn(arg->arg1, arg->arg2);
 	builtin___v_free(arg);
 	return 0;
@@ -10429,7 +12803,7 @@ void* net__http__HandlerWorker_process_requests_thread_wrapper(thread_arg_net__h
 }
 
 // V anon functions:
-VV_LOC void anon_fn_3035ace31b993c50_82_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
+VV_LOC void anon_fn_3035ace31b993c50_83_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
 	_result_vphp__DynVal _t1 = vphp__decode_val(v);
 	if (_t1.is_error) {
 		*(vphp__DynVal*) _t1.data = vphp__dyn_null();
@@ -10439,32 +12813,32 @@ VV_LOC void anon_fn_3035ace31b993c50_82_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__DynVal*)builtin__map_get_and_set((map*)m, &(string[]){vphp__ZVal_to_string(key)}, &(vphp__DynVal[]){ (vphp__DynVal){.type = 0,.data = (vphp__DynValData){.b = 0,.i = 0,.f = 0,.s = (string){.str=(byteptr)"", .is_lit=1},.ptr = 0,},.list = builtin____new_array(0, 0, sizeof(vphp__DynVal)),.map = builtin__new_map(sizeof(string), sizeof(vphp__DynVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),} })) = decoded;
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_12188(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_12188(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_13585(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_13585(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_14057(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_14057(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_14617(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_14617(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_map_string_string_33384(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_map_string_string_33384(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
 	builtin__map_set(m, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
-	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
+	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
 	f();
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+VV_LOC void anon_fn_8e93695b6bd488a3_44_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
 	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
 	if ((key_name).len == 0) {
 		return;
@@ -10472,7 +12846,7 @@ VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){key_name}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+VV_LOC void anon_fn_8e93695b6bd488a3_44_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
 	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
 	if ((key_name).len == 0) {
 		return;
@@ -10480,17 +12854,17 @@ VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){key_name}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
 }
 
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021(void) {
-	struct _V_anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282(void) {
+	struct _V_anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61767(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_45_vphp__zval_vphp__zval_mut_map_string_string_63028(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
-VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967(main__VSlimRequest _v_toheap_r) {
-	struct _V_anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967(main__VSlimRequest _v_toheap_r) {
+	struct _V_anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	main__VSlimRequest* r = HEAP(main__VSlimRequest, _v_toheap_r);
 	return main__VSlimRuntime_run_middleware(_V_closure_ctx->app, (int)(_V_closure_ctx->index + 1), (*(r)));
 }
@@ -10510,6 +12884,7 @@ static char * v_typeof_interface_IError(u32 sidx) {
 	if (sidx == _IError_os__FileNotOpenedError_index) return "os.FileNotOpenedError";
 	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return "os.SizeOfTypeIs0Error";
 	if (sidx == _IError_os__ExecutableNotFoundError_index) return "os.ExecutableNotFoundError";
+	if (sidx == _IError_x__json2__JsonDecodeError_index) return "x.json2.JsonDecodeError";
 	if (sidx == _IError_net__http__HeaderKeyError_index) return "net.http.HeaderKeyError";
 	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return "net.http.UnexpectedExtraAttributeError";
 	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return "net.http.MultiplePathAttributesError";
@@ -10521,22 +12896,62 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_voidptr_index) return 2;
 	if (sidx == _IError_Error_index) return 63;
 	if (sidx == _IError_MessageError_index) return 64;
-	if (sidx == _IError_time__TimeParseError_index) return 312;
-	if (sidx == _IError_io__Eof_index) return 477;
-	if (sidx == _IError_io__NotExpected_index) return 478;
-	if (sidx == _IError_os__Eof_index) return 245;
-	if (sidx == _IError_os__NotExpected_index) return 246;
-	if (sidx == _IError_os__FileNotOpenedError_index) return 248;
-	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 249;
-	if (sidx == _IError_os__ExecutableNotFoundError_index) return 266;
-	if (sidx == _IError_net__http__HeaderKeyError_index) return 341;
-	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 357;
-	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 358;
+	if (sidx == _IError_time__TimeParseError_index) return 368;
+	if (sidx == _IError_io__Eof_index) return 593;
+	if (sidx == _IError_io__NotExpected_index) return 594;
+	if (sidx == _IError_os__Eof_index) return 301;
+	if (sidx == _IError_os__NotExpected_index) return 302;
+	if (sidx == _IError_os__FileNotOpenedError_index) return 304;
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 305;
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return 322;
+	if (sidx == _IError_x__json2__JsonDecodeError_index) return 505;
+	if (sidx == _IError_net__http__HeaderKeyError_index) return 397;
+	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 413;
+	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 414;
 	return 30;
+}
+char * v_typeof_sumtype_toml__Any(u32 sidx) {
+	switch(sidx) {
+		case 126: return "toml.Any";
+		case 130: return "toml.Date";
+		case 132: return "toml.DateTime";
+		case 129: return "toml.Null";
+		case 131: return "toml.Time";
+		case 128: return "[]toml.Any";
+		case 19: return "bool";
+		case 16: return "f32";
+		case 17: return "f64";
+		case 9: return "i64";
+		case 8: return "int";
+		case 127: return "map[string]toml.Any";
+		case 21: return "string";
+		case 14: return "u64";
+		default: return "unknown toml.Any";
+	}
+}
+
+u32 v_typeof_sumtype_idx_toml__Any(u32 sidx) {
+	switch(sidx) {
+		case 126: return 126;
+		case 130: return 130;
+		case 132: return 132;
+		case 129: return 129;
+		case 131: return 131;
+		case 128: return 128;
+		case 19: return 19;
+		case 16: return 16;
+		case 17: return 17;
+		case 9: return 9;
+		case 8: return 8;
+		case 127: return 127;
+		case 21: return 21;
+		case 14: return 14;
+		default: return 126;
+	}
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 208: return "vphp.TaskResult";
+		case 216: return "vphp.TaskResult";
 		case 21: return "string";
 		case 8: return "int";
 		case 9: return "i64";
@@ -10544,15 +12959,15 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 19: return "bool";
 		case 37: return "[]string";
 		case 47: return "[]int";
-		case 206: return "[]i64";
-		case 207: return "[]f64";
+		case 214: return "[]i64";
+		case 215: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
 
 u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 208: return 208;
+		case 216: return 216;
 		case 21: return 21;
 		case 8: return 8;
 		case 9: return 9;
@@ -10560,9 +12975,9 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 19: return 19;
 		case 37: return 37;
 		case 47: return 47;
-		case 206: return 206;
-		case 207: return 207;
-		default: return 208;
+		case 214: return 214;
+		case 215: return 215;
+		default: return 216;
 	}
 }
 static char * v_typeof_interface_vphp__ITask(u32 sidx) {
@@ -10570,7 +12985,102 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	return 211;
+	return 219;
+}
+char * v_typeof_sumtype_toml__ast__Value(u32 sidx) {
+	switch(sidx) {
+		case 284: return "toml.ast.Value";
+		case 293: return "toml.ast.Bool";
+		case 288: return "toml.ast.Date";
+		case 290: return "toml.ast.DateTime";
+		case 285: return "toml.ast.Null";
+		case 292: return "toml.ast.Number";
+		case 291: return "toml.ast.Quoted";
+		case 289: return "toml.ast.Time";
+		case 286: return "[]toml.ast.Value";
+		case 287: return "map[string]toml.ast.Value";
+		default: return "unknown toml.ast.Value";
+	}
+}
+
+u32 v_typeof_sumtype_idx_toml__ast__Value(u32 sidx) {
+	switch(sidx) {
+		case 284: return 284;
+		case 293: return 293;
+		case 288: return 288;
+		case 290: return 290;
+		case 285: return 285;
+		case 292: return 292;
+		case 291: return 291;
+		case 289: return 289;
+		case 286: return 286;
+		case 287: return 287;
+		default: return 284;
+	}
+}
+char * v_typeof_sumtype_toml__to__DocOrAny(u32 sidx) {
+	switch(sidx) {
+		case 294: return "toml.to.DocOrAny";
+		case 126: return "toml.Any";
+		case 280: return "toml.Doc";
+		default: return "unknown toml.to.DocOrAny";
+	}
+}
+
+u32 v_typeof_sumtype_idx_toml__to__DocOrAny(u32 sidx) {
+	switch(sidx) {
+		case 294: return 294;
+		case 126: return 126;
+		case 280: return 280;
+		default: return 294;
+	}
+}
+char * v_typeof_sumtype_x__json2__Any(u32 sidx) {
+	switch(sidx) {
+		case 295: return "x.json2.Any";
+		case 298: return "[]x.json2.Any";
+		case 19: return "bool";
+		case 17: return "f64";
+		case 16: return "f32";
+		case 9: return "i64";
+		case 8: return "int";
+		case 7: return "i32";
+		case 6: return "i16";
+		case 5: return "i8";
+		case 297: return "map[string]x.json2.Any";
+		case 21: return "string";
+		case 359: return "time.Time";
+		case 14: return "u64";
+		case 13: return "u32";
+		case 12: return "u16";
+		case 11: return "u8";
+		case 296: return "x.json2.Null";
+		default: return "unknown x.json2.Any";
+	}
+}
+
+u32 v_typeof_sumtype_idx_x__json2__Any(u32 sidx) {
+	switch(sidx) {
+		case 295: return 295;
+		case 298: return 298;
+		case 19: return 19;
+		case 17: return 17;
+		case 16: return 16;
+		case 9: return 9;
+		case 8: return 8;
+		case 7: return 7;
+		case 6: return 6;
+		case 5: return 5;
+		case 297: return 297;
+		case 21: return 21;
+		case 359: return 359;
+		case 14: return 14;
+		case 13: return 13;
+		case 12: return 12;
+		case 11: return 11;
+		case 296: return 296;
+		default: return 295;
+	}
 }
 static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
 	if (sidx == _net__http__Downloader_voidptr_index) return "voidptr";
@@ -10581,9 +13091,9 @@ static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
 
 u32 v_typeof_interface_idx_net__http__Downloader(u32 sidx) {
 	if (sidx == _net__http__Downloader_voidptr_index) return 2;
-	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 329;
-	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 331;
-	return 327;
+	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 385;
+	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 387;
+	return 383;
 }
 static char * v_typeof_interface_net__http__Handler(u32 sidx) {
 	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return "net.http.DebugHandler";
@@ -10592,9 +13102,115 @@ static char * v_typeof_interface_net__http__Handler(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__http__Handler(u32 sidx) {
-	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 368;
+	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 424;
 	if (sidx == _net__http__Handler_voidptr_index) return 2;
-	return 367;
+	return 423;
+}
+char * v_typeof_sumtype_toml__ast__Key(u32 sidx) {
+	switch(sidx) {
+		case 456: return "toml.ast.Key";
+		case 455: return "toml.ast.Bare";
+		case 293: return "toml.ast.Bool";
+		case 285: return "toml.ast.Null";
+		case 292: return "toml.ast.Number";
+		case 291: return "toml.ast.Quoted";
+		default: return "unknown toml.ast.Key";
+	}
+}
+
+u32 v_typeof_sumtype_idx_toml__ast__Key(u32 sidx) {
+	switch(sidx) {
+		case 456: return 456;
+		case 455: return 455;
+		case 293: return 293;
+		case 285: return 285;
+		case 292: return 292;
+		case 291: return 291;
+		default: return 456;
+	}
+}
+char * v_typeof_sumtype_toml__ast__DateTimeType(u32 sidx) {
+	switch(sidx) {
+		case 457: return "toml.ast.DateTimeType";
+		case 288: return "toml.ast.Date";
+		case 290: return "toml.ast.DateTime";
+		case 289: return "toml.ast.Time";
+		default: return "unknown toml.ast.DateTimeType";
+	}
+}
+
+u32 v_typeof_sumtype_idx_toml__ast__DateTimeType(u32 sidx) {
+	switch(sidx) {
+		case 457: return 457;
+		case 288: return 288;
+		case 290: return 290;
+		case 289: return 289;
+		default: return 457;
+	}
+}
+static char * v_typeof_interface_x__json2__JsonEncoder(u32 sidx) {
+	if (sidx == _x__json2__JsonEncoder_time__Time_index) return "time.Time";
+	if (sidx == _x__json2__JsonEncoder_voidptr_index) return "voidptr";
+	if (sidx == _x__json2__JsonEncoder_x__json2__Null_index) return "x.json2.Null";
+	return "unknown x.json2.JsonEncoder";
+}
+
+u32 v_typeof_interface_idx_x__json2__JsonEncoder(u32 sidx) {
+	if (sidx == _x__json2__JsonEncoder_time__Time_index) return 359;
+	if (sidx == _x__json2__JsonEncoder_voidptr_index) return 2;
+	if (sidx == _x__json2__JsonEncoder_x__json2__Null_index) return 296;
+	return 492;
+}
+static char * v_typeof_interface_x__json2__Encodable(u32 sidx) {
+	if (sidx == _x__json2__Encodable_x__json2__Any_index) return "x.json2.Any";
+	if (sidx == _x__json2__Encodable_voidptr_index) return "voidptr";
+	return "unknown x.json2.Encodable";
+}
+
+u32 v_typeof_interface_idx_x__json2__Encodable(u32 sidx) {
+	if (sidx == _x__json2__Encodable_x__json2__Any_index) return 295;
+	if (sidx == _x__json2__Encodable_voidptr_index) return 2;
+	return 493;
+}
+static char * v_typeof_interface_x__json2__StringDecoder(u32 sidx) {
+	if (sidx == _x__json2__StringDecoder_time__Time_index) return "time.Time";
+	if (sidx == _x__json2__StringDecoder_voidptr_index) return "voidptr";
+	return "unknown x.json2.StringDecoder";
+}
+
+u32 v_typeof_interface_idx_x__json2__StringDecoder(u32 sidx) {
+	if (sidx == _x__json2__StringDecoder_time__Time_index) return 359;
+	if (sidx == _x__json2__StringDecoder_voidptr_index) return 2;
+	return 494;
+}
+static char * v_typeof_interface_x__json2__NumberDecoder(u32 sidx) {
+	if (sidx == _x__json2__NumberDecoder_time__Time_index) return "time.Time";
+	if (sidx == _x__json2__NumberDecoder_voidptr_index) return "voidptr";
+	return "unknown x.json2.NumberDecoder";
+}
+
+u32 v_typeof_interface_idx_x__json2__NumberDecoder(u32 sidx) {
+	if (sidx == _x__json2__NumberDecoder_time__Time_index) return 359;
+	if (sidx == _x__json2__NumberDecoder_voidptr_index) return 2;
+	return 495;
+}
+static char * v_typeof_interface_x__json2__BooleanDecoder(u32 sidx) {
+	return "unknown x.json2.BooleanDecoder";
+}
+
+u32 v_typeof_interface_idx_x__json2__BooleanDecoder(u32 sidx) {
+	return 496;
+}
+static char * v_typeof_interface_x__json2__NullDecoder(u32 sidx) {
+	if (sidx == _x__json2__NullDecoder_x__json2__Null_index) return "x.json2.Null";
+	if (sidx == _x__json2__NullDecoder_voidptr_index) return "voidptr";
+	return "unknown x.json2.NullDecoder";
+}
+
+u32 v_typeof_interface_idx_x__json2__NullDecoder(u32 sidx) {
+	if (sidx == _x__json2__NullDecoder_x__json2__Null_index) return 296;
+	if (sidx == _x__json2__NullDecoder_voidptr_index) return 2;
+	return 497;
 }
 static char * v_typeof_interface_net__Dialer(u32 sidx) {
 	if (sidx == _net__Dialer_net__TCPDialer_index) return "net.TCPDialer";
@@ -10605,11 +13221,11 @@ static char * v_typeof_interface_net__Dialer(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__Dialer(u32 sidx) {
-	if (sidx == _net__Dialer_net__TCPDialer_index) return 466;
+	if (sidx == _net__Dialer_net__TCPDialer_index) return 582;
 	if (sidx == _net__Dialer_voidptr_index) return 2;
-	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 404;
-	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 473;
-	return 405;
+	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 522;
+	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 589;
+	return 523;
 }
 static char * v_typeof_interface_net__Connection(u32 sidx) {
 	if (sidx == _net__Connection_net__TcpConn_index) return "net.TcpConn";
@@ -10620,11 +13236,11 @@ static char * v_typeof_interface_net__Connection(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__Connection(u32 sidx) {
-	if (sidx == _net__Connection_net__TcpConn_index) return 353;
+	if (sidx == _net__Connection_net__TcpConn_index) return 409;
 	if (sidx == _net__Connection_voidptr_index) return 2;
-	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 321;
-	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 407;
-	return 406;
+	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 377;
+	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 525;
+	return 524;
 }
 static char * v_typeof_interface_io__Reader(u32 sidx) {
 	if (sidx == _io__Reader_net__TcpConn_index) return "net.TcpConn";
@@ -10639,15 +13255,15 @@ static char * v_typeof_interface_io__Reader(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_io__Reader(u32 sidx) {
-	if (sidx == _io__Reader_net__TcpConn_index) return 353;
+	if (sidx == _io__Reader_net__TcpConn_index) return 409;
 	if (sidx == _io__Reader_voidptr_index) return 2;
-	if (sidx == _io__Reader_os__File_index) return 247;
-	if (sidx == _io__Reader_os__Pipe_index) return 276;
-	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 321;
-	if (sidx == _io__Reader_io__BufferedReader_index) return 355;
-	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 407;
-	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 488;
-	return 474;
+	if (sidx == _io__Reader_os__File_index) return 303;
+	if (sidx == _io__Reader_os__Pipe_index) return 332;
+	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 377;
+	if (sidx == _io__Reader_io__BufferedReader_index) return 411;
+	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 525;
+	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 604;
+	return 590;
 }
 static char * v_typeof_interface_io__Writer(u32 sidx) {
 	if (sidx == _io__Writer_io__MultiWriter_index) return "io.MultiWriter";
@@ -10665,18 +13281,18 @@ static char * v_typeof_interface_io__Writer(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_io__Writer(u32 sidx) {
-	if (sidx == _io__Writer_io__MultiWriter_index) return 484;
+	if (sidx == _io__Writer_io__MultiWriter_index) return 600;
 	if (sidx == _io__Writer_voidptr_index) return 2;
-	if (sidx == _io__Writer_os__File_index) return 247;
-	if (sidx == _io__Writer_os__Pipe_index) return 276;
-	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 321;
-	if (sidx == _io__Writer_net__TcpConn_index) return 353;
-	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 407;
-	if (sidx == _io__Writer_net__RawConn_index) return 462;
-	if (sidx == _io__Writer_net__UdpConn_index) return 471;
-	if (sidx == _io__Writer_io__BufferedWriter_index) return 480;
-	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 488;
-	return 479;
+	if (sidx == _io__Writer_os__File_index) return 303;
+	if (sidx == _io__Writer_os__Pipe_index) return 332;
+	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 377;
+	if (sidx == _io__Writer_net__TcpConn_index) return 409;
+	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 525;
+	if (sidx == _io__Writer_net__RawConn_index) return 578;
+	if (sidx == _io__Writer_net__UdpConn_index) return 587;
+	if (sidx == _io__Writer_io__BufferedWriter_index) return 596;
+	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 604;
+	return 595;
 }
 static char * v_typeof_interface_rand__PRNG(u32 sidx) {
 	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return "rand.wyrand.WyRandRNG";
@@ -10685,12 +13301,38 @@ static char * v_typeof_interface_rand__PRNG(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_rand__PRNG(u32 sidx) {
-	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 494;
+	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 610;
 	if (sidx == _rand__PRNG_voidptr_index) return 2;
-	return 491;
+	return 607;
+}
+static char * v_typeof_interface_toml__ast__walker__Visitor(u32 sidx) {
+	if (sidx == _toml__ast__walker__Visitor_toml__ast__walker__Inspector_index) return "toml.ast.walker.Inspector";
+	if (sidx == _toml__ast__walker__Visitor_voidptr_index) return "voidptr";
+	if (sidx == _toml__ast__walker__Visitor_toml__checker__Checker_index) return "toml.checker.Checker";
+	return "unknown toml.ast.walker.Visitor";
+}
+
+u32 v_typeof_interface_idx_toml__ast__walker__Visitor(u32 sidx) {
+	if (sidx == _toml__ast__walker__Visitor_toml__ast__walker__Inspector_index) return 670;
+	if (sidx == _toml__ast__walker__Visitor_voidptr_index) return 2;
+	if (sidx == _toml__ast__walker__Visitor_toml__checker__Checker_index) return 468;
+	return 667;
+}
+static char * v_typeof_interface_toml__ast__walker__Modifier(u32 sidx) {
+	if (sidx == _toml__ast__walker__Modifier_toml__decoder__Decoder_index) return "toml.decoder.Decoder";
+	if (sidx == _toml__ast__walker__Modifier_voidptr_index) return "voidptr";
+	return "unknown toml.ast.walker.Modifier";
+}
+
+u32 v_typeof_interface_idx_toml__ast__walker__Modifier(u32 sidx) {
+	if (sidx == _toml__ast__walker__Modifier_toml__decoder__Decoder_index) return 469;
+	if (sidx == _toml__ast__walker__Modifier_voidptr_index) return 2;
+	return 668;
 }
 // << typeof() support for sum types
 
+	// pointers to common sumtype fields
+	// pointers to common sumtype fields
 strings__Builder strings__new_builder(int initial_size) {
 	strings__Builder res = ((builtin____new_array_with_default(0, initial_size, sizeof(u8), 0)));
 	builtin__ArrayFlags_set(&res.flags, ArrayFlags__noslices);
@@ -16030,8 +18672,14 @@ VV_LOC array builtin____new_array_with_multi_default_noscan(int mylen, int cap, 
 VV_LOC array builtin____new_array_with_array_default_noscan(int mylen, int cap, int elm_size, array val, int depth) {
 	return builtin____new_array_with_array_default(mylen, cap, elm_size, val, depth);
 }
+VV_LOC void builtin__array_insert_noscan(array* a, int i, voidptr val) {
+	builtin__array_insert(a, i, val);
+}
 VV_LOC void builtin__array_prepend_noscan(array* a, voidptr val) {
 	builtin__array_prepend(a, val);
+}
+VV_LOC voidptr builtin__array_pop_noscan(array* a) {
+	return builtin__array_pop(a);
 }
 VV_LOC void builtin__array_push_noscan(array* a, voidptr val) {
 	builtin__array_push(a, val);
@@ -25798,6 +28446,18 @@ _result_string net__http__chunked__decode(string text) {
 	 
 	return _t3;
 }
+inline toml__token__Pos toml__token__Token_pos(toml__token__Token* tok) {
+	return ((toml__token__Pos){.len = tok->len,.line_nr = (int)(tok->line_nr - 1),.pos = tok->pos,.col = (int)(tok->col - 1),});
+}
+inline bool toml__util__is_key_char(u8 c) {
+	return builtin__u8_is_letter(c);
+}
+inline bool toml__util__is_ascii_control_character(u8 byte_char) {
+	return (byte_char >= 0 && byte_char <= 0x1f) || byte_char == 0x7f;
+}
+inline bool toml__util__is_illegal_ascii_control_character(u8 byte_char) {
+	return byte_char != 0x09 && toml__util__is_ascii_control_character(byte_char);
+}
 f32 net__conv__htonf32(f32 host) {
 	#if defined(TARGET_ORDER_IS_LITTLE)
 	{
@@ -25942,6 +28602,20 @@ inline void sync__stdatomic__store_i64(i64* ptr, i64 val) {
 inline i64 sync__stdatomic__load_i64(i64* ptr) {
 	return ((i64)(atomic_load_u64(((voidptr)(ptr)))));
 }
+bool encoding__utf8__validate__utf8_string(string s) {
+	return encoding__utf8__validate__utf8_data(s.str, s.len);
+}
+bool encoding__utf8__validate__utf8_data(u8* data, int len) {
+	int state = 0;
+	for (int i = 0; i < len; i++) {
+		u8 b = data[i];
+		state = _const_encoding__utf8__validate__utf8d[(int)((int)(256 + state) + _const_encoding__utf8__validate__utf8d[b])];
+		if (state == 12) {
+			return false;
+		}
+	}
+	return state == 0;
+}
 vphp__Context vphp__Context__static__new(zend_execute_data* ex, zval* ret) {
 	return ((vphp__Context){.ex = ex,.ret = ret,});
 }
@@ -26040,6 +28714,22 @@ bool vphp__Context_arg_T_bool(vphp__Context ctx, int index) {
 	}
 	
  	return (*(bool*)_t4.data);
+}
+f64 vphp__Context_arg_T_f64(vphp__Context ctx, int index) {
+	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
+	if (!vphp__ZVal_is_valid(val)) {
+		return 0;
+	}
+	#if false
+	{
+	}
+	#endif
+	_result_f64 _t4 = vphp__ZVal_to_v_T_f64(val);
+	if (_t4.is_error) {
+		*(f64*) _t4.data = 0;
+	}
+	
+ 	return (*(f64*)_t4.data);
 }
 vphp__ZVal vphp__Context_arg_val(vphp__Context ctx, int index) {
 	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
@@ -26272,6 +28962,23 @@ void vphp__Context_return_val_T_Array_Map_string_string(vphp__Context ctx, Array
 	
  ;
 }
+void vphp__Context_return_val_T_vphp__ZVal(vphp__Context ctx, vphp__ZVal val) {
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
+	_result_void _t1 = vphp__ZVal_from_v_T_vphp__ZVal(out, val);
+	if (_t1.is_error) {
+		#if true
+		{
+			vphp__Context_return_struct_T_vphp__ZVal(ctx, val);
+		}
+		#else
+		{
+		}
+		#endif
+	;
+	}
+	
+ ;
+}
 void vphp__Context_return_map_T_string(vphp__Context ctx, Map_string_string m) {
 	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	vphp__ZVal_array_init(out);
@@ -26321,6 +29028,80 @@ void vphp__Context_return_object(vphp__Context ctx, Map_string_string props) {
 			vphp_update_property_string(ctx.ret, ((char*)(k.str)), k.len, ((char*)(v.str)));
 		}
 	}
+}
+void vphp__Context_return_struct_T_vphp__ZVal(vphp__Context ctx, vphp__ZVal s) {
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
+	vphp__ZVal_array_init(out);
+	/* $for field in vphp.ZVal.fields */ {
+			FieldData field = {0};
+		/* field 0 : raw */ {
+			field.name = _S("raw");
+			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+			field.typ = 109;	// &C.zval
+			field.unaliased_typ = 109;	// &C.zval
+			field.is_pub = true;
+			field.is_mut = true;
+			field.is_embed = false;
+			field.is_shared = false;
+			field.is_atomic = false;
+			field.is_option = false;
+			field.is_array = false;
+			field.is_map = false;
+			field.is_chan = false;
+			field.is_struct = true;
+			field.is_alias = false;
+			field.is_enum = false;
+			field.indirections = 1;
+			string key = field.name;
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false || false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+		}
+		/* field 1 : owned */ {
+			field.name = _S("owned");
+			field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+			field.typ = 19;	// bool
+			field.unaliased_typ = 19;	// bool
+			field.is_pub = true;
+			field.is_mut = true;
+			field.is_embed = false;
+			field.is_shared = false;
+			field.is_atomic = false;
+			field.is_option = false;
+			field.is_array = false;
+			field.is_map = false;
+			field.is_chan = false;
+			field.is_struct = false;
+			field.is_alias = false;
+			field.is_enum = false;
+			field.indirections = 0;
+			string key = field.name;
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false || false
+			{
+			}
+			#elif true
+			{
+				vphp__ZVal_add_assoc_bool(out, key, s.owned);
+			}
+			#endif
+		}
+	}// $for
 }
 void vphp__return_val_raw_T_string(zval* ret, string val) {
 	{ // Unsafe block
@@ -26794,10 +29575,13 @@ voidptr vphp__generic_new_raw_T_main__VSlimResponse(void) {
 	return ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimResponse)));
 }
 voidptr vphp__generic_new_raw_T_main__VSlimApp(void) {
-	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = ((vphp__PersistentOwnedZVal){.z = ((vphp__ZVal){.raw = 0,.owned = 0,}),}),.error_handler = ((vphp__PersistentOwnedZVal){.z = ((vphp__ZVal){.raw = 0,.owned = 0,}),}),.container_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = 0,.error_response_json = 0,.view_base_path = (string){.str=(byteptr)"", .is_lit=1},.assets_prefix = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimApp)));
+	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = ((vphp__PersistentOwnedZVal){.z = ((vphp__ZVal){.raw = 0,.owned = 0,}),}),.error_handler = ((vphp__PersistentOwnedZVal){.z = ((vphp__ZVal){.raw = 0,.owned = 0,}),}),.container_ref = ((void*)0),.config_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = 0,.error_response_json = 0,.view_base_path = (string){.str=(byteptr)"", .is_lit=1},.assets_prefix = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimApp)));
 }
 voidptr vphp__generic_new_raw_T_main__VSlimView(void) {
 	return ((main__VSlimView*)builtin__memdup(&(main__VSlimView){.base_path = (string){.str=(byteptr)"", .is_lit=1},.assets_prefix = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimView)));
+}
+voidptr vphp__generic_new_raw_T_main__VSlimConfig(void) {
+	return ((main__VSlimConfig*)builtin__memdup(&(main__VSlimConfig){.path = (string){.str=(byteptr)"", .is_lit=1},.loaded = 0,.root = _const_toml__null,}, sizeof(main__VSlimConfig)));
 }
 voidptr vphp__generic_new_raw_T_main__VSlimController(void) {
 	return ((main__VSlimController*)builtin__memdup(&(main__VSlimController){.app_ref = ((void*)0),.view_ref = ((void*)0),}, sizeof(main__VSlimController)));
@@ -26840,6 +29624,12 @@ void vphp__generic_free_raw_T_main__VSlimView(voidptr ptr) {
 		return;
 	}
 	builtin___v_free(((main__VSlimView*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimConfig(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimConfig*)(ptr)));
 }
 void vphp__generic_free_raw_T_main__VSlimController(voidptr ptr) {
 	if (ptr == 0) {
@@ -27025,10 +29815,10 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 47 /* []int */) {
 			vphp__Context_return_val_T_Array_int(ctx, (*results._Array_int));
 		}
-		else if (results._typ == 206 /* []i64 */) {
+		else if (results._typ == 214 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 207 /* []f64 */) {
+		else if (results._typ == 215 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -27095,7 +29885,7 @@ _result_vphp__DynVal vphp__decode_val(vphp__ZVal z) {
 	if (vphp__ZVal_is_array(z)) {
 		Map_string_vphp__DynVal out = builtin__new_map(sizeof(string), sizeof(vphp__DynVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(z, out, (voidptr)		anon_fn_3035ace31b993c50_82_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(z, out, (voidptr)		anon_fn_3035ace31b993c50_83_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018);
 		_result_vphp__DynVal _t6;
 		builtin___result_ok(&(vphp__DynVal[]) { vphp__dyn_map(out) }, (_result*)(&_t6), sizeof(vphp__DynVal));
 		 
@@ -27645,7 +30435,7 @@ Array_string vphp__ZVal_interface_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(interfaces, out, (voidptr)	anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_12188);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(interfaces, out, (voidptr)	anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_12188);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -27694,7 +30484,7 @@ Array_string vphp__ZVal_method_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_13585);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_13585);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -27709,7 +30499,7 @@ Array_string vphp__ZVal_property_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_14057);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_14057);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -27728,7 +30518,7 @@ Array_string vphp__ZVal_const_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_array_string_14617);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_array_string_14617);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -28170,7 +30960,7 @@ _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v) {
 		}
 		Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_map_string_string_33384);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_84_vphp__zval_vphp__zval_mut_map_string_string_33384);
 		_result_Map_string_string _t14;
 		builtin___result_ok(&(Map_string_string[]) { out }, (_result*)(&_t14), sizeof(Map_string_string));
 		 
@@ -28463,6 +31253,72 @@ _result_bool vphp__ZVal_to_v_T_bool(vphp__ZVal v) {
 	}
 	#endif
 	return (_result_bool){ .is_error=true, .err=builtin___v_error(_S("unsupported to_v conversion for requested type")), .data={E_STRUCT} };
+}
+_result_f64 vphp__ZVal_to_v_T_f64(vphp__ZVal v) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if true
+	{
+		if (!vphp__ZVal_is_numeric(v)) {
+			return (_result_f64){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("type mismatch: expected f64, got "), 0xfe10, {.d_s = vphp__ZVal_type_name(v)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		_result_f64 _t7;
+		builtin___result_ok(&(f64[]) { vphp__ZVal_to_f64(v) }, (_result*)(&_t7), sizeof(f64));
+		 
+		return _t7;
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	return (_result_f64){ .is_error=true, .err=builtin___v_error(_S("unsupported to_v conversion for requested type")), .data={E_STRUCT} };
 }
 _result_void vphp__ZVal_from_v_T_Array_string(vphp__ZVal v, Array_string value) {
 	#if false
@@ -29165,6 +32021,71 @@ _result_void vphp__ZVal_from_v_T_Array_Map_string_string(vphp__ZVal v, Array_Map
 			vphp__ZVal_add_next_val(v, sub);
 		}
 		return (_result_void){0};
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false || false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	return (_result_void){ .is_error=true, .err=builtin___v_error(_S("unsupported from_v conversion for source type")), .data={E_STRUCT} };
+}
+_result_void vphp__ZVal_from_v_T_vphp__ZVal(vphp__ZVal v, vphp__ZVal value) {
+	#if true
+	{
+		if (!vphp__ZVal_is_valid(value)) {
+			vphp__ZVal_set_null(v);
+			return (_result_void){0};
+		}
+		ZVAL_COPY(v.raw, value.raw);
+		return (_result_void){0};
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false || false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false || false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
 	}
 	#endif
 	#if false
@@ -35508,6 +38429,10617 @@ inline f64 math__with_set_high_word(f64 f, u32 hi) {
 inline u32 math__get_high_word(f64 f) {
 	return ((u32)((math__f64_bits(f) >> 32)));
 }
+inline VV_LOC _result_void x__json2__Decoder_increment(x__json2__Decoder* checker, string message) {
+	if ((int)(checker->checker_idx + 1) == checker->json.len) {
+		if ((message).len == 0) {
+			return (_result_void){ .is_error=true, .err=I_Error_to_Interface_IError(((Error*)builtin__memdup(&(Error){E_STRUCT}, sizeof(Error)))), .data={E_STRUCT} };
+		}
+		_result_void _t2 = x__json2__Decoder_checker_error(checker, builtin__string__plus(_S("EOF: "), message));
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+	}
+	checker->checker_idx++;
+	return (_result_void){0};
+}
+inline VV_LOC _result_void x__json2__Decoder_skip_whitespace(x__json2__Decoder* checker, string message) {
+	for (;;) {
+		if (!((Array_fixed_rune_4_contains(_const_x__json2__whitespace_chars, builtin__string_at(checker->json, checker->checker_idx))))) break;
+		_result_void _t1 = x__json2__Decoder_increment(checker, message);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_json_format(x__json2__Decoder* checker) {
+	_result_void _t1 = x__json2__Decoder_skip_whitespace(checker, _S("empty json"));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	int start_idx_position = checker->checker_idx;
+	x__json2__ValueInfo* actual_value_info_pointer = ((x__json2__ValueInfo*)(((void*)0)));
+	u8 _t3 = builtin__string_at(checker->json, checker->checker_idx);
+	
+	if (_t3 == ('"')) {
+		x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(&checker->values_info, ((x__json2__ValueInfo){.position = checker->checker_idx,.value_kind = x__json2__ValueKind__string,.length = 0,}));
+		actual_value_info_pointer = x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(&checker->values_info);
+		_result_void _t4 = x__json2__Decoder_check_string(checker);
+		if (_t4.is_error) {
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	}
+	else if (_t3 == ('-') || (_t3 >= '0' && _t3 <= '9')) {
+		x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(&checker->values_info, ((x__json2__ValueInfo){.position = checker->checker_idx,.value_kind = x__json2__ValueKind__number,.length = 0,}));
+		actual_value_info_pointer = x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(&checker->values_info);
+		_result_void _t6 = x__json2__Decoder_check_number(checker);
+		if (_t6.is_error) {
+			_result_void _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+	}
+	else if (_t3 == ('t') || _t3 == ('f')) {
+		x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(&checker->values_info, ((x__json2__ValueInfo){.position = checker->checker_idx,.value_kind = x__json2__ValueKind__boolean,.length = 0,}));
+		actual_value_info_pointer = x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(&checker->values_info);
+		_result_void _t8 = x__json2__Decoder_check_boolean(checker);
+		if (_t8.is_error) {
+			_result_void _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ ;
+	}
+	else if (_t3 == ('n')) {
+		x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(&checker->values_info, ((x__json2__ValueInfo){.position = checker->checker_idx,.value_kind = x__json2__ValueKind__null,.length = 0,}));
+		actual_value_info_pointer = x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(&checker->values_info);
+		_result_void _t10 = x__json2__Decoder_check_null(checker);
+		if (_t10.is_error) {
+			_result_void _t11 = {0};
+			_t11.is_error = true;
+			_t11.err = _t10.err;
+			return _t11;
+		}
+		
+ ;
+	}
+	else if (_t3 == ('[')) {
+		x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(&checker->values_info, ((x__json2__ValueInfo){.position = checker->checker_idx,.value_kind = x__json2__ValueKind__array,.length = 0,}));
+		actual_value_info_pointer = x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(&checker->values_info);
+		_result_void _t12 = x__json2__Decoder_check_array(checker);
+		if (_t12.is_error) {
+			_result_void _t13 = {0};
+			_t13.is_error = true;
+			_t13.err = _t12.err;
+			return _t13;
+		}
+		
+ ;
+	}
+	else if (_t3 == ('{')) {
+		x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(&checker->values_info, ((x__json2__ValueInfo){.position = checker->checker_idx,.value_kind = x__json2__ValueKind__object,.length = 0,}));
+		actual_value_info_pointer = x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(&checker->values_info);
+		_result_void _t14 = x__json2__Decoder_check_object(checker);
+		if (_t14.is_error) {
+			_result_void _t15 = {0};
+			_t15.is_error = true;
+			_t15.err = _t14.err;
+			return _t15;
+		}
+		
+ ;
+	}
+	else {
+		_result_void _t16 = x__json2__Decoder_checker_error(checker, _S("unknown value kind"));
+		if (_t16.is_error) {
+			_result_void _t17 = {0};
+			_t17.is_error = true;
+			_t17.err = _t16.err;
+			return _t17;
+		}
+		
+ ;
+	}
+	actual_value_info_pointer->length = (int)((int)(checker->checker_idx + 1) - start_idx_position);
+	_result_void _t18 = x__json2__Decoder_increment(checker, _S(""));
+	if (_t18.is_error) {
+		return (_result_void){0};
+	}
+	
+ ;
+	_result_void _t19 = x__json2__Decoder_skip_whitespace(checker, _S(""));
+	if (_t19.is_error) {
+		return (_result_void){0};
+	}
+	
+ ;
+	if (!(builtin__string_at(checker->json, checker->checker_idx) == ',' || builtin__string_at(checker->json, checker->checker_idx) == ':' || builtin__string_at(checker->json, checker->checker_idx) == '}' || builtin__string_at(checker->json, checker->checker_idx) == ']')) {
+		_result_void _t20 = x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid value. Unexpected character after "), 0xfe10, {.d_s = x__json2__ValueKind_str(actual_value_info_pointer->value_kind)}}, {_S(" end"), 0, { .d_c = 0 }}})));
+		if (_t20.is_error) {
+			_result_void _t21 = {0};
+			_t21.is_error = true;
+			_t21.err = _t20.err;
+			return _t21;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_string(x__json2__Decoder* checker) {
+	_result_void _t1 = x__json2__Decoder_increment(checker, _S("string not closed"));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	for (;;) {
+		if (!(builtin__string_at(checker->json, checker->checker_idx) != '"')) break;
+		if (builtin__string_at(checker->json, checker->checker_idx) == '\\') {
+			_result_void _t3 = x__json2__Decoder_increment(checker, _S("invalid escape sequence"));
+			if (_t3.is_error) {
+				_result_void _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ ;
+			u8 escaped_char = builtin__string_at(checker->json, checker->checker_idx);
+
+			if (escaped_char == ('/') || escaped_char == ('b') || escaped_char == ('f') || escaped_char == ('n') || escaped_char == ('r') || escaped_char == ('t') || escaped_char == ('"') || escaped_char == ('\\')) {
+			}
+			else if (escaped_char == ('u')) {
+				int escaped_char_last_index = (int)(checker->checker_idx + 4);
+				if (escaped_char_last_index < checker->json.len) {
+					_result_void _t5 = x__json2__Decoder_increment(checker, _S("invalid escape sequence"));
+					if (_t5.is_error) {
+						_result_void _t6 = {0};
+						_t6.is_error = true;
+						_t6.err = _t5.err;
+						return _t6;
+					}
+					
+ ;
+					for (;;) {
+						if (!(checker->checker_idx < escaped_char_last_index)) break;
+						u8 _t7 = builtin__string_at(checker->json, checker->checker_idx);
+						
+						if ((_t7 >= '0' && _t7 <= '9') || (_t7 >= 'a' && _t7 <= 'f') || (_t7 >= 'A' && _t7 <= 'F')) {
+							_result_void _t8 = x__json2__Decoder_increment(checker, _S("invalid unicode escape sequence"));
+							if (_t8.is_error) {
+								_result_void _t9 = {0};
+								_t9.is_error = true;
+								_t9.err = _t8.err;
+								return _t9;
+							}
+							
+ ;
+						}
+						else {
+							return x__json2__Decoder_checker_error(checker, _S("invalid unicode escape sequence"));
+						}
+					}
+					continue;
+				} else {
+					return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("short unicode escape sequence "), 0xfe10, {.d_s = builtin__string_substr(checker->json, (int)(checker->checker_idx - 1), (int)(checker->json.len - 1))}}, {_SLIT0, 0, { .d_c = 0 }}})));
+				}
+			}
+			else {
+				return x__json2__Decoder_checker_error(checker, _S("unknown escape sequence"));
+			}
+		}
+		_result_void _t13 = x__json2__Decoder_increment(checker, _S("string not closed"));
+		if (_t13.is_error) {
+			_result_void _t14 = {0};
+			_t14.is_error = true;
+			_t14.err = _t13.err;
+			return _t14;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_number(x__json2__Decoder* checker) {
+	if (builtin__string_at(checker->json, checker->checker_idx) == '-') {
+		_result_void _t1 = x__json2__Decoder_increment(checker, _S("expected digit"));
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	if (builtin__string_at(checker->json, checker->checker_idx) == '0') {
+		_result_void _t3 = x__json2__Decoder_increment(checker, _S(""));
+		if (_t3.is_error) {
+			return (_result_void){0};
+		}
+		
+ ;
+	} else if (builtin__string_at(checker->json, checker->checker_idx) >= '1' && builtin__string_at(checker->json, checker->checker_idx) <= '9') {
+		_result_void _t4 = x__json2__Decoder_increment(checker, _S(""));
+		if (_t4.is_error) {
+			return (_result_void){0};
+		}
+		
+ ;
+		for (;;) {
+			if (!(builtin__string_at(checker->json, checker->checker_idx) >= '0' && builtin__string_at(checker->json, checker->checker_idx) <= '9')) break;
+			_result_void _t5 = x__json2__Decoder_increment(checker, _S(""));
+			if (_t5.is_error) {
+				return (_result_void){0};
+			}
+			
+ ;
+		}
+	} else {
+		return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("expected digit got "), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(checker->json, checker->checker_idx))}}, {_SLIT0, 0, { .d_c = 0 }}})));
+	}
+	if (builtin__string_at(checker->json, checker->checker_idx) == '.') {
+		_result_void _t7 = x__json2__Decoder_increment(checker, _S("expected digit"));
+		if (_t7.is_error) {
+			_result_void _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+		if (!(builtin__string_at(checker->json, checker->checker_idx) >= '0' && builtin__string_at(checker->json, checker->checker_idx) <= '9')) {
+			return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("expected digit got "), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(checker->json, checker->checker_idx))}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		for (;;) {
+			if (!(builtin__string_at(checker->json, checker->checker_idx) >= '0' && builtin__string_at(checker->json, checker->checker_idx) <= '9')) break;
+			_result_void _t10 = x__json2__Decoder_increment(checker, _S(""));
+			if (_t10.is_error) {
+				return (_result_void){0};
+			}
+			
+ ;
+		}
+	}
+	if (builtin__string_at(checker->json, checker->checker_idx) == 'e' || builtin__string_at(checker->json, checker->checker_idx) == 'E') {
+		_result_void _t11 = x__json2__Decoder_increment(checker, _S("expected digit"));
+		if (_t11.is_error) {
+			_result_void _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ ;
+		if (builtin__string_at(checker->json, checker->checker_idx) == '-' || builtin__string_at(checker->json, checker->checker_idx) == '+') {
+			_result_void _t13 = x__json2__Decoder_increment(checker, _S("expected digit"));
+			if (_t13.is_error) {
+				_result_void _t14 = {0};
+				_t14.is_error = true;
+				_t14.err = _t13.err;
+				return _t14;
+			}
+			
+ ;
+		}
+		if (!(builtin__string_at(checker->json, checker->checker_idx) >= '0' && builtin__string_at(checker->json, checker->checker_idx) <= '9')) {
+			return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("expected digit got "), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(checker->json, checker->checker_idx))}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		for (;;) {
+			if (!(builtin__string_at(checker->json, checker->checker_idx) >= '0' && builtin__string_at(checker->json, checker->checker_idx) <= '9')) break;
+			_result_void _t16 = x__json2__Decoder_increment(checker, _S(""));
+			if (_t16.is_error) {
+				return (_result_void){0};
+			}
+			
+ ;
+		}
+	}
+	checker->checker_idx--;
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_boolean(x__json2__Decoder* checker) {
+	u8 _t1 = builtin__string_at(checker->json, checker->checker_idx);
+		switch (_t1) {
+		case 't': {
+			if ((int)(checker->json.len - checker->checker_idx) <= 3) {
+				return x__json2__Decoder_checker_error(checker, _S("EOF error: expecting `true`"));
+			}
+			int is_not_ok = builtin__vmemcmp(checker->json.str + checker->checker_idx, _const_x__json2__true_in_string.str, _const_x__json2__true_in_string.len);
+			if (is_not_ok != 0) {
+				return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid boolean value. Got `"), 0xfe10, {.d_s = builtin__string_substr(checker->json, checker->checker_idx, (int)(checker->checker_idx + 4))}}, {_S("` instead of `true`"), 0, { .d_c = 0 }}})));
+			}
+			checker->checker_idx += 3;
+			break;
+		}
+		case 'f': {
+			if ((int)(checker->json.len - checker->checker_idx) <= 4) {
+				return x__json2__Decoder_checker_error(checker, _S("EOF error: expecting `false`"));
+			}
+			int is_not_ok = builtin__vmemcmp(checker->json.str + checker->checker_idx, _const_x__json2__false_in_string.str, _const_x__json2__false_in_string.len);
+			if (is_not_ok != 0) {
+				return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid boolean value. Got `"), 0xfe10, {.d_s = builtin__string_substr(checker->json, checker->checker_idx, (int)(checker->checker_idx + 5))}}, {_S("` instead of `false`"), 0, { .d_c = 0 }}})));
+			}
+			checker->checker_idx += 4;
+			break;
+		}
+		default: {
+			{
+				return x__json2__Decoder_checker_error(checker, _S("invalid boolean"));
+			}
+		}
+	}
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_null(x__json2__Decoder* checker) {
+	if ((int)(checker->json.len - checker->checker_idx) <= 3) {
+		return x__json2__Decoder_checker_error(checker, _S("EOF error: expecting `null`"));
+	}
+	int is_not_ok = builtin__vmemcmp(checker->json.str + checker->checker_idx, _const_x__json2__null_in_string.str, _const_x__json2__null_in_string.len);
+	if (is_not_ok != 0) {
+		return x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid null value. Got `"), 0xfe10, {.d_s = builtin__string_substr(checker->json, checker->checker_idx, (int)(checker->checker_idx + 4))}}, {_S("` instead of `null`"), 0, { .d_c = 0 }}})));
+	}
+	checker->checker_idx += 3;
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_array(x__json2__Decoder* checker) {
+	_result_void _t1 = x__json2__Decoder_increment(checker, _S("expected array end"));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_void _t3 = x__json2__Decoder_skip_whitespace(checker, _S("expected array end"));
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	for (;;) {
+		if (!(builtin__string_at(checker->json, checker->checker_idx) != ']')) break;
+		_result_void _t5 = x__json2__Decoder_check_json_format(checker);
+		if (_t5.is_error) {
+			_result_void _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+		_result_void _t7 = x__json2__Decoder_skip_whitespace(checker, _S("expected array end"));
+		if (_t7.is_error) {
+			_result_void _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+		if (builtin__string_at(checker->json, checker->checker_idx) == ',') {
+			_result_void _t9 = x__json2__Decoder_increment(checker, _S("expected array value"));
+			if (_t9.is_error) {
+				_result_void _t10 = {0};
+				_t10.is_error = true;
+				_t10.err = _t9.err;
+				return _t10;
+			}
+			
+ ;
+			_result_void _t11 = x__json2__Decoder_skip_whitespace(checker, _S(""));
+			(void)_t11;
+ ;
+			if (builtin__string_at(checker->json, checker->checker_idx) == ']') {
+				return x__json2__Decoder_checker_error(checker, _S("Cannot use `,`, before `]`"));
+			}
+		}
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_check_object(x__json2__Decoder* checker) {
+	_result_void _t1 = x__json2__Decoder_increment(checker, _S("expected object end"));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_void _t3 = x__json2__Decoder_skip_whitespace(checker, _S("expected object end"));
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	for (;;) {
+		if (!(builtin__string_at(checker->json, checker->checker_idx) != '}')) break;
+		if (builtin__string_at(checker->json, checker->checker_idx) != '"') {
+			_result_void _t5 = x__json2__Decoder_checker_error(checker, _S("Expecting object key"));
+			if (_t5.is_error) {
+				_result_void _t6 = {0};
+				_t6.is_error = true;
+				_t6.err = _t5.err;
+				return _t6;
+			}
+			
+ ;
+		}
+		_result_void _t7 = x__json2__Decoder_check_json_format(checker);
+		if (_t7.is_error) {
+			_result_void _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+		_result_void _t9 = x__json2__Decoder_skip_whitespace(checker, _S("expected `:`"));
+		if (_t9.is_error) {
+			_result_void _t10 = {0};
+			_t10.is_error = true;
+			_t10.err = _t9.err;
+			return _t10;
+		}
+		
+ ;
+		if (builtin__string_at(checker->json, checker->checker_idx) != ':') {
+			_result_void _t11 = x__json2__Decoder_checker_error(checker, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("expected `:`, got `"), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(checker->json, checker->checker_idx))}}, {_S("`"), 0, { .d_c = 0 }}})));
+			if (_t11.is_error) {
+				_result_void _t12 = {0};
+				_t12.is_error = true;
+				_t12.err = _t11.err;
+				return _t12;
+			}
+			
+ ;
+		}
+		_result_void _t13 = x__json2__Decoder_increment(checker, _S("expected object value"));
+		if (_t13.is_error) {
+			_result_void _t14 = {0};
+			_t14.is_error = true;
+			_t14.err = _t13.err;
+			return _t14;
+		}
+		
+ ;
+		_result_void _t15 = x__json2__Decoder_skip_whitespace(checker, _S("expected object value"));
+		if (_t15.is_error) {
+			_result_void _t16 = {0};
+			_t16.is_error = true;
+			_t16.err = _t15.err;
+			return _t16;
+		}
+		
+ ;
+		_result_void _t17 = x__json2__Decoder_check_json_format(checker);
+		if (_t17.is_error) {
+			_result_void _t18 = {0};
+			_t18.is_error = true;
+			_t18.err = _t17.err;
+			return _t18;
+		}
+		
+ ;
+		_result_void _t19 = x__json2__Decoder_skip_whitespace(checker, _S("expected object end"));
+		if (_t19.is_error) {
+			_result_void _t20 = {0};
+			_t20.is_error = true;
+			_t20.err = _t19.err;
+			return _t20;
+		}
+		
+ ;
+		if (builtin__string_at(checker->json, checker->checker_idx) == ',') {
+			_result_void _t21 = x__json2__Decoder_increment(checker, _S("expected object key"));
+			if (_t21.is_error) {
+				_result_void _t22 = {0};
+				_t22.is_error = true;
+				_t22.err = _t21.err;
+				return _t22;
+			}
+			
+ ;
+			_result_void _t23 = x__json2__Decoder_skip_whitespace(checker, _S(""));
+			(void)_t23;
+ ;
+			if (builtin__string_at(checker->json, checker->checker_idx) == '}') {
+				return x__json2__Decoder_checker_error(checker, _S("Cannot use `,`, before `}`"));
+			}
+		}
+	}
+	return (_result_void){0};
+}
+VV_LOC void x__json2__LinkedList_T_x__json2__ValueInfo_push_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list, x__json2__ValueInfo value) {
+	x__json2__Node_T_x__json2__ValueInfo* new_node = ((x__json2__Node_T_x__json2__ValueInfo*)builtin__memdup(&(x__json2__Node_T_x__json2__ValueInfo){.value = value,.next = ((void*)0),}, sizeof(x__json2__Node_T_x__json2__ValueInfo)));
+	if (list->head == ((void*)0)) {
+		list->head = new_node;
+		list->tail = new_node;
+	} else {
+		list->tail->next = new_node;
+		list->tail = new_node;
+	}
+	list->len++;
+}
+VV_LOC void x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list, x__json2__StructFieldInfo value) {
+	x__json2__Node_T_x__json2__StructFieldInfo* new_node = ((x__json2__Node_T_x__json2__StructFieldInfo*)builtin__memdup(&(x__json2__Node_T_x__json2__StructFieldInfo){.value = value,.next = ((void*)0),}, sizeof(x__json2__Node_T_x__json2__StructFieldInfo)));
+	if (list->head == ((void*)0)) {
+		list->head = new_node;
+		list->tail = new_node;
+	} else {
+		list->tail->next = new_node;
+		list->tail = new_node;
+	}
+	list->len++;
+}
+VV_LOC x__json2__ValueInfo* x__json2__LinkedList_T_x__json2__ValueInfo_last_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list) {
+	return &list->tail->value;
+}
+VV_LOC x__json2__StructFieldInfo* x__json2__LinkedList_T_x__json2__StructFieldInfo_last_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list) {
+	return &list->tail->value;
+}
+VV_LOC string x__json2__LinkedList_T_x__json2__ValueInfo_str(x__json2__LinkedList_T_x__json2__ValueInfo* list) {
+	Array_u8 result_buffer = builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+	x__json2__Node_T_x__json2__ValueInfo* current = list->head;
+	for (;;) {
+		if (!(current != ((void*)0))) break;
+		string value_kind_as_string = x__json2__ValueKind_str(current->value.value_kind);
+		builtin__array_push_many(&result_buffer, value_kind_as_string.str, value_kind_as_string.len);
+		builtin__array_push((array*)&result_buffer, _MOV((u8[]){ ((u8)(' ')) }));
+		current = current->next;
+	}
+	return Array_u8_bytestr(result_buffer);
+}
+VV_LOC string x__json2__LinkedList_T_x__json2__ValueInfo_str_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list) {
+	strings__Builder sb = strings__new_builder(128);
+	x__json2__Node_T_x__json2__ValueInfo* current = list->head;
+	for (;;) {
+		if (!(current != ((void*)0))) break;
+		string value_as_string = x__json2__ValueInfo_str(current->value);
+		strings__Builder_write_string(&sb, value_as_string);
+		strings__Builder_write_u8(&sb, ((u8)(' ')));
+		current = current->next;
+	}
+	string _t1 = strings__Builder_str(&sb);
+		{ // defer begin
+			strings__Builder_free(&sb);
+		} // defer end
+	return _t1;
+}
+VV_LOC string x__json2__LinkedList_T_x__json2__StructFieldInfo_str_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list) {
+	strings__Builder sb = strings__new_builder(128);
+	x__json2__Node_T_x__json2__StructFieldInfo* current = list->head;
+	for (;;) {
+		if (!(current != ((void*)0))) break;
+		string value_as_string = x__json2__StructFieldInfo_str(current->value);
+		strings__Builder_write_string(&sb, value_as_string);
+		strings__Builder_write_u8(&sb, ((u8)(' ')));
+		current = current->next;
+	}
+	string _t1 = strings__Builder_str(&sb);
+		{ // defer begin
+			strings__Builder_free(&sb);
+		} // defer end
+	return _t1;
+}
+VV_LOC void x__json2__LinkedList_T_x__json2__ValueInfo_free_T_x__json2__ValueInfo(x__json2__LinkedList_T_x__json2__ValueInfo* list) {
+	x__json2__Node_T_x__json2__ValueInfo* current = list->head;
+	for (;;) {
+		if (!(current != ((void*)0))) break;
+		x__json2__Node_T_x__json2__ValueInfo* next = current->next;
+		current->next = ((void*)0);
+		builtin___v_free(current);
+		current = next;
+	}
+	list->head = ((void*)0);
+	list->tail = ((void*)0);
+	list->len = 0;
+}
+VV_LOC void x__json2__LinkedList_T_x__json2__StructFieldInfo_free_T_x__json2__StructFieldInfo(x__json2__LinkedList_T_x__json2__StructFieldInfo* list) {
+	x__json2__Node_T_x__json2__StructFieldInfo* current = list->head;
+	for (;;) {
+		if (!(current != ((void*)0))) break;
+		x__json2__Node_T_x__json2__StructFieldInfo* next = current->next;
+		current->next = ((void*)0);
+		builtin___v_free(current);
+		current = next;
+	}
+	list->head = ((void*)0);
+	list->tail = ((void*)0);
+	list->len = 0;
+}
+VV_LOC string x__json2__JsonDecodeError_msg(x__json2__JsonDecodeError e) {
+	return builtin__str_intp(5, _MOV((StrIntpData[]){{_S("\n"), 0xfe07, {.d_i32 = e.line}}, {_S(":"), 0xfe07, {.d_i32 = e.character}}, {_S(": Invalid json: "), 0xfe10, {.d_s = e.message}}, {_S("\n"), 0xfe10, {.d_s = e.context}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC _result_void x__json2__Decoder_checker_error(x__json2__Decoder* checker, string message) {
+	int position = checker->checker_idx;
+	int line_number = 0;
+	int character_number = 0;
+	int last_newline = 0;
+	for (int i = (int)(position - 1); i >= 0; i--) {
+		if (last_newline == 0) {
+			if (builtin__string_at(checker->json, i) == '\n') {
+				last_newline = (int)(i + 1);
+			} else if (builtin__string_at(checker->json, i) == '\t') {
+				character_number += _const_x__json2__tab_width;
+			} else {
+				character_number++;
+			}
+		}
+		if (builtin__string_at(checker->json, i) == '\n') {
+			line_number++;
+		}
+	}
+	bool cutoff = character_number > 50;
+	int context_start = (cutoff ? ((int)(position - 50)) : (last_newline));
+	int context_end = builtin__int_min(checker->json.len, (int)(position + 5));
+	int context_end_newline = builtin__string_index_u8(builtin__string_substr(checker->json, position, context_end), '\n');
+	if (context_end_newline != -1) {
+		context_end = (int)(position + context_end_newline);
+	}
+	string context = _S("");
+	if (cutoff) {
+		context = builtin__string__plus(context, _S("..."));
+	}
+	context = builtin__string__plus(context, builtin__string_substr(checker->json, context_start, position));
+	context = builtin__string__plus(context, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\e[31m"), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(checker->json, position))}}, {_S("\e[0m"), 0, { .d_c = 0 }}})));
+	context = builtin__string__plus(context, builtin__string_substr(checker->json, (int)(position + 1), context_end));
+	context = builtin__string__plus(context, _S("\n"));
+	if (cutoff) {
+		context = builtin__string__plus(context, builtin__string_repeat(_S(" "), (int_literal)(50 + 3)));
+	} else {
+		context = builtin__string__plus(context, builtin__string_repeat(_S(" "), character_number));
+	}
+	context = builtin__string__plus(context, _S("\e[31m^\e[0m"));
+	return (_result_void){ .is_error=true, .err=I_x__json2__JsonDecodeError_to_Interface_IError(((x__json2__JsonDecodeError*)builtin__memdup(&(x__json2__JsonDecodeError){.Error = ((Error){E_STRUCT}),.context = context,.message = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Syntax: "), 0xfe10, {.d_s = message}}, {_SLIT0, 0, { .d_c = 0 }}})),.line = (int)(line_number + 1),.character = (int)(character_number + 1),}, sizeof(x__json2__JsonDecodeError)))), .data={E_STRUCT} };
+}
+VV_LOC _result_void x__json2__Decoder_decode_error(x__json2__Decoder* decoder, string message) {
+	x__json2__ValueInfo error_info = ((x__json2__ValueInfo){.position = 0,.value_kind = 0,.length = 0,});
+	if (decoder->current_node != ((void*)0)) {
+		error_info = decoder->current_node->value;
+	} else {
+		error_info = decoder->values_info.tail->value;
+	}
+	int start = error_info.position;
+	int end = (int)(start + builtin__int_min(error_info.length, _const_x__json2__max_context_length));
+	int line_number = 0;
+	int character_number = 0;
+	int last_newline = 0;
+	for (int i = (int)(start - 1); i >= 0; i--) {
+		if (last_newline == 0) {
+			if (builtin__string_at(decoder->json, i) == '\n') {
+				last_newline = (int)(i + 1);
+			} else if (builtin__string_at(decoder->json, i) == '\t') {
+				character_number += _const_x__json2__tab_width;
+			} else {
+				character_number++;
+			}
+		}
+		if (builtin__string_at(decoder->json, i) == '\n') {
+			line_number++;
+		}
+	}
+	bool cutoff = character_number > 50;
+	int context_start = (cutoff ? ((int)(start - 50)) : (last_newline));
+	int context_end = builtin__int_min(decoder->json.len, (int)(end + 5));
+	int context_end_newline = builtin__string_index_u8(builtin__string_substr(decoder->json, end, context_end), '\n');
+	if (context_end_newline != -1) {
+		context_end = (int)(end + context_end_newline);
+	}
+	string context = _S("");
+	if (cutoff) {
+		context = builtin__string__plus(context, _S("..."));
+	}
+	context = builtin__string__plus(context, builtin__string_substr(decoder->json, context_start, start));
+	context = builtin__string__plus(context, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\e[31m"), 0xfe10, {.d_s = builtin__string_substr(decoder->json, start, end)}}, {_S("\e[0m"), 0, { .d_c = 0 }}})));
+	context = builtin__string__plus(context, builtin__string_substr(decoder->json, end, context_end));
+	context = builtin__string__plus(context, _S("\n"));
+	if (cutoff) {
+		context = builtin__string__plus(context, builtin__string_repeat(_S(" "), (int_literal)(50 + 3)));
+	} else {
+		context = builtin__string__plus(context, builtin__string_repeat(_S(" "), character_number));
+	}
+	context = builtin__string__plus(context, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\e[31m"), 0xfe10, {.d_s = builtin__string_repeat(_S("~"), error_info.length)}}, {_S("\e[0m"), 0, { .d_c = 0 }}})));
+	return (_result_void){ .is_error=true, .err=I_x__json2__JsonDecodeError_to_Interface_IError(((x__json2__JsonDecodeError*)builtin__memdup(&(x__json2__JsonDecodeError){.Error = ((Error){E_STRUCT}),.context = context,.message = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Data: "), 0xfe10, {.d_s = message}}, {_SLIT0, 0, { .d_c = 0 }}})),.line = (int)(line_number + 1),.character = (int)(character_number + 1),}, sizeof(x__json2__JsonDecodeError)))), .data={E_STRUCT} };
+}
+_result_x__json2__Any x__json2__decode_T_x__json2__Any(string val, x__json2__DecoderOptions params) {
+	if ((val).len == 0) {
+		return (_result_x__json2__Any){ .is_error=true, .err=I_x__json2__JsonDecodeError_to_Interface_IError(((x__json2__JsonDecodeError*)builtin__memdup(&(x__json2__JsonDecodeError){.Error = ((Error){E_STRUCT}),.context = (string){.str=(byteptr)"", .is_lit=1},.message = _S("empty string"),.line = 1,.character = 1,}, sizeof(x__json2__JsonDecodeError)))), .data={E_STRUCT} };
+	}
+	x__json2__Decoder decoder = ((x__json2__Decoder){.json = val,.strict = params.strict,.values_info = ((x__json2__LinkedList_T_x__json2__ValueInfo){.head = ((void*)0),.tail = ((void*)0),.len = 0,}),.checker_idx = 0,.current_node = ((void*)0),});
+	_result_void _t2 = x__json2__Decoder_check_json_format(&decoder);
+	if (_t2.is_error) {
+		_result_x__json2__Any _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ ;
+	x__json2__Any result = (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298};
+	decoder.current_node = decoder.values_info.head;
+	_result_void _t4 = x__json2__Decoder_decode_value_T_x__json2__Any(&decoder, &result);
+	if (_t4.is_error) {
+		_result_x__json2__Any _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	x__json2__LinkedList_T_x__json2__ValueInfo_free_T_x__json2__ValueInfo(&decoder.values_info);
+	_result_x__json2__Any _t6;
+	builtin___result_ok(&(x__json2__Any[]) { result }, (_result*)(&_t6), sizeof(x__json2__Any));
+	 
+	return _t6;
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif true
+	{
+		_result_void _t6 = x__json2__Decoder_decode_sumtype_T_x__json2__Any(decoder, val);
+		if (_t6.is_error) {
+			_result_void _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_Array_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		builtin__array_clear(val);
+		_result_void _t6 = x__json2__Decoder_decode_array_T_x__json2__Any(decoder, val);
+		if (_t6.is_error) {
+			_result_void _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_bool(x__json2__Decoder* decoder, bool* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind != x__json2__ValueKind__boolean) {
+			_result_void _t6 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected boolean, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		}
+		{ // Unsafe block
+			*val = builtin__vmemcmp(decoder->json.str + value_info.position, _const_x__json2__true_in_string.str, _const_x__json2__true_in_string.len) == 0;
+		}
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_f64(x__json2__Decoder* decoder, f64* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true || false
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_f64(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_f64 _t8 = x__json2__Decoder_decode_number_from_string_T_f64(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(f64*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_f32(x__json2__Decoder* decoder, f32* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true || false
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_f32(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_f32 _t8 = x__json2__Decoder_decode_number_from_string_T_f32(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(f32*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i64(x__json2__Decoder* decoder, i64* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_i64(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_i64 _t8 = x__json2__Decoder_decode_number_from_string_T_i64(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(i64*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_int(x__json2__Decoder* decoder, int* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_int(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_int _t8 = x__json2__Decoder_decode_number_from_string_T_int(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(int*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i32(x__json2__Decoder* decoder, i32* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_i32(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_i32 _t8 = x__json2__Decoder_decode_number_from_string_T_i32(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(i32*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i16(x__json2__Decoder* decoder, i16* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_i16(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_i16 _t8 = x__json2__Decoder_decode_number_from_string_T_i16(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(i16*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_i8(x__json2__Decoder* decoder, i8* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_i8(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_i8 _t8 = x__json2__Decoder_decode_number_from_string_T_i8(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(i8*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_Map_string_x__json2__Any(x__json2__Decoder* decoder, Map_string_x__json2__Any* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_void _t6 = x__json2__Decoder_decode_map_T_string_x__json2__Any(decoder, val);
+		if (_t6.is_error) {
+			_result_void _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_string(x__json2__Decoder* decoder, string* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if true
+	{
+		_result_void _t6 = x__json2__Decoder_decode_string_T_string(decoder, val);
+		if (_t6.is_error) {
+			_result_void _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_time__Time(x__json2__Decoder* decoder, time__Time* val) {
+	#if true
+	{
+		x__json2__ValueInfo struct_info = decoder->current_node->value;
+		if (struct_info.value_kind == x__json2__ValueKind__string) {
+			_result_void _t2 = time__Time_from_json_string(val, builtin__string_substr(decoder->json, (int)(struct_info.position + 1), (int)((int)(struct_info.position + struct_info.length) - 1)));
+			if (_t2.is_error) {
+				IError err = _t2.err;
+				_result_void _t3 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = _S("time.Time")}}, {_S(": "), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+				if (_t3.is_error) {
+					_result_void _t4 = {0};
+					_t4.is_error = true;
+					_t4.err = _t3.err;
+					return _t4;
+				}
+				
+ ;
+			;
+			}
+			
+ ;
+			if (decoder->current_node != ((void*)0)) {
+				decoder->current_node = decoder->current_node->next;
+			}
+			return (_result_void){0};
+		}
+	}
+	#endif
+	#if true
+	{
+		x__json2__ValueInfo struct_info = decoder->current_node->value;
+		if (struct_info.value_kind == x__json2__ValueKind__number) {
+			_result_void _t6 = time__Time_from_json_number(val, builtin__string_substr(decoder->json, struct_info.position, (int)(struct_info.position + struct_info.length)));
+			if (_t6.is_error) {
+				IError err = _t6.err;
+				_result_void _t7 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = _S("time.Time")}}, {_S(": "), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+				if (_t7.is_error) {
+					_result_void _t8 = {0};
+					_t8.is_error = true;
+					_t8.err = _t7.err;
+					return _t8;
+				}
+				
+ ;
+			;
+			}
+			
+ ;
+			if (decoder->current_node != ((void*)0)) {
+				decoder->current_node = decoder->current_node->next;
+			}
+			return (_result_void){0};
+		}
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__ValueInfo struct_info = decoder->current_node->value;
+		x__json2__LinkedList_T_x__json2__StructFieldInfo struct_fields_info = ((x__json2__LinkedList_T_x__json2__StructFieldInfo){.head = ((void*)0),.tail = ((void*)0),.len = 0,});
+		/* $for field in time.Time.fields */ {
+				FieldData field = {0};
+			/* field 0 : unix */ {
+				field.name = _S("unix");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 9;	// i64
+				field.unaliased_typ = 9;	// i64
+				field.is_pub = false;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t12 = 0; _t12 < field.attrs.len; ++_t12) {
+					string attr = ((string*)field.attrs.data)[_t12];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t13 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t13.is_error) {
+								_result_void _t14 = {0};
+								_t14.is_error = true;
+								_t14.err = _t13.err;
+								return _t14;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 1 : year */ {
+				field.name = _S("year");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t15 = 0; _t15 < field.attrs.len; ++_t15) {
+					string attr = ((string*)field.attrs.data)[_t15];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t16 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t16.is_error) {
+								_result_void _t17 = {0};
+								_t17.is_error = true;
+								_t17.err = _t16.err;
+								return _t17;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 2 : month */ {
+				field.name = _S("month");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t18 = 0; _t18 < field.attrs.len; ++_t18) {
+					string attr = ((string*)field.attrs.data)[_t18];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t19 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t19.is_error) {
+								_result_void _t20 = {0};
+								_t20.is_error = true;
+								_t20.err = _t19.err;
+								return _t20;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 3 : day */ {
+				field.name = _S("day");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t21 = 0; _t21 < field.attrs.len; ++_t21) {
+					string attr = ((string*)field.attrs.data)[_t21];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t22 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t22.is_error) {
+								_result_void _t23 = {0};
+								_t23.is_error = true;
+								_t23.err = _t22.err;
+								return _t23;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 4 : hour */ {
+				field.name = _S("hour");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t24 = 0; _t24 < field.attrs.len; ++_t24) {
+					string attr = ((string*)field.attrs.data)[_t24];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t25 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t25.is_error) {
+								_result_void _t26 = {0};
+								_t26.is_error = true;
+								_t26.err = _t25.err;
+								return _t26;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 5 : minute */ {
+				field.name = _S("minute");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t27 = 0; _t27 < field.attrs.len; ++_t27) {
+					string attr = ((string*)field.attrs.data)[_t27];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t28 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t28.is_error) {
+								_result_void _t29 = {0};
+								_t29.is_error = true;
+								_t29.err = _t28.err;
+								return _t29;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 6 : second */ {
+				field.name = _S("second");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t30 = 0; _t30 < field.attrs.len; ++_t30) {
+					string attr = ((string*)field.attrs.data)[_t30];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t31 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t31.is_error) {
+								_result_void _t32 = {0};
+								_t32.is_error = true;
+								_t32.err = _t31.err;
+								return _t32;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 7 : nanosecond */ {
+				field.name = _S("nanosecond");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 8;	// int
+				field.unaliased_typ = 8;	// int
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t33 = 0; _t33 < field.attrs.len; ++_t33) {
+					string attr = ((string*)field.attrs.data)[_t33];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t34 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t34.is_error) {
+								_result_void _t35 = {0};
+								_t35.is_error = true;
+								_t35.err = _t34.err;
+								return _t35;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+			/* field 8 : is_local */ {
+				field.name = _S("is_local");
+				field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+				field.typ = 19;	// bool
+				field.unaliased_typ = 19;	// bool
+				field.is_pub = true;
+				field.is_mut = false;
+				field.is_embed = false;
+				field.is_shared = false;
+				field.is_atomic = false;
+				field.is_option = false;
+				field.is_array = false;
+				field.is_map = false;
+				field.is_chan = false;
+				field.is_struct = false;
+				field.is_alias = false;
+				field.is_enum = false;
+				field.indirections = 0;
+				u8* json_name_str = field.name.str;
+				int json_name_len = field.name.len;
+				for (int _t36 = 0; _t36 < field.attrs.len; ++_t36) {
+					string attr = ((string*)field.attrs.data)[_t36];
+					if (builtin__string_starts_with(attr, _S("json:"))) {
+						if (attr.len <= 6) {
+							_result_void _t37 = x__json2__Decoder_decode_error(decoder, _S("`json` attribute must have an argument"));
+							if (_t37.is_error) {
+								_result_void _t38 = {0};
+								_t38.is_error = true;
+								_t38.err = _t37.err;
+								return _t38;
+							}
+							
+ ;
+						}
+						json_name_str = attr.str + 6;
+						json_name_len = (int)(attr.len - 6);
+						break;
+					}
+					continue;
+				}
+				x__json2__LinkedList_T_x__json2__StructFieldInfo_push_T_x__json2__StructFieldInfo(&struct_fields_info, ((x__json2__StructFieldInfo){
+					.field_name_str = ((voidptr)(field.name.str)),
+					.field_name_len = field.name.len,
+					.json_name_ptr = ((voidptr)(json_name_str)),
+					.json_name_len = json_name_len,
+					.is_omitempty = Array_string_contains(field.attrs, _S("omitempty")),
+					.is_skip = Array_string_contains(field.attrs, _S("skip")) || Array_string_contains(field.attrs, _S("json: -")),
+					.is_required = Array_string_contains(field.attrs, _S("required")),
+					.is_raw = Array_string_contains(field.attrs, _S("raw")),
+					.is_decoded = 0,
+				}));
+			}
+		}// $for
+		if (struct_info.value_kind == x__json2__ValueKind__object) {
+			int struct_position = struct_info.position;
+			int struct_end = (int)(struct_position + struct_info.length);
+			decoder->current_node = decoder->current_node->next;
+			x__json2__Node_T_x__json2__StructFieldInfo* current_field_info = struct_fields_info.head;
+			for (;;) {
+				if (decoder->current_node == ((void*)0)) {
+					break;
+				}
+				x__json2__ValueInfo key_info = decoder->current_node->value;
+				if (key_info.position >= struct_end) {
+					break;
+				}
+				current_field_info = struct_fields_info.head;
+				for (;;) {
+					if (current_field_info == ((void*)0)) {
+						decoder->current_node = decoder->current_node->next;
+						if (decoder->current_node != ((void*)0)) {
+							int value_end = (int)(decoder->current_node->value.position + decoder->current_node->value.length);
+							for (;;) {
+								if (decoder->current_node == ((void*)0)) {
+									break;
+								}
+								if (decoder->current_node->value.position >= value_end) {
+									break;
+								}
+								decoder->current_node = decoder->current_node->next;
+							}
+						}
+						break;
+					}
+					if (current_field_info->value.is_skip) {
+						if (current_field_info->value.is_required == false) {
+							current_field_info = current_field_info->next;
+							continue;
+						}
+					}
+					if (current_field_info->value.is_omitempty) {
+
+						if (decoder->current_node->next->value.value_kind == (x__json2__ValueKind__null)) {
+							current_field_info = current_field_info->next;
+							continue;
+						}
+						else if (decoder->current_node->next->value.value_kind == (x__json2__ValueKind__string)) {
+							if (decoder->current_node->next->value.length == 2) {
+								current_field_info = current_field_info->next;
+								continue;
+							}
+						}
+						else if (decoder->current_node->next->value.value_kind == (x__json2__ValueKind__number)) {
+							if (builtin__string_at(decoder->json, decoder->current_node->next->value.position) == '0') {
+								if (decoder->current_node->next->value.length == 1) {
+									current_field_info = current_field_info->next;
+									continue;
+								} else if (decoder->current_node->next->value.length == 3) {
+									if (builtin__vmemcmp(decoder->json.str + decoder->current_node->next->value.position, _const_x__json2__float_zero_in_string.str, _const_x__json2__float_zero_in_string.len) == 0) {
+										current_field_info = current_field_info->next;
+										continue;
+									}
+								}
+							}
+						}
+						else {
+						}
+					}
+					if ((int)(key_info.length - 2) == current_field_info->value.json_name_len) {
+						if (builtin__vmemcmp(decoder->json.str + key_info.position + 1, current_field_info->value.json_name_ptr, current_field_info->value.json_name_len) == 0) {
+							/* $for field in time.Time.fields */ {
+									FieldData field = {0};
+								/* field 0 : unix */ {
+									field.name = _S("unix");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 9;	// i64
+									field.unaliased_typ = 9;	// i64
+									field.is_pub = false;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t39 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t39.is_error) {
+														_result_void _t40 = {0};
+														_t40.is_error = true;
+														_t40.err = _t39.err;
+														return _t40;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t42 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t42.is_error) {
+														_result_void _t43 = {0};
+														_t43.is_error = true;
+														_t43.err = _t42.err;
+														return _t43;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t45 = x__json2__Decoder_decode_value_T_i64(decoder, &/*mut*/val->__v_unix);
+													if (_t45.is_error) {
+														_result_void _t46 = {0};
+														_t46.is_error = true;
+														_t46.err = _t45.err;
+														return _t46;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 1 : year */ {
+									field.name = _S("year");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t47 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t47.is_error) {
+														_result_void _t48 = {0};
+														_t48.is_error = true;
+														_t48.err = _t47.err;
+														return _t48;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t50 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t50.is_error) {
+														_result_void _t51 = {0};
+														_t51.is_error = true;
+														_t51.err = _t50.err;
+														return _t51;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t53 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->year);
+													if (_t53.is_error) {
+														_result_void _t54 = {0};
+														_t54.is_error = true;
+														_t54.err = _t53.err;
+														return _t54;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 2 : month */ {
+									field.name = _S("month");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t55 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t55.is_error) {
+														_result_void _t56 = {0};
+														_t56.is_error = true;
+														_t56.err = _t55.err;
+														return _t56;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t58 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t58.is_error) {
+														_result_void _t59 = {0};
+														_t59.is_error = true;
+														_t59.err = _t58.err;
+														return _t59;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t61 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->month);
+													if (_t61.is_error) {
+														_result_void _t62 = {0};
+														_t62.is_error = true;
+														_t62.err = _t61.err;
+														return _t62;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 3 : day */ {
+									field.name = _S("day");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t63 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t63.is_error) {
+														_result_void _t64 = {0};
+														_t64.is_error = true;
+														_t64.err = _t63.err;
+														return _t64;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t66 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t66.is_error) {
+														_result_void _t67 = {0};
+														_t67.is_error = true;
+														_t67.err = _t66.err;
+														return _t67;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t69 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->day);
+													if (_t69.is_error) {
+														_result_void _t70 = {0};
+														_t70.is_error = true;
+														_t70.err = _t69.err;
+														return _t70;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 4 : hour */ {
+									field.name = _S("hour");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t71 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t71.is_error) {
+														_result_void _t72 = {0};
+														_t72.is_error = true;
+														_t72.err = _t71.err;
+														return _t72;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t74 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t74.is_error) {
+														_result_void _t75 = {0};
+														_t75.is_error = true;
+														_t75.err = _t74.err;
+														return _t75;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t77 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->hour);
+													if (_t77.is_error) {
+														_result_void _t78 = {0};
+														_t78.is_error = true;
+														_t78.err = _t77.err;
+														return _t78;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 5 : minute */ {
+									field.name = _S("minute");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t79 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t79.is_error) {
+														_result_void _t80 = {0};
+														_t80.is_error = true;
+														_t80.err = _t79.err;
+														return _t80;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t82 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t82.is_error) {
+														_result_void _t83 = {0};
+														_t83.is_error = true;
+														_t83.err = _t82.err;
+														return _t83;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t85 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->minute);
+													if (_t85.is_error) {
+														_result_void _t86 = {0};
+														_t86.is_error = true;
+														_t86.err = _t85.err;
+														return _t86;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 6 : second */ {
+									field.name = _S("second");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t87 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t87.is_error) {
+														_result_void _t88 = {0};
+														_t88.is_error = true;
+														_t88.err = _t87.err;
+														return _t88;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t90 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t90.is_error) {
+														_result_void _t91 = {0};
+														_t91.is_error = true;
+														_t91.err = _t90.err;
+														return _t91;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t93 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->second);
+													if (_t93.is_error) {
+														_result_void _t94 = {0};
+														_t94.is_error = true;
+														_t94.err = _t93.err;
+														return _t94;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 7 : nanosecond */ {
+									field.name = _S("nanosecond");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 8;	// int
+									field.unaliased_typ = 8;	// int
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t95 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t95.is_error) {
+														_result_void _t96 = {0};
+														_t96.is_error = true;
+														_t96.err = _t95.err;
+														return _t96;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t98 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t98.is_error) {
+														_result_void _t99 = {0};
+														_t99.is_error = true;
+														_t99.err = _t98.err;
+														return _t99;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t101 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val->nanosecond);
+													if (_t101.is_error) {
+														_result_void _t102 = {0};
+														_t102.is_error = true;
+														_t102.err = _t101.err;
+														return _t102;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+								/* field 8 : is_local */ {
+									field.name = _S("is_local");
+									field.attrs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+									field.typ = 19;	// bool
+									field.unaliased_typ = 19;	// bool
+									field.is_pub = true;
+									field.is_mut = false;
+									field.is_embed = false;
+									field.is_shared = false;
+									field.is_atomic = false;
+									field.is_option = false;
+									field.is_array = false;
+									field.is_map = false;
+									field.is_chan = false;
+									field.is_struct = false;
+									field.is_alias = false;
+									field.is_enum = false;
+									field.indirections = 0;
+									if (field.name.len == current_field_info->value.field_name_len) {
+										if (builtin__string__eq(builtin__u8_vstring_with_len((((u8*)(current_field_info->value.field_name_str))), field.name.len), field.name)) {
+											decoder->current_node = decoder->current_node->next;
+											if (current_field_info->value.is_skip) {
+												if (current_field_info->value.is_required == false) {
+													_result_void _t103 = x__json2__Decoder_decode_error(decoder, _S("This should not happen. Please, file a bug. `skip` field should not be processed here without a `required` attribute"));
+													if (_t103.is_error) {
+														_result_void _t104 = {0};
+														_t104.is_error = true;
+														_t104.err = _t103.err;
+														return _t104;
+													}
+													
+ ;
+												}
+												current_field_info->value.is_decoded = true;
+												if (decoder->current_node != ((void*)0)) {
+													decoder->current_node = decoder->current_node->next;
+												}
+												break;
+											}
+											if (current_field_info->value.is_raw) {
+												#if false
+												{
+												}
+												#elif false
+												{
+												}
+												#elif false
+												{
+												}
+												#else
+												{
+													_result_void _t106 = x__json2__Decoder_decode_error(decoder, _S("`raw` attribute can only be used with string fields"));
+													if (_t106.is_error) {
+														_result_void _t107 = {0};
+														_t107.is_error = true;
+														_t107.err = _t106.err;
+														return _t107;
+													}
+													
+ ;
+												}
+												#endif
+											} else {
+												#if false
+												{
+												}
+												#else
+												{
+													_result_void _t109 = x__json2__Decoder_decode_value_T_bool(decoder, &/*mut*/val->is_local);
+													if (_t109.is_error) {
+														_result_void _t110 = {0};
+														_t110.is_error = true;
+														_t110.err = _t109.err;
+														return _t110;
+													}
+													
+ ;
+												}
+												#endif
+											}
+											current_field_info->value.is_decoded = true;
+											break;
+										}
+									}
+								}
+							}// $for
+						}
+					}
+					current_field_info = current_field_info->next;
+				}
+			}
+			current_field_info = struct_fields_info.head;
+			for (;;) {
+				if (current_field_info == ((void*)0)) {
+					break;
+				}
+				if (current_field_info->value.is_required == false) {
+					current_field_info = current_field_info->next;
+					continue;
+				}
+				if (!current_field_info->value.is_decoded) {
+					_result_void _t111 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("missing required field `"), 0xfe10, {.d_s = builtin__tos(current_field_info->value.field_name_str, current_field_info->value.field_name_len)}}, {_S("`"), 0, { .d_c = 0 }}})));
+					if (_t111.is_error) {
+						_result_void _t112 = {0};
+						_t112.is_error = true;
+						_t112.err = _t111.err;
+						return _t112;
+					}
+					
+ ;
+				}
+				current_field_info = current_field_info->next;
+			}
+		} else {
+			_result_void _t113 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected object, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(struct_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t113.is_error) {
+				_result_void _t114 = {0};
+				_t114.is_error = true;
+				_t114.err = _t113.err;
+				return _t114;
+			}
+			
+ ;
+		}
+		x__json2__LinkedList_T_x__json2__StructFieldInfo_free_T_x__json2__StructFieldInfo(&struct_fields_info);
+		return (_result_void){0};
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u64(x__json2__Decoder* decoder, u64* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_u64(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_u64 _t8 = x__json2__Decoder_decode_number_from_string_T_u64(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(u64*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u32(x__json2__Decoder* decoder, u32* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_u32(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_u32 _t8 = x__json2__Decoder_decode_number_from_string_T_u32(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(u32*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u16(x__json2__Decoder* decoder, u16* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_u16(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_u16 _t8 = x__json2__Decoder_decode_number_from_string_T_u16(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(u16*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_u8(x__json2__Decoder* decoder, u8* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		if (value_info.value_kind == x__json2__ValueKind__number) {
+						_result_void _t6 = x__json2__Decoder_decode_number_T_u8(decoder, val);
+			if (_t6.is_error) {
+				_result_void _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ ;
+		} else if (value_info.value_kind == x__json2__ValueKind__string && !decoder->strict) {
+			_result_u8 _t8 = x__json2__Decoder_decode_number_from_string_T_u8(decoder);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			*val = (*(u8*)_t8.data);
+		} else {
+			_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected number, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t10.is_error) {
+				_result_void _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+		}
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_x__json2__Null(x__json2__Decoder* decoder, x__json2__Null* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if true
+	{
+		x__json2__ValueInfo struct_info = decoder->current_node->value;
+		if (struct_info.value_kind == x__json2__ValueKind__null) {
+			x__json2__Null_from_json_null(val);
+			if (decoder->current_node != ((void*)0)) {
+				decoder->current_node = decoder->current_node->next;
+			}
+			return (_result_void){0};
+		}
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__ValueInfo struct_info = decoder->current_node->value;
+		x__json2__LinkedList_T_x__json2__StructFieldInfo struct_fields_info = ((x__json2__LinkedList_T_x__json2__StructFieldInfo){.head = ((void*)0),.tail = ((void*)0),.len = 0,});
+		/* $for field in x.json2.Null.fields */ {
+		}// $for
+		if (struct_info.value_kind == x__json2__ValueKind__object) {
+			int struct_position = struct_info.position;
+			int struct_end = (int)(struct_position + struct_info.length);
+			decoder->current_node = decoder->current_node->next;
+			x__json2__Node_T_x__json2__StructFieldInfo* current_field_info = struct_fields_info.head;
+			for (;;) {
+				if (decoder->current_node == ((void*)0)) {
+					break;
+				}
+				x__json2__ValueInfo key_info = decoder->current_node->value;
+				if (key_info.position >= struct_end) {
+					break;
+				}
+				current_field_info = struct_fields_info.head;
+				for (;;) {
+					if (current_field_info == ((void*)0)) {
+						decoder->current_node = decoder->current_node->next;
+						if (decoder->current_node != ((void*)0)) {
+							int value_end = (int)(decoder->current_node->value.position + decoder->current_node->value.length);
+							for (;;) {
+								if (decoder->current_node == ((void*)0)) {
+									break;
+								}
+								if (decoder->current_node->value.position >= value_end) {
+									break;
+								}
+								decoder->current_node = decoder->current_node->next;
+							}
+						}
+						break;
+					}
+					if (current_field_info->value.is_skip) {
+						if (current_field_info->value.is_required == false) {
+							current_field_info = current_field_info->next;
+							continue;
+						}
+					}
+					if (current_field_info->value.is_omitempty) {
+
+						if (decoder->current_node->next->value.value_kind == (x__json2__ValueKind__null)) {
+							current_field_info = current_field_info->next;
+							continue;
+						}
+						else if (decoder->current_node->next->value.value_kind == (x__json2__ValueKind__string)) {
+							if (decoder->current_node->next->value.length == 2) {
+								current_field_info = current_field_info->next;
+								continue;
+							}
+						}
+						else if (decoder->current_node->next->value.value_kind == (x__json2__ValueKind__number)) {
+							if (builtin__string_at(decoder->json, decoder->current_node->next->value.position) == '0') {
+								if (decoder->current_node->next->value.length == 1) {
+									current_field_info = current_field_info->next;
+									continue;
+								} else if (decoder->current_node->next->value.length == 3) {
+									if (builtin__vmemcmp(decoder->json.str + decoder->current_node->next->value.position, _const_x__json2__float_zero_in_string.str, _const_x__json2__float_zero_in_string.len) == 0) {
+										current_field_info = current_field_info->next;
+										continue;
+									}
+								}
+							}
+						}
+						else {
+						}
+					}
+					if ((int)(key_info.length - 2) == current_field_info->value.json_name_len) {
+						if (builtin__vmemcmp(decoder->json.str + key_info.position + 1, current_field_info->value.json_name_ptr, current_field_info->value.json_name_len) == 0) {
+							/* $for field in x.json2.Null.fields */ {
+							}// $for
+						}
+					}
+					current_field_info = current_field_info->next;
+				}
+			}
+			current_field_info = struct_fields_info.head;
+			for (;;) {
+				if (current_field_info == ((void*)0)) {
+					break;
+				}
+				if (current_field_info->value.is_required == false) {
+					current_field_info = current_field_info->next;
+					continue;
+				}
+				if (!current_field_info->value.is_decoded) {
+					_result_void _t6 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("missing required field `"), 0xfe10, {.d_s = builtin__tos(current_field_info->value.field_name_str, current_field_info->value.field_name_len)}}, {_S("`"), 0, { .d_c = 0 }}})));
+					if (_t6.is_error) {
+						_result_void _t7 = {0};
+						_t7.is_error = true;
+						_t7.err = _t6.err;
+						return _t7;
+					}
+					
+ ;
+				}
+				current_field_info = current_field_info->next;
+			}
+		} else {
+			_result_void _t8 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected object, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(struct_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ ;
+		}
+		x__json2__LinkedList_T_x__json2__StructFieldInfo_free_T_x__json2__StructFieldInfo(&struct_fields_info);
+		return (_result_void){0};
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_value_T_IError(x__json2__Decoder* decoder, IError* val) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+		_result_void _t6 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("cannot decode value with "), 0xfe10, {.d_s = _S("&IError")}}, {_S(" type"), 0, { .d_c = 0 }}})));
+		if (_t6.is_error) {
+			_result_void _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+	}
+	#endif
+	if (decoder->current_node != ((void*)0)) {
+		decoder->current_node = decoder->current_node->next;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_string_T_string(x__json2__Decoder* decoder, string* val) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.value_kind == x__json2__ValueKind__string) {
+		Array_u8 string_buffer = builtin____new_array_with_default(0, string_info.length, sizeof(u8), 0);
+		int buffer_index = 1;
+		int string_index = 1;
+		for (;;) {
+			if (!(string_index < (int)(string_info.length - 1))) break;
+			u8 current_byte = builtin__string_at(decoder->json, (int)(string_info.position + string_index));
+			if (current_byte == '\\') {
+				builtin__array_push_many(&string_buffer, decoder->json.str + string_info.position + buffer_index, (int)(string_index - buffer_index));
+				string_index++;
+				u8 escaped_char = builtin__string_at(decoder->json, (int)(string_info.position + string_index));
+				string_index++;
+
+				if (escaped_char == ('/') || escaped_char == ('"') || escaped_char == ('\\')) {
+					builtin__array_push((array*)&string_buffer, _MOV((u8[]){ escaped_char }));
+				}
+				else if (escaped_char == ('b')) {
+					builtin__array_push((array*)&string_buffer, _MOV((u8[]){ '\b' }));
+				}
+				else if (escaped_char == ('f')) {
+					builtin__array_push((array*)&string_buffer, _MOV((u8[]){ '\f' }));
+				}
+				else if (escaped_char == ('n')) {
+					builtin__array_push((array*)&string_buffer, _MOV((u8[]){ '\n' }));
+				}
+				else if (escaped_char == ('r')) {
+					builtin__array_push((array*)&string_buffer, _MOV((u8[]){ '\r' }));
+				}
+				else if (escaped_char == ('t')) {
+					builtin__array_push((array*)&string_buffer, _MOV((u8[]){ '\t' }));
+				}
+				else if (escaped_char == ('u')) {
+					_result_u64 _t7 = strconv__parse_uint(builtin__string_substr(decoder->json, (int)(string_info.position + string_index), (int)((int)(string_info.position + string_index) + 4)), 16, 32);
+					if (_t7.is_error) {
+						_result_void _t8 = {0};
+						_t8.is_error = true;
+						_t8.err = _t7.err;
+						return _t8;
+					}
+					
+ 					rune unicode_point = ((rune)((*(u64*)_t7.data)));
+					string_index += 4;
+					if (unicode_point < 0xD800 || unicode_point > 0xDFFF) {
+						_PUSH_MANY(&string_buffer, (builtin__rune_bytes(unicode_point)), _t9, Array_u8);
+					} else if (unicode_point >= 0xDC00) {
+						_result_void _t10 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Got trail surrogate: "), 0xf008fea6, {.d_u32 = ((u32)(unicode_point))}}, {_S(" before head surrogate."), 0, { .d_c = 0 }}})));
+						if (_t10.is_error) {
+							_result_void _t11 = {0};
+							_t11.is_error = true;
+							_t11.err = _t10.err;
+							return _t11;
+						}
+						
+ ;
+					} else {
+						if (string_index > (int)(string_info.length - 6)) {
+							_result_void _t12 = x__json2__Decoder_decode_error(decoder, _S("Expected a trail surrogate after a head surrogate, but got no valid escape sequence."));
+							if (_t12.is_error) {
+								_result_void _t13 = {0};
+								_t13.is_error = true;
+								_t13.err = _t12.err;
+								return _t13;
+							}
+							
+ ;
+						}
+						if (!builtin__string__eq(builtin__string_substr(decoder->json, (int)(string_info.position + string_index), (int)((int)(string_info.position + string_index) + 2)), _S("\\u"))) {
+							_result_void _t14 = x__json2__Decoder_decode_error(decoder, _S("Expected a trail surrogate after a head surrogate, but got no valid escape sequence."));
+							if (_t14.is_error) {
+								_result_void _t15 = {0};
+								_t15.is_error = true;
+								_t15.err = _t14.err;
+								return _t15;
+							}
+							
+ ;
+						}
+						string_index += 2;
+						_result_u64 _t16 = strconv__parse_uint(builtin__string_substr(decoder->json, (int)(string_info.position + string_index), (int)((int)(string_info.position + string_index) + 4)), 16, 32);
+						if (_t16.is_error) {
+							_result_void _t17 = {0};
+							_t17.is_error = true;
+							_t17.err = _t16.err;
+							return _t17;
+						}
+						
+ 						rune unicode_point2 = ((rune)((*(u64*)_t16.data)));
+						string_index += 4;
+						if (unicode_point2 < 0xDC00) {
+							_result_void _t18 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected a trail surrogate after a head surrogate, but got "), 0xf008fea6, {.d_u32 = ((u32)(unicode_point))}}, {_S("."), 0, { .d_c = 0 }}})));
+							if (_t18.is_error) {
+								_result_void _t19 = {0};
+								_t19.is_error = true;
+								_t19.err = _t18.err;
+								return _t19;
+							}
+							
+ ;
+						}
+						rune final_unicode_point = (rune)((rune)(((unicode_point2 & 0x3FF)) + ((((unicode_point & 0x3FF)) << 10))) + 0x10000);
+						_PUSH_MANY(&string_buffer, (builtin__rune_bytes(final_unicode_point)), _t20, Array_u8);
+					}
+				}
+				else {
+				}
+				buffer_index = string_index;
+			} else {
+				string_index++;
+			}
+		}
+		builtin__array_push_many(&string_buffer, decoder->json.str + string_info.position + buffer_index, (int)(string_index - buffer_index));
+		*val = Array_u8_bytestr(string_buffer);
+	} else {
+		_result_void _t21 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected string, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(string_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		if (_t21.is_error) {
+			_result_void _t22 = {0};
+			_t22.is_error = true;
+			_t22.err = _t21.err;
+			return _t22;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_array_T_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any* val) {
+	x__json2__ValueInfo array_info = decoder->current_node->value;
+	if (array_info.value_kind == x__json2__ValueKind__array) {
+		decoder->current_node = decoder->current_node->next;
+		int array_position = array_info.position;
+		int array_end = (int)(array_position + array_info.length);
+		for (;;) {
+			if (decoder->current_node == ((void*)0) || decoder->current_node->value.position >= array_end) {
+				break;
+			}
+			x__json2__Any array_element = (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298};
+			_result_void _t1 = x__json2__Decoder_decode_value_T_x__json2__Any(decoder, &array_element);
+			if (_t1.is_error) {
+				_result_void _t2 = {0};
+				_t2.is_error = true;
+				_t2.err = _t1.err;
+				return _t2;
+			}
+			
+ ;
+			builtin__array_push((array*)val, _MOV((x__json2__Any[]){ array_element }));
+		}
+	} else {
+		_result_void _t4 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected array, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(array_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		if (_t4.is_error) {
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_map_T_string_x__json2__Any(x__json2__Decoder* decoder, Map_string_x__json2__Any* val) {
+	x__json2__ValueInfo map_info = decoder->current_node->value;
+	if (map_info.value_kind == x__json2__ValueKind__object) {
+		int map_position = map_info.position;
+		int map_end = (int)(map_position + map_info.length);
+		decoder->current_node = decoder->current_node->next;
+		for (;;) {
+			if (decoder->current_node == ((void*)0) || decoder->current_node->value.position >= map_end) {
+				break;
+			}
+			x__json2__ValueInfo key_info = decoder->current_node->value;
+			if (key_info.position >= map_end) {
+				break;
+			}
+			string key = builtin__string_substr(decoder->json, (int)(key_info.position + 1), (int)((int)(key_info.position + key_info.length) - 1));
+			decoder->current_node = decoder->current_node->next;
+			x__json2__ValueInfo value_info = decoder->current_node->value;
+			if ((int)(value_info.position + value_info.length) >= map_end) {
+				break;
+			}
+			x__json2__Any map_value = (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298};
+			#if false
+			{
+			}
+			#else
+			{
+				builtin__map_set(val, &(string[]){key}, &(x__json2__Any[]) { map_value });
+			}
+			#endif
+			_result_void _t2 = x__json2__Decoder_decode_value_T_x__json2__Any(decoder, (voidptr)&(*(x__json2__Any*)builtin__map_get((val), &(string[]){key}, &(x__json2__Any[]){ (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298} })));
+			if (_t2.is_error) {
+				_result_void _t3 = {0};
+				_t3.is_error = true;
+				_t3.err = _t2.err;
+				return _t3;
+			}
+			
+ ;
+		}
+	} else {
+		_result_void _t4 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected object, but got "), 0xfe10, {.d_s = x__json2__ValueKind_str(map_info.value_kind)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		if (_t4.is_error) {
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_f64(x__json2__Decoder* decoder, f64* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		*val = strconv__atof_quick(str);
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_f32(x__json2__Decoder* decoder, f32* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		*val = ((f32)(strconv__atof_quick(str)));
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i64(x__json2__Decoder* decoder, i64* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif true
+		_result_i64 _t2 = strconv__atoi64(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(i64*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_int(x__json2__Decoder* decoder, int* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		_result_int _t2 = strconv__atoi(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(int*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i32(x__json2__Decoder* decoder, i32* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif true
+		_result_i32 _t2 = strconv__atoi32(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(i32*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i16(x__json2__Decoder* decoder, i16* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif true
+		_result_i16 _t2 = strconv__atoi16(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(i16*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_i8(x__json2__Decoder* decoder, i8* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if true
+		_result_i8 _t2 = strconv__atoi8(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(i8*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u64(x__json2__Decoder* decoder, u64* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		_result_u64 _t2 = strconv__atou64(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(u64*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u32(x__json2__Decoder* decoder, u32* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		_result_u32 _t2 = strconv__atou32(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(u32*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u16(x__json2__Decoder* decoder, u16* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		_result_u16 _t2 = strconv__atou16(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(u16*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_number_T_u8(x__json2__Decoder* decoder, u8* val) {
+	x__json2__ValueInfo number_info = decoder->current_node->value;
+	string str = builtin__string_substr(decoder->json, number_info.position, (int)(number_info.position + number_info.length));
+	#if false
+	#elif false
+	#elif false
+	#elif false
+	#elif true
+		_result_u8 _t2 = strconv__atou8(str);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		*val = (*(u8*)_t2.data);
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#elif false
+	#else
+	#endif
+	
+	return (_result_void){0};
+}
+VV_LOC _result_f64 x__json2__Decoder_decode_number_from_string_T_f64(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_f64){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_f64 _t3;
+		builtin___result_ok(&(f64[]) { ((f64)(strconv__atof_quick(str))) }, (_result*)(&_t3), sizeof(f64));
+		 
+		return _t3;
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_f64){0};
+}
+VV_LOC _result_f32 x__json2__Decoder_decode_number_from_string_T_f32(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_f32){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_f32 _t3;
+		builtin___result_ok(&(f32[]) { ((f32)(((f32)(strconv__atof_quick(str))))) }, (_result*)(&_t3), sizeof(f32));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_f32){0};
+}
+VV_LOC _result_i64 x__json2__Decoder_decode_number_from_string_T_i64(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_i64){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_i64 _t4 = strconv__atoi64(str);
+		if (_t4.is_error) {
+			_result_i64 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_i64 _t3;
+		builtin___result_ok(&(i64[]) { ((i64)((*(i64*)_t4.data))) }, (_result*)(&_t3), sizeof(i64));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_i64){0};
+}
+VV_LOC _result_int x__json2__Decoder_decode_number_from_string_T_int(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_int _t4 = strconv__atoi(str);
+		if (_t4.is_error) {
+			_result_int _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_int _t3;
+		builtin___result_ok(&(int[]) { ((int)((*(int*)_t4.data))) }, (_result*)(&_t3), sizeof(int));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_int){0};
+}
+VV_LOC _result_i32 x__json2__Decoder_decode_number_from_string_T_i32(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_i32){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_i32 _t4 = strconv__atoi32(str);
+		if (_t4.is_error) {
+			_result_i32 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_i32 _t3;
+		builtin___result_ok(&(i32[]) { ((i32)((*(i32*)_t4.data))) }, (_result*)(&_t3), sizeof(i32));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_i32){0};
+}
+VV_LOC _result_i16 x__json2__Decoder_decode_number_from_string_T_i16(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_i16){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif true
+	{
+		_result_i16 _t4 = strconv__atoi16(str);
+		if (_t4.is_error) {
+			_result_i16 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_i16 _t3;
+		builtin___result_ok(&(i16[]) { ((i16)((*(i16*)_t4.data))) }, (_result*)(&_t3), sizeof(i16));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_i16){0};
+}
+VV_LOC _result_i8 x__json2__Decoder_decode_number_from_string_T_i8(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_i8){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if true
+	{
+		_result_i8 _t4 = strconv__atoi8(str);
+		if (_t4.is_error) {
+			_result_i8 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_i8 _t3;
+		builtin___result_ok(&(i8[]) { ((i8)((*(i8*)_t4.data))) }, (_result*)(&_t3), sizeof(i8));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_i8){0};
+}
+VV_LOC _result_u64 x__json2__Decoder_decode_number_from_string_T_u64(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_u64){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_u64 _t4 = strconv__atou64(str);
+		if (_t4.is_error) {
+			_result_u64 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_u64 _t3;
+		builtin___result_ok(&(u64[]) { ((u64)((*(u64*)_t4.data))) }, (_result*)(&_t3), sizeof(u64));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_u64){0};
+}
+VV_LOC _result_u32 x__json2__Decoder_decode_number_from_string_T_u32(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_u32){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_u32 _t4 = strconv__atou32(str);
+		if (_t4.is_error) {
+			_result_u32 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_u32 _t3;
+		builtin___result_ok(&(u32[]) { ((u32)((*(u32*)_t4.data))) }, (_result*)(&_t3), sizeof(u32));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_u32){0};
+}
+VV_LOC _result_u16 x__json2__Decoder_decode_number_from_string_T_u16(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_u16){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_u16 _t4 = strconv__atou16(str);
+		if (_t4.is_error) {
+			_result_u16 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_u16 _t3;
+		builtin___result_ok(&(u16[]) { ((u16)((*(u16*)_t4.data))) }, (_result*)(&_t3), sizeof(u16));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_u16){0};
+}
+VV_LOC _result_u8 x__json2__Decoder_decode_number_from_string_T_u8(x__json2__Decoder* decoder) {
+	x__json2__ValueInfo string_info = decoder->current_node->value;
+	if (string_info.length < 2) {
+		return (_result_u8){ .is_error=true, .err=builtin___v_error(_S("invalid string for number conversion")), .data={E_STRUCT} };
+	}
+	string str = builtin__string_substr(decoder->json, (int)(string_info.position + 1), (int)((int)(string_info.position + string_info.length) - 1));
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		_result_u8 _t4 = strconv__atou8(str);
+		if (_t4.is_error) {
+			_result_u8 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		_result_u8 _t3;
+		builtin___result_ok(&(u8[]) { ((u8)((*(u8*)_t4.data))) }, (_result*)(&_t3), sizeof(u8));
+		 
+		return _t3;
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_u8){0};
+}
+VV_LOC Array_x__json2__Any x__json2__copy_type_T_Array_x__json2__Any(Array_x__json2__Any _t) {
+	return builtin____new_array_with_default(0, 0, sizeof(x__json2__Any), 0);
+}
+VV_LOC bool x__json2__copy_type_T_bool(bool _t) {
+	return 0;
+}
+VV_LOC f64 x__json2__copy_type_T_f64(f64 _t) {
+	return 0;
+}
+VV_LOC f32 x__json2__copy_type_T_f32(f32 _t) {
+	return 0;
+}
+VV_LOC i64 x__json2__copy_type_T_i64(i64 _t) {
+	return 0;
+}
+VV_LOC int x__json2__copy_type_T_int(int _t) {
+	return 0;
+}
+VV_LOC i32 x__json2__copy_type_T_i32(i32 _t) {
+	return 0;
+}
+VV_LOC i16 x__json2__copy_type_T_i16(i16 _t) {
+	return 0;
+}
+VV_LOC i8 x__json2__copy_type_T_i8(i8 _t) {
+	return 0;
+}
+VV_LOC Map_string_x__json2__Any x__json2__copy_type_T_Map_string_x__json2__Any(Map_string_x__json2__Any _t) {
+	return builtin__new_map(sizeof(string), sizeof(x__json2__Any), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+}
+VV_LOC string x__json2__copy_type_T_string(string _t) {
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC time__Time x__json2__copy_type_T_time__Time(time__Time _t) {
+	return ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,});
+}
+VV_LOC u64 x__json2__copy_type_T_u64(u64 _t) {
+	return 0;
+}
+VV_LOC u32 x__json2__copy_type_T_u32(u32 _t) {
+	return 0;
+}
+VV_LOC u16 x__json2__copy_type_T_u16(u16 _t) {
+	return 0;
+}
+VV_LOC u8 x__json2__copy_type_T_u8(u8 _t) {
+	return 0;
+}
+VV_LOC x__json2__Null x__json2__copy_type_T_x__json2__Null(x__json2__Null _t) {
+	return ((x__json2__Null){E_STRUCT});
+}
+VV_LOC _result_x__json2__Any x__json2__Decoder_get_decoded_sumtype_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype) {
+	#if true
+	{
+		/* $for v in x.json2.Any.variants */ {
+				VariantData v = {0};
+			/* variant 0 : []json2.Any */ {
+				v.typ = 298;	// 
+				if ((initialized_sumtype)._typ == 298) {
+					#if true
+					{
+						Array_x__json2__Any val = x__json2__copy_type_T_Array_x__json2__Any((*initialized_sumtype._Array_x__json2__Any));
+						_result_void _t3 = x__json2__Decoder_decode_value_T_Array_x__json2__Any(decoder, &/*mut*/val);
+						if (_t3.is_error) {
+							_result_x__json2__Any _t4 = {0};
+							_t4.is_error = true;
+							_t4.err = _t3.err;
+							return _t4;
+						}
+						
+ ;
+						_result_x__json2__Any _t5;
+						builtin___result_ok(&(x__json2__Any[]) { Array_x__json2__Any_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t5), sizeof(x__json2__Any));
+						 
+						return _t5;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 1 : bool */ {
+				v.typ = 19;	// 
+				if ((initialized_sumtype)._typ == 19) {
+					#if true
+					{
+						bool val = x__json2__copy_type_T_bool((*initialized_sumtype._bool));
+						_result_void _t7 = x__json2__Decoder_decode_value_T_bool(decoder, &/*mut*/val);
+						if (_t7.is_error) {
+							_result_x__json2__Any _t8 = {0};
+							_t8.is_error = true;
+							_t8.err = _t7.err;
+							return _t8;
+						}
+						
+ ;
+						_result_x__json2__Any _t9;
+						builtin___result_ok(&(x__json2__Any[]) { bool_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t9), sizeof(x__json2__Any));
+						 
+						return _t9;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 2 : f64 */ {
+				v.typ = 17;	// 
+				if ((initialized_sumtype)._typ == 17) {
+					#if true
+					{
+						f64 val = x__json2__copy_type_T_f64((*initialized_sumtype._f64));
+						_result_void _t11 = x__json2__Decoder_decode_value_T_f64(decoder, &/*mut*/val);
+						if (_t11.is_error) {
+							_result_x__json2__Any _t12 = {0};
+							_t12.is_error = true;
+							_t12.err = _t11.err;
+							return _t12;
+						}
+						
+ ;
+						_result_x__json2__Any _t13;
+						builtin___result_ok(&(x__json2__Any[]) { f64_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t13), sizeof(x__json2__Any));
+						 
+						return _t13;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 3 : f32 */ {
+				v.typ = 16;	// 
+				if ((initialized_sumtype)._typ == 16) {
+					#if true
+					{
+						f32 val = x__json2__copy_type_T_f32((*initialized_sumtype._f32));
+						_result_void _t15 = x__json2__Decoder_decode_value_T_f32(decoder, &/*mut*/val);
+						if (_t15.is_error) {
+							_result_x__json2__Any _t16 = {0};
+							_t16.is_error = true;
+							_t16.err = _t15.err;
+							return _t16;
+						}
+						
+ ;
+						_result_x__json2__Any _t17;
+						builtin___result_ok(&(x__json2__Any[]) { f32_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t17), sizeof(x__json2__Any));
+						 
+						return _t17;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 4 : i64 */ {
+				v.typ = 9;	// 
+				if ((initialized_sumtype)._typ == 9) {
+					#if true
+					{
+						i64 val = x__json2__copy_type_T_i64((*initialized_sumtype._i64));
+						_result_void _t19 = x__json2__Decoder_decode_value_T_i64(decoder, &/*mut*/val);
+						if (_t19.is_error) {
+							_result_x__json2__Any _t20 = {0};
+							_t20.is_error = true;
+							_t20.err = _t19.err;
+							return _t20;
+						}
+						
+ ;
+						_result_x__json2__Any _t21;
+						builtin___result_ok(&(x__json2__Any[]) { i64_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t21), sizeof(x__json2__Any));
+						 
+						return _t21;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 5 : int */ {
+				v.typ = 8;	// 
+				if ((initialized_sumtype)._typ == 8) {
+					#if true
+					{
+						int val = x__json2__copy_type_T_int((*initialized_sumtype._int));
+						_result_void _t23 = x__json2__Decoder_decode_value_T_int(decoder, &/*mut*/val);
+						if (_t23.is_error) {
+							_result_x__json2__Any _t24 = {0};
+							_t24.is_error = true;
+							_t24.err = _t23.err;
+							return _t24;
+						}
+						
+ ;
+						_result_x__json2__Any _t25;
+						builtin___result_ok(&(x__json2__Any[]) { int_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t25), sizeof(x__json2__Any));
+						 
+						return _t25;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 6 : i32 */ {
+				v.typ = 7;	// 
+				if ((initialized_sumtype)._typ == 7) {
+					#if true
+					{
+						i32 val = x__json2__copy_type_T_i32((*initialized_sumtype._i32));
+						_result_void _t27 = x__json2__Decoder_decode_value_T_i32(decoder, &/*mut*/val);
+						if (_t27.is_error) {
+							_result_x__json2__Any _t28 = {0};
+							_t28.is_error = true;
+							_t28.err = _t27.err;
+							return _t28;
+						}
+						
+ ;
+						_result_x__json2__Any _t29;
+						builtin___result_ok(&(x__json2__Any[]) { i32_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t29), sizeof(x__json2__Any));
+						 
+						return _t29;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 7 : i16 */ {
+				v.typ = 6;	// 
+				if ((initialized_sumtype)._typ == 6) {
+					#if true
+					{
+						i16 val = x__json2__copy_type_T_i16((*initialized_sumtype._i16));
+						_result_void _t31 = x__json2__Decoder_decode_value_T_i16(decoder, &/*mut*/val);
+						if (_t31.is_error) {
+							_result_x__json2__Any _t32 = {0};
+							_t32.is_error = true;
+							_t32.err = _t31.err;
+							return _t32;
+						}
+						
+ ;
+						_result_x__json2__Any _t33;
+						builtin___result_ok(&(x__json2__Any[]) { i16_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t33), sizeof(x__json2__Any));
+						 
+						return _t33;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 8 : i8 */ {
+				v.typ = 5;	// 
+				if ((initialized_sumtype)._typ == 5) {
+					#if true
+					{
+						i8 val = x__json2__copy_type_T_i8((*initialized_sumtype._i8));
+						_result_void _t35 = x__json2__Decoder_decode_value_T_i8(decoder, &/*mut*/val);
+						if (_t35.is_error) {
+							_result_x__json2__Any _t36 = {0};
+							_t36.is_error = true;
+							_t36.err = _t35.err;
+							return _t36;
+						}
+						
+ ;
+						_result_x__json2__Any _t37;
+						builtin___result_ok(&(x__json2__Any[]) { i8_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t37), sizeof(x__json2__Any));
+						 
+						return _t37;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 9 : map[string]json2.Any */ {
+				v.typ = 297;	// 
+				if ((initialized_sumtype)._typ == 297) {
+					#if true
+					{
+						Map_string_x__json2__Any val = x__json2__copy_type_T_Map_string_x__json2__Any((*initialized_sumtype._Map_string_x__json2__Any));
+						_result_void _t39 = x__json2__Decoder_decode_value_T_Map_string_x__json2__Any(decoder, &/*mut*/val);
+						if (_t39.is_error) {
+							_result_x__json2__Any _t40 = {0};
+							_t40.is_error = true;
+							_t40.err = _t39.err;
+							return _t40;
+						}
+						
+ ;
+						_result_x__json2__Any _t41;
+						builtin___result_ok(&(x__json2__Any[]) { Map_string_x__json2__Any_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t41), sizeof(x__json2__Any));
+						 
+						return _t41;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 10 : string */ {
+				v.typ = 21;	// 
+				if ((initialized_sumtype)._typ == 21) {
+					#if true
+					{
+						string val = x__json2__copy_type_T_string((*initialized_sumtype._string));
+						_result_void _t43 = x__json2__Decoder_decode_value_T_string(decoder, &/*mut*/val);
+						if (_t43.is_error) {
+							_result_x__json2__Any _t44 = {0};
+							_t44.is_error = true;
+							_t44.err = _t43.err;
+							return _t44;
+						}
+						
+ ;
+						_result_x__json2__Any _t45;
+						builtin___result_ok(&(x__json2__Any[]) { string_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t45), sizeof(x__json2__Any));
+						 
+						return _t45;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 11 : time.Time */ {
+				v.typ = 359;	// 
+				if ((initialized_sumtype)._typ == 359) {
+					#if true
+					{
+						time__Time val = x__json2__copy_type_T_time__Time((*initialized_sumtype._time__Time));
+						_result_void _t47 = x__json2__Decoder_decode_value_T_time__Time(decoder, &/*mut*/val);
+						if (_t47.is_error) {
+							_result_x__json2__Any _t48 = {0};
+							_t48.is_error = true;
+							_t48.err = _t47.err;
+							return _t48;
+						}
+						
+ ;
+						_result_x__json2__Any _t49;
+						builtin___result_ok(&(x__json2__Any[]) { time__Time_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t49), sizeof(x__json2__Any));
+						 
+						return _t49;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 12 : u64 */ {
+				v.typ = 14;	// 
+				if ((initialized_sumtype)._typ == 14) {
+					#if true
+					{
+						u64 val = x__json2__copy_type_T_u64((*initialized_sumtype._u64));
+						_result_void _t51 = x__json2__Decoder_decode_value_T_u64(decoder, &/*mut*/val);
+						if (_t51.is_error) {
+							_result_x__json2__Any _t52 = {0};
+							_t52.is_error = true;
+							_t52.err = _t51.err;
+							return _t52;
+						}
+						
+ ;
+						_result_x__json2__Any _t53;
+						builtin___result_ok(&(x__json2__Any[]) { u64_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t53), sizeof(x__json2__Any));
+						 
+						return _t53;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 13 : u32 */ {
+				v.typ = 13;	// 
+				if ((initialized_sumtype)._typ == 13) {
+					#if true
+					{
+						u32 val = x__json2__copy_type_T_u32((*initialized_sumtype._u32));
+						_result_void _t55 = x__json2__Decoder_decode_value_T_u32(decoder, &/*mut*/val);
+						if (_t55.is_error) {
+							_result_x__json2__Any _t56 = {0};
+							_t56.is_error = true;
+							_t56.err = _t55.err;
+							return _t56;
+						}
+						
+ ;
+						_result_x__json2__Any _t57;
+						builtin___result_ok(&(x__json2__Any[]) { u32_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t57), sizeof(x__json2__Any));
+						 
+						return _t57;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 14 : u16 */ {
+				v.typ = 12;	// 
+				if ((initialized_sumtype)._typ == 12) {
+					#if true
+					{
+						u16 val = x__json2__copy_type_T_u16((*initialized_sumtype._u16));
+						_result_void _t59 = x__json2__Decoder_decode_value_T_u16(decoder, &/*mut*/val);
+						if (_t59.is_error) {
+							_result_x__json2__Any _t60 = {0};
+							_t60.is_error = true;
+							_t60.err = _t59.err;
+							return _t60;
+						}
+						
+ ;
+						_result_x__json2__Any _t61;
+						builtin___result_ok(&(x__json2__Any[]) { u16_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t61), sizeof(x__json2__Any));
+						 
+						return _t61;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 15 : u8 */ {
+				v.typ = 11;	// 
+				if ((initialized_sumtype)._typ == 11) {
+					#if true
+					{
+						u8 val = x__json2__copy_type_T_u8((*initialized_sumtype._u8));
+						_result_void _t63 = x__json2__Decoder_decode_value_T_u8(decoder, &/*mut*/val);
+						if (_t63.is_error) {
+							_result_x__json2__Any _t64 = {0};
+							_t64.is_error = true;
+							_t64.err = _t63.err;
+							return _t64;
+						}
+						
+ ;
+						_result_x__json2__Any _t65;
+						builtin___result_ok(&(x__json2__Any[]) { u8_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t65), sizeof(x__json2__Any));
+						 
+						return _t65;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 16 : json2.Null */ {
+				v.typ = 296;	// 
+				if ((initialized_sumtype)._typ == 296) {
+					#if true
+					{
+						x__json2__Null val = x__json2__copy_type_T_x__json2__Null((*initialized_sumtype._x__json2__Null));
+						_result_void _t67 = x__json2__Decoder_decode_value_T_x__json2__Null(decoder, &/*mut*/val);
+						if (_t67.is_error) {
+							_result_x__json2__Any _t68 = {0};
+							_t68.is_error = true;
+							_t68.err = _t67.err;
+							return _t68;
+						}
+						
+ ;
+						_result_x__json2__Any _t69;
+						builtin___result_ok(&(x__json2__Any[]) { x__json2__Null_to_sumtype_x__json2__Any(&val, false) }, (_result*)(&_t69), sizeof(x__json2__Any));
+						 
+						return _t69;
+					}
+					#else
+					{
+					}
+					#endif
+				}
+			}
+		}// $for
+	}
+	#endif
+	_result_void _t70 = x__json2__Decoder_decode_error(decoder, _S("could not decode resolved sumtype (should not happen)"));
+	if (_t70.is_error) {
+		_result_x__json2__Any _t71 = {0};
+		_t71.is_error = true;
+		_t71.err = _t70.err;
+		return _t71;
+	}
+	
+ ;
+	_result_x__json2__Any _t72;
+	builtin___result_ok(&(x__json2__Any[]) { initialized_sumtype }, (_result*)(&_t72), sizeof(x__json2__Any));
+	 
+	return _t72;
+}
+VV_LOC bool x__json2__Decoder_check_element_type_valid_T_Array_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any element, x__json2__Node_T_x__json2__ValueInfo* current_node) {
+	if (current_node == ((void*)0)) {
+		#if true || false
+		{
+			return false;
+		}
+		#endif
+		return true;
+	}
+	#if false
+	{
+	}
+	#endif
+	switch (current_node->value.value_kind) {
+		case x__json2__ValueKind__string: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__number: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__boolean: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__null: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__array: {
+			#if true
+			{
+				return x__json2__Decoder_check_array_type_valid_T_x__json2__Any(decoder, element, current_node->next);
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__object: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+	}
+	
+	return false;
+}
+VV_LOC bool x__json2__Decoder_check_element_type_valid_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any element, x__json2__Node_T_x__json2__ValueInfo* current_node) {
+	if (current_node == ((void*)0)) {
+		#if false || false
+		{
+		}
+		#endif
+		return true;
+	}
+	#if true
+	{
+		return true;
+	}
+	#endif
+	switch (current_node->value.value_kind) {
+		case x__json2__ValueKind__string: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__number: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__boolean: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__null: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__array: {
+			#if false
+			{
+			}
+			#endif
+			break;
+		}
+		case x__json2__ValueKind__object: {
+			#if false
+			{
+			}
+			#elif false
+			{
+			}
+			#endif
+			break;
+		}
+	}
+	
+	return false;
+}
+VV_LOC x__json2__Any x__json2__get_array_element_type_T_x__json2__Any(Array_x__json2__Any _arr) {
+	return (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298};
+}
+VV_LOC bool x__json2__Decoder_check_array_type_valid_T_x__json2__Any(x__json2__Decoder* decoder, Array_x__json2__Any arr, x__json2__Node_T_x__json2__ValueInfo* current_node) {
+	return x__json2__Decoder_check_element_type_valid_T_x__json2__Any(decoder, x__json2__get_array_element_type_T_x__json2__Any(arr), current_node);
+}
+VV_LOC bool x__json2__Decoder_get_array_type_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype) {
+	#if true
+	{
+		/* $for v in x.json2.Any.variants */ {
+				VariantData v = {0};
+			/* variant 0 : []json2.Any */ {
+				v.typ = 298;	// 
+				if ((initialized_sumtype)._typ == 298) {
+					#if true
+					{
+						return x__json2__Decoder_check_element_type_valid_T_Array_x__json2__Any(decoder, (*initialized_sumtype._Array_x__json2__Any), decoder->current_node);
+					}
+					#endif
+				}
+			}
+			/* variant 1 : bool */ {
+				v.typ = 19;	// 
+				if ((initialized_sumtype)._typ == 19) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 2 : f64 */ {
+				v.typ = 17;	// 
+				if ((initialized_sumtype)._typ == 17) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 3 : f32 */ {
+				v.typ = 16;	// 
+				if ((initialized_sumtype)._typ == 16) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 4 : i64 */ {
+				v.typ = 9;	// 
+				if ((initialized_sumtype)._typ == 9) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 5 : int */ {
+				v.typ = 8;	// 
+				if ((initialized_sumtype)._typ == 8) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 6 : i32 */ {
+				v.typ = 7;	// 
+				if ((initialized_sumtype)._typ == 7) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 7 : i16 */ {
+				v.typ = 6;	// 
+				if ((initialized_sumtype)._typ == 6) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 8 : i8 */ {
+				v.typ = 5;	// 
+				if ((initialized_sumtype)._typ == 5) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 9 : map[string]json2.Any */ {
+				v.typ = 297;	// 
+				if ((initialized_sumtype)._typ == 297) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 10 : string */ {
+				v.typ = 21;	// 
+				if ((initialized_sumtype)._typ == 21) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 11 : time.Time */ {
+				v.typ = 359;	// 
+				if ((initialized_sumtype)._typ == 359) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 12 : u64 */ {
+				v.typ = 14;	// 
+				if ((initialized_sumtype)._typ == 14) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 13 : u32 */ {
+				v.typ = 13;	// 
+				if ((initialized_sumtype)._typ == 13) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 14 : u16 */ {
+				v.typ = 12;	// 
+				if ((initialized_sumtype)._typ == 12) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 15 : u8 */ {
+				v.typ = 11;	// 
+				if ((initialized_sumtype)._typ == 11) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 16 : json2.Null */ {
+				v.typ = 296;	// 
+				if ((initialized_sumtype)._typ == 296) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+		}// $for
+	}
+	#endif
+	return false;
+}
+VV_LOC x__json2__Any x__json2__get_map_element_type_T_string_x__json2__Any(Map_string_x__json2__Any _m) {
+	return (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298};
+}
+VV_LOC bool x__json2__Decoder_check_map_type_valid_T_Map_string_x__json2__Any(x__json2__Decoder* decoder, Map_string_x__json2__Any m, x__json2__Node_T_x__json2__ValueInfo* current_node) {
+	x__json2__Any element = x__json2__get_map_element_type_T_string_x__json2__Any(m);
+	return x__json2__Decoder_check_element_type_valid_T_x__json2__Any(decoder, element, current_node);
+}
+VV_LOC bool x__json2__Decoder_get_map_type_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype) {
+	#if true
+	{
+		/* $for v in x.json2.Any.variants */ {
+				VariantData v = {0};
+			/* variant 0 : []json2.Any */ {
+				v.typ = 298;	// 
+				if ((initialized_sumtype)._typ == 298) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 1 : bool */ {
+				v.typ = 19;	// 
+				if ((initialized_sumtype)._typ == 19) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 2 : f64 */ {
+				v.typ = 17;	// 
+				if ((initialized_sumtype)._typ == 17) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 3 : f32 */ {
+				v.typ = 16;	// 
+				if ((initialized_sumtype)._typ == 16) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 4 : i64 */ {
+				v.typ = 9;	// 
+				if ((initialized_sumtype)._typ == 9) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 5 : int */ {
+				v.typ = 8;	// 
+				if ((initialized_sumtype)._typ == 8) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 6 : i32 */ {
+				v.typ = 7;	// 
+				if ((initialized_sumtype)._typ == 7) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 7 : i16 */ {
+				v.typ = 6;	// 
+				if ((initialized_sumtype)._typ == 6) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 8 : i8 */ {
+				v.typ = 5;	// 
+				if ((initialized_sumtype)._typ == 5) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 9 : map[string]json2.Any */ {
+				v.typ = 297;	// 
+				if ((initialized_sumtype)._typ == 297) {
+					#if true
+					{
+						Map_string_x__json2__Any val = x__json2__copy_type_T_Map_string_x__json2__Any((*initialized_sumtype._Map_string_x__json2__Any));
+						if (decoder->current_node->next != ((void*)0)) {
+							return x__json2__Decoder_check_map_type_valid_T_Map_string_x__json2__Any(decoder, val, decoder->current_node->next->next);
+						} else {
+							return x__json2__Decoder_check_map_type_valid_T_Map_string_x__json2__Any(decoder, val, ((void*)0));
+						}
+					}
+					#endif
+				}
+			}
+			/* variant 10 : string */ {
+				v.typ = 21;	// 
+				if ((initialized_sumtype)._typ == 21) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 11 : time.Time */ {
+				v.typ = 359;	// 
+				if ((initialized_sumtype)._typ == 359) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 12 : u64 */ {
+				v.typ = 14;	// 
+				if ((initialized_sumtype)._typ == 14) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 13 : u32 */ {
+				v.typ = 13;	// 
+				if ((initialized_sumtype)._typ == 13) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 14 : u16 */ {
+				v.typ = 12;	// 
+				if ((initialized_sumtype)._typ == 12) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 15 : u8 */ {
+				v.typ = 11;	// 
+				if ((initialized_sumtype)._typ == 11) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 16 : json2.Null */ {
+				v.typ = 296;	// 
+				if ((initialized_sumtype)._typ == 296) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+		}// $for
+	}
+	#endif
+	return false;
+}
+VV_LOC bool x__json2__Decoder_check_struct_type_valid_T_time__Time(x__json2__Decoder* decoder, time__Time s, x__json2__Node_T_x__json2__ValueInfo current_node) {
+	x__json2__Node_T_x__json2__ValueInfo* type_field_node = decoder->current_node->next;
+	int map_position = current_node.value.position;
+	int map_end = (int)(map_position + current_node.value.length);
+	string type_field = _S("\"_type\"");
+	for (;;) {
+		if (type_field_node == ((void*)0)) {
+			break;
+		}
+		x__json2__ValueInfo key_info = type_field_node->value;
+		if (key_info.position >= map_end) {
+			type_field_node = ((void*)0);
+			break;
+		}
+		if ((int)(key_info.position + type_field.len) <= decoder->json.len && 0 == builtin__vmemcmp(decoder->json.str + key_info.position, type_field.str, type_field.len)) {
+			type_field_node = type_field_node->next;
+			break;
+		} else {
+			type_field_node = type_field_node->next;
+		}
+	}
+	if (type_field_node == ((void*)0)) {
+		return false;
+	}
+	string variant_name = _S("time.Time");
+	if ((int)(type_field_node->value.length - 2) == variant_name.len) {
+		{ // Unsafe block
+		}
+		if ((int)((int)(type_field_node->value.position + 1) + variant_name.len) <= decoder->json.len && 0 == builtin__vmemcmp(decoder->json.str + type_field_node->value.position + 1, variant_name.str, variant_name.len)) {
+			return true;
+		}
+	}
+	return false;
+}
+VV_LOC bool x__json2__Decoder_check_struct_type_valid_T_x__json2__Null(x__json2__Decoder* decoder, x__json2__Null s, x__json2__Node_T_x__json2__ValueInfo current_node) {
+	x__json2__Node_T_x__json2__ValueInfo* type_field_node = decoder->current_node->next;
+	int map_position = current_node.value.position;
+	int map_end = (int)(map_position + current_node.value.length);
+	string type_field = _S("\"_type\"");
+	for (;;) {
+		if (type_field_node == ((void*)0)) {
+			break;
+		}
+		x__json2__ValueInfo key_info = type_field_node->value;
+		if (key_info.position >= map_end) {
+			type_field_node = ((void*)0);
+			break;
+		}
+		if ((int)(key_info.position + type_field.len) <= decoder->json.len && 0 == builtin__vmemcmp(decoder->json.str + key_info.position, type_field.str, type_field.len)) {
+			type_field_node = type_field_node->next;
+			break;
+		} else {
+			type_field_node = type_field_node->next;
+		}
+	}
+	if (type_field_node == ((void*)0)) {
+		return false;
+	}
+	string variant_name = _S("json2.Null");
+	if ((int)(type_field_node->value.length - 2) == variant_name.len) {
+		{ // Unsafe block
+		}
+		if ((int)((int)(type_field_node->value.position + 1) + variant_name.len) <= decoder->json.len && 0 == builtin__vmemcmp(decoder->json.str + type_field_node->value.position + 1, variant_name.str, variant_name.len)) {
+			return true;
+		}
+	}
+	return false;
+}
+VV_LOC bool x__json2__Decoder_get_struct_type_workaround_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any initialized_sumtype) {
+	#if true
+	{
+		/* $for v in x.json2.Any.variants */ {
+				VariantData v = {0};
+			/* variant 0 : []json2.Any */ {
+				v.typ = 298;	// 
+				if ((initialized_sumtype)._typ == 298) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 1 : bool */ {
+				v.typ = 19;	// 
+				if ((initialized_sumtype)._typ == 19) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 2 : f64 */ {
+				v.typ = 17;	// 
+				if ((initialized_sumtype)._typ == 17) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 3 : f32 */ {
+				v.typ = 16;	// 
+				if ((initialized_sumtype)._typ == 16) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 4 : i64 */ {
+				v.typ = 9;	// 
+				if ((initialized_sumtype)._typ == 9) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 5 : int */ {
+				v.typ = 8;	// 
+				if ((initialized_sumtype)._typ == 8) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 6 : i32 */ {
+				v.typ = 7;	// 
+				if ((initialized_sumtype)._typ == 7) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 7 : i16 */ {
+				v.typ = 6;	// 
+				if ((initialized_sumtype)._typ == 6) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 8 : i8 */ {
+				v.typ = 5;	// 
+				if ((initialized_sumtype)._typ == 5) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 9 : map[string]json2.Any */ {
+				v.typ = 297;	// 
+				if ((initialized_sumtype)._typ == 297) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 10 : string */ {
+				v.typ = 21;	// 
+				if ((initialized_sumtype)._typ == 21) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 11 : time.Time */ {
+				v.typ = 359;	// 
+				if ((initialized_sumtype)._typ == 359) {
+					#if true
+					{
+						time__Time val = x__json2__copy_type_T_time__Time((*initialized_sumtype._time__Time));
+						return x__json2__Decoder_check_struct_type_valid_T_time__Time(decoder, val, *decoder->current_node);
+					}
+					#endif
+				}
+			}
+			/* variant 12 : u64 */ {
+				v.typ = 14;	// 
+				if ((initialized_sumtype)._typ == 14) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 13 : u32 */ {
+				v.typ = 13;	// 
+				if ((initialized_sumtype)._typ == 13) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 14 : u16 */ {
+				v.typ = 12;	// 
+				if ((initialized_sumtype)._typ == 12) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 15 : u8 */ {
+				v.typ = 11;	// 
+				if ((initialized_sumtype)._typ == 11) {
+					#if false
+					{
+					}
+					#endif
+				}
+			}
+			/* variant 16 : json2.Null */ {
+				v.typ = 296;	// 
+				if ((initialized_sumtype)._typ == 296) {
+					#if true
+					{
+						x__json2__Null val = x__json2__copy_type_T_x__json2__Null((*initialized_sumtype._x__json2__Null));
+						return x__json2__Decoder_check_struct_type_valid_T_x__json2__Null(decoder, val, *decoder->current_node);
+					}
+					#endif
+				}
+			}
+		}// $for
+	}
+	#endif
+	return false;
+}
+VV_LOC _result_void x__json2__Decoder_init_sumtype_by_value_kind_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any* val, x__json2__ValueInfo value_info) {
+	bool failed_struct = false;
+	switch (value_info.value_kind) {
+		case x__json2__ValueKind__string: {
+			/* $for v in x.json2.Any.variants */ {
+					VariantData v = {0};
+				/* variant 0 : []json2.Any */ {
+					v.typ = 298;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 1 : bool */ {
+					v.typ = 19;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 2 : f64 */ {
+					v.typ = 17;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 3 : f32 */ {
+					v.typ = 16;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 4 : i64 */ {
+					v.typ = 9;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 5 : int */ {
+					v.typ = 8;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 6 : i32 */ {
+					v.typ = 7;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 7 : i16 */ {
+					v.typ = 6;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 8 : i8 */ {
+					v.typ = 5;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 9 : map[string]json2.Any */ {
+					v.typ = 297;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 10 : string */ {
+					v.typ = 21;	// 
+					#if true
+					{
+						*val = string_to_sumtype_x__json2__Any(ADDR(string, ((string){.str=(byteptr)"", .is_lit=1})), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 11 : time.Time */ {
+					v.typ = 359;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = time__Time_to_sumtype_x__json2__Any(ADDR(time__Time, ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,})), false);
+						return (_result_void){0};
+					}
+					#elif true
+					{
+					}
+					#endif
+				}
+				/* variant 12 : u64 */ {
+					v.typ = 14;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 13 : u32 */ {
+					v.typ = 13;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 14 : u16 */ {
+					v.typ = 12;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 15 : u8 */ {
+					v.typ = 11;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 16 : json2.Null */ {
+					v.typ = 296;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+			}// $for
+			break;
+		}
+		case x__json2__ValueKind__number: {
+			/* $for v in x.json2.Any.variants */ {
+					VariantData v = {0};
+				/* variant 0 : []json2.Any */ {
+					v.typ = 298;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 1 : bool */ {
+					v.typ = 19;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 2 : f64 */ {
+					v.typ = 17;	// 
+					#if true
+					{
+						*val = f64_to_sumtype_x__json2__Any(ADDR(f64, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 3 : f32 */ {
+					v.typ = 16;	// 
+					#if true
+					{
+						*val = f32_to_sumtype_x__json2__Any(ADDR(f32, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 4 : i64 */ {
+					v.typ = 9;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = i64_to_sumtype_x__json2__Any(ADDR(i64, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 5 : int */ {
+					v.typ = 8;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = int_to_sumtype_x__json2__Any(ADDR(int, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 6 : i32 */ {
+					v.typ = 7;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = i32_to_sumtype_x__json2__Any(ADDR(i32, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 7 : i16 */ {
+					v.typ = 6;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = i16_to_sumtype_x__json2__Any(ADDR(i16, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 8 : i8 */ {
+					v.typ = 5;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = i8_to_sumtype_x__json2__Any(ADDR(i8, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 9 : map[string]json2.Any */ {
+					v.typ = 297;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 10 : string */ {
+					v.typ = 21;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 11 : time.Time */ {
+					v.typ = 359;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif true
+					{
+						*val = time__Time_to_sumtype_x__json2__Any(ADDR(time__Time, ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,})), false);
+						return (_result_void){0};
+					}
+					#endif
+				}
+				/* variant 12 : u64 */ {
+					v.typ = 14;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = u64_to_sumtype_x__json2__Any(ADDR(u64, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 13 : u32 */ {
+					v.typ = 13;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = u32_to_sumtype_x__json2__Any(ADDR(u32, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 14 : u16 */ {
+					v.typ = 12;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = u16_to_sumtype_x__json2__Any(ADDR(u16, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 15 : u8 */ {
+					v.typ = 11;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = u8_to_sumtype_x__json2__Any(ADDR(u8, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 16 : json2.Null */ {
+					v.typ = 296;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+			}// $for
+			break;
+		}
+		case x__json2__ValueKind__boolean: {
+			/* $for v in x.json2.Any.variants */ {
+					VariantData v = {0};
+				/* variant 0 : []json2.Any */ {
+					v.typ = 298;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 1 : bool */ {
+					v.typ = 19;	// 
+					#if true
+					{
+						*val = bool_to_sumtype_x__json2__Any(ADDR(bool, (0)), false);
+						return (_result_void){0};
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 2 : f64 */ {
+					v.typ = 17;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 3 : f32 */ {
+					v.typ = 16;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 4 : i64 */ {
+					v.typ = 9;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 5 : int */ {
+					v.typ = 8;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 6 : i32 */ {
+					v.typ = 7;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 7 : i16 */ {
+					v.typ = 6;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 8 : i8 */ {
+					v.typ = 5;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 9 : map[string]json2.Any */ {
+					v.typ = 297;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 10 : string */ {
+					v.typ = 21;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 11 : time.Time */ {
+					v.typ = 359;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 12 : u64 */ {
+					v.typ = 14;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 13 : u32 */ {
+					v.typ = 13;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 14 : u16 */ {
+					v.typ = 12;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 15 : u8 */ {
+					v.typ = 11;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 16 : json2.Null */ {
+					v.typ = 296;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+			}// $for
+			break;
+		}
+		case x__json2__ValueKind__null: {
+			/* $for v in x.json2.Any.variants */ {
+					VariantData v = {0};
+				/* variant 0 : []json2.Any */ {
+					v.typ = 298;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 1 : bool */ {
+					v.typ = 19;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 2 : f64 */ {
+					v.typ = 17;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 3 : f32 */ {
+					v.typ = 16;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 4 : i64 */ {
+					v.typ = 9;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 5 : int */ {
+					v.typ = 8;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 6 : i32 */ {
+					v.typ = 7;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 7 : i16 */ {
+					v.typ = 6;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 8 : i8 */ {
+					v.typ = 5;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 9 : map[string]json2.Any */ {
+					v.typ = 297;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 10 : string */ {
+					v.typ = 21;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 11 : time.Time */ {
+					v.typ = 359;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 12 : u64 */ {
+					v.typ = 14;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 13 : u32 */ {
+					v.typ = 13;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 14 : u16 */ {
+					v.typ = 12;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 15 : u8 */ {
+					v.typ = 11;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 16 : json2.Null */ {
+					v.typ = 296;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = x__json2__Null_to_sumtype_x__json2__Any(ADDR(x__json2__Null, ((x__json2__Null){})), false);
+						return (_result_void){0};
+					}
+					#endif
+				}
+			}// $for
+			break;
+		}
+		case x__json2__ValueKind__array: {
+			/* $for v in x.json2.Any.variants */ {
+					VariantData v = {0};
+				/* variant 0 : []json2.Any */ {
+					v.typ = 298;	// 
+					#if true
+					{
+						*val = Array_x__json2__Any_to_sumtype_x__json2__Any(ADDR(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))), false);
+						if (x__json2__Decoder_get_array_type_workaround_T_x__json2__Any(decoder, *val)) {
+							return (_result_void){0};
+						}
+					}
+					#endif
+				}
+				/* variant 1 : bool */ {
+					v.typ = 19;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 2 : f64 */ {
+					v.typ = 17;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 3 : f32 */ {
+					v.typ = 16;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 4 : i64 */ {
+					v.typ = 9;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 5 : int */ {
+					v.typ = 8;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 6 : i32 */ {
+					v.typ = 7;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 7 : i16 */ {
+					v.typ = 6;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 8 : i8 */ {
+					v.typ = 5;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 9 : map[string]json2.Any */ {
+					v.typ = 297;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 10 : string */ {
+					v.typ = 21;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 11 : time.Time */ {
+					v.typ = 359;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 12 : u64 */ {
+					v.typ = 14;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 13 : u32 */ {
+					v.typ = 13;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 14 : u16 */ {
+					v.typ = 12;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 15 : u8 */ {
+					v.typ = 11;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+				/* variant 16 : json2.Null */ {
+					v.typ = 296;	// 
+					#if false
+					{
+					}
+					#endif
+				}
+			}// $for
+			break;
+		}
+		case x__json2__ValueKind__object: {
+			/* $for v in x.json2.Any.variants */ {
+					VariantData v = {0};
+				/* variant 0 : []json2.Any */ {
+					v.typ = 298;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 1 : bool */ {
+					v.typ = 19;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 2 : f64 */ {
+					v.typ = 17;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 3 : f32 */ {
+					v.typ = 16;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 4 : i64 */ {
+					v.typ = 9;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 5 : int */ {
+					v.typ = 8;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 6 : i32 */ {
+					v.typ = 7;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 7 : i16 */ {
+					v.typ = 6;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 8 : i8 */ {
+					v.typ = 5;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 9 : map[string]json2.Any */ {
+					v.typ = 297;	// 
+					#if true
+					{
+						*val = Map_string_x__json2__Any_to_sumtype_x__json2__Any(ADDR(Map_string_x__json2__Any, (builtin__new_map(sizeof(string), sizeof(x__json2__Any), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string))), false);
+						if (x__json2__Decoder_get_map_type_workaround_T_x__json2__Any(decoder, *val)) {
+							return (_result_void){0};
+						}
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 10 : string */ {
+					v.typ = 21;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 11 : time.Time */ {
+					v.typ = 359;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = time__Time_to_sumtype_x__json2__Any(ADDR(time__Time, ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,})), false);
+						if (x__json2__Decoder_get_struct_type_workaround_T_x__json2__Any(decoder, *val)) {
+							return (_result_void){0};
+						}
+						failed_struct = true;
+					}
+					#endif
+				}
+				/* variant 12 : u64 */ {
+					v.typ = 14;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 13 : u32 */ {
+					v.typ = 13;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 14 : u16 */ {
+					v.typ = 12;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 15 : u8 */ {
+					v.typ = 11;	// 
+					#if false
+					{
+					}
+					#elif false
+					{
+					}
+					#endif
+				}
+				/* variant 16 : json2.Null */ {
+					v.typ = 296;	// 
+					#if false
+					{
+					}
+					#elif true
+					{
+						*val = x__json2__Null_to_sumtype_x__json2__Any(ADDR(x__json2__Null, ((x__json2__Null){})), false);
+						if (x__json2__Decoder_get_struct_type_workaround_T_x__json2__Any(decoder, *val)) {
+							return (_result_void){0};
+						}
+						failed_struct = true;
+					}
+					#endif
+				}
+			}// $for
+			break;
+		}
+	}
+	
+	if (failed_struct) {
+		_result_void _t103 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("could not resolve sumtype `"), 0xfe10, {.d_s = _S("json2.Any")}}, {_S("`, missing \"_type\" field?"), 0, { .d_c = 0 }}})));
+		if (_t103.is_error) {
+			_result_void _t104 = {0};
+			_t104.is_error = true;
+			_t104.err = _t103.err;
+			return _t104;
+		}
+		
+ ;
+	}
+	_result_void _t105 = x__json2__Decoder_decode_error(decoder, builtin__str_intp(3, _MOV((StrIntpData[]){{_S("could not resolve sumtype `"), 0xfe10, {.d_s = _S("json2.Any")}}, {_S("`, got "), 0xfe10, {.d_s = x__json2__ValueKind_str(value_info.value_kind)}}, {_S("."), 0, { .d_c = 0 }}})));
+	if (_t105.is_error) {
+		_result_void _t106 = {0};
+		_t106.is_error = true;
+		_t106.err = _t105.err;
+		return _t106;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void x__json2__Decoder_decode_sumtype_T_x__json2__Any(x__json2__Decoder* decoder, x__json2__Any* val) {
+	#if false
+	{
+	}
+	#else
+	{
+		x__json2__ValueInfo value_info = decoder->current_node->value;
+		_result_void _t2 = x__json2__Decoder_init_sumtype_by_value_kind_T_x__json2__Any(decoder, val, value_info);
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+		_result_x__json2__Any _t4 = x__json2__Decoder_get_decoded_sumtype_workaround_T_x__json2__Any(decoder, *val);
+		if (_t4.is_error) {
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		*val = (*(x__json2__Any*)_t4.data);
+	}
+	#endif
+	return (_result_void){0};
+}
+_result_x__json2__Any x__json2__raw_decode(string src) {
+	return x__json2__decode_T_x__json2__Any(src, ((x__json2__DecoderOptions){.strict = 0,}));
+}
+string x__json2__encode_T_x__json2__Any(x__json2__Any val, x__json2__EncoderOptions config) {
+	x__json2__Encoder encoder = ((x__json2__Encoder){.EncoderOptions = config,.level = 0,.prefix = (string){.str=(byteptr)"", .is_lit=1},.output = builtin____new_array_with_default(0, 2048, sizeof(u8), 0),});
+	x__json2__Encoder_encode_value_T_x__json2__Any(&encoder, val);
+	return Array_u8_bytestr(encoder.output);
+}
+VV_LOC void x__json2__Encoder_encode_value_T_x__json2__Any(x__json2__Encoder* encoder, x__json2__Any val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_sumtype_T_x__json2__Any(encoder, val);
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_Array_x__json2__Any(x__json2__Encoder* encoder, Array_x__json2__Any val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_array_T_x__json2__Any(encoder, val);
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_bool(x__json2__Encoder* encoder, bool val) {
+	#if false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_boolean(encoder, val);
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_f64(x__json2__Encoder* encoder, f64 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_f64(encoder, ((f64)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_f32(x__json2__Encoder* encoder, f32 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_f32(encoder, ((f32)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_i64(x__json2__Encoder* encoder, i64 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_i64(encoder, ((i64)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_int(x__json2__Encoder* encoder, int val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true || false
+	{
+		x__json2__Encoder_encode_number_T_i32(encoder, ((i32)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_i32(x__json2__Encoder* encoder, i32 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || true
+	{
+		x__json2__Encoder_encode_number_T_i32(encoder, ((i32)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_i16(x__json2__Encoder* encoder, i16 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_i16(encoder, ((i16)(val)));
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_i8(x__json2__Encoder* encoder, i8 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_i8(encoder, ((i8)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_Map_string_x__json2__Any(x__json2__Encoder* encoder, Map_string_x__json2__Any val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_map_T_x__json2__Any(encoder, val);
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_string(x__json2__Encoder* encoder, string val) {
+	#if true
+	{
+		x__json2__Encoder_encode_string(encoder, *((string *)(&val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_time__Time(x__json2__Encoder* encoder, time__Time val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_custom_T_time__Time(encoder, val);
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_u64(x__json2__Encoder* encoder, u64 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_u64(encoder, ((u64)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_u32(x__json2__Encoder* encoder, u32 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_u32(encoder, ((u32)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_u16(x__json2__Encoder* encoder, u16 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_u16(encoder, ((u16)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_u8(x__json2__Encoder* encoder, u8 val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_number_T_u8(encoder, ((u8)(val)));
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_value_T_x__json2__Null(x__json2__Encoder* encoder, x__json2__Null val) {
+	#if false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false || false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+		x__json2__Encoder_encode_custom_T_x__json2__Null(encoder, val);
+	}
+	#elif false
+	{
+	}
+	#elif true
+	{
+	}
+	#endif
+}
+VV_LOC void x__json2__Encoder_encode_string(x__json2__Encoder* encoder, string val) {
+	builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '"' }));
+	int buffer_start = 0;
+	int buffer_end = 0;
+	for (;;) {
+		if (!(buffer_end < val.len)) break;
+		u8 character = builtin__string_at(val, buffer_end);
+
+		if (character == ('"') || character == ('\\')) {
+			builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+			buffer_end++;
+			buffer_start = buffer_end;
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ character }));
+		}
+		else if (character == ('\b')) {
+			builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+			buffer_end++;
+			buffer_start = buffer_end;
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ 'b' }));
+		}
+		else if (character == ('\n')) {
+			builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+			buffer_end++;
+			buffer_start = buffer_end;
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ 'n' }));
+		}
+		else if (character == ('\f')) {
+			builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+			buffer_end++;
+			buffer_start = buffer_end;
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ 'f' }));
+		}
+		else if (character == ('\t')) {
+			builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+			buffer_end++;
+			buffer_start = buffer_end;
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ 't' }));
+		}
+		else if (character == ('\r')) {
+			builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+			buffer_end++;
+			buffer_start = buffer_end;
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ 'r' }));
+		}
+		else {
+			if (character < 0x20) {
+				builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+				buffer_end++;
+				buffer_start = buffer_end;
+				builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '\\' }));
+				builtin__array_push((array*)&encoder->output, _MOV((u8[]){ 'u' }));
+				string hex_string = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xf008fe22, {.d_u8 = character}}, {_SLIT0, 0, { .d_c = 0 }}}));
+				builtin__array_push_many(&encoder->output, hex_string.str, 4);
+				continue;
+			}
+			if (encoder->EncoderOptions.escape_unicode) {
+				if (character >= 0b11110000) {
+					builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+					_result_rune _t16 = Array_u8_byterune(builtin__string_bytes(builtin__string_substr(val, buffer_end, (int)(buffer_end + 4))));
+					if (_t16.is_error) {
+						*(rune*) _t16.data = 0;
+					}
+					
+ 					rune unicode_point_low = (rune)((*(rune*)_t16.data) - 0x10000);
+					string hex_string = builtin__str_intp(3, _MOV((StrIntpData[]){{_S("\\u"), 0xf008fea7, {.d_i32 = (rune)(0xD800 + ((((unicode_point_low >> 10)) & 0x3FF)))}}, {_S("\\u"), 0xf008fe27, {.d_i32 = (rune)(0xDC00 + ((unicode_point_low & 0x3FF)))}}, {_SLIT0, 0, { .d_c = 0 }}}));
+					buffer_end += 4;
+					buffer_start = buffer_end;
+					builtin__array_push_many(&encoder->output, hex_string.str, 12);
+					continue;
+				} else if (character >= 0b11100000) {
+					builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+					_result_rune _t17 = Array_u8_byterune(builtin__string_bytes(builtin__string_substr(val, buffer_end, (int)(buffer_end + 3))));
+					if (_t17.is_error) {
+						*(rune*) _t17.data = 0;
+					}
+					
+ 					string hex_string = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\\u"), 0xf008fe27, {.d_i32 = (*(rune*)_t17.data)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+					buffer_end += 3;
+					buffer_start = buffer_end;
+					builtin__array_push_many(&encoder->output, hex_string.str, 6);
+					continue;
+				} else if (character >= 0b11000000) {
+					builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+					_result_rune _t18 = Array_u8_byterune(builtin__string_bytes(builtin__string_substr(val, buffer_end, (int)(buffer_end + 2))));
+					if (_t18.is_error) {
+						*(rune*) _t18.data = 0;
+					}
+					
+ 					string hex_string = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\\u"), 0xf008fe27, {.d_i32 = (*(rune*)_t18.data)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+					buffer_end += 2;
+					buffer_start = buffer_end;
+					builtin__array_push_many(&encoder->output, hex_string.str, 6);
+					continue;
+				}
+			}
+			buffer_end++;
+		}
+	}
+	builtin__array_push_many(&encoder->output, val.str + buffer_start, (int)(buffer_end - buffer_start));
+	builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '"' }));
+}
+VV_LOC void x__json2__Encoder_encode_boolean(x__json2__Encoder* encoder, bool val) {
+	if (val) {
+		builtin__array_push_many(&encoder->output, _const_x__json2__true_string.str, _const_x__json2__true_string.len);
+	} else {
+		builtin__array_push_many(&encoder->output, _const_x__json2__false_string.str, _const_x__json2__false_string.len);
+	}
+}
+VV_LOC void x__json2__Encoder_encode_number_T_f64(x__json2__Encoder* encoder, f64 val) {
+	string integer_val = builtin__f64_str(val);
+	#if true
+	{
+		if (integer_val.len > 2 && builtin__string_at(integer_val, (int)(integer_val.len - 2)) == '.' && builtin__string_at(integer_val, (int)(integer_val.len - 1)) == '0') {
+			{ // Unsafe block
+				integer_val.len -= 2;
+			}
+		}
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_f32(x__json2__Encoder* encoder, f32 val) {
+	string integer_val = builtin__f32_str(val);
+	#if true
+	{
+		if (integer_val.len > 2 && builtin__string_at(integer_val, (int)(integer_val.len - 2)) == '.' && builtin__string_at(integer_val, (int)(integer_val.len - 1)) == '0') {
+			{ // Unsafe block
+				integer_val.len -= 2;
+			}
+		}
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_i64(x__json2__Encoder* encoder, i64 val) {
+	string integer_val = builtin__i64_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_i32(x__json2__Encoder* encoder, i32 val) {
+	string integer_val = builtin__i32_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_i16(x__json2__Encoder* encoder, i16 val) {
+	string integer_val = builtin__i16_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_i8(x__json2__Encoder* encoder, i8 val) {
+	string integer_val = builtin__i8_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_u64(x__json2__Encoder* encoder, u64 val) {
+	string integer_val = builtin__u64_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_u32(x__json2__Encoder* encoder, u32 val) {
+	string integer_val = builtin__u32_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_u16(x__json2__Encoder* encoder, u16 val) {
+	string integer_val = builtin__u16_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_number_T_u8(x__json2__Encoder* encoder, u8 val) {
+	string integer_val = builtin__u8_str(val);
+	#if false
+	{
+	}
+	#endif
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_array_T_x__json2__Any(x__json2__Encoder* encoder, Array_x__json2__Any val) {
+	builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '[' }));
+	if (encoder->EncoderOptions.prettify) {
+		x__json2__Encoder_increment_level(encoder);
+		x__json2__Encoder_add_indent(encoder);
+	}
+	for (int i = 0; i < val.len; ++i) {
+		x__json2__Any item = ((x__json2__Any*)val.data)[i];
+		x__json2__Encoder_encode_value_T_x__json2__Any(encoder, item);
+		if (i < (int)(val.len - 1)) {
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ ',' }));
+			if (encoder->EncoderOptions.prettify) {
+				x__json2__Encoder_add_indent(encoder);
+			}
+		} else {
+			if (encoder->EncoderOptions.prettify) {
+				x__json2__Encoder_decrement_level(encoder);
+				x__json2__Encoder_add_indent(encoder);
+			}
+		}
+	}
+	builtin__array_push((array*)&encoder->output, _MOV((u8[]){ ']' }));
+}
+VV_LOC void x__json2__Encoder_encode_map_T_x__json2__Any(x__json2__Encoder* encoder, Map_string_x__json2__Any val) {
+	builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '{' }));
+	if (encoder->EncoderOptions.prettify) {
+		x__json2__Encoder_increment_level(encoder);
+		x__json2__Encoder_add_indent(encoder);
+	}
+	int i = 0;
+	int _t3 = val.key_values.len;
+	for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
+		int _t4 = val.key_values.len - _t3;
+		_t3 = val.key_values.len;
+		if (_t4 < 0) {
+			_t2 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&val.key_values, _t2)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&val.key_values, _t2);
+		key = builtin__string_clone(key);
+		x__json2__Any value = (*(x__json2__Any*)builtin__DenseArray_value(&val.key_values, _t2));
+		x__json2__Encoder_encode_string(encoder, key);
+		builtin__array_push((array*)&encoder->output, _MOV((u8[]){ ':' }));
+		if (encoder->EncoderOptions.prettify) {
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ ' ' }));
+		}
+		x__json2__Encoder_encode_value_T_x__json2__Any(encoder, value);
+		if (i < (int)(val.len - 1)) {
+			builtin__array_push((array*)&encoder->output, _MOV((u8[]){ ',' }));
+			if (encoder->EncoderOptions.prettify) {
+				x__json2__Encoder_add_indent(encoder);
+			}
+		} else {
+			if (encoder->EncoderOptions.prettify) {
+				x__json2__Encoder_decrement_level(encoder);
+				x__json2__Encoder_add_indent(encoder);
+			}
+		}
+		i++;
+	}
+	builtin__array_push((array*)&encoder->output, _MOV((u8[]){ '}' }));
+}
+VV_LOC void x__json2__Encoder_encode_sumtype_T_x__json2__Any(x__json2__Encoder* encoder, x__json2__Any val) {
+	/* $for variant in x.json2.Any.variants */ {
+			VariantData variant = {0};
+		/* variant 0 : []json2.Any */ {
+			variant.typ = 298;	// 
+			if ((val)._typ == 298) {
+				x__json2__Encoder_encode_value_T_Array_x__json2__Any(encoder, (*val._Array_x__json2__Any));
+			}
+		}
+		/* variant 1 : bool */ {
+			variant.typ = 19;	// 
+			if ((val)._typ == 19) {
+				x__json2__Encoder_encode_value_T_bool(encoder, (*val._bool));
+			}
+		}
+		/* variant 2 : f64 */ {
+			variant.typ = 17;	// 
+			if ((val)._typ == 17) {
+				x__json2__Encoder_encode_value_T_f64(encoder, (*val._f64));
+			}
+		}
+		/* variant 3 : f32 */ {
+			variant.typ = 16;	// 
+			if ((val)._typ == 16) {
+				x__json2__Encoder_encode_value_T_f32(encoder, (*val._f32));
+			}
+		}
+		/* variant 4 : i64 */ {
+			variant.typ = 9;	// 
+			if ((val)._typ == 9) {
+				x__json2__Encoder_encode_value_T_i64(encoder, (*val._i64));
+			}
+		}
+		/* variant 5 : int */ {
+			variant.typ = 8;	// 
+			if ((val)._typ == 8) {
+				x__json2__Encoder_encode_value_T_int(encoder, (*val._int));
+			}
+		}
+		/* variant 6 : i32 */ {
+			variant.typ = 7;	// 
+			if ((val)._typ == 7) {
+				x__json2__Encoder_encode_value_T_i32(encoder, (*val._i32));
+			}
+		}
+		/* variant 7 : i16 */ {
+			variant.typ = 6;	// 
+			if ((val)._typ == 6) {
+				x__json2__Encoder_encode_value_T_i16(encoder, (*val._i16));
+			}
+		}
+		/* variant 8 : i8 */ {
+			variant.typ = 5;	// 
+			if ((val)._typ == 5) {
+				x__json2__Encoder_encode_value_T_i8(encoder, (*val._i8));
+			}
+		}
+		/* variant 9 : map[string]json2.Any */ {
+			variant.typ = 297;	// 
+			if ((val)._typ == 297) {
+				x__json2__Encoder_encode_value_T_Map_string_x__json2__Any(encoder, (*val._Map_string_x__json2__Any));
+			}
+		}
+		/* variant 10 : string */ {
+			variant.typ = 21;	// 
+			if ((val)._typ == 21) {
+				x__json2__Encoder_encode_value_T_string(encoder, (*val._string));
+			}
+		}
+		/* variant 11 : time.Time */ {
+			variant.typ = 359;	// 
+			if ((val)._typ == 359) {
+				x__json2__Encoder_encode_value_T_time__Time(encoder, (*val._time__Time));
+			}
+		}
+		/* variant 12 : u64 */ {
+			variant.typ = 14;	// 
+			if ((val)._typ == 14) {
+				x__json2__Encoder_encode_value_T_u64(encoder, (*val._u64));
+			}
+		}
+		/* variant 13 : u32 */ {
+			variant.typ = 13;	// 
+			if ((val)._typ == 13) {
+				x__json2__Encoder_encode_value_T_u32(encoder, (*val._u32));
+			}
+		}
+		/* variant 14 : u16 */ {
+			variant.typ = 12;	// 
+			if ((val)._typ == 12) {
+				x__json2__Encoder_encode_value_T_u16(encoder, (*val._u16));
+			}
+		}
+		/* variant 15 : u8 */ {
+			variant.typ = 11;	// 
+			if ((val)._typ == 11) {
+				x__json2__Encoder_encode_value_T_u8(encoder, (*val._u8));
+			}
+		}
+		/* variant 16 : json2.Null */ {
+			variant.typ = 296;	// 
+			if ((val)._typ == 296) {
+				x__json2__Encoder_encode_value_T_x__json2__Null(encoder, (*val._x__json2__Null));
+			}
+		}
+	}// $for
+}
+VV_LOC void x__json2__Encoder_encode_custom_T_time__Time(x__json2__Encoder* encoder, time__Time val) {
+	string integer_val = time__Time_to_json(val);
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_encode_custom_T_x__json2__Null(x__json2__Encoder* encoder, x__json2__Null val) {
+	string integer_val = x__json2__Null_to_json(val);
+	builtin__array_push_many(&encoder->output, integer_val.str, integer_val.len);
+}
+VV_LOC void x__json2__Encoder_increment_level(x__json2__Encoder* encoder) {
+	encoder->level++;
+	encoder->prefix = builtin__string__plus(encoder->EncoderOptions.newline_string, builtin__string_repeat(encoder->EncoderOptions.indent_string, encoder->level));
+}
+VV_LOC void x__json2__Encoder_decrement_level(x__json2__Encoder* encoder) {
+	encoder->level--;
+	encoder->prefix = builtin__string__plus(encoder->EncoderOptions.newline_string, builtin__string_repeat(encoder->EncoderOptions.indent_string, encoder->level));
+}
+VV_LOC void x__json2__Encoder_add_indent(x__json2__Encoder* encoder) {
+	builtin__array_push_many(&encoder->output, encoder->prefix.str, encoder->prefix.len);
+}
+string Map_string_x__json2__Any_str(Map_string_x__json2__Any f) {
+	return x__json2__Any_json_str(Map_string_x__json2__Any_to_sumtype_x__json2__Any(ADDR(Map_string_x__json2__Any, (f)), false));
+}
+string Array_x__json2__Any_str(Array_x__json2__Any f) {
+	return x__json2__Any_json_str(Array_x__json2__Any_to_sumtype_x__json2__Any(ADDR(Array_x__json2__Any, (f)), false));
+}
+string x__json2__Any_str(x__json2__Any f) {
+	if ((f)._typ == 21 /* string */) {
+		return (*f._string);
+	} else {
+		return x__json2__Any_json_str(f);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string x__json2__Any_json_str(x__json2__Any f) {
+	return x__json2__encode_T_x__json2__Any(f, ((x__json2__EncoderOptions){.prettify = 0,.indent_string = _S("    "),.newline_string = _S("\n"),.enum_as_int = 0,.escape_unicode = 0,}));
+}
+string x__json2__Any_prettify_json_str(x__json2__Any f) {
+	return x__json2__encode_T_x__json2__Any(f, ((x__json2__EncoderOptions){.prettify = true,.indent_string = _S("    "),.newline_string = _S("\n"),.enum_as_int = 0,.escape_unicode = 0,}));
+}
+i8 x__json2__Any_i8(x__json2__Any f) {
+	if (f._typ == 5 /* i8 */) {
+		return (*f._i8);
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((i8)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((i8)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((i8)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((i8)((*f._i64)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((i8)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((i8)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((i8)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((i8)((*f._u64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((i8)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((i8)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (i8[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_i8((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+i16 x__json2__Any_i16(x__json2__Any f) {
+	if (f._typ == 6 /* i16 */) {
+		return (*f._i16);
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((i16)((*f._i8)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((i16)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((i16)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((i16)((*f._i64)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((i16)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((i16)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((i16)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((i16)((*f._u64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((i16)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((i16)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (i16[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_i16((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+int x__json2__Any_int(x__json2__Any f) {
+	if (f._typ == 8 /* int */) {
+		return (*f._int);
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((int)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((int)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((int)((*f._i32)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((int)((*f._i64)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((int)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((int)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((int)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((int)((*f._u64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((int)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((int)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (int[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_int((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+i32 x__json2__Any_i32(x__json2__Any f) {
+	if (f._typ == 7 /* i32 */) {
+		return (*f._i32);
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((i32)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((i32)((*f._i16)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((i32)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((i32)((*f._i64)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((i32)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((i32)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((i32)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((i32)((*f._u64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((i32)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((i32)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (i32[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_i32((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+i64 x__json2__Any_i64(x__json2__Any f) {
+	if (f._typ == 9 /* i64 */) {
+		return (*f._i64);
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((i64)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((i64)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((i64)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((i64)((*f._int)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((i64)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((i64)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((i64)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((i64)((*f._u64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((i64)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((i64)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (i64[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_i64((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+u8 x__json2__Any_u8(x__json2__Any f) {
+	if (f._typ == 11 /* u8 */) {
+		return (*f._u8);
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((u8)(((u16)((*f._u16)))));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((u8)(((u16)((*f._u32)))));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((u8)(((u16)((*f._u64)))));
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((u8)(((u16)((*f._i8)))));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((u8)(((u16)((*f._i16)))));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((u8)(((u16)((*f._i32)))));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((u8)(((u16)((*f._int)))));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((u8)(((u16)((*f._i64)))));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((u8)(((u16)((*f._f32)))));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((u8)(((u16)((*f._f64)))));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return ((u8)((u16[]){((*f._bool))?1:0}[0]));
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_u8((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+u16 x__json2__Any_u16(x__json2__Any f) {
+	if (f._typ == 12 /* u16 */) {
+		return (*f._u16);
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((u16)((*f._u8)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((u16)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((u16)((*f._u64)));
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((u16)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((u16)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((u16)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((u16)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((u16)((*f._i64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((u16)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((u16)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (u16[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_u16((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+u32 x__json2__Any_u32(x__json2__Any f) {
+	if (f._typ == 13 /* u32 */) {
+		return (*f._u32);
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((u32)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((u32)((*f._u16)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((u32)((*f._u64)));
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((u32)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((u32)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((u32)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((u32)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((u32)((*f._i64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((u32)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((u32)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (u32[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_u32((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+u64 x__json2__Any_u64(x__json2__Any f) {
+	if (f._typ == 14 /* u64 */) {
+		return (*f._u64);
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((u64)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((u64)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((u64)((*f._u32)));
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((u64)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((u64)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((u64)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((u64)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((u64)((*f._i64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((u64)((*f._f32)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((u64)((*f._f64)));
+	}
+	else if (f._typ == 19 /* bool */) {
+		return (u64[]){((*f._bool))?1:0}[0];
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_u64((*f._string));
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+f32 x__json2__Any_f32(x__json2__Any f) {
+	if (f._typ == 16 /* f32 */) {
+		return (*f._f32);
+	}
+	else if (f._typ == 19 /* bool */) {
+		return ((f32)((*f._bool)));
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((f32)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((f32)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((f32)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((f32)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((f32)((*f._i64)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((f32)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((f32)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((f32)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((f32)((*f._u64)));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((f32)((*f._f64)));
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_f32((*f._string));
+	}
+	
+	else {
+		return 0.0;
+	}
+	
+	return 0;
+}
+f64 x__json2__Any_f64(x__json2__Any f) {
+	if (f._typ == 17 /* f64 */) {
+		return (*f._f64);
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((f64)((*f._i8)));
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((f64)((*f._i16)));
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((f64)((*f._i32)));
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((f64)((*f._int)));
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((f64)((*f._i64)));
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((f64)((*f._u8)));
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((f64)((*f._u16)));
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((f64)((*f._u32)));
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((f64)((*f._u64)));
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((f64)((*f._f32)));
+	}
+	else if (f._typ == 21 /* string */) {
+		return builtin__string_f64((*f._string));
+	}
+	
+	else {
+		return 0.0;
+	}
+	
+	return 0;
+}
+bool x__json2__Any_bool(x__json2__Any f) {
+	if (f._typ == 19 /* bool */) {
+		return (*f._bool);
+	}
+	else if (f._typ == 21 /* string */) {
+		if (_SLIT_EQ((*f._string).str, (*f._string).len, "false")) {
+			return false;
+		}
+		if (_SLIT_EQ((*f._string).str, (*f._string).len, "true")) {
+			return true;
+		}
+		if ((*f._string).len > 0) {
+			return _SLIT_NE((*f._string).str, (*f._string).len, "0") && _SLIT_NE((*f._string).str, (*f._string).len, "0.0");
+		} else {
+			return false;
+		}
+	}
+	else if (f._typ == 5 /* i8 */) {
+		return ((i64)((*f._i8))) != 0;
+	}
+	else if (f._typ == 6 /* i16 */) {
+		return ((i64)((*f._i16))) != 0;
+	}
+	else if (f._typ == 7 /* i32 */) {
+		return ((i64)((*f._i32))) != 0;
+	}
+	else if (f._typ == 8 /* int */) {
+		return ((i64)((*f._int))) != 0;
+	}
+	else if (f._typ == 9 /* i64 */) {
+		return ((i64)((*f._i64))) != 0;
+	}
+	else if (f._typ == 11 /* u8 */) {
+		return ((u64)((*f._u8))) != 0;
+	}
+	else if (f._typ == 12 /* u16 */) {
+		return ((u64)((*f._u16))) != 0;
+	}
+	else if (f._typ == 13 /* u32 */) {
+		return ((u64)((*f._u32))) != 0;
+	}
+	else if (f._typ == 14 /* u64 */) {
+		return ((u64)((*f._u64))) != 0;
+	}
+	else if (f._typ == 16 /* f32 */) {
+		return ((f64)((*f._f32))) != ((f64)(0.0));
+	}
+	else if (f._typ == 17 /* f64 */) {
+		return ((f64)((*f._f64))) != ((f64)(0.0));
+	}
+	
+	else {
+		return false;
+	}
+	
+	return 0;
+}
+Array_x__json2__Any x__json2__Any_arr(x__json2__Any f) {
+	return x__json2__Any_as_array(f);
+}
+Array_x__json2__Any x__json2__Any_as_array(x__json2__Any f) {
+	if ((f)._typ == 298 /* []x.json2.Any */) {
+		return (*f._Array_x__json2__Any);
+	} else if ((f)._typ == 297 /* map[string]x.json2.Any */) {
+		Array_x__json2__Any arr = builtin____new_array_with_default(0, 0, sizeof(x__json2__Any), 0);
+		int _t3 = (*f._Map_string_x__json2__Any).key_values.len;
+		for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
+			int _t4 = (*f._Map_string_x__json2__Any).key_values.len - _t3;
+			_t3 = (*f._Map_string_x__json2__Any).key_values.len;
+			if (_t4 < 0) {
+				_t2 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&(*f._Map_string_x__json2__Any).key_values, _t2)) {continue;}
+			x__json2__Any v = (*(x__json2__Any*)builtin__DenseArray_value(&(*f._Map_string_x__json2__Any).key_values, _t2));
+			builtin__array_push((array*)&arr, _MOV((x__json2__Any[]){ v }));
+		}
+		return arr;
+	}
+	return builtin__new_array_from_c_array(1, 1, sizeof(x__json2__Any), _MOV((x__json2__Any[1]){f}));
+}
+Map_string_x__json2__Any x__json2__Any_as_map(x__json2__Any f) {
+	if ((f)._typ == 297 /* map[string]x.json2.Any */) {
+		return (*f._Map_string_x__json2__Any);
+	} else if ((f)._typ == 298 /* []x.json2.Any */) {
+		Map_string_x__json2__Any mp = builtin__new_map(sizeof(string), sizeof(x__json2__Any), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		for (int i = 0; i < (*f._Array_x__json2__Any).len; ++i) {
+			x__json2__Any fi = ((x__json2__Any*)(*f._Array_x__json2__Any).data)[i];
+			builtin__map_set(&mp, &(string[]){builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))}, &(x__json2__Any[]) { fi });
+		}
+		return mp;
+	}
+	return builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(x__json2__Any),
+		_MOV((string[1]){
+			_S("0"),
+		}),
+		_MOV((x__json2__Any[1]){
+			f, 
+		})
+	)
+	;
+}
+Map_string_string x__json2__Any_as_map_of_strings(x__json2__Any f) {
+	if ((f)._typ == 297 /* map[string]x.json2.Any */) {
+		Map_string_string ms = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		int _t2 = (*f._Map_string_x__json2__Any).key_values.len;
+		for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+			int _t3 = (*f._Map_string_x__json2__Any).key_values.len - _t2;
+			_t2 = (*f._Map_string_x__json2__Any).key_values.len;
+			if (_t3 < 0) {
+				_t1 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&(*f._Map_string_x__json2__Any).key_values, _t1)) {continue;}
+			string k = *(string*)builtin__DenseArray_key(&(*f._Map_string_x__json2__Any).key_values, _t1);
+			k = builtin__string_clone(k);
+			x__json2__Any v = (*(x__json2__Any*)builtin__DenseArray_value(&(*f._Map_string_x__json2__Any).key_values, _t1));
+			builtin__map_set(&ms, &(string[]){k}, &(string[]) { x__json2__Any_str(v) });
+		}
+		return ms;
+	}
+	if ((f)._typ == 298 /* []x.json2.Any */) {
+		Map_string_string ms = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		for (int i = 0; i < (*f._Array_x__json2__Any).len; ++i) {
+			x__json2__Any fi = ((x__json2__Any*)(*f._Array_x__json2__Any).data)[i];
+			builtin__map_set(&ms, &(string[]){builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))}, &(string[]) { x__json2__Any_str(fi) });
+		}
+		return ms;
+	}
+	return builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
+		_MOV((string[1]){
+			_S("0"),
+		}),
+		_MOV((string[1]){
+			x__json2__Any_str(f), 
+		})
+	)
+	;
+}
+_result_time__Time x__json2__Any_to_time(x__json2__Any f) {
+	if (f._typ == 359 /* time.Time */) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { (*f._time__Time) }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	else if (f._typ == 9 /* i64 */) {
+		_result_time__Time _t2;
+		builtin___result_ok(&(time__Time[]) { time__unix((*f._i64)) }, (_result*)(&_t2), sizeof(time__Time));
+		 
+		return _t2;
+	}
+	else if (f._typ == 21 /* string */) {
+		bool is_iso8601 = builtin__string_at((*f._string), 4) == '-' && builtin__string_at((*f._string), 7) == '-';
+		if (is_iso8601) {
+			_result_time__Time _t4 = time__parse_iso8601((*f._string));
+			if (_t4.is_error) {
+				_result_time__Time _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ 			_result_time__Time _t3;
+			builtin___result_ok(&(time__Time[]) { (*(time__Time*)_t4.data) }, (_result*)(&_t3), sizeof(time__Time));
+			 
+			return _t3;
+		}
+		bool is_rfc3339 = (*f._string).len == 24 && builtin__string_at((*f._string), 23) == 'Z' && builtin__string_at((*f._string), 10) == 'T';
+		if (is_rfc3339) {
+			_result_time__Time _t7 = time__parse_rfc3339((*f._string));
+			if (_t7.is_error) {
+				_result_time__Time _t8 = {0};
+				_t8.is_error = true;
+				_t8.err = _t7.err;
+				return _t8;
+			}
+			
+ 			_result_time__Time _t6;
+			builtin___result_ok(&(time__Time[]) { (*(time__Time*)_t7.data) }, (_result*)(&_t6), sizeof(time__Time));
+			 
+			return _t6;
+		}
+		bool is_unix_timestamp = true;
+		for (int _t9 = 0; _t9 < (*f._string).len; ++_t9) {
+			u8 c = (*f._string).str[_t9];
+			if (c == '-' || (c >= '0' && c <= '9')) {
+				continue;
+			}
+			is_unix_timestamp = false;
+			break;
+		}
+		if (is_unix_timestamp) {
+			_result_time__Time _t10;
+			builtin___result_ok(&(time__Time[]) { time__unix(builtin__string_i64((*f._string))) }, (_result*)(&_t10), sizeof(time__Time));
+			 
+			return _t10;
+		}
+		_result_time__Time _t12 = time__parse((*f._string));
+		if (_t12.is_error) {
+			_result_time__Time _t13 = {0};
+			_t13.is_error = true;
+			_t13.err = _t12.err;
+			return _t13;
+		}
+		
+ 		_result_time__Time _t11;
+		builtin___result_ok(&(time__Time[]) { (*(time__Time*)_t12.data) }, (_result*)(&_t11), sizeof(time__Time));
+		 
+		return _t11;
+	}
+	
+	else {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("not a time value: "), 0xfe10, {.d_s = x__json2__Any_str(f)}}, {_S(" of type: "), 0xfe10, {.d_s = builtin__charptr_vstring_literal(v_typeof_sumtype_x__json2__Any( (f)._typ ))}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+	return (_result_time__Time){0};
+}
+int x__json2__Token_full_col(x__json2__Token t) {
+	return (int)(t.col + t.lit.len);
+}
+void x__json2__Null_from_json_null(x__json2__Null* n) {
+}
+string x__json2__Null_to_json(x__json2__Null n) {
+	return _S("null");
+}
+bool encoding__utf8__validate_str(string str) {
+	return encoding__utf8__validate__utf8_string(str);
+}
+bool encoding__utf8__validate(u8* data, int len) {
+	return encoding__utf8__validate__utf8_data(data, len);
+}
+VV_LOC bool encoding__utf8__is_excluding_latin(encoding__utf8__RangeTable* table, rune r) {
+	Array_encoding__utf8__Range16* r16 = &table->r16;
+	int off = table->latin_offset;
+	if (r16->len > off && ((u32)(r)) < ((u32)((*(encoding__utf8__Range16*)builtin__array_get((*r16), (int)(r16->len - 1))).hi))) {
+		return encoding__utf8__is_16(builtin__array_slice((*r16), off, 2147483647), ((u16)(r)));
+	}
+	Array_encoding__utf8__Range32* r32 = &table->r32;
+	if (r32->len > 0 && r >= ((rune)((*(encoding__utf8__Range32*)builtin__array_get((*r32), 0)).lo))) {
+		return encoding__utf8__is_32(*r32, ((u32)(r)));
+	}
+	return false;
+}
+VV_LOC bool encoding__utf8__is_16(Array_encoding__utf8__Range16 ranges, u16 r) {
+	if (ranges.len <= 18 && r <= _const_encoding__utf8__max_latin_1) {
+		for (int _t1 = 0; _t1 < ranges.len; ++_t1) {
+			encoding__utf8__Range16 range = ((encoding__utf8__Range16*)ranges.data)[_t1];
+			if (r < range.lo) {
+				return false;
+			}
+			if (r <= range.hi) {
+				return range.stride == 1 || (u16)(((u16)(r - range.lo)) % range.stride) == 0;
+			}
+		}
+		return false;
+	}
+	int low = 0;
+	int high = ranges.len;
+	for (;;) {
+		if (!(low < high)) break;
+		int medium = (int)(low + (int)(((int)(high - low)) / 2));
+		encoding__utf8__Range16 range = (*(encoding__utf8__Range16*)builtin__array_get(ranges, medium));
+		if (range.lo <= r && r <= range.hi) {
+			return range.stride == 1 || (u16)(((u16)(r - range.lo)) % range.stride) == 0;
+		}
+		if (r < range.lo) {
+			high = medium;
+		} else {
+			low = (int)(medium + 1);
+		}
+	}
+	return false;
+}
+VV_LOC bool encoding__utf8__is_32(Array_encoding__utf8__Range32 ranges, u32 r) {
+	if (ranges.len <= 18 && r <= _const_encoding__utf8__max_latin_1) {
+		for (int _t1 = 0; _t1 < ranges.len; ++_t1) {
+			encoding__utf8__Range32 range = ((encoding__utf8__Range32*)ranges.data)[_t1];
+			if (r < range.lo) {
+				return false;
+			}
+			if (r <= range.hi) {
+				return range.stride == 1 || (u32)(((u32)(r - range.lo)) % range.stride) == 0;
+			}
+		}
+		return false;
+	}
+	int low = 0;
+	int high = ranges.len;
+	for (;;) {
+		if (!(low < high)) break;
+		int medium = (int)(low + (int)(((int)(high - low)) / 2));
+		encoding__utf8__Range32 range = (*(encoding__utf8__Range32*)builtin__array_get(ranges, medium));
+		if (range.lo <= r && r <= range.hi) {
+			return range.stride == 1 || (u32)(((u32)(r - range.lo)) % range.stride) == 0;
+		}
+		if (r < range.lo) {
+			high = medium;
+		} else {
+			low = (int)(medium + 1);
+		}
+	}
+	return false;
+}
+int encoding__utf8__len(string s) {
+	if (s.len == 0) {
+		return 0;
+	}
+	int count = 0;
+	int index = 0;
+	for (;;) {
+		int ch_len = builtin__utf8_char_len(builtin__string_at(s, index));
+		index += ch_len;
+		count++;
+		if (index >= s.len) {
+			break;
+		}
+	}
+	return count;
+}
+rune encoding__utf8__get_rune(string s, int index) {
+	int res = 0;
+	int ch_len = 0;
+	if (s.len > 0) {
+		ch_len = builtin__utf8_char_len(builtin__string_at(s, index));
+		if (ch_len == 1) {
+			return ((u16)(builtin__string_at(s, index)));
+		}
+		if (ch_len > 1 && ch_len < 5) {
+			int lword = 0;
+			for (int i = 0; i < ch_len; i++) {
+				lword = ((int)(((((u32)(lword)) << 8) | ((u32)(builtin__string_at(s, (int)(index + i)))))));
+			}
+			if (ch_len == 2) {
+				res = ((((lword & 0x1f00)) >> 2) | ((lword & 0x3f)));
+			} else if (ch_len == 3) {
+				res = (((((lword & 0x0f0000)) >> 4) | (((lword & 0x3f00)) >> 2)) | ((lword & 0x3f)));
+			} else if (ch_len == 4) {
+				res = (((((((lword & 0x07000000)) >> 6)) | ((((lword & 0x003f0000)) >> 4))) | ((((lword & 0x00003F00)) >> 2))) | ((lword & 0x0000003f)));
+			}
+		}
+	}
+	return res;
+}
+string encoding__utf8__raw_index(string s, int index) {
+	Array_rune r = builtin____new_array_with_default(0, 0, sizeof(rune), 0);
+	for (int i = 0; i < s.len; i++) {
+		if ((int)(r.len - 1) == index) {
+			break;
+		}
+		u8 b = builtin__string_at(s, i);
+		int ch_len = ((((0xe5000000U >> ((((b >> 3)) & 0x1e)))) & 3));
+		rune _t2; /* if prepend */
+		if (ch_len > 0) {
+			i += ch_len;
+			_t2 = ((rune)(encoding__utf8__get_rune(s, (int)(i - ch_len))));
+			goto _t3;
+		};
+		{
+			_t2 = ((rune)(b));
+		}
+	_t3: {};
+				builtin__array_push((array*)&r, _MOV((rune[]){ _t2 }));
+	}
+	return builtin__rune_str((*(rune*)builtin__array_get(r, index)));
+}
+string encoding__utf8__reverse(string s) {
+	int len_s = encoding__utf8__len(s);
+	if (len_s == 0 || len_s == 1) {
+		return builtin__string_clone(s);
+	}
+	Array_string str_array = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int i = 0; i < len_s; ++i) {
+		builtin__array_push((array*)&str_array, _MOV((string[]){ encoding__utf8__raw_index(s, i) }));
+	}
+	str_array = builtin__array_reverse(str_array);
+	return Array_string_join(str_array, _S(""));
+}
+string encoding__utf8__to_upper(string s) {
+	return encoding__utf8__convert_case(s, true);
+}
+string encoding__utf8__to_lower(string s) {
+	return encoding__utf8__convert_case(s, false);
+}
+bool encoding__utf8__is_punct(string s, int index) {
+	return encoding__utf8__is_rune_punct(encoding__utf8__get_rune(s, index));
+}
+bool encoding__utf8__is_control(rune r) {
+	if (r > _const_encoding__utf8__max_latin_1) {
+		return false;
+	}
+	return _const_encoding__utf8__props[builtin__v_fixed_index(((u8)(r)), 256)] == 1;
+}
+bool encoding__utf8__is_letter(rune r) {
+	if ((r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z')) {
+		return true;
+	} else if (r <= _const_encoding__utf8__max_latin_1) {
+		return (_const_encoding__utf8__props[builtin__v_fixed_index(((u8)(r)), 256)] & _const_encoding__utf8__p_l_mask) != 0;
+	}
+	return encoding__utf8__is_excluding_latin((voidptr)&_const_encoding__utf8__letter_table, r);
+}
+bool encoding__utf8__is_space(rune r) {
+	if (r <= _const_encoding__utf8__max_latin_1) {
+		switch (r) {
+			case '\t': case '\n': case '\v': case '\f': case '\r': case ' ': case 0x85: case 0xA0: {
+				return true;
+			}
+			default: {
+				{
+					return false;
+				}
+			}
+		}
+		
+	}
+	return encoding__utf8__is_excluding_latin((voidptr)&_const_encoding__utf8__white_space_table, r);
+}
+bool encoding__utf8__is_number(rune r) {
+	if (r <= _const_encoding__utf8__max_latin_1) {
+		return (_const_encoding__utf8__props[builtin__v_fixed_index(((u8)(r)), 256)] & 4) != 0;
+	}
+	return encoding__utf8__is_excluding_latin((voidptr)&_const_encoding__utf8__number_table, r);
+}
+bool encoding__utf8__is_rune_punct(rune r) {
+	return encoding__utf8__find_punct_in_table(r, _const_encoding__utf8__unicode_punct_western) != ((rune)(-1));
+}
+bool encoding__utf8__is_global_punct(string s, int index) {
+	return encoding__utf8__is_rune_global_punct(encoding__utf8__get_rune(s, index));
+}
+bool encoding__utf8__is_rune_global_punct(rune r) {
+	return encoding__utf8__find_punct_in_table(r, _const_encoding__utf8__unicode_punct) != ((rune)(-1));
+}
+VV_LOC int encoding__utf8__utf8_to_lower(int in_cp) {
+	int cp = in_cp;
+	if ((0x0041 <= cp && 0x005a >= cp) || (0x00c0 <= cp && 0x00d6 >= cp) || (0x00d8 <= cp && 0x00de >= cp) || (0x0391 <= cp && 0x03a1 >= cp) || (0x03a3 <= cp && 0x03ab >= cp) || (0x0410 <= cp && 0x042f >= cp)) {
+		cp += 32;
+	} else if (0x0400 <= cp && 0x040f >= cp) {
+		cp += 80;
+	} else if ((0x0100 <= cp && 0x012f >= cp) || (0x0132 <= cp && 0x0137 >= cp) || (0x014a <= cp && 0x0177 >= cp) || (0x0182 <= cp && 0x0185 >= cp) || (0x01a0 <= cp && 0x01a5 >= cp) || (0x01de <= cp && 0x01ef >= cp) || (0x01f8 <= cp && 0x021f >= cp) || (0x0222 <= cp && 0x0233 >= cp) || (0x0246 <= cp && 0x024f >= cp) || (0x03d8 <= cp && 0x03ef >= cp) || (0x0460 <= cp && 0x0481 >= cp) || (0x048a <= cp && 0x04ff >= cp)) {
+		cp |= 0x1;
+	} else if ((0x0139 <= cp && 0x0148 >= cp) || (0x0179 <= cp && 0x017e >= cp) || (0x01af <= cp && 0x01b0 >= cp) || (0x01b3 <= cp && 0x01b6 >= cp) || (0x01cd <= cp && 0x01dc >= cp)) {
+		cp += 1;
+		cp &= ~0x1;
+	} else if ((0x0531 <= cp && 0x0556 >= cp) || (0x10A0 <= cp && 0x10C5 >= cp)) {
+		cp += 0x30;
+	} else if (((0x1E00 <= cp && 0x1E94 >= cp) || (0x1EA0 <= cp && 0x1EF8 >= cp)) && (cp & 1) == 0) {
+		cp += 1;
+	} else if (0x24B6 <= cp && 0x24CF >= cp) {
+		cp += 0x1a;
+	} else if (0xFF21 <= cp && 0xFF3A >= cp) {
+		cp += 0x19;
+	} else if ((0x1F08 <= cp && 0x1F0F >= cp) || (0x1F18 <= cp && 0x1F1D >= cp) || (0x1F28 <= cp && 0x1F2F >= cp) || (0x1F38 <= cp && 0x1F3F >= cp) || (0x1F48 <= cp && 0x1F4D >= cp) || (0x1F68 <= cp && 0x1F6F >= cp) || (0x1F88 <= cp && 0x1F8F >= cp) || (0x1F98 <= cp && 0x1F9F >= cp) || (0x1FA8 <= cp && 0x1FAF >= cp)) {
+		cp -= 8;
+	} else {
+		switch (cp) {
+			case 0x0178: {
+				cp = 0x00ff;
+				break;
+			}
+			case 0x0243: {
+				cp = 0x0180;
+				break;
+			}
+			case 0x018e: {
+				cp = 0x01dd;
+				break;
+			}
+			case 0x023d: {
+				cp = 0x019a;
+				break;
+			}
+			case 0x0220: {
+				cp = 0x019e;
+				break;
+			}
+			case 0x01b7: {
+				cp = 0x0292;
+				break;
+			}
+			case 0x01c4: {
+				cp = 0x01c6;
+				break;
+			}
+			case 0x01c7: {
+				cp = 0x01c9;
+				break;
+			}
+			case 0x01ca: {
+				cp = 0x01cc;
+				break;
+			}
+			case 0x01f1: {
+				cp = 0x01f3;
+				break;
+			}
+			case 0x01f7: {
+				cp = 0x01bf;
+				break;
+			}
+			case 0x0187: {
+				cp = 0x0188;
+				break;
+			}
+			case 0x018b: {
+				cp = 0x018c;
+				break;
+			}
+			case 0x0191: {
+				cp = 0x0192;
+				break;
+			}
+			case 0x0198: {
+				cp = 0x0199;
+				break;
+			}
+			case 0x01a7: {
+				cp = 0x01a8;
+				break;
+			}
+			case 0x01ac: {
+				cp = 0x01ad;
+				break;
+			}
+			case 0x01af: {
+				cp = 0x01b0;
+				break;
+			}
+			case 0x01b8: {
+				cp = 0x01b9;
+				break;
+			}
+			case 0x01bc: {
+				cp = 0x01bd;
+				break;
+			}
+			case 0x01f4: {
+				cp = 0x01f5;
+				break;
+			}
+			case 0x023b: {
+				cp = 0x023c;
+				break;
+			}
+			case 0x0241: {
+				cp = 0x0242;
+				break;
+			}
+			case 0x03fd: {
+				cp = 0x037b;
+				break;
+			}
+			case 0x03fe: {
+				cp = 0x037c;
+				break;
+			}
+			case 0x03ff: {
+				cp = 0x037d;
+				break;
+			}
+			case 0x037f: {
+				cp = 0x03f3;
+				break;
+			}
+			case 0x0386: {
+				cp = 0x03ac;
+				break;
+			}
+			case 0x0388: {
+				cp = 0x03ad;
+				break;
+			}
+			case 0x0389: {
+				cp = 0x03ae;
+				break;
+			}
+			case 0x038a: {
+				cp = 0x03af;
+				break;
+			}
+			case 0x038c: {
+				cp = 0x03cc;
+				break;
+			}
+			case 0x038e: {
+				cp = 0x03cd;
+				break;
+			}
+			case 0x038f: {
+				cp = 0x03ce;
+				break;
+			}
+			case 0x0370: {
+				cp = 0x0371;
+				break;
+			}
+			case 0x0372: {
+				cp = 0x0373;
+				break;
+			}
+			case 0x0376: {
+				cp = 0x0377;
+				break;
+			}
+			case 0x03f4: {
+				cp = 0x03b8;
+				break;
+			}
+			case 0x03cf: {
+				cp = 0x03d7;
+				break;
+			}
+			case 0x03f9: {
+				cp = 0x03f2;
+				break;
+			}
+			case 0x03f7: {
+				cp = 0x03f8;
+				break;
+			}
+			case 0x03fa: {
+				cp = 0x03fb;
+				break;
+			}
+			case 0x1F59: {
+				cp = 0x1F51;
+				break;
+			}
+			case 0x1F5B: {
+				cp = 0x1F53;
+				break;
+			}
+			case 0x1F5D: {
+				cp = 0x1F55;
+				break;
+			}
+			case 0x1F5F: {
+				cp = 0x1F57;
+				break;
+			}
+			case 0x1FB8: {
+				cp = 0x1FB0;
+				break;
+			}
+			case 0x1FB9: {
+				cp = 0x1FB1;
+				break;
+			}
+			case 0x1FD8: {
+				cp = 0x1FD0;
+				break;
+			}
+			case 0x1FD9: {
+				cp = 0x1FD1;
+				break;
+			}
+			case 0x1FE8: {
+				cp = 0x1FE0;
+				break;
+			}
+			case 0x1FE9: {
+				cp = 0x1FE1;
+				break;
+			}
+			default: {
+				{
+					break;
+				}
+			}
+		}
+		
+	}
+	return cp;
+}
+VV_LOC int encoding__utf8__utf8_to_upper(int in_cp) {
+	int cp = in_cp;
+	if ((0x0061 <= cp && 0x007a >= cp) || (0x00e0 <= cp && 0x00f6 >= cp) || (0x00f8 <= cp && 0x00fe >= cp) || (0x03b1 <= cp && 0x03c1 >= cp) || (0x03c3 <= cp && 0x03cb >= cp) || (0x0430 <= cp && 0x044f >= cp)) {
+		cp -= 32;
+	} else if (0x0450 <= cp && 0x045f >= cp) {
+		cp -= 80;
+	} else if ((0x0100 <= cp && 0x012f >= cp) || (0x0132 <= cp && 0x0137 >= cp) || (0x014a <= cp && 0x0177 >= cp) || (0x0182 <= cp && 0x0185 >= cp) || (0x01a0 <= cp && 0x01a5 >= cp) || (0x01de <= cp && 0x01ef >= cp) || (0x01f8 <= cp && 0x021f >= cp) || (0x0222 <= cp && 0x0233 >= cp) || (0x0246 <= cp && 0x024f >= cp) || (0x03d8 <= cp && 0x03ef >= cp) || (0x0460 <= cp && 0x0481 >= cp) || (0x048a <= cp && 0x04ff >= cp)) {
+		cp &= ~0x1;
+	} else if ((0x0139 <= cp && 0x0148 >= cp) || (0x0179 <= cp && 0x017e >= cp) || (0x01af <= cp && 0x01b0 >= cp) || (0x01b3 <= cp && 0x01b6 >= cp) || (0x01cd <= cp && 0x01dc >= cp)) {
+		cp -= 1;
+		cp |= 0x1;
+	} else if ((0x0561 <= cp && 0x0586 >= cp) || (0x10D0 <= cp && 0x10F5 >= cp)) {
+		cp -= 0x30;
+	} else if (((0x1E01 <= cp && 0x1E95 >= cp) || (0x1EA1 <= cp && 0x1EF9 >= cp)) && (cp & 1) == 1) {
+		cp -= 1;
+	} else if (0x24D0 <= cp && 0x24E9 >= cp) {
+		cp -= 0x1a;
+	} else if (0xFF41 <= cp && 0xFF5A >= cp) {
+		cp -= 0x19;
+	} else if ((0x1F00 <= cp && 0x1F07 >= cp) || (0x1F10 <= cp && 0x1F15 >= cp) || (0x1F20 <= cp && 0x1F27 >= cp) || (0x1F30 <= cp && 0x1F37 >= cp) || (0x1F40 <= cp && 0x1F45 >= cp) || (0x1F60 <= cp && 0x1F67 >= cp) || (0x1F80 <= cp && 0x1F87 >= cp) || (0x1F90 <= cp && 0x1F97 >= cp) || (0x1FA0 <= cp && 0x1FA7 >= cp)) {
+		cp += 8;
+	} else {
+		switch (cp) {
+			case 0x00ff: {
+				cp = 0x0178;
+				break;
+			}
+			case 0x0180: {
+				cp = 0x0243;
+				break;
+			}
+			case 0x01dd: {
+				cp = 0x018e;
+				break;
+			}
+			case 0x019a: {
+				cp = 0x023d;
+				break;
+			}
+			case 0x019e: {
+				cp = 0x0220;
+				break;
+			}
+			case 0x0292: {
+				cp = 0x01b7;
+				break;
+			}
+			case 0x01c6: {
+				cp = 0x01c4;
+				break;
+			}
+			case 0x01c9: {
+				cp = 0x01c7;
+				break;
+			}
+			case 0x01cc: {
+				cp = 0x01ca;
+				break;
+			}
+			case 0x01f3: {
+				cp = 0x01f1;
+				break;
+			}
+			case 0x01bf: {
+				cp = 0x01f7;
+				break;
+			}
+			case 0x0188: {
+				cp = 0x0187;
+				break;
+			}
+			case 0x018c: {
+				cp = 0x018b;
+				break;
+			}
+			case 0x0192: {
+				cp = 0x0191;
+				break;
+			}
+			case 0x0199: {
+				cp = 0x0198;
+				break;
+			}
+			case 0x01a8: {
+				cp = 0x01a7;
+				break;
+			}
+			case 0x01ad: {
+				cp = 0x01ac;
+				break;
+			}
+			case 0x01b0: {
+				cp = 0x01af;
+				break;
+			}
+			case 0x01b9: {
+				cp = 0x01b8;
+				break;
+			}
+			case 0x01bd: {
+				cp = 0x01bc;
+				break;
+			}
+			case 0x01f5: {
+				cp = 0x01f4;
+				break;
+			}
+			case 0x023c: {
+				cp = 0x023b;
+				break;
+			}
+			case 0x0242: {
+				cp = 0x0241;
+				break;
+			}
+			case 0x037b: {
+				cp = 0x03fd;
+				break;
+			}
+			case 0x037c: {
+				cp = 0x03fe;
+				break;
+			}
+			case 0x037d: {
+				cp = 0x03ff;
+				break;
+			}
+			case 0x03f3: {
+				cp = 0x037f;
+				break;
+			}
+			case 0x03ac: {
+				cp = 0x0386;
+				break;
+			}
+			case 0x03ad: {
+				cp = 0x0388;
+				break;
+			}
+			case 0x03ae: {
+				cp = 0x0389;
+				break;
+			}
+			case 0x03af: {
+				cp = 0x038a;
+				break;
+			}
+			case 0x03cc: {
+				cp = 0x038c;
+				break;
+			}
+			case 0x03cd: {
+				cp = 0x038e;
+				break;
+			}
+			case 0x03ce: {
+				cp = 0x038f;
+				break;
+			}
+			case 0x0371: {
+				cp = 0x0370;
+				break;
+			}
+			case 0x0373: {
+				cp = 0x0372;
+				break;
+			}
+			case 0x0377: {
+				cp = 0x0376;
+				break;
+			}
+			case 0x03d1: {
+				cp = 0x0398;
+				break;
+			}
+			case 0x03d7: {
+				cp = 0x03cf;
+				break;
+			}
+			case 0x03f2: {
+				cp = 0x03f9;
+				break;
+			}
+			case 0x03f8: {
+				cp = 0x03f7;
+				break;
+			}
+			case 0x03fb: {
+				cp = 0x03fa;
+				break;
+			}
+			case 0x1F51: {
+				cp = 0x1F59;
+				break;
+			}
+			case 0x1F53: {
+				cp = 0x1F5B;
+				break;
+			}
+			case 0x1F55: {
+				cp = 0x1F5D;
+				break;
+			}
+			case 0x1F57: {
+				cp = 0x1F5F;
+				break;
+			}
+			case 0x1FB0: {
+				cp = 0x1FB8;
+				break;
+			}
+			case 0x1FB1: {
+				cp = 0x1FB9;
+				break;
+			}
+			case 0x1FD0: {
+				cp = 0x1FD8;
+				break;
+			}
+			case 0x1FD1: {
+				cp = 0x1FD9;
+				break;
+			}
+			case 0x1FE0: {
+				cp = 0x1FE8;
+				break;
+			}
+			case 0x1FE1: {
+				cp = 0x1FE9;
+				break;
+			}
+			default: {
+				{
+					break;
+				}
+			}
+		}
+		
+	}
+	return cp;
+}
+VV_LOC string encoding__utf8__convert_case(string s, bool upper_flag) {
+	int index = 0;
+	int tab_char = 0;
+	u8* str_res = builtin__malloc_noscan((int)(s.len + 1));
+	for (;;) {
+		int ch_len = builtin__utf8_char_len(s.str[ index]);
+		if (ch_len == 1) {
+			if (upper_flag == true) {
+				{ // Unsafe block
+					u8 c = s.str[ index];
+					str_res[index] = (c >= 0x61 && c <= 0x7a ? ((c & 0xdf)) : (c));
+				}
+			} else {
+				{ // Unsafe block
+					u8 c = s.str[ index];
+					str_res[index] = (c >= 0x41 && c <= 0x5a ? ((c | 0x20)) : (c));
+				}
+			}
+		} else if (ch_len > 1 && ch_len < 5) {
+			int lword = 0;
+			for (int i = 0; i < ch_len; i++) {
+				lword = ((int)(((((u32)(lword)) << 8) | ((u32)(s.str[ (int)(index + i)])))));
+			}
+			int res = 0;
+			if (ch_len == 2) {
+				res = ((((lword & 0x1f00)) >> 2) | ((lword & 0x3f)));
+			} else if (ch_len == 3) {
+				res = (((((lword & 0x0f0000)) >> 4) | (((lword & 0x3f00)) >> 2)) | ((lword & 0x3f)));
+			} else if (ch_len == 4) {
+				res = (((((((lword & 0x07000000)) >> 6)) | ((((lword & 0x003f0000)) >> 4))) | ((((lword & 0x00003F00)) >> 2))) | ((lword & 0x0000003f)));
+			}
+			if (upper_flag == false) {
+				tab_char = encoding__utf8__utf8_to_lower(res);
+			} else {
+				tab_char = encoding__utf8__utf8_to_upper(res);
+			}
+			if (ch_len == 2) {
+				u8 ch0 = (((u8)((((tab_char >> 6)) & 0x1f))) | 0xc0);
+				u8 ch1 = (((u8)((((tab_char >> 0)) & 0x3f))) | 0x80);
+				{ // Unsafe block
+					str_res[(int)(index + 0)] = ch0;
+					str_res[(int)(index + 1)] = ch1;
+				}
+			} else if (ch_len == 3) {
+				u8 ch0 = (((u8)((((tab_char >> 12)) & 0x0f))) | 0xe0);
+				u8 ch1 = (((u8)((((tab_char >> 6)) & 0x3f))) | 0x80);
+				u8 ch2 = (((u8)((((tab_char >> 0)) & 0x3f))) | 0x80);
+				{ // Unsafe block
+					str_res[(int)(index + 0)] = ch0;
+					str_res[(int)(index + 1)] = ch1;
+					str_res[(int)(index + 2)] = ch2;
+				}
+			} else if (ch_len == 4) {
+				for (int i = 0; i < ch_len; ++i) {
+					{ // Unsafe block
+						str_res[(int)(index + i)] = s.str[ (int)(index + i)];
+					}
+				}
+			}
+		} else {
+			for (int i = 0; i < ch_len; ++i) {
+				{ // Unsafe block
+					str_res[(int)(index + i)] = s.str[ (int)(index + i)];
+				}
+			}
+		}
+		index += ch_len;
+		if (index >= s.len) {
+			break;
+		}
+	}
+	{ // Unsafe block
+		str_res[index] = 0;
+		return builtin__tos(str_res, s.len);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC rune encoding__utf8__find_punct_in_table(rune in_code, Array_rune in_table) {
+	int first_index = 0;
+	int last_index = (in_table.len);
+	int index = 0;
+	rune x = ((rune)(0));
+	for (;;) {
+		x = ((rune*)in_table.data)[index];
+		if (x == in_code) {
+			return index;
+		} else if (x > in_code) {
+			last_index = index;
+		} else {
+			first_index = index;
+		}
+		if (((int)(last_index - first_index)) <= 1) {
+			break;
+		}
+		index = (((int)(first_index + last_index)) >> 1);
+	}
+	return -1;
+}
 inline VV_LOC u32 rand__seed__nr_next(u32 prev) {
 	return (u32)((u32)(prev * 1664525) + 1013904223);
 }
@@ -35534,6 +49066,34 @@ u64 rand__seed__time_seed_64(void) {
 	builtin__array_free(&seed_data);
 	u64 res = (lower | ((upper << 32)));
 	return res;
+}
+_result_string toml__input__Config_read_input(toml__input__Config c) {
+	if ((c.file_path).len != 0 && (c.text).len != 0) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.input"), _S(".")), _S("read_input")), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = _S("input.Config")}}, {_S(" should contain only one of the fields `file_path` OR `text` filled out"), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if ((c.file_path).len == 0 && (c.text).len == 0) {
+		_result_string _t2;
+		builtin___result_ok(&(string[]) { _S("") }, (_result*)(&_t2), sizeof(string));
+		 
+		return _t2;
+	}
+	if ((c.text).len != 0) {
+		_result_string _t3;
+		builtin___result_ok(&(string[]) { c.text }, (_result*)(&_t3), sizeof(string));
+		 
+		return _t3;
+	}
+	_result_string _t4 = os__read_file(c.file_path);
+	if (_t4.is_error) {
+		IError err = _t4.err;
+		return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.input"), _S(".")), _S("Config")), _S(".")), _S("read_input")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" Could not read \""), 0xfe10, {.d_s = c.file_path}}, {_S("\": \""), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	
+ 	string text = (*(string*)_t4.data);
+	_result_string _t6;
+	builtin___result_ok(&(string[]) { text }, (_result*)(&_t6), sizeof(string));
+	 
+	return _t6;
 }
 VV_LOC _result_usize runtime__free_memory_impl(void) {
 	{
@@ -35714,6 +49274,864 @@ inline u64 rand__wyrand__WyRandRNG_u64(rand__wyrand__WyRandRNG* rng) {
 		return _wymix((seed1 ^ _const_rand__wyrand__wyp1), seed1);
 	}
 	return 0;
+}
+string toml__ast__Root_str(toml__ast__Root _v_toheap_r) {
+toml__ast__Root* r = HEAP(toml__ast__Root, _v_toheap_r);
+	string s = builtin__string__plus(_S("ast.Root"), _S("{\n"));
+	s = builtin__string__plus(s, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  input:  "), 0xfe10, {.d_s = toml__input__Config_str((*(r)).input)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	s = builtin__string__plus(s, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  table:  "), 0xfe10, {.d_s = toml__ast__Value_str((*(r)).table)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	s = builtin__string__plus(s, _S("}"));
+	return s;
+}
+string toml__ast__Key_str(toml__ast__Key k) {
+	return builtin__string_clone((*(k.text)));
+}
+string toml__ast__Value_str(toml__ast__Value v) {
+	if (v._typ == 291 /* toml.ast.Quoted */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = (*v._toml__ast__Quoted).text}}, {_S("\""), 0, { .d_c = 0 }}}));
+	}
+	else if (v._typ == 288 /* toml.ast.Date */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = (*v._toml__ast__Date).text}}, {_S("\""), 0, { .d_c = 0 }}}));
+	}
+	else if (v._typ == 290 /* toml.ast.DateTime */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = (*v._toml__ast__DateTime).text}}, {_S("\""), 0, { .d_c = 0 }}}));
+	}
+	else if (v._typ == 289 /* toml.ast.Time */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = (*v._toml__ast__Time).text}}, {_S("\""), 0, { .d_c = 0 }}}));
+	}
+	else if (v._typ == 293 /* toml.ast.Bool */) {
+		return (*v._toml__ast__Bool).text;
+	}
+	else if (v._typ == 285 /* toml.ast.Null */) {
+		return (*v._toml__ast__Null).text;
+	}
+	else if (v._typ == 292 /* toml.ast.Number */) {
+		return (*v._toml__ast__Number).text;
+	}
+	else if (v._typ == 287 /* map[string]toml.ast.Value */) {
+		string str = _S("{");
+		int _t9 = (*v._Map_string_toml__ast__Value).key_values.len;
+		for (int _t8 = 0; _t8 < _t9; ++_t8 ) {
+			int _t10 = (*v._Map_string_toml__ast__Value).key_values.len - _t9;
+			_t9 = (*v._Map_string_toml__ast__Value).key_values.len;
+			if (_t10 < 0) {
+				_t8 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&(*v._Map_string_toml__ast__Value).key_values, _t8)) {continue;}
+			string key = *(string*)builtin__DenseArray_key(&(*v._Map_string_toml__ast__Value).key_values, _t8);
+			key = builtin__string_clone(key);
+			toml__ast__Value val = (*(toml__ast__Value*)builtin__DenseArray_value(&(*v._Map_string_toml__ast__Value).key_values, _t8));
+			str = builtin__string__plus(str, builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = key}}, {_S("\": "), 0xfe10, {.d_s = toml__ast__Value_str(val)}}, {_S(","), 0, { .d_c = 0 }}})));
+		}
+		str = builtin__string_trim_right(str, _S(","));
+		str = builtin__string__plus(str, _S(" }"));
+		return str;
+	}
+	else if (v._typ == 286 /* []toml.ast.Value */) {
+		string str = _S("[");
+		for (int _t12 = 0; _t12 < (*v._Array_toml__ast__Value).len; ++_t12) {
+			toml__ast__Value val = ((toml__ast__Value*)(*v._Array_toml__ast__Value).data)[_t12];
+			str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = toml__ast__Value_str(val)}}, {_S(","), 0, { .d_c = 0 }}})));
+		}
+		str = builtin__string_trim_right(str, _S(","));
+		str = builtin__string__plus(str, _S(" ]"));
+		return str;
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string toml__ast__DateTimeType_str(toml__ast__DateTimeType dtt) {
+	return (*(dtt.text));
+}
+string toml__ast__Comment_str(toml__ast__Comment c) {
+	string s = builtin__string__plus(_S("ast.Comment"), _S("{\n"));
+	s = builtin__string__plus(s, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = c.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	s = builtin__string__plus(s, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(c.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	s = builtin__string__plus(s, _S("}"));
+	return s;
+}
+string toml__ast__Null_str(toml__ast__Null n) {
+	return n.text;
+}
+string toml__ast__Quoted_str(toml__ast__Quoted q) {
+	string str = builtin__string__plus(_S("ast.Quoted"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = q.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(q.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  is_multiline:  "), 0xfe10, {.d_s = q.is_multiline ? _S("true") : _S("false")}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  quote: \'"), 0xfe02, {.d_u8 = q.quote}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+string toml__ast__Bare_str(toml__ast__Bare b) {
+	string str = builtin__string__plus(_S("ast.Bare"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = b.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(b.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+string toml__ast__Bool_str(toml__ast__Bool b) {
+	string str = builtin__string__plus(_S("ast.Bool"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = b.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(b.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+string toml__ast__Number_str(toml__ast__Number n) {
+	string str = builtin__string__plus(_S("ast.Number"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = n.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(n.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+i64 toml__ast__Number_i64(toml__ast__Number n) {
+	if (builtin__string_starts_with(n.text, _S("0x"))) {
+		string hex = builtin__string_replace(builtin__string_to_upper(builtin__string_all_after(n.text, _S("0x"))), _S("_"), _S(""));
+		_result_i64 _t2 = strconv__parse_int(hex, 16, 64);
+		if (_t2.is_error) {
+			*(i64*) _t2.data = ((i64)(0));
+		}
+		
+ 		return (*(i64*)_t2.data);
+	} else if (builtin__string_starts_with(n.text, _S("0o"))) {
+		string oct = builtin__string_replace(builtin__string_all_after(n.text, _S("0o")), _S("_"), _S(""));
+		_result_i64 _t4 = strconv__parse_int(oct, 8, 64);
+		if (_t4.is_error) {
+			*(i64*) _t4.data = ((i64)(0));
+		}
+		
+ 		return (*(i64*)_t4.data);
+	} else if (builtin__string_starts_with(n.text, _S("0b"))) {
+		string bin = builtin__string_replace(builtin__string_all_after(n.text, _S("0b")), _S("_"), _S(""));
+		_result_i64 _t6 = strconv__parse_int(bin, 2, 64);
+		if (_t6.is_error) {
+			*(i64*) _t6.data = ((i64)(0));
+		}
+		
+ 		return (*(i64*)_t6.data);
+	}
+	_result_i64 _t8 = strconv__parse_int(n.text, 0, 64);
+	if (_t8.is_error) {
+		*(i64*) _t8.data = ((i64)(0));
+	}
+	
+ 	return (*(i64*)_t8.data);
+}
+f64 toml__ast__Number_f64(toml__ast__Number n) {
+	return builtin__string_f64(builtin__string_replace(n.text, _S("_"), _S("")));
+}
+string toml__ast__Date_str(toml__ast__Date d) {
+	string str = builtin__string__plus(_S("ast.Date"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = d.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(d.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+string toml__ast__Time_str(toml__ast__Time t) {
+	string str = builtin__string__plus(_S("ast.Time"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = t.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  offset:  \'"), 0xfe07, {.d_i32 = t.offset}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(t.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+string toml__ast__DateTime_str(toml__ast__DateTime dt) {
+	string str = builtin__string__plus(_S("ast.DateTime"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  text:  \'"), 0xfe10, {.d_s = dt.text}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  date:  \'"), 0xfe10, {.d_s = toml__ast__Date_str(dt.date)}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  time:  \'"), 0xfe10, {.d_s = toml__ast__Time_str(dt.time)}}, {_S("\'\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(dt.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+string toml__ast__EOF_str(toml__ast__EOF e) {
+	string str = builtin__string__plus(_S("ast.EOF"), _S("{\n"));
+	str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  pos:  "), 0xfe10, {.d_s = toml__token__Pos_str(e.pos)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	str = builtin__string__plus(str, _S("}"));
+	return str;
+}
+_result_toml__scanner__Scanner_ptr toml__scanner__new_scanner(toml__scanner__Config config) {
+	_result_string _t1 = toml__input__Config_read_input(config.input);
+	if (_t1.is_error) {
+		_result_toml__scanner__Scanner_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__scanner__Scanner* s = ((toml__scanner__Scanner*)builtin__memdup(&(toml__scanner__Scanner){.config = config,.text = (*(string*)_t1.data),.col = 0,.line_nr = 1,.pos = 0,.header_len = 0,.is_left_of_assign = true,}, sizeof(toml__scanner__Scanner)));
+	_result_toml__scanner__Scanner_ptr _t3;
+	builtin___result_ok(&(toml__scanner__Scanner*[]) { s }, (_result*)(&_t3), sizeof(toml__scanner__Scanner*));
+	 
+	return _t3;
+}
+_result_toml__scanner__Scanner toml__scanner__new_simple(toml__scanner__Config config) {
+	_result_string _t2 = toml__input__Config_read_input(config.input);
+	if (_t2.is_error) {
+		_result_toml__scanner__Scanner _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_toml__scanner__Scanner _t1;
+	builtin___result_ok(&(toml__scanner__Scanner[]) { ((toml__scanner__Scanner){.config = config,.text = (*(string*)_t2.data),.col = 0,.line_nr = 1,.pos = 0,.header_len = 0,.is_left_of_assign = true,}) }, (_result*)(&_t1), sizeof(toml__scanner__Scanner));
+	 
+	return _t1;
+}
+_result_toml__scanner__Scanner toml__scanner__new_simple_text(string text) {
+	toml__input__Config in_config = ((toml__input__Config){.text = text,.file_path = (string){.str=(byteptr)"", .is_lit=1},});
+	toml__scanner__Config config = ((toml__scanner__Config){.input = in_config,.tokenize_formatting = true,});
+	_result_string _t2 = toml__input__Config_read_input(config.input);
+	if (_t2.is_error) {
+		_result_toml__scanner__Scanner _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_toml__scanner__Scanner _t1;
+	builtin___result_ok(&(toml__scanner__Scanner[]) { ((toml__scanner__Scanner){.config = config,.text = (*(string*)_t2.data),.col = 0,.line_nr = 1,.pos = 0,.header_len = 0,.is_left_of_assign = true,}) }, (_result*)(&_t1), sizeof(toml__scanner__Scanner));
+	 
+	return _t1;
+}
+_result_toml__scanner__Scanner toml__scanner__new_simple_file(string path) {
+	toml__input__Config in_config = ((toml__input__Config){.text = (string){.str=(byteptr)"", .is_lit=1},.file_path = path,});
+	toml__scanner__Config config = ((toml__scanner__Config){.input = in_config,.tokenize_formatting = true,});
+	_result_string _t2 = toml__input__Config_read_input(config.input);
+	if (_t2.is_error) {
+		_result_toml__scanner__Scanner _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_toml__scanner__Scanner _t1;
+	builtin___result_ok(&(toml__scanner__Scanner[]) { ((toml__scanner__Scanner){.config = config,.text = (*(string*)_t2.data),.col = 0,.line_nr = 1,.pos = 0,.header_len = 0,.is_left_of_assign = true,}) }, (_result*)(&_t1), sizeof(toml__scanner__Scanner));
+	 
+	return _t1;
+}
+_result_toml__token__Token toml__scanner__Scanner_scan(toml__scanner__Scanner* s) {
+	_result_void _t1 = toml__scanner__Scanner_validate_and_skip_headers(s);
+	if (_t1.is_error) {
+		_result_toml__token__Token _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	for (;;) {
+		u32 c = toml__scanner__Scanner_next(s);
+		u8 byte_c = ((u8)(c));
+		if (c == _const_toml__scanner__end_of_text) {
+			toml__scanner__Scanner_inc_line_number(s);
+			;
+			_result_toml__token__Token _t3;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__eof, _S(""), 1) }, (_result*)(&_t3), sizeof(toml__token__Token));
+			 
+			return _t3;
+		}
+		string ascii = builtin__u8_ascii_str(byte_c);
+		;
+		if (byte_c == ((u8)(0x0))) {
+			toml__scanner__Scanner_reset(s);
+			return (_result_toml__token__Token){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("scan")), builtin__str_intp(6, _MOV((StrIntpData[]){{_S(" NULL control character `"), 0xfe10, {.d_s = builtin__u32_hex(c)}}, {_S("` is not allowed at ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = ascii}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		bool is_sign = c == '+' || c == '-';
+		u32 peek_1 = toml__scanner__Scanner_peek(s, 1);
+		u32 peek_2 = toml__scanner__Scanner_peek(s, 2);
+		bool is_nan = c == 'n' && toml__scanner__Scanner_at(s) == 'a' && peek_1 == 'n';
+		bool is_inf = !is_nan && c == 'i' && toml__scanner__Scanner_at(s) == 'n' && peek_1 == 'f';
+		bool is_signed_nan = is_sign && toml__scanner__Scanner_at(s) == 'n' && peek_1 == 'a' && peek_2 == 'n';
+		bool is_signed_inf = !is_signed_nan && is_sign && toml__scanner__Scanner_at(s) == 'i' && peek_1 == 'n' && peek_2 == 'f';
+		if (!s->is_left_of_assign && (is_nan || is_inf || is_signed_nan || is_signed_inf)) {
+			_result_string _t5 = toml__scanner__Scanner_extract_nan_or_inf_number(s);
+			if (_t5.is_error) {
+				_result_toml__token__Token _t6 = {0};
+				_t6.is_error = true;
+				_t6.err = _t5.err;
+				return _t6;
+			}
+			
+ 			string num = (*(string*)_t5.data);
+			;
+			_result_toml__token__Token _t7;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__number, num, num.len) }, (_result*)(&_t7), sizeof(toml__token__Token));
+			 
+			return _t7;
+		}
+		bool is_signed_number = is_sign && builtin__u8_is_digit(((u8)(toml__scanner__Scanner_at(s)))) && !builtin__u8_is_digit(((u8)(toml__scanner__Scanner_peek(s, -1))));
+		bool is_digit = builtin__u8_is_digit(byte_c);
+		if (is_digit || is_signed_number) {
+			_result_string _t8 = toml__scanner__Scanner_extract_number(s);
+			if (_t8.is_error) {
+				_result_toml__token__Token _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			string num = (*(string*)_t8.data);
+			;
+			_result_toml__token__Token _t10;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__number, num, num.len) }, (_result*)(&_t10), sizeof(toml__token__Token));
+			 
+			return _t10;
+		}
+		if (toml__util__is_key_char(byte_c)) {
+			string key = toml__scanner__Scanner_extract_key(s);
+			if (((u8)(toml__scanner__Scanner_peek(s, 1))) != '=' && (_SLIT_EQ(key.str, key.len, "true") || _SLIT_EQ(key.str, key.len, "false"))) {
+				;
+				_result_toml__token__Token _t11;
+				builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__boolean, key, key.len) }, (_result*)(&_t11), sizeof(toml__token__Token));
+				 
+				return _t11;
+			}
+			;
+			_result_toml__token__Token _t12;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__bare, key, key.len) }, (_result*)(&_t12), sizeof(toml__token__Token));
+			 
+			return _t12;
+		}
+		rune _t13 = ((rune)(c));
+		
+		if (_t13 == (' ') || _t13 == ('\t') || _t13 == ('\n') || _t13 == ('\r')) {
+			if (c == '\n') {
+				toml__scanner__Scanner_inc_line_number(s);
+				;
+			} else if (c == '\r') {
+				if (toml__scanner__Scanner_at(s) != '\n') {
+					return (_result_toml__token__Token){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("scan")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" missing newline/linefeed character after \"\\c\" carriage return at ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = ascii}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			}
+			if (c == ' ' && builtin__u8_is_digit(((u8)(toml__scanner__Scanner_peek(s, -1)))) && builtin__u8_is_digit(((u8)(toml__scanner__Scanner_at(s))))) {
+				;
+				_result_toml__token__Token _t15;
+				builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__whitespace, ascii, ascii.len) }, (_result*)(&_t15), sizeof(toml__token__Token));
+				 
+				return _t15;
+			}
+			if (s->config.tokenize_formatting) {
+				toml__token__Kind kind = toml__token__Kind__whitespace;
+				if (c == '\t') {
+					kind = toml__token__Kind__tab;
+				} else if (c == '\r') {
+					kind = toml__token__Kind__cr;
+				} else if (c == '\n') {
+					kind = toml__token__Kind__nl;
+				}
+				;
+				_result_toml__token__Token _t16;
+				builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, kind, ascii, ascii.len) }, (_result*)(&_t16), sizeof(toml__token__Token));
+				 
+				return _t16;
+			} else {
+				;
+			}
+			continue;
+		}
+		else if (_t13 == ('-')) {
+			;
+			_result_toml__token__Token _t17;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__minus, ascii, ascii.len) }, (_result*)(&_t17), sizeof(toml__token__Token));
+			 
+			return _t17;
+		}
+		else if (_t13 == ('_')) {
+			;
+			_result_toml__token__Token _t18;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__underscore, ascii, ascii.len) }, (_result*)(&_t18), sizeof(toml__token__Token));
+			 
+			return _t18;
+		}
+		else if (_t13 == ('+')) {
+			;
+			_result_toml__token__Token _t19;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__plus, ascii, ascii.len) }, (_result*)(&_t19), sizeof(toml__token__Token));
+			 
+			return _t19;
+		}
+		else if (_t13 == ('=')) {
+			s->is_left_of_assign = false;
+			;
+			_result_toml__token__Token _t20;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__assign, ascii, ascii.len) }, (_result*)(&_t20), sizeof(toml__token__Token));
+			 
+			return _t20;
+		}
+		else if (_t13 == ('"') || _t13 == ('\'')) {
+			_result_string _t21 = toml__scanner__Scanner_extract_string(s);
+			if (_t21.is_error) {
+				_result_toml__token__Token _t22 = {0};
+				_t22.is_error = true;
+				_t22.err = _t21.err;
+				return _t22;
+			}
+			
+ 			string ident_string = (*(string*)_t21.data);
+			;
+			_result_toml__token__Token _t23;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__quoted, ident_string, ident_string.len) }, (_result*)(&_t23), sizeof(toml__token__Token));
+			 
+			return _t23;
+		}
+		else if (_t13 == ('#')) {
+			_result_string _t24 = toml__scanner__Scanner_ignore_line(s);
+			if (_t24.is_error) {
+				_result_toml__token__Token _t25 = {0};
+				_t25.is_error = true;
+				_t25.err = _t24.err;
+				return _t25;
+			}
+			
+ 			string hash = (*(string*)_t24.data);
+			;
+			_result_toml__token__Token _t26;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__hash, hash, (int)(hash.len + 1)) }, (_result*)(&_t26), sizeof(toml__token__Token));
+			 
+			return _t26;
+		}
+		else if (_t13 == ('{')) {
+			;
+			_result_toml__token__Token _t27;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__lcbr, ascii, ascii.len) }, (_result*)(&_t27), sizeof(toml__token__Token));
+			 
+			return _t27;
+		}
+		else if (_t13 == ('}')) {
+			;
+			_result_toml__token__Token _t28;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__rcbr, ascii, ascii.len) }, (_result*)(&_t28), sizeof(toml__token__Token));
+			 
+			return _t28;
+		}
+		else if (_t13 == ('[')) {
+			;
+			_result_toml__token__Token _t29;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__lsbr, ascii, ascii.len) }, (_result*)(&_t29), sizeof(toml__token__Token));
+			 
+			return _t29;
+		}
+		else if (_t13 == (']')) {
+			;
+			_result_toml__token__Token _t30;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__rsbr, ascii, ascii.len) }, (_result*)(&_t30), sizeof(toml__token__Token));
+			 
+			return _t30;
+		}
+		else if (_t13 == (':')) {
+			;
+			_result_toml__token__Token _t31;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__colon, ascii, ascii.len) }, (_result*)(&_t31), sizeof(toml__token__Token));
+			 
+			return _t31;
+		}
+		else if (_t13 == (',')) {
+			;
+			_result_toml__token__Token _t32;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__comma, ascii, ascii.len) }, (_result*)(&_t32), sizeof(toml__token__Token));
+			 
+			return _t32;
+		}
+		else if (_t13 == ('.')) {
+			;
+			_result_toml__token__Token _t33;
+			builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__period, ascii, ascii.len) }, (_result*)(&_t33), sizeof(toml__token__Token));
+			 
+			return _t33;
+		}
+		else {
+			return (_result_toml__token__Token){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("scan")), builtin__str_intp(7, _MOV((StrIntpData[]){{_S(" could not scan character `"), 0xfe10, {.d_s = ascii}}, {_S("` / "), 0xfe06, {.d_u32 = c}}, {_S(" at "), 0xfe07, {.d_i32 = s->pos}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	;
+	_result_toml__token__Token _t35;
+	builtin___result_ok(&(toml__token__Token[]) { toml__scanner__Scanner_new_token(s, toml__token__Kind__unknown, _S(""), 0) }, (_result*)(&_t35), sizeof(toml__token__Token));
+	 
+	return _t35;
+}
+void toml__scanner__Scanner_free(toml__scanner__Scanner* s) {
+	builtin__string_free(&s->text);
+}
+inline int toml__scanner__Scanner_remaining(toml__scanner__Scanner* s) {
+	return (int)(s->text.len - s->pos);
+}
+inline u32 toml__scanner__Scanner_next(toml__scanner__Scanner* s) {
+	if (s->pos < s->text.len) {
+		int opos = s->pos;
+		s->pos++;
+		s->col++;
+		u8 c = s->text.str[ opos];
+		return c;
+	}
+	return _const_toml__scanner__end_of_text;
+}
+inline void toml__scanner__Scanner_skip(toml__scanner__Scanner* s) {
+	if ((int)(s->pos + 1) < s->text.len) {
+		s->pos++;
+		s->col++;
+	}
+}
+inline void toml__scanner__Scanner_skip_n(toml__scanner__Scanner* s, int n) {
+	s->pos += n;
+	if (s->pos > s->text.len) {
+		s->pos = s->text.len;
+	}
+	s->col = s->pos;
+}
+inline u32 toml__scanner__Scanner_at(toml__scanner__Scanner* s) {
+	if (s->pos < s->text.len) {
+		return s->text.str[ s->pos];
+	}
+	return _const_toml__scanner__end_of_text;
+}
+VV_LOC bool toml__scanner__Scanner_at_crlf(toml__scanner__Scanner* s) {
+	return toml__scanner__Scanner_at(s) == '\r' && toml__scanner__Scanner_peek(s, 1) == '\n';
+}
+inline u32 toml__scanner__Scanner_peek(toml__scanner__Scanner* s, int n) {
+	if ((int)(s->pos + n) < s->text.len) {
+		if ((int)(n - 1) < 0 && (int)((int)(s->pos + n) - 1) >= 0) {
+			return s->text.str[ (int)((int)(s->pos + n) - 1)];
+		}
+		return s->text.str[ (int)(s->pos + n)];
+	}
+	return _const_toml__scanner__end_of_text;
+}
+void toml__scanner__Scanner_reset(toml__scanner__Scanner* s) {
+	s->pos = 0;
+	s->col = 0;
+	s->line_nr = 1;
+	s->header_len = 0;
+}
+inline VV_LOC toml__token__Token toml__scanner__Scanner_new_token(toml__scanner__Scanner* s, toml__token__Kind kind, string lit, int len) {
+	int col = (int)((int)(s->col - len) + 1);
+	if (s->line_nr == 1) {
+		col -= s->header_len;
+	}
+	return ((toml__token__Token){
+		.kind = kind,
+		.lit = lit,
+		.col = (col < 1 ? (1) : (col)),
+		.line_nr = (int)(s->line_nr + 1),
+		.pos = (int)((int)((int)(s->pos - s->header_len) - len) + 1),
+		.len = len,
+	});
+}
+inline VV_LOC _result_string toml__scanner__Scanner_ignore_line(toml__scanner__Scanner* s) {
+	;
+	int start = s->pos;
+	for (u32 c = toml__scanner__Scanner_at(s); c != _const_toml__scanner__end_of_text && c != '\n'; c = toml__scanner__Scanner_at(s)) {
+		;
+		if (toml__scanner__Scanner_at_crlf(s)) {
+			;
+			break;
+		}
+		toml__scanner__Scanner_next(s);
+	}
+	_result_string _t1;
+	builtin___result_ok(&(string[]) { builtin__string_substr(s->text, start, s->pos) }, (_result*)(&_t1), sizeof(string));
+	 
+	return _t1;
+}
+inline VV_LOC void toml__scanner__Scanner_inc_line_number(toml__scanner__Scanner* s) {
+	s->col = 0;
+	s->line_nr++;
+	s->is_left_of_assign = true;
+}
+inline VV_LOC string toml__scanner__Scanner_extract_key(toml__scanner__Scanner* s) {
+	s->pos--;
+	s->col--;
+	int start = s->pos;
+	for (;;) {
+		if (!(s->pos < s->text.len)) break;
+		u8 c = ((u8)(toml__scanner__Scanner_at(s)));
+		if (!(toml__util__is_key_char(c) || builtin__u8_is_digit(c) || (c == '_' || c == '-'))) {
+			break;
+		}
+		s->pos++;
+		s->col++;
+	}
+	string key = builtin__string_substr(s->text, start, s->pos);
+	return key;
+}
+inline VV_LOC _result_string toml__scanner__Scanner_extract_string(toml__scanner__Scanner* s) {
+	s->pos--;
+	s->col--;
+	u8 quote = ((u8)(toml__scanner__Scanner_at(s)));
+	int start = s->pos;
+	string lit = builtin__u8_ascii_str(quote);
+	bool is_multiline = s->text.str[ (int)(s->pos + 1)] == quote && s->text.str[ (int)(s->pos + 2)] == quote;
+	if (is_multiline) {
+		_result_string _t1 = toml__scanner__Scanner_extract_multiline_string(s);
+		if (_t1.is_error) {
+			_result_string _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		string mls = (*(string*)_t1.data);
+		_result_string _t3;
+		builtin___result_ok(&(string[]) { mls }, (_result*)(&_t3), sizeof(string));
+		 
+		return _t3;
+	}
+	for (;;) {
+		s->pos++;
+		s->col++;
+		if (s->pos >= s->text.len) {
+			return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_string")), builtin__str_intp(7, _MOV((StrIntpData[]){{_S(" unfinished single-line string literal `"), 0xfe10, {.d_s = builtin__u8_ascii_str(quote)}}, {_S("` started at "), 0xfe07, {.d_i32 = start}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_at(s))))}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		u8 c = ((u8)(toml__scanner__Scanner_at(s)));
+		;
+		if (c == ((u8)(92))) {
+			multi_return_string_int mr_14130 = toml__scanner__Scanner_handle_escapes(s, quote, is_multiline);
+			string esc = mr_14130.arg0;
+			int skip = mr_14130.arg1;
+			lit = builtin__string__plus(lit, esc);
+			if (skip > 0) {
+				s->pos += skip;
+				s->col += skip;
+				continue;
+			}
+		}
+		if (toml__util__is_illegal_ascii_control_character(c)) {
+			return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_string")), builtin__str_intp(7, _MOV((StrIntpData[]){{_S(" control character `"), 0xfe10, {.d_s = builtin__u8_hex(c)}}, {_S("` is not allowed at "), 0xfe07, {.d_i32 = start}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_at(s))))}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (c == quote) {
+			s->pos++;
+			s->col++;
+			_result_string _t6;
+			builtin___result_ok(&(string[]) { builtin__string__plus(lit, builtin__u8_ascii_str(quote)) }, (_result*)(&_t6), sizeof(string));
+			 
+			return _t6;
+		}
+		lit = builtin__string__plus(lit, builtin__u8_ascii_str(c));
+		if (builtin__string_contains(lit, _S("\n"))) {
+			return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_string")), builtin__str_intp(7, _MOV((StrIntpData[]){{_S(" unfinished single-line string literal `"), 0xfe10, {.d_s = builtin__u8_ascii_str(quote)}}, {_S("` started at "), 0xfe07, {.d_i32 = start}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_at(s))))}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	_result_string _t8;
+	builtin___result_ok(&(string[]) { lit }, (_result*)(&_t8), sizeof(string));
+	 
+	return _t8;
+}
+inline VV_LOC _result_string toml__scanner__Scanner_extract_multiline_string(toml__scanner__Scanner* s) {
+	u8 quote = ((u8)(toml__scanner__Scanner_at(s)));
+	int start = s->pos;
+	string lit = builtin__string__plus(builtin__string__plus(builtin__u8_ascii_str(quote), builtin__u8_ascii_str(quote)), builtin__u8_ascii_str(quote));
+	;
+	s->pos += 2;
+	s->col += 2;
+	for (;;) {
+		s->pos++;
+		s->col++;
+		if (s->pos >= s->text.len) {
+			return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_multiline_string")), builtin__str_intp(9, _MOV((StrIntpData[]){{_S(" unfinished multi-line string literal ("), 0xfe10, {.d_s = builtin__u8_ascii_str(quote)}}, {_SLIT0, 0xfe10, {.d_s = builtin__u8_ascii_str(quote)}}, {_SLIT0, 0xfe10, {.d_s = builtin__u8_ascii_str(quote)}}, {_S(") started at "), 0xfe07, {.d_i32 = start}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_at(s))))}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		u8 c = ((u8)(toml__scanner__Scanner_at(s)));
+		;
+		if (c == '\r' && toml__scanner__Scanner_peek(s, 1) == '\n') {
+			continue;
+		}
+		if (c == '\n') {
+			toml__scanner__Scanner_inc_line_number(s);
+			lit = builtin__string__plus(lit, builtin__u8_ascii_str(c));
+			;
+			continue;
+		}
+		if (c == ((u8)(92))) {
+			multi_return_string_int mr_16516 = toml__scanner__Scanner_handle_escapes(s, quote, true);
+			string esc = mr_16516.arg0;
+			int skip = mr_16516.arg1;
+			lit = builtin__string__plus(lit, esc);
+			if (skip > 0) {
+				s->pos += skip;
+				s->col += skip;
+				continue;
+			}
+		}
+		if (toml__util__is_illegal_ascii_control_character(c)) {
+			return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_multiline_string")), builtin__str_intp(7, _MOV((StrIntpData[]){{_S(" control character `"), 0xfe10, {.d_s = builtin__u8_hex(c)}}, {_S("` is not allowed at "), 0xfe07, {.d_i32 = start}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") \""), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_at(s))))}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (c == quote) {
+			if (toml__scanner__Scanner_peek(s, 1) == quote && toml__scanner__Scanner_peek(s, 2) == quote) {
+				if (toml__scanner__Scanner_peek(s, 3) == _const_toml__scanner__end_of_text) {
+					s->pos += 3;
+					s->col += 3;
+					lit = builtin__string__plus(lit, builtin__string__plus(builtin__string__plus(builtin__u8_ascii_str(quote), builtin__u8_ascii_str(quote)), builtin__u8_ascii_str(quote)));
+					;
+					_result_string _t3;
+					builtin___result_ok(&(string[]) { lit }, (_result*)(&_t3), sizeof(string));
+					 
+					return _t3;
+				} else if (toml__scanner__Scanner_peek(s, 3) != quote) {
+					s->pos += 3;
+					s->col += 3;
+					lit = builtin__string__plus(lit, builtin__string__plus(builtin__string__plus(builtin__u8_ascii_str(quote), builtin__u8_ascii_str(quote)), builtin__u8_ascii_str(quote)));
+					;
+					_result_string _t4;
+					builtin___result_ok(&(string[]) { lit }, (_result*)(&_t4), sizeof(string));
+					 
+					return _t4;
+				}
+			}
+		}
+		lit = builtin__string__plus(lit, builtin__u8_ascii_str(c));
+	}
+	_result_string _t5;
+	builtin___result_ok(&(string[]) { lit }, (_result*)(&_t5), sizeof(string));
+	 
+	return _t5;
+}
+VV_LOC multi_return_string_int toml__scanner__Scanner_handle_escapes(toml__scanner__Scanner* s, u8 quote, bool is_multiline) {
+	u8 c = ((u8)(toml__scanner__Scanner_at(s)));
+	string lit = builtin__u8_ascii_str(c);
+	bool is_literal_string = quote == '\'';
+	if (!is_literal_string) {
+		if (toml__scanner__Scanner_peek(s, 1) == 'u' && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(s, 2)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(s, 3)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(s, 4)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(s, 5))))) {
+			lit = builtin__string__plus(lit, builtin__string_substr(s->text, (int)(s->pos + 1), (int)(s->pos + 6)));
+			;
+			return (multi_return_string_int){.arg0=lit, .arg1=5};
+		} else if (toml__scanner__Scanner_peek(s, 1) == quote) {
+			if ((!is_multiline && toml__scanner__Scanner_peek(s, 2) == '\n') || (is_multiline && toml__scanner__Scanner_peek(s, 2) == quote && toml__scanner__Scanner_peek(s, 3) == quote && toml__scanner__Scanner_peek(s, 4) == '\n')) {
+				;
+				return (multi_return_string_int){.arg0=_S(""), .arg1=0};
+			}
+			lit = builtin__string__plus(lit, builtin__u8_ascii_str(quote));
+			;
+			return (multi_return_string_int){.arg0=lit, .arg1=1};
+		}
+	}
+	if (is_literal_string) {
+		if (toml__scanner__Scanner_peek(s, 1) == quote) {
+			;
+			return (multi_return_string_int){.arg0=_S(""), .arg1=0};
+		}
+	}
+	lit = builtin__string__plus(lit, builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_peek(s, 1)))));
+	;
+	return (multi_return_string_int){.arg0=lit, .arg1=1};
+}
+inline VV_LOC _result_string toml__scanner__Scanner_extract_number(toml__scanner__Scanner* s) {
+	s->pos--;
+	s->col--;
+	int start = s->pos;
+	u32 c = toml__scanner__Scanner_at(s);
+	bool is_digit = builtin__u8_is_digit(((u8)(c)));
+	if (!(is_digit || (c == '+' || c == '-'))) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(c)))}}, {_S(" is not a number at "), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 10)}}, {_SLIT0, 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	s->pos++;
+	s->col++;
+	for (;;) {
+		if (!(s->pos < s->text.len)) break;
+		c = toml__scanner__Scanner_at(s);
+		int float_precision = 0;
+		if (c == '.') {
+			int i = 1;
+			for (u8 c_ = ((u8)(toml__scanner__Scanner_peek(s, i))); c_ != _const_toml__scanner__end_of_text && c_ != '\n'; c_ = ((u8)(toml__scanner__Scanner_peek(s, i)))) {
+				if (!builtin__u8_is_digit(c_) && c_ != ',') {
+					float_precision = 0;
+					break;
+				}
+				float_precision++;
+				i++;
+			}
+		}
+		s->pos += float_precision;
+		s->col += float_precision;
+		if ((c == 'e' || c == 'E') && (Array_rune_contains(builtin__new_array_from_c_array(2, 2, sizeof(rune), _MOV((rune[2]){'+', '-'})), toml__scanner__Scanner_peek(s, 1))) && builtin__u8_is_digit(((u8)(toml__scanner__Scanner_peek(s, 2))))) {
+			s->pos += 2;
+			s->col += 2;
+		}
+		c = toml__scanner__Scanner_at(s);
+		if (!(builtin__u8_is_hex_digit(((u8)(c))) || (Array_rune_contains(_const_toml__scanner__digit_extras, c))) || (c == '.' && s->is_left_of_assign)) {
+			break;
+		}
+		s->pos++;
+		s->col++;
+	}
+	string key = builtin__string_substr(s->text, start, s->pos);
+	;
+	_result_string _t2;
+	builtin___result_ok(&(string[]) { key }, (_result*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+inline VV_LOC _result_string toml__scanner__Scanner_extract_nan_or_inf_number(toml__scanner__Scanner* s) {
+	s->pos--;
+	s->col--;
+	int start = s->pos;
+	u32 c = toml__scanner__Scanner_at(s);
+	if (!(c == '+' || c == '-' || c == 'n' || c == 'i')) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("extract_nan_or_inf_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(c)))}}, {_S(" is not a number at "), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 10)}}, {_SLIT0, 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	s->pos++;
+	s->col++;
+	for (;;) {
+		if (!(s->pos < s->text.len)) break;
+		c = toml__scanner__Scanner_at(s);
+		if (!(c == 'n' || c == 'a' || c == 'i' || c == 'f')) {
+			break;
+		}
+		s->pos++;
+		s->col++;
+	}
+	string key = builtin__string_substr(s->text, start, s->pos);
+	;
+	_result_string _t2;
+	builtin___result_ok(&(string[]) { key }, (_result*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+string toml__scanner__Scanner_excerpt(toml__scanner__Scanner* s, int pos, int margin) {
+	int start = (pos > 0 && pos >= margin ? ((int)(pos - margin)) : (0));
+	int end = ((int)(pos + margin) < s->text.len ? ((int)(pos + margin)) : (s->text.len));
+	return builtin__string_replace(builtin__string_substr(s->text, start, end), _S("\n"), _S("\\n"));
+}
+toml__scanner__State toml__scanner__Scanner_state(toml__scanner__Scanner* s) {
+	return ((toml__scanner__State){.col = s->col,.line_nr = s->line_nr,.pos = s->pos,});
+}
+VV_LOC _result_void toml__scanner__Scanner_validate_and_skip_headers(toml__scanner__Scanner* s) {
+	_result_void _t1 = toml__scanner__Scanner_check_utf16_or_32_bom(s);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	if (toml__scanner__Scanner_at(s) == 0xEF && toml__scanner__Scanner_peek(s, 1) == 0xBB && toml__scanner__Scanner_peek(s, 2) == 0xBF) {
+		;
+		s->header_len = 3;
+		toml__scanner__Scanner_skip_n(s, s->header_len);
+	}
+	_result_void _t3 = toml__scanner__Scanner_check_utf16_or_32_bom(s);
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__scanner__Scanner_check_utf16_or_32_bom(toml__scanner__Scanner* s) {
+	if ((toml__scanner__Scanner_at(s) == 0xFF && toml__scanner__Scanner_peek(s, 1) == 0xFE && toml__scanner__Scanner_peek(s, 2) == 0x00 && toml__scanner__Scanner_peek(s, 3) == 0x00) || (toml__scanner__Scanner_at(s) == 0x00 && toml__scanner__Scanner_peek(s, 1) == 0x00 && toml__scanner__Scanner_peek(s, 2) == 0xFE && toml__scanner__Scanner_peek(s, 3) == 0xFF)) {
+		s->header_len = 4;
+		toml__scanner__Scanner_skip_n(s, s->header_len);
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("check_utf16_or_32_bom")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" UTF-32 is not a valid TOML encoding at "), 0xfe07, {.d_i32 = s->pos}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if ((toml__scanner__Scanner_at(s) == 0xFE && toml__scanner__Scanner_peek(s, 1) == 0xFF) || (toml__scanner__Scanner_at(s) == 0xFF && toml__scanner__Scanner_peek(s, 1) == 0xFE)) {
+		s->header_len = 2;
+		toml__scanner__Scanner_skip_n(s, s->header_len);
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.scanner"), _S(".")), _S("Scanner")), _S(".")), _S("check_utf16_or_32_bom")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" UTF-16 is not a valid TOML encoding at "), 0xfe07, {.d_i32 = s->pos}}, {_S(" ("), 0xfe07, {.d_i32 = s->line_nr}}, {_S(","), 0xfe07, {.d_i32 = s->col}}, {_S(") near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(s, s->pos, 5)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
 }
 inline VV_LOC f64 rand__msqrt(f64 a) {
 	if (a == 0) {
@@ -37423,16 +51841,16 @@ void sync__WaitGroup_wait(sync__WaitGroup* wg) {
 void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)(void)) {
 	sync__WaitGroup_add(wg, 1);
 	// start go
-	thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731));
-	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731;
+	thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731));
+	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731;
 	arg__t1->arg1 = wg;
 	arg__t1->arg2 = f;
 	pthread_t thread__t1;
 	pthread_attr_t thread__t1_attributes;
 	pthread_attr_init(&thread__t1_attributes);
 	pthread_attr_setstacksize(&thread__t1_attributes, 8388608); // fn: 
-	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
-	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_253_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
+	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
+	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_274_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
 	pthread_detach(thread__t1);
 	// end go
 	;
@@ -37549,6 +51967,130 @@ VV_LOC _result_multi_return_string_string io__util__prefix_and_suffix(string pat
 	_result_multi_return_string_string _t3;
 	builtin___result_ok(&(multi_return_string_string[]) { (multi_return_string_string){.arg0=prefix, .arg1=suffix} }, (_result*)(&_t3), sizeof(multi_return_string_string));
 	return _t3;
+}
+_result_void toml__ast__walker__Inspector_visit(toml__ast__walker__Inspector* i, toml__ast__Value* value) {
+	_result_void _t1 = i->inspector_callback(value, i->data);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void toml__ast__walker__inspect(toml__ast__Value* value, voidptr data, _result_void (*inspector_callback)(toml__ast__Value* value, voidptr data)) {
+	_result_void _t1 = toml__ast__walker__walk(I_toml__ast__walker__Inspector_to_Interface_toml__ast__walker__Visitor(((toml__ast__walker__Inspector*)builtin__memdup(&(toml__ast__walker__Inspector){.inspector_callback = (voidptr)inspector_callback,.data = data,}, sizeof(toml__ast__walker__Inspector)))), value);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void toml__ast__walker__walk(toml__ast__walker__Visitor visitor, toml__ast__Value* value) {
+	if ((value)->_typ == 287 /* map[string]toml.ast.Value */) {
+		Map_string_toml__ast__Value value_map = (*value->_Map_string_toml__ast__Value);
+		int _t2 = value_map.key_values.len;
+		for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+			int _t3 = value_map.key_values.len - _t2;
+			_t2 = value_map.key_values.len;
+			if (_t3 < 0) {
+				_t1 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&value_map.key_values, _t1)) {continue;}
+			toml__ast__Value val = (*(toml__ast__Value*)builtin__DenseArray_value(&value_map.key_values, _t1));
+			_result_void _t4 = toml__ast__walker__walk(visitor, &val);
+			if (_t4.is_error) {
+				_result_void _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ ;
+		}
+	}
+	if ((value)->_typ == 286 /* []toml.ast.Value */) {
+		Array_toml__ast__Value value_array = (*value->_Array_toml__ast__Value);
+		for (int _t6 = 0; _t6 < value_array.len; ++_t6) {
+			toml__ast__Value val = ((toml__ast__Value*)value_array.data)[_t6];
+			_result_void _t7 = toml__ast__walker__walk(visitor, &val);
+			if (_t7.is_error) {
+				_result_void _t8 = {0};
+				_t8.is_error = true;
+				_t8.err = _t7.err;
+				return _t8;
+			}
+			
+ ;
+		}
+	} else {
+		_result_void _t9 = toml__ast__walker__Visitor_name_table[visitor._typ]._method_visit(visitor._object, value);
+		if (_t9.is_error) {
+			_result_void _t10 = {0};
+			_t10.is_error = true;
+			_t10.err = _t9.err;
+			return _t10;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+_result_void toml__ast__walker__walk_and_modify(toml__ast__walker__Modifier modifier, toml__ast__Value* value) {
+	if ((value)->_typ == 287 /* map[string]toml.ast.Value */) {
+		Map_string_toml__ast__Value value_map = *(Map_string_toml__ast__Value*)builtin____as_cast((value)->_Map_string_toml__ast__Value,(value)->_typ, 287);
+		int _t2 = value_map.key_values.len;
+		for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+			int _t3 = value_map.key_values.len - _t2;
+			_t2 = value_map.key_values.len;
+			if (_t3 < 0) {
+				_t1 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&value_map.key_values, _t1)) {continue;}
+			toml__ast__Value* val = ((toml__ast__Value*)builtin__DenseArray_value(&value_map.key_values, _t1));
+			_result_void _t4 = toml__ast__walker__walk_and_modify(modifier, val);
+			if (_t4.is_error) {
+				_result_void _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ ;
+		}
+	}
+	if ((value)->_typ == 286 /* []toml.ast.Value */) {
+		Array_toml__ast__Value value_array = *(Array_toml__ast__Value*)builtin____as_cast((value)->_Array_toml__ast__Value,(value)->_typ, 286);
+		for (int _t6 = 0; _t6 < value_array.len; ++_t6) {
+			toml__ast__Value* val = ((toml__ast__Value*)value_array.data) + _t6;
+			_result_void _t7 = toml__ast__walker__walk_and_modify(modifier, val);
+			if (_t7.is_error) {
+				_result_void _t8 = {0};
+				_t8.is_error = true;
+				_t8.err = _t7.err;
+				return _t8;
+			}
+			
+ ;
+		}
+	} else {
+		_result_void _t9 = toml__ast__walker__Modifier_name_table[modifier._typ]._method_modify(modifier._object, value);
+		if (_t9.is_error) {
+			_result_void _t10 = {0};
+			_t10.is_error = true;
+			_t10.err = _t9.err;
+			return _t10;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
 }
 #if defined(_WIN32)
 #else
@@ -39548,6 +54090,3611 @@ _result_multi_return_string_u16 net__split_address(string addr) {
 	}
 	return (_result_multi_return_string_u16){0};
 }
+VV_LOC _result_time__Time toml__checker__toml_parse_time(string s) {
+	if (s.len > 3 && builtin__string_at(s, 2) == ':') {
+		return time__parse_rfc3339(builtin__string__plus(_S("0001-01-01T"), s));
+	}
+	if (s.len == 10) {
+		return time__parse_rfc3339(builtin__string__plus(s, _S("T00:00:00Z")));
+	}
+	_result_time__Time _t4 = time__parse_rfc3339(s);
+	if (_t4.is_error) {
+		_result_time__Time _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	_result_time__Time _t3;
+	builtin___result_ok(&(time__Time[]) { (*(time__Time*)_t4.data) }, (_result*)(&_t3), sizeof(time__Time));
+	 
+	return _t3;
+}
+_result_void toml__checker__Checker_check(toml__checker__Checker* c, toml__ast__Value* n) {
+	_result_void _t1 = toml__ast__walker__walk(I_toml__checker__Checker_to_Interface_toml__ast__walker__Visitor(c), n);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__Checker_visit(toml__checker__Checker* c, toml__ast__Value* value) {
+	if (value->_typ == 293 /* toml.ast.Bool */) {
+		_result_void _t1 = toml__checker__Checker_check_boolean(c, (*value->_toml__ast__Bool));
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 292 /* toml.ast.Number */) {
+		_result_void _t3 = toml__checker__Checker_check_number(c, (*value->_toml__ast__Number));
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 291 /* toml.ast.Quoted */) {
+		_result_void _t5 = toml__checker__Checker_check_quoted(c, (*value->_toml__ast__Quoted));
+		if (_t5.is_error) {
+			_result_void _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 290 /* toml.ast.DateTime */) {
+		_result_void _t7 = toml__checker__Checker_check_date_time(c, (*value->_toml__ast__DateTime));
+		if (_t7.is_error) {
+			_result_void _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 288 /* toml.ast.Date */) {
+		_result_void _t9 = toml__checker__Checker_check_date(c, (*value->_toml__ast__Date));
+		if (_t9.is_error) {
+			_result_void _t10 = {0};
+			_t10.is_error = true;
+			_t10.err = _t9.err;
+			return _t10;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 289 /* toml.ast.Time */) {
+		_result_void _t11 = toml__checker__Checker_check_time(c, (*value->_toml__ast__Time));
+		if (_t11.is_error) {
+			_result_void _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ ;
+	}
+	
+	else {
+	}
+	
+	return (_result_void){0};
+}
+VV_LOC string toml__checker__Checker_excerpt(toml__checker__Checker* c, toml__token__Pos tp) {
+	return toml__scanner__Scanner_excerpt(c->scanner, tp.pos, 10);
+}
+VV_LOC bool toml__checker__is_hex_bin_oct_prefixed(string hbo) {
+	return hbo.len > 2 && (builtin__string_starts_with(hbo, _S("0x")) || builtin__string_starts_with(hbo, _S("0o")) || builtin__string_starts_with(hbo, _S("0b")));
+}
+VV_LOC bool toml__checker__has_repeating(string str, Array_rune repeats) {
+	for (int i = 0; i < str.len; ++i) {
+		u8 r = str.str[i];
+		if ((Array_rune_contains(repeats, r)) && (int)(i + 1) < str.len) {
+			if (r == builtin__string_at(str, (int)(i + 1))) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+VV_LOC _result_void toml__checker__Checker_check_number(toml__checker__Checker* c, toml__ast__Number num) {
+	string lit = num.text;
+	string lit_lower_case = builtin__string_to_lower(lit);
+	if (_SLIT_EQ(lit.str, lit.len, "0") || _SLIT_EQ(lit.str, lit.len, "0.0") || _SLIT_EQ(lit.str, lit.len, "+0") || _SLIT_EQ(lit.str, lit.len, "-0") || _SLIT_EQ(lit.str, lit.len, "+0.0") || _SLIT_EQ(lit.str, lit.len, "-0.0") || _SLIT_EQ(lit.str, lit.len, "0e0") || _SLIT_EQ(lit.str, lit.len, "+0e0") || _SLIT_EQ(lit.str, lit.len, "-0e0") || _SLIT_EQ(lit.str, lit.len, "0e00")) {
+		return (_result_void){0};
+	}
+	if (builtin__string_contains(lit, _S("_"))) {
+		if (builtin__string_starts_with(lit, _S("_")) || builtin__string_ends_with(lit, _S("_"))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start or end with `_` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (builtin__string_contains(lit, _S("__"))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not have more than one underscore (`_`) in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	bool hex_bin_oct = toml__checker__is_hex_bin_oct_prefixed(lit);
+	bool is_bin = false;
+	bool is_oct = false;
+	bool is_hex = false;
+	bool is_float = builtin__string_contains(builtin__string_all_before(lit_lower_case, _S("e")), _S("."));
+	bool has_exponent_notation = builtin__string_contains(lit_lower_case, _S("e"));
+	int float_decimal_index = builtin__string_index_(lit, _S("."));
+	string ascii = builtin__u8_ascii_str(((u8)(builtin__string_at(lit, 0))));
+	bool is_sign_prefixed = (builtin__string_at(lit, 0) == '+' || builtin__string_at(lit, 0) == '-');
+	string lit_sans_sign = lit;
+	if (is_sign_prefixed) {
+		lit_sans_sign = builtin__string_substr(lit, 1, 2147483647);
+		hex_bin_oct = toml__checker__is_hex_bin_oct_prefixed(lit_sans_sign);
+		if (hex_bin_oct) {
+			ascii = builtin__u8_ascii_str(((u8)(builtin__string_at(lit, 0))));
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (hex, octal and binary) can not start with `"), 0xfe10, {.d_s = ascii}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (lit.len > 1 && builtin__string_starts_with(lit_sans_sign, _S("0")) && !builtin__string_starts_with(lit_sans_sign, _S("0."))) {
+			ascii = builtin__u8_ascii_str(((u8)(builtin__string_at(lit_sans_sign, 0))));
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start with `"), 0xfe10, {.d_s = ascii}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	} else {
+		if (!hex_bin_oct) {
+			if (!is_float && builtin__string_at(lit, 0) == '0') {
+				if (builtin__string_at(lit, 1) == 'B' || builtin__string_at(lit, 1) == 'O' || builtin__string_at(lit, 1) == 'X') {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" only lowercase notation in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start with a zero in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+			if (is_float && builtin__string_at(lit, 0) == '0' && float_decimal_index > 1) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start with a zero in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		}
+	}
+	if (toml__checker__has_repeating(lit, builtin__new_array_from_c_array(5, 5, sizeof(rune), _MOV((rune[5]){'_', '.', 'b', 'o', 'x'})))) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not have "), 0xfe10, {.d_s = Array_rune_str(_const_toml__scanner__digit_extras)}}, {_S(" as repeating characters in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if (hex_bin_oct) {
+		is_bin = builtin__string_starts_with(lit_sans_sign, _S("0b"));
+		is_oct = builtin__string_starts_with(lit_sans_sign, _S("0o"));
+		is_hex = builtin__string_starts_with(lit_sans_sign, _S("0x"));
+		string lit_sans_sign_and_type_prefix = builtin__string_substr(lit_sans_sign, 2, 2147483647);
+		if (builtin__string_starts_with(lit_sans_sign_and_type_prefix, _S("_")) || builtin__string_ends_with(lit_sans_sign_and_type_prefix, _S("_"))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start or end with `_` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (is_bin) {
+			if (!toml__checker__Checker_is_valid_binary_literal(c, lit_sans_sign_and_type_prefix)) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid binary number in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		} else if (is_oct) {
+			if (!toml__checker__Checker_is_valid_octal_literal(c, lit_sans_sign_and_type_prefix)) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid octal number in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		} else {
+			if (!toml__checker__Checker_is_valid_hex_literal(c, lit_sans_sign_and_type_prefix)) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid hexadecimal number in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		}
+	}
+	if (has_exponent_notation) {
+		if (builtin__string_starts_with(builtin__string_all_after(lit_lower_case, _S("e")), _S("_")) || builtin__string_ends_with(builtin__string_all_before(lit_lower_case, _S("e")), _S("_"))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" the exponent in \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start nor end with an underscore in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (builtin__string_contains(builtin__string_all_after(lit_lower_case, _S("e")), _S("."))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (with exponent) can not have a decimal point in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (!is_hex && builtin__string_count(lit_lower_case, _S("e")) > 1) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (with exponent) can only have one exponent in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	if (is_float) {
+		if (builtin__string_count(lit, _S(".")) > 1) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (float) can only have one decimal point in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		u8 last = builtin__string_at(lit, (int)(lit.len - 1));
+		if ((Array_rune_contains(_const_toml__scanner__digit_extras, last))) {
+			ascii = builtin__u8_ascii_str(((u8)(last)));
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (float) can not end with `"), 0xfe10, {.d_s = ascii}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (builtin__string_contains(lit, _S("_.")) || builtin__string_contains(lit, _S("._"))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (float) can not have underscores before or after the decimal point in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (builtin__string_contains(lit_lower_case, _S("e.")) || builtin__string_contains(lit, _S(".e"))) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (float) can not have decimal points on either side of the exponent notation in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		for (int _t20 = 0; _t20 < lit.len; ++_t20) {
+			u8 r = lit.str[_t20];
+			if (!(r == '0' || r == '1' || r == '2' || r == '3' || r == '4' || r == '5' || r == '6' || r == '7' || r == '8' || r == '9' || r == '.' || r == 'e' || r == 'E' || r == '-' || r == '+' || r == '_')) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" (float) can not contain `"), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(r)))}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		}
+	} else {
+		if (lit.len > 1 && builtin__string_starts_with(lit, _S("0")) && !(builtin__string_at(lit, 1) == 'b' || builtin__string_at(lit, 1) == 'o' || builtin__string_at(lit, 1) == 'x')) {
+			ascii = builtin__u8_ascii_str(((u8)(builtin__string_at(lit, 0))));
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_number")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" numbers like \""), 0xfe10, {.d_s = lit}}, {_S("\" can not start with `"), 0xfe10, {.d_s = ascii}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, num.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	return (_result_void){0};
+}
+VV_LOC bool toml__checker__Checker_is_valid_binary_literal(toml__checker__Checker* c, string num) {
+	for (int _t1 = 0; _t1 < num.len; ++_t1) {
+		u8 ch = num.str[_t1];
+		if (ch == '_') {
+			continue;
+		}
+		if (!(ch >= '0' && ch <= '1')) {
+			return false;
+		}
+	}
+	return true;
+}
+VV_LOC bool toml__checker__Checker_is_valid_octal_literal(toml__checker__Checker* c, string num) {
+	for (int _t1 = 0; _t1 < num.len; ++_t1) {
+		u8 ch = num.str[_t1];
+		if (ch == '_') {
+			continue;
+		}
+		if (!(ch >= '0' && ch <= '7')) {
+			return false;
+		}
+	}
+	return true;
+}
+VV_LOC bool toml__checker__Checker_is_valid_hex_literal(toml__checker__Checker* c, string num) {
+	for (int _t1 = 0; _t1 < num.len; ++_t1) {
+		u8 ch = num.str[_t1];
+		if (ch == '_') {
+			continue;
+		}
+		if (!builtin__u8_is_hex_digit(ch)) {
+			return false;
+		}
+	}
+	return true;
+}
+VV_LOC _result_void toml__checker__Checker_check_boolean(toml__checker__Checker* c, toml__ast__Bool b) {
+	string lit = b.text;
+	if (_SLIT_EQ(lit.str, lit.len, "true") || _SLIT_EQ(lit.str, lit.len, "false")) {
+		return (_result_void){0};
+	}
+	return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_boolean")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" boolean values like \""), 0xfe10, {.d_s = lit}}, {_S("\" can only be `true` or `false` literals, not `"), 0xfe10, {.d_s = lit}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, b.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+}
+VV_LOC _result_void toml__checker__Checker_check_date_time(toml__checker__Checker* c, toml__ast__DateTime dt) {
+	string lit = dt.text;
+	Array_string split = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	if (builtin__string_contains_any(builtin__string_to_lower(lit), _S(" _t"))) {
+		if (builtin__string_contains(lit, _S(" "))) {
+			split = builtin__string_split(lit, _S(" "));
+		} else if (builtin__string_contains(lit, _S("_"))) {
+			split = builtin__string_split(lit, _S("_"));
+		} else if (builtin__string_contains(lit, _S("T"))) {
+			split = builtin__string_split(lit, _S("T"));
+		} else if (builtin__string_contains(lit, _S("t"))) {
+			split = builtin__string_split(lit, _S("t"));
+		}
+		if (split.len != 2) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date_time")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" contains too many date/time separators in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, dt.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		_result_void _t2 = toml__checker__Checker_check_date(c, ((toml__ast__Date){.text = (*(string*)builtin__array_get(split, 0)),.pos = ((toml__token__Pos){.len = (*(string*)builtin__array_get(split, 0)).len,.line_nr = dt.pos.line_nr,.pos = dt.pos.pos,.col = dt.pos.col,}),}));
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+		_result_void _t4 = toml__checker__Checker_check_time(c, ((toml__ast__Time){.text = (*(string*)builtin__array_get(split, 1)),.offset = 0,.pos = ((toml__token__Pos){.len = (*(string*)builtin__array_get(split, 1)).len,.line_nr = dt.pos.line_nr,.pos = (int)(dt.pos.pos + (*(string*)builtin__array_get(split, 0)).len),.col = (int)(dt.pos.col + (*(string*)builtin__array_get(split, 0)).len),}),}));
+		if (_t4.is_error) {
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+		bool has_time_offset = false;
+		for (int _t6 = 0; _t6 < builtin__string_substr_ni(lit, 19, 2147483647).len; ++_t6) {
+			u8 ch = builtin__string_substr_ni(lit, 19, 2147483647).str[_t6];
+			if (ch == ((u8)('-')) || ch == '+' || ch == 'Z') {
+				has_time_offset = true;
+				break;
+			}
+		}
+		string lit_with_offset = lit;
+		if (!has_time_offset) {
+			lit_with_offset = builtin__string__plus(lit_with_offset, _S("Z"));
+		}
+		_result_time__Time _t7 = toml__checker__toml_parse_time(lit_with_offset);
+		if (_t7.is_error) {
+			IError err = _t7.err;
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date_time")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 Date-Time format string \""), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_S("\". In ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, dt.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		
+ ;
+	} else {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date_time")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 Date-Time format string in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, dt.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__Checker_check_date(toml__checker__Checker* c, toml__ast__Date date) {
+	string lit = date.text;
+	Array_string parts = builtin__string_split(lit, _S("-"));
+	if (parts.len != 3) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 Date format string in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	string yyyy = (*(string*)builtin__array_get(parts, 0));
+	if (yyyy.len != 4) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" does not have a valid RFC 3339 year indication in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	string mm = (*(string*)builtin__array_get(parts, 1));
+	if (mm.len != 2) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" does not have a valid RFC 3339 month indication in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	string dd = (*(string*)builtin__array_get(parts, 2));
+	if (dd.len != 2) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" does not have a valid RFC 3339 day indication in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if (builtin__string_int(mm) == 2) {
+		int ddi = builtin__string_int(dd);
+		if (ddi > 28) {
+			if (ddi == 29) {
+				int yyyyi = builtin__string_int(yyyy);
+				if (!((int)(yyyyi % 4) == 0 && ((int)(yyyyi % 100) != 0 || (int)(yyyyi % 400) == 0))) {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 date: "), 0xfe10, {.d_s = yyyy}}, {_S(" is not a leap year so February can not have 29 days in it ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			} else {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 date: February can not have more that 28 or 29 days in it ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		}
+	}
+	_result_time__Time _t7 = toml__checker__toml_parse_time(lit);
+	if (_t7.is_error) {
+		IError err = _t7.err;
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_date")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 Date format string \""), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_S("\". In ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, date.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__Checker_check_time(toml__checker__Checker* c, toml__ast__Time t) {
+	string lit = t.text;
+	string offset_splitter = (builtin__string_contains(lit, _S("+")) ? (_S("+")) : (_S("-")));
+	Array_string parts = builtin__string_split(lit, offset_splitter);
+	string hhmmss = builtin__string_all_before((*(string*)builtin__array_get(parts, 0)), _S("."));
+	int check_length = 8;
+	if (builtin__string_ends_with(builtin__string_to_upper(hhmmss), _S("Z"))) {
+		check_length++;
+	}
+	if (hhmmss.len != check_length) {
+		bool starts_with_zero = builtin__string_starts_with(hhmmss, _S("0"));
+		if (!starts_with_zero) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_time")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" must be zero prefixed in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, t.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_time")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 Time format string in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, t.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if (parts.len > 1) {
+		Array_string offset_parts = builtin__string_split((*(string*)builtin__array_get(parts, 1)), _S(":"));
+		if (offset_parts.len != 2) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_time")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = (*(string*)builtin__array_get(parts, 1))}}, {_S("\" is not a valid RFC 3339 time offset specifier in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, t.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		int hh = builtin__string_int((*(string*)builtin__array_get(offset_parts, 0)));
+		if (hh < 0 || hh > 24) {
+			toml__token__Pos pos = ((toml__token__Pos){.len = (t.pos).len,.line_nr = (t.pos).line_nr,.pos = (int)(t.pos.pos + check_length),.col = (t.pos).col,});
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_time")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe07, {.d_i32 = hh}}, {_S("\" hour specifier in \""), 0xfe10, {.d_s = (*(string*)builtin__array_get(parts, 1))}}, {_S("\" should be between 00 and 24 in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		int mm = builtin__string_int((*(string*)builtin__array_get(offset_parts, 1)));
+		if (mm < 0 || mm > 59) {
+			toml__token__Pos pos = ((toml__token__Pos){.len = (t.pos).len,.line_nr = (t.pos).line_nr,.pos = (int)(t.pos.pos + check_length),.col = (t.pos).col,});
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_time")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe07, {.d_i32 = mm}}, {_S("\" second specifier in \""), 0xfe10, {.d_s = (*(string*)builtin__array_get(parts, 1))}}, {_S("\" should be between 00 and 59 in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	bool has_time_offset = false;
+	for (int _t6 = 0; _t6 < builtin__string_substr_ni((*(string*)builtin__array_get(parts, 0)), 8, 2147483647).len; ++_t6) {
+		u8 ch = builtin__string_substr_ni((*(string*)builtin__array_get(parts, 0)), 8, 2147483647).str[_t6];
+		if (ch == ((u8)('-')) || ch == '+' || ch == 'Z') {
+			has_time_offset = true;
+			break;
+		}
+	}
+	string part_with_offset = (*(string*)builtin__array_get(parts, 0));
+	if (!has_time_offset) {
+		part_with_offset = builtin__string__plus(part_with_offset, _S("Z"));
+	}
+	_result_time__Time _t7 = toml__checker__toml_parse_time(part_with_offset);
+	if (_t7.is_error) {
+		IError err = _t7.err;
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_time")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = lit}}, {_S("\" is not a valid RFC 3339 Time format string \""), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_S("\". In ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, t.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void toml__checker__Checker_check_quoted(toml__checker__Checker* c, toml__ast__Quoted q) {
+	string lit = q.text;
+	string quote = builtin__u8_ascii_str(q.quote);
+	string triple_quote = builtin__string__plus(builtin__string__plus(quote, quote), quote);
+	if (q.is_multiline && builtin__string_ends_with(lit, triple_quote) && !builtin__string_ends_with(lit, builtin__string__plus(_S("\\"), triple_quote))) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_quoted")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" string values like \""), 0xfe10, {.d_s = lit}}, {_S("\" has unbalanced quote literals `"), 0xfe10, {.d_s = quote}}, {_S("` in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	_result_void _t2 = toml__checker__Checker_check_quoted_escapes(c, q);
+	if (_t2.is_error) {
+		_result_void _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ ;
+	_result_void _t4 = toml__checker__Checker_check_utf8_validity(c, q);
+	if (_t4.is_error) {
+		_result_void _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__Checker_check_quoted_escapes(toml__checker__Checker* c, toml__ast__Quoted q) {
+	_result_toml__scanner__Scanner _t1 = toml__scanner__new_simple_text(q.text);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__scanner__Scanner s = (*(toml__scanner__Scanner*)_t1.data);
+	bool is_basic = q.quote == '\"';
+	bool contains_newlines = builtin__string_contains(q.text, _S("\n"));
+	for (;;) {
+		u32 ch = toml__scanner__Scanner_next(&s);
+		if (ch == _const_toml__scanner__end_of_text) {
+			break;
+		}
+		u8 ch_byte = ((u8)(ch));
+		if (ch == '\\') {
+			u8 next_ch = ((u8)(toml__scanner__Scanner_at(&s)));
+			if (next_ch == '\\') {
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			string escape = builtin__string__plus(builtin__u8_ascii_str(ch_byte), builtin__u8_ascii_str(next_ch));
+			if (is_basic) {
+				if (q.is_multiline) {
+					if (next_ch == ' ') {
+						if (!contains_newlines) {
+							toml__scanner__State st = toml__scanner__Scanner_state(&s);
+							return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_quoted_escapes")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" can not escape whitespaces in multi-line strings (`\\ `) at `"), 0xfe10, {.d_s = escape}}, {_S("` ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(") in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+						}
+						for (;;) {
+							u32 ch_ = toml__scanner__Scanner_next(&s);
+							if (ch_ == '\n') {
+								break;
+							}
+							if (!(ch_ == ' ' || ch_ == '\t')) {
+								toml__scanner__State st = toml__scanner__Scanner_state(&s);
+								return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_quoted_escapes")), builtin__str_intp(6, _MOV((StrIntpData[]){{_S(" invalid character `"), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(ch_)))}}, {_S("` after `"), 0xfe10, {.d_s = escape}}, {_S("` at ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(") in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+							}
+						}
+					}
+					if (next_ch == '\t' || next_ch == '\r' || next_ch == '\n' || next_ch == ' ') {
+						toml__scanner__Scanner_next(&s);
+						continue;
+					}
+				}
+				if (!(Array_rune_contains(_const_toml__checker__allowed_basic_escape_chars, next_ch))) {
+					toml__scanner__State st = toml__scanner__Scanner_state(&s);
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_quoted_escapes")), builtin__str_intp(6, _MOV((StrIntpData[]){{_S(" unknown basic string escape character `"), 0xfe10, {.d_s = builtin__u8_ascii_str(next_ch)}}, {_S("` in `"), 0xfe10, {.d_s = escape}}, {_S("` ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(") in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			}
+			if (is_basic && builtin__string__eq(builtin__string_to_lower(escape), _S("\\u"))) {
+				if (toml__scanner__Scanner_remaining(&s) >= 10) {
+					int pos = toml__scanner__Scanner_state(&s).pos;
+					_result_void _t6 = toml__checker__Checker_check_unicode_escape(c, builtin__string_substr(s.text, pos, (int)(pos + 11)));
+					if (_t6.is_error) {
+						IError err = _t6.err;
+						toml__scanner__State st = toml__scanner__Scanner_state(&s);
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_quoted_escapes")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" escaped Unicode is invalid. "), 0xfe10, {.d_s = builtin__string_capitalize(IError_name_table[err._typ]._method_msg(err._object))}}, {_S(" ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(") in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+					
+ ;
+				} else {
+					int pos = toml__scanner__Scanner_state(&s).pos;
+					_result_void _t8 = toml__checker__Checker_check_unicode_escape(c, builtin__string_substr(s.text, pos, 2147483647));
+					if (_t8.is_error) {
+						IError err = _t8.err;
+						toml__scanner__State st = toml__scanner__Scanner_state(&s);
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_quoted_escapes")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" escaped Unicode is invalid. "), 0xfe10, {.d_s = builtin__string_capitalize(IError_name_table[err._typ]._method_msg(err._object))}}, {_S(" ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(") in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+					
+ ;
+				}
+			}
+		}
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__Checker_check_utf8_validity(toml__checker__Checker* c, toml__ast__Quoted q) {
+	string lit = q.text;
+	if (!encoding__utf8__validate_str(lit)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_utf8_validity")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" the string value \""), 0xfe10, {.d_s = lit}}, {_S("\" is not valid UTF-8 in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, q.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__validate_utf8_codepoint_string(string str) {
+	_result_i64 _t1 = strconv__parse_int(str, 16, 64);
+	if (_t1.is_error) {
+		*(i64*) _t1.data = ((i64)(-1));
+	}
+	
+ 	i64 int_val = (*(i64*)_t1.data);
+	if (int_val > 0x10FFFF || int_val < 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Unicode code point `"), 0xfe10, {.d_s = str}}, {_S("` is outside the valid Unicode scalar value ranges."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (!((int_val >= 0x0000 && int_val <= 0xD7FF) || (int_val >= 0xE000 && int_val <= 0x10FFFF))) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Unicode code point `"), 0xfe10, {.d_s = str}}, {_S("` is not a valid Unicode scalar value."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	Array_u8 bytes = builtin__string_bytes(str);
+	if (!encoding__utf8__validate(bytes.data, bytes.len)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Unicode code point `"), 0xfe10, {.d_s = str}}, {_S("` is not a valid UTF-8 code point."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__checker__Checker_check_unicode_escape(toml__checker__Checker* c, string esc_unicode) {
+	if (esc_unicode.len < 5 || !builtin__string_starts_with(builtin__string_to_lower(esc_unicode), _S("u"))) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("`"), 0xfe10, {.d_s = esc_unicode}}, {_S("` is not a valid escaped Unicode sequence."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	bool is_long_esc_type = builtin__string_starts_with(esc_unicode, _S("U"));
+	string sequence = builtin__string_substr(esc_unicode, 1, 2147483647);
+	int hex_digits_len = (is_long_esc_type ? (8) : (4));
+	if (sequence.len < hex_digits_len) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("Unicode escape sequence `"), 0xfe10, {.d_s = esc_unicode}}, {_S("` should be at least "), 0xfe07, {.d_i32 = hex_digits_len}}, {_S(" in length."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	sequence = builtin__string_substr(sequence, 0, hex_digits_len);
+	_result_void _t3 = toml__checker__validate_utf8_codepoint_string(builtin__string_to_upper(sequence));
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	if (is_long_esc_type) {
+	} else {
+	}
+	return (_result_void){0};
+}
+_result_void toml__checker__Checker_check_comment(toml__checker__Checker* c, toml__ast__Comment comment) {
+	string lit = comment.text;
+	_result_toml__scanner__Scanner _t1 = toml__scanner__new_simple_text(lit);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__scanner__Scanner s = (*(toml__scanner__Scanner*)_t1.data);
+	for (;;) {
+		u32 ch = toml__scanner__Scanner_next(&s);
+		if (ch == _const_toml__scanner__end_of_text) {
+			break;
+		}
+		u8 ch_byte = ((u8)(ch));
+		if (ch_byte == 0x0D) {
+			toml__scanner__State st = toml__scanner__Scanner_state(&s);
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_comment")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" carriage return character `"), 0xfe10, {.d_s = builtin__u8_hex(ch_byte)}}, {_S("` is not allowed in comments ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(")."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		if (toml__util__is_illegal_ascii_control_character(ch_byte)) {
+			toml__scanner__State st = toml__scanner__Scanner_state(&s);
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_comment")), builtin__str_intp(6, _MOV((StrIntpData[]){{_S(" control character `"), 0xfe10, {.d_s = builtin__u8_hex(ch_byte)}}, {_S("` is not allowed ("), 0xfe07, {.d_i32 = st.line_nr}}, {_S(","), 0xfe07, {.d_i32 = st.col}}, {_S(") \""), 0xfe10, {.d_s = builtin__u8_ascii_str(((u8)(toml__scanner__Scanner_at(&s))))}}, {_S("\" near ..."), 0xfe10, {.d_s = toml__scanner__Scanner_excerpt(&s, st.pos, 10)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	if (!encoding__utf8__validate_str(lit)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.checker"), _S(".")), _S("Checker")), _S(".")), _S("check_comment")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" comment \""), 0xfe10, {.d_s = lit}}, {_S("\" is not valid UTF-8 in ..."), 0xfe10, {.d_s = toml__checker__Checker_excerpt(c, comment.pos)}}, {_S("..."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+_result_void toml__decoder__Decoder_decode(toml__decoder__Decoder _v_toheap_d, toml__ast__Value* n) {
+toml__decoder__Decoder* d = HEAP(toml__decoder__Decoder, _v_toheap_d);
+	_result_void _t1 = toml__ast__walker__walk_and_modify(I_toml__decoder__Decoder_to_Interface_toml__ast__walker__Modifier(HEAP(toml__decoder__Decoder, ((*(d))))), n);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__decoder__Decoder_modify(toml__decoder__Decoder d, toml__ast__Value* value) {
+	if (value->_typ == 291 /* toml.ast.Quoted */) {
+		toml__ast__Quoted* v = &(*(toml__ast__Quoted*)builtin____as_cast((value)->_toml__ast__Quoted,(value)->_typ, 291));
+		_result_void _t1 = toml__decoder__Decoder_decode_quoted(d, v);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 292 /* toml.ast.Number */) {
+		toml__ast__Number* v = &(*(toml__ast__Number*)builtin____as_cast((value)->_toml__ast__Number,(value)->_typ, 292));
+		_result_void _t3 = toml__decoder__Decoder_decode_number(d, v);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	}
+	else if (value->_typ == 290 /* toml.ast.DateTime */) {
+		toml__ast__DateTime* v = &(*(toml__ast__DateTime*)builtin____as_cast((value)->_toml__ast__DateTime,(value)->_typ, 290));
+		_result_void _t5 = toml__decoder__Decoder_decode_date_time(d, v);
+		if (_t5.is_error) {
+			_result_void _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+	}
+	
+	else {
+	}
+	
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__decoder__Decoder_decode_quoted(toml__decoder__Decoder d, toml__ast__Quoted* q) {
+	_result_void _t1 = toml__decoder__decode_quoted_escapes(q);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__decoder__Decoder_decode_number(toml__decoder__Decoder d, toml__ast__Number* n) {
+	if (builtin__fast_string_eq(n->text, _S("-nan")) || builtin__fast_string_eq(n->text, _S("+nan"))) {
+		n->text = _S("nan");
+	}
+	return (_result_void){0};
+}
+_result_void toml__decoder__decode_quoted_escapes(toml__ast__Quoted* q) {
+	bool eat_whitespace = false;
+	string decoded_s = _S("");
+	bool is_basic = q->quote == '\"';
+	if (!is_basic) {
+		return (_result_void){0};
+	}
+	_result_toml__scanner__Scanner _t1 = toml__scanner__new_simple_text(q->text);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__scanner__Scanner s = (*(toml__scanner__Scanner*)_t1.data);
+	q->text = builtin__string_replace(q->text, _S("\\\""), _S("\""));
+	for (u32 ch = toml__scanner__Scanner_next(&s); ch != _const_toml__scanner__end_of_text; ch = toml__scanner__Scanner_next(&s)) {
+		u8 ch_byte = ((u8)(ch));
+		if (eat_whitespace && builtin__u8_is_space(ch_byte)) {
+			continue;
+		}
+		eat_whitespace = false;
+		if (ch == '\\') {
+			u32 ch_next = toml__scanner__Scanner_at(&s);
+			u8 ch_next_byte = ((u8)(ch_next));
+			if (q->is_multiline) {
+				if (builtin__u8_is_space(ch_next_byte)) {
+					eat_whitespace = true;
+					continue;
+				}
+			}
+			rune _t3 = ((rune)(ch_next));
+			
+			if (_t3 == ('\\') || _t3 == ('"')) {
+				decoded_s = builtin__string__plus(decoded_s, builtin__u8_ascii_str(ch_next_byte));
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			else if (_t3 == ('n')) {
+				decoded_s = builtin__string__plus(decoded_s, _S("\n"));
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			else if (_t3 == ('t')) {
+				decoded_s = builtin__string__plus(decoded_s, _S("\t"));
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			else if (_t3 == ('b')) {
+				decoded_s = builtin__string__plus(decoded_s, _S("\b"));
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			else if (_t3 == ('r')) {
+				decoded_s = builtin__string__plus(decoded_s, _S("\r"));
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			else if (_t3 == ('f')) {
+				decoded_s = builtin__string__plus(decoded_s, _S("\f"));
+				toml__scanner__Scanner_next(&s);
+				continue;
+			}
+			else {
+			}
+			string escape = builtin__string__plus(builtin__u8_ascii_str(ch_byte), builtin__u8_ascii_str(ch_next_byte));
+			if (builtin__string__eq(builtin__string_to_lower(escape), _S("\\u"))) {
+				bool is_valid_short = builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 1)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 2)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 3)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 4))));
+				if (is_valid_short) {
+					bool is_valid_long = builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 5)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 6)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 7)))) && builtin__u8_is_hex_digit(((u8)(toml__scanner__Scanner_peek(&s, 8))));
+					string decoded = _S("");
+					int sequence_length = 0;
+					int unicode_val = 0;
+					int slen = (is_valid_long ? (10) : (6));
+					if (slen <= toml__scanner__Scanner_remaining(&s)) {
+						int pos = toml__scanner__Scanner_state(&s).pos;
+						string sequence = builtin__string_substr_ni(s.text, pos, (int)((int)(pos + slen) + 1));
+						_result_multi_return_string_int_int _t4 = toml__decoder__decode_unicode_escape(sequence);
+						if (_t4.is_error) {
+							decoded_s = builtin__string__plus(decoded_s, escape);
+							continue;
+						}
+						
+ 						multi_return_string_int_int mr_4414 = (*(multi_return_string_int_int*)_t4.data);
+						decoded = mr_4414.arg0;
+						unicode_val = mr_4414.arg1;
+						sequence_length = mr_4414.arg2;
+						if (unicode_val > 0x10FFFF || unicode_val < 0) {
+							decoded_s = builtin__string__plus(decoded_s, escape);
+							continue;
+						}
+						if (!((unicode_val >= 0x0000 && unicode_val <= 0xD7FF) || (unicode_val >= 0xE000 && unicode_val <= 0x10FFFF))) {
+							decoded_s = builtin__string__plus(decoded_s, escape);
+							continue;
+						}
+						decoded_s = builtin__string__plus(decoded_s, decoded);
+						string replacement = builtin__string_substr(s.text, pos, (int)((int)(pos + sequence_length) + 1));
+						toml__scanner__Scanner_skip_n(&s, replacement.len);
+						continue;
+					} else {
+						int pos = toml__scanner__Scanner_state(&s).pos;
+						string sequence = builtin__string_substr(s.text, pos, 2147483647);
+						_result_multi_return_string_int_int _t5 = toml__decoder__decode_unicode_escape(sequence);
+						if (_t5.is_error) {
+							decoded_s = builtin__string__plus(decoded_s, escape);
+							continue;
+						}
+						
+ 						multi_return_string_int_int mr_5100 = (*(multi_return_string_int_int*)_t5.data);
+						decoded = mr_5100.arg0;
+						decoded_s = builtin__string__plus(decoded_s, decoded);
+						toml__scanner__Scanner_skip_n(&s, builtin__string_substr(s.text, pos, 2147483647).len);
+						continue;
+					}
+				}
+			}
+		}
+		decoded_s = builtin__string__plus(decoded_s, builtin__u8_ascii_str(ch_byte));
+	}
+	q->text = decoded_s;
+	return (_result_void){0};
+}
+VV_LOC _result_multi_return_string_int_int toml__decoder__decode_unicode_escape(string esc_unicode) {
+	bool is_long_esc_type = builtin__string_starts_with(esc_unicode, _S("U"));
+	string sequence = builtin__string_substr(esc_unicode, 1, 2147483647);
+	int hex_digits_len = (is_long_esc_type ? (8) : (4));
+	int sequence_len = hex_digits_len;
+	sequence = builtin__string_substr(sequence, 0, hex_digits_len);
+	string unicode_point = sequence;
+	if (unicode_point.len < 8) {
+		unicode_point = builtin__string__plus(builtin__string_repeat(_S("0"), (int)(8 - unicode_point.len)), unicode_point);
+	}
+	_result_i64 _t1 = strconv__parse_int(unicode_point, 16, 0);
+	if (_t1.is_error) {
+		_result_multi_return_string_int_int _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	i64 i64_val = (*(i64*)_t1.data);
+	rune rn = ((rune)(i64_val));
+	_result_multi_return_string_int_int _t3;
+	builtin___result_ok(&(multi_return_string_int_int[]) { (multi_return_string_int_int){.arg0=builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = builtin__rune_str(rn)}}, {_SLIT0, 0, { .d_c = 0 }}})), .arg1=((int)(i64_val)), .arg2=sequence_len} }, (_result*)(&_t3), sizeof(multi_return_string_int_int));
+	return _t3;
+}
+VV_LOC _result_void toml__decoder__Decoder_decode_date_time(toml__decoder__Decoder d, toml__ast__DateTime* dt) {
+	if (builtin__string_contains(dt->text, _S("."))) {
+		string yymmddhhmmss = builtin__string_all_before(dt->text, _S("."));
+		string rest = builtin__string_all_after(dt->text, _S("."));
+		string z = (builtin__string_contains(rest, _S("Z")) ? (_S("Z")) : (_S("")));
+		string ms = rest;
+		string offset = _S("");
+		if (builtin__string_contains(rest, _S("+"))) {
+			offset = builtin__string__plus(_S("+"), builtin__string_all_after(rest, _S("+")));
+			ms = builtin__string_all_before(rest, _S("+"));
+		} else if (builtin__string_contains(rest, _S("-"))) {
+			offset = builtin__string__plus(_S("-"), builtin__string_all_after(rest, _S("-")));
+			ms = builtin__string_all_before(rest, _S("-"));
+		}
+		if ((z).len != 0) {
+			ms = builtin__string_replace(ms, _S("Z"), _S(""));
+		}
+		if (ms.len > 1) {
+			return (_result_void){0};
+		}
+		ms = builtin__string__plus(builtin__string__plus(ms, builtin__string_repeat(_S("0"), (int)(4 - ms.len))), z);
+		dt->text = builtin__string__plus(builtin__string__plus(builtin__string__plus(yymmddhhmmss, _S(".")), ms), offset);
+	}
+	return (_result_void){0};
+}
+string toml__parser__DottedKey_str(toml__parser__DottedKey dk) {
+	return Array_string_join(dk, _S("."));
+}
+VV_LOC bool toml__parser__DottedKey_starts_with(toml__parser__DottedKey dk, toml__parser__DottedKey target) {
+	if (dk.len >= target.len) {
+		for (int i = 0; i < target.len; i++) {
+			if (!builtin__string__eq((*(string*)builtin__array_get(dk, i)), (*(string*)builtin__array_get(target, i)))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+VV_LOC bool Array_toml__parser__DottedKey_has(Array_toml__parser__DottedKey a, toml__parser__DottedKey target) {
+	for (int _t1 = 0; _t1 < a.len; ++_t1) {
+		toml__parser__DottedKey dk = ((toml__parser__DottedKey*)a.data)[_t1];
+		if (toml__parser__DottedKey_alias_eq(dk, target)) {
+			return true;
+		}
+	}
+	return false;
+}
+toml__parser__Parser toml__parser__new_parser(toml__parser__Config config) {
+	return ((toml__parser__Parser){.config = config,.scanner = config.scanner,.prev_tok = ((toml__token__Token){.kind = 0,.lit = (string){.str=(byteptr)"", .is_lit=1},.col = 0,.line_nr = 0,.pos = 0,.len = 0,}),.tok = ((toml__token__Token){.kind = 0,.lit = (string){.str=(byteptr)"", .is_lit=1},.col = 0,.line_nr = 0,.pos = 0,.len = 0,}),.peek_tok = ((toml__token__Token){.kind = 0,.lit = (string){.str=(byteptr)"", .is_lit=1},.col = 0,.line_nr = 0,.pos = 0,.len = 0,}),.tokens = builtin____new_array(0, 0, sizeof(toml__token__Token)),.skip_next = 0,.root_map = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.root_map_key = builtin____new_array(0, 0, sizeof(string)),.value_is_immutable = 0,.immutable = builtin____new_array(0, 0, sizeof(toml__parser__DottedKey)),.explicit_declared = builtin____new_array(0, 0, sizeof(toml__parser__DottedKey)),.explicit_declared_array_of_tables = builtin____new_array(0, 0, sizeof(toml__parser__DottedKey)),.implicit_declared = builtin____new_array(0, 0, sizeof(toml__parser__DottedKey)),.last_aot = builtin____new_array(0, 0, sizeof(string)),.last_aot_index = 0,.ast_root = ((toml__ast__Root*)builtin__memdup(&(toml__ast__Root){.input = ((toml__input__Config){.text = (string){.str=(byteptr)"", .is_lit=1},.file_path = (string){.str=(byteptr)"", .is_lit=1},}),.comments = builtin____new_array(0, 0, sizeof(toml__ast__Comment)),.table = (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293},}, sizeof(toml__ast__Root))),});
+}
+_result_void toml__parser__Parser_init(toml__parser__Parser* p) {
+	p->root_map = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	_result_toml__token__Token _t2 = toml__scanner__Scanner_scan(p->scanner);
+	if (_t2.is_error) {
+		_result_void _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	builtin__array_push((array*)&p->tokens, _MOV((toml__token__Token[]){ (*(toml__token__Token*)_t2.data) }));
+	_result_void _t4 = toml__parser__Parser_next(p);
+	if (_t4.is_error) {
+		_result_void _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_run_checker(toml__parser__Parser* p) {
+	if (p->config.run_checks) {
+		toml__checker__Checker chckr = ((toml__checker__Checker){.scanner = p->scanner,});
+		_result_void _t1 = toml__checker__Checker_check(&chckr, HEAP(toml__ast__Value, Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&p->root_map, true)));
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+		for (int _t3 = 0; _t3 < p->ast_root->comments.len; ++_t3) {
+			toml__ast__Comment comment = ((toml__ast__Comment*)p->ast_root->comments.data)[_t3];
+			_result_void _t4 = toml__checker__Checker_check_comment(&chckr, comment);
+			if (_t4.is_error) {
+				_result_void _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ ;
+		}
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_run_decoder(toml__parser__Parser* p) {
+	if (p->config.decode_values) {
+		toml__decoder__Decoder dcoder = ((toml__decoder__Decoder){.scanner = p->scanner,});
+		_result_void _t1 = toml__decoder__Decoder_decode(dcoder, HEAP(toml__ast__Value, Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&p->root_map, true)));
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+_result_toml__ast__Root_ptr toml__parser__Parser_parse(toml__parser__Parser* p) {
+	_result_void _t1 = toml__parser__Parser_init(p);
+	if (_t1.is_error) {
+		_result_toml__ast__Root_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_void _t3 = toml__parser__Parser_root_table(p);
+	if (_t3.is_error) {
+		_result_toml__ast__Root_ptr _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	_result_void _t5 = toml__parser__Parser_run_checker(p);
+	if (_t5.is_error) {
+		_result_toml__ast__Root_ptr _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	_result_void _t7 = toml__parser__Parser_run_decoder(p);
+	if (_t7.is_error) {
+		_result_toml__ast__Root_ptr _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	p->ast_root->table = Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&p->root_map, false);
+	_result_toml__ast__Root_ptr _t9;
+	builtin___result_ok(&(toml__ast__Root*[]) { p->ast_root }, (_result*)(&_t9), sizeof(toml__ast__Root*));
+	 
+	return _t9;
+}
+VV_LOC _result_void toml__parser__Parser_next(toml__parser__Parser* p) {
+	p->prev_tok = p->tok;
+	p->tok = p->peek_tok;
+	if (p->tokens.len > 0) {
+		p->peek_tok = (*(toml__token__Token*)builtin__array_first(p->tokens));
+		builtin__array_delete(&p->tokens, 0);
+		_result_toml__token__Token _t1 = toml__parser__Parser_peek(p, 1);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	} else {
+		_result_toml__token__Token _t3 = toml__parser__Parser_peek(p, 1);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		p->peek_tok = (*(toml__token__Token*)builtin__array_first(p->tokens));
+		builtin__array_delete(&p->tokens, 0);
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_toml__token__Token toml__parser__Parser_peek(toml__parser__Parser* p, int n) {
+	if (n < 0) {
+		return (_result_toml__token__Token){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("peek")), _S(" peeking backwards is not supported."))), .data={E_STRUCT} };
+	}
+	if (n == 0) {
+		_result_toml__token__Token _t2;
+		builtin___result_ok(&(toml__token__Token[]) { p->peek_tok }, (_result*)(&_t2), sizeof(toml__token__Token));
+		 
+		return _t2;
+	} else {
+		if (n <= p->tokens.len) {
+			_result_toml__token__Token _t3;
+			builtin___result_ok(&(toml__token__Token[]) { (*(toml__token__Token*)builtin__array_get(p->tokens, (int)(n - 1))) }, (_result*)(&_t3), sizeof(toml__token__Token));
+			 
+			return _t3;
+		} else {
+			toml__token__Token token_ = ((toml__token__Token){.kind = 0,.lit = (string){.str=(byteptr)"", .is_lit=1},.col = 0,.line_nr = 0,.pos = 0,.len = 0,});
+			int count = (int)(n - p->tokens.len);
+			;
+			for (;;) {
+				if (!(token_.kind != toml__token__Kind__eof && count != 0)) break;
+				_result_toml__token__Token _t4 = toml__scanner__Scanner_scan(p->scanner);
+				if (_t4.is_error) {
+					_result_toml__token__Token _t5 = {0};
+					_t5.is_error = true;
+					_t5.err = _t4.err;
+					return _t5;
+				}
+				
+ 				token_ = (*(toml__token__Token*)_t4.data);
+				builtin__array_push((array*)&p->tokens, _MOV((toml__token__Token[]){ token_ }));
+				count--;
+			}
+			_result_toml__token__Token _t7;
+			builtin___result_ok(&(toml__token__Token[]) { token_ }, (_result*)(&_t7), sizeof(toml__token__Token));
+			 
+			return _t7;
+		}
+	}
+	return (_result_toml__token__Token){0};
+}
+VV_LOC _result_void toml__parser__Parser_check(toml__parser__Parser* p, toml__token__Kind check_token) {
+	if (p->tok.kind == check_token) {
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	} else {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("check")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" expected token \""), 0xfe10, {.d_s = toml__token__Kind_str(check_token)}}, {_S("\" but found \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_peek_for_correct_line_ending_or_fail(toml__parser__Parser* p) {
+	_result_multi_return_toml__token__Token_int _t1 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_toml__token__Token_int mr_5122 = (*(multi_return_toml__token__Token_int*)_t1.data);
+	toml__token__Token peek_tok = mr_5122.arg0;
+	if (!(peek_tok.kind == toml__token__Kind__cr || peek_tok.kind == toml__token__Kind__nl || peek_tok.kind == toml__token__Kind__hash || peek_tok.kind == toml__token__Kind__eof)) {
+		_result_void _t3 = toml__parser__Parser_next(p);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("peek_for_correct_line_ending_or_fail")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected EOL \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" expected one of [.cr, .nl, .hash, .eof] at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_check_one_of(toml__parser__Parser* p, Array_toml__token__Kind tokens) {
+	if ((Array_toml__token__Kind_contains(tokens, p->tok.kind))) {
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	} else {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("check_one_of")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" expected one of "), 0xfe10, {.d_s = Array_toml__token__Kind_str(tokens)}}, {_S(" but found \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC void toml__parser__Parser_ignore_while(toml__parser__Parser* p, Array_toml__token__Kind tokens) {
+	if ((Array_toml__token__Kind_contains(tokens, p->tok.kind))) {
+		;
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			return;
+		}
+		
+ ;
+		toml__parser__Parser_ignore_while(p, tokens);
+	}
+}
+VV_LOC void toml__parser__Parser_ignore_while_peek(toml__parser__Parser* p, Array_toml__token__Kind tokens) {
+	for (;;) {
+		if (!((Array_toml__token__Kind_contains(tokens, p->peek_tok.kind)))) break;
+		;
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			return;
+		}
+		
+ ;
+	}
+}
+VV_LOC _result_multi_return_toml__token__Token_int toml__parser__Parser_peek_over(toml__parser__Parser* p, int i, Array_toml__token__Kind tokens) {
+	toml__token__Token peek_tok = p->peek_tok;
+	int peek_i = i;
+	for (;;) {
+		if (!((Array_toml__token__Kind_contains(tokens, peek_tok.kind)))) break;
+		_result_toml__token__Token _t1 = toml__parser__Parser_peek(p, peek_i);
+		if (_t1.is_error) {
+			_result_multi_return_toml__token__Token_int _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		peek_tok = (*(toml__token__Token*)_t1.data);
+		peek_i++;
+	}
+	_result_multi_return_toml__token__Token_int _t3;
+	builtin___result_ok(&(multi_return_toml__token__Token_int[]) { (multi_return_toml__token__Token_int){.arg0=peek_tok, .arg1=peek_i} }, (_result*)(&_t3), sizeof(multi_return_toml__token__Token_int));
+	return _t3;
+}
+VV_LOC bool toml__parser__Parser_is_at(toml__parser__Parser* p, toml__token__Kind expected_token) {
+	return p->tok.kind == expected_token;
+}
+VV_LOC _result_void toml__parser__Parser_expect(toml__parser__Parser* p, toml__token__Kind expected_token) {
+	if (p->tok.kind == expected_token) {
+		return (_result_void){0};
+	} else {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("expect")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" expected token \""), 0xfe10, {.d_s = toml__token__Kind_str(expected_token)}}, {_S("\" but found \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" in this text \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC toml__parser__DottedKey toml__parser__Parser_build_abs_dotted_key(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	if (p->root_map_key.len > 0) {
+		toml__parser__DottedKey abs_dotted_key = ((builtin____new_array_with_default(0, 0, sizeof(string), 0)));
+		_PUSH_MANY(&abs_dotted_key, (p->root_map_key), _t1, toml__parser__DottedKey);
+		_PUSH_MANY(&abs_dotted_key, (key), _t2, toml__parser__DottedKey);
+		return abs_dotted_key;
+	}
+	return key;
+}
+VV_LOC toml__parser__DottedKey toml__parser__todo_msvc_astring2dkey(Array_string s) {
+	return s;
+}
+VV_LOC _result_void toml__parser__Parser_check_immutable(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	bool _t1 = (p->immutable.len > 0);
+	if ( _t1 && Array_toml__parser__DottedKey_has(p->immutable, key)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("check_immutable")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("` is immutable. Unexpected mutation at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_check_explicitly_declared(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	bool _t1 = (p->explicit_declared.len > 0);
+	if ( _t1 && Array_toml__parser__DottedKey_has(p->explicit_declared, key)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("check_explicitly_declared")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("` is already explicitly declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_check_explicitly_declared_array_of_tables(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	bool _t1 = (p->explicit_declared_array_of_tables.len > 0);
+	if ( _t1 && Array_toml__parser__DottedKey_has(p->explicit_declared_array_of_tables, key)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("check_explicitly_declared_array_of_tables")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("` is already an explicitly declared array of tables. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void toml__parser__Parser_check_implicitly_declared(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	bool _t1 = (p->implicit_declared.len > 0);
+	if ( _t1 && Array_toml__parser__DottedKey_has(p->implicit_declared, key)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("check_implicitly_declared")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("` is already implicitly declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+_result_Map_string_toml__ast__Value_ptr toml__parser__Parser_find_table(toml__parser__Parser* p) {
+	;
+	Map_string_toml__ast__Value* t = &p->root_map;
+	if (p->root_map_key.len == 0) {
+		_result_Map_string_toml__ast__Value_ptr _t1;
+		builtin___result_ok(&(Map_string_toml__ast__Value*[]) { t }, (_result*)(&_t1), sizeof(Map_string_toml__ast__Value*));
+		 
+		return _t1;
+	}
+	return toml__parser__Parser_find_in_table(p, t, p->root_map_key);
+}
+_result_void toml__parser__Parser_allocate_table(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	;
+	Map_string_toml__ast__Value* t = &p->root_map;
+	if (key.len == 0) {
+		return (_result_void){0};
+	}
+	_result_void _t1 = toml__parser__Parser_allocate_in_table(p, t, key);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+multi_return_toml__parser__DottedKey_toml__parser__DottedKey toml__parser__Parser_sub_table_key(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	Array_string last = builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){(*(string*)builtin__array_last(key))}));
+	toml__parser__DottedKey first = builtin__array_slice(key, 0, (int)(key.len - 1));
+	return (multi_return_toml__parser__DottedKey_toml__parser__DottedKey){.arg0=first, .arg1=last};
+}
+_result_Map_string_toml__ast__Value_ptr toml__parser__Parser_find_sub_table(toml__parser__Parser* p, toml__parser__DottedKey key) {
+	toml__parser__DottedKey ky = ((builtin____new_array_with_default(0, 0, sizeof(string), 0)));
+	_PUSH_MANY(&ky, (p->root_map_key), _t1, toml__parser__DottedKey);
+	_PUSH_MANY(&ky, (key), _t2, toml__parser__DottedKey);
+	if (p->root_map_key.len == 0) {
+		ky = key;
+	}
+	;
+	Map_string_toml__ast__Value* t = &p->root_map;
+	if (ky.len == 0) {
+		_result_Map_string_toml__ast__Value_ptr _t3;
+		builtin___result_ok(&(Map_string_toml__ast__Value*[]) { t }, (_result*)(&_t3), sizeof(Map_string_toml__ast__Value*));
+		 
+		return _t3;
+	}
+	return toml__parser__Parser_find_in_table(p, t, ky);
+}
+_result_Map_string_toml__ast__Value_ptr toml__parser__Parser_find_in_table(toml__parser__Parser* p, Map_string_toml__ast__Value* table, toml__parser__DottedKey key) {
+	;
+	Map_string_toml__ast__Value* t = table;
+	{ // Unsafe block
+		for (int _t1 = 0; _t1 < key.len; ++_t1) {
+			string k = ((string*)key.data)[_t1];
+			toml__ast__Value* _t3 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){k}));
+			_option_toml__ast__Value _t2 = {0};
+			if (_t3) {
+				*((toml__ast__Value*)&_t2.data) = *((toml__ast__Value*)_t3);
+			} else {
+				_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+			}
+			
+			if (_t2.state == 0) {
+				toml__ast__Value val = (*(toml__ast__Value*)_t2.data);
+				;
+				if ((val)._typ == 287 /* map[string]toml.ast.Value */) {
+					t = &(*val._Map_string_toml__ast__Value);
+				} else {
+					return (_result_Map_string_toml__ast__Value_ptr){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("find_in_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = k}}, {_S("\" in \""), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("\" is not a map but `"), 0xfe10, {.d_s = builtin__charptr_vstring_literal(v_typeof_sumtype_toml__ast__Value( (val)._typ ))}}, {_S("`"), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			} else {
+				;
+				builtin__map_set(t, &(string[]){k}, &(toml__ast__Value[]) { Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Map_string_toml__ast__Value, (builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+				)), false) });
+				t = &(*(Map_string_toml__ast__Value*)builtin____as_cast(((*(toml__ast__Value*)builtin__map_get((t), &(string[]){k}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._Map_string_toml__ast__Value,((*(toml__ast__Value*)builtin__map_get((t), &(string[]){k}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._typ, 287));
+				;
+			}
+		}
+	}
+	;
+	_result_Map_string_toml__ast__Value_ptr _t5;
+	builtin___result_ok(&(Map_string_toml__ast__Value*[]) { t }, (_result*)(&_t5), sizeof(Map_string_toml__ast__Value*));
+	 
+	return _t5;
+}
+VV_LOC bool toml__parser__is_all_tables(Map_string_toml__ast__Value table, toml__parser__DottedKey dotted_key) {
+	if (dotted_key.len == 0) {
+		return false;
+	}
+	{ // Unsafe block
+		Map_string_toml__ast__Value* t = &table;
+		for (int _t2 = 0; _t2 < dotted_key.len; ++_t2) {
+			string key = ((string*)dotted_key.data)[_t2];
+			toml__ast__Value* _t4 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){key}));
+			_option_toml__ast__Value _t3 = {0};
+			if (_t4) {
+				*((toml__ast__Value*)&_t3.data) = *((toml__ast__Value*)_t4);
+			} else {
+				_t3.state = 2; _t3.err = builtin___v_error(_S("map key does not exist"));
+			}
+			
+			if (_t3.state == 0) {
+				toml__ast__Value val = (*(toml__ast__Value*)_t3.data);
+				if ((val)._typ == 287 /* map[string]toml.ast.Value */) {
+					t = &(*val._Map_string_toml__ast__Value);
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+_result_Array_toml__ast__Value toml__parser__Parser_find_array_of_tables(toml__parser__Parser* p) {
+	Map_string_toml__ast__Value* t = &p->root_map;
+	toml__parser__DottedKey key = p->last_aot;
+	if (key.len > 1) {
+		key = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){(*(string*)builtin__array_get(key, 0))}))));
+	}
+	;
+	{ // Unsafe block
+		toml__ast__Value* _t2 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){toml__parser__DottedKey_str(key)}));
+		_option_toml__ast__Value _t1 = {0};
+		if (_t2) {
+			*((toml__ast__Value*)&_t1.data) = *((toml__ast__Value*)_t2);
+		} else {
+			_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+		}
+		
+		if (_t1.state == 0) {
+			toml__ast__Value val = (*(toml__ast__Value*)_t1.data);
+			;
+			if ((val)._typ == 286 /* []toml.ast.Value */) {
+				_result_Array_toml__ast__Value _t3;
+				builtin___result_ok(&(Array_toml__ast__Value[]) { (*val._Array_toml__ast__Value) }, (_result*)(&_t3), sizeof(Array_toml__ast__Value));
+				 
+				return _t3;
+			}
+		}
+	}
+	return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("find_array_of_tables")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S("no key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("` found in map "), 0xfe10, {.d_s = builtin__ptr_str(t)}}, {_S("\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+}
+_result_void toml__parser__Parser_allocate_in_table(toml__parser__Parser* p, Map_string_toml__ast__Value* table, toml__parser__DottedKey key) {
+	;
+	Map_string_toml__ast__Value* t = table;
+	{ // Unsafe block
+		for (int _t1 = 0; _t1 < key.len; ++_t1) {
+			string k = ((string*)key.data)[_t1];
+			toml__ast__Value* _t3 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){k}));
+			_option_toml__ast__Value _t2 = {0};
+			if (_t3) {
+				*((toml__ast__Value*)&_t2.data) = *((toml__ast__Value*)_t3);
+			} else {
+				_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+			}
+			
+			if (_t2.state == 0) {
+				toml__ast__Value val = (*(toml__ast__Value*)_t2.data);
+				;
+				if ((val)._typ == 287 /* map[string]toml.ast.Value */) {
+					t = &(*val._Map_string_toml__ast__Value);
+				} else {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("allocate_in_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" \""), 0xfe10, {.d_s = k}}, {_S("\" in \""), 0xfe10, {.d_s = toml__parser__DottedKey_str(key)}}, {_S("\" is not a map ("), 0xfe10, {.d_s = builtin__charptr_vstring_literal(v_typeof_sumtype_toml__ast__Value( (val)._typ ))}}, {_S(")"), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			} else {
+				;
+				builtin__map_set(t, &(string[]){k}, &(toml__ast__Value[]) { Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Map_string_toml__ast__Value, (builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+				)), false) });
+				t = &(*(Map_string_toml__ast__Value*)builtin____as_cast(((*(toml__ast__Value*)builtin__map_get((t), &(string[]){k}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._Map_string_toml__ast__Value,((*(toml__ast__Value*)builtin__map_get((t), &(string[]){k}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._typ, 287));
+				;
+			}
+		}
+	}
+	return (_result_void){0};
+}
+_result_toml__parser__DottedKey toml__parser__Parser_dotted_key(toml__parser__Parser* p) {
+	;
+	toml__parser__DottedKey dotted_key = ((builtin____new_array_with_default(0, 0, sizeof(string), 0)));
+	_result_toml__ast__Key _t1 = toml__parser__Parser_key(p);
+	if (_t1.is_error) {
+		_result_toml__parser__DottedKey _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__ast__Key key = (*(toml__ast__Key*)_t1.data);
+	toml__parser__Parser_ignore_while_peek(p, _const_toml__parser__space_formatting);
+	builtin__array_push((array*)&dotted_key, _MOV((string[]){ toml__ast__Key_str(key) }));
+	for (;;) {
+		if (!(p->peek_tok.kind == toml__token__Kind__period)) break;
+		_result_void _t4 = toml__parser__Parser_next(p);
+		if (_t4.is_error) {
+			_result_toml__parser__DottedKey _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+		_result_void _t6 = toml__parser__Parser_check(p, toml__token__Kind__period);
+		if (_t6.is_error) {
+			_result_toml__parser__DottedKey _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+		toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+		_result_toml__ast__Key _t8 = toml__parser__Parser_key(p);
+		if (_t8.is_error) {
+			_result_toml__parser__DottedKey _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ 		toml__ast__Key next_key = (*(toml__ast__Key*)_t8.data);
+		builtin__array_push((array*)&dotted_key, _MOV((string[]){ builtin__string_clone((*(next_key.text))) }));
+		toml__parser__Parser_ignore_while_peek(p, _const_toml__parser__space_formatting);
+	}
+	_result_void _t11 = toml__parser__Parser_next(p);
+	if (_t11.is_error) {
+		_result_toml__parser__DottedKey _t12 = {0};
+		_t12.is_error = true;
+		_t12.err = _t11.err;
+		return _t12;
+	}
+	
+ ;
+	;
+	_result_toml__parser__DottedKey _t13;
+	builtin___result_ok(&(toml__parser__DottedKey[]) { dotted_key }, (_result*)(&_t13), sizeof(toml__parser__DottedKey));
+	 
+	return _t13;
+}
+_result_void toml__parser__Parser_root_table(toml__parser__Parser* p) {
+	;
+	for (;;) {
+		if (!(p->tok.kind != toml__token__Kind__eof)) break;
+		if (!p->skip_next) {
+			_result_void _t1 = toml__parser__Parser_next(p);
+			if (_t1.is_error) {
+				_result_void _t2 = {0};
+				_t2.is_error = true;
+				_t2.err = _t1.err;
+				return _t2;
+			}
+			
+ ;
+		} else {
+			p->skip_next = false;
+		}
+		;
+
+		if (p->tok.kind == (toml__token__Kind__hash)) {
+			toml__ast__Comment c = toml__parser__Parser_comment(p);
+			builtin__array_push((array*)&p->ast_root->comments, _MOV((toml__ast__Comment[]){ c }));
+			;
+		}
+		else if (p->tok.kind == (toml__token__Kind__whitespace) || p->tok.kind == (toml__token__Kind__tab) || p->tok.kind == (toml__token__Kind__nl) || p->tok.kind == (toml__token__Kind__cr)) {
+			;
+			continue;
+		}
+		else if (p->tok.kind == (toml__token__Kind__bare) || p->tok.kind == (toml__token__Kind__boolean) || p->tok.kind == (toml__token__Kind__quoted) || p->tok.kind == (toml__token__Kind__number) || p->tok.kind == (toml__token__Kind__minus) || p->tok.kind == (toml__token__Kind__underscore)) {
+			_result_multi_return_toml__token__Token_int _t4 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__keys_and_space_formatting);
+			if (_t4.is_error) {
+				_result_void _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_17463 = (*(multi_return_toml__token__Token_int*)_t4.data);
+			toml__token__Token peek_tok = mr_17463.arg0;
+			if (peek_tok.kind == toml__token__Kind__period) {
+				_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t6 = toml__parser__Parser_dotted_key_value(p);
+				if (_t6.is_error) {
+					_result_void _t7 = {0};
+					_t7.is_error = true;
+					_t7.err = _t6.err;
+					return _t7;
+				}
+				
+ 				multi_return_toml__parser__DottedKey_toml__ast__Value mr_17565 = (*(multi_return_toml__parser__DottedKey_toml__ast__Value*)_t6.data);
+				toml__parser__DottedKey dotted_key = mr_17565.arg0;
+				toml__ast__Value val = mr_17565.arg1;
+				multi_return_toml__parser__DottedKey_toml__parser__DottedKey mr_17611 = toml__parser__Parser_sub_table_key(p, dotted_key);
+				toml__parser__DottedKey sub_table = mr_17611.arg0;
+				toml__parser__DottedKey key = mr_17611.arg1;
+				if (toml__parser__is_all_tables(p->root_map, dotted_key)) {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(dotted_key)}}, {_S("` is already declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+				for (int _t9 = 0; _t9 < p->explicit_declared.len; ++_t9) {
+					toml__parser__DottedKey explicit_key = ((toml__parser__DottedKey*)p->explicit_declared.data)[_t9];
+					if (toml__parser__DottedKey_alias_eq(toml__parser__Parser_build_abs_dotted_key(p, sub_table), explicit_key)) {
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(sub_table)}}, {_S("` has already been explicitly declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+					if (explicit_key.len == 1 || toml__parser__DottedKey_alias_eq(explicit_key, p->root_map_key)) {
+						continue;
+					}
+					if (toml__parser__DottedKey_starts_with(toml__parser__Parser_build_abs_dotted_key(p, sub_table), explicit_key)) {
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(dotted_key)}}, {_S("` has already been explicitly declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+				}
+				toml__parser__DottedKey dotted_key_copy = builtin__array_clone_to_depth(&dotted_key, 1);
+				(*(string*)builtin__array_pop(&dotted_key_copy));
+				toml__parser__DottedKey implicit_keys = toml__parser__todo_msvc_astring2dkey(dotted_key_copy);
+				toml__parser__DottedKey abs_dotted_key = toml__parser__Parser_build_abs_dotted_key(p, implicit_keys);
+				if (!Array_toml__parser__DottedKey_has(p->implicit_declared, abs_dotted_key)) {
+					builtin__array_push((array*)&p->implicit_declared, &abs_dotted_key);
+				}
+				_result_Map_string_toml__ast__Value_ptr _t13 = toml__parser__Parser_find_sub_table(p, sub_table);
+				if (_t13.is_error) {
+					_result_void _t14 = {0};
+					_t14.is_error = true;
+					_t14.err = _t13.err;
+					return _t14;
+				}
+				
+ 				Map_string_toml__ast__Value* t = (*(Map_string_toml__ast__Value**)_t13.data);
+				{ // Unsafe block
+					;
+					builtin__map_set(t, &(string[]){toml__parser__DottedKey_str(key)}, &(toml__ast__Value[]) { val });
+				}
+			} else {
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				_result_multi_return_toml__ast__Key_toml__ast__Value _t15 = toml__parser__Parser_key_value(p);
+				if (_t15.is_error) {
+					_result_void _t16 = {0};
+					_t16.is_error = true;
+					_t16.err = _t15.err;
+					return _t16;
+				}
+				
+ 				multi_return_toml__ast__Key_toml__ast__Value mr_19812 = (*(multi_return_toml__ast__Key_toml__ast__Value*)_t15.data);
+				toml__ast__Key key = mr_19812.arg0;
+				toml__ast__Value val = mr_19812.arg1;
+				_result_Map_string_toml__ast__Value_ptr _t17 = toml__parser__Parser_find_table(p);
+				if (_t17.is_error) {
+					_result_void _t18 = {0};
+					_t18.is_error = true;
+					_t18.err = _t17.err;
+					return _t18;
+				}
+				
+ 				Map_string_toml__ast__Value* t = (*(Map_string_toml__ast__Value**)_t17.data);
+				{ // Unsafe block
+					;
+					string key_str = toml__ast__Key_str(key);
+					toml__ast__Value* _t20 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){key_str}));
+					_option_toml__ast__Value _t19 = {0};
+					if (_t20) {
+						*((toml__ast__Value*)&_t19.data) = *((toml__ast__Value*)_t20);
+					} else {
+						_t19.state = 2; _t19.err = builtin___v_error(_S("map key does not exist"));
+					}
+					
+					if (_t19.state == 0) {
+						toml__ast__Value _dummy_19 = (*(toml__ast__Value*)_t19.data);
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key \""), 0xfe10, {.d_s = toml__ast__Key_str(key)}}, {_S("\" is already initialized with a value. At \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+					builtin__map_set(t, &(string[]){key_str}, &(toml__ast__Value[]) { val });
+				}
+			}
+			_result_void _t22 = toml__parser__Parser_peek_for_correct_line_ending_or_fail(p);
+			if (_t22.is_error) {
+				_result_void _t23 = {0};
+				_t23.is_error = true;
+				_t23.err = _t22.err;
+				return _t23;
+			}
+			
+ ;
+		}
+		else if (p->tok.kind == (toml__token__Kind__lsbr)) {
+			_result_void _t24 = toml__parser__Parser_check(p, toml__token__Kind__lsbr);
+			if (_t24.is_error) {
+				_result_void _t25 = {0};
+				_t25.is_error = true;
+				_t25.err = _t24.err;
+				return _t25;
+			}
+			
+ ;
+			toml__token__Token peek_tok = p->peek_tok;
+			if ((Array_toml__token__Kind_contains(_const_toml__parser__space_formatting, p->tok.kind))) {
+				_result_multi_return_toml__token__Token_int _t26 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+				if (_t26.is_error) {
+					_result_void _t27 = {0};
+					_t27.is_error = true;
+					_t27.err = _t26.err;
+					return _t27;
+				}
+				
+ 				multi_return_toml__token__Token_int mr_20489 = (*(multi_return_toml__token__Token_int*)_t26.data);
+				peek_tok = mr_20489.arg0;
+				if (peek_tok.kind == toml__token__Kind__lsbr) {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			}
+			toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+			_result_multi_return_toml__token__Token_int _t29 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__keys_and_space_formatting);
+			if (_t29.is_error) {
+				_result_void _t30 = {0};
+				_t30.is_error = true;
+				_t30.err = _t29.err;
+				return _t30;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_20875 = (*(multi_return_toml__token__Token_int*)_t29.data);
+			peek_tok = mr_20875.arg0;
+			if (p->tok.kind == toml__token__Kind__lsbr) {
+								_result_void _t31 = toml__parser__Parser_array_of_tables(p, &p->root_map);
+				if (_t31.is_error) {
+					_result_void _t32 = {0};
+					_t32.is_error = true;
+					_t32.err = _t31.err;
+					return _t32;
+				}
+				
+ ;
+				p->skip_next = true;
+				;
+			} else if (peek_tok.kind == toml__token__Kind__period) {
+				_result_toml__parser__DottedKey _t33 = toml__parser__Parser_dotted_key(p);
+				if (_t33.is_error) {
+					_result_void _t34 = {0};
+					_t34.is_error = true;
+					_t34.err = _t33.err;
+					return _t34;
+				}
+				
+ 				toml__parser__DottedKey dotted_key = (*(toml__parser__DottedKey*)_t33.data);
+				if (p->last_aot.len == 1 && dotted_key.len > 1 && builtin__string__eq((*(string*)builtin__array_get(dotted_key, 0)), toml__parser__DottedKey_str(p->last_aot))) {
+					_result_void _t35 = toml__parser__Parser_check_explicitly_declared_array_of_tables(p, dotted_key);
+					if (_t35.is_error) {
+						_result_void _t36 = {0};
+						_t36.is_error = true;
+						_t36.err = _t35.err;
+						return _t36;
+					}
+					
+ ;
+					_result_void _t37 = toml__parser__Parser_check(p, toml__token__Kind__rsbr);
+					if (_t37.is_error) {
+						_result_void _t38 = {0};
+						_t38.is_error = true;
+						_t38.err = _t37.err;
+						return _t38;
+					}
+					
+ ;
+					toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+					_result_Array_toml__ast__Value _t39 = toml__parser__Parser_find_array_of_tables(p);
+					if (_t39.is_error) {
+						_result_void _t40 = {0};
+						_t40.is_error = true;
+						_t40.err = _t39.err;
+						return _t40;
+					}
+					
+ 					Array_toml__ast__Value arr = (*(Array_toml__ast__Value*)_t39.data);
+					toml__ast__Value* _t42 = (toml__ast__Value*)(builtin__array_get_with_check(arr, p->last_aot_index));
+					_option_toml__ast__Value _t41 = {0};
+					if (_t42) {
+						*((toml__ast__Value*)&_t41.data) = *((toml__ast__Value*)_t42);
+					} else {
+						_t41.state = 2; _t41.err = builtin___v_error(_S("array index out of range"));
+					}
+					
+					if (_t41.state == 0) {
+						toml__ast__Value val = (*(toml__ast__Value*)_t41.data);
+						if ((val)._typ == 287 /* map[string]toml.ast.Value */) {
+							Map_string_toml__ast__Value m = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+							;
+							_result_void _t43 = toml__parser__Parser_table_contents(p, (voidptr)&m);
+							if (_t43.is_error) {
+								_result_void _t44 = {0};
+								_t44.is_error = true;
+								_t44.err = _t43.err;
+								return _t44;
+							}
+							
+ ;
+							{ // Unsafe block
+								Map_string_toml__ast__Value* mut_val = &(*val._Map_string_toml__ast__Value);
+								if (dotted_key.len == 2) {
+									builtin__map_set(mut_val, &(string[]){builtin__string_str((*(string*)builtin__array_get(dotted_key, 1)))}, &(toml__ast__Value[]) { Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&m, false) });
+								} else {
+									toml__parser__DottedKey dotted_key_copy = builtin__array_clone_to_depth(&dotted_key, 1);
+									builtin__array_delete(&dotted_key_copy, 0);
+									toml__parser__DottedKey new_key = toml__parser__todo_msvc_astring2dkey(dotted_key_copy);
+									multi_return_toml__parser__DottedKey_toml__parser__DottedKey mr_22658 = toml__parser__Parser_sub_table_key(p, new_key);
+									toml__parser__DottedKey sub_table = mr_22658.arg0;
+									toml__parser__DottedKey key = mr_22658.arg1;
+									_result_Map_string_toml__ast__Value_ptr _t45 = toml__parser__Parser_find_in_table(p, mut_val, sub_table);
+									if (_t45.is_error) {
+										_result_void _t46 = {0};
+										_t46.is_error = true;
+										_t46.err = _t45.err;
+										return _t46;
+									}
+									
+ 									Map_string_toml__ast__Value* t = (*(Map_string_toml__ast__Value**)_t45.data);
+									;
+									builtin__map_set(t, &(string[]){builtin__string_str((*(string*)builtin__array_last(new_key)))}, &(toml__ast__Value[]) { Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&m, false) });
+								}
+							}
+						} else {
+							return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" \""), 0xfe07, {.d_i32 = p->last_aot_index}}, {_S("\" in array is not a map but `"), 0xfe10, {.d_s = _S("ast.Value")}}, {_S("`"), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+						}
+					}
+					continue;
+				}
+				if (dotted_key.len > 1) {
+					for (int _t48 = 0; _t48 < dotted_key.len; ++_t48) {
+						string part = ((string*)dotted_key.data)[_t48];
+						toml__parser__DottedKey dotted_part = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__string_clone(part)}))));
+						if (Array_toml__parser__DottedKey_has(p->explicit_declared, dotted_part)) {
+							_result_void _t49 = toml__parser__Parser_check_immutable(p, dotted_part);
+							if (_t49.is_error) {
+								_result_void _t50 = {0};
+								_t50.is_error = true;
+								_t50.err = _t49.err;
+								return _t50;
+							}
+							
+ ;
+						}
+					}
+				}
+				if (toml__parser__is_all_tables(p->root_map, dotted_key)) {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(dotted_key)}}, {_S("` is already declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+				builtin__array_push((array*)&p->explicit_declared, &dotted_key);
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				;
+				p->root_map_key = dotted_key;
+				_result_void _t53 = toml__parser__Parser_allocate_table(p, p->root_map_key);
+				if (_t53.is_error) {
+					_result_void _t54 = {0};
+					_t54.is_error = true;
+					_t54.err = _t53.err;
+					return _t54;
+				}
+				
+ ;
+				_result_void _t55 = toml__parser__Parser_expect(p, toml__token__Kind__rsbr);
+				if (_t55.is_error) {
+					_result_void _t56 = {0};
+					_t56.is_error = true;
+					_t56.err = _t55.err;
+					return _t56;
+				}
+				
+ ;
+				_result_void _t57 = toml__parser__Parser_peek_for_correct_line_ending_or_fail(p);
+				if (_t57.is_error) {
+					_result_void _t58 = {0};
+					_t58.is_error = true;
+					_t58.err = _t57.err;
+					return _t58;
+				}
+				
+ ;
+			} else {
+				_result_toml__ast__Key _t59 = toml__parser__Parser_key(p);
+				if (_t59.is_error) {
+					_result_void _t60 = {0};
+					_t60.is_error = true;
+					_t60.err = _t59.err;
+					return _t60;
+				}
+				
+ 				toml__ast__Key key = (*(toml__ast__Key*)_t59.data);
+				toml__parser__DottedKey dotted_key = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){toml__ast__Key_str(key)}))));
+				_result_void _t61 = toml__parser__Parser_check_implicitly_declared(p, dotted_key);
+				if (_t61.is_error) {
+					_result_void _t62 = toml__parser__Parser_check_explicitly_declared(p, dotted_key);
+					if (_t62.is_error) {
+						toml__ast__Value* _t64 = (toml__ast__Value*)(builtin__map_get_check(ADDR(map, p->root_map), &(string[]){toml__ast__Key_str(key)}));
+						_option_toml__ast__Value _t63 = {0};
+						if (_t64) {
+							*((toml__ast__Value*)&_t63.data) = *((toml__ast__Value*)_t64);
+						} else {
+							_t63.state = 2; _t63.err = builtin___v_error(_S("map key does not exist"));
+						}
+						;
+						if (_t63.state != 0) {
+							*(toml__ast__Value*) _t63.data = toml__ast__Bool_to_sumtype_toml__ast__Value(ADDR(toml__ast__Bool, (((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+						}
+						
+						if (((*(toml__ast__Value*)_t63.data))._typ == 287 /* map[string]toml.ast.Value */) {
+							toml__parser__Parser_undo_special_case_01(p, dotted_key);
+						}
+					;
+					}
+					
+ ;
+				;
+				}
+				
+ ;
+				_result_void _t65 = toml__parser__Parser_check_explicitly_declared(p, dotted_key);
+				if (_t65.is_error) {
+					_result_void _t66 = {0};
+					_t66.is_error = true;
+					_t66.err = _t65.err;
+					return _t66;
+				}
+				
+ ;
+				builtin__array_push((array*)&p->explicit_declared, &dotted_key);
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				;
+				p->root_map_key = dotted_key;
+				_result_void _t68 = toml__parser__Parser_allocate_table(p, p->root_map_key);
+				if (_t68.is_error) {
+					_result_void _t69 = {0};
+					_t69.is_error = true;
+					_t69.err = _t68.err;
+					return _t69;
+				}
+				
+ ;
+				_result_void _t70 = toml__parser__Parser_next(p);
+				if (_t70.is_error) {
+					_result_void _t71 = {0};
+					_t71.is_error = true;
+					_t71.err = _t70.err;
+					return _t71;
+				}
+				
+ ;
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				_result_void _t72 = toml__parser__Parser_expect(p, toml__token__Kind__rsbr);
+				if (_t72.is_error) {
+					_result_void _t73 = {0};
+					_t73.is_error = true;
+					_t73.err = _t72.err;
+					return _t73;
+				}
+				
+ ;
+				_result_void _t74 = toml__parser__Parser_peek_for_correct_line_ending_or_fail(p);
+				if (_t74.is_error) {
+					_result_void _t75 = {0};
+					_t75.is_error = true;
+					_t75.err = _t74.err;
+					return _t75;
+				}
+				
+ ;
+			}
+		}
+		else if (p->tok.kind == (toml__token__Kind__eof)) {
+			return (_result_void){0};
+		}
+		else {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("root_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" could not parse \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	return (_result_void){0};
+}
+VV_LOC string toml__parser__Parser_excerpt(toml__parser__Parser* p) {
+	return toml__scanner__Scanner_excerpt(p->scanner, p->tok.pos, 10);
+}
+_result_void toml__parser__Parser_table_contents(toml__parser__Parser* p, Map_string_toml__ast__Value* tbl) {
+	;
+	for (;;) {
+		if (!(p->tok.kind != toml__token__Kind__eof)) break;
+		if (p->peek_tok.kind == toml__token__Kind__lsbr) {
+			return (_result_void){0};
+		}
+		if (!p->skip_next) {
+			_result_void _t1 = toml__parser__Parser_next(p);
+			if (_t1.is_error) {
+				_result_void _t2 = {0};
+				_t2.is_error = true;
+				_t2.err = _t1.err;
+				return _t2;
+			}
+			
+ ;
+		} else {
+			p->skip_next = false;
+		}
+		;
+
+		if (p->tok.kind == (toml__token__Kind__hash)) {
+			toml__ast__Comment c = toml__parser__Parser_comment(p);
+			builtin__array_push((array*)&p->ast_root->comments, _MOV((toml__ast__Comment[]){ c }));
+			;
+		}
+		else if (p->tok.kind == (toml__token__Kind__whitespace) || p->tok.kind == (toml__token__Kind__tab) || p->tok.kind == (toml__token__Kind__nl) || p->tok.kind == (toml__token__Kind__cr)) {
+			;
+			continue;
+		}
+		else if (p->tok.kind == (toml__token__Kind__bare) || p->tok.kind == (toml__token__Kind__quoted) || p->tok.kind == (toml__token__Kind__number) || p->tok.kind == (toml__token__Kind__minus) || p->tok.kind == (toml__token__Kind__underscore)) {
+			_result_multi_return_toml__token__Token_int _t4 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__keys_and_space_formatting);
+			if (_t4.is_error) {
+				_result_void _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_26741 = (*(multi_return_toml__token__Token_int*)_t4.data);
+			toml__token__Token peek_tok = mr_26741.arg0;
+			if (peek_tok.kind == toml__token__Kind__period) {
+				_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t6 = toml__parser__Parser_dotted_key_value(p);
+				if (_t6.is_error) {
+					_result_void _t7 = {0};
+					_t7.is_error = true;
+					_t7.err = _t6.err;
+					return _t7;
+				}
+				
+ 				multi_return_toml__parser__DottedKey_toml__ast__Value mr_26843 = (*(multi_return_toml__parser__DottedKey_toml__ast__Value*)_t6.data);
+				toml__parser__DottedKey dotted_key = mr_26843.arg0;
+				toml__ast__Value val = mr_26843.arg1;
+				multi_return_toml__parser__DottedKey_toml__parser__DottedKey mr_26889 = toml__parser__Parser_sub_table_key(p, dotted_key);
+				toml__parser__DottedKey sub_table = mr_26889.arg0;
+				toml__parser__DottedKey key = mr_26889.arg1;
+				_result_Map_string_toml__ast__Value_ptr _t8 = toml__parser__Parser_find_in_table(p, tbl, sub_table);
+				if (_t8.is_error) {
+					_result_void _t9 = {0};
+					_t9.is_error = true;
+					_t9.err = _t8.err;
+					return _t9;
+				}
+				
+ 				Map_string_toml__ast__Value* t = (*(Map_string_toml__ast__Value**)_t8.data);
+				{ // Unsafe block
+					;
+					builtin__map_set(t, &(string[]){toml__parser__DottedKey_str(key)}, &(toml__ast__Value[]) { val });
+				}
+			} else {
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				_result_multi_return_toml__ast__Key_toml__ast__Value _t10 = toml__parser__Parser_key_value(p);
+				if (_t10.is_error) {
+					_result_void _t11 = {0};
+					_t11.is_error = true;
+					_t11.err = _t10.err;
+					return _t11;
+				}
+				
+ 				multi_return_toml__ast__Key_toml__ast__Value mr_27185 = (*(multi_return_toml__ast__Key_toml__ast__Value*)_t10.data);
+				toml__ast__Key key = mr_27185.arg0;
+				toml__ast__Value val = mr_27185.arg1;
+				{ // Unsafe block
+					;
+					string key_str = toml__ast__Key_str(key);
+					toml__ast__Value* _t13 = (toml__ast__Value*)(builtin__map_get_check((tbl), &(string[]){key_str}));
+					_option_toml__ast__Value _t12 = {0};
+					if (_t13) {
+						*((toml__ast__Value*)&_t12.data) = *((toml__ast__Value*)_t13);
+					} else {
+						_t12.state = 2; _t12.err = builtin___v_error(_S("map key does not exist"));
+					}
+					
+					if (_t12.state == 0) {
+						toml__ast__Value _dummy_12 = (*(toml__ast__Value*)_t12.data);
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("table_contents")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key \""), 0xfe10, {.d_s = toml__ast__Key_str(key)}}, {_S("\" is already initialized with a value. At \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+					builtin__map_set(tbl, &(string[]){key_str}, &(toml__ast__Value[]) { val });
+				}
+			}
+			_result_void _t15 = toml__parser__Parser_peek_for_correct_line_ending_or_fail(p);
+			if (_t15.is_error) {
+				_result_void _t16 = {0};
+				_t16.is_error = true;
+				_t16.err = _t15.err;
+				return _t16;
+			}
+			
+ ;
+		}
+		else if (p->tok.kind == (toml__token__Kind__eof)) {
+			break;
+		}
+		else {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("table_contents")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" could not parse \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	return (_result_void){0};
+}
+_result_void toml__parser__Parser_inline_table(toml__parser__Parser* p, Map_string_toml__ast__Value* tbl) {
+	;
+	bool previous_token_was_value = false;
+	for (;;) {
+		if (!(p->tok.kind != toml__token__Kind__eof)) break;
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			{ // defer begin
+				p->value_is_immutable = true;
+			} // defer end
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+		;
+		if (previous_token_was_value) {
+			toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+			if (p->tok.kind != toml__token__Kind__rcbr) {
+				_result_void _t3 = toml__parser__Parser_expect(p, toml__token__Kind__comma);
+				if (_t3.is_error) {
+					{ // defer begin
+						p->value_is_immutable = true;
+					} // defer end
+					_result_void _t4 = {0};
+					_t4.is_error = true;
+					_t4.err = _t3.err;
+					return _t4;
+				}
+				
+ ;
+			}
+			previous_token_was_value = false;
+		}
+
+		if (p->tok.kind == (toml__token__Kind__whitespace) || p->tok.kind == (toml__token__Kind__tab)) {
+			;
+			continue;
+		}
+		else if (p->tok.kind == (toml__token__Kind__comma)) {
+			toml__parser__Parser_ignore_while_peek(p, _const_toml__parser__space_formatting);
+			if (p->peek_tok.kind == toml__token__Kind__comma || p->peek_tok.kind == toml__token__Kind__rcbr) {
+				_result_void _t5 = toml__parser__Parser_next(p);
+				if (_t5.is_error) {
+					{ // defer begin
+						p->value_is_immutable = true;
+					} // defer end
+					_result_void _t6 = {0};
+					_t6.is_error = true;
+					_t6.err = _t5.err;
+					return _t6;
+				}
+				
+ ;
+				_result_void _t7 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("inline_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					{ // defer begin
+						p->value_is_immutable = true;
+					} // defer end
+				return _t7;
+			}
+			;
+			continue;
+		}
+		else if (p->tok.kind == (toml__token__Kind__rcbr)) {
+				{ // defer begin
+					p->value_is_immutable = true;
+				} // defer end
+			return (_result_void){0};
+		}
+		else if (p->tok.kind == (toml__token__Kind__bare) || p->tok.kind == (toml__token__Kind__quoted) || p->tok.kind == (toml__token__Kind__number) || p->tok.kind == (toml__token__Kind__minus) || p->tok.kind == (toml__token__Kind__underscore)) {
+			_result_multi_return_toml__token__Token_int _t8 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+			if (_t8.is_error) {
+				{ // defer begin
+					p->value_is_immutable = true;
+				} // defer end
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_29474 = (*(multi_return_toml__token__Token_int*)_t8.data);
+			toml__token__Token peek_tok = mr_29474.arg0;
+			if (peek_tok.kind == toml__token__Kind__period) {
+				_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t10 = toml__parser__Parser_dotted_key_value(p);
+				if (_t10.is_error) {
+					{ // defer begin
+						p->value_is_immutable = true;
+					} // defer end
+					_result_void _t11 = {0};
+					_t11.is_error = true;
+					_t11.err = _t10.err;
+					return _t11;
+				}
+				
+ 				multi_return_toml__parser__DottedKey_toml__ast__Value mr_29567 = (*(multi_return_toml__parser__DottedKey_toml__ast__Value*)_t10.data);
+				toml__parser__DottedKey dotted_key = mr_29567.arg0;
+				toml__ast__Value val = mr_29567.arg1;
+				multi_return_toml__parser__DottedKey_toml__parser__DottedKey mr_29613 = toml__parser__Parser_sub_table_key(p, dotted_key);
+				toml__parser__DottedKey sub_table = mr_29613.arg0;
+				toml__parser__DottedKey key = mr_29613.arg1;
+				_result_Map_string_toml__ast__Value_ptr _t12 = toml__parser__Parser_find_in_table(p, tbl, sub_table);
+				if (_t12.is_error) {
+					{ // defer begin
+						p->value_is_immutable = true;
+					} // defer end
+					_result_void _t13 = {0};
+					_t13.is_error = true;
+					_t13.err = _t12.err;
+					return _t13;
+				}
+				
+ 				Map_string_toml__ast__Value* t = (*(Map_string_toml__ast__Value**)_t12.data);
+				if (Array_toml__parser__DottedKey_has(p->explicit_declared, dotted_key)) {
+					toml__parser__DottedKey left_most = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){(*(string*)builtin__array_get(dotted_key, 0))}))));
+					if (t->len > 0) {
+						_result_void _t14 = toml__parser__Parser_check_immutable(p, left_most);
+						if (_t14.is_error) {
+							{ // defer begin
+								p->value_is_immutable = true;
+							} // defer end
+							_result_void _t15 = {0};
+							_t15.is_error = true;
+							_t15.err = _t14.err;
+							return _t15;
+						}
+						
+ ;
+					}
+				}
+				string key_str = toml__parser__DottedKey_str(key);
+				;
+				{ // Unsafe block
+					toml__ast__Value* _t17 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){key_str}));
+					_option_toml__ast__Value _t16 = {0};
+					if (_t17) {
+						*((toml__ast__Value*)&_t16.data) = *((toml__ast__Value*)_t17);
+					} else {
+						_t16.state = 2; _t16.err = builtin___v_error(_S("map key does not exist"));
+					}
+					
+					if (_t16.state == 0) {
+						toml__ast__Value _dummy_16 = (*(toml__ast__Value*)_t16.data);
+						_result_void _t18 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("inline_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key \""), 0xfe10, {.d_s = key_str}}, {_S("\" is already initialized with a value. At \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+							{ // defer begin
+								p->value_is_immutable = true;
+							} // defer end
+						return _t18;
+					}
+					builtin__map_set(t, &(string[]){key_str}, &(toml__ast__Value[]) { val });
+				}
+			} else {
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				_result_multi_return_toml__ast__Key_toml__ast__Value _t19 = toml__parser__Parser_key_value(p);
+				if (_t19.is_error) {
+					{ // defer begin
+						p->value_is_immutable = true;
+					} // defer end
+					_result_void _t20 = {0};
+					_t20.is_error = true;
+					_t20.err = _t19.err;
+					return _t20;
+				}
+				
+ 				multi_return_toml__ast__Key_toml__ast__Value mr_30400 = (*(multi_return_toml__ast__Key_toml__ast__Value*)_t19.data);
+				toml__ast__Key key = mr_30400.arg0;
+				toml__ast__Value val = mr_30400.arg1;
+				string key_str = toml__ast__Key_str(key);
+				;
+				toml__ast__Value* _t22 = (toml__ast__Value*)(builtin__map_get_check((tbl), &(string[]){key_str}));
+				_option_toml__ast__Value _t21 = {0};
+				if (_t22) {
+					*((toml__ast__Value*)&_t21.data) = *((toml__ast__Value*)_t22);
+				} else {
+					_t21.state = 2; _t21.err = builtin___v_error(_S("map key does not exist"));
+				}
+				
+				if (_t21.state == 0) {
+					toml__ast__Value _dummy_21 = (*(toml__ast__Value*)_t21.data);
+					_result_void _t23 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("inline_table")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key \""), 0xfe10, {.d_s = key_str}}, {_S("\" is already initialized with a value. At \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+						{ // defer begin
+							p->value_is_immutable = true;
+						} // defer end
+					return _t23;
+				}
+				builtin__map_set(tbl, &(string[]){key_str}, &(toml__ast__Value[]) { val });
+			}
+			previous_token_was_value = true;
+		}
+		else {
+			_result_void _t24 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("inline_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				{ // defer begin
+					p->value_is_immutable = true;
+				} // defer end
+			return _t24;
+		}
+	}
+	_result_void _t25 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("inline_table")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected end of inline-table \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		{ // defer begin
+			p->value_is_immutable = true;
+		} // defer end
+	return _t25;
+}
+_result_void toml__parser__Parser_array_of_tables(toml__parser__Parser* p, Map_string_toml__ast__Value* table) {
+	;
+	_result_void _t1 = toml__parser__Parser_check(p, toml__token__Kind__lsbr);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_multi_return_toml__token__Token_int _t3 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	multi_return_toml__token__Token_int mr_31712 = (*(multi_return_toml__token__Token_int*)_t3.data);
+	toml__token__Token peek_tok = mr_31712.arg0;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	if (peek_tok.kind == toml__token__Kind__period) {
+		_result_void _t5 = toml__parser__Parser_double_array_of_tables(p, table);
+		if (_t5.is_error) {
+			_result_void _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	_result_toml__ast__Key _t7 = toml__parser__Parser_key(p);
+	if (_t7.is_error) {
+		_result_void _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ 	toml__ast__Key key = (*(toml__ast__Key*)_t7.data);
+	_result_void _t9 = toml__parser__Parser_next(p);
+	if (_t9.is_error) {
+		_result_void _t10 = {0};
+		_t10.is_error = true;
+		_t10.err = _t9.err;
+		return _t10;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_void _t11 = toml__parser__Parser_check(p, toml__token__Kind__rsbr);
+	if (_t11.is_error) {
+		_result_void _t12 = {0};
+		_t12.is_error = true;
+		_t12.err = _t11.err;
+		return _t12;
+	}
+	
+ ;
+	_result_void _t13 = toml__parser__Parser_peek_for_correct_line_ending_or_fail(p);
+	if (_t13.is_error) {
+		_result_void _t14 = {0};
+		_t14.is_error = true;
+		_t14.err = _t13.err;
+		return _t14;
+	}
+	
+ ;
+	_result_void _t15 = toml__parser__Parser_expect(p, toml__token__Kind__rsbr);
+	if (_t15.is_error) {
+		_result_void _t16 = {0};
+		_t16.is_error = true;
+		_t16.err = _t15.err;
+		return _t16;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__all_formatting);
+	toml__parser__DottedKey dotted_key = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){toml__ast__Key_str(key)}))));
+	string dotted_key_str = toml__parser__DottedKey_str(dotted_key);
+	_result_void _t17 = toml__parser__Parser_check_explicitly_declared(p, dotted_key);
+	if (_t17.is_error) {
+		_result_void _t18 = {0};
+		_t18.is_error = true;
+		_t18.err = _t17.err;
+		return _t18;
+	}
+	
+ ;
+	{ // Unsafe block
+		toml__ast__Value* _t20 = (toml__ast__Value*)(builtin__map_get_check((table), &(string[]){dotted_key_str}));
+		_option_toml__ast__Value _t19 = {0};
+		if (_t20) {
+			*((toml__ast__Value*)&_t19.data) = *((toml__ast__Value*)_t20);
+		} else {
+			_t19.state = 2; _t19.err = builtin___v_error(_S("map key does not exist"));
+		}
+		
+		if (_t19.state == 0) {
+			toml__ast__Value val = (*(toml__ast__Value*)_t19.data);
+			if ((val)._typ == 286 /* []toml.ast.Value */) {
+				Array_toml__ast__Value* arr = &(*(Array_toml__ast__Value*)builtin____as_cast(((*(toml__ast__Value*)builtin__map_get((table), &(string[]){dotted_key_str}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._Array_toml__ast__Value,((*(toml__ast__Value*)builtin__map_get((table), &(string[]){dotted_key_str}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._typ, 286));
+				_result_Array_toml__ast__Value _t22 = toml__parser__Parser_array_of_tables_contents(p);
+				if (_t22.is_error) {
+					_result_void _t23 = {0};
+					_t23.is_error = true;
+					_t23.err = _t22.err;
+					return _t23;
+				}
+				
+ 				_PUSH_MANY(arr, ((*(Array_toml__ast__Value*)_t22.data)), _t21, Array_toml__ast__Value);
+				builtin__map_set(table, &(string[]){dotted_key_str}, &(toml__ast__Value[]) { Array_toml__ast__Value_to_sumtype_toml__ast__Value(arr, false) });
+			} else {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("array_of_tables")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" table["), 0xfe10, {.d_s = dotted_key_str}}, {_S("] is not an array. (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		} else {
+			_result_Array_toml__ast__Value _t25 = toml__parser__Parser_array_of_tables_contents(p);
+			if (_t25.is_error) {
+				_result_void _t26 = {0};
+				_t26.is_error = true;
+				_t26.err = _t25.err;
+				return _t26;
+			}
+			
+ 			builtin__map_set(table, &(string[]){dotted_key_str}, &(toml__ast__Value[]) { Array_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Array_toml__ast__Value, ((*(Array_toml__ast__Value*)_t25.data))), false) });
+		}
+	}
+	p->last_aot = dotted_key;
+	{ // Unsafe block
+		Array_toml__ast__Value* arr = &(*(Array_toml__ast__Value*)builtin____as_cast(((*(toml__ast__Value*)builtin__map_get((table), &(string[]){toml__parser__DottedKey_str(p->last_aot)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._Array_toml__ast__Value,((*(toml__ast__Value*)builtin__map_get((table), &(string[]){toml__parser__DottedKey_str(p->last_aot)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._typ, 286));
+		p->last_aot_index = (int)(arr->len - 1);
+	}
+	return (_result_void){0};
+}
+_result_Array_toml__ast__Value toml__parser__Parser_array_of_tables_contents(toml__parser__Parser* p) {
+	;
+	Map_string_toml__ast__Value tbl = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	_result_void _t1 = toml__parser__Parser_table_contents(p, (voidptr)&tbl);
+	if (_t1.is_error) {
+		_result_Array_toml__ast__Value _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	Array_toml__ast__Value arr = builtin____new_array_with_default(0, 0, sizeof(toml__ast__Value), 0);
+	builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&tbl, false) }));
+	;
+	_result_Array_toml__ast__Value _t4;
+	builtin___result_ok(&(Array_toml__ast__Value[]) { arr }, (_result*)(&_t4), sizeof(Array_toml__ast__Value));
+	 
+	return _t4;
+}
+_result_void toml__parser__Parser_double_array_of_tables(toml__parser__Parser* p, Map_string_toml__ast__Value* table) {
+	;
+	_result_toml__parser__DottedKey _t1 = toml__parser__Parser_dotted_key(p);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__parser__DottedKey dotted_key = (*(toml__parser__DottedKey*)_t1.data);
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_void _t3 = toml__parser__Parser_check(p, toml__token__Kind__rsbr);
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	_result_void _t5 = toml__parser__Parser_expect(p, toml__token__Kind__rsbr);
+	if (_t5.is_error) {
+		_result_void _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__all_formatting);
+	_result_void _t7 = toml__parser__Parser_check_explicitly_declared(p, dotted_key);
+	if (_t7.is_error) {
+		_result_void _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	if (toml__parser__is_all_tables(p->root_map, dotted_key)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" key `"), 0xfe10, {.d_s = toml__parser__DottedKey_str(dotted_key)}}, {_S("` is already declared. Unexpected redeclaration at \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if (!Array_toml__parser__DottedKey_has(p->explicit_declared_array_of_tables, dotted_key)) {
+		builtin__array_push((array*)&p->explicit_declared_array_of_tables, &dotted_key);
+	}
+	toml__parser__DottedKey first = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){(*(string*)builtin__array_get(dotted_key, 0))}))));
+	toml__parser__DottedKey last = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){(*(string*)builtin__array_get(dotted_key, 1))}))));
+	Array_toml__ast__Value* t_arr = ((Array_toml__ast__Value*)(((void*)0)));
+	toml__ast__Value t_map = toml__ast__Null_to_sumtype_toml__ast__Value(ADDR(toml__ast__Null, (((toml__ast__Null){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+	{ // Unsafe block
+		if (!toml__parser__DottedKey_alias_eq(first, p->last_aot)) {
+			;
+			if (p->last_aot.len == 0) {
+				p->last_aot = first;
+				Map_string_toml__ast__Value* nm = &p->root_map;
+				bool _t11 = (Array_string_contains(builtin__map_keys(table), toml__parser__DottedKey_str(first)));
+				
+				if (_t11) {
+					;
+					toml__ast__Value table_first = (*(toml__ast__Value*)builtin__map_get((table), &(string[]){toml__parser__DottedKey_str(first)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} }));
+					if ((table_first)._typ != 287 /* map[string]toml.ast.Value */) {
+						return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" expected a table at \""), 0xfe10, {.d_s = toml__parser__DottedKey_str(first)}}, {_S("\" but got \""), 0xfe10, {.d_s = builtin__charptr_vstring_literal(v_typeof_sumtype_toml__ast__Value( (table_first)._typ ))}}, {_S("\" instead. (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+					}
+					nm = &(*(Map_string_toml__ast__Value*)builtin____as_cast((table_first)._Map_string_toml__ast__Value,(table_first)._typ, 287));
+				} else {
+					;
+					nm = (Map_string_toml__ast__Value*)builtin__memdup(ADDR(Map_string_toml__ast__Value, builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+					), sizeof(Map_string_toml__ast__Value));
+					builtin__array_push((array*)&p->implicit_declared, &first);
+					builtin__array_push((array*)&p->explicit_declared, &first);
+				}
+				builtin__map_set(nm, &(string[]){toml__parser__DottedKey_str(last)}, &(toml__ast__Value[]) { Array_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Array_toml__ast__Value, (builtin____new_array_with_default(0, 0, sizeof(toml__ast__Value), 0))), false) });
+				builtin__map_set(table, &(string[]){toml__parser__DottedKey_str(first)}, &(toml__ast__Value[]) { Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(nm, false) });
+				t_arr = &(*(Array_toml__ast__Value*)builtin____as_cast(((*(toml__ast__Value*)builtin__map_get((nm), &(string[]){toml__parser__DottedKey_str(last)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._Array_toml__ast__Value,((*(toml__ast__Value*)builtin__map_get((nm), &(string[]){toml__parser__DottedKey_str(last)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._typ, 286));
+				_result_Array_toml__ast__Value _t16 = toml__parser__Parser_array_of_tables_contents(p);
+				if (_t16.is_error) {
+					_result_void _t17 = {0};
+					_t17.is_error = true;
+					_t17.err = _t16.err;
+					return _t17;
+				}
+				
+ 				_PUSH_MANY(t_arr, ((*(Array_toml__ast__Value*)_t16.data)), _t15, Array_toml__ast__Value);
+				return (_result_void){0};
+			} else {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" nested array of tables key \""), 0xfe10, {.d_s = toml__parser__DottedKey_str(first)}}, {_S("\" does not match \""), 0xfe10, {.d_s = toml__parser__DottedKey_str(p->last_aot)}}, {_S("\". (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		}
+		toml__ast__Value array_of_tables = (*(toml__ast__Value*)builtin__map_get((table), &(string[]){toml__parser__DottedKey_str(p->last_aot)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} }));
+		if (toml__parser__DottedKey_alias_eq(first, p->last_aot)) {
+			if ((array_of_tables)._typ == 287 /* map[string]toml.ast.Value */) {
+				toml__parser__Parser_undo_special_case_01(p, dotted_key);
+				_result_void _t19 = toml__parser__Parser_next(p);
+				if (_t19.is_error) {
+					_result_void _t20 = {0};
+					_t20.is_error = true;
+					_t20.err = _t19.err;
+					return _t20;
+				}
+				
+ ;
+				return (_result_void){0};
+			}
+		}
+		if ((array_of_tables)._typ != 286 /* []toml.ast.Value */) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" nested array of tables \""), 0xfe10, {.d_s = toml__parser__DottedKey_str(p->last_aot)}}, {_S("\" expected an array but got \""), 0xfe10, {.d_s = builtin__charptr_vstring_literal(v_typeof_sumtype_toml__ast__Value( ((*(toml__ast__Value*)builtin__map_get((table), &(string[]){toml__parser__DottedKey_str(p->last_aot)}, &(toml__ast__Value[]){ (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293} })))._typ ))}}, {_S("\". Re-definition is not allowed. (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		t_arr = &(*(Array_toml__ast__Value*)builtin____as_cast((array_of_tables)._Array_toml__ast__Value,(array_of_tables)._typ, 286));
+		t_map = Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Map_string_toml__ast__Value, (builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		)), false);
+		if (p->last_aot_index < t_arr->len) {
+			t_map = (*(toml__ast__Value*)builtin__array_get(*t_arr, p->last_aot_index));
+		}
+		if ((t_map)._typ != 287 /* map[string]toml.ast.Value */) {
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" expected a table but got \""), 0xfe10, {.d_s = builtin__charptr_vstring_literal(v_typeof_sumtype_toml__ast__Value( (t_map)._typ ))}}, {_S("\". (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		Map_string_toml__ast__Value* t = &(*(Map_string_toml__ast__Value*)builtin____as_cast((t_map)._Map_string_toml__ast__Value,(t_map)._typ, 287));
+		toml__ast__Value* _t24 = (toml__ast__Value*)(builtin__map_get_check((t), &(string[]){toml__parser__DottedKey_str(last)}));
+		_option_toml__ast__Value _t23 = {0};
+		if (_t24) {
+			*((toml__ast__Value*)&_t23.data) = *((toml__ast__Value*)_t24);
+		} else {
+			_t23.state = 2; _t23.err = builtin___v_error(_S("map key does not exist"));
+		}
+		
+		if (_t23.state == 0) {
+			toml__ast__Value val = (*(toml__ast__Value*)_t23.data);
+			if ((val)._typ == 286 /* []toml.ast.Value */) {
+				Array_toml__ast__Value* arr = &(*val._Array_toml__ast__Value);
+				_result_Array_toml__ast__Value _t26 = toml__parser__Parser_double_array_of_tables_contents(p, dotted_key);
+				if (_t26.is_error) {
+					_result_void _t27 = {0};
+					_t27.is_error = true;
+					_t27.err = _t26.err;
+					return _t27;
+				}
+				
+ 				_PUSH_MANY(arr, ((*(Array_toml__ast__Value*)_t26.data)), _t25, Array_toml__ast__Value);
+				builtin__map_set(t, &(string[]){toml__parser__DottedKey_str(last)}, &(toml__ast__Value[]) { Array_toml__ast__Value_to_sumtype_toml__ast__Value(arr, false) });
+			} else {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" t["), 0xfe10, {.d_s = toml__parser__DottedKey_str(last)}}, {_S("] is not an array. (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		} else {
+			_result_Array_toml__ast__Value _t29 = toml__parser__Parser_double_array_of_tables_contents(p, dotted_key);
+			if (_t29.is_error) {
+				_result_void _t30 = {0};
+				_t30.is_error = true;
+				_t30.err = _t29.err;
+				return _t30;
+			}
+			
+ 			builtin__map_set(t, &(string[]){toml__parser__DottedKey_str(last)}, &(toml__ast__Value[]) { Array_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Array_toml__ast__Value, ((*(Array_toml__ast__Value*)_t29.data))), false) });
+		}
+		if (t_arr->len == 0) {
+			builtin__array_push((array*)t_arr, _MOV((toml__ast__Value[]){ Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(t, false) }));
+			p->last_aot_index = (int)(t_arr->len - 1);
+		}
+	}
+	return (_result_void){0};
+}
+_result_Array_toml__ast__Value toml__parser__Parser_double_array_of_tables_contents(toml__parser__Parser* p, toml__parser__DottedKey target_key) {
+	;
+	Map_string_toml__ast__Value tbl = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	toml__parser__DottedKey implicit_allocation_key = ((builtin____new_array_with_default(0, 0, sizeof(string), 0)));
+	int peeked_over = 0;
+	toml__token__Token peek_tok = p->peek_tok;
+	for (;;) {
+		if (!(p->tok.kind != toml__token__Kind__eof)) break;
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			_result_Array_toml__ast__Value _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+		;
+		toml__parser__Parser_ignore_while(p, _const_toml__parser__all_formatting);
+		_result_multi_return_toml__token__Token_int _t3 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+		if (_t3.is_error) {
+			_result_Array_toml__ast__Value _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ 		multi_return_toml__token__Token_int mr_38424 = (*(multi_return_toml__token__Token_int*)_t3.data);
+		peek_tok = mr_38424.arg0;
+		peeked_over = mr_38424.arg1;
+		if (peek_tok.kind == toml__token__Kind__lsbr) {
+			_result_multi_return_toml__token__Token_int _t5 = toml__parser__Parser_peek_over(p, (int)(peeked_over + 1), _const_toml__parser__space_formatting);
+			if (_t5.is_error) {
+				_result_Array_toml__ast__Value _t6 = {0};
+				_t6.is_error = true;
+				_t6.err = _t5.err;
+				return _t6;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_38548 = (*(multi_return_toml__token__Token_int*)_t5.data);
+			peek_tok = mr_38548.arg0;
+			peeked_over = mr_38548.arg1;
+			if (peek_tok.kind == toml__token__Kind__lsbr) {
+				Array_toml__ast__Value arr = builtin____new_array_with_default(0, 0, sizeof(toml__ast__Value), 0);
+				builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&tbl, false) }));
+				_result_Array_toml__ast__Value _t8;
+				builtin___result_ok(&(Array_toml__ast__Value[]) { arr }, (_result*)(&_t8), sizeof(Array_toml__ast__Value));
+				 
+				return _t8;
+			}
+		}
+
+		if (p->tok.kind == (toml__token__Kind__bare) || p->tok.kind == (toml__token__Kind__quoted) || p->tok.kind == (toml__token__Kind__number) || p->tok.kind == (toml__token__Kind__minus) || p->tok.kind == (toml__token__Kind__underscore)) {
+			_result_multi_return_toml__token__Token_int _t9 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+			if (_t9.is_error) {
+				_result_Array_toml__ast__Value _t10 = {0};
+				_t10.is_error = true;
+				_t10.err = _t9.err;
+				return _t10;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_38861 = (*(multi_return_toml__token__Token_int*)_t9.data);
+			peek_tok = mr_38861.arg0;
+			if (peek_tok.kind == toml__token__Kind__period) {
+				_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t11 = toml__parser__Parser_dotted_key_value(p);
+				if (_t11.is_error) {
+					_result_Array_toml__ast__Value _t12 = {0};
+					_t12.is_error = true;
+					_t12.err = _t11.err;
+					return _t12;
+				}
+				
+ 				multi_return_toml__parser__DottedKey_toml__ast__Value mr_38957 = (*(multi_return_toml__parser__DottedKey_toml__ast__Value*)_t11.data);
+				toml__parser__DottedKey dotted_key = mr_38957.arg0;
+				toml__ast__Value val = mr_38957.arg1;
+				if (implicit_allocation_key.len > 0) {
+					builtin__array_insert_many(&dotted_key, 0, implicit_allocation_key.data, implicit_allocation_key.len);
+				}
+				multi_return_toml__parser__DottedKey_toml__parser__DottedKey mr_39104 = toml__parser__Parser_sub_table_key(p, dotted_key);
+				toml__parser__DottedKey sub_table = mr_39104.arg0;
+				toml__parser__DottedKey key = mr_39104.arg1;
+				_result_Map_string_toml__ast__Value_ptr _t13 = toml__parser__Parser_find_in_table(p, (voidptr)&tbl, sub_table);
+				if (_t13.is_error) {
+					_result_Array_toml__ast__Value _t14 = {0};
+					_t14.is_error = true;
+					_t14.err = _t13.err;
+					return _t14;
+				}
+				
+ 				Map_string_toml__ast__Value* t = (*(Map_string_toml__ast__Value**)_t13.data);
+				{ // Unsafe block
+					;
+					builtin__map_set(t, &(string[]){toml__parser__DottedKey_str(key)}, &(toml__ast__Value[]) { val });
+				}
+			} else {
+				_result_multi_return_toml__ast__Key_toml__ast__Value _t15 = toml__parser__Parser_key_value(p);
+				if (_t15.is_error) {
+					_result_Array_toml__ast__Value _t16 = {0};
+					_t16.is_error = true;
+					_t16.err = _t15.err;
+					return _t16;
+				}
+				
+ 				multi_return_toml__ast__Key_toml__ast__Value mr_39367 = (*(multi_return_toml__ast__Key_toml__ast__Value*)_t15.data);
+				toml__ast__Key key = mr_39367.arg0;
+				toml__ast__Value val = mr_39367.arg1;
+				Map_string_toml__ast__Value* t = &tbl;
+				if (implicit_allocation_key.len > 0) {
+					_result_Map_string_toml__ast__Value_ptr _t17 = toml__parser__Parser_find_in_table(p, (voidptr)&tbl, implicit_allocation_key);
+					if (_t17.is_error) {
+						_result_Array_toml__ast__Value _t18 = {0};
+						_t18.is_error = true;
+						_t18.err = _t17.err;
+						return _t18;
+					}
+					
+ 					t = (*(Map_string_toml__ast__Value**)_t17.data);
+				}
+				{ // Unsafe block
+					;
+					builtin__map_set(t, &(string[]){toml__ast__Key_str(key)}, &(toml__ast__Value[]) { val });
+				}
+			}
+		}
+		else if (p->tok.kind == (toml__token__Kind__lsbr)) {
+			_result_void _t19 = toml__parser__Parser_check(p, toml__token__Kind__lsbr);
+			if (_t19.is_error) {
+				_result_Array_toml__ast__Value _t20 = {0};
+				_t20.is_error = true;
+				_t20.err = _t19.err;
+				return _t20;
+			}
+			
+ ;
+			peek_tok = p->peek_tok;
+			toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+			_result_multi_return_toml__token__Token_int _t21 = toml__parser__Parser_peek_over(p, 1, _const_toml__parser__space_formatting);
+			if (_t21.is_error) {
+				_result_Array_toml__ast__Value _t22 = {0};
+				_t22.is_error = true;
+				_t22.err = _t21.err;
+				return _t22;
+			}
+			
+ 			multi_return_toml__token__Token_int mr_39917 = (*(multi_return_toml__token__Token_int*)_t21.data);
+			peek_tok = mr_39917.arg0;
+			if (peek_tok.kind == toml__token__Kind__period) {
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				_result_toml__parser__DottedKey _t23 = toml__parser__Parser_dotted_key(p);
+				if (_t23.is_error) {
+					_result_Array_toml__ast__Value _t24 = {0};
+					_t24.is_error = true;
+					_t24.err = _t23.err;
+					return _t24;
+				}
+				
+ 				toml__parser__DottedKey dotted_key = (*(toml__parser__DottedKey*)_t23.data);
+				implicit_allocation_key = dotted_key;
+				if (dotted_key.len > 2) {
+					implicit_allocation_key = builtin__array_slice(dotted_key, 2, 2147483647);
+				}
+				toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+				;
+				_result_void _t25 = toml__parser__Parser_expect(p, toml__token__Kind__rsbr);
+				if (_t25.is_error) {
+					_result_Array_toml__ast__Value _t26 = {0};
+					_t26.is_error = true;
+					_t26.err = _t25.err;
+					return _t26;
+				}
+				
+ ;
+				_result_void _t27 = toml__parser__Parser_peek_for_correct_line_ending_or_fail(p);
+				if (_t27.is_error) {
+					_result_Array_toml__ast__Value _t28 = {0};
+					_t28.is_error = true;
+					_t28.err = _t27.err;
+					return _t28;
+				}
+				
+ ;
+				builtin__array_push((array*)&p->explicit_declared, &dotted_key);
+				continue;
+			} else {
+				return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("double_array_of_tables_contents")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" could not parse \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+		}
+		else {
+			break;
+		}
+	}
+	Array_toml__ast__Value arr = builtin____new_array_with_default(0, 0, sizeof(toml__ast__Value), 0);
+	builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&tbl, false) }));
+	;
+	_result_Array_toml__ast__Value _t32;
+	builtin___result_ok(&(Array_toml__ast__Value[]) { arr }, (_result*)(&_t32), sizeof(Array_toml__ast__Value));
+	 
+	return _t32;
+}
+_result_Array_toml__ast__Value toml__parser__Parser_array(toml__parser__Parser* p) {
+	;
+	Array_toml__ast__Value arr = builtin____new_array_with_default(0, 0, sizeof(toml__ast__Value), 0);
+	_result_void _t1 = toml__parser__Parser_expect(p, toml__token__Kind__lsbr);
+	if (_t1.is_error) {
+		_result_Array_toml__ast__Value _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	bool previous_token_was_value = false;
+	for (;;) {
+		if (!(p->tok.kind != toml__token__Kind__eof)) break;
+		_result_void _t3 = toml__parser__Parser_next(p);
+		if (_t3.is_error) {
+			_result_Array_toml__ast__Value _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		;
+		if (previous_token_was_value) {
+			toml__parser__Parser_ignore_while(p, _const_toml__parser__all_formatting);
+			if (p->tok.kind != toml__token__Kind__rsbr && p->tok.kind != toml__token__Kind__hash) {
+				_result_void _t5 = toml__parser__Parser_expect(p, toml__token__Kind__comma);
+				if (_t5.is_error) {
+					_result_Array_toml__ast__Value _t6 = {0};
+					_t6.is_error = true;
+					_t6.err = _t5.err;
+					return _t6;
+				}
+				
+ ;
+			}
+			previous_token_was_value = false;
+		} else {
+			if (p->tok.kind == toml__token__Kind__comma) {
+				toml__parser__Parser_ignore_while_peek(p, _const_toml__parser__space_formatting);
+				if (p->peek_tok.kind == toml__token__Kind__rsbr) {
+					return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("array")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected empty value in array \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+				}
+			}
+		}
+		toml__parser__Parser_ignore_while(p, _const_toml__parser__all_formatting);
+
+		if (p->tok.kind == (toml__token__Kind__boolean)) {
+			_result_toml__ast__Bool _t9 = toml__parser__Parser_boolean(p);
+			if (_t9.is_error) {
+				_result_Array_toml__ast__Value _t10 = {0};
+				_t10.is_error = true;
+				_t10.err = _t9.err;
+				return _t10;
+			}
+			
+ 			builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ toml__ast__Bool_to_sumtype_toml__ast__Value(ADDR(toml__ast__Bool, ((*(toml__ast__Bool*)_t9.data))), false) }));
+			previous_token_was_value = true;
+		}
+		else if (p->tok.kind == (toml__token__Kind__comma)) {
+			toml__parser__Parser_ignore_while_peek(p, _const_toml__parser__space_formatting);
+			if (p->peek_tok.kind == toml__token__Kind__comma || p->peek_tok.kind == toml__token__Kind__bare) {
+				_result_void _t11 = toml__parser__Parser_next(p);
+				if (_t11.is_error) {
+					_result_Array_toml__ast__Value _t12 = {0};
+					_t12.is_error = true;
+					_t12.err = _t11.err;
+					return _t12;
+				}
+				
+ ;
+				return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("array")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" at this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+			;
+			continue;
+		}
+		else if (p->tok.kind == (toml__token__Kind__eof)) {
+			return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("array")), builtin__str_intp(5, _MOV((StrIntpData[]){{_S(" could not parse array. Reached EOF \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" (\""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\") in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		else if (p->tok.kind == (toml__token__Kind__hash)) {
+			toml__ast__Comment c = toml__parser__Parser_comment(p);
+			builtin__array_push((array*)&p->ast_root->comments, _MOV((toml__ast__Comment[]){ c }));
+			;
+		}
+		else if (p->tok.kind == (toml__token__Kind__lcbr)) {
+			toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+			Map_string_toml__ast__Value t = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+			;
+			_result_void _t16 = toml__parser__Parser_inline_table(p, (voidptr)&t);
+			if (_t16.is_error) {
+				_result_Array_toml__ast__Value _t17 = {0};
+				_t17.is_error = true;
+				_t17.err = _t16.err;
+				return _t17;
+			}
+			
+ ;
+			builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&t, false) }));
+			previous_token_was_value = true;
+		}
+		else if (p->tok.kind == (toml__token__Kind__number)) {
+			_result_toml__ast__Value _t19 = toml__parser__Parser_number_or_date(p);
+			if (_t19.is_error) {
+				_result_Array_toml__ast__Value _t20 = {0};
+				_t20.is_error = true;
+				_t20.err = _t19.err;
+				return _t20;
+			}
+			
+ 			toml__ast__Value val = (*(toml__ast__Value*)_t19.data);
+			builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ val }));
+			previous_token_was_value = true;
+		}
+		else if (p->tok.kind == (toml__token__Kind__quoted)) {
+			builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ toml__ast__Quoted_to_sumtype_toml__ast__Value(ADDR(toml__ast__Quoted, (toml__parser__Parser_quoted(p))), false) }));
+			previous_token_was_value = true;
+		}
+		else if (p->tok.kind == (toml__token__Kind__lsbr)) {
+			;
+			_result_Array_toml__ast__Value _t24 = toml__parser__Parser_array(p);
+			if (_t24.is_error) {
+				_result_Array_toml__ast__Value _t25 = {0};
+				_t25.is_error = true;
+				_t25.err = _t24.err;
+				return _t25;
+			}
+			
+ 			builtin__array_push((array*)&arr, _MOV((toml__ast__Value[]){ Array_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Array_toml__ast__Value, ((*(Array_toml__ast__Value*)_t24.data))), false) }));
+			previous_token_was_value = true;
+		}
+		else if (p->tok.kind == (toml__token__Kind__rsbr)) {
+			break;
+		}
+		else if (p->tok.kind == (toml__token__Kind__bare)) {
+			return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("array")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" unexpected value \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\". Array values should be quoted (with \" or \') in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+		else {
+			return (_result_Array_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("array")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" unexpected token \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	_result_void _t28 = toml__parser__Parser_expect(p, toml__token__Kind__rsbr);
+	if (_t28.is_error) {
+		_result_Array_toml__ast__Value _t29 = {0};
+		_t29.is_error = true;
+		_t29.err = _t28.err;
+		return _t29;
+	}
+	
+ ;
+	_result_Array_toml__ast__Value _t30;
+	builtin___result_ok(&(Array_toml__ast__Value[]) { arr }, (_result*)(&_t30), sizeof(Array_toml__ast__Value));
+	 
+	return _t30;
+}
+toml__ast__Comment toml__parser__Parser_comment(toml__parser__Parser* p) {
+	;
+	return ((toml__ast__Comment){.text = p->tok.lit,.pos = toml__token__Token_pos(&p->tok),});
+}
+_result_toml__ast__Key toml__parser__Parser_key(toml__parser__Parser* p) {
+	;
+	toml__ast__Key key = toml__ast__Null_to_sumtype_toml__ast__Key(ADDR(toml__ast__Null, (((toml__ast__Null){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+	if (p->tok.kind == toml__token__Kind__number) {
+		if (p->peek_tok.kind == toml__token__Kind__minus) {
+			string lits = p->tok.lit;
+			toml__token__Pos pos = toml__token__Token_pos(&p->tok);
+			for (;;) {
+				if (!(p->peek_tok.kind != toml__token__Kind__assign && p->peek_tok.kind != toml__token__Kind__period && p->peek_tok.kind != toml__token__Kind__rsbr)) break;
+				_result_void _t1 = toml__parser__Parser_next(p);
+				if (_t1.is_error) {
+					_result_toml__ast__Key _t2 = {0};
+					_t2.is_error = true;
+					_t2.err = _t1.err;
+					return _t2;
+				}
+				
+ ;
+				if (!(Array_toml__token__Kind_contains(_const_toml__parser__space_formatting, p->tok.kind))) {
+					lits = builtin__string__plus(lits, p->tok.lit);
+				}
+			}
+			_result_toml__ast__Key _t3;
+			builtin___result_ok(&(toml__ast__Key[]) { toml__ast__Bare_to_sumtype_toml__ast__Key(ADDR(toml__ast__Bare, (((toml__ast__Bare){.text = lits,.pos = pos,}))), false) }, (_result*)(&_t3), sizeof(toml__ast__Key));
+			 
+			return _t3;
+		}
+		toml__ast__Number num = toml__parser__Parser_number(p);
+		if (p->peek_tok.kind == toml__token__Kind__bare || p->peek_tok.kind == toml__token__Kind__underscore || p->peek_tok.kind == toml__token__Kind__minus) {
+			_result_toml__ast__Bare _t4 = toml__parser__Parser_bare(p);
+			if (_t4.is_error) {
+				_result_toml__ast__Key _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ 			toml__ast__Bare bare = (*(toml__ast__Bare*)_t4.data);
+			_result_toml__ast__Key _t6;
+			builtin___result_ok(&(toml__ast__Key[]) { toml__ast__Bare_to_sumtype_toml__ast__Key(&bare, false) }, (_result*)(&_t6), sizeof(toml__ast__Key));
+			 
+			return _t6;
+		}
+		key = toml__ast__Number_to_sumtype_toml__ast__Key(&num, false);
+	} else {
+		toml__ast__Key _t7 = (toml__ast__Key){._toml__ast__Bare=HEAP(toml__ast__Bare, ((toml__ast__Bare){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=455};
+		
+		if (p->tok.kind == (toml__token__Kind__bare) || p->tok.kind == (toml__token__Kind__underscore) || p->tok.kind == (toml__token__Kind__minus)) {
+			_result_toml__ast__Bare _t8 = toml__parser__Parser_bare(p);
+			if (_t8.is_error) {
+				_result_toml__ast__Key _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			_t7 = toml__ast__Bare_to_sumtype_toml__ast__Key(ADDR(toml__ast__Bare, ((*(toml__ast__Bare*)_t8.data))), false);
+		}
+		else if (p->tok.kind == (toml__token__Kind__boolean)) {
+			_result_toml__ast__Bool _t10 = toml__parser__Parser_boolean(p);
+			if (_t10.is_error) {
+				_result_toml__ast__Key _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ 			_t7 = toml__ast__Bool_to_sumtype_toml__ast__Key(ADDR(toml__ast__Bool, ((*(toml__ast__Bool*)_t10.data))), false);
+		}
+		else if (p->tok.kind == (toml__token__Kind__quoted)) {
+			_t7 = toml__ast__Quoted_to_sumtype_toml__ast__Key(ADDR(toml__ast__Quoted, (toml__parser__Parser_quoted(p))), false);
+		}
+		else {
+			_t7 = toml__ast__Null_to_sumtype_toml__ast__Key(ADDR(toml__ast__Null, (((toml__ast__Null){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+		}key = _t7;
+	}
+	if ((key)._typ == 285 /* toml.ast.Null */) {
+		return (_result_toml__ast__Key){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("key")), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" key expected .bare, .underscore, .number, .quoted or .boolean but got \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if ((key)._typ == 291 /* toml.ast.Quoted */) {
+		if (p->config.run_checks) {
+			toml__ast__Quoted quoted = *(toml__ast__Quoted*)builtin____as_cast((key)._toml__ast__Quoted,(key)._typ, 291);
+			if (quoted.is_multiline) {
+				return (_result_toml__ast__Key){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("key")), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" multiline string as key is not allowed. (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+			}
+			toml__checker__Checker chckr = ((toml__checker__Checker){.scanner = p->scanner,});
+			_result_void _t14 = toml__checker__Checker_check_quoted(&chckr, quoted);
+			if (_t14.is_error) {
+				_result_toml__ast__Key _t15 = {0};
+				_t15.is_error = true;
+				_t15.err = _t14.err;
+				return _t15;
+			}
+			
+ ;
+		}
+		if (p->config.decode_values) {
+			toml__ast__Quoted quoted = *(toml__ast__Quoted*)builtin____as_cast((key)._toml__ast__Quoted,(key)._typ, 291);
+			_result_void _t16 = toml__decoder__decode_quoted_escapes((voidptr)&quoted);
+			if (_t16.is_error) {
+				_result_toml__ast__Key _t17 = {0};
+				_t17.is_error = true;
+				_t17.err = _t16.err;
+				return _t17;
+			}
+			
+ ;
+			key = toml__ast__Quoted_to_sumtype_toml__ast__Key(&quoted, false);
+		}
+	}
+	_result_toml__ast__Key _t18;
+	builtin___result_ok(&(toml__ast__Key[]) { key }, (_result*)(&_t18), sizeof(toml__ast__Key));
+	 
+	return _t18;
+}
+_result_multi_return_toml__ast__Key_toml__ast__Value toml__parser__Parser_key_value(toml__parser__Parser* p) {
+	;
+	_result_toml__ast__Key _t1 = toml__parser__Parser_key(p);
+	if (_t1.is_error) {
+		_result_multi_return_toml__ast__Key_toml__ast__Value _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__ast__Key key = (*(toml__ast__Key*)_t1.data);
+	toml__parser__DottedKey dotted_key = ((builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){toml__ast__Key_str(key)}))));
+	builtin__array_push((array*)&p->explicit_declared, _MOV((toml__parser__DottedKey[]){ toml__parser__Parser_build_abs_dotted_key(p, dotted_key) }));
+	_result_void _t4 = toml__parser__Parser_next(p);
+	if (_t4.is_error) {
+		_result_multi_return_toml__ast__Key_toml__ast__Value _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_void _t6 = toml__parser__Parser_check(p, toml__token__Kind__assign);
+	if (_t6.is_error) {
+		_result_multi_return_toml__ast__Key_toml__ast__Value _t7 = {0};
+		_t7.is_error = true;
+		_t7.err = _t6.err;
+		return _t7;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_toml__ast__Value _t8 = toml__parser__Parser_value(p);
+	if (_t8.is_error) {
+		_result_multi_return_toml__ast__Key_toml__ast__Value _t9 = {0};
+		_t9.is_error = true;
+		_t9.err = _t8.err;
+		return _t9;
+	}
+	
+ 	toml__ast__Value value = (*(toml__ast__Value*)_t8.data);
+	if (p->value_is_immutable) {
+		if (!Array_toml__parser__DottedKey_has(p->immutable, dotted_key)) {
+			builtin__array_push((array*)&p->immutable, _MOV((toml__parser__DottedKey[]){ toml__parser__Parser_build_abs_dotted_key(p, dotted_key) }));
+		}
+		p->value_is_immutable = false;
+	}
+	;
+	_result_multi_return_toml__ast__Key_toml__ast__Value _t11;
+	builtin___result_ok(&(multi_return_toml__ast__Key_toml__ast__Value[]) { (multi_return_toml__ast__Key_toml__ast__Value){.arg0=key, .arg1=value} }, (_result*)(&_t11), sizeof(multi_return_toml__ast__Key_toml__ast__Value));
+	return _t11;
+}
+_result_multi_return_toml__parser__DottedKey_toml__ast__Value toml__parser__Parser_dotted_key_value(toml__parser__Parser* p) {
+	;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_toml__parser__DottedKey _t1 = toml__parser__Parser_dotted_key(p);
+	if (_t1.is_error) {
+		_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__parser__DottedKey dotted_key = (*(toml__parser__DottedKey*)_t1.data);
+	builtin__array_push((array*)&p->explicit_declared, _MOV((toml__parser__DottedKey[]){ toml__parser__Parser_build_abs_dotted_key(p, dotted_key) }));
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_void _t4 = toml__parser__Parser_check(p, toml__token__Kind__assign);
+	if (_t4.is_error) {
+		_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+	_result_toml__ast__Value _t6 = toml__parser__Parser_value(p);
+	if (_t6.is_error) {
+		_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t7 = {0};
+		_t7.is_error = true;
+		_t7.err = _t6.err;
+		return _t7;
+	}
+	
+ 	toml__ast__Value value = (*(toml__ast__Value*)_t6.data);
+	if (p->value_is_immutable) {
+		if (!Array_toml__parser__DottedKey_has(p->immutable, dotted_key)) {
+			builtin__array_push((array*)&p->immutable, _MOV((toml__parser__DottedKey[]){ toml__parser__Parser_build_abs_dotted_key(p, dotted_key) }));
+		}
+		p->value_is_immutable = false;
+	}
+	;
+	_result_multi_return_toml__parser__DottedKey_toml__ast__Value _t9;
+	builtin___result_ok(&(multi_return_toml__parser__DottedKey_toml__ast__Value[]) { (multi_return_toml__parser__DottedKey_toml__ast__Value){.arg0=dotted_key, .arg1=value} }, (_result*)(&_t9), sizeof(multi_return_toml__parser__DottedKey_toml__ast__Value));
+	return _t9;
+}
+_result_toml__ast__Value toml__parser__Parser_value(toml__parser__Parser* p) {
+	;
+	toml__ast__Value value = toml__ast__Null_to_sumtype_toml__ast__Value(ADDR(toml__ast__Null, (((toml__ast__Null){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+	if (p->tok.kind == toml__token__Kind__number) {
+		_result_toml__ast__Value _t1 = toml__parser__Parser_number_or_date(p);
+		if (_t1.is_error) {
+			_result_toml__ast__Value _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		toml__ast__Value number_or_date = (*(toml__ast__Value*)_t1.data);
+		value = number_or_date;
+	} else {
+		toml__ast__Value _t3 = (toml__ast__Value){._toml__ast__Bool=HEAP(toml__ast__Bool, ((toml__ast__Bool){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = (toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,},})),._typ=293};
+		
+		if (p->tok.kind == (toml__token__Kind__quoted)) {
+			_t3 = toml__ast__Quoted_to_sumtype_toml__ast__Value(ADDR(toml__ast__Quoted, (toml__parser__Parser_quoted(p))), false);
+		}
+		else if (p->tok.kind == (toml__token__Kind__boolean)) {
+			_result_toml__ast__Bool _t4 = toml__parser__Parser_boolean(p);
+			if (_t4.is_error) {
+				_result_toml__ast__Value _t5 = {0};
+				_t5.is_error = true;
+				_t5.err = _t4.err;
+				return _t5;
+			}
+			
+ 			_t3 = toml__ast__Bool_to_sumtype_toml__ast__Value(ADDR(toml__ast__Bool, ((*(toml__ast__Bool*)_t4.data))), false);
+		}
+		else if (p->tok.kind == (toml__token__Kind__lsbr)) {
+			_result_Array_toml__ast__Value _t6 = toml__parser__Parser_array(p);
+			if (_t6.is_error) {
+				_result_toml__ast__Value _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ 			_t3 = Array_toml__ast__Value_to_sumtype_toml__ast__Value(ADDR(Array_toml__ast__Value, ((*(Array_toml__ast__Value*)_t6.data))), false);
+		}
+		else if (p->tok.kind == (toml__token__Kind__lcbr)) {
+			toml__parser__Parser_ignore_while(p, _const_toml__parser__space_formatting);
+			Map_string_toml__ast__Value t = builtin__new_map(sizeof(string), sizeof(toml__ast__Value), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+			;
+			_result_void _t8 = toml__parser__Parser_inline_table(p, (voidptr)&t);
+			if (_t8.is_error) {
+				_result_toml__ast__Value _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ ;
+			_t3 = Map_string_toml__ast__Value_to_sumtype_toml__ast__Value(&t, false);
+		}
+		else {
+			_t3 = toml__ast__Null_to_sumtype_toml__ast__Value(ADDR(toml__ast__Null, (((toml__ast__Null){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+		}value = _t3;
+		if ((value)._typ == 285 /* toml.ast.Null */) {
+			return (_result_toml__ast__Value){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("value")), builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" value expected .boolean, .quoted, .lsbr, .lcbr or .number got \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\" \""), 0xfe10, {.d_s = p->tok.lit}}, {_S("\" in this (excerpt): \"..."), 0xfe10, {.d_s = toml__parser__Parser_excerpt(p)}}, {_S("...\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+		}
+	}
+	;
+	_result_toml__ast__Value _t11;
+	builtin___result_ok(&(toml__ast__Value[]) { value }, (_result*)(&_t11), sizeof(toml__ast__Value));
+	 
+	return _t11;
+}
+_result_toml__ast__Value toml__parser__Parser_number_or_date(toml__parser__Parser* p) {
+	if (p->peek_tok.kind == toml__token__Kind__minus || p->peek_tok.kind == toml__token__Kind__colon) {
+		_result_toml__ast__DateTimeType _t1 = toml__parser__Parser_date_time(p);
+		if (_t1.is_error) {
+			_result_toml__ast__Value _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		toml__ast__DateTimeType date_time_type = (*(toml__ast__DateTimeType*)_t1.data);
+		if (date_time_type._typ == 288 /* toml.ast.Date */) {
+			_result_toml__ast__Value _t3;
+			builtin___result_ok(&(toml__ast__Value[]) { toml__ast__Date_to_sumtype_toml__ast__Value(&(*date_time_type._toml__ast__Date), false) }, (_result*)(&_t3), sizeof(toml__ast__Value));
+			 
+			return _t3;
+		}
+		else if (date_time_type._typ == 289 /* toml.ast.Time */) {
+			_result_toml__ast__Value _t4;
+			builtin___result_ok(&(toml__ast__Value[]) { toml__ast__Time_to_sumtype_toml__ast__Value(&(*date_time_type._toml__ast__Time), false) }, (_result*)(&_t4), sizeof(toml__ast__Value));
+			 
+			return _t4;
+		}
+		else if (date_time_type._typ == 290 /* toml.ast.DateTime */) {
+			_result_toml__ast__Value _t5;
+			builtin___result_ok(&(toml__ast__Value[]) { toml__ast__DateTime_to_sumtype_toml__ast__Value(&(*date_time_type._toml__ast__DateTime), false) }, (_result*)(&_t5), sizeof(toml__ast__Value));
+			 
+			return _t5;
+		}
+		
+	}
+	_result_toml__ast__Value _t6;
+	builtin___result_ok(&(toml__ast__Value[]) { toml__ast__Number_to_sumtype_toml__ast__Value(ADDR(toml__ast__Number, (toml__parser__Parser_number(p))), false) }, (_result*)(&_t6), sizeof(toml__ast__Value));
+	 
+	return _t6;
+}
+_result_toml__ast__Bare toml__parser__Parser_bare(toml__parser__Parser* p) {
+	string lits = p->tok.lit;
+	toml__token__Pos pos = toml__token__Token_pos(&p->tok);
+	for (;;) {
+		if (!(p->peek_tok.kind != toml__token__Kind__assign && p->peek_tok.kind != toml__token__Kind__period && p->peek_tok.kind != toml__token__Kind__rsbr && !(Array_toml__token__Kind_contains(_const_toml__parser__space_formatting, p->peek_tok.kind)))) break;
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			_result_toml__ast__Bare _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+		if (p->tok.kind == toml__token__Kind__bare || p->tok.kind == toml__token__Kind__minus || p->tok.kind == toml__token__Kind__underscore) {
+			lits = builtin__string__plus(lits, p->tok.lit);
+			continue;
+		}
+		return (_result_toml__ast__Bare){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("bare")), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" bare key expected .bare, .minus, or .underscore but got \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	_result_toml__ast__Bare _t4;
+	builtin___result_ok(&(toml__ast__Bare[]) { ((toml__ast__Bare){.text = lits,.pos = pos,}) }, (_result*)(&_t4), sizeof(toml__ast__Bare));
+	 
+	return _t4;
+}
+toml__ast__Quoted toml__parser__Parser_quoted(toml__parser__Parser* p) {
+	u8 quote = builtin__string_at(p->tok.lit, 0);
+	bool is_multiline = p->tok.lit.len >= 6 && builtin__string_at(p->tok.lit, 1) == quote && builtin__string_at(p->tok.lit, 2) == quote;
+	string lit = builtin__string_substr(p->tok.lit, 1, (int)(p->tok.lit.len - 1));
+	if (is_multiline) {
+		lit = builtin__string_substr(p->tok.lit, 3, (int)(p->tok.lit.len - 3));
+		if (lit.len > 0 && builtin__string_at(lit, 0) == '\n') {
+			lit = builtin__string_substr(lit, 1, 2147483647);
+		}
+	}
+	return ((toml__ast__Quoted){.text = lit,.pos = toml__token__Token_pos(&p->tok),.is_multiline = is_multiline,.quote = quote,});
+}
+_result_toml__ast__Bool toml__parser__Parser_boolean(toml__parser__Parser* p) {
+	if (!(builtin__fast_string_eq(p->tok.lit, _S("true")) || builtin__fast_string_eq(p->tok.lit, _S("false")))) {
+		return (_result_toml__ast__Bool){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("boolean")), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" expected literal to be either `true` or `false` got \""), 0xfe10, {.d_s = toml__token__Kind_str(p->tok.kind)}}, {_S("\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	_result_toml__ast__Bool _t2;
+	builtin___result_ok(&(toml__ast__Bool[]) { ((toml__ast__Bool){.text = p->tok.lit,.pos = toml__token__Token_pos(&p->tok),}) }, (_result*)(&_t2), sizeof(toml__ast__Bool));
+	 
+	return _t2;
+}
+toml__ast__Number toml__parser__Parser_number(toml__parser__Parser* p) {
+	return ((toml__ast__Number){.pos = toml__token__Token_pos(&p->tok),.text = p->tok.lit,});
+}
+_result_toml__ast__DateTimeType toml__parser__Parser_date_time(toml__parser__Parser* p) {
+	string lit = _S("");
+	toml__token__Pos pos = toml__token__Token_pos(&p->tok);
+	toml__ast__Date date = ((toml__ast__Date){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),});
+	toml__ast__Time time = ((toml__ast__Time){.text = (string){.str=(byteptr)"", .is_lit=1},.offset = 0,.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),});
+	if (p->peek_tok.kind == toml__token__Kind__minus) {
+		_result_toml__ast__Date _t1 = toml__parser__Parser_date(p);
+		if (_t1.is_error) {
+			_result_toml__ast__DateTimeType _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		date = (*(toml__ast__Date*)_t1.data);
+		lit = builtin__string__plus(lit, date.text);
+		if ((p->peek_tok.kind == toml__token__Kind__bare && (builtin__string_starts_with(p->peek_tok.lit, _S("T")) || builtin__string_starts_with(p->peek_tok.lit, _S("t")))) || p->peek_tok.kind == toml__token__Kind__whitespace) {
+			_result_void _t3 = toml__parser__Parser_next(p);
+			if (_t3.is_error) {
+				_result_toml__ast__DateTimeType _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ ;
+			if (builtin__string_starts_with(p->tok.lit, _S("T")) || builtin__string_starts_with(p->tok.lit, _S("t"))) {
+				lit = builtin__string__plus(lit, builtin__u8_ascii_str(builtin__string_at(p->tok.lit, 0)));
+			} else {
+				_result_toml__token__Token _t5 = toml__parser__Parser_peek(p, 0);
+				if (_t5.is_error) {
+					_result_toml__ast__DateTimeType _t6 = {0};
+					_t6.is_error = true;
+					_t6.err = _t5.err;
+					return _t6;
+				}
+				
+ 				toml__token__Token peek = (*(toml__token__Token*)_t5.data);
+				if (peek.kind != toml__token__Kind__number) {
+					_result_toml__ast__DateTimeType _t7;
+					builtin___result_ok(&(toml__ast__DateTimeType[]) { toml__ast__Date_to_sumtype_toml__ast__DateTimeType(ADDR(toml__ast__Date, (((toml__ast__Date){.text = lit,.pos = pos,}))), false) }, (_result*)(&_t7), sizeof(toml__ast__DateTimeType));
+					 
+					return _t7;
+				}
+				lit = builtin__string__plus(lit, p->tok.lit);
+				_result_void _t8 = toml__parser__Parser_next(p);
+				if (_t8.is_error) {
+					_result_toml__ast__DateTimeType _t9 = {0};
+					_t9.is_error = true;
+					_t9.err = _t8.err;
+					return _t9;
+				}
+				
+ ;
+			}
+			_result_toml__ast__Time _t10 = toml__parser__Parser_time(p);
+			if (_t10.is_error) {
+				_result_toml__ast__DateTimeType _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ 			time = (*(toml__ast__Time*)_t10.data);
+			lit = builtin__string__plus(lit, time.text);
+			;
+			_result_toml__ast__DateTimeType _t12;
+			builtin___result_ok(&(toml__ast__DateTimeType[]) { toml__ast__DateTime_to_sumtype_toml__ast__DateTimeType(ADDR(toml__ast__DateTime, (((toml__ast__DateTime){.text = lit,.pos = pos,.date = date,.time = time,}))), false) }, (_result*)(&_t12), sizeof(toml__ast__DateTimeType));
+			 
+			return _t12;
+		}
+	} else if (p->peek_tok.kind == toml__token__Kind__colon) {
+		_result_toml__ast__Time _t13 = toml__parser__Parser_time(p);
+		if (_t13.is_error) {
+			_result_toml__ast__DateTimeType _t14 = {0};
+			_t14.is_error = true;
+			_t14.err = _t13.err;
+			return _t14;
+		}
+		
+ 		time = (*(toml__ast__Time*)_t13.data);
+		_result_toml__ast__DateTimeType _t15;
+		builtin___result_ok(&(toml__ast__DateTimeType[]) { toml__ast__Time_to_sumtype_toml__ast__DateTimeType(&time, false) }, (_result*)(&_t15), sizeof(toml__ast__DateTimeType));
+		 
+		return _t15;
+	}
+	_result_toml__ast__DateTimeType _t16;
+	builtin___result_ok(&(toml__ast__DateTimeType[]) { toml__ast__Date_to_sumtype_toml__ast__DateTimeType(ADDR(toml__ast__Date, (((toml__ast__Date){.text = lit,.pos = pos,}))), false) }, (_result*)(&_t16), sizeof(toml__ast__DateTimeType));
+	 
+	return _t16;
+}
+_result_toml__ast__Date toml__parser__Parser_date(toml__parser__Parser* p) {
+	string lit = p->tok.lit;
+	toml__token__Pos pos = toml__token__Token_pos(&p->tok);
+	_result_void _t1 = toml__parser__Parser_check(p, toml__token__Kind__number);
+	if (_t1.is_error) {
+		_result_toml__ast__Date _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t3 = toml__parser__Parser_check(p, toml__token__Kind__minus);
+	if (_t3.is_error) {
+		_result_toml__ast__Date _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t5 = toml__parser__Parser_check(p, toml__token__Kind__number);
+	if (_t5.is_error) {
+		_result_toml__ast__Date _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t7 = toml__parser__Parser_check(p, toml__token__Kind__minus);
+	if (_t7.is_error) {
+		_result_toml__ast__Date _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t9 = toml__parser__Parser_expect(p, toml__token__Kind__number);
+	if (_t9.is_error) {
+		_result_toml__ast__Date _t10 = {0};
+		_t10.is_error = true;
+		_t10.err = _t9.err;
+		return _t10;
+	}
+	
+ ;
+	;
+	_result_toml__ast__Date _t11;
+	builtin___result_ok(&(toml__ast__Date[]) { ((toml__ast__Date){.text = lit,.pos = pos,}) }, (_result*)(&_t11), sizeof(toml__ast__Date));
+	 
+	return _t11;
+}
+_result_toml__ast__Time toml__parser__Parser_time(toml__parser__Parser* p) {
+	string lit = p->tok.lit;
+	toml__token__Pos pos = toml__token__Token_pos(&p->tok);
+	if (toml__parser__Parser_is_at(p, toml__token__Kind__bare) && (builtin__string_starts_with(lit, _S("T")) || builtin__string_starts_with(lit, _S("t")))) {
+		if (builtin__string_starts_with(p->tok.lit, _S("T"))) {
+			lit = builtin__string_all_after(lit, _S("T"));
+		} else if (builtin__string_starts_with(p->tok.lit, _S("t"))) {
+			lit = builtin__string_all_after(lit, _S("t"));
+		}
+		_result_void _t1 = toml__parser__Parser_next(p);
+		if (_t1.is_error) {
+			_result_toml__ast__Time _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	} else {
+		_result_void _t3 = toml__parser__Parser_check(p, toml__token__Kind__number);
+		if (_t3.is_error) {
+			_result_toml__ast__Time _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	}
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t5 = toml__parser__Parser_check(p, toml__token__Kind__colon);
+	if (_t5.is_error) {
+		_result_toml__ast__Time _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t7 = toml__parser__Parser_check(p, toml__token__Kind__number);
+	if (_t7.is_error) {
+		_result_toml__ast__Time _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t9 = toml__parser__Parser_check(p, toml__token__Kind__colon);
+	if (_t9.is_error) {
+		_result_toml__ast__Time _t10 = {0};
+		_t10.is_error = true;
+		_t10.err = _t9.err;
+		return _t10;
+	}
+	
+ ;
+	lit = builtin__string__plus(lit, p->tok.lit);
+	_result_void _t11 = toml__parser__Parser_expect(p, toml__token__Kind__number);
+	if (_t11.is_error) {
+		_result_toml__ast__Time _t12 = {0};
+		_t12.is_error = true;
+		_t12.err = _t11.err;
+		return _t12;
+	}
+	
+ ;
+	if (p->peek_tok.kind == toml__token__Kind__period) {
+		_result_void _t13 = toml__parser__Parser_next(p);
+		if (_t13.is_error) {
+			_result_toml__ast__Time _t14 = {0};
+			_t14.is_error = true;
+			_t14.err = _t13.err;
+			return _t14;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t15 = toml__parser__Parser_check(p, toml__token__Kind__period);
+		if (_t15.is_error) {
+			_result_toml__ast__Time _t16 = {0};
+			_t16.is_error = true;
+			_t16.err = _t15.err;
+			return _t16;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t17 = toml__parser__Parser_expect(p, toml__token__Kind__number);
+		if (_t17.is_error) {
+			_result_toml__ast__Time _t18 = {0};
+			_t18.is_error = true;
+			_t18.err = _t17.err;
+			return _t18;
+		}
+		
+ ;
+	}
+	if (!builtin__u8_is_digit(builtin__string_at(lit, (int)(lit.len - 1)))) {
+		return (_result_toml__ast__Time){ .is_error=true, .err=builtin___v_error(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("toml.parser"), _S(".")), _S("Parser")), _S(".")), _S("time")), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" expected a number as last occurrence in \""), 0xfe10, {.d_s = lit}}, {_S("\" got \""), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(lit, (int)(lit.len - 1)))}}, {_S("\""), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	if (p->peek_tok.kind == toml__token__Kind__minus || p->peek_tok.kind == toml__token__Kind__plus) {
+		_result_void _t20 = toml__parser__Parser_next(p);
+		if (_t20.is_error) {
+			_result_toml__ast__Time _t21 = {0};
+			_t21.is_error = true;
+			_t21.err = _t20.err;
+			return _t21;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t22 = toml__parser__Parser_check_one_of(p, builtin__new_array_from_c_array(2, 2, sizeof(toml__token__Kind), _MOV((toml__token__Kind[2]){toml__token__Kind__minus, toml__token__Kind__plus})));
+		if (_t22.is_error) {
+			_result_toml__ast__Time _t23 = {0};
+			_t23.is_error = true;
+			_t23.err = _t22.err;
+			return _t23;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t24 = toml__parser__Parser_check(p, toml__token__Kind__number);
+		if (_t24.is_error) {
+			_result_toml__ast__Time _t25 = {0};
+			_t25.is_error = true;
+			_t25.err = _t24.err;
+			return _t25;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t26 = toml__parser__Parser_check(p, toml__token__Kind__colon);
+		if (_t26.is_error) {
+			_result_toml__ast__Time _t27 = {0};
+			_t27.is_error = true;
+			_t27.err = _t26.err;
+			return _t27;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t28 = toml__parser__Parser_expect(p, toml__token__Kind__number);
+		if (_t28.is_error) {
+			_result_toml__ast__Time _t29 = {0};
+			_t29.is_error = true;
+			_t29.err = _t28.err;
+			return _t29;
+		}
+		
+ ;
+	} else if (p->peek_tok.kind == toml__token__Kind__bare && (builtin__fast_string_eq(p->peek_tok.lit, _S("Z")) || builtin__fast_string_eq(p->peek_tok.lit, _S("z")))) {
+		_result_void _t30 = toml__parser__Parser_next(p);
+		if (_t30.is_error) {
+			_result_toml__ast__Time _t31 = {0};
+			_t31.is_error = true;
+			_t31.err = _t30.err;
+			return _t31;
+		}
+		
+ ;
+		lit = builtin__string__plus(lit, p->tok.lit);
+		_result_void _t32 = toml__parser__Parser_expect(p, toml__token__Kind__bare);
+		if (_t32.is_error) {
+			_result_toml__ast__Time _t33 = {0};
+			_t33.is_error = true;
+			_t33.err = _t32.err;
+			return _t33;
+		}
+		
+ ;
+	}
+	;
+	_result_toml__ast__Time _t34;
+	builtin___result_ok(&(toml__ast__Time[]) { ((toml__ast__Time){.text = lit,.offset = 0,.pos = pos,}) }, (_result*)(&_t34), sizeof(toml__ast__Time));
+	 
+	return _t34;
+}
+void toml__parser__Parser_undo_special_case_01(toml__parser__Parser* p, toml__parser__DottedKey dotted_key) {
+	int exd_i = Array_toml__parser__DottedKey_index(p->explicit_declared, dotted_key);
+	if (exd_i > -1) {
+		builtin__array_delete(&p->explicit_declared, exd_i);
+		builtin__array_clear(&p->last_aot);
+	}
+}
+toml__ast__EOF toml__parser__Parser_eof(toml__parser__Parser* p) {
+	return ((toml__ast__EOF){.pos = toml__token__Token_pos(&p->tok),});
+}
 #if true
 #else
 #endif
@@ -40130,6 +58277,755 @@ VV_LOC _result_void net__openssl__SSLConn_wait_for_write(net__openssl__SSLConn* 
 VV_LOC _result_void net__openssl__SSLConn_wait_for_read(net__openssl__SSLConn* s, time__Duration timeout) {
 	return net__openssl__wait_for(s->handle, net__openssl__Select__read, timeout);
 }
+string toml__Any_string(toml__Any a) {
+	if (a._typ == 21 /* string */) {
+		return builtin__string_clone(((*a._string)));
+	}
+	else if (a._typ == 132 /* toml.DateTime */) {
+		return builtin__string_clone(toml__DateTime_str((*a._toml__DateTime)));
+	}
+	else if (a._typ == 130 /* toml.Date */) {
+		return builtin__string_clone(toml__Date_str((*a._toml__Date)));
+	}
+	else if (a._typ == 131 /* toml.Time */) {
+		return builtin__string_clone(toml__Time_str((*a._toml__Time)));
+	}
+	
+	else {
+		return builtin__string_clone(toml__Any_str(a));
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string toml__Any_to_toml(toml__Any a) {
+	if (a._typ == 127 /* map[string]toml.Any */) {
+		return Map_string_toml__Any_to_inline_toml((*a._Map_string_toml__Any));
+	}
+	else if (a._typ == 128 /* []toml.Any */) {
+		return Array_toml__Any_to_toml((*a._Array_toml__Any));
+	}
+	else if (a._typ == 19 /* bool */) {
+		return builtin__string_clone((*a._bool) ? _S("true") : _S("false"));
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return builtin__string_clone(builtin__f32_str((*a._f32)));
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return builtin__string_clone(builtin__f64_str((*a._f64)));
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return builtin__string_clone(builtin__i64_str((*a._i64)));
+	}
+	else if (a._typ == 8 /* int */) {
+		return builtin__string_clone(builtin__int_str((*a._int)));
+	}
+	else if (a._typ == 14 /* u64 */) {
+		return builtin__string_clone(builtin__u64_str((*a._u64)));
+	}
+	else if (a._typ == 21 /* string */) {
+		return builtin__string__plus(builtin__string__plus(_S("\""), builtin__string_clone(((*a._string)))), _S("\""));
+	}
+	else if (a._typ == 132 /* toml.DateTime */) {
+		return builtin__string_clone(toml__DateTime_str((*a._toml__DateTime)));
+	}
+	else if (a._typ == 130 /* toml.Date */) {
+		return builtin__string_clone(toml__Date_str((*a._toml__Date)));
+	}
+	else if (a._typ == 131 /* toml.Time */) {
+		return builtin__string_clone(toml__Time_str((*a._toml__Time)));
+	}
+	
+	else {
+		return builtin__string_clone(toml__Any_str(a));
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+int toml__Any_int(toml__Any a) {
+	if (a._typ == 8 /* int */) {
+		return (*a._int);
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return ((int)((*a._i64)));
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return ((int)((*a._f32)));
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return ((int)((*a._f64)));
+	}
+	else if (a._typ == 19 /* bool */) {
+		return (int[]){((*a._bool))?1:0}[0];
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+i64 toml__Any_i64(toml__Any a) {
+	if (a._typ == 9 /* i64 */) {
+		return (*a._i64);
+	}
+	else if (a._typ == 8 /* int */) {
+		return ((i64)((*a._int)));
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return ((i64)((*a._f32)));
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return ((i64)((*a._f64)));
+	}
+	else if (a._typ == 19 /* bool */) {
+		return (i64[]){((*a._bool))?1:0}[0];
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+u64 toml__Any_u64(toml__Any a) {
+	if (a._typ == 14 /* u64 */) {
+		return (*a._u64);
+	}
+	else if (a._typ == 8 /* int */) {
+		return ((u64)((*a._int)));
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return ((u64)((*a._i64)));
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return ((u64)((*a._f32)));
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return ((u64)((*a._f64)));
+	}
+	else if (a._typ == 19 /* bool */) {
+		return (u64[]){((*a._bool))?1:0}[0];
+	}
+	
+	else {
+		return 0;
+	}
+	
+	return 0;
+}
+f32 toml__Any_f32(toml__Any a) {
+	if (a._typ == 16 /* f32 */) {
+		return (*a._f32);
+	}
+	else if (a._typ == 8 /* int */) {
+		return ((f32)((*a._int)));
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return ((f32)((*a._i64)));
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return ((f32)((*a._f64)));
+	}
+	
+	else {
+		return 0.0;
+	}
+	
+	return 0;
+}
+f64 toml__Any_f64(toml__Any a) {
+	if (a._typ == 17 /* f64 */) {
+		return (*a._f64);
+	}
+	else if (a._typ == 8 /* int */) {
+		return ((f64)((*a._int)));
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return ((f64)((*a._i64)));
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return ((f64)((*a._f32)));
+	}
+	
+	else {
+		return 0.0;
+	}
+	
+	return 0;
+}
+Array_toml__Any toml__Any_array(toml__Any a) {
+	if ((a)._typ == 128 /* []toml.Any */) {
+		return (*a._Array_toml__Any);
+	} else if ((a)._typ == 127 /* map[string]toml.Any */) {
+		Array_toml__Any arr = builtin____new_array_with_default(0, 0, sizeof(toml__Any), 0);
+		int _t3 = (*a._Map_string_toml__Any).key_values.len;
+		for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
+			int _t4 = (*a._Map_string_toml__Any).key_values.len - _t3;
+			_t3 = (*a._Map_string_toml__Any).key_values.len;
+			if (_t4 < 0) {
+				_t2 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&(*a._Map_string_toml__Any).key_values, _t2)) {continue;}
+			toml__Any v = (*(toml__Any*)builtin__DenseArray_value(&(*a._Map_string_toml__Any).key_values, _t2));
+			builtin__array_push((array*)&arr, _MOV((toml__Any[]){ v }));
+		}
+		return arr;
+	}
+	return builtin__new_array_from_c_array(1, 1, sizeof(toml__Any), _MOV((toml__Any[1]){a}));
+}
+Map_string_toml__Any toml__Any_as_map(toml__Any a) {
+	if ((a)._typ == 127 /* map[string]toml.Any */) {
+		return (*a._Map_string_toml__Any);
+	} else if ((a)._typ == 128 /* []toml.Any */) {
+		Map_string_toml__Any mp = builtin__new_map(sizeof(string), sizeof(toml__Any), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		for (int i = 0; i < (*a._Array_toml__Any).len; ++i) {
+			toml__Any fi = ((toml__Any*)(*a._Array_toml__Any).data)[i];
+			builtin__map_set(&mp, &(string[]){builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))}, &(toml__Any[]) { fi });
+		}
+		return mp;
+	}
+	return builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(toml__Any),
+		_MOV((string[1]){
+			_S("0"),
+		}),
+		_MOV((toml__Any[1]){
+			a, 
+		})
+	)
+	;
+}
+bool toml__Any_bool(toml__Any a) {
+	if (a._typ == 19 /* bool */) {
+		return (*a._bool);
+	}
+	else if (a._typ == 21 /* string */) {
+		return builtin__string_bool((*a._string));
+	}
+	
+	else {
+		return false;
+	}
+	
+	return 0;
+}
+toml__Date toml__Any_date(toml__Any a) {
+	if (a._typ == 130 /* toml.Date */) {
+		return ((toml__Date){.date = builtin__string_clone(toml__Date_str((*a._toml__Date))),});
+	}
+	
+	else {
+		return ((toml__Date){.date = _S(""),});
+	}
+	
+	return (toml__Date){.date = (string){.str=(byteptr)"", .is_lit=1},};
+}
+toml__Time toml__Any_time(toml__Any a) {
+	if (a._typ == 131 /* toml.Time */) {
+		return ((toml__Time){.time = builtin__string_clone(toml__Time_str((*a._toml__Time))),});
+	}
+	
+	else {
+		return ((toml__Time){.time = _S(""),});
+	}
+	
+	return (toml__Time){.time = (string){.str=(byteptr)"", .is_lit=1},};
+}
+toml__DateTime toml__Any_datetime(toml__Any a) {
+	if (a._typ == 132 /* toml.DateTime */) {
+		return ((toml__DateTime){.datetime = builtin__string_clone(toml__DateTime_str((*a._toml__DateTime))),});
+	}
+	
+	else {
+		return ((toml__DateTime){.datetime = _S(""),});
+	}
+	
+	return (toml__DateTime){.datetime = (string){.str=(byteptr)"", .is_lit=1},};
+}
+toml__Any toml__Any_default_to(toml__Any a, toml__Any value) {
+	if (a._typ == 129 /* toml.Null */) {
+		return value;
+	}
+	
+	else {
+		return a;
+	}
+	
+	return (toml__Any){._toml__Date=HEAP(toml__Date, ((toml__Date){.date = (string){.str=(byteptr)"", .is_lit=1},})),._typ=130};
+}
+toml__Any Map_string_toml__Any_value(Map_string_toml__Any m, string key) {
+	return toml__Any_value(Map_string_toml__Any_to_sumtype_toml__Any(ADDR(Map_string_toml__Any, (m)), false), key);
+}
+Map_string_string Map_string_toml__Any_as_strings(Map_string_toml__Any m) {
+	Map_string_string result = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	int _t2 = m.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = m.key_values.len - _t2;
+		_t2 = m.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&m.key_values, _t1)) {continue;}
+		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
+		k = builtin__string_clone(k);
+		toml__Any v = (*(toml__Any*)builtin__DenseArray_value(&m.key_values, _t1));
+		builtin__map_set(&result, &(string[]){k}, &(string[]) { toml__Any_string(v) });
+	}
+	return result;
+}
+string Map_string_toml__Any_to_toml(Map_string_toml__Any m) {
+	string toml_text = _S("");
+	int _t2 = m.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = m.key_values.len - _t2;
+		_t2 = m.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&m.key_values, _t1)) {continue;}
+		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
+		k = builtin__string_clone(k);
+		toml__Any v = (*(toml__Any*)builtin__DenseArray_value(&m.key_values, _t1));
+		string key = (builtin__string_contains(k, _S(" ")) ? (builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = k}}, {_S("\""), 0, { .d_c = 0 }}}))) : (k));
+		toml_text = builtin__string__plus(toml_text, builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = key}}, {_S(" = "), 0xfe10, {.d_s = toml__Any_to_toml(v)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	}
+	toml_text = builtin__string_trim_right(toml_text, _S("\n"));
+	return toml_text;
+}
+string Map_string_toml__Any_to_inline_toml(Map_string_toml__Any m) {
+	string toml_text = _S("{");
+	int i = 1;
+	int _t2 = m.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = m.key_values.len - _t2;
+		_t2 = m.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&m.key_values, _t1)) {continue;}
+		string k = *(string*)builtin__DenseArray_key(&m.key_values, _t1);
+		k = builtin__string_clone(k);
+		toml__Any v = (*(toml__Any*)builtin__DenseArray_value(&m.key_values, _t1));
+		string key = (builtin__string_contains(k, _S(" ")) ? (builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = k}}, {_S("\""), 0, { .d_c = 0 }}}))) : (k));
+		string delimiter = (i < m.len ? (_S(",")) : (_S("")));
+		toml_text = builtin__string__plus(toml_text, builtin__str_intp(4, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = key}}, {_S(" = "), 0xfe10, {.d_s = toml__Any_to_toml(v)}}, {_SLIT0, 0xfe10, {.d_s = delimiter}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		i++;
+	}
+	return builtin__string__plus(toml_text, _S(" }"));
+}
+toml__Any Array_toml__Any_value(Array_toml__Any a, string key) {
+	return toml__Any_value(Array_toml__Any_to_sumtype_toml__Any(ADDR(Array_toml__Any, (a)), false), key);
+}
+Array_string Array_toml__Any_as_strings(Array_toml__Any a) {
+	Array_string sa = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int _t1 = 0; _t1 < a.len; ++_t1) {
+		toml__Any any = ((toml__Any*)a.data)[_t1];
+		builtin__array_push((array*)&sa, _MOV((string[]){ toml__Any_string(any) }));
+	}
+	return sa;
+}
+string Array_toml__Any_to_toml(Array_toml__Any a) {
+	string toml_text = _S("[\n");
+	for (int _t1 = 0; _t1 < a.len; ++_t1) {
+		toml__Any any = ((toml__Any*)a.data)[_t1];
+		toml_text = builtin__string__plus(toml_text, builtin__string__plus(builtin__string__plus(_S("  "), toml__Any_to_toml(any)), _S(",\n")));
+	}
+	toml_text = builtin__string_trim_right(toml_text, _S(",\n"));
+	return builtin__string__plus(toml_text, _S("\n]"));
+}
+toml__Any toml__Any_value(toml__Any a, string key) {
+	_result_Array_string _t1 = toml__parse_dotted_key(key);
+	if (_t1.is_error) {
+		return _const_toml__null;
+	}
+	
+ 	Array_string key_split = (*(Array_string*)_t1.data);
+	return toml__Any_value_(a, a, key_split);
+}
+_result_toml__Any toml__Any_value_opt(toml__Any a, string key) {
+	_result_Array_string _t1 = toml__parse_dotted_key(key);
+	if (_t1.is_error) {
+		return (_result_toml__Any){ .is_error=true, .err=builtin___v_error(_S("invalid dotted key")), .data={E_STRUCT} };
+	}
+	
+ 	Array_string key_split = (*(Array_string*)_t1.data);
+	toml__Any x = toml__Any_value_(a, a, key_split);
+	if ((x)._typ == 129 /* toml.Null */) {
+		return (_result_toml__Any){ .is_error=true, .err=builtin___v_error(_S("no value for key")), .data={E_STRUCT} };
+	}
+	_result_toml__Any _t4;
+	builtin___result_ok(&(toml__Any[]) { x }, (_result*)(&_t4), sizeof(toml__Any));
+	 
+	return _t4;
+}
+VV_LOC toml__Any toml__Any_value_(toml__Any a, toml__Any value, Array_string key) {
+	if (key.len == 0) {
+		return _const_toml__null;
+	}
+	toml__Any any_value = _const_toml__null;
+	multi_return_string_int mr_7364 = toml__parse_array_key((*(string*)builtin__array_get(key, 0)));
+	string k = mr_7364.arg0;
+	int index = mr_7364.arg1;
+	if ((k).len == 0) {
+		Array_toml__Any arr = *(Array_toml__Any*)builtin____as_cast((value)._Array_toml__Any,(value)._typ, 128);
+		toml__Any* _t3 = (toml__Any*)(builtin__array_get_with_check(arr, index));
+		_option_toml__Any _t2 = {0};
+		if (_t3) {
+			*((toml__Any*)&_t2.data) = *((toml__Any*)_t3);
+		} else {
+			_t2.state = 2; _t2.err = builtin___v_error(_S("array index out of range"));
+		}
+		;
+		if (_t2.state != 0) {
+			return _const_toml__null;
+		}
+		
+		any_value = (*(toml__Any*)_t2.data);
+	}
+	if ((value)._typ == 127 /* map[string]toml.Any */) {
+		toml__Any* _t6 = (toml__Any*)(builtin__map_get_check(ADDR(map, (*value._Map_string_toml__Any)), &(string[]){k}));
+		_option_toml__Any _t5 = {0};
+		if (_t6) {
+			*((toml__Any*)&_t5.data) = *((toml__Any*)_t6);
+		} else {
+			_t5.state = 2; _t5.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t5.state != 0) {
+			return _const_toml__null;
+		}
+		
+		any_value = (*(toml__Any*)_t5.data);
+		if (index > -1) {
+			Array_toml__Any arr = *(Array_toml__Any*)builtin____as_cast((any_value)._Array_toml__Any,(any_value)._typ, 128);
+			toml__Any* _t9 = (toml__Any*)(builtin__array_get_with_check(arr, index));
+			_option_toml__Any _t8 = {0};
+			if (_t9) {
+				*((toml__Any*)&_t8.data) = *((toml__Any*)_t9);
+			} else {
+				_t8.state = 2; _t8.err = builtin___v_error(_S("array index out of range"));
+			}
+			;
+			if (_t8.state != 0) {
+				return _const_toml__null;
+			}
+			
+			any_value = (*(toml__Any*)_t8.data);
+		}
+	}
+	if (key.len <= 1) {
+		return any_value;
+	}
+	if (any_value._typ == 127 /* map[string]toml.Any */) {
+		return toml__Any_value_(a, any_value, builtin__array_slice(key, 1, 2147483647));
+	}
+	else if (any_value._typ == 128 /* []toml.Any */) {
+		return toml__Any_value_(a, any_value, builtin__array_slice(key, 1, 2147483647));
+	}
+	
+	else {
+		return value;
+	}
+	
+	return (toml__Any){._toml__Date=HEAP(toml__Date, ((toml__Date){.date = (string){.str=(byteptr)"", .is_lit=1},})),._typ=130};
+}
+string toml__DateTime_str(toml__DateTime dt) {
+	return dt.datetime;
+}
+string toml__Date_str(toml__Date d) {
+	return d.date;
+}
+string toml__Time_str(toml__Time t) {
+	return t.time;
+}
+_result_toml__Doc toml__parse_file(string path) {
+	toml__input__Config input_config = ((toml__input__Config){.text = (string){.str=(byteptr)"", .is_lit=1},.file_path = path,});
+	toml__scanner__Config scanner_config = ((toml__scanner__Config){.input = input_config,.tokenize_formatting = true,});
+	_result_toml__scanner__Scanner_ptr _t1 = toml__scanner__new_scanner(scanner_config);
+	if (_t1.is_error) {
+		_result_toml__Doc _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__parser__Config parser_config = ((toml__parser__Config){.scanner = (*(toml__scanner__Scanner**)_t1.data),.run_checks = true,.decode_values = true,});
+	toml__parser__Parser p = toml__parser__new_parser(parser_config);
+	_result_toml__ast__Root_ptr _t3 = toml__parser__Parser_parse(&p);
+	if (_t3.is_error) {
+		_result_toml__Doc _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	toml__ast__Root* ast_ = (*(toml__ast__Root**)_t3.data);
+	_result_toml__Doc _t5;
+	builtin___result_ok(&(toml__Doc[]) { ((toml__Doc){.ast = ast_,}) }, (_result*)(&_t5), sizeof(toml__Doc));
+	 
+	return _t5;
+}
+_result_toml__Doc toml__parse_text(string text) {
+	toml__input__Config input_config = ((toml__input__Config){.text = text,.file_path = (string){.str=(byteptr)"", .is_lit=1},});
+	toml__scanner__Config scanner_config = ((toml__scanner__Config){.input = input_config,.tokenize_formatting = true,});
+	_result_toml__scanner__Scanner_ptr _t1 = toml__scanner__new_scanner(scanner_config);
+	if (_t1.is_error) {
+		_result_toml__Doc _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	toml__parser__Config parser_config = ((toml__parser__Config){.scanner = (*(toml__scanner__Scanner**)_t1.data),.run_checks = true,.decode_values = true,});
+	toml__parser__Parser p = toml__parser__new_parser(parser_config);
+	_result_toml__ast__Root_ptr _t3 = toml__parser__Parser_parse(&p);
+	if (_t3.is_error) {
+		_result_toml__Doc _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	toml__ast__Root* ast_ = (*(toml__ast__Root**)_t3.data);
+	_result_toml__Doc _t5;
+	builtin___result_ok(&(toml__Doc[]) { ((toml__Doc){.ast = ast_,}) }, (_result*)(&_t5), sizeof(toml__Doc));
+	 
+	return _t5;
+}
+_result_Array_string toml__parse_dotted_key(string key) {
+	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	string buf = _S("");
+	bool in_string = false;
+	u8 delim = ((u8)(' '));
+	for (int _t1 = 0; _t1 < key.len; ++_t1) {
+		u8 ch = key.str[_t1];
+		if (ch == '"' || ch == '\'') {
+			if (!in_string) {
+				delim = ch;
+			}
+			in_string = !in_string && ch == delim;
+			if (!in_string) {
+				if ((buf).len != 0 && _SLIT_NE(buf.str, buf.len, " ")) {
+					builtin__array_push((array*)&out, _MOV((string[]){ builtin__string_clone(buf) }));
+				}
+				buf = _S("");
+				delim = ' ';
+			}
+			continue;
+		}
+		buf = builtin__string__plus(buf, builtin__u8_ascii_str(ch));
+		if (!in_string && ch == '.') {
+			if ((buf).len != 0 && _SLIT_NE(buf.str, buf.len, " ")) {
+				buf = builtin__string_substr(buf, 0, (int)(buf.len - 1));
+				if ((buf).len != 0 && _SLIT_NE(buf.str, buf.len, " ")) {
+					builtin__array_push((array*)&out, _MOV((string[]){ builtin__string_clone(buf) }));
+				}
+			}
+			buf = _S("");
+			continue;
+		}
+	}
+	if ((buf).len != 0 && _SLIT_NE(buf.str, buf.len, " ")) {
+		builtin__array_push((array*)&out, _MOV((string[]){ builtin__string_clone(buf) }));
+	}
+	if (in_string) {
+		return (_result_Array_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("parse_dotted_key"), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(": could not parse key, missing closing string delimiter `"), 0xfe10, {.d_s = builtin__u8_ascii_str(delim)}}, {_S("`"), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	_result_Array_string _t6;
+	builtin___result_ok(&(Array_string[]) { out }, (_result*)(&_t6), sizeof(Array_string));
+	 
+	return _t6;
+}
+VV_LOC multi_return_string_int toml__parse_array_key(string key) {
+	int index = -1;
+	string k = key;
+	if (builtin__string_contains(k, _S("["))) {
+		index = builtin__string_int(builtin__string_all_before(builtin__string_all_after(k, _S("[")), _S("]")));
+		if (builtin__string_starts_with(k, _S("["))) {
+			k = _S("");
+		} else {
+			k = builtin__string_all_before(k, _S("["));
+		}
+	}
+	return (multi_return_string_int){.arg0=k, .arg1=index};
+}
+toml__Any toml__Doc_to_any(toml__Doc d) {
+	return toml__ast_to_any(d.ast->table);
+}
+toml__Any toml__Doc_value(toml__Doc d, string key) {
+	_result_Array_string _t1 = toml__parse_dotted_key(key);
+	if (_t1.is_error) {
+		return _const_toml__null;
+	}
+	
+ 	Array_string key_split = (*(Array_string*)_t1.data);
+	return toml__Doc_value_(d, d.ast->table, key_split);
+}
+_result_toml__Any toml__Doc_value_opt(toml__Doc d, string key) {
+	_result_Array_string _t1 = toml__parse_dotted_key(key);
+	if (_t1.is_error) {
+		return (_result_toml__Any){ .is_error=true, .err=builtin___v_error(_S("invalid dotted key")), .data={E_STRUCT} };
+	}
+	
+ 	Array_string key_split = (*(Array_string*)_t1.data);
+	toml__Any x = toml__Doc_value_(d, d.ast->table, key_split);
+	if ((x)._typ == 129 /* toml.Null */) {
+		return (_result_toml__Any){ .is_error=true, .err=builtin___v_error(_S("no value for key")), .data={E_STRUCT} };
+	}
+	_result_toml__Any _t4;
+	builtin___result_ok(&(toml__Any[]) { x }, (_result*)(&_t4), sizeof(toml__Any));
+	 
+	return _t4;
+}
+VV_LOC toml__Any toml__Doc_value_(toml__Doc d, toml__ast__Value value, Array_string key) {
+	if (key.len == 0) {
+		return _const_toml__null;
+	}
+	toml__ast__Value ast_value = toml__ast__Null_to_sumtype_toml__ast__Value(ADDR(toml__ast__Null, (((toml__ast__Null){.text = (string){.str=(byteptr)"", .is_lit=1},.pos = ((toml__token__Pos){.len = 0,.line_nr = 0,.pos = 0,.col = 0,}),}))), false);
+	multi_return_string_int mr_11509 = toml__parse_array_key((*(string*)builtin__array_get(key, 0)));
+	string k = mr_11509.arg0;
+	int index = mr_11509.arg1;
+	if ((k).len == 0) {
+		Array_toml__ast__Value a = *(Array_toml__ast__Value*)builtin____as_cast((value)._Array_toml__ast__Value,(value)._typ, 286);
+		toml__ast__Value* _t3 = (toml__ast__Value*)(builtin__array_get_with_check(a, index));
+		_option_toml__ast__Value _t2 = {0};
+		if (_t3) {
+			*((toml__ast__Value*)&_t2.data) = *((toml__ast__Value*)_t3);
+		} else {
+			_t2.state = 2; _t2.err = builtin___v_error(_S("array index out of range"));
+		}
+		;
+		if (_t2.state != 0) {
+			return _const_toml__null;
+		}
+		
+		ast_value = (*(toml__ast__Value*)_t2.data);
+	}
+	if ((value)._typ == 287 /* map[string]toml.ast.Value */) {
+		toml__ast__Value* _t6 = (toml__ast__Value*)(builtin__map_get_check(ADDR(map, (*value._Map_string_toml__ast__Value)), &(string[]){k}));
+		_option_toml__ast__Value _t5 = {0};
+		if (_t6) {
+			*((toml__ast__Value*)&_t5.data) = *((toml__ast__Value*)_t6);
+		} else {
+			_t5.state = 2; _t5.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t5.state != 0) {
+			return _const_toml__null;
+		}
+		
+		ast_value = (*(toml__ast__Value*)_t5.data);
+		if (index > -1) {
+			Array_toml__ast__Value a = *(Array_toml__ast__Value*)builtin____as_cast((ast_value)._Array_toml__ast__Value,(ast_value)._typ, 286);
+			toml__ast__Value* _t9 = (toml__ast__Value*)(builtin__array_get_with_check(a, index));
+			_option_toml__ast__Value _t8 = {0};
+			if (_t9) {
+				*((toml__ast__Value*)&_t8.data) = *((toml__ast__Value*)_t9);
+			} else {
+				_t8.state = 2; _t8.err = builtin___v_error(_S("array index out of range"));
+			}
+			;
+			if (_t8.state != 0) {
+				return _const_toml__null;
+			}
+			
+			ast_value = (*(toml__ast__Value*)_t8.data);
+		}
+	}
+	if (key.len <= 1) {
+		return toml__ast_to_any(ast_value);
+	}
+	if (ast_value._typ == 287 /* map[string]toml.ast.Value */) {
+		return toml__Doc_value_(d, ast_value, builtin__array_slice(key, 1, 2147483647));
+	}
+	else if (ast_value._typ == 286 /* []toml.ast.Value */) {
+		return toml__Doc_value_(d, ast_value, builtin__array_slice(key, 1, 2147483647));
+	}
+	
+	else {
+		return toml__ast_to_any(value);
+	}
+	
+	return (toml__Any){._toml__Date=HEAP(toml__Date, ((toml__Date){.date = (string){.str=(byteptr)"", .is_lit=1},})),._typ=130};
+}
+toml__Any toml__ast_to_any(toml__ast__Value value) {
+	if (value._typ == 288 /* toml.ast.Date */) {
+		return toml__Date_to_sumtype_toml__Any(ADDR(toml__Date, (((toml__Date){.date = (*value._toml__ast__Date).text,}))), false);
+	}
+	else if (value._typ == 289 /* toml.ast.Time */) {
+		return toml__Time_to_sumtype_toml__Any(ADDR(toml__Time, (((toml__Time){.time = (*value._toml__ast__Time).text,}))), false);
+	}
+	else if (value._typ == 290 /* toml.ast.DateTime */) {
+		return toml__DateTime_to_sumtype_toml__Any(ADDR(toml__DateTime, (((toml__DateTime){.datetime = (*value._toml__ast__DateTime).text,}))), false);
+	}
+	else if (value._typ == 291 /* toml.ast.Quoted */) {
+		return string_to_sumtype_toml__Any(&(*value._toml__ast__Quoted).text, false);
+	}
+	else if (value._typ == 292 /* toml.ast.Number */) {
+		string val_text = (*value._toml__ast__Number).text;
+		if (_SLIT_EQ(val_text.str, val_text.len, "inf") || _SLIT_EQ(val_text.str, val_text.len, "+inf") || _SLIT_EQ(val_text.str, val_text.len, "-inf")) {
+			if (!builtin__string_starts_with(val_text, _S("-"))) {
+				return u64_to_sumtype_toml__Any(ADDR(u64, (((u64)(0x7FF0000000000000LL)))), false);
+			} else {
+				return u64_to_sumtype_toml__Any(ADDR(u64, (((u64)(0xFFF0000000000000ULL)))), false);
+			}
+		}
+		if (_SLIT_EQ(val_text.str, val_text.len, "nan") || _SLIT_EQ(val_text.str, val_text.len, "+nan") || _SLIT_EQ(val_text.str, val_text.len, "-nan")) {
+			return string_to_sumtype_toml__Any(ADDR(string, (_S("nan"))), false);
+		}
+		if (!builtin__string_starts_with(val_text, _S("0x")) && (builtin__string_contains(val_text, _S(".")) || builtin__string_contains(builtin__string_to_lower(val_text), _S("e")))) {
+			return f64_to_sumtype_toml__Any(ADDR(f64, (toml__ast__Number_f64((*value._toml__ast__Number)))), false);
+		}
+		return i64_to_sumtype_toml__Any(ADDR(i64, (toml__ast__Number_i64((*value._toml__ast__Number)))), false);
+	}
+	else if (value._typ == 293 /* toml.ast.Bool */) {
+		string str = ((*value._toml__ast__Bool)).text;
+		if (_SLIT_EQ(str.str, str.len, "true")) {
+			return bool_to_sumtype_toml__Any(ADDR(bool, (true)), false);
+		}
+		return bool_to_sumtype_toml__Any(ADDR(bool, (false)), false);
+	}
+	else if (value._typ == 287 /* map[string]toml.ast.Value */) {
+		Map_string_toml__ast__Value m = ((*value._Map_string_toml__ast__Value));
+		Map_string_toml__Any am = builtin__new_map(sizeof(string), sizeof(toml__Any), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		int _t13 = m.key_values.len;
+		for (int _t12 = 0; _t12 < _t13; ++_t12 ) {
+			int _t14 = m.key_values.len - _t13;
+			_t13 = m.key_values.len;
+			if (_t14 < 0) {
+				_t12 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&m.key_values, _t12)) {continue;}
+			string k = *(string*)builtin__DenseArray_key(&m.key_values, _t12);
+			k = builtin__string_clone(k);
+			toml__ast__Value v = (*(toml__ast__Value*)builtin__DenseArray_value(&m.key_values, _t12));
+			builtin__map_set(&am, &(string[]){k}, &(toml__Any[]) { toml__ast_to_any(v) });
+		}
+		return Map_string_toml__Any_to_sumtype_toml__Any(&am, false);
+	}
+	else if (value._typ == 286 /* []toml.ast.Value */) {
+		Array_toml__ast__Value a = ((*value._Array_toml__ast__Value));
+		Array_toml__Any aa = builtin____new_array_with_default(0, 0, sizeof(toml__Any), 0);
+		for (int _t16 = 0; _t16 < a.len; ++_t16) {
+			toml__ast__Value val = ((toml__ast__Value*)a.data)[_t16];
+			builtin__array_push((array*)&aa, _MOV((toml__Any[]){ toml__ast_to_any(val) }));
+		}
+		return Array_toml__Any_to_sumtype_toml__Any(&aa, false);
+	}
+	
+	else {
+		return _const_toml__null;
+	}
+	
+	return _const_toml__null;
+}
 net__Dialer net__ssl__new_ssl_dialer(net__ssl__SSLConnectConfig config) {
 	return I_net__ssl__SSLDialer_to_Interface_net__Dialer(((net__ssl__SSLDialer*)builtin__memdup(&(net__ssl__SSLDialer){.config = config,}, sizeof(net__ssl__SSLDialer))));
 }
@@ -40160,6 +59056,148 @@ _result_net__ssl__SSLConn_ptr net__ssl__new_ssl_conn(net__ssl__SSLConnectConfig 
 	 
 	return _t3;
 }
+string toml__to__json(toml__to__DocOrAny doa) {
+	if (doa._typ == 280 /* toml.Doc */) {
+		return toml__to__any_to_json(toml__ast_to_any((*doa._toml__Doc).ast->table));
+	}
+	else if (doa._typ == 126 /* toml.Any */) {
+		return toml__to__any_to_json((*doa._toml__Any));
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC string toml__to__any_to_json(toml__Any a) {
+	if (a._typ == 129 /* toml.Null */) {
+		return _S("null");
+	}
+	else if (a._typ == 132 /* toml.DateTime */) {
+		return x__json2__Any_json_str(string_to_sumtype_x__json2__Any(ADDR(string, (toml__DateTime_str((*a._toml__DateTime)))), false));
+	}
+	else if (a._typ == 130 /* toml.Date */) {
+		return x__json2__Any_json_str(string_to_sumtype_x__json2__Any(ADDR(string, (toml__Date_str((*a._toml__Date)))), false));
+	}
+	else if (a._typ == 131 /* toml.Time */) {
+		return x__json2__Any_json_str(string_to_sumtype_x__json2__Any(ADDR(string, (toml__Time_str((*a._toml__Time)))), false));
+	}
+	else if (a._typ == 21 /* string */) {
+		return x__json2__Any_json_str(string_to_sumtype_x__json2__Any(ADDR(string, ((*a._string))), false));
+	}
+	else if (a._typ == 19 /* bool */) {
+		return x__json2__Any_json_str(bool_to_sumtype_x__json2__Any(ADDR(bool, ((*a._bool))), false));
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return x__json2__Any_json_str(f32_to_sumtype_x__json2__Any(ADDR(f32, (((f32)((*a._f32))))), false));
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return x__json2__Any_json_str(f64_to_sumtype_x__json2__Any(ADDR(f64, (((f64)((*a._f64))))), false));
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return x__json2__Any_json_str(i64_to_sumtype_x__json2__Any(ADDR(i64, (((i64)((*a._i64))))), false));
+	}
+	else if (a._typ == 8 /* int */) {
+		return x__json2__Any_json_str(int_to_sumtype_x__json2__Any(ADDR(int, (((int)((*a._int))))), false));
+	}
+	else if (a._typ == 14 /* u64 */) {
+		return x__json2__Any_json_str(u64_to_sumtype_x__json2__Any(ADDR(u64, (((u64)((*a._u64))))), false));
+	}
+	else if (a._typ == 127 /* map[string]toml.Any */) {
+		string str = _S("{");
+		int _t13 = (*a._Map_string_toml__Any).key_values.len;
+		for (int _t12 = 0; _t12 < _t13; ++_t12 ) {
+			int _t14 = (*a._Map_string_toml__Any).key_values.len - _t13;
+			_t13 = (*a._Map_string_toml__Any).key_values.len;
+			if (_t14 < 0) {
+				_t12 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&(*a._Map_string_toml__Any).key_values, _t12)) {continue;}
+			string key = *(string*)builtin__DenseArray_key(&(*a._Map_string_toml__Any).key_values, _t12);
+			key = builtin__string_clone(key);
+			toml__Any val = (*(toml__Any*)builtin__DenseArray_value(&(*a._Map_string_toml__Any).key_values, _t12));
+			x__json2__Any json_key = string_to_sumtype_x__json2__Any(&key, false);
+			str = builtin__string__plus(str, builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = x__json2__Any_json_str(json_key)}}, {_S(": "), 0xfe10, {.d_s = toml__to__any_to_json(val)}}, {_S(","), 0, { .d_c = 0 }}})));
+		}
+		str = builtin__string_trim_right(str, _S(","));
+		str = builtin__string__plus(str, _S(" }"));
+		return str;
+	}
+	else if (a._typ == 128 /* []toml.Any */) {
+		string str = _S("[");
+		for (int _t16 = 0; _t16 < (*a._Array_toml__Any).len; ++_t16) {
+			toml__Any val = ((toml__Any*)(*a._Array_toml__Any).data)[_t16];
+			str = builtin__string__plus(str, builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = toml__to__any_to_json(val)}}, {_S(","), 0, { .d_c = 0 }}})));
+		}
+		str = builtin__string_trim_right(str, _S(","));
+		str = builtin__string__plus(str, _S(" ]"));
+		return str;
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+x__json2__Any toml__to__json_any(toml__Any a) {
+	if (a._typ == 129 /* toml.Null */) {
+		return x__json2__Null_to_sumtype_x__json2__Any(ADDR(x__json2__Null, (((x__json2__Null){E_STRUCT}))), false);
+	}
+	else if (a._typ == 132 /* toml.DateTime */) {
+		return string_to_sumtype_x__json2__Any(ADDR(string, (toml__DateTime_str((*a._toml__DateTime)))), false);
+	}
+	else if (a._typ == 130 /* toml.Date */) {
+		return string_to_sumtype_x__json2__Any(ADDR(string, (toml__Date_str((*a._toml__Date)))), false);
+	}
+	else if (a._typ == 131 /* toml.Time */) {
+		return string_to_sumtype_x__json2__Any(ADDR(string, (toml__Time_str((*a._toml__Time)))), false);
+	}
+	else if (a._typ == 21 /* string */) {
+		return string_to_sumtype_x__json2__Any(ADDR(string, ((*a._string))), false);
+	}
+	else if (a._typ == 19 /* bool */) {
+		return bool_to_sumtype_x__json2__Any(ADDR(bool, ((*a._bool))), false);
+	}
+	else if (a._typ == 8 /* int */) {
+		return int_to_sumtype_x__json2__Any(ADDR(int, (((int)((*a._int))))), false);
+	}
+	else if (a._typ == 16 /* f32 */) {
+		return f32_to_sumtype_x__json2__Any(ADDR(f32, (((f32)((*a._f32))))), false);
+	}
+	else if (a._typ == 17 /* f64 */) {
+		return f64_to_sumtype_x__json2__Any(ADDR(f64, (((f64)((*a._f64))))), false);
+	}
+	else if (a._typ == 9 /* i64 */) {
+		return i64_to_sumtype_x__json2__Any(ADDR(i64, (((i64)((*a._i64))))), false);
+	}
+	else if (a._typ == 14 /* u64 */) {
+		return u64_to_sumtype_x__json2__Any(ADDR(u64, (((u64)((*a._u64))))), false);
+	}
+	else if (a._typ == 127 /* map[string]toml.Any */) {
+		Map_string_x__json2__Any jmap = builtin__new_map(sizeof(string), sizeof(x__json2__Any), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+		int _t13 = (*a._Map_string_toml__Any).key_values.len;
+		for (int _t12 = 0; _t12 < _t13; ++_t12 ) {
+			int _t14 = (*a._Map_string_toml__Any).key_values.len - _t13;
+			_t13 = (*a._Map_string_toml__Any).key_values.len;
+			if (_t14 < 0) {
+				_t12 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&(*a._Map_string_toml__Any).key_values, _t12)) {continue;}
+			string key = *(string*)builtin__DenseArray_key(&(*a._Map_string_toml__Any).key_values, _t12);
+			key = builtin__string_clone(key);
+			toml__Any val = (*(toml__Any*)builtin__DenseArray_value(&(*a._Map_string_toml__Any).key_values, _t12));
+			builtin__map_set(&jmap, &(string[]){key}, &(x__json2__Any[]) { toml__to__json_any(val) });
+		}
+		return Map_string_x__json2__Any_to_sumtype_x__json2__Any(&jmap, false);
+	}
+	else if (a._typ == 128 /* []toml.Any */) {
+		Array_x__json2__Any jarr = builtin____new_array_with_default(0, 0, sizeof(x__json2__Any), 0);
+		for (int _t16 = 0; _t16 < (*a._Array_toml__Any).len; ++_t16) {
+			toml__Any val = ((toml__Any*)(*a._Array_toml__Any).data)[_t16];
+			builtin__array_push((array*)&jarr, _MOV((x__json2__Any[]){ toml__to__json_any(val) }));
+		}
+		return Array_x__json2__Any_to_sumtype_x__json2__Any(&jarr, false);
+	}
+	
+	return (x__json2__Any){._Array_x__json2__Any=HEAP(Array_x__json2__Any, (builtin____new_array(0, 0, sizeof(x__json2__Any)))),._typ=298};
+}
 _result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, string username, string password) {
 	_result_net__TcpConn_ptr _t1 = net__dial_tcp(proxy_url);
 	if (_t1.is_error) {
@@ -40179,7 +59217,7 @@ _result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, 
 	}
 	
  	net__Connection socks_conn_as_interface = (*(net__Connection*)_t3.data);
-	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 353)));
+	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 409)));
 	_result_net__TcpConn_ptr _t5;
 	builtin___result_ok(&(net__TcpConn*[]) { &(*(socks_conn)) }, (_result*)(&_t5), sizeof(net__TcpConn*));
 	 
@@ -46498,6 +65536,78 @@ voidptr main__vphp_wrap_vslimapp_container(voidptr ptr, vphp__Context ctx) {
 voidptr vphp_wrap_VSlimApp_container(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_container(ptr, ctx);
 }
+void main__vphp_wrap_vslimapp_has_config(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	bool res = main__VSlimApp_has_config(recv);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimApp_has_config -> main__vphp_wrap_vslimapp_has_config
+void vphp_wrap_VSlimApp_has_config(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_has_config(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_set_config(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	main__VSlimConfig* arg_0 = ((main__VSlimConfig*)(vphp__Context_arg_raw_obj(ctx, 0)));
+	main__VSlimApp* res = main__VSlimApp_set_config(recv, arg_0);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimApp_set_config -> main__vphp_wrap_vslimapp_set_config
+voidptr vphp_wrap_VSlimApp_set_config(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_set_config(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_config(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	main__VSlimConfig* res = main__VSlimApp_config(recv);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimApp_config -> main__vphp_wrap_vslimapp_config
+voidptr vphp_wrap_VSlimApp_config(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_config(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_load_config(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	main__VSlimApp* res = main__VSlimApp_load_config(recv, arg_0);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimApp_load_config -> main__vphp_wrap_vslimapp_load_config
+voidptr vphp_wrap_VSlimApp_load_config(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_load_config(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimapp_load_config_text(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	main__VSlimApp* res = main__VSlimApp_load_config_text(recv, arg_0);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimApp_load_config_text -> main__vphp_wrap_vslimapp_load_config_text
+voidptr vphp_wrap_VSlimApp_load_config_text(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_load_config_text(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimapp_group(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
 	int vphp_ar_mark = vphp__autorelease_mark();
@@ -47594,6 +66704,312 @@ voidptr main__vslimview_handlers(void) {
 voidptr VSlimView_handlers(void) {
 	return main__vslimview_handlers();
 }
+voidptr main__vslimconfig_new_raw(void) {
+	return vphp__generic_new_raw_T_main__VSlimConfig();
+}
+// export alias: VSlimConfig_new_raw -> main__vslimconfig_new_raw
+voidptr VSlimConfig_new_raw(void) {
+	return main__vslimconfig_new_raw();
+}
+void main__vslimconfig_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimConfig(ptr);
+}
+// export alias: VSlimConfig_free_raw -> main__vslimconfig_free_raw
+void VSlimConfig_free_raw(voidptr ptr) {
+	return main__vslimconfig_free_raw(ptr);
+}
+void main__vslimconfig_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	{ // Unsafe block
+		main__VSlimConfig* obj = ((main__VSlimConfig*)(ptr));
+		main__VSlimConfig_free(obj);
+	}
+}
+// export alias: VSlimConfig_cleanup_raw -> main__vslimconfig_cleanup_raw
+void VSlimConfig_cleanup_raw(voidptr ptr) {
+	return main__vslimconfig_cleanup_raw(ptr);
+}
+void main__vslimconfig_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
+	{ // Unsafe block
+		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
+		main__VSlimConfig* obj = ((main__VSlimConfig*)(ptr));
+	}
+}
+// export alias: VSlimConfig_get_prop -> main__vslimconfig_get_prop
+void VSlimConfig_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
+	return main__vslimconfig_get_prop(ptr, name_ptr, name_len, rv);
+}
+void main__vslimconfig_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value) {
+	{ // Unsafe block
+		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
+		main__VSlimConfig* obj = ((main__VSlimConfig*)(ptr));
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
+	}
+}
+// export alias: VSlimConfig_set_prop -> main__vslimconfig_set_prop
+void VSlimConfig_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value) {
+	return main__vslimconfig_set_prop(ptr, name_ptr, name_len, value);
+}
+void main__vslimconfig_sync_props(voidptr ptr, zval* zv) {
+	{ // Unsafe block
+		main__VSlimConfig* obj = ((main__VSlimConfig*)(ptr));
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
+	}
+}
+// export alias: VSlimConfig_sync_props -> main__vslimconfig_sync_props
+void VSlimConfig_sync_props(voidptr ptr, zval* zv) {
+	return main__vslimconfig_sync_props(ptr, zv);
+}
+voidptr main__vphp_wrap_vslimconfig_construct(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	main__VSlimConfig* res = main__VSlimConfig_construct(recv);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimConfig_construct -> main__vphp_wrap_vslimconfig_construct
+voidptr vphp_wrap_VSlimConfig_construct(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_construct(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimconfig_load(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	main__VSlimConfig* res = main__VSlimConfig_load(recv, arg_0);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimConfig_load -> main__vphp_wrap_vslimconfig_load
+voidptr vphp_wrap_VSlimConfig_load(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_load(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimconfig_load_text(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	main__VSlimConfig* res = main__VSlimConfig_load_text(recv, arg_0);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimConfig_load_text -> main__vphp_wrap_vslimconfig_load_text
+voidptr vphp_wrap_VSlimConfig_load_text(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_load_text(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_is_loaded(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	bool res = main__VSlimConfig_is_loaded(recv);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_is_loaded -> main__vphp_wrap_vslimconfig_is_loaded
+void vphp_wrap_VSlimConfig_is_loaded(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_is_loaded(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_path(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string res = main__VSlimConfig_path(recv);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_path -> main__vphp_wrap_vslimconfig_path
+void vphp_wrap_VSlimConfig_path(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_path(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_has(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	bool res = main__VSlimConfig_has(recv, arg_0);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_has -> main__vphp_wrap_vslimconfig_has
+void vphp_wrap_VSlimConfig_has(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_has(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_string(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	string res = main__VSlimConfig_get_string(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_string -> main__vphp_wrap_vslimconfig_get_string
+void vphp_wrap_VSlimConfig_get_string(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_string(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_int(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	int arg_1 = vphp__Context_arg_T_int(ctx, 1);
+	int res = main__VSlimConfig_get_int(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_int(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_int -> main__vphp_wrap_vslimconfig_get_int
+void vphp_wrap_VSlimConfig_get_int(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_int(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_bool(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	bool arg_1 = vphp__Context_arg_T_bool(ctx, 1);
+	bool res = main__VSlimConfig_get_bool(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_bool -> main__vphp_wrap_vslimconfig_get_bool
+void vphp_wrap_VSlimConfig_get_bool(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_bool(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_float(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	f64 arg_1 = vphp__Context_arg_T_f64(ctx, 1);
+	f64 res = main__VSlimConfig_get_float(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_f64(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_float -> main__vphp_wrap_vslimconfig_get_float
+void vphp_wrap_VSlimConfig_get_float(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_float(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_string_list(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	Array_string res = main__VSlimConfig_get_string_list(recv, arg_0);
+	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_string_list -> main__vphp_wrap_vslimconfig_get_string_list
+void vphp_wrap_VSlimConfig_get_string_list(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_string_list(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_json(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	string res = main__VSlimConfig_get_json(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_json -> main__vphp_wrap_vslimconfig_get_json
+void vphp_wrap_VSlimConfig_get_json(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_json(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	vphp__ZVal res = main__VSlimConfig_get(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_vphp__ZVal(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get -> main__vphp_wrap_vslimconfig_get
+void vphp_wrap_VSlimConfig_get(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_map(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	vphp__ZVal res = main__VSlimConfig_get_map(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_vphp__ZVal(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_map -> main__vphp_wrap_vslimconfig_get_map
+void vphp_wrap_VSlimConfig_get_map(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_map(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_get_list(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	vphp__ZVal res = main__VSlimConfig_get_list(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_vphp__ZVal(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_get_list -> main__vphp_wrap_vslimconfig_get_list
+void vphp_wrap_VSlimConfig_get_list(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_get_list(ptr, ctx);
+}
+void main__vphp_wrap_vslimconfig_all_json(voidptr ptr, vphp__Context ctx) {
+	main__VSlimConfig* recv = ((main__VSlimConfig*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string res = main__VSlimConfig_all_json(recv);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimConfig_all_json -> main__vphp_wrap_vslimconfig_all_json
+void vphp_wrap_VSlimConfig_all_json(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimconfig_all_json(ptr, ctx);
+}
+voidptr main__vslimconfig_handlers(void) {
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimconfig_get_prop)),
+		.write_handler = ((voidptr)(main__vslimconfig_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimconfig_sync_props)),
+		.new_raw = ((voidptr)(main__vslimconfig_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimconfig_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimconfig_free_raw)),
+	}, sizeof(vphp_class_handlers)));
+}
+// export alias: VSlimConfig_handlers -> main__vslimconfig_handlers
+voidptr VSlimConfig_handlers(void) {
+	return main__vslimconfig_handlers();
+}
 voidptr main__vslimcontroller_new_raw(void) {
 	return vphp__generic_new_raw_T_main__VSlimController();
 }
@@ -48195,6 +67611,305 @@ VV_LOC void main__vphp_wrap_vslim_middleware_next(vphp__Context ctx) {
 // export alias: vphp_wrap_vslim_middleware_next -> main__vphp_wrap_vslim_middleware_next
 void vphp_wrap_vslim_middleware_next(vphp__Context ctx) {
 	return main__vphp_wrap_vslim_middleware_next(ctx);
+}
+main__VSlimConfig* main__VSlimConfig_construct(main__VSlimConfig* c) {
+	c->path = _S("");
+	c->loaded = false;
+	c->root = _const_toml__null;
+	return c;
+}
+main__VSlimConfig* main__VSlimConfig_load(main__VSlimConfig* c, string path) {
+	_result_toml__Doc _t1 = toml__parse_file(path);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		vphp__throw_exception_class(_S("InvalidArgumentException"), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("config load failed: "), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_SLIT0, 0, { .d_c = 0 }}})), 0);
+		return c;
+	}
+	
+ 	toml__Doc doc = (*(toml__Doc*)_t1.data);
+	c->path = path;
+	c->loaded = true;
+	c->root = toml__Doc_to_any(doc);
+	return c;
+}
+main__VSlimConfig* main__VSlimConfig_load_text(main__VSlimConfig* c, string text) {
+	_result_toml__Doc _t1 = toml__parse_text(text);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		vphp__throw_exception_class(_S("InvalidArgumentException"), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("config parse failed: "), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_SLIT0, 0, { .d_c = 0 }}})), 0);
+		return c;
+	}
+	
+ 	toml__Doc doc = (*(toml__Doc*)_t1.data);
+	c->path = _S("");
+	c->loaded = true;
+	c->root = toml__Doc_to_any(doc);
+	return c;
+}
+bool main__VSlimConfig_is_loaded(main__VSlimConfig* c) {
+	return c->loaded;
+}
+string main__VSlimConfig_path(main__VSlimConfig* c) {
+	return c->path;
+}
+bool main__VSlimConfig_has(main__VSlimConfig* c, string key) {
+	return (main__VSlimConfig_value_opt(c, key)).state != 2;
+}
+string main__VSlimConfig_get_string(main__VSlimConfig* c, string key, string default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return default_value;
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	return toml__Any_string(value);
+}
+int main__VSlimConfig_get_int(main__VSlimConfig* c, string key, int default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return default_value;
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	return toml__Any_int(value);
+}
+bool main__VSlimConfig_get_bool(main__VSlimConfig* c, string key, bool default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return default_value;
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	return toml__Any_bool(value);
+}
+f64 main__VSlimConfig_get_float(main__VSlimConfig* c, string key, f64 default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return default_value;
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	return toml__Any_f64(value);
+}
+Array_string main__VSlimConfig_get_string_list(main__VSlimConfig* c, string key) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	Array_toml__Any arr = toml__Any_array(value);
+	return Array_toml__Any_as_strings(arr);
+}
+string main__VSlimConfig_get_json(main__VSlimConfig* c, string key, string default_json) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return default_json;
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	return main__toml_any_to_json(value);
+}
+vphp__ZVal main__VSlimConfig_get(main__VSlimConfig* c, string key, vphp__ZVal default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		if (vphp__ZVal_is_valid(default_value)) {
+			return default_value;
+		}
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	return main__toml_any_to_zval(value);
+}
+vphp__ZVal main__VSlimConfig_get_map(main__VSlimConfig* c, string key, vphp__ZVal default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return main__default_or_empty(default_value);
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	if (value._typ == 127 /* map[string]toml.Any */) {
+		return main__toml_map_to_zval((*value._Map_string_toml__Any));
+	}
+	
+	else {
+		return main__default_or_empty(default_value);
+	}
+	
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal main__VSlimConfig_get_list(main__VSlimConfig* c, string key, vphp__ZVal default_value) {
+	_option_toml__Any _t1 = main__VSlimConfig_value_opt(c, key);
+	if (_t1.state != 0) {
+		return main__default_or_empty(default_value);
+	}
+	
+ 	toml__Any value = (*(toml__Any*)_t1.data);
+	if (value._typ == 128 /* []toml.Any */) {
+		return main__toml_list_to_zval((*value._Array_toml__Any));
+	}
+	
+	else {
+		return main__default_or_empty(default_value);
+	}
+	
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+string main__VSlimConfig_all_json(main__VSlimConfig* c) {
+	if (!c->loaded) {
+		return _S("{}");
+	}
+	return main__toml_any_to_json(c->root);
+}
+VV_LOC _option_toml__Any main__VSlimConfig_value_opt(main__VSlimConfig* c, string key) {
+	if (!c->loaded) {
+		return (_option_toml__Any){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+	}
+	string trimmed = builtin__string_trim_space(key);
+	if ((trimmed).len == 0) {
+		_option_toml__Any _t2;
+		builtin___option_ok(&(toml__Any[]) { c->root }, (_option*)(&_t2), sizeof(toml__Any));
+		 
+		return _t2;
+	}
+	toml__Any value = toml__Any_value(c->root, trimmed);
+	if ((value)._typ == 129 /* toml.Null */) {
+		return (_option_toml__Any){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+	}
+	_option_toml__Any _t4;
+	builtin___option_ok(&(toml__Any[]) { value }, (_option*)(&_t4), sizeof(toml__Any));
+	 
+	return _t4;
+}
+VV_LOC string main__toml_any_to_json(toml__Any value) {
+	if (value._typ == 129 /* toml.Null */) {
+		return _S("null");
+	}
+	else if (value._typ == 19 /* bool */) {
+		return ((*value._bool) ? (_S("true")) : (_S("false")));
+	}
+	else if (value._typ == 8 /* int */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = (*value._int)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	else if (value._typ == 9 /* i64 */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe09, {.d_i64 = (*value._i64)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	else if (value._typ == 14 /* u64 */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe08, {.d_u64 = (*value._u64)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	else if (value._typ == 16 /* f32 */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x1fe0e, {.d_f32 = (*value._f32)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	else if (value._typ == 17 /* f64 */) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x1fe0f, {.d_f64 = (*value._f64)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	else if (value._typ == 21 /* string */) {
+		return vphp__ZVal_to_string(vphp__call_php(_S("json_encode"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string((*value._string)))}))));
+	}
+	else if (value._typ == 130 /* toml.Date */) {
+		return vphp__ZVal_to_string(vphp__call_php(_S("json_encode"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(toml__Date_str((*value._toml__Date))))}))));
+	}
+	else if (value._typ == 131 /* toml.Time */) {
+		return vphp__ZVal_to_string(vphp__call_php(_S("json_encode"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(toml__Time_str((*value._toml__Time))))}))));
+	}
+	else if (value._typ == 132 /* toml.DateTime */) {
+		return vphp__ZVal_to_string(vphp__call_php(_S("json_encode"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(toml__DateTime_str((*value._toml__DateTime))))}))));
+	}
+	else if (value._typ == 127 /* map[string]toml.Any */) {
+		return toml__to__json(toml__Any_to_sumtype_toml__to__DocOrAny(ADDR(toml__Any, (Map_string_toml__Any_to_sumtype_toml__Any(&(*value._Map_string_toml__Any), false))), false));
+	}
+	else if (value._typ == 128 /* []toml.Any */) {
+		return toml__to__json(toml__Any_to_sumtype_toml__to__DocOrAny(ADDR(toml__Any, (Array_toml__Any_to_sumtype_toml__Any(&(*value._Array_toml__Any), false))), false));
+	}
+	
+	return _S("null");
+}
+VV_LOC vphp__ZVal main__empty_array_zval(void) {
+	vphp__ZVal out = vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+	vphp__ZVal_array_init(out);
+	return out;
+}
+VV_LOC vphp__ZVal main__default_or_empty(vphp__ZVal default_value) {
+	if (vphp__ZVal_is_valid(default_value) && !vphp__ZVal_is_null(default_value)) {
+		return default_value;
+	}
+	return main__empty_array_zval();
+}
+VV_LOC vphp__ZVal main__toml_any_to_zval(toml__Any value) {
+	if (value._typ == 129 /* toml.Null */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+	}
+	else if (value._typ == 19 /* bool */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_bool((*value._bool)));
+	}
+	else if (value._typ == 8 /* int */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int((*value._int)));
+	}
+	else if (value._typ == 9 /* i64 */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int((*value._i64)));
+	}
+	else if (value._typ == 14 /* u64 */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int(((i64)((*value._u64)))));
+	}
+	else if (value._typ == 16 /* f32 */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_float(((f64)((*value._f32)))));
+	}
+	else if (value._typ == 17 /* f64 */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_float((*value._f64)));
+	}
+	else if (value._typ == 21 /* string */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string((*value._string)));
+	}
+	else if (value._typ == 130 /* toml.Date */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(toml__Date_str((*value._toml__Date))));
+	}
+	else if (value._typ == 131 /* toml.Time */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(toml__Time_str((*value._toml__Time))));
+	}
+	else if (value._typ == 132 /* toml.DateTime */) {
+		return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(toml__DateTime_str((*value._toml__DateTime))));
+	}
+	else if (value._typ == 127 /* map[string]toml.Any */) {
+		return main__toml_map_to_zval((*value._Map_string_toml__Any));
+	}
+	else if (value._typ == 128 /* []toml.Any */) {
+		return main__toml_list_to_zval((*value._Array_toml__Any));
+	}
+	
+	return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+}
+VV_LOC vphp__ZVal main__toml_map_to_zval(Map_string_toml__Any input) {
+	vphp__ZVal out = vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+	vphp__ZVal_array_init(out);
+	int _t2 = input.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = input.key_values.len - _t2;
+		_t2 = input.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&input.key_values, _t1)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&input.key_values, _t1);
+		key = builtin__string_clone(key);
+		toml__Any item = (*(toml__Any*)builtin__DenseArray_value(&input.key_values, _t1));
+		vphp__ZVal child = main__toml_any_to_zval(item);
+		vphp_array_add_assoc_zval(out.raw, ((char*)(key.str)), child.raw);
+	}
+	return out;
+}
+VV_LOC vphp__ZVal main__toml_list_to_zval(Array_toml__Any input) {
+	vphp__ZVal out = vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+	vphp__ZVal_array_init(out);
+	for (int _t1 = 0; _t1 < input.len; ++_t1) {
+		toml__Any item = ((toml__Any*)input.data)[_t1];
+		vphp__ZVal_add_next_val(out, main__toml_any_to_zval(item));
+	}
+	return out;
+}
+VV_LOC void main__VSlimConfig_free(main__VSlimConfig* c) {
+	builtin__string_free(&c->path);
 }
 main__VSlimContainer* main__VSlimContainer_construct(main__VSlimContainer* c) {
 	c->entries = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
@@ -49465,7 +69180,7 @@ VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_s
 			return;
 		}
 		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291);
+		, (voidptr)		anon_fn_8e93695b6bd488a3_44_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291);
 		int _t3 = children.key_values.len;
 		for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
 			int _t4 = children.key_values.len - _t3;
@@ -49485,7 +69200,7 @@ VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_s
 	}
 	if (vphp__ZVal_is_object(value)) {
 		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777);
+		, (voidptr)		anon_fn_8e93695b6bd488a3_44_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777);
 		int _t6 = children.key_values.len;
 		for (int _t5 = 0; _t5 < _t6; ++_t5 ) {
 			int _t7 = children.key_values.len - _t6;
@@ -49774,7 +69489,7 @@ VV_LOC void main__vslim_trace_mem_log(main__VSlimRequest* req, string stage, i64
 	builtin__eprintln(builtin__str_intp(11, _MOV((StrIntpData[]){{_S("[vslim.mem] ts="), 0xfe09, {.d_i64 = time__Time_unix_milli(time__now())}}, {_S(" stage="), 0xfe10, {.d_s = stage}}, {_S(" method="), 0xfe10, {.d_s = req->method}}, {_S(" path="), 0xfe10, {.d_s = req->path}}, {_S(" bytes="), 0xfe09, {.d_i64 = bytes}}, {_S(" delta="), 0xfe09, {.d_i64 = delta}}, {_S(" ar_len="), 0xfe07, {.d_i32 = counters.autorelease_len}}, {_S(" owned_len="), 0xfe07, {.d_i32 = counters.owned_len}}, {_S(" obj_reg="), 0xfe06, {.d_u32 = counters.obj_registry_len}}, {_S(" rev_reg="), 0xfe06, {.d_u32 = counters.rev_registry_len}}, {_SLIT0, 0, { .d_c = 0 }}})));
 }
 main__VSlimApp* main__VSlimApp__static__demo(void) {
-	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = vphp__PersistentOwnedZVal__static__new_null(),.error_handler = vphp__PersistentOwnedZVal__static__new_null(),.container_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = true,.error_response_json = 0,.view_base_path = (string){.str=(byteptr)"", .is_lit=1},.assets_prefix = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimApp)));
+	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = vphp__PersistentOwnedZVal__static__new_null(),.error_handler = vphp__PersistentOwnedZVal__static__new_null(),.container_ref = ((void*)0),.config_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = true,.error_response_json = 0,.view_base_path = (string){.str=(byteptr)"", .is_lit=1},.assets_prefix = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__VSlimApp)));
 }
 main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path) {
 	app->base_path = main__RoutePath__static__normalize_base_path(base_path);
@@ -49785,6 +69500,7 @@ bool main__VSlimApp_has_container(main__VSlimApp* app) {
 }
 main__VSlimApp* main__VSlimApp_set_container(main__VSlimApp* app, main__VSlimContainer* container) {
 	app->container_ref = container;
+	main__VSlimApp_sync_config_to_container(app);
 	return app;
 }
 main__VSlimContainer* main__VSlimApp_container(main__VSlimApp* app) {
@@ -49793,7 +69509,51 @@ main__VSlimContainer* main__VSlimApp_container(main__VSlimApp* app) {
 		main__VSlimContainer_construct(created);
 		app->container_ref = created;
 	}
+	main__VSlimApp_sync_config_to_container(app);
 	return app->container_ref;
+}
+bool main__VSlimApp_has_config(main__VSlimApp* app) {
+	return app->config_ref != ((void*)0);
+}
+main__VSlimApp* main__VSlimApp_set_config(main__VSlimApp* app, main__VSlimConfig* config) {
+	app->config_ref = config;
+	main__VSlimApp_sync_config_to_container(app);
+	return app;
+}
+main__VSlimConfig* main__VSlimApp_config(main__VSlimApp* app) {
+	if (app->config_ref == ((void*)0)) {
+		main__VSlimConfig* created = ((main__VSlimConfig*)builtin__memdup(&(main__VSlimConfig){.path = (string){.str=(byteptr)"", .is_lit=1},.loaded = 0,.root = _const_toml__null,}, sizeof(main__VSlimConfig)));
+		main__VSlimConfig_construct(created);
+		app->config_ref = created;
+		main__VSlimApp_sync_config_to_container(app);
+	}
+	return app->config_ref;
+}
+main__VSlimApp* main__VSlimApp_load_config(main__VSlimApp* app, string path) {
+	main__VSlimConfig* cfg = main__VSlimApp_config(app);
+	main__VSlimConfig_load(cfg, path);
+	main__VSlimApp_sync_config_to_container(app);
+	return app;
+}
+main__VSlimApp* main__VSlimApp_load_config_text(main__VSlimApp* app, string text) {
+	main__VSlimConfig* cfg = main__VSlimApp_config(app);
+	main__VSlimConfig_load_text(cfg, text);
+	main__VSlimApp_sync_config_to_container(app);
+	return app;
+}
+VV_LOC void main__VSlimApp_sync_config_to_container(main__VSlimApp* app) {
+	if (app->container_ref == ((void*)0) || app->config_ref == ((void*)0)) {
+		return;
+	}
+	{ // Unsafe block
+		zval* z = vphp_new_zval();
+		if (z == 0) {
+			return;
+		}
+		vphp_return_obj(z, app->config_ref, vslim__config_ce);
+		main__VSlimContainer_set(app->container_ref, _S("config"), ((vphp__ZVal){.raw = z,.owned = 0,}));
+		vphp_release_zval(z);
+	}
 }
 main__RouteGroup* main__VSlimApp_group(main__VSlimApp* app, string prefix) {
 	return ((main__RouteGroup*)builtin__memdup(&(main__RouteGroup){.app = app,.prefix = main__RoutePath__static__normalize_group_prefix(prefix),}, sizeof(main__RouteGroup)));
@@ -49813,9 +69573,9 @@ main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__
 		trace_base = main__vslim_mem_usage_bytes();
 		main__vslim_trace_mem_log(req, _S("dispatch.enter"), trace_base);
 	}
-	multi_return_main__VSlimResponse_Map_string_string mr_3836 = main__dispatch_app_request_with_params(app, req, trace_on, trace_base);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_3836.arg0);
-	Map_string_string params = mr_3836.arg1;
+	multi_return_main__VSlimResponse_Map_string_string mr_5097 = main__dispatch_app_request_with_params(app, req, trace_on, trace_base);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_5097.arg0);
+	Map_string_string params = mr_5097.arg1;
 	if (trace_on) {
 		main__vslim_trace_mem_log(req, _S("dispatch.after_core"), trace_base);
 	}
@@ -49872,8 +69632,8 @@ Map_string_string main__VSlimApp_dispatch_envelope_map(main__VSlimApp* app, vphp
 		trace_base = main__vslim_mem_usage_bytes();
 		main__vslim_trace_mem_log(req, _S("dispatch_map.enter"), trace_base);
 	}
-	multi_return_main__VSlimResponse_Map_string_string mr_5433 = main__dispatch_app_request_with_params(app, req, trace_on, trace_base);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_5433.arg0);
+	multi_return_main__VSlimResponse_Map_string_string mr_6694 = main__dispatch_app_request_with_params(app, req, trace_on, trace_base);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_6694.arg0);
 	if (trace_on) {
 		main__vslim_trace_mem_log(req, _S("dispatch_map.after_core"), trace_base);
 	}
@@ -50525,8 +70285,8 @@ Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_
 	Array_string allowed = builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
 		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_25967 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_25967.arg0;
+		multi_return_bool_Map_string_string mr_27228 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_27228.arg0;
 		if (!ok) {
 			continue;
 		}
@@ -50563,10 +70323,10 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_req
 		if (trace_on) {
 			main__vslim_trace_mem_log(req, _S("dispatch.routes.begin"), trace_base);
 		}
-		multi_return_main__VSlimResponse_Map_string_string_bool mr_27285 = main__dispatch_php_routes_with_params(app, req, trace_on, trace_base);
-		main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_27285.arg0);
-		Map_string_string params = mr_27285.arg1;
-		bool ok = mr_27285.arg2;
+		multi_return_main__VSlimResponse_Map_string_string_bool mr_28546 = main__dispatch_php_routes_with_params(app, req, trace_on, trace_base);
+		main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_28546.arg0);
+		Map_string_string params = mr_28546.arg1;
+		bool ok = mr_28546.arg2;
 		if (trace_on) {
 			main__vslim_trace_mem_log(req, _S("dispatch.routes.end"), trace_base);
 		}
@@ -50597,9 +70357,9 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 		if (route.handler_type != main__VSlimRouteHandlerType__php_callable) {
 			continue;
 		}
-		multi_return_bool_Map_string_string mr_28234 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_28234.arg0;
-		Map_string_string params = mr_28234.arg1;
+		multi_return_bool_Map_string_string mr_29495 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_29495.arg0;
+		Map_string_string params = mr_29495.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -50933,9 +70693,9 @@ VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* 
 	}
 	vphp__RequestOwnedZVal mw = (*(vphp__RequestOwnedZVal*)builtin__array_get(chain->middlewares, chain->index));
 	chain->index++;
-	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021, (struct _V_anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021_Ctx){.payload = payload,
+	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282, (struct _V_anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282_Ctx){.payload = payload,
 		.mw = mw,
-	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021_Ctx))));
+	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_45___vphp__ZVal_41282_Ctx))));
 	if (!vphp__ZVal_is_valid(raw) || vphp__ZVal_is_null(raw) || vphp__ZVal_is_undef(raw)) {
 		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(_S("Middleware must return a response")), .data={E_STRUCT} };
 	}
@@ -51007,9 +70767,9 @@ main__VSlimResponse* initial = HEAP(main__VSlimResponse, _v_toheap_initial);
 	return (*(current));
 }
 VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__BorrowedZVal request_payload, vphp__BorrowedZVal result, int fallback_status, string fallback_message) {
-	multi_return_main__VSlimResponse_bool mr_42395 = main__normalize_php_route_response_borrowed(result);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_42395.arg0);
-	bool ok = mr_42395.arg1;
+	multi_return_main__VSlimResponse_bool mr_43656 = main__normalize_php_route_response_borrowed(result);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_43656.arg0);
+	bool ok = mr_43656.arg1;
 	if (ok) {
 		return (*(res));
 	}
@@ -51043,9 +70803,9 @@ VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, 
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
 	vphp__ZVal raw = vphp__PersistentOwnedZVal_call_owned_request(eh, builtin__new_array_from_c_array(3, 3, sizeof(vphp__ZVal), _MOV((vphp__ZVal[3]){vphp__BorrowedZVal_to_zval(request_payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(message)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int(status))})));
-	multi_return_main__VSlimResponse_bool mr_43753 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_43753.arg0);
-	bool ok = mr_43753.arg1;
+	multi_return_main__VSlimResponse_bool mr_45014 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_45014.arg0);
+	bool ok = mr_45014.arg1;
 	if (!ok) {
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
@@ -51637,7 +71397,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61767);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_45_vphp__zval_vphp__zval_mut_map_string_string_63028);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
@@ -53080,9 +72840,9 @@ main__VSlimRequest* req = HEAP(main__VSlimRequest, _v_toheap_req);
 		return main__VSlimRuntime_dispatch_route(app, (*(req)));
 	}
 	main__VSlimResponse (*mw) (main__VSlimRequest , main__VSlimResponse (*)(main__VSlimRequest )) = (*(voidptr*)builtin__array_get(app.middlewares, index));
-	main__VSlimResponse (*next) (main__VSlimRequest) = 	builtin__closure__closure_create(anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967, (struct _V_anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967_Ctx){.app = app,
+	main__VSlimResponse (*next) (main__VSlimRequest) = 	builtin__closure__closure_create(anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967, (struct _V_anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967_Ctx){.app = app,
 		.index = index,
-	}, sizeof(struct _V_anon_fn_0ad197fd27271f23_49_main__vslimrequest__main__VSlimResponse_1967_Ctx)));
+	}, sizeof(struct _V_anon_fn_0ad197fd27271f23_50_main__vslimrequest__main__VSlimResponse_1967_Ctx)));
 	return mw((*(req)), (voidptr)next);
 }
 VV_LOC main__VSlimResponse main__VSlimRuntime_dispatch_route(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req) {
@@ -53280,12 +73040,35 @@ VV_LOC void main__VSlimResponse_free(main__VSlimResponse* res) {
 	}
 }
 void _vinit(int ___argc, voidptr ___argv) {
-	as_cast_type_indexes = builtin__new_array_from_c_array(5, 5, sizeof(VCastTypeIndexName), _MOV((VCastTypeIndexName[5]){
+	as_cast_type_indexes = builtin__new_array_from_c_array(28, 28, sizeof(VCastTypeIndexName), _MOV((VCastTypeIndexName[28]){
 		  (VCastTypeIndexName){.tindex = 0, .tname = _S("unknown")}
-		, (VCastTypeIndexName){.tindex = 65889, .tname = _S("net.TcpConn")}
+		, (VCastTypeIndexName){.tindex = 293, .tname = _S("toml.ast.Bool")}
+		, (VCastTypeIndexName){.tindex = 288, .tname = _S("toml.ast.Date")}
+		, (VCastTypeIndexName){.tindex = 290, .tname = _S("toml.ast.DateTime")}
+		, (VCastTypeIndexName){.tindex = 285, .tname = _S("toml.ast.Null")}
+		, (VCastTypeIndexName){.tindex = 292, .tname = _S("toml.ast.Number")}
+		, (VCastTypeIndexName){.tindex = 291, .tname = _S("toml.ast.Quoted")}
+		, (VCastTypeIndexName){.tindex = 289, .tname = _S("toml.ast.Time")}
+		, (VCastTypeIndexName){.tindex = 286, .tname = _S("[]toml.ast.Value")}
+		, (VCastTypeIndexName){.tindex = 287, .tname = _S("map[string]toml.ast.Value")}
+		, (VCastTypeIndexName){.tindex = 455, .tname = _S("toml.ast.Bare")}
+		, (VCastTypeIndexName){.tindex = 130, .tname = _S("toml.Date")}
+		, (VCastTypeIndexName){.tindex = 132, .tname = _S("toml.DateTime")}
+		, (VCastTypeIndexName){.tindex = 129, .tname = _S("toml.Null")}
+		, (VCastTypeIndexName){.tindex = 131, .tname = _S("toml.Time")}
+		, (VCastTypeIndexName){.tindex = 128, .tname = _S("[]toml.Any")}
+		, (VCastTypeIndexName){.tindex = 19, .tname = _S("bool")}
+		, (VCastTypeIndexName){.tindex = 16, .tname = _S("f32")}
+		, (VCastTypeIndexName){.tindex = 17, .tname = _S("f64")}
+		, (VCastTypeIndexName){.tindex = 9, .tname = _S("i64")}
+		, (VCastTypeIndexName){.tindex = 8, .tname = _S("int")}
+		, (VCastTypeIndexName){.tindex = 127, .tname = _S("map[string]toml.Any")}
+		, (VCastTypeIndexName){.tindex = 21, .tname = _S("string")}
+		, (VCastTypeIndexName){.tindex = 14, .tname = _S("u64")}
+		, (VCastTypeIndexName){.tindex = 65945, .tname = _S("net.TcpConn")}
 		, (VCastTypeIndexName){.tindex = 2, .tname = _S("voidptr")}
-		, (VCastTypeIndexName){.tindex = 65857, .tname = _S("net.ssl.SSLConn")}
-		, (VCastTypeIndexName){.tindex = 407, .tname = _S("net.openssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 65913, .tname = _S("net.ssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 525, .tname = _S("net.openssl.SSLConn")}
 	}));
 
 
@@ -53590,6 +73373,213 @@ int _t2;
 	_const_math__cos_cs = ((math__ChebSeries){.c = _const_math__cos_data,.order = 10,.a = -1,.b = 1,});
 }
 }
+	// Initializations of consts for module x.json2
+	_const_x__json2__true_string = _S("true");
+	_const_x__json2__false_string = _S("false");
+	_const_x__json2__null_in_string = _S("null");
+	_const_x__json2__true_in_string = _S("true");
+	_const_x__json2__false_in_string = _S("false");
+	_const_x__json2__float_zero_in_string = _S("0.0");
+{
+{
+	_const_x__json2__null = ((x__json2__Null){E_STRUCT});
+}
+}
+	// Initializations of consts for module encoding.utf8
+	_const_encoding__utf8__max_latin_1 = ((rune)(0x00ff));
+{
+{
+	_const_encoding__utf8__letter_table = ((encoding__utf8__RangeTable){.r16 = builtin__new_array_from_c_array(359, 359, sizeof(encoding__utf8__Range16), _MOV((encoding__utf8__Range16[359]){
+		((encoding__utf8__Range16){.lo = 0x0041,.hi = 0x005a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0061,.hi = 0x007a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x00aa,.hi = 0x00b5,.stride = 11,}), ((encoding__utf8__Range16){.lo = 0x00ba,.hi = 0x00c0,.stride = 6,}), ((encoding__utf8__Range16){.lo = 0x00c1,.hi = 0x00d6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x00d8,.hi = 0x00f6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x00f8,.hi = 0x02c1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x02c6,.hi = 0x02d1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x02e0,.hi = 0x02e4,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x02ec,.hi = 0x02ee,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x0370,.hi = 0x0374,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0376,.hi = 0x0377,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x037a,.hi = 0x037d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x037f,.hi = 0x0386,.stride = 7,}), ((encoding__utf8__Range16){.lo = 0x0388,.hi = 0x038a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x038c,.hi = 0x038e,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x038f,.hi = 0x03a1,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x03a3,.hi = 0x03f5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x03f7,.hi = 0x0481,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x048a,.hi = 0x052f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0531,.hi = 0x0556,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0559,.hi = 0x0560,.stride = 7,}), ((encoding__utf8__Range16){.lo = 0x0561,.hi = 0x0588,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x05d0,.hi = 0x05ea,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x05ef,.hi = 0x05f2,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0620,.hi = 0x064a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x066e,.hi = 0x066f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0671,.hi = 0x06d3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x06d5,.hi = 0x06e5,.stride = 16,}), ((encoding__utf8__Range16){.lo = 0x06e6,.hi = 0x06ee,.stride = 8,}), ((encoding__utf8__Range16){.lo = 0x06ef,.hi = 0x06fa,.stride = 11,}), ((encoding__utf8__Range16){.lo = 0x06fb,.hi = 0x06fc,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x06ff,.hi = 0x0710,.stride = 17,}),
+		((encoding__utf8__Range16){.lo = 0x0712,.hi = 0x072f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x074d,.hi = 0x07a5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x07b1,.hi = 0x07ca,.stride = 25,}), ((encoding__utf8__Range16){.lo = 0x07cb,.hi = 0x07ea,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x07f4,.hi = 0x07f5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x07fa,.hi = 0x0800,.stride = 6,}), ((encoding__utf8__Range16){.lo = 0x0801,.hi = 0x0815,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x081a,.hi = 0x0824,.stride = 10,}),
+		((encoding__utf8__Range16){.lo = 0x0828,.hi = 0x0840,.stride = 24,}), ((encoding__utf8__Range16){.lo = 0x0841,.hi = 0x0858,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0860,.hi = 0x086a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x08a0,.hi = 0x08b4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x08b6,.hi = 0x08c7,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0904,.hi = 0x0939,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x093d,.hi = 0x0950,.stride = 19,}), ((encoding__utf8__Range16){.lo = 0x0958,.hi = 0x0961,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0971,.hi = 0x0980,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0985,.hi = 0x098c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x098f,.hi = 0x0990,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0993,.hi = 0x09a8,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09aa,.hi = 0x09b0,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09b2,.hi = 0x09b6,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0x09b7,.hi = 0x09b9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09bd,.hi = 0x09ce,.stride = 17,}),
+		((encoding__utf8__Range16){.lo = 0x09dc,.hi = 0x09dd,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09df,.hi = 0x09e1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09f0,.hi = 0x09f1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09fc,.hi = 0x0a05,.stride = 9,}), ((encoding__utf8__Range16){.lo = 0x0a06,.hi = 0x0a0a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a0f,.hi = 0x0a10,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a13,.hi = 0x0a28,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a2a,.hi = 0x0a30,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0a32,.hi = 0x0a33,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a35,.hi = 0x0a36,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a38,.hi = 0x0a39,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a59,.hi = 0x0a5c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a5e,.hi = 0x0a72,.stride = 20,}), ((encoding__utf8__Range16){.lo = 0x0a73,.hi = 0x0a74,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a85,.hi = 0x0a8d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a8f,.hi = 0x0a91,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0a93,.hi = 0x0aa8,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0aaa,.hi = 0x0ab0,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ab2,.hi = 0x0ab3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ab5,.hi = 0x0ab9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0abd,.hi = 0x0ad0,.stride = 19,}), ((encoding__utf8__Range16){.lo = 0x0ae0,.hi = 0x0ae1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0af9,.hi = 0x0b05,.stride = 12,}), ((encoding__utf8__Range16){.lo = 0x0b06,.hi = 0x0b0c,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0b0f,.hi = 0x0b10,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b13,.hi = 0x0b28,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b2a,.hi = 0x0b30,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b32,.hi = 0x0b33,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b35,.hi = 0x0b39,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b3d,.hi = 0x0b5c,.stride = 31,}), ((encoding__utf8__Range16){.lo = 0x0b5d,.hi = 0x0b5f,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x0b60,.hi = 0x0b61,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0b71,.hi = 0x0b83,.stride = 18,}), ((encoding__utf8__Range16){.lo = 0x0b85,.hi = 0x0b8a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b8e,.hi = 0x0b90,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b92,.hi = 0x0b95,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b99,.hi = 0x0b9a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b9c,.hi = 0x0b9e,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x0b9f,.hi = 0x0ba3,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0x0ba4,.hi = 0x0ba8,.stride = 4,}),
+		((encoding__utf8__Range16){.lo = 0x0ba9,.hi = 0x0baa,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0bae,.hi = 0x0bb9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0bd0,.hi = 0x0c05,.stride = 53,}), ((encoding__utf8__Range16){.lo = 0x0c06,.hi = 0x0c0c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c0e,.hi = 0x0c10,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c12,.hi = 0x0c28,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c2a,.hi = 0x0c39,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c3d,.hi = 0x0c58,.stride = 27,}),
+		((encoding__utf8__Range16){.lo = 0x0c59,.hi = 0x0c5a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c60,.hi = 0x0c61,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c80,.hi = 0x0c85,.stride = 5,}), ((encoding__utf8__Range16){.lo = 0x0c86,.hi = 0x0c8c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c8e,.hi = 0x0c90,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c92,.hi = 0x0ca8,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0caa,.hi = 0x0cb3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0cb5,.hi = 0x0cb9,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0cbd,.hi = 0x0cde,.stride = 33,}), ((encoding__utf8__Range16){.lo = 0x0ce0,.hi = 0x0ce1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0cf1,.hi = 0x0cf2,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d04,.hi = 0x0d0c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d0e,.hi = 0x0d10,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d12,.hi = 0x0d3a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d3d,.hi = 0x0d4e,.stride = 17,}), ((encoding__utf8__Range16){.lo = 0x0d54,.hi = 0x0d56,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0d5f,.hi = 0x0d61,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d7a,.hi = 0x0d7f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d85,.hi = 0x0d96,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d9a,.hi = 0x0db1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0db3,.hi = 0x0dbb,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0dbd,.hi = 0x0dc0,.stride = 3,}), ((encoding__utf8__Range16){.lo = 0x0dc1,.hi = 0x0dc6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0e01,.hi = 0x0e30,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0e32,.hi = 0x0e33,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0e40,.hi = 0x0e46,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0e81,.hi = 0x0e82,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0e84,.hi = 0x0e86,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x0e87,.hi = 0x0e8a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0e8c,.hi = 0x0ea3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ea5,.hi = 0x0ea7,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x0ea8,.hi = 0x0eb0,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0eb2,.hi = 0x0eb3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ebd,.hi = 0x0ec0,.stride = 3,}), ((encoding__utf8__Range16){.lo = 0x0ec1,.hi = 0x0ec4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ec6,.hi = 0x0edc,.stride = 22,}), ((encoding__utf8__Range16){.lo = 0x0edd,.hi = 0x0edf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0f00,.hi = 0x0f40,.stride = 64,}), ((encoding__utf8__Range16){.lo = 0x0f41,.hi = 0x0f47,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0f49,.hi = 0x0f6c,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0f88,.hi = 0x0f8c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1000,.hi = 0x102a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x103f,.hi = 0x1050,.stride = 17,}), ((encoding__utf8__Range16){.lo = 0x1051,.hi = 0x1055,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x105a,.hi = 0x105d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1061,.hi = 0x1065,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0x1066,.hi = 0x106e,.stride = 8,}), ((encoding__utf8__Range16){.lo = 0x106f,.hi = 0x1070,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1075,.hi = 0x1081,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x108e,.hi = 0x10a0,.stride = 18,}), ((encoding__utf8__Range16){.lo = 0x10a1,.hi = 0x10c5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x10c7,.hi = 0x10cd,.stride = 6,}), ((encoding__utf8__Range16){.lo = 0x10d0,.hi = 0x10fa,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x10fc,.hi = 0x1248,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x124a,.hi = 0x124d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1250,.hi = 0x1256,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1258,.hi = 0x125a,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x125b,.hi = 0x125d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1260,.hi = 0x1288,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x128a,.hi = 0x128d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1290,.hi = 0x12b0,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x12b2,.hi = 0x12b5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x12b8,.hi = 0x12be,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x12c0,.hi = 0x12c2,.stride = 2,}),
+		((encoding__utf8__Range16){.lo = 0x12c3,.hi = 0x12c5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x12c8,.hi = 0x12d6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x12d8,.hi = 0x1310,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1312,.hi = 0x1315,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1318,.hi = 0x135a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1380,.hi = 0x138f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x13a0,.hi = 0x13f5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x13f8,.hi = 0x13fd,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1401,.hi = 0x166c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x166f,.hi = 0x167f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1681,.hi = 0x169a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x16a0,.hi = 0x16ea,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x16f1,.hi = 0x16f8,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1700,.hi = 0x170c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x170e,.hi = 0x1711,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1720,.hi = 0x1731,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1740,.hi = 0x1751,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1760,.hi = 0x176c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x176e,.hi = 0x1770,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1780,.hi = 0x17b3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x17d7,.hi = 0x17dc,.stride = 5,}), ((encoding__utf8__Range16){.lo = 0x1820,.hi = 0x1878,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1880,.hi = 0x1884,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1887,.hi = 0x18a8,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x18aa,.hi = 0x18b0,.stride = 6,}), ((encoding__utf8__Range16){.lo = 0x18b1,.hi = 0x18f5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1900,.hi = 0x191e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1950,.hi = 0x196d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1970,.hi = 0x1974,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1980,.hi = 0x19ab,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x19b0,.hi = 0x19c9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1a00,.hi = 0x1a16,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1a20,.hi = 0x1a54,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1aa7,.hi = 0x1b05,.stride = 94,}), ((encoding__utf8__Range16){.lo = 0x1b06,.hi = 0x1b33,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1b45,.hi = 0x1b4b,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1b83,.hi = 0x1ba0,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1bae,.hi = 0x1baf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1bba,.hi = 0x1be5,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1c00,.hi = 0x1c23,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1c4d,.hi = 0x1c4f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1c5a,.hi = 0x1c7d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1c80,.hi = 0x1c88,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1c90,.hi = 0x1cba,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1cbd,.hi = 0x1cbf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1ce9,.hi = 0x1cec,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1cee,.hi = 0x1cf3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1cf5,.hi = 0x1cf6,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1cfa,.hi = 0x1d00,.stride = 6,}), ((encoding__utf8__Range16){.lo = 0x1d01,.hi = 0x1dbf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1e00,.hi = 0x1f15,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1f18,.hi = 0x1f1d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1f20,.hi = 0x1f45,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1f48,.hi = 0x1f4d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1f50,.hi = 0x1f57,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1f59,.hi = 0x1f5f,.stride = 2,}),
+		((encoding__utf8__Range16){.lo = 0x1f60,.hi = 0x1f7d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1f80,.hi = 0x1fb4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1fb6,.hi = 0x1fbc,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1fbe,.hi = 0x1fc2,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0x1fc3,.hi = 0x1fc4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1fc6,.hi = 0x1fcc,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1fd0,.hi = 0x1fd3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1fd6,.hi = 0x1fdb,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1fe0,.hi = 0x1fec,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1ff2,.hi = 0x1ff4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1ff6,.hi = 0x1ffc,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2071,.hi = 0x207f,.stride = 14,}), ((encoding__utf8__Range16){.lo = 0x2090,.hi = 0x209c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2102,.hi = 0x2107,.stride = 5,}), ((encoding__utf8__Range16){.lo = 0x210a,.hi = 0x2113,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2115,.hi = 0x2119,.stride = 4,}),
+		((encoding__utf8__Range16){.lo = 0x211a,.hi = 0x211d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2124,.hi = 0x212a,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0x212b,.hi = 0x212d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x212f,.hi = 0x2139,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x213c,.hi = 0x213f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2145,.hi = 0x2149,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x214e,.hi = 0x2183,.stride = 53,}), ((encoding__utf8__Range16){.lo = 0x2184,.hi = 0x2c00,.stride = 2684,}),
+		((encoding__utf8__Range16){.lo = 0x2c01,.hi = 0x2c2e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2c30,.hi = 0x2c5e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2c60,.hi = 0x2ce4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2ceb,.hi = 0x2cee,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2cf2,.hi = 0x2cf3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2d00,.hi = 0x2d25,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2d27,.hi = 0x2d2d,.stride = 6,}), ((encoding__utf8__Range16){.lo = 0x2d30,.hi = 0x2d67,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x2d6f,.hi = 0x2d80,.stride = 17,}), ((encoding__utf8__Range16){.lo = 0x2d81,.hi = 0x2d96,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2da0,.hi = 0x2da6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2da8,.hi = 0x2dae,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2db0,.hi = 0x2db6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2db8,.hi = 0x2dbe,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2dc0,.hi = 0x2dc6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2dc8,.hi = 0x2dce,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x2dd0,.hi = 0x2dd6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2dd8,.hi = 0x2dde,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2e2f,.hi = 0x3005,.stride = 470,}), ((encoding__utf8__Range16){.lo = 0x3006,.hi = 0x3031,.stride = 43,}), ((encoding__utf8__Range16){.lo = 0x3032,.hi = 0x3035,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x303b,.hi = 0x303c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3041,.hi = 0x3096,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x309d,.hi = 0x309f,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x30a1,.hi = 0x30fa,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x30fc,.hi = 0x30ff,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3105,.hi = 0x312f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3131,.hi = 0x318e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x31a0,.hi = 0x31bf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x31f0,.hi = 0x31ff,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3400,.hi = 0x4dbf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x4e00,.hi = 0x9ffc,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xa000,.hi = 0xa48c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa4d0,.hi = 0xa4fd,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa500,.hi = 0xa60c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa610,.hi = 0xa61f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa62a,.hi = 0xa62b,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa640,.hi = 0xa66e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa67f,.hi = 0xa69d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa6a0,.hi = 0xa6e5,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xa717,.hi = 0xa71f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa722,.hi = 0xa788,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa78b,.hi = 0xa7bf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa7c2,.hi = 0xa7ca,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa7f5,.hi = 0xa801,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa803,.hi = 0xa805,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa807,.hi = 0xa80a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa80c,.hi = 0xa822,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xa840,.hi = 0xa873,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa882,.hi = 0xa8b3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa8f2,.hi = 0xa8f7,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa8fb,.hi = 0xa8fd,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0xa8fe,.hi = 0xa90a,.stride = 12,}), ((encoding__utf8__Range16){.lo = 0xa90b,.hi = 0xa925,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa930,.hi = 0xa946,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa960,.hi = 0xa97c,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xa984,.hi = 0xa9b2,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa9cf,.hi = 0xa9e0,.stride = 17,}), ((encoding__utf8__Range16){.lo = 0xa9e1,.hi = 0xa9e4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa9e6,.hi = 0xa9ef,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa9fa,.hi = 0xa9fe,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaa00,.hi = 0xaa28,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaa40,.hi = 0xaa42,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaa44,.hi = 0xaa4b,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xaa60,.hi = 0xaa76,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaa7a,.hi = 0xaa7e,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0xaa7f,.hi = 0xaaaf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaab1,.hi = 0xaab5,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0xaab6,.hi = 0xaab9,.stride = 3,}), ((encoding__utf8__Range16){.lo = 0xaaba,.hi = 0xaabd,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaac0,.hi = 0xaac2,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0xaadb,.hi = 0xaadd,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xaae0,.hi = 0xaaea,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaaf2,.hi = 0xaaf4,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab01,.hi = 0xab06,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab09,.hi = 0xab0e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab11,.hi = 0xab16,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab20,.hi = 0xab26,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab28,.hi = 0xab2e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab30,.hi = 0xab5a,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xab5c,.hi = 0xab69,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xab70,.hi = 0xabe2,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xac00,.hi = 0xd7a3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xd7b0,.hi = 0xd7c6,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xd7cb,.hi = 0xd7fb,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xf900,.hi = 0xfa6d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfa70,.hi = 0xfad9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfb00,.hi = 0xfb06,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xfb13,.hi = 0xfb17,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfb1d,.hi = 0xfb1f,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0xfb20,.hi = 0xfb28,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfb2a,.hi = 0xfb36,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfb38,.hi = 0xfb3c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfb3e,.hi = 0xfb40,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0xfb41,.hi = 0xfb43,.stride = 2,}), ((encoding__utf8__Range16){.lo = 0xfb44,.hi = 0xfb46,.stride = 2,}),
+		((encoding__utf8__Range16){.lo = 0xfb47,.hi = 0xfbb1,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfbd3,.hi = 0xfd3d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfd50,.hi = 0xfd8f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfd92,.hi = 0xfdc7,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfdf0,.hi = 0xfdfb,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfe70,.hi = 0xfe74,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xfe76,.hi = 0xfefc,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xff21,.hi = 0xff3a,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xff41,.hi = 0xff5a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xff66,.hi = 0xffbe,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xffc2,.hi = 0xffc7,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xffca,.hi = 0xffcf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xffd2,.hi = 0xffd7,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xffda,.hi = 0xffdc,.stride = 1,})})),.r32 = builtin__new_array_from_c_array(227, 227, sizeof(encoding__utf8__Range32), _MOV((encoding__utf8__Range32[227]){
+		((encoding__utf8__Range32){.lo = 0x10000,.hi = 0x1000b,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1000d,.hi = 0x10026,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10028,.hi = 0x1003a,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1003c,.hi = 0x1003d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1003f,.hi = 0x1004d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10050,.hi = 0x1005d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10080,.hi = 0x100fa,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10280,.hi = 0x1029c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x102a0,.hi = 0x102d0,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10300,.hi = 0x1031f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1032d,.hi = 0x10340,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10342,.hi = 0x10349,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10350,.hi = 0x10375,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10380,.hi = 0x1039d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x103a0,.hi = 0x103c3,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x103c8,.hi = 0x103cf,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10400,.hi = 0x1049d,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x104b0,.hi = 0x104d3,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x104d8,.hi = 0x104fb,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10500,.hi = 0x10527,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10530,.hi = 0x10563,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10600,.hi = 0x10736,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10740,.hi = 0x10755,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10760,.hi = 0x10767,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10800,.hi = 0x10805,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10808,.hi = 0x1080a,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1080b,.hi = 0x10835,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10837,.hi = 0x10838,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1083c,.hi = 0x1083f,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x10840,.hi = 0x10855,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10860,.hi = 0x10876,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10880,.hi = 0x1089e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x108e0,.hi = 0x108f2,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x108f4,.hi = 0x108f5,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10900,.hi = 0x10915,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10920,.hi = 0x10939,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10980,.hi = 0x109b7,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x109be,.hi = 0x109bf,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10a00,.hi = 0x10a10,.stride = 16,}), ((encoding__utf8__Range32){.lo = 0x10a11,.hi = 0x10a13,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10a15,.hi = 0x10a17,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10a19,.hi = 0x10a35,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10a60,.hi = 0x10a7c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10a80,.hi = 0x10a9c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10ac0,.hi = 0x10ac7,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10ac9,.hi = 0x10ae4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10b00,.hi = 0x10b35,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10b40,.hi = 0x10b55,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10b60,.hi = 0x10b72,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10b80,.hi = 0x10b91,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10c00,.hi = 0x10c48,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10c80,.hi = 0x10cb2,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10cc0,.hi = 0x10cf2,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10d00,.hi = 0x10d23,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10e80,.hi = 0x10ea9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10eb0,.hi = 0x10eb1,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10f00,.hi = 0x10f1c,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10f27,.hi = 0x10f30,.stride = 9,}), ((encoding__utf8__Range32){.lo = 0x10f31,.hi = 0x10f45,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10fb0,.hi = 0x10fc4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10fe0,.hi = 0x10ff6,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11003,.hi = 0x11037,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11083,.hi = 0x110af,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x110d0,.hi = 0x110e8,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11103,.hi = 0x11126,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11144,.hi = 0x11147,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x11150,.hi = 0x11172,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11176,.hi = 0x11183,.stride = 13,}), ((encoding__utf8__Range32){.lo = 0x11184,.hi = 0x111b2,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x111c1,.hi = 0x111c4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x111da,.hi = 0x111dc,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x11200,.hi = 0x11211,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11213,.hi = 0x1122b,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11280,.hi = 0x11286,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11288,.hi = 0x1128a,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1128b,.hi = 0x1128d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1128f,.hi = 0x1129d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1129f,.hi = 0x112a8,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x112b0,.hi = 0x112de,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11305,.hi = 0x1130c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1130f,.hi = 0x11310,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11313,.hi = 0x11328,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1132a,.hi = 0x11330,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11332,.hi = 0x11333,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11335,.hi = 0x11339,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1133d,.hi = 0x11350,.stride = 19,}), ((encoding__utf8__Range32){.lo = 0x1135d,.hi = 0x11361,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11400,.hi = 0x11434,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11447,.hi = 0x1144a,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1145f,.hi = 0x11461,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11480,.hi = 0x114af,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x114c4,.hi = 0x114c5,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x114c7,.hi = 0x11580,.stride = 185,}), ((encoding__utf8__Range32){.lo = 0x11581,.hi = 0x115ae,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x115d8,.hi = 0x115db,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11600,.hi = 0x1162f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11644,.hi = 0x11680,.stride = 60,}),
+		((encoding__utf8__Range32){.lo = 0x11681,.hi = 0x116aa,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x116b8,.hi = 0x11700,.stride = 72,}), ((encoding__utf8__Range32){.lo = 0x11701,.hi = 0x1171a,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11800,.hi = 0x1182b,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x118a0,.hi = 0x118df,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x118ff,.hi = 0x11906,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11909,.hi = 0x1190c,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x1190d,.hi = 0x11913,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11915,.hi = 0x11916,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11918,.hi = 0x1192f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1193f,.hi = 0x11941,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x119a0,.hi = 0x119a7,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x119aa,.hi = 0x119d0,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x119e1,.hi = 0x119e3,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x11a00,.hi = 0x11a0b,.stride = 11,}), ((encoding__utf8__Range32){.lo = 0x11a0c,.hi = 0x11a32,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11a3a,.hi = 0x11a50,.stride = 22,}), ((encoding__utf8__Range32){.lo = 0x11a5c,.hi = 0x11a89,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11a9d,.hi = 0x11ac0,.stride = 35,}), ((encoding__utf8__Range32){.lo = 0x11ac1,.hi = 0x11af8,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11c00,.hi = 0x11c08,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11c0a,.hi = 0x11c2e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11c40,.hi = 0x11c72,.stride = 50,}), ((encoding__utf8__Range32){.lo = 0x11c73,.hi = 0x11c8f,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11d00,.hi = 0x11d06,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d08,.hi = 0x11d09,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d0b,.hi = 0x11d30,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d46,.hi = 0x11d60,.stride = 26,}), ((encoding__utf8__Range32){.lo = 0x11d61,.hi = 0x11d65,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d67,.hi = 0x11d68,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d6a,.hi = 0x11d89,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d98,.hi = 0x11ee0,.stride = 328,}),
+		((encoding__utf8__Range32){.lo = 0x11ee1,.hi = 0x11ef2,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11fb0,.hi = 0x12000,.stride = 80,}), ((encoding__utf8__Range32){.lo = 0x12001,.hi = 0x12399,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x12480,.hi = 0x12543,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x13000,.hi = 0x1342e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x14400,.hi = 0x14646,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16800,.hi = 0x16a38,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16a40,.hi = 0x16a5e,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x16ad0,.hi = 0x16aed,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16b00,.hi = 0x16b2f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16b40,.hi = 0x16b43,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16b63,.hi = 0x16b77,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16b7d,.hi = 0x16b8f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16e40,.hi = 0x16e7f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16f00,.hi = 0x16f4a,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16f50,.hi = 0x16f93,.stride = 67,}),
+		((encoding__utf8__Range32){.lo = 0x16f94,.hi = 0x16f9f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16fe0,.hi = 0x16fe1,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16fe3,.hi = 0x17000,.stride = 29,}), ((encoding__utf8__Range32){.lo = 0x17001,.hi = 0x187f7,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x18800,.hi = 0x18cd5,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x18d00,.hi = 0x18d08,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1b000,.hi = 0x1b11e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1b150,.hi = 0x1b152,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1b164,.hi = 0x1b167,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1b170,.hi = 0x1b2fb,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1bc00,.hi = 0x1bc6a,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1bc70,.hi = 0x1bc7c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1bc80,.hi = 0x1bc88,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1bc90,.hi = 0x1bc99,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d400,.hi = 0x1d454,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d456,.hi = 0x1d49c,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1d49e,.hi = 0x1d49f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d4a2,.hi = 0x1d4a5,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x1d4a6,.hi = 0x1d4a9,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x1d4aa,.hi = 0x1d4ac,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d4ae,.hi = 0x1d4b9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d4bb,.hi = 0x1d4bd,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1d4be,.hi = 0x1d4c3,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d4c5,.hi = 0x1d505,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1d507,.hi = 0x1d50a,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d50d,.hi = 0x1d514,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d516,.hi = 0x1d51c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d51e,.hi = 0x1d539,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d53b,.hi = 0x1d53e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d540,.hi = 0x1d544,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d546,.hi = 0x1d54a,.stride = 4,}), ((encoding__utf8__Range32){.lo = 0x1d54b,.hi = 0x1d550,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1d552,.hi = 0x1d6a5,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d6a8,.hi = 0x1d6c0,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d6c2,.hi = 0x1d6da,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d6dc,.hi = 0x1d6fa,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d6fc,.hi = 0x1d714,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d716,.hi = 0x1d734,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d736,.hi = 0x1d74e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d750,.hi = 0x1d76e,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1d770,.hi = 0x1d788,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d78a,.hi = 0x1d7a8,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d7aa,.hi = 0x1d7c2,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d7c4,.hi = 0x1d7cb,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e100,.hi = 0x1e12c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e137,.hi = 0x1e13d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e14e,.hi = 0x1e2c0,.stride = 370,}), ((encoding__utf8__Range32){.lo = 0x1e2c1,.hi = 0x1e2eb,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1e800,.hi = 0x1e8c4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e900,.hi = 0x1e943,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e94b,.hi = 0x1ee00,.stride = 1205,}), ((encoding__utf8__Range32){.lo = 0x1ee01,.hi = 0x1ee03,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee05,.hi = 0x1ee1f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee21,.hi = 0x1ee22,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee24,.hi = 0x1ee27,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x1ee29,.hi = 0x1ee32,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1ee34,.hi = 0x1ee37,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee39,.hi = 0x1ee3b,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1ee42,.hi = 0x1ee47,.stride = 5,}), ((encoding__utf8__Range32){.lo = 0x1ee49,.hi = 0x1ee4d,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1ee4e,.hi = 0x1ee4f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee51,.hi = 0x1ee52,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee54,.hi = 0x1ee57,.stride = 3,}), ((encoding__utf8__Range32){.lo = 0x1ee59,.hi = 0x1ee61,.stride = 2,}),
+		((encoding__utf8__Range32){.lo = 0x1ee62,.hi = 0x1ee64,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1ee67,.hi = 0x1ee6a,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee6c,.hi = 0x1ee72,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee74,.hi = 0x1ee77,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee79,.hi = 0x1ee7c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee7e,.hi = 0x1ee80,.stride = 2,}), ((encoding__utf8__Range32){.lo = 0x1ee81,.hi = 0x1ee89,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ee8b,.hi = 0x1ee9b,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1eea1,.hi = 0x1eea3,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1eea5,.hi = 0x1eea9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1eeab,.hi = 0x1eebb,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x20000,.hi = 0x2a6dd,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x2a700,.hi = 0x2b734,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x2b740,.hi = 0x2b81d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x2b820,.hi = 0x2cea1,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x2ceb0,.hi = 0x2ebe0,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x2f800,.hi = 0x2fa1d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x30000,.hi = 0x3134a,.stride = 1,})})),.latin_offset = 6,});
+}
+}
+{
+{
+	_const_encoding__utf8__white_space_table = ((encoding__utf8__RangeTable){.r16 = builtin__new_array_from_c_array(7, 7, sizeof(encoding__utf8__Range16), _MOV((encoding__utf8__Range16[7]){((encoding__utf8__Range16){.lo = 0x0009,.hi = 0x000d,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0020,.hi = 0x0085,.stride = 101,}), ((encoding__utf8__Range16){.lo = 0x00a0,.hi = 0x1680,.stride = 5600,}), ((encoding__utf8__Range16){.lo = 0x2000,.hi = 0x200a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2028,.hi = 0x2029,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x202f,.hi = 0x205f,.stride = 48,}), ((encoding__utf8__Range16){.lo = 0x3000,.hi = 0x3000,.stride = 1,})})),.r32 = builtin____new_array_with_default(0, 0, sizeof(encoding__utf8__Range32), 0),.latin_offset = 2,});
+}
+}
+{
+{
+	_const_encoding__utf8__number_table = ((encoding__utf8__RangeTable){.r16 = builtin__new_array_from_c_array(66, 66, sizeof(encoding__utf8__Range16), _MOV((encoding__utf8__Range16[66]){
+		((encoding__utf8__Range16){.lo = 0x0030,.hi = 0x0039,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x00b2,.hi = 0x00b3,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x00b9,.hi = 0x00bc,.stride = 3,}), ((encoding__utf8__Range16){.lo = 0x00bd,.hi = 0x00be,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0660,.hi = 0x0669,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x06f0,.hi = 0x06f9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x07c0,.hi = 0x07c9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0966,.hi = 0x096f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x09e6,.hi = 0x09ef,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x09f4,.hi = 0x09f9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0a66,.hi = 0x0a6f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ae6,.hi = 0x0aef,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b66,.hi = 0x0b6f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0b72,.hi = 0x0b77,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0be6,.hi = 0x0bf2,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c66,.hi = 0x0c6f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0c78,.hi = 0x0c7e,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x0ce6,.hi = 0x0cef,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d58,.hi = 0x0d5e,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0d66,.hi = 0x0d78,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0de6,.hi = 0x0def,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0e50,.hi = 0x0e59,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0ed0,.hi = 0x0ed9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x0f20,.hi = 0x0f33,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1040,.hi = 0x1049,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1090,.hi = 0x1099,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1369,.hi = 0x137c,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x16ee,.hi = 0x16f0,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x17e0,.hi = 0x17e9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x17f0,.hi = 0x17f9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1810,.hi = 0x1819,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1946,.hi = 0x194f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x19d0,.hi = 0x19da,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x1a80,.hi = 0x1a89,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1a90,.hi = 0x1a99,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1b50,.hi = 0x1b59,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1bb0,.hi = 0x1bb9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1c40,.hi = 0x1c49,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x1c50,.hi = 0x1c59,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2070,.hi = 0x2074,.stride = 4,}), ((encoding__utf8__Range16){.lo = 0x2075,.hi = 0x2079,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x2080,.hi = 0x2089,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2150,.hi = 0x2182,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2185,.hi = 0x2189,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2460,.hi = 0x249b,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x24ea,.hi = 0x24ff,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2776,.hi = 0x2793,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x2cfd,.hi = 0x3007,.stride = 778,}), ((encoding__utf8__Range16){.lo = 0x3021,.hi = 0x3029,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0x3038,.hi = 0x303a,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3192,.hi = 0x3195,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3220,.hi = 0x3229,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3248,.hi = 0x324f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3251,.hi = 0x325f,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x3280,.hi = 0x3289,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0x32b1,.hi = 0x32bf,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa620,.hi = 0xa629,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xa6e6,.hi = 0xa6ef,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa830,.hi = 0xa835,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa8d0,.hi = 0xa8d9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa900,.hi = 0xa909,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa9d0,.hi = 0xa9d9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xa9f0,.hi = 0xa9f9,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xaa50,.hi = 0xaa59,.stride = 1,}), ((encoding__utf8__Range16){.lo = 0xabf0,.hi = 0xabf9,.stride = 1,}),
+		((encoding__utf8__Range16){.lo = 0xff10,.hi = 0xff19,.stride = 1,})})),.r32 = builtin__new_array_from_c_array(65, 65, sizeof(encoding__utf8__Range32), _MOV((encoding__utf8__Range32[65]){
+		((encoding__utf8__Range32){.lo = 0x10107,.hi = 0x10133,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10140,.hi = 0x10178,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1018a,.hi = 0x1018b,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x102e1,.hi = 0x102fb,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10320,.hi = 0x10323,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10341,.hi = 0x1034a,.stride = 9,}), ((encoding__utf8__Range32){.lo = 0x103d1,.hi = 0x103d5,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x104a0,.hi = 0x104a9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10858,.hi = 0x1085f,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10879,.hi = 0x1087f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x108a7,.hi = 0x108af,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x108fb,.hi = 0x108ff,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10916,.hi = 0x1091b,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x109bc,.hi = 0x109bd,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x109c0,.hi = 0x109cf,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x109d2,.hi = 0x109ff,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10a40,.hi = 0x10a48,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10a7d,.hi = 0x10a7e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10a9d,.hi = 0x10a9f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10aeb,.hi = 0x10aef,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10b58,.hi = 0x10b5f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10b78,.hi = 0x10b7f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10ba9,.hi = 0x10baf,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10cfa,.hi = 0x10cff,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10d30,.hi = 0x10d39,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x10e60,.hi = 0x10e7e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10f1d,.hi = 0x10f26,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10f51,.hi = 0x10f54,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x10fc5,.hi = 0x10fcb,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11052,.hi = 0x1106f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x110f0,.hi = 0x110f9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11136,.hi = 0x1113f,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x111d0,.hi = 0x111d9,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x111e1,.hi = 0x111f4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x112f0,.hi = 0x112f9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11450,.hi = 0x11459,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x114d0,.hi = 0x114d9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11650,.hi = 0x11659,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x116c0,.hi = 0x116c9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11730,.hi = 0x1173b,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x118e0,.hi = 0x118f2,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x11950,.hi = 0x11959,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11c50,.hi = 0x11c6c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11d50,.hi = 0x11d59,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11da0,.hi = 0x11da9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x11fc0,.hi = 0x11fd4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x12400,.hi = 0x1246e,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16a60,.hi = 0x16a69,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16b50,.hi = 0x16b59,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x16b5b,.hi = 0x16b61,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x16e80,.hi = 0x16e96,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d2e0,.hi = 0x1d2f3,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d360,.hi = 0x1d378,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1d7ce,.hi = 0x1d7ff,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e140,.hi = 0x1e149,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e2f0,.hi = 0x1e2f9,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1e8c7,.hi = 0x1e8cf,.stride = 1,}),
+		((encoding__utf8__Range32){.lo = 0x1e950,.hi = 0x1e959,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ec71,.hi = 0x1ecab,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ecad,.hi = 0x1ecaf,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ecb1,.hi = 0x1ecb4,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ed01,.hi = 0x1ed2d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1ed2f,.hi = 0x1ed3d,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1f100,.hi = 0x1f10c,.stride = 1,}), ((encoding__utf8__Range32){.lo = 0x1fbf0,.hi = 0x1fbf9,.stride = 1,})})),.latin_offset = 4,});
+}
+}
+{
+	_const_encoding__utf8__unicode_punct_western = builtin__new_array_from_c_array(29, 29, sizeof(rune), _MOV((rune[29]){
+		((rune)(0x0021)), 0x0022, 0x0027, 0x002A, 0x002C, 0x002E, 0x002F, 0x003A, 0x003B,
+		0x003F, 0x00A1, 0x00A7, 0x00B6, 0x00B7, 0x00BF, 0x037E, 0x0387,
+		0x055A, 0x055B, 0x055C, 0x055D, 0x055E, 0x055F, 0x0589, 0x05C0,
+		0x05C3, 0x05C6, 0x05F3, 0x05F4}));
+}
+{
+	_const_encoding__utf8__unicode_punct = builtin__new_array_from_c_array(588, 588, sizeof(rune), _MOV((rune[588]){
+		((rune)(0x0021)), 0x0022, 0x0023, 0x0025, 0x0026, 0x0027, 0x002A, 0x002C, 0x002E,
+		0x002F, 0x003A, 0x003B, 0x003F, 0x0040, 0x005C, 0x00A1, 0x00A7,
+		0x00B6, 0x00B7, 0x00BF, 0x037E, 0x0387, 0x055A, 0x055B, 0x055C,
+		0x055D, 0x055E, 0x055F, 0x0589, 0x05C0, 0x05C3, 0x05C6, 0x05F3,
+		0x05F4, 0x0609, 0x060A, 0x060C, 0x060D, 0x061B, 0x061E, 0x061F,
+		0x066A, 0x066B, 0x066C, 0x066D, 0x06D4, 0x0700, 0x0701, 0x0702,
+		0x0703, 0x0704, 0x0705, 0x0706, 0x0707, 0x0708, 0x0709, 0x070A,
+		0x070B, 0x070C, 0x070D, 0x07F7, 0x07F8, 0x07F9, 0x0830, 0x0831,
+		0x0832, 0x0833, 0x0834, 0x0835, 0x0836, 0x0837, 0x0838, 0x0839,
+		0x083A, 0x083B, 0x083C, 0x083D, 0x083E, 0x085E, 0x0964, 0x0965,
+		0x0970, 0x09FD, 0x0A76, 0x0AF0, 0x0C77, 0x0C84, 0x0DF4, 0x0E4F,
+		0x0E5A, 0x0E5B, 0x0F04, 0x0F05, 0x0F06, 0x0F07, 0x0F08, 0x0F09,
+		0x0F0A, 0x0F0B, 0x0F0C, 0x0F0D, 0x0F0E, 0x0F0F, 0x0F10, 0x0F11,
+		0x0F12, 0x0F14, 0x0F85, 0x0FD0, 0x0FD1, 0x0FD2, 0x0FD3, 0x0FD4,
+		0x0FD9, 0x0FDA, 0x104A, 0x104B, 0x104C, 0x104D, 0x104E, 0x104F,
+		0x10FB, 0x1360, 0x1361, 0x1362, 0x1363, 0x1364, 0x1365, 0x1366,
+		0x1367, 0x1368, 0x166E, 0x16EB, 0x16EC, 0x16ED, 0x1735, 0x1736,
+		0x17D4, 0x17D5, 0x17D6, 0x17D8, 0x17D9, 0x17DA, 0x1800, 0x1801,
+		0x1802, 0x1803, 0x1804, 0x1805, 0x1807, 0x1808, 0x1809, 0x180A,
+		0x1944, 0x1945, 0x1A1E, 0x1A1F, 0x1AA0, 0x1AA1, 0x1AA2, 0x1AA3,
+		0x1AA4, 0x1AA5, 0x1AA6, 0x1AA8, 0x1AA9, 0x1AAA, 0x1AAB, 0x1AAC,
+		0x1AAD, 0x1B5A, 0x1B5B, 0x1B5C, 0x1B5D, 0x1B5E, 0x1B5F, 0x1B60,
+		0x1BFC, 0x1BFD, 0x1BFE, 0x1BFF, 0x1C3B, 0x1C3C, 0x1C3D, 0x1C3E,
+		0x1C3F, 0x1C7E, 0x1C7F, 0x1CC0, 0x1CC1, 0x1CC2, 0x1CC3, 0x1CC4,
+		0x1CC5, 0x1CC6, 0x1CC7, 0x1CD3, 0x2016, 0x2017, 0x2020, 0x2021,
+		0x2022, 0x2023, 0x2024, 0x2025, 0x2026, 0x2027, 0x2030, 0x2031,
+		0x2032, 0x2033, 0x2034, 0x2035, 0x2036, 0x2037, 0x2038, 0x203B,
+		0x203C, 0x203D, 0x203E, 0x2041, 0x2042, 0x2043, 0x2047, 0x2048,
+		0x2049, 0x204A, 0x204B, 0x204C, 0x204D, 0x204E, 0x204F, 0x2050,
+		0x2051, 0x2053, 0x2055, 0x2056, 0x2057, 0x2058, 0x2059, 0x205A,
+		0x205B, 0x205C, 0x205D, 0x205E, 0x2CF9, 0x2CFA, 0x2CFB, 0x2CFC,
+		0x2CFE, 0x2CFF, 0x2D70, 0x2E00, 0x2E01, 0x2E06, 0x2E07, 0x2E08,
+		0x2E0B, 0x2E0E, 0x2E0F, 0x2E10, 0x2E11, 0x2E12, 0x2E13, 0x2E14,
+		0x2E15, 0x2E16, 0x2E18, 0x2E19, 0x2E1B, 0x2E1E, 0x2E1F, 0x2E2A,
+		0x2E2B, 0x2E2C, 0x2E2D, 0x2E2E, 0x2E30, 0x2E31, 0x2E32, 0x2E33,
+		0x2E34, 0x2E35, 0x2E36, 0x2E37, 0x2E38, 0x2E39, 0x2E3C, 0x2E3D,
+		0x2E3E, 0x2E3F, 0x2E41, 0x2E43, 0x2E44, 0x2E45, 0x2E46, 0x2E47,
+		0x2E48, 0x2E49, 0x2E4A, 0x2E4B, 0x2E4C, 0x2E4D, 0x2E4E, 0x2E4F,
+		0x3001, 0x3002, 0x3003, 0x303D, 0x30FB, 0xA4FE, 0xA4FF, 0xA60D,
+		0xA60E, 0xA60F, 0xA673, 0xA67E, 0xA6F2, 0xA6F3, 0xA6F4, 0xA6F5,
+		0xA6F6, 0xA6F7, 0xA874, 0xA875, 0xA876, 0xA877, 0xA8CE, 0xA8CF,
+		0xA8F8, 0xA8F9, 0xA8FA, 0xA8FC, 0xA92E, 0xA92F, 0xA95F, 0xA9C1,
+		0xA9C2, 0xA9C3, 0xA9C4, 0xA9C5, 0xA9C6, 0xA9C7, 0xA9C8, 0xA9C9,
+		0xA9CA, 0xA9CB, 0xA9CC, 0xA9CD, 0xA9DE, 0xA9DF, 0xAA5C, 0xAA5D,
+		0xAA5E, 0xAA5F, 0xAADE, 0xAADF, 0xAAF0, 0xAAF1, 0xABEB, 0xFE10,
+		0xFE11, 0xFE12, 0xFE13, 0xFE14, 0xFE15, 0xFE16, 0xFE19, 0xFE30,
+		0xFE45, 0xFE46, 0xFE49, 0xFE4A, 0xFE4B, 0xFE4C, 0xFE50, 0xFE51,
+		0xFE52, 0xFE54, 0xFE55, 0xFE56, 0xFE57, 0xFE5F, 0xFE60, 0xFE61,
+		0xFE68, 0xFE6A, 0xFE6B, 0xFF01, 0xFF02, 0xFF03, 0xFF05, 0xFF06,
+		0xFF07, 0xFF0A, 0xFF0C, 0xFF0E, 0xFF0F, 0xFF1A, 0xFF1B, 0xFF1F,
+		0xFF20, 0xFF3C, 0xFF61, 0xFF64, 0xFF65, 0x10100, 0x10101, 0x10102,
+		0x1039F, 0x103D0, 0x1056F, 0x10857, 0x1091F, 0x1093F, 0x10A50, 0x10A51,
+		0x10A52, 0x10A53, 0x10A54, 0x10A55, 0x10A56, 0x10A57, 0x10A58, 0x10A7F,
+		0x10AF0, 0x10AF1, 0x10AF2, 0x10AF3, 0x10AF4, 0x10AF5, 0x10AF6, 0x10B39,
+		0x10B3A, 0x10B3B, 0x10B3C, 0x10B3D, 0x10B3E, 0x10B3F, 0x10B99, 0x10B9A,
+		0x10B9B, 0x10B9C, 0x10F55, 0x10F56, 0x10F57, 0x10F58, 0x10F59, 0x11047,
+		0x11048, 0x11049, 0x1104A, 0x1104B, 0x1104C, 0x1104D, 0x110BB, 0x110BC,
+		0x110BE, 0x110BF, 0x110C0, 0x110C1, 0x11140, 0x11141, 0x11142, 0x11143,
+		0x11174, 0x11175, 0x111C5, 0x111C6, 0x111C7, 0x111C8, 0x111CD, 0x111DB,
+		0x111DD, 0x111DE, 0x111DF, 0x11238, 0x11239, 0x1123A, 0x1123B, 0x1123C,
+		0x1123D, 0x112A9, 0x1144B, 0x1144C, 0x1144D, 0x1144E, 0x1144F, 0x1145B,
+		0x1145D, 0x114C6, 0x115C1, 0x115C2, 0x115C3, 0x115C4, 0x115C5, 0x115C6,
+		0x115C7, 0x115C8, 0x115C9, 0x115CA, 0x115CB, 0x115CC, 0x115CD, 0x115CE,
+		0x115CF, 0x115D0, 0x115D1, 0x115D2, 0x115D3, 0x115D4, 0x115D5, 0x115D6,
+		0x115D7, 0x11641, 0x11642, 0x11643, 0x11660, 0x11661, 0x11662, 0x11663,
+		0x11664, 0x11665, 0x11666, 0x11667, 0x11668, 0x11669, 0x1166A, 0x1166B,
+		0x1166C, 0x1173C, 0x1173D, 0x1173E, 0x1183B, 0x119E2, 0x11A3F, 0x11A40,
+		0x11A41, 0x11A42, 0x11A43, 0x11A44, 0x11A45, 0x11A46, 0x11A9A, 0x11A9B,
+		0x11A9C, 0x11A9E, 0x11A9F, 0x11AA0, 0x11AA1, 0x11AA2, 0x11C41, 0x11C42,
+		0x11C43, 0x11C44, 0x11C45, 0x11C70, 0x11C71, 0x11EF7, 0x11EF8, 0x11FFF,
+		0x12470, 0x12471, 0x12472, 0x12473, 0x12474, 0x16A6E, 0x16A6F, 0x16AF5,
+		0x16B37, 0x16B38, 0x16B39, 0x16B3A, 0x16B3B, 0x16B44, 0x16E97, 0x16E98,
+		0x16E99, 0x16E9A, 0x16FE2, 0x1BC9F, 0x1DA87, 0x1DA88, 0x1DA89, 0x1DA8A,
+		0x1DA8B, 0x1E95E, 0x1E95F}));
+}
+	// Initializations of consts for module toml.scanner
+	_const_toml__scanner__digit_extras = builtin__new_array_from_c_array(7, 7, sizeof(rune), _MOV((rune[7]){'_', '.', 'x', 'o', 'b', 'e', 'E'}));
+	_const_toml__scanner__end_of_text = ((u32)(~0));
 	// Initializations of consts for module rand
 	_const_rand__ulid_encoding = _S("0123456789ABCDEFGHJKMNPQRSTVWXYZ");
 	_const_rand__english_letters = _S("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -53647,8 +73637,17 @@ int _t2;
 	_const_net__udp_default_write_timeout = _const_time__second / 10;
 	// Calling fn init() for module net
 	net__init();
+	// Initializations of consts for module toml.checker
+	_const_toml__checker__allowed_basic_escape_chars = builtin__new_array_from_c_array(9, 9, sizeof(rune), _MOV((rune[9]){
+		'u', 'U', 'b', 't', 'n', 'f', 'r', '"', '\\'}));
+	// Initializations of consts for module toml.parser
+	_const_toml__parser__all_formatting = builtin__new_array_from_c_array(4, 4, sizeof(toml__token__Kind), _MOV((toml__token__Kind[4]){toml__token__Kind__whitespace, toml__token__Kind__tab, toml__token__Kind__cr, toml__token__Kind__nl}));
+	_const_toml__parser__space_formatting = builtin__new_array_from_c_array(2, 2, sizeof(toml__token__Kind), _MOV((toml__token__Kind[2]){toml__token__Kind__whitespace, toml__token__Kind__tab}));
+	_const_toml__parser__keys_and_space_formatting = builtin__new_array_from_c_array(8, 8, sizeof(toml__token__Kind), _MOV((toml__token__Kind[8]){toml__token__Kind__whitespace, toml__token__Kind__tab, toml__token__Kind__minus, toml__token__Kind__bare, toml__token__Kind__quoted, toml__token__Kind__boolean, toml__token__Kind__number, toml__token__Kind__underscore}));
 	// Calling fn init() for module net.openssl
 	net__openssl__init();
+	// Initializations of consts for module toml
+	_const_toml__null = toml__Null_to_sumtype_toml__Any(ADDR(toml__Null, (((toml__Null){E_STRUCT}))), false);
 	// Initializations of consts for module net.http
 	_const_net__http__content_type_default = _S("text/plain");
 	_const_net__http__headers_body_boundary = _S("\r\n\r\n");

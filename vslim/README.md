@@ -694,6 +694,33 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `view(template, data)`
   - `view_with_layout(template, layout, data)`
 
+### `VSlim\Config` (TOML)
+
+- `load(path)` / `load_text(text)`（V `toml` parser）
+- `is_loaded()` / `path()` / `has(key)`
+- mixed getters:
+  - `get(key, default = null)`（支持 dot-path）
+  - `get_map(key, default = []): array`
+  - `get_list(key, default = []): array`
+- typed getters:
+  - `get_string(key, default)`
+  - `get_int(key, default)`
+  - `get_bool(key, default)`
+  - `get_float(key, default)`
+  - `get_string_list(key)`
+- JSON bridge getters:
+  - `get_json(key, default_json)`
+  - `all_json()`
+
+与 `VSlim\App` 集成：
+
+- `has_config()`
+- `config()`（懒加载共享实例）
+- `set_config(VSlim\Config $config)`
+- `load_config(path)`
+- `load_config_text(text)`
+- 调用以上任一配置入口后，会自动同步到容器键 `config`（可通过 `$app->container()->get('config')` 获取）
+
 模板中的资源占位符可写成：
 
 ```html

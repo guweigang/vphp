@@ -91,3 +91,16 @@ BASE_URL=http://127.0.0.1:19888 /Users/guweigang/Source/vphpext/vslim/examples/v
 make -C /Users/guweigang/Source/vphpext/vslim demo-self-test
 make -C /Users/guweigang/Source/vphpext/vslim demo-verify
 ```
+
+## Config 用法示例
+
+文件：
+
+- `config_usage.php`
+- `config_usage.toml`
+
+运行：
+
+```bash
+php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/examples/config_usage.php
+```

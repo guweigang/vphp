@@ -1,5 +1,6 @@
 module main
 
+import toml
 import vphp
 
 pub type VSlimHandler = fn (VSlimRequest) VSlimResponse
@@ -104,6 +105,7 @@ mut:
 	not_found_handler vphp.PersistentOwnedZVal
 	error_handler     vphp.PersistentOwnedZVal
 	container_ref     &VSlimContainer = unsafe { nil }
+	config_ref        &VSlimConfig = unsafe { nil }
 	base_path         string
 	use_demo          bool
 	error_response_json bool
@@ -117,6 +119,15 @@ struct VSlimView {
 mut:
 	base_path     string
 	assets_prefix string
+}
+
+@[heap]
+@[php_class: 'VSlim\\Config']
+struct VSlimConfig {
+mut:
+	path   string
+	loaded bool
+	root   toml.Any = toml.null
 }
 
 @[heap]

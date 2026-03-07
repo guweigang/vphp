@@ -96,6 +96,7 @@ pub fn (app &VSlimApp) has_container() bool {
 @[php_method]
 pub fn (mut app VSlimApp) set_container(container &VSlimContainer) &VSlimApp {
 	app.container_ref = container
+	app.sync_config_to_container()
 	return app
 }
 
@@ -106,7 +107,64 @@ pub fn (mut app VSlimApp) container() &VSlimContainer {
 		created.construct()
 		app.container_ref = created
 	}
+	app.sync_config_to_container()
 	return app.container_ref
+}
+
+@[php_method]
+pub fn (app &VSlimApp) has_config() bool {
+	return app.config_ref != unsafe { nil }
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) set_config(config &VSlimConfig) &VSlimApp {
+	app.config_ref = config
+	app.sync_config_to_container()
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) config() &VSlimConfig {
+	if app.config_ref == unsafe { nil } {
+		mut created := &VSlimConfig{}
+		created.construct()
+		app.config_ref = created
+		app.sync_config_to_container()
+	}
+	return app.config_ref
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) load_config(path string) &VSlimApp {
+	mut cfg := app.config()
+	cfg.load(path)
+	app.sync_config_to_container()
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) load_config_text(text string) &VSlimApp {
+	mut cfg := app.config()
+	cfg.load_text(text)
+	app.sync_config_to_container()
+	return app
+}
+
+fn (mut app VSlimApp) sync_config_to_container() {
+	if app.container_ref == unsafe { nil } || app.config_ref == unsafe { nil } {
+		return
+	}
+	unsafe {
+		z := C.vphp_new_zval()
+		if z == 0 {
+			return
+		}
+		C.vphp_return_obj(z, app.config_ref, C.vslim__config_ce)
+		app.container_ref.set('config', vphp.ZVal{
+			raw: z
+		})
+		C.vphp_release_zval(z)
+	}
 }
 
 @[php_method]
