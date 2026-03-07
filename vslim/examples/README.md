@@ -84,3 +84,10 @@ curl --noproxy '*' -I http://127.0.0.1:19888/assets/app.js
 ```bash
 BASE_URL=http://127.0.0.1:19888 /Users/guweigang/Source/vphpext/vslim/examples/verify_demo.sh
 ```
+
+也可以使用 `vslim/Makefile` 的快捷目标：
+
+```bash
+make -C /Users/guweigang/Source/vphpext/vslim demo-self-test
+make -C /Users/guweigang/Source/vphpext/vslim demo-verify
+```

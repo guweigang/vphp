@@ -1,4 +1,4 @@
-.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix clean
+.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-self-test demo-verify clean
 
 BREW_PATH ?= /opt/homebrew
 DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
@@ -14,6 +14,7 @@ VHTTPD_PORT ?= 19881
 VHTTPD_HOST ?= 127.0.0.1
 VHTTPD_PID_FILE ?= /tmp/vslim_vhttpd.pid
 VHTTPD_EVENT_LOG ?= /tmp/vslim_vhttpd.events.ndjson
+VSLIM_DEMO_BASE_URL ?= http://127.0.0.1:19888
 VSLIM_WORKER_SOCKET ?= /tmp/vslim_worker.sock
 VSLIM_WORKER_CMD := php -d extension=$(ROOT)/vslim.so $(VHTTPD_ROOT)/php/php-worker.php --socket $(VSLIM_WORKER_SOCKET)
 
@@ -55,6 +56,12 @@ psr-matrix:
 
 framework-matrix:
 	@./tests/run_framework_matrix.sh
+
+demo-self-test: build
+	php -d extension=$(ROOT)/vslim.so $(ROOT)/examples/demo_app.php --self-test
+
+demo-verify:
+	BASE_URL=$(VSLIM_DEMO_BASE_URL) $(ROOT)/examples/verify_demo.sh
 
 clean:
 	rm -f vslim.so $(VHTTPD_BIN)
