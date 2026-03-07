@@ -689,6 +689,48 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 
 这和 `vhttpd` 的 `veb.assets` 数据面静态资源前缀约定一致（默认 `/assets`）。
 
+### Resource Routing 快捷示例
+
+基础资源路由：
+
+```php
+$app->resource('/users', UserController::class);
+$app->api_resource('/api/users', UserController::class);
+```
+
+带选项（`only/except/names`）：
+
+```php
+$app->resource_opts('/books', BookController::class, [
+    'only' => ['index', 'show'],
+    'name_prefix' => 'library.books',
+]);
+
+$app->api_resource_opts('/api/books', BookController::class, [
+    'except' => 'destroy',
+    'name_show' => 'api.books.fetch',
+    // 也支持 names 映射：
+    // 'names' => ['show' => 'api.books.fetch']
+]);
+```
+
+在 group 中使用：
+
+```php
+$api = $app->group('/v1');
+$api->api_resource('/orders', OrderController::class);
+$api->resource_opts('/products', ProductController::class, [
+    'except' => ['create', 'edit'],
+    'name_prefix' => 'v1.products',
+]);
+```
+
+说明：
+
+- `resource(...)`：`index/create/store/show/edit/update/destroy`
+- `api_resource(...)`：`index/store/show/update/destroy`
+- `update` 同时注册 `PUT` 和 `PATCH`
+
 第一版我们明确承诺这些：
 
 - `veb` 是 HTTP/runtime 源头
