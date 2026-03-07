@@ -654,6 +654,37 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - 但第一版推荐主用 `set_status(...)`
 - 因为 `VSlim\Response` 是可变对象，不是 PSR-7 immutable response
 
+### `VSlim\View` / `VSlim\Controller` (MVP)
+
+`VSlim` 现在提供最小 MVC 视图层能力：
+
+- `VSlim\View`
+  - `__construct(base_path, assets_prefix)`
+  - `set_base_path(...)`
+  - `set_assets_prefix(...)`
+  - `asset('app.js') -> /assets/app.js`
+  - `render(template, data)`（`{{ key }}` 占位符）
+  - `render_response(template, data)`（返回 `VSlim\Response`，`text/html; charset=utf-8`）
+- `VSlim\Controller`
+  - `__construct(VSlim\App $app)`
+  - `render(template, data)`
+  - `text(body, status)`
+  - `json(body, status)`
+  - `redirect(location, status)`
+- `VSlim\App`
+  - `set_view_base_path(...)`
+  - `set_assets_prefix(...)`
+  - `make_view()`
+  - `view(template, data)`
+
+模板中的资源占位符可写成：
+
+```html
+<script src="{{asset:app.js}}"></script>
+```
+
+这和 `vhttpd` 的 `veb.assets` 数据面静态资源前缀约定一致（默认 `/assets`）。
+
 第一版我们明确承诺这些：
 
 - `veb` 是 HTTP/runtime 源头

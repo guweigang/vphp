@@ -1,1 +1,1 @@
-console.log('vhttpd assets ready');
+console.log('vslim demo assets loaded');

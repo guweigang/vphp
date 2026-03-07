@@ -105,6 +105,24 @@ mut:
 	base_path         string
 	use_demo          bool
 	error_response_json bool
+	view_base_path    string
+	assets_prefix     string
+}
+
+@[heap]
+@[php_class: 'VSlim\\View']
+struct VSlimView {
+mut:
+	base_path     string
+	assets_prefix string
+}
+
+@[heap]
+@[php_class: 'VSlim\\Controller']
+struct VSlimController {
+mut:
+	app_ref  &VSlimApp = unsafe { nil }
+	view_ref &VSlimView = unsafe { nil }
 }
 
 fn (mut req VSlimRequest) free() {

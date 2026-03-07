@@ -88,15 +88,32 @@ if (!class_exists('DemoAutoPing', false)) {
     }
 }
 
+if (!class_exists('DemoPageController', false)) {
+    final class DemoPageController extends VSlim\Controller
+    {
+        public function home(VSlim\Request $req): VSlim\Response
+        {
+            return $this->render('home.html', [
+                'title' => 'VSlim MVC Demo',
+                'name' => $req->param('name') ?: 'guest',
+                'trace' => $req->trace_id() ?: '',
+            ]);
+        }
+    }
+}
+
 function build_demo_app(): VSlim\App
 {
     $app = new VSlim\App();
+    $app->set_view_base_path(__DIR__ . '/views');
+    $app->set_assets_prefix('/assets');
 
     $container = $app->container();
     $container->set(DemoUserService::class, new DemoUserService());
     /** @var DemoUserService $svc */
     $svc = $container->get(DemoUserService::class);
     $container->set(DemoUserController::class, new DemoUserController($svc));
+    $container->set(DemoPageController::class, new DemoPageController($app));
 
     $app->set_base_path('/demo');
 
@@ -132,7 +149,7 @@ function build_demo_app(): VSlim\App
             'content_type' => 'application/json; charset=utf-8',
             'body' => json_encode([
                 'name' => 'vslim-demo',
-                'routes' => 'GET /health, GET /hello/:name, POST /forms/echo, GET /api/users/:id, GET /debug/routes, GET /debug/route-conflicts',
+                'routes' => 'GET /health, GET /hello/:name, GET /mvc/home/:name, POST /forms/echo, GET /api/users/:id, GET /debug/routes, GET /debug/route-conflicts',
             ], JSON_UNESCAPED_UNICODE),
         ];
     });
@@ -160,6 +177,7 @@ function build_demo_app(): VSlim\App
     });
 
     $app->get('/auto/:id', DemoAutoPing::class);
+    $app->get('/mvc/home/:name', [DemoPageController::class, 'home']);
 
     $api = $app->group('/api');
     $api->get_named('api.users.show', '/users/:id', [DemoUserController::class, 'show']);
@@ -267,6 +285,9 @@ function run_self_test(): void
 
     $r2 = $app->dispatch('GET', '/api/users/7?token=demo-token');
     echo "GET /api/users/7 => {$r2->status} {$r2->body}\n";
+
+    $r2b = $app->dispatch('GET', '/mvc/home/codex?trace_id=mvc-self-test');
+    echo "GET /mvc/home/codex => {$r2b->status} " . substr($r2b->body, 0, 64) . "...\n";
 
     $r3 = $app->dispatch_body('POST', '/forms/echo?token=demo', 'name=neo&city=shanghai');
     echo "POST /forms/echo => {$r3->status} {$r3->body}\n";
