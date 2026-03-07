@@ -200,6 +200,22 @@ pub fn (mut c VSlimController) render(template string, data vphp.ZVal) &VSlimRes
 }
 
 @[php_method]
+pub fn (c &VSlimController) url_for(name string, params vphp.ZVal) string {
+	if c.app_ref == unsafe { nil } {
+		return ''
+	}
+	return c.app_ref.url_for(name, params)
+}
+
+@[php_method]
+pub fn (c &VSlimController) url_for_query(name string, params vphp.ZVal, query vphp.ZVal) string {
+	if c.app_ref == unsafe { nil } {
+		return ''
+	}
+	return c.app_ref.url_for_query(name, params, query)
+}
+
+@[php_method]
 pub fn (c &VSlimController) text(body string, status int) &VSlimResponse {
 	return &VSlimResponse{
 		status: status
@@ -235,4 +251,13 @@ pub fn (c &VSlimController) redirect(location string, status int) &VSlimResponse
 	}
 	res.set_header('location', location)
 	return to_vslim_response(res)
+}
+
+@[php_method]
+pub fn (c &VSlimController) redirect_to(name string, params vphp.ZVal, status int) &VSlimResponse {
+	location := c.url_for(name, params)
+	if location == '' {
+		return c.text('route not found', 404)
+	}
+	return c.redirect(location, status)
 }

@@ -7838,12 +7838,18 @@ voidptr main__vphp_wrap_vslimcontroller_view(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_view(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_view
 voidptr main__vphp_wrap_vslimcontroller_render(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_render(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_render
+void main__vphp_wrap_vslimcontroller_url_for(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimController_url_for(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_url_for
+void main__vphp_wrap_vslimcontroller_url_for_query(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimController_url_for_query(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_url_for_query
 voidptr main__vphp_wrap_vslimcontroller_text(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_text(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_text
 voidptr main__vphp_wrap_vslimcontroller_json(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_json(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_json
 voidptr main__vphp_wrap_vslimcontroller_redirect(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_redirect(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_redirect
+voidptr main__vphp_wrap_vslimcontroller_redirect_to(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimController_redirect_to(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_redirect_to
 voidptr main__vslimcontroller_handlers(void);
 VV_EXP voidptr VSlimController_handlers(void); // exported fn main.vslimcontroller_handlers
 voidptr main__vslimcontainerexception_new_raw(void);
@@ -7940,9 +7946,12 @@ main__VSlimController* main__VSlimController_set_app(main__VSlimController* c, m
 main__VSlimController* main__VSlimController_set_view(main__VSlimController* c, main__VSlimView* view);
 main__VSlimView* main__VSlimController_view(main__VSlimController* c);
 main__VSlimResponse* main__VSlimController_render(main__VSlimController* c, string __v_template, vphp__ZVal data);
+string main__VSlimController_url_for(main__VSlimController* c, string name, vphp__ZVal params);
+string main__VSlimController_url_for_query(main__VSlimController* c, string name, vphp__ZVal params, vphp__ZVal query);
 main__VSlimResponse* main__VSlimController_text(main__VSlimController* c, string body, int status);
 main__VSlimResponse* main__VSlimController_json(main__VSlimController* c, string body, int status);
 main__VSlimResponse* main__VSlimController_redirect(main__VSlimController* c, string location, int status);
+main__VSlimResponse* main__VSlimController_redirect_to(main__VSlimController* c, string name, vphp__ZVal params, int status);
 VV_LOC bool main__vslim_trace_mem_enabled(void);
 VV_LOC int main__vslim_trace_mem_every(void);
 VV_LOC bool main__vslim_trace_mem_should_log(void);
@@ -44950,6 +44959,37 @@ voidptr main__vphp_wrap_vslimcontroller_render(voidptr ptr, vphp__Context ctx) {
 voidptr vphp_wrap_VSlimController_render(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimcontroller_render(ptr, ctx);
 }
+void main__vphp_wrap_vslimcontroller_url_for(voidptr ptr, vphp__Context ctx) {
+	main__VSlimController* recv = ((main__VSlimController*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	string res = main__VSlimController_url_for(recv, arg_0, arg_1);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimController_url_for -> main__vphp_wrap_vslimcontroller_url_for
+void vphp_wrap_VSlimController_url_for(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimcontroller_url_for(ptr, ctx);
+}
+void main__vphp_wrap_vslimcontroller_url_for_query(voidptr ptr, vphp__Context ctx) {
+	main__VSlimController* recv = ((main__VSlimController*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	string res = main__VSlimController_url_for_query(recv, arg_0, arg_1, arg_2);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimController_url_for_query -> main__vphp_wrap_vslimcontroller_url_for_query
+void vphp_wrap_VSlimController_url_for_query(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimcontroller_url_for_query(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimcontroller_text(voidptr ptr, vphp__Context ctx) {
 	main__VSlimController* recv = ((main__VSlimController*)(ptr));
 	int vphp_ar_mark = vphp__autorelease_mark();
@@ -44997,6 +45037,23 @@ voidptr main__vphp_wrap_vslimcontroller_redirect(voidptr ptr, vphp__Context ctx)
 // export alias: vphp_wrap_VSlimController_redirect -> main__vphp_wrap_vslimcontroller_redirect
 voidptr vphp_wrap_VSlimController_redirect(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimcontroller_redirect(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimcontroller_redirect_to(voidptr ptr, vphp__Context ctx) {
+	main__VSlimController* recv = ((main__VSlimController*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
+	int arg_2 = vphp__Context_arg_T_int(ctx, 2);
+	main__VSlimResponse* res = main__VSlimController_redirect_to(recv, arg_0, arg_1, arg_2);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimController_redirect_to -> main__vphp_wrap_vslimcontroller_redirect_to
+voidptr vphp_wrap_VSlimController_redirect_to(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimcontroller_redirect_to(ptr, ctx);
 }
 voidptr main__vslimcontroller_handlers(void) {
 	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
@@ -45644,6 +45701,18 @@ main__VSlimResponse* main__VSlimController_render(main__VSlimController* c, stri
 	main__VSlimView* view = main__VSlimController_view(c);
 	return main__VSlimView_render_response(view, __v_template, data);
 }
+string main__VSlimController_url_for(main__VSlimController* c, string name, vphp__ZVal params) {
+	if (c->app_ref == ((void*)0)) {
+		return _S("");
+	}
+	return main__VSlimApp_url_for(c->app_ref, name, params);
+}
+string main__VSlimController_url_for_query(main__VSlimController* c, string name, vphp__ZVal params, vphp__ZVal query) {
+	if (c->app_ref == ((void*)0)) {
+		return _S("");
+	}
+	return main__VSlimApp_url_for_query(c->app_ref, name, params, query);
+}
 main__VSlimResponse* main__VSlimController_text(main__VSlimController* c, string body, int status) {
 	return ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = status,.body = body,.content_type = _S("text/plain; charset=utf-8"),.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
 		_MOV((string[1]){
@@ -45678,6 +45747,13 @@ main__VSlimResponse* main__VSlimController_redirect(main__VSlimController* c, st
 	,})));
 	main__VSlimResponse_set_header(&(*(res)), _S("location"), location);
 	return main__to_vslim_response((*(res)));
+}
+main__VSlimResponse* main__VSlimController_redirect_to(main__VSlimController* c, string name, vphp__ZVal params, int status) {
+	string location = main__VSlimController_url_for(c, name, params);
+	if ((location).len == 0) {
+		return main__VSlimController_text(c, _S("route not found"), 404);
+	}
+	return main__VSlimController_redirect(c, location, status);
 }
 VV_LOC bool main__vslim_trace_mem_enabled(void) {
 	{ // Unsafe block

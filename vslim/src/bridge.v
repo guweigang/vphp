@@ -2156,6 +2156,27 @@ pub fn vphp_wrap_vslimcontroller_render(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.render(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimController_url_for']
+pub fn vphp_wrap_vslimcontroller_url_for(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimController(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    res := recv.url_for(arg_0, arg_1)
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimController_url_for_query']
+pub fn vphp_wrap_vslimcontroller_url_for_query(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimController(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.url_for_query(arg_0, arg_1, arg_2)
+    ctx.return_val[string](res)
+}
 @[export: 'vphp_wrap_VSlimController_text']
 pub fn vphp_wrap_vslimcontroller_text(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimController(ptr) }
@@ -2184,6 +2205,17 @@ pub fn vphp_wrap_vslimcontroller_redirect(ptr voidptr, ctx vphp.Context) voidptr
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg[int](1)
     res := recv.redirect(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimController_redirect_to']
+pub fn vphp_wrap_vslimcontroller_redirect_to(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimController(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg[int](2)
+    res := recv.redirect_to(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'VSlimController_handlers']

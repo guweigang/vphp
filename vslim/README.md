@@ -673,9 +673,12 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - `VSlim\Controller`
   - `__construct(VSlim\App $app)`
   - `render(template, data)`
+  - `url_for(name, params)`
+  - `url_for_query(name, params, query)`
   - `text(body, status)`
   - `json(body, status)`
   - `redirect(location, status)`
+  - `redirect_to(name, params, status)`
 - `VSlim\App`
   - `set_view_base_path(...)`
   - `set_assets_prefix(...)`
@@ -689,6 +692,16 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 ```
 
 这和 `vhttpd` 的 `veb.assets` 数据面静态资源前缀约定一致（默认 `/assets`）。
+
+控制器内也可以直接基于命名路由跳转：
+
+```php
+final class UserController extends VSlim\Controller {
+    public function jump(string $id): VSlim\Response {
+        return $this->redirect_to('users.show', ['id' => $id], 302);
+    }
+}
+```
 
 ### Resource Routing 快捷示例
 
