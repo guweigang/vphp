@@ -8413,7 +8413,7 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61723(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61767(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
@@ -10485,7 +10485,7 @@ VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021(void) {
 	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61723(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61767(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -51056,7 +51056,8 @@ VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, 
 }
 VV_LOC main__VSlimResponse main__default_error_response(main__VSlimApp* app, int status, string message, string error_code) {
 	if (app->error_response_json) {
-		return main__json_response(status, builtin__str_intp(4, _MOV((StrIntpData[]){{_S("{\"ok\":false,\"error\":\""), 0xfe10, {.d_s = main__json_escape(error_code)}}, {_S("\",\"status\":"), 0xfe07, {.d_i32 = status}}, {_S(",\"message\":\""), 0xfe10, {.d_s = main__json_escape(message)}}, {_S("\"}"), 0, { .d_c = 0 }}})));
+		string esc_code = main__json_escape(error_code);
+		return main__json_response(status, builtin__str_intp(5, _MOV((StrIntpData[]){{_S("{\"ok\":false,\"code\":\""), 0xfe10, {.d_s = esc_code}}, {_S("\",\"error\":\""), 0xfe10, {.d_s = esc_code}}, {_S("\",\"status\":"), 0xfe07, {.d_i32 = status}}, {_S(",\"message\":\""), 0xfe10, {.d_s = main__json_escape(message)}}, {_S("\"}"), 0, { .d_c = 0 }}})));
 	}
 	return main__text_response(status, message);
 }
@@ -51636,7 +51637,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61723);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_61767);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;

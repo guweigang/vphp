@@ -1389,7 +1389,8 @@ fn run_error_handler(app &VSlimApp, request_payload vphp.BorrowedZVal, status in
 
 fn default_error_response(app &VSlimApp, status int, message string, error_code string) VSlimResponse {
 	if app.error_response_json {
-		return json_response(status, '{"ok":false,"error":"${json_escape(error_code)}","status":${status},"message":"${json_escape(message)}"}')
+		esc_code := json_escape(error_code)
+		return json_response(status, '{"ok":false,"code":"${esc_code}","error":"${esc_code}","status":${status},"message":"${json_escape(message)}"}')
 	}
 	return text_response(status, message)
 }

@@ -534,6 +534,8 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `set_not_found_handler(...)` / `not_found(...)`
   - `set_error_handler(...)` / `error(...)`
   - `set_error_response_json(...)` / `error_response_json_enabled()`
+    - 默认 JSON 错误结构：`{"ok":false,"code":"...","error":"...","status":...,"message":"..."}`
+    - `code` 为推荐字段，`error` 为兼容字段（与 `code` 同值）
 - container：
   - `has_container()`
   - `container()` (lazy create `VSlim\Container`)

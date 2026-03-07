@@ -19,5 +19,5 @@ echo $res2->status . '|' . $res2->content_type . '|' . $res2->body . PHP_EOL;
 ?>
 --EXPECT--
 bool(true)
-404|application/json; charset=utf-8|{"ok":false,"error":"not_found","status":404,"message":"Not Found"}
-500|application/json; charset=utf-8|{"ok":false,"error":"invalid_response","status":500,"message":"Invalid route response"}
+404|application/json; charset=utf-8|{"ok":false,"code":"not_found","error":"not_found","status":404,"message":"Not Found"}
+500|application/json; charset=utf-8|{"ok":false,"code":"invalid_response","error":"invalid_response","status":500,"message":"Invalid route response"}
