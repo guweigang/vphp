@@ -291,6 +291,20 @@ pub fn (mut app VSlimApp) api_resource(resource_path string, controller string) 
 }
 
 @[php_method]
+pub fn (mut app VSlimApp) resource_opts(resource_path string, controller string, options vphp.ZVal) &VSlimApp {
+	opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+	register_resource_routes_with_options(mut app, resource_path, controller, true, opts)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) api_resource_opts(resource_path string, controller string, options vphp.ZVal) &VSlimApp {
+	opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+	register_resource_routes_with_options(mut app, resource_path, controller, false, opts)
+	return app
+}
+
+@[php_method]
 pub fn (mut app VSlimApp) get_named(name string, pattern string, handler vphp.ZVal) &VSlimApp {
 	app.add_php_route('GET', name, pattern, handler)
 	return app
@@ -561,6 +575,26 @@ pub fn (group &RouteGroup) api_resource(resource_path string, controller string)
 	unsafe {
 		mut app := &VSlimApp(group.app)
 		register_resource_routes(mut app, group.prefixed_pattern(resource_path), controller, false)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) resource_opts(resource_path string, controller string, options vphp.ZVal) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+		register_resource_routes_with_options(mut app, group.prefixed_pattern(resource_path), controller, true, opts)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) api_resource_opts(resource_path string, controller string, options vphp.ZVal) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+		register_resource_routes_with_options(mut app, group.prefixed_pattern(resource_path), controller, false, opts)
 	}
 	return group
 }
@@ -1368,12 +1402,26 @@ fn request_with_method(req &VSlimRequest, method string) VSlimRequest {
 }
 
 fn register_resource_routes(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool) {
+	register_resource_routes_with_options(mut app, raw_resource_path, controller, include_page_routes, ResourceRouteOptions{})
+}
+
+struct ResourceRouteOptions {
+mut:
+	only        map[string]bool
+	except      map[string]bool
+	names       map[string]string
+	name_prefix string
+}
+
+fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool, options ResourceRouteOptions) {
 	clean_controller := controller.trim_space()
 	path := normalize_resource_path(raw_resource_path)
 	if clean_controller == '' || path == '' {
 		return
 	}
 	base_name := resource_name_from_path(path)
+	mut opts := options
+	actions := ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']
 	handler_index := make_resource_handler(clean_controller, 'index')
 	handler_show := make_resource_handler(clean_controller, 'show')
 	handler_store := make_resource_handler(clean_controller, 'store')
@@ -1385,18 +1433,29 @@ fn register_resource_routes(mut app VSlimApp, raw_resource_path string, controll
 		return
 	}
 	id_path := '${path}/:id'
-	app.add_php_route('GET', '${base_name}.index', path, handler_index)
-	if include_page_routes && handler_create.is_valid() {
-		app.add_php_route('GET', '${base_name}.create', '${path}/create', handler_create)
+	if should_include_resource_action(opts, 'index', actions) {
+		app.add_php_route('GET', resource_route_name(opts, base_name, 'index'), path, handler_index)
 	}
-	app.add_php_route('POST', '${base_name}.store', path, handler_store)
-	app.add_php_route('GET', '${base_name}.show', id_path, handler_show)
-	if include_page_routes && handler_edit.is_valid() {
-		app.add_php_route('GET', '${base_name}.edit', '${id_path}/edit', handler_edit)
+	if include_page_routes && handler_create.is_valid() && should_include_resource_action(opts, 'create', actions) {
+		app.add_php_route('GET', resource_route_name(opts, base_name, 'create'), '${path}/create', handler_create)
 	}
-	app.add_php_route('PUT', '${base_name}.update', id_path, handler_update)
-	app.add_php_route('PATCH', '${base_name}.update', id_path, handler_update)
-	app.add_php_route('DELETE', '${base_name}.destroy', id_path, handler_destroy)
+	if should_include_resource_action(opts, 'store', actions) {
+		app.add_php_route('POST', resource_route_name(opts, base_name, 'store'), path, handler_store)
+	}
+	if should_include_resource_action(opts, 'show', actions) {
+		app.add_php_route('GET', resource_route_name(opts, base_name, 'show'), id_path, handler_show)
+	}
+	if include_page_routes && handler_edit.is_valid() && should_include_resource_action(opts, 'edit', actions) {
+		app.add_php_route('GET', resource_route_name(opts, base_name, 'edit'), '${id_path}/edit', handler_edit)
+	}
+	if should_include_resource_action(opts, 'update', actions) {
+		name := resource_route_name(opts, base_name, 'update')
+		app.add_php_route('PUT', name, id_path, handler_update)
+		app.add_php_route('PATCH', name, id_path, handler_update)
+	}
+	if should_include_resource_action(opts, 'destroy', actions) {
+		app.add_php_route('DELETE', resource_route_name(opts, base_name, 'destroy'), id_path, handler_destroy)
+	}
 }
 
 fn make_resource_handler(controller string, action string) vphp.ZVal {
@@ -1428,6 +1487,90 @@ fn resource_name_from_path(path string) string {
 		return 'resource'
 	}
 	return clean.replace('/', '.')
+}
+
+fn parse_resource_options(options vphp.BorrowedZVal) ResourceRouteOptions {
+	mut out := ResourceRouteOptions{
+		only: map[string]bool{}
+		except: map[string]bool{}
+		names: map[string]string{}
+		name_prefix: ''
+	}
+	if !options.is_valid() || !options.is_array() {
+		return out
+	}
+	only_raw := options.to_zval().get('only') or { vphp.ZVal.new_null() }
+	except_raw := options.to_zval().get('except') or { vphp.ZVal.new_null() }
+	name_prefix_raw := options.to_zval().get('name_prefix') or { vphp.ZVal.new_null() }
+	if name_prefix_raw.is_valid() && !name_prefix_raw.is_null() && !name_prefix_raw.is_undef() {
+		out.name_prefix = name_prefix_raw.to_string().trim_space()
+	}
+	for action in parse_action_list(only_raw) {
+		out.only[action] = true
+	}
+	for action in parse_action_list(except_raw) {
+		out.except[action] = true
+	}
+
+	names_raw := options.to_zval().get('names') or { vphp.ZVal.new_null() }
+	if names_raw.is_valid() && names_raw.is_array() {
+		for key, value in names_raw.to_string_map() {
+			if key.trim_space() != '' && value.trim_space() != '' {
+				out.names[key.trim_space()] = value.trim_space()
+			}
+		}
+	}
+	for action in ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'] {
+		alt := options.to_zval().get('name_${action}') or { vphp.ZVal.new_null() }
+		if alt.is_valid() && !alt.is_null() && !alt.is_undef() && alt.to_string().trim_space() != '' {
+			out.names[action] = alt.to_string().trim_space()
+		}
+	}
+	return out
+}
+
+fn parse_action_list(raw vphp.ZVal) []string {
+	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
+		return []string{}
+	}
+	if raw.is_array() {
+		mut out := []string{}
+		for item in raw.to_string_list() {
+			clean := item.trim_space().to_lower()
+			if clean != '' && clean !in out {
+				out << clean
+			}
+		}
+		return out
+	}
+	mut out := []string{}
+	for part in raw.to_string().split(',') {
+		clean := part.trim_space().to_lower()
+		if clean != '' && clean !in out {
+			out << clean
+		}
+	}
+	return out
+}
+
+fn should_include_resource_action(opts ResourceRouteOptions, action string, all_actions []string) bool {
+	if opts.only.len > 0 {
+		return action in opts.only
+	}
+	if action in opts.except {
+		return false
+	}
+	return action in all_actions
+}
+
+fn resource_route_name(opts ResourceRouteOptions, base_name string, action string) string {
+	if action in opts.names {
+		return opts.names[action]
+	}
+	if opts.name_prefix.trim_space() != '' {
+		return '${opts.name_prefix}.${action}'
+	}
+	return '${base_name}.${action}'
 }
 
 fn resolve_effective_method(req &VSlimRequest) string {

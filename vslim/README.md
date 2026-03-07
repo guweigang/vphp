@@ -521,6 +521,8 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `map(...)`
   - `resource(path, ControllerClass::class)` (index/show/store/update/destroy/create/edit)
   - `api_resource(path, ControllerClass::class)` (index/show/store/update/destroy)
+  - `resource_opts(path, ControllerClass::class, options)`
+  - `api_resource_opts(path, ControllerClass::class, options)`
   - `get_named/post_named/put_named/patch_named/delete_named/head_named/options_named/any_named`
   - `map_named(...)`
   - `group(...)`

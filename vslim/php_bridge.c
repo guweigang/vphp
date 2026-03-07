@@ -99,6 +99,16 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_api_resource, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, resource_path, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, controller, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_resource_opts, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, resource_path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, controller, IS_STRING, 0)
+ZEND_ARG_INFO(0, options)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_api_resource_opts, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, resource_path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, controller, IS_STRING, 0)
+ZEND_ARG_INFO(0, options)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__routegroup_get_named, 0, 0, 3)
 ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
@@ -386,6 +396,38 @@ PHP_METHOD(VSlim__RouteGroup, api_resource) {
 }
 
 
+PHP_METHOD(VSlim__RouteGroup, resource_opts) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_RouteGroup_resource_opts(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__RouteGroup::resource_opts called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_RouteGroup_resource_opts(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* RouteGroup_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
+    }
+}
+
+
+PHP_METHOD(VSlim__RouteGroup, api_resource_opts) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_RouteGroup_api_resource_opts(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__RouteGroup::api_resource_opts called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_RouteGroup_api_resource_opts(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* RouteGroup_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
+    }
+}
+
+
 PHP_METHOD(VSlim__RouteGroup, get_named) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -558,6 +600,8 @@ static const zend_function_entry vslim__routegroup_methods[] = {
     PHP_ME(VSlim__RouteGroup, map, arginfo_vslim__routegroup_map, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__RouteGroup, resource, arginfo_vslim__routegroup_resource, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__RouteGroup, api_resource, arginfo_vslim__routegroup_api_resource, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__RouteGroup, resource_opts, arginfo_vslim__routegroup_resource_opts, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__RouteGroup, api_resource_opts, arginfo_vslim__routegroup_api_resource_opts, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__RouteGroup, get_named, arginfo_vslim__routegroup_get_named, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__RouteGroup, post_named, arginfo_vslim__routegroup_post_named, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__RouteGroup, put_named, arginfo_vslim__routegroup_put_named, ZEND_ACC_PUBLIC)
@@ -1928,6 +1972,16 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_api_resource, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, resource_path, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, controller, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_resource_opts, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, resource_path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, controller, IS_STRING, 0)
+ZEND_ARG_INFO(0, options)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_api_resource_opts, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, resource_path, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, controller, IS_STRING, 0)
+ZEND_ARG_INFO(0, options)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_get_named, 0, 0, 3)
 ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, pattern, IS_STRING, 0)
@@ -2461,6 +2515,38 @@ PHP_METHOD(VSlim__App, api_resource) {
 }
 
 
+PHP_METHOD(VSlim__App, resource_opts) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimApp_resource_opts(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__App::resource_opts called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimApp_resource_opts(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__app_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimApp_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
+    }
+}
+
+
+PHP_METHOD(VSlim__App, api_resource_opts) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimApp_api_resource_opts(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__App::api_resource_opts called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimApp_api_resource_opts(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__app_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimApp_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
+    }
+}
+
+
 PHP_METHOD(VSlim__App, get_named) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -2910,6 +2996,8 @@ static const zend_function_entry vslim__app_methods[] = {
     PHP_ME(VSlim__App, map, arginfo_vslim__app_map, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, resource, arginfo_vslim__app_resource, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, api_resource, arginfo_vslim__app_api_resource, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__App, resource_opts, arginfo_vslim__app_resource_opts, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__App, api_resource_opts, arginfo_vslim__app_api_resource_opts, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, get_named, arginfo_vslim__app_get_named, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, post_named, arginfo_vslim__app_post_named, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, put_named, arginfo_vslim__app_put_named, ZEND_ACC_PUBLIC)
