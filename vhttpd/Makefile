@@ -4,6 +4,9 @@ ROOT := $(CURDIR)
 SRC_DIR := $(ROOT)/src
 VHTTPD_BIN := $(ROOT)/vhttpd
 
+build:
+	v -o $(VHTTPD_BIN) $(SRC_DIR)
+
 vhttpd:
 	v -o $(VHTTPD_BIN) $(SRC_DIR)
 

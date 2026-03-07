@@ -54,6 +54,57 @@ Compatibility aliases are provided for legacy names:
 - `VHttpd\\PhpWorker\\PhpWorker`, `PhpWorker`
 - `VHttpd\\PhpWorker\\WorkerStreamResponse`, `WorkerStreamResponse`
 
+## StreamResponse quick examples
+
+`StreamResponse` is the common streaming contract for any PHP app behind `vhttpd`.
+
+### Plain PHP handler
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use VHttpd\PhpWorker\StreamResponse;
+
+return function (array $envelope) {
+    $prompt = (string)($envelope['query']['prompt'] ?? 'hello');
+    $events = (function () use ($prompt) {
+        foreach (preg_split('//u', $prompt, -1, PREG_SPLIT_NO_EMPTY) as $i => $token) {
+            yield [
+                'event' => 'token',
+                'id' => 'tok-' . ($i + 1),
+                'data' => $token,
+            ];
+        }
+    })();
+    return StreamResponse::sse($events);
+};
+```
+
+### Laravel-style endpoint return
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Http\Request;
+use VHttpd\PhpWorker\StreamResponse;
+
+Route::get('/ai/stream', function (Request $request) {
+    $prompt = (string)$request->query('prompt', 'hello');
+    $chunks = (function () use ($prompt) {
+        foreach (str_split($prompt) as $ch) {
+            yield $ch;
+        }
+    })();
+    return StreamResponse::text($chunks, 200, 'text/plain; charset=utf-8', [
+        'content-type' => 'text/plain; charset=utf-8',
+    ]);
+});
+```
+
 ## Experimental DB gateway client
 
 ```php

@@ -407,7 +407,7 @@ fn write_http_stream_headers(mut ctx Context, status int, content_type string, e
 	}
 	mut sb := strings.new_builder(512)
 	sb.write_string('HTTP/1.1 ${code} ${status_reason_phrase(code)}\r\n')
-	sb.write_string('Server: veb\r\n')
+	sb.write_string('Server: vhttpd\r\n')
 	sb.write_string('Connection: close\r\n')
 	if chunked {
 		sb.write_string('Transfer-Encoding: chunked\r\n')
@@ -699,7 +699,7 @@ fn parse_query_map(query_str string) map[string]string {
 fn apply_worker_headers(mut ctx Context, headers map[string]string) {
 	for name, value in headers {
 		lower := name.to_lower()
-		if lower == 'content-type' || lower == 'content-length' {
+		if lower == 'content-type' || lower == 'content-length' || lower == 'server' || lower == 'x-request-id' {
 			continue
 		}
 		ctx.set_custom_header(name, value) or {}

@@ -438,6 +438,37 @@ That keeps:
 
 This enables AI/token streaming style workloads in addition to normal request/response handlers.
 
+### StreamResponse contract for any PHP framework
+
+`VHttpd\\PhpWorker\\StreamResponse` is intentionally a `vhttpd` runtime contract (not a VSlim-only type).
+Any framework behind `vhttpd -> php-worker` can return this object to stream chunks/tokens.
+
+Minimal app return contract:
+
+```php
+use VHttpd\PhpWorker\StreamResponse;
+
+return function (array $envelope) {
+    $prompt = (string)($envelope['query']['prompt'] ?? 'hello');
+    $events = (function () use ($prompt) {
+        foreach (str_split($prompt) as $idx => $ch) {
+            yield [
+                'event' => 'token',
+                'id' => 'tok-' . ($idx + 1),
+                'data' => $ch,
+            ];
+        }
+    })();
+    return StreamResponse::sse($events, 200, ['x-stream-source' => 'vhttpd-app']);
+};
+```
+
+Notes:
+
+- `StreamResponse::sse(...)` emits true SSE frames.
+- `StreamResponse::text(...)` emits passthrough text chunks.
+- Keep this class in `vhttpd/php/package`; do not duplicate it in each framework adapter.
+
 ## Final request envelope
 
 `vhttpd` now forwards a single structured request shape derived from `veb.Context`
