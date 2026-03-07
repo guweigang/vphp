@@ -1,6 +1,7 @@
 module main
 
 import os
+import math
 import vphp
 
 @[php_method]
@@ -162,8 +163,9 @@ pub fn (view &VSlimView) render_response_with_layout(template string, layout str
 fn (view &VSlimView) render_source(source string, scalars map[string]string, lists map[string][]string, depth int) string {
 	mut out := source
 	out = view.render_include_tokens(out, scalars, lists, depth)
-	out = render_if_blocks(out, scalars, lists)
 	out = render_for_blocks(out, scalars, lists)
+	out = render_if_blocks(out, scalars, lists)
+	out = render_function_tokens(out, scalars, lists)
 	out = render_raw_value_tokens(out, scalars)
 	for key, value in scalars {
 		escaped := escape_html_text(value)
@@ -241,6 +243,375 @@ fn render_raw_value_tokens(source string, data map[string]string) string {
 	return out
 }
 
+fn render_function_tokens(source string, scalars map[string]string, lists map[string][]string) string {
+	mut out := source
+	out = replace_function_tokens_by_prefix(out, 'trim:', scalars, lists)
+	out = replace_function_tokens_by_prefix(out, 'first:', scalars, lists)
+	out = replace_function_tokens_by_prefix(out, 'last:', scalars, lists)
+	out = replace_function_tokens_by_prefix(out, 'join:', scalars, lists)
+	out = replace_function_tokens_by_prefix(out, 'reduce:', scalars, lists)
+	return out
+}
+
+fn replace_function_tokens_by_prefix(source string, prefix string, scalars map[string]string, lists map[string][]string) string {
+	mut out := source
+	open := '{{${prefix}'
+	open_spaced := '{{ ${prefix}'
+	for {
+		mut start := out.index(open) or { -1 }
+		mut actual_open := open
+		if start == -1 {
+			start = out.index(open_spaced) or { break }
+			actual_open = open_spaced
+		}
+		end_rel := out[start..].index('}}') or { break }
+		end := start + end_rel + 2
+		token := out[start..end]
+		payload := token.replace(actual_open, '').replace('}}', '')
+		raw := eval_template_function(prefix.trim_right(':'), payload, scalars, lists)
+		out = out[..start] + escape_html_text(raw) + out[end..]
+	}
+	return out
+}
+
+fn eval_template_function(fn_name string, payload string, scalars map[string]string, lists map[string][]string) string {
+	if payload == '' {
+		return ''
+	}
+	match fn_name {
+		'trim' {
+			return template_scalar_value(payload, scalars).trim_space()
+		}
+		'first' {
+			items := template_list_values(payload, scalars, lists)
+			if items.len == 0 {
+				return ''
+			}
+			return items[0]
+		}
+		'last' {
+			items := template_list_values(payload, scalars, lists)
+			if items.len == 0 {
+				return ''
+			}
+			return items[items.len - 1]
+		}
+		'join' {
+			path, sep := split_function_args(payload)
+			items := template_list_values(path, scalars, lists)
+			return items.join(sep)
+		}
+		'reduce' {
+			path, reducer, seed := split_reduce_args(payload)
+			items := template_list_values(path, scalars, lists)
+			return reduce_template_values(items, reducer, seed)
+		}
+		else {
+			return ''
+		}
+	}
+}
+
+fn reduce_template_values(items []string, reducer string, seed string) string {
+	if items.len == 0 && seed.trim_space() == '' {
+		return ''
+	}
+	mut reducer_expr := reducer.trim_space()
+	if reducer_expr == '' {
+		reducer_expr = 'acc+item'
+	}
+	if reducer_expr.to_lower() == 'avg' {
+		mut sum := 0.0
+		mut count := 0
+		if seed.trim_space() != '' && is_numeric_template_value(seed.trim_space()) {
+			sum = seed.trim_space().f64()
+			count = 1
+		}
+		for item in items {
+			raw := item.trim_space()
+			if !is_numeric_template_value(raw) {
+				continue
+			}
+			sum += raw.f64()
+			count++
+		}
+		if count == 0 {
+			return ''
+		}
+		return format_reduced_number(sum / f64(count))
+	}
+	mut acc := 0.0
+	if seed.trim_space() != '' && is_numeric_template_value(seed.trim_space()) {
+		acc = seed.trim_space().f64()
+	}
+	mut seen := seed.trim_space() != ''
+	for item in items {
+		raw := item.trim_space()
+		if !is_numeric_template_value(raw) {
+			continue
+		}
+		value := raw.f64()
+		if !seen && (reducer_expr.to_lower() == 'min' || reducer_expr.to_lower() == 'max') {
+			acc = value
+			seen = true
+			continue
+		}
+		if !seen {
+			acc = 0.0
+			seen = true
+		}
+		if named := apply_named_reducer(reducer_expr, acc, value) {
+			acc = named
+		} else {
+			acc = eval_reduce_expr(reducer_expr, acc, value) or { acc }
+		}
+	}
+	if !seen {
+		return ''
+	}
+	return format_reduced_number(acc)
+}
+
+fn apply_named_reducer(name string, acc f64, item f64) ?f64 {
+	match name.trim_space().to_lower() {
+		'sum', 'add' { return acc + item }
+		'count' { return acc + 1.0 }
+		'min' { return if acc < item { acc } else { item } }
+		'max' { return if acc > item { acc } else { item } }
+		else { return none }
+	}
+}
+
+struct ReduceExprParser {
+	src  string
+mut:
+	pos  int
+	acc  f64
+	item f64
+}
+
+fn eval_reduce_expr(expr string, acc f64, item f64) !f64 {
+	mut p := ReduceExprParser{
+		src: expr
+		acc: acc
+		item: item
+	}
+	value := p.parse_expr()!
+	p.skip_ws()
+	if p.pos < p.src.len {
+		return error('unexpected token')
+	}
+	return value
+}
+
+fn (mut p ReduceExprParser) parse_expr() !f64 {
+	mut left := p.parse_term()!
+	for {
+		p.skip_ws()
+		if p.match_char(`+`) {
+			left += p.parse_term()!
+		} else if p.match_char(`-`) {
+			left -= p.parse_term()!
+		} else {
+			break
+		}
+	}
+	return left
+}
+
+fn (mut p ReduceExprParser) parse_term() !f64 {
+	mut left := p.parse_factor()!
+	for {
+		p.skip_ws()
+		if p.match_char(`*`) {
+			left *= p.parse_factor()!
+		} else if p.match_char(`/`) {
+			right := p.parse_factor()!
+			if math.abs(right) < 1e-12 {
+				return error('division by zero')
+			}
+			left /= right
+		} else {
+			break
+		}
+	}
+	return left
+}
+
+fn (mut p ReduceExprParser) parse_factor() !f64 {
+	p.skip_ws()
+	if p.match_char(`+`) {
+		return p.parse_factor()!
+	}
+	if p.match_char(`-`) {
+		return -p.parse_factor()!
+	}
+	if p.match_char(`(`) {
+		value := p.parse_expr()!
+		p.skip_ws()
+		if !p.match_char(`)`) {
+			return error('missing )')
+		}
+		return value
+	}
+	if ident := p.parse_ident() {
+		match ident {
+			'acc' { return p.acc }
+			'item' { return p.item }
+			else { return error('unknown identifier') }
+		}
+	}
+	if num := p.parse_number() {
+		return num
+	}
+	return error('invalid factor')
+}
+
+fn (mut p ReduceExprParser) parse_ident() ?string {
+	p.skip_ws()
+	if p.pos >= p.src.len {
+		return none
+	}
+	first := p.src[p.pos]
+	if !first.is_letter() && first != `_` {
+		return none
+	}
+	start := p.pos
+	for p.pos < p.src.len {
+		ch := p.src[p.pos]
+		if ch.is_letter() || ch.is_digit() || ch == `_` {
+			p.pos++
+			continue
+		}
+		break
+	}
+	if p.pos == start {
+		return none
+	}
+	return p.src[start..p.pos]
+}
+
+fn (mut p ReduceExprParser) parse_number() ?f64 {
+	p.skip_ws()
+	start := p.pos
+	mut seen_dot := false
+	for p.pos < p.src.len {
+		ch := p.src[p.pos]
+		if ch.is_digit() {
+			p.pos++
+			continue
+		}
+		if ch == `.` && !seen_dot {
+			seen_dot = true
+			p.pos++
+			continue
+		}
+		break
+	}
+	if p.pos == start {
+		return none
+	}
+	raw := p.src[start..p.pos]
+	return raw.f64()
+}
+
+fn (mut p ReduceExprParser) skip_ws() {
+	for p.pos < p.src.len && p.src[p.pos].is_space() {
+		p.pos++
+	}
+}
+
+fn (mut p ReduceExprParser) match_char(ch u8) bool {
+	if p.pos < p.src.len && p.src[p.pos] == ch {
+		p.pos++
+		return true
+	}
+	return false
+}
+
+fn format_reduced_number(value f64) string {
+	as_int := i64(value)
+	if math.abs(value - f64(as_int)) < 1e-9 {
+		return '${as_int}'
+	}
+	return '${value}'
+}
+
+fn is_numeric_template_value(raw string) bool {
+	if raw == '' {
+		return false
+	}
+	mut seen_digit := false
+	mut seen_dot := false
+	for i, ch in raw {
+		if (ch == `+` || ch == `-`) && i == 0 {
+			continue
+		}
+		if ch == `.` {
+			if seen_dot {
+				return false
+			}
+			seen_dot = true
+			continue
+		}
+		if !ch.is_digit() {
+			return false
+		}
+		seen_digit = true
+	}
+	return seen_digit
+}
+
+fn split_function_args(payload string) (string, string) {
+	if !payload.contains('|') {
+		return payload.trim_space(), ','
+	}
+	path := payload.all_before('|').trim_space()
+	sep := payload.all_after('|')
+	return path, sep
+}
+
+fn split_reduce_args(payload string) (string, string, string) {
+	parts := payload.split('|')
+	if parts.len == 0 {
+		return '', '', ''
+	}
+	path := parts[0].trim_space()
+	reducer := if parts.len >= 2 { parts[1].trim_space() } else { 'acc+item' }
+	seed := if parts.len >= 3 { parts[2].trim_space() } else { '' }
+	return path, reducer, seed
+}
+
+fn template_scalar_value(path string, scalars map[string]string) string {
+	key := path.trim_space()
+	if key == '' {
+		return ''
+	}
+	if key in scalars {
+		return scalars[key]
+	}
+	alias := alias_template_key(key)
+	if alias in scalars {
+		return scalars[alias]
+	}
+	return ''
+}
+
+fn template_list_values(path string, scalars map[string]string, lists map[string][]string) []string {
+	key := path.trim_space()
+	if key == '' {
+		return []string{}
+	}
+	if key in lists {
+		unsafe { return lists[key].clone() }
+	}
+	alias := alias_template_key(key)
+	if alias in lists {
+		unsafe { return lists[alias].clone() }
+	}
+	return parse_for_items(template_scalar_value(key, scalars))
+}
+
 fn render_if_blocks(source string, scalars map[string]string, lists map[string][]string) string {
 	mut out := source
 	for {
@@ -291,25 +662,129 @@ fn render_for_blocks(source string, scalars map[string]string, lists map[string]
 		close_start := key_end + close_rel
 		close_end := close_start + close_token.len
 		block := out[key_end..close_start]
-		items := if key in lists {
-			unsafe { lists[key].clone() }
-		} else {
-			raw := scalars[key] or { '' }
-			parse_for_items(raw)
-		}
 		mut rendered := ''
-		for idx, item in items {
-			mut part := block
-			escaped_item := escape_html_text(item)
-			part = part.replace('{{item}}', escaped_item)
-			part = part.replace('{{ item }}', escaped_item)
-			part = part.replace('{{index}}', '${idx}')
-			part = part.replace('{{ index }}', '${idx}')
-			part = part.replace('{{raw:item}}', item)
-			part = part.replace('{{ raw:item }}', item)
-			rendered += part
+		object_locals := collect_object_loop_locals_from_block(key, block, scalars)
+		if object_locals.len > 0 {
+			for local in object_locals {
+				rendered += render_for_item_block(block, local, scalars, lists)
+			}
+		} else {
+			items := if key in lists {
+				unsafe { lists[key].clone() }
+			} else {
+				raw := scalars[key] or { '' }
+				parse_for_items(raw)
+			}
+			for idx, item in items {
+				mut local := map[string]string{}
+				local['index'] = '${idx}'
+				local['item'] = item
+				if item != '' && is_numeric_path_segment(item) {
+					populate_indexed_item_fields(key, item, scalars, mut local)
+				}
+				rendered += render_for_item_block(block, local, scalars, lists)
+			}
 		}
 		out = out[..start] + rendered + out[close_end..]
+	}
+	return out
+}
+
+fn populate_indexed_item_fields(loop_key string, idx string, scalars map[string]string, mut local map[string]string) {
+	prefix_dot := '${loop_key}.${idx}.'
+	prefix_bracket := '${loop_key}[${idx}].'
+	for key, value in scalars {
+		if key.starts_with(prefix_dot) {
+			field := key[prefix_dot.len..]
+			if field != '' {
+				local['item.${field}'] = value
+			}
+			continue
+		}
+		if key.starts_with(prefix_bracket) {
+			field := key[prefix_bracket.len..]
+			if field != '' {
+				local['item.${field}'] = value
+			}
+		}
+	}
+}
+
+fn render_for_item_block(block string, local map[string]string, scalars map[string]string, lists map[string][]string) string {
+	mut merged := scalars.clone()
+	for k, v in local {
+		merged[k] = v
+	}
+	mut part := block
+	part = render_if_blocks(part, merged, lists)
+	part = render_function_tokens(part, merged, lists)
+	part = render_raw_value_tokens(part, merged)
+	for key, value in local {
+		escaped := escape_html_text(value)
+		part = part.replace('{{${key}}}', escaped)
+		part = part.replace('{{ ${key} }}', escaped)
+	}
+	return part
+}
+
+fn collect_object_loop_locals_from_block(loop_key string, block string, scalars map[string]string) []map[string]string {
+	fields := extract_item_field_tokens(block)
+	if fields.len == 0 {
+		return []map[string]string{}
+	}
+	mut out := []map[string]string{}
+	mut started := false
+	for idx in 0 .. 512 {
+		mut local := map[string]string{}
+		local['index'] = '${idx}'
+		local['item'] = ''
+		mut found := false
+		for field in fields {
+			dot_path := '${loop_key}.${idx}.${field}'
+			bracket_path := '${loop_key}[${idx}].${field}'
+			mut val := template_scalar_value(dot_path, scalars)
+			if val == '' {
+				val = template_scalar_value(bracket_path, scalars)
+			}
+			if val != '' {
+				local['item.${field}'] = val
+				found = true
+			}
+		}
+		if found {
+			started = true
+			out << local
+			continue
+		}
+		if started {
+			break
+		}
+	}
+	return out
+}
+
+fn extract_item_field_tokens(block string) []string {
+	mut out := []string{}
+	mut seen := map[string]bool{}
+	mut i := 0
+	for i < block.len {
+		pos := block[i..].index('item.') or { break }
+		start := i + pos + 'item.'.len
+		mut end := start
+		for end < block.len {
+			ch := block[end]
+			if ch.is_letter() || ch.is_digit() || ch == `.` || ch == `_` || ch == `[` || ch == `]` {
+				end++
+				continue
+			}
+			break
+		}
+		field := block[start..end].trim_space()
+		if field != '' && field !in seen {
+			seen[field] = true
+			out << field
+		}
+		i = end
 	}
 	return out
 }
@@ -333,11 +808,33 @@ fn collect_template_values(prefix string, value vphp.ZVal, mut scalars map[strin
 	}
 	if value.is_array() {
 		if is_template_list(value) {
-			items := extract_template_list_items(value)
-			if prefix != '' {
-				lists[prefix] = items
-				if prefix !in scalars {
-					scalars[prefix] = items.join(',')
+			if template_list_has_complex_items(value) {
+				if prefix != '' {
+					mut idx_items := []string{}
+					for i in 0 .. value.array_count() {
+						idx_items << '${i}'
+					}
+					lists[prefix] = idx_items
+				}
+				for i in 0 .. value.array_count() {
+					child := value.array_get(i)
+					next_prefix := if prefix == '' { '${i}' } else { '${prefix}.${i}' }
+					collect_template_values(next_prefix, child, mut scalars, mut lists, depth + 1)
+				}
+			} else {
+				items := extract_template_list_items(value)
+				if prefix != '' {
+					lists[prefix] = items
+					alias := alias_template_key(prefix)
+					if alias != '' && alias != prefix {
+						lists[alias] = items
+					}
+					if prefix !in scalars {
+						scalars[prefix] = items.join(',')
+					}
+					if alias != '' && alias != prefix && alias !in scalars {
+						scalars[alias] = items.join(',')
+					}
 				}
 			}
 			return
@@ -371,7 +868,51 @@ fn collect_template_values(prefix string, value vphp.ZVal, mut scalars map[strin
 	}
 	if prefix != '' {
 		scalars[prefix] = to_template_scalar(value)
+		alias := alias_template_key(prefix)
+		if alias != '' && alias != prefix {
+			scalars[alias] = scalars[prefix]
+		}
 	}
+}
+
+fn alias_template_key(path string) string {
+	if path == '' {
+		return path
+	}
+	parts := path.split('.')
+	mut out := []string{}
+	for idx, part in parts {
+		if part == '' {
+			continue
+		}
+		is_num := is_numeric_path_segment(part)
+		if is_num {
+			if out.len == 0 {
+				out << '[${part}]'
+			} else {
+				out[out.len - 1] = out[out.len - 1] + '[${part}]'
+			}
+			continue
+		}
+		if idx == 0 {
+			out << part
+		} else {
+			out << '.${part}'
+		}
+	}
+	return out.join('')
+}
+
+fn is_numeric_path_segment(part string) bool {
+	if part.len == 0 {
+		return false
+	}
+	for ch in part {
+		if !ch.is_digit() {
+			return false
+		}
+	}
+	return true
 }
 
 fn is_template_list(value vphp.ZVal) bool {
@@ -388,6 +929,16 @@ fn extract_template_list_items(value vphp.ZVal) []string {
 		items << to_template_scalar(value.array_get(i))
 	}
 	return items
+}
+
+fn template_list_has_complex_items(value vphp.ZVal) bool {
+	for i in 0 .. value.array_count() {
+		item := value.array_get(i)
+		if item.is_array() || item.is_object() {
+			return true
+		}
+	}
+	return false
 }
 
 fn to_template_scalar(value vphp.ZVal) string {

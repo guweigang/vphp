@@ -2,4 +2,7 @@
 {{if:user.active}}<p>ACTIVE</p>{{/if}}
 <ul>{{for:user.tags}}<li>{{item}}</li>{{/for}}</ul>
 <div>{{meta.profile.title}}</div>
+<div class="row0">{{rows[0].name}}</div>
+<div class="row1">{{rows.1.name}}</div>
+<ul class="rows">{{for:rows}}{{if:item.name}}<li>{{item.name}}</li>{{/if}}{{/for}}</ul>
 {{if:meta.enabled}}<span>ENABLED</span>{{else}}<span>DISABLED</span>{{/if}}

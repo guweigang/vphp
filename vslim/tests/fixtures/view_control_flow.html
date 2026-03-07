@@ -3,3 +3,9 @@
 <ul>
 {{for:tags}}<li data-i="{{index}}">{{item}}</li>{{/for}}
 </ul>
+<p id="trim">{{trim:title_spaced}}</p>
+<p id="first">{{first:tags}}</p>
+<p id="last">{{last:tags}}</p>
+<p id="join">{{join:tags| + }}</p>
+<p id="reduce-sum">{{reduce:scores|sum}}</p>
+<p id="reduce-count">{{reduce:scores|count}}</p>

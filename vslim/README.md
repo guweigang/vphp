@@ -720,6 +720,18 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - `if` 目前是 key truthy 判断（`'',0,false,no,off,null` 视为 false）
 - `for` 支持数组（优先）和逗号分隔字符串（`item/index`）
 - 支持点号路径访问（Map/对象）：`user.name`、`if:user.active`、`for:user.tags`
+- 支持数组下标路径：`rows.0.name` 与 `rows[0].name`（两种写法等价）
+
+模板内置函数（默认仍会 HTML 转义）：
+
+```html
+{{trim:user.name}}           <!-- 去除首尾空格 -->
+{{first:user.tags}}          <!-- 第一个元素 -->
+{{last:user.tags}}           <!-- 最后一个元素 -->
+{{join:user.tags|, }}        <!-- 按分隔符拼接 -->
+{{reduce:scores|sum}}        <!-- 命名 reducer -->
+{{reduce:scores|acc+item|0}} <!-- 自定义表达式 + 初始值(seed) -->
+```
 
 局部模板与布局：
 
