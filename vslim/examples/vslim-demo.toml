@@ -1,0 +1,24 @@
+[server]
+host = "127.0.0.1"
+port = 19888
+
+[files]
+pid_file = "/tmp/vhttpd_vslim_demo.pid"
+event_log = "/tmp/vhttpd_vslim_demo.events.ndjson"
+
+[worker]
+autostart = true
+read_timeout_ms = 3000
+pool_size = 4
+socket_prefix = "/tmp/vslim_demo_worker"
+cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/guweigang/Source/vphpext/vslim/examples/vendor/bin/php-worker"
+
+[worker.env]
+VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/demo_app.php"
+VSLIM_TRACE_MEM=1
+VSLIM_TRACE_MEM_EVERY=200
+
+[admin]
+host = "127.0.0.1"
+port = 19988
+token = ""
