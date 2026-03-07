@@ -1,6 +1,24 @@
 import os
 import vphp.compiler
 
+fn sanitize_ldflags(ldflags string) string {
+	mut kept := []string{}
+	for token in ldflags.split(' ') {
+		t := token.trim_space()
+		if t == '' {
+			continue
+		}
+		if t.starts_with('-L') && t.len > 2 {
+			path := t[2..]
+			if !os.exists(path) {
+				continue
+			}
+		}
+		kept << t
+	}
+	return kept.join(' ')
+}
+
 fn main() {
 	project_root := os.dir(os.real_path(@FILE))
 	source_dir := os.join_path(project_root, 'src')
@@ -58,7 +76,7 @@ fn main() {
 
 	println('🛠️  3. GCC 最终链接...')
 	php_inc := os.execute('php-config --includes').output.trim_space()
-	php_ldflags := os.execute('php-config --ldflags').output.trim_space()
+	php_ldflags := sanitize_ldflags(os.execute('php-config --ldflags').output.trim_space())
 	php_libs := os.execute('php-config --libs').output.replace('-lzip', '').trim_space()
 
 	gcc_cmd := 'gcc -shared -fPIC ${disabled_warnings} -DCOMPILE_DL_${ext_name.to_upper()}=1 ' +
