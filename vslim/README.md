@@ -437,6 +437,7 @@ make ext
 make vhttpd
 make serve
 make test
+make mvp-check
 ```
 
 HTTP runtime 相关文件现在在：

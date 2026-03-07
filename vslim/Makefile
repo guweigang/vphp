@@ -1,4 +1,4 @@
-.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-self-test demo-verify clean
+.PHONY: all build ext vhttpd serve test psr-matrix framework-matrix demo-self-test demo-verify mvp-check clean
 
 BREW_PATH ?= /opt/homebrew
 DISABLED_WARNINGS := -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types -Wno-initializer-overrides
@@ -17,13 +17,21 @@ VHTTPD_EVENT_LOG ?= /tmp/vslim_vhttpd.events.ndjson
 VSLIM_DEMO_BASE_URL ?= http://127.0.0.1:19888
 VSLIM_WORKER_SOCKET ?= /tmp/vslim_worker.sock
 VSLIM_WORKER_CMD := php -d extension=$(ROOT)/vslim.so $(VHTTPD_ROOT)/php/php-worker.php --socket $(VSLIM_WORKER_SOCKET)
+MVP_TESTS := \
+	tests/test_vslim_request_trace_ids.phpt \
+	tests/test_vslim_dispatch_envelope_map_headers.phpt \
+	tests/test_vslim_worker_envelope_map.phpt \
+	tests/test_vslim_mvc_view_controller.phpt \
+	tests/test_vslim_resource_routes.phpt \
+	tests/test_vslim_resource_opts.phpt \
+	tests/test_vslim_error_response_json.phpt
 
 all: build
 
 build:
 	v -path ".:..:@vlib" run build.v
 
-vslim:
+ext:
 	@if [ -z "$(EXT_C)" ]; then \
 		echo "Error: no transpiled extension C file found (expected vphp_ext_*.c)."; \
 		exit 1; \
@@ -62,6 +70,12 @@ demo-self-test: build
 
 demo-verify:
 	BASE_URL=$(VSLIM_DEMO_BASE_URL) $(ROOT)/examples/verify_demo.sh
+
+mvp-check: build
+	@echo "[mvp-check] demo self-test"
+	@php -d extension=$(ROOT)/vslim.so $(ROOT)/examples/demo_app.php --self-test
+	@echo "[mvp-check] phpt core set"
+	@TEST_PHP_EXECUTABLE="$$(which php)" php ../v_php_ext/run-tests.php -q --show-all -d extension=./vslim.so $(MVP_TESTS)
 
 clean:
 	rm -f vslim.so $(VHTTPD_BIN)
