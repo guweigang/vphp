@@ -7980,6 +7980,10 @@ VV_LOC string main__VSlimView_resolve_template_path(main__VSlimView* view, strin
 VV_LOC string main__render_asset_tokens(string source, string assets_prefix);
 VV_LOC string main__replace_slot_tokens(string source, string slot, string content);
 VV_LOC string main__render_raw_value_tokens(string source, Map_string_string data);
+VV_LOC string main__render_if_blocks(string source, Map_string_string data);
+VV_LOC string main__render_for_blocks(string source, Map_string_string data);
+VV_LOC Array_string main__parse_for_items(string raw);
+VV_LOC bool main__is_truthy_template_value(string raw);
 VV_LOC string main__escape_html_text(string input);
 VV_LOC string main__normalize_assets_prefix(string prefix);
 main__VSlimController* main__VSlimController_construct(main__VSlimController* c, main__VSlimApp* app);
@@ -45944,6 +45948,8 @@ main__VSlimResponse* main__VSlimView_render_response_with_layout(main__VSlimView
 VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source, Map_string_string data, int depth) {
 	string out = source;
 	out = main__VSlimView_render_include_tokens(view, out, data, depth);
+	out = main__render_if_blocks(out, data);
+	out = main__render_for_blocks(out, data);
 	out = main__render_raw_value_tokens(out, data);
 	int _t2 = data.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
@@ -46052,6 +46058,148 @@ VV_LOC string main__render_raw_value_tokens(string source, Map_string_string dat
 		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{ raw:"), 0xfe10, {.d_s = key}}, {_S(" }}"), 0, { .d_c = 0 }}})), value);
 	}
 	return out;
+}
+VV_LOC string main__render_if_blocks(string source, Map_string_string data) {
+	string out = source;
+	for (;;) {
+		_option_int _t1 = builtin__string_index(out, _S("{{if:"));
+		if (_t1.state != 0) {
+			break;
+		}
+		
+ 		int start = (*(int*)_t1.data);
+		_option_int _t2 = builtin__string_index(builtin__string_substr(out, start, 2147483647), _S("}}"));
+		if (_t2.state != 0) {
+			break;
+		}
+		
+ 		int key_end_rel = (*(int*)_t2.data);
+		int key_end = (int)((int)(start + key_end_rel) + 2);
+		string open_token = builtin__string_substr(out, start, key_end);
+		string key = builtin__string_trim_space(builtin__string_replace(builtin__string_replace(open_token, _S("{{if:"), _S("")), _S("}}"), _S("")));
+		string close_token = _S("{{/if}}");
+		_option_int _t3 = builtin__string_index(builtin__string_substr(out, key_end, 2147483647), close_token);
+		if (_t3.state != 0) {
+			break;
+		}
+		
+ 		int close_rel = (*(int*)_t3.data);
+		int close_start = (int)(key_end + close_rel);
+		int close_end = (int)(close_start + close_token.len);
+		string block = builtin__string_substr(out, key_end, close_start);
+		string else_token = _S("{{else}}");
+		string else_token_spaced = _S("{{ else }}");
+		string true_block = block;
+		string false_block = _S("");
+		_option_int _t4;
+		_option_int _t5;
+		if (_t4 = builtin__string_index(block, else_token), _t4.state == 0) {
+			int else_pos = *(int*)_t4.data;
+			true_block = builtin__string_substr(block, 0, else_pos);
+			false_block = builtin__string_substr(block, (int)(else_pos + else_token.len), 2147483647);
+		} else if (_t5 = builtin__string_index(block, else_token_spaced), _t5.state == 0) {
+			int else_pos = *(int*)_t5.data;
+			true_block = builtin__string_substr(block, 0, else_pos);
+			false_block = builtin__string_substr(block, (int)(else_pos + else_token_spaced.len), 2147483647);
+		}
+		string* _t7 = (string*)(builtin__map_get_check(ADDR(map, data), &(string[]){key}));
+		_option_string _t6 = {0};
+		if (_t7) {
+			*((string*)&_t6.data) = *((string*)_t7);
+		} else {
+			_t6.state = 2; _t6.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t6.state != 0) {
+			*(string*) _t6.data = _S("");
+		}
+		
+		string val = (*(string*)_t6.data);
+		string replacement = (main__is_truthy_template_value(val) ? (true_block) : (false_block));
+		out = builtin__string__plus(builtin__string__plus(builtin__string_substr(out, 0, start), replacement), builtin__string_substr(out, close_end, 2147483647));
+	}
+	return out;
+}
+VV_LOC string main__render_for_blocks(string source, Map_string_string data) {
+	string out = source;
+	for (;;) {
+		_option_int _t1 = builtin__string_index(out, _S("{{for:"));
+		if (_t1.state != 0) {
+			break;
+		}
+		
+ 		int start = (*(int*)_t1.data);
+		_option_int _t2 = builtin__string_index(builtin__string_substr(out, start, 2147483647), _S("}}"));
+		if (_t2.state != 0) {
+			break;
+		}
+		
+ 		int key_end_rel = (*(int*)_t2.data);
+		int key_end = (int)((int)(start + key_end_rel) + 2);
+		string open_token = builtin__string_substr(out, start, key_end);
+		string key = builtin__string_trim_space(builtin__string_replace(builtin__string_replace(open_token, _S("{{for:"), _S("")), _S("}}"), _S("")));
+		string close_token = _S("{{/for}}");
+		_option_int _t3 = builtin__string_index(builtin__string_substr(out, key_end, 2147483647), close_token);
+		if (_t3.state != 0) {
+			break;
+		}
+		
+ 		int close_rel = (*(int*)_t3.data);
+		int close_start = (int)(key_end + close_rel);
+		int close_end = (int)(close_start + close_token.len);
+		string block = builtin__string_substr(out, key_end, close_start);
+		string* _t5 = (string*)(builtin__map_get_check(ADDR(map, data), &(string[]){key}));
+		_option_string _t4 = {0};
+		if (_t5) {
+			*((string*)&_t4.data) = *((string*)_t5);
+		} else {
+			_t4.state = 2; _t4.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t4.state != 0) {
+			*(string*) _t4.data = _S("");
+		}
+		
+		string raw = (*(string*)_t4.data);
+		Array_string items = main__parse_for_items(raw);
+		string rendered = _S("");
+		for (int idx = 0; idx < items.len; ++idx) {
+			string item = ((string*)items.data)[idx];
+			string part = block;
+			string escaped_item = main__escape_html_text(item);
+			part = builtin__string_replace(part, _S("{{item}}"), escaped_item);
+			part = builtin__string_replace(part, _S("{{ item }}"), escaped_item);
+			part = builtin__string_replace(part, _S("{{index}}"), builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = idx}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			part = builtin__string_replace(part, _S("{{ index }}"), builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = idx}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			part = builtin__string_replace(part, _S("{{raw:item}}"), item);
+			part = builtin__string_replace(part, _S("{{ raw:item }}"), item);
+			rendered = builtin__string__plus(rendered, part);
+		}
+		out = builtin__string__plus(builtin__string__plus(builtin__string_substr(out, 0, start), rendered), builtin__string_substr(out, close_end, 2147483647));
+	}
+	return out;
+}
+VV_LOC Array_string main__parse_for_items(string raw) {
+	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	if ((builtin__string_trim_space(raw)).len == 0) {
+		return out;
+	}
+	Array_string _t2 = builtin__string_split(raw, _S(","));
+	for (int _t3 = 0; _t3 < _t2.len; ++_t3) {
+		string part = ((string*)_t2.data)[_t3];
+		string item = builtin__string_trim_space(part);
+		if ((item).len != 0) {
+			builtin__array_push((array*)&out, _MOV((string[]){ builtin__string_clone(item) }));
+		}
+	}
+	return out;
+}
+VV_LOC bool main__is_truthy_template_value(string raw) {
+	string value = builtin__string_to_lower(builtin__string_trim_space(raw));
+	if ((value).len == 0) {
+		return false;
+	}
+	return !(_SLIT_EQ(value.str, value.len, "0") || _SLIT_EQ(value.str, value.len, "false") || _SLIT_EQ(value.str, value.len, "no") || _SLIT_EQ(value.str, value.len, "off") || _SLIT_EQ(value.str, value.len, "null"));
 }
 VV_LOC string main__escape_html_text(string input) {
 	string out = input;

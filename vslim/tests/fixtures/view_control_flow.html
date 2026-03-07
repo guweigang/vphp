@@ -1,0 +1,5 @@
+{{if:show_title}}<h1>{{ title }}</h1>{{/if}}
+{{if:show_desc}}<p>{{ desc }}</p>{{else}}<p>NO-DESC</p>{{/if}}
+<ul>
+{{for:tags}}<li data-i="{{index}}">{{item}}</li>{{/for}}
+</ul>

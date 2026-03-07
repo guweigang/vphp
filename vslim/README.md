@@ -705,6 +705,21 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 <div>{{raw:payload}}</div>
 ```
 
+控制流（MVP）：
+
+```html
+{{if:show_title}}<h1>{{ title }}</h1>{{/if}}
+{{if:show_desc}}<p>{{ desc }}</p>{{else}}<p>NO-DESC</p>{{/if}}
+
+<ul>
+{{for:tags}}<li data-i="{{index}}">{{item}}</li>{{/for}}
+</ul>
+```
+
+说明：
+- `if` 目前是 key truthy 判断（`'',0,false,no,off,null` 视为 false）
+- `for` 目前按逗号分隔字符串迭代（`item/index`）
+
 局部模板与布局：
 
 ```html

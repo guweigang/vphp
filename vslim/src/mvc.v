@@ -152,6 +152,8 @@ pub fn (view &VSlimView) render_response_with_layout(template string, layout str
 fn (view &VSlimView) render_source(source string, data map[string]string, depth int) string {
 	mut out := source
 	out = view.render_include_tokens(out, data, depth)
+	out = render_if_blocks(out, data)
+	out = render_for_blocks(out, data)
 	out = render_raw_value_tokens(out, data)
 	for key, value in data {
 		escaped := escape_html_text(value)
@@ -227,6 +229,91 @@ fn render_raw_value_tokens(source string, data map[string]string) string {
 		out = out.replace('{{ raw:${key} }}', value)
 	}
 	return out
+}
+
+fn render_if_blocks(source string, data map[string]string) string {
+	mut out := source
+	for {
+		start := out.index('{{if:') or { break }
+		key_end_rel := out[start..].index('}}') or { break }
+		key_end := start + key_end_rel + 2
+		open_token := out[start..key_end]
+		key := open_token.replace('{{if:', '').replace('}}', '').trim_space()
+		close_token := '{{/if}}'
+		close_rel := out[key_end..].index(close_token) or { break }
+		close_start := key_end + close_rel
+		close_end := close_start + close_token.len
+		block := out[key_end..close_start]
+		else_token := '{{else}}'
+		else_token_spaced := '{{ else }}'
+		mut true_block := block
+		mut false_block := ''
+		if else_pos := block.index(else_token) {
+			true_block = block[..else_pos]
+			false_block = block[else_pos + else_token.len..]
+		} else if else_pos := block.index(else_token_spaced) {
+			true_block = block[..else_pos]
+			false_block = block[else_pos + else_token_spaced.len..]
+		}
+		val := data[key] or { '' }
+		replacement := if is_truthy_template_value(val) { true_block } else { false_block }
+		out = out[..start] + replacement + out[close_end..]
+	}
+	return out
+}
+
+fn render_for_blocks(source string, data map[string]string) string {
+	mut out := source
+	for {
+		start := out.index('{{for:') or { break }
+		key_end_rel := out[start..].index('}}') or { break }
+		key_end := start + key_end_rel + 2
+		open_token := out[start..key_end]
+		key := open_token.replace('{{for:', '').replace('}}', '').trim_space()
+		close_token := '{{/for}}'
+		close_rel := out[key_end..].index(close_token) or { break }
+		close_start := key_end + close_rel
+		close_end := close_start + close_token.len
+		block := out[key_end..close_start]
+		raw := data[key] or { '' }
+		items := parse_for_items(raw)
+		mut rendered := ''
+		for idx, item in items {
+			mut part := block
+			escaped_item := escape_html_text(item)
+			part = part.replace('{{item}}', escaped_item)
+			part = part.replace('{{ item }}', escaped_item)
+			part = part.replace('{{index}}', '${idx}')
+			part = part.replace('{{ index }}', '${idx}')
+			part = part.replace('{{raw:item}}', item)
+			part = part.replace('{{ raw:item }}', item)
+			rendered += part
+		}
+		out = out[..start] + rendered + out[close_end..]
+	}
+	return out
+}
+
+fn parse_for_items(raw string) []string {
+	mut out := []string{}
+	if raw.trim_space() == '' {
+		return out
+	}
+	for part in raw.split(',') {
+		item := part.trim_space()
+		if item != '' {
+			out << item
+		}
+	}
+	return out
+}
+
+fn is_truthy_template_value(raw string) bool {
+	value := raw.trim_space().to_lower()
+	if value == '' {
+		return false
+	}
+	return value !in ['0', 'false', 'no', 'off', 'null']
 }
 
 fn escape_html_text(input string) string {
