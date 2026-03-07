@@ -719,6 +719,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 说明：
 - `if` 目前是 key truthy 判断（`'',0,false,no,off,null` 视为 false）
 - `for` 支持数组（优先）和逗号分隔字符串（`item/index`）
+- 支持点号路径访问（Map/对象）：`user.name`、`if:user.active`、`for:user.tags`
 
 局部模板与布局：
 

@@ -1,0 +1,5 @@
+<h1>{{user.name}}</h1>
+{{if:user.active}}<p>ACTIVE</p>{{/if}}
+<ul>{{for:user.tags}}<li>{{item}}</li>{{/for}}</ul>
+<div>{{meta.profile.title}}</div>
+{{if:meta.enabled}}<span>ENABLED</span>{{else}}<span>DISABLED</span>{{/if}}

@@ -3418,8 +3418,8 @@ struct main__VSlimContainerNotFoundException {
 //          |   19 = bool
 //          |   37 = Array_string
 //          |   47 = Array_int
-//          |  203 = Array_i64
-//          |  204 = Array_f64
+//          |  204 = Array_i64
+//          |  205 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -8002,7 +8002,12 @@ VV_LOC string main__render_raw_value_tokens(string source, Map_string_string dat
 VV_LOC string main__render_if_blocks(string source, Map_string_string scalars, Map_string_Array_string lists);
 VV_LOC string main__render_for_blocks(string source, Map_string_string scalars, Map_string_Array_string lists);
 VV_LOC multi_return_Map_string_string_Map_string_Array_string main__extract_template_data(vphp__ZVal data);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_9812(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_string_string* scalars, Map_string_Array_string* lists, int depth);
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_10460(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_10946(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC bool main__is_template_list(vphp__ZVal value);
+VV_LOC Array_string main__extract_template_list_items(vphp__ZVal value);
+VV_LOC string main__to_template_scalar(vphp__ZVal value);
 VV_LOC Array_string main__parse_for_items(string raw);
 VV_LOC bool main__is_truthy_template_value(string raw);
 VV_LOC string main__escape_html_text(string input);
@@ -10049,12 +10054,20 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_map_string_str
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_9812(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
-	string k = builtin__string_trim_space(vphp__ZVal_to_string(key));
-	if ((k).len == 0) {
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_10460(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
+	if ((key_name).len == 0) {
 		return;
 	}
-	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){k}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
+	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){key_name}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
+}
+
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_10946(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
+	if ((key_name).len == 0) {
+		return;
+	}
+	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){key_name}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
 }
 
 VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_40021(void) {
@@ -10098,22 +10111,22 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_voidptr_index) return 2;
 	if (sidx == _IError_Error_index) return 63;
 	if (sidx == _IError_MessageError_index) return 64;
-	if (sidx == _IError_time__TimeParseError_index) return 299;
-	if (sidx == _IError_io__Eof_index) return 465;
-	if (sidx == _IError_io__NotExpected_index) return 466;
-	if (sidx == _IError_os__Eof_index) return 242;
-	if (sidx == _IError_os__NotExpected_index) return 243;
-	if (sidx == _IError_os__FileNotOpenedError_index) return 245;
-	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 246;
-	if (sidx == _IError_os__ExecutableNotFoundError_index) return 264;
-	if (sidx == _IError_net__http__HeaderKeyError_index) return 328;
-	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 344;
-	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 345;
+	if (sidx == _IError_time__TimeParseError_index) return 300;
+	if (sidx == _IError_io__Eof_index) return 466;
+	if (sidx == _IError_io__NotExpected_index) return 467;
+	if (sidx == _IError_os__Eof_index) return 243;
+	if (sidx == _IError_os__NotExpected_index) return 244;
+	if (sidx == _IError_os__FileNotOpenedError_index) return 246;
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 247;
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return 265;
+	if (sidx == _IError_net__http__HeaderKeyError_index) return 329;
+	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 345;
+	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 346;
 	return 30;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 205: return "vphp.TaskResult";
+		case 206: return "vphp.TaskResult";
 		case 21: return "string";
 		case 8: return "int";
 		case 9: return "i64";
@@ -10121,15 +10134,15 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 19: return "bool";
 		case 37: return "[]string";
 		case 47: return "[]int";
-		case 203: return "[]i64";
-		case 204: return "[]f64";
+		case 204: return "[]i64";
+		case 205: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
 
 u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 205: return 205;
+		case 206: return 206;
 		case 21: return 21;
 		case 8: return 8;
 		case 9: return 9;
@@ -10137,9 +10150,9 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 19: return 19;
 		case 37: return 37;
 		case 47: return 47;
-		case 203: return 203;
 		case 204: return 204;
-		default: return 205;
+		case 205: return 205;
+		default: return 206;
 	}
 }
 static char * v_typeof_interface_vphp__ITask(u32 sidx) {
@@ -10147,7 +10160,7 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	return 208;
+	return 209;
 }
 static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
 	if (sidx == _net__http__Downloader_voidptr_index) return "voidptr";
@@ -10158,9 +10171,9 @@ static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
 
 u32 v_typeof_interface_idx_net__http__Downloader(u32 sidx) {
 	if (sidx == _net__http__Downloader_voidptr_index) return 2;
-	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 316;
-	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 318;
-	return 314;
+	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 317;
+	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 319;
+	return 315;
 }
 static char * v_typeof_interface_net__http__Handler(u32 sidx) {
 	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return "net.http.DebugHandler";
@@ -10169,9 +10182,9 @@ static char * v_typeof_interface_net__http__Handler(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__http__Handler(u32 sidx) {
-	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 355;
+	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 356;
 	if (sidx == _net__http__Handler_voidptr_index) return 2;
-	return 354;
+	return 355;
 }
 static char * v_typeof_interface_net__Dialer(u32 sidx) {
 	if (sidx == _net__Dialer_net__TCPDialer_index) return "net.TCPDialer";
@@ -10182,11 +10195,11 @@ static char * v_typeof_interface_net__Dialer(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__Dialer(u32 sidx) {
-	if (sidx == _net__Dialer_net__TCPDialer_index) return 454;
+	if (sidx == _net__Dialer_net__TCPDialer_index) return 455;
 	if (sidx == _net__Dialer_voidptr_index) return 2;
-	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 392;
-	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 461;
-	return 393;
+	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 393;
+	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 462;
+	return 394;
 }
 static char * v_typeof_interface_net__Connection(u32 sidx) {
 	if (sidx == _net__Connection_net__TcpConn_index) return "net.TcpConn";
@@ -10197,11 +10210,11 @@ static char * v_typeof_interface_net__Connection(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__Connection(u32 sidx) {
-	if (sidx == _net__Connection_net__TcpConn_index) return 340;
+	if (sidx == _net__Connection_net__TcpConn_index) return 341;
 	if (sidx == _net__Connection_voidptr_index) return 2;
-	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 308;
-	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 395;
-	return 394;
+	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 309;
+	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 396;
+	return 395;
 }
 static char * v_typeof_interface_io__Reader(u32 sidx) {
 	if (sidx == _io__Reader_net__TcpConn_index) return "net.TcpConn";
@@ -10216,15 +10229,15 @@ static char * v_typeof_interface_io__Reader(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_io__Reader(u32 sidx) {
-	if (sidx == _io__Reader_net__TcpConn_index) return 340;
+	if (sidx == _io__Reader_net__TcpConn_index) return 341;
 	if (sidx == _io__Reader_voidptr_index) return 2;
-	if (sidx == _io__Reader_os__File_index) return 244;
-	if (sidx == _io__Reader_os__Pipe_index) return 274;
-	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 308;
-	if (sidx == _io__Reader_io__BufferedReader_index) return 342;
-	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 395;
-	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 476;
-	return 462;
+	if (sidx == _io__Reader_os__File_index) return 245;
+	if (sidx == _io__Reader_os__Pipe_index) return 275;
+	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 309;
+	if (sidx == _io__Reader_io__BufferedReader_index) return 343;
+	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 396;
+	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 477;
+	return 463;
 }
 static char * v_typeof_interface_io__Writer(u32 sidx) {
 	if (sidx == _io__Writer_io__MultiWriter_index) return "io.MultiWriter";
@@ -10242,18 +10255,18 @@ static char * v_typeof_interface_io__Writer(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_io__Writer(u32 sidx) {
-	if (sidx == _io__Writer_io__MultiWriter_index) return 472;
+	if (sidx == _io__Writer_io__MultiWriter_index) return 473;
 	if (sidx == _io__Writer_voidptr_index) return 2;
-	if (sidx == _io__Writer_os__File_index) return 244;
-	if (sidx == _io__Writer_os__Pipe_index) return 274;
-	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 308;
-	if (sidx == _io__Writer_net__TcpConn_index) return 340;
-	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 395;
-	if (sidx == _io__Writer_net__RawConn_index) return 450;
-	if (sidx == _io__Writer_net__UdpConn_index) return 459;
-	if (sidx == _io__Writer_io__BufferedWriter_index) return 468;
-	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 476;
-	return 467;
+	if (sidx == _io__Writer_os__File_index) return 245;
+	if (sidx == _io__Writer_os__Pipe_index) return 275;
+	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 309;
+	if (sidx == _io__Writer_net__TcpConn_index) return 341;
+	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 396;
+	if (sidx == _io__Writer_net__RawConn_index) return 451;
+	if (sidx == _io__Writer_net__UdpConn_index) return 460;
+	if (sidx == _io__Writer_io__BufferedWriter_index) return 469;
+	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 477;
+	return 468;
 }
 static char * v_typeof_interface_rand__PRNG(u32 sidx) {
 	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return "rand.wyrand.WyRandRNG";
@@ -10262,9 +10275,9 @@ static char * v_typeof_interface_rand__PRNG(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_rand__PRNG(u32 sidx) {
-	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 482;
+	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 483;
 	if (sidx == _rand__PRNG_voidptr_index) return 2;
-	return 479;
+	return 480;
 }
 // << typeof() support for sum types
 
@@ -26602,10 +26615,10 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 47 /* []int */) {
 			vphp__Context_return_val_T_Array_int(ctx, (*results._Array_int));
 		}
-		else if (results._typ == 203 /* []i64 */) {
+		else if (results._typ == 204 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 204 /* []f64 */) {
+		else if (results._typ == 205 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -37720,7 +37733,7 @@ _result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, 
 	}
 	
  	net__Connection socks_conn_as_interface = (*(net__Connection*)_t3.data);
-	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 340)));
+	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 341)));
 	_result_net__TcpConn_ptr _t5;
 	builtin___result_ok(&(net__TcpConn*[]) { &(*(socks_conn)) }, (_result*)(&_t5), sizeof(net__TcpConn*));
 	 
@@ -46262,30 +46275,95 @@ VV_LOC multi_return_Map_string_string_Map_string_Array_string main__extract_temp
 	;
 	Map_string_Array_string lists = builtin__new_map(sizeof(string), sizeof(Array_string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	;
-	if (!vphp__ZVal_is_valid(data) || !vphp__ZVal_is_array(data)) {
+	if (!vphp__ZVal_is_valid(data) || (!vphp__ZVal_is_array(data) && !vphp__ZVal_is_object(data))) {
 		return (multi_return_Map_string_string_Map_string_Array_string){.arg0=scalars, .arg1=lists};
 	}
-	Map_string_vphp__ZVal items = vphp__ZVal_fold_T_Map_string_vphp__ZVal(data, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-	, (voidptr)	anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_9812);
-	int _t3 = items.key_values.len;
-	for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
-		int _t4 = items.key_values.len - _t3;
-		_t3 = items.key_values.len;
-		if (_t4 < 0) {
-			_t2 = -1;
-			continue;
-		}
-		if (!builtin__DenseArray_has_index(&items.key_values, _t2)) {continue;}
-		string k = *(string*)builtin__DenseArray_key(&items.key_values, _t2);
-		k = builtin__string_clone(k);
-		vphp__ZVal val = (*(vphp__ZVal*)builtin__DenseArray_value(&items.key_values, _t2));
-		if (vphp__ZVal_is_array(val)) {
-			(*(Array_string*)builtin__map_get_and_set((map*)&lists, &(string[]){k}, &(Array_string[]){ builtin____new_array(0, 0, sizeof(string)) })) = vphp__ZVal_to_string_list(val);
-		} else {
-			builtin__map_set(&scalars, &(string[]){k}, &(string[]) { vphp__ZVal_to_string(val) });
-		}
-	}
+	main__collect_template_values(_S(""), data, (voidptr)&scalars, (voidptr)&lists, 0);
 	return (multi_return_Map_string_string_Map_string_Array_string){.arg0=scalars, .arg1=lists};
+}
+VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_string_string* scalars, Map_string_Array_string* lists, int depth) {
+	if (depth > 8 || !vphp__ZVal_is_valid(value) || vphp__ZVal_is_null(value) || vphp__ZVal_is_undef(value)) {
+		if ((prefix).len != 0 && !_IN_MAP(ADDR(string, prefix), scalars)) {
+			builtin__map_set(scalars, &(string[]){prefix}, &(string[]) { _S("") });
+		}
+		return;
+	}
+	if (vphp__ZVal_is_array(value)) {
+		if (main__is_template_list(value)) {
+			Array_string items = main__extract_template_list_items(value);
+			if ((prefix).len != 0) {
+				(*(Array_string*)builtin__map_get_and_set((map*)lists, &(string[]){prefix}, &(Array_string[]){ builtin____new_array(0, 0, sizeof(string)) })) = items;
+				if (!_IN_MAP(ADDR(string, prefix), scalars)) {
+					builtin__map_set(scalars, &(string[]){prefix}, &(string[]) { Array_string_join(items, _S(",")) });
+				}
+			}
+			return;
+		}
+		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_10460);
+		int _t2 = children.key_values.len;
+		for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+			int _t3 = children.key_values.len - _t2;
+			_t2 = children.key_values.len;
+			if (_t3 < 0) {
+				_t1 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&children.key_values, _t1)) {continue;}
+			string key_name = *(string*)builtin__DenseArray_key(&children.key_values, _t1);
+			key_name = builtin__string_clone(key_name);
+			vphp__ZVal child = (*(vphp__ZVal*)builtin__DenseArray_value(&children.key_values, _t1));
+			string next_prefix = ((prefix).len == 0 ? (key_name) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("."), 0xfe10, {.d_s = key_name}}, {_SLIT0, 0, { .d_c = 0 }}}))));
+			main__collect_template_values(next_prefix, child, scalars, lists, (int)(depth + 1));
+		}
+		return;
+	}
+	if (vphp__ZVal_is_object(value)) {
+		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_10946);
+		int _t5 = children.key_values.len;
+		for (int _t4 = 0; _t4 < _t5; ++_t4 ) {
+			int _t6 = children.key_values.len - _t5;
+			_t5 = children.key_values.len;
+			if (_t6 < 0) {
+				_t4 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&children.key_values, _t4)) {continue;}
+			string key_name = *(string*)builtin__DenseArray_key(&children.key_values, _t4);
+			key_name = builtin__string_clone(key_name);
+			vphp__ZVal child = (*(vphp__ZVal*)builtin__DenseArray_value(&children.key_values, _t4));
+			string next_prefix = ((prefix).len == 0 ? (key_name) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("."), 0xfe10, {.d_s = key_name}}, {_SLIT0, 0, { .d_c = 0 }}}))));
+			main__collect_template_values(next_prefix, child, scalars, lists, (int)(depth + 1));
+		}
+		return;
+	}
+	if ((prefix).len != 0) {
+		builtin__map_set(scalars, &(string[]){prefix}, &(string[]) { main__to_template_scalar(value) });
+	}
+}
+VV_LOC bool main__is_template_list(vphp__ZVal value) {
+	if (!vphp__ZVal_is_array(value)) {
+		return false;
+	}
+	vphp__ZVal is_list = vphp__call_php(_S("array_is_list"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){value})));
+	return vphp__ZVal_is_valid(is_list) && vphp__ZVal_to_bool(is_list);
+}
+VV_LOC Array_string main__extract_template_list_items(vphp__ZVal value) {
+	Array_string items = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int i = 0; i < vphp__ZVal_array_count(value); ++i) {
+		builtin__array_push((array*)&items, _MOV((string[]){ main__to_template_scalar(vphp__ZVal_array_get(value, i)) }));
+	}
+	return items;
+}
+VV_LOC string main__to_template_scalar(vphp__ZVal value) {
+	if (!vphp__ZVal_is_valid(value) || vphp__ZVal_is_null(value) || vphp__ZVal_is_undef(value)) {
+		return _S("");
+	}
+	if (vphp__ZVal_is_bool(value)) {
+		return (vphp__ZVal_to_bool(value) ? (_S("1")) : (_S("0")));
+	}
+	return vphp__ZVal_to_string(value);
 }
 VV_LOC Array_string main__parse_for_items(string raw) {
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
@@ -49985,10 +50063,10 @@ VV_LOC void main__VSlimResponse_free(main__VSlimResponse* res) {
 void _vinit(int ___argc, voidptr ___argv) {
 	as_cast_type_indexes = builtin__new_array_from_c_array(5, 5, sizeof(VCastTypeIndexName), _MOV((VCastTypeIndexName[5]){
 		  (VCastTypeIndexName){.tindex = 0, .tname = _S("unknown")}
-		, (VCastTypeIndexName){.tindex = 65876, .tname = _S("net.TcpConn")}
+		, (VCastTypeIndexName){.tindex = 65877, .tname = _S("net.TcpConn")}
 		, (VCastTypeIndexName){.tindex = 2, .tname = _S("voidptr")}
-		, (VCastTypeIndexName){.tindex = 65844, .tname = _S("net.ssl.SSLConn")}
-		, (VCastTypeIndexName){.tindex = 395, .tname = _S("net.openssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 65845, .tname = _S("net.ssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 396, .tname = _S("net.openssl.SSLConn")}
 	}));
 
 

@@ -317,24 +317,87 @@ fn render_for_blocks(source string, scalars map[string]string, lists map[string]
 fn extract_template_data(data vphp.ZVal) (map[string]string, map[string][]string) {
 	mut scalars := map[string]string{}
 	mut lists := map[string][]string{}
-	if !data.is_valid() || !data.is_array() {
+	if !data.is_valid() || (!data.is_array() && !data.is_object()) {
 		return scalars, lists
 	}
-	items := data.fold[map[string]vphp.ZVal](map[string]vphp.ZVal{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc map[string]vphp.ZVal) {
-		k := key.to_string().trim_space()
-		if k == '' {
+	collect_template_values('', data, mut scalars, mut lists, 0)
+	return scalars, lists
+}
+
+fn collect_template_values(prefix string, value vphp.ZVal, mut scalars map[string]string, mut lists map[string][]string, depth int) {
+	if depth > 8 || !value.is_valid() || value.is_null() || value.is_undef() {
+		if prefix != '' && prefix !in scalars {
+			scalars[prefix] = ''
+		}
+		return
+	}
+	if value.is_array() {
+		if is_template_list(value) {
+			items := extract_template_list_items(value)
+			if prefix != '' {
+				lists[prefix] = items
+				if prefix !in scalars {
+					scalars[prefix] = items.join(',')
+				}
+			}
 			return
 		}
-		acc[k] = val
-	})
-	for k, val in items {
-		if val.is_array() {
-			lists[k] = val.to_string_list()
-		} else {
-			scalars[k] = val.to_string()
+		children := value.fold[map[string]vphp.ZVal](map[string]vphp.ZVal{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc map[string]vphp.ZVal) {
+			key_name := key.to_string().trim_space()
+			if key_name == '' {
+				return
+			}
+			acc[key_name] = val
+		})
+		for key_name, child in children {
+			next_prefix := if prefix == '' { key_name } else { '${prefix}.${key_name}' }
+			collect_template_values(next_prefix, child, mut scalars, mut lists, depth + 1)
 		}
+		return
 	}
-	return scalars, lists
+	if value.is_object() {
+		children := value.fold[map[string]vphp.ZVal](map[string]vphp.ZVal{}, fn (key vphp.ZVal, val vphp.ZVal, mut acc map[string]vphp.ZVal) {
+			key_name := key.to_string().trim_space()
+			if key_name == '' {
+				return
+			}
+			acc[key_name] = val
+		})
+		for key_name, child in children {
+			next_prefix := if prefix == '' { key_name } else { '${prefix}.${key_name}' }
+			collect_template_values(next_prefix, child, mut scalars, mut lists, depth + 1)
+		}
+		return
+	}
+	if prefix != '' {
+		scalars[prefix] = to_template_scalar(value)
+	}
+}
+
+fn is_template_list(value vphp.ZVal) bool {
+	if !value.is_array() {
+		return false
+	}
+	is_list := vphp.call_php('array_is_list', [value])
+	return is_list.is_valid() && is_list.to_bool()
+}
+
+fn extract_template_list_items(value vphp.ZVal) []string {
+	mut items := []string{}
+	for i in 0 .. value.array_count() {
+		items << to_template_scalar(value.array_get(i))
+	}
+	return items
+}
+
+fn to_template_scalar(value vphp.ZVal) string {
+	if !value.is_valid() || value.is_null() || value.is_undef() {
+		return ''
+	}
+	if value.is_bool() {
+		return if value.to_bool() { '1' } else { '0' }
+	}
+	return value.to_string()
 }
 
 fn parse_for_items(raw string) []string {
