@@ -7,8 +7,9 @@
 
 // V comptime_definitions:
 // V compile time defines by -d or -define flags:
-//     All custom defines      : macos
-//     Turned ON custom defines: macos
+//     All custom defines      : use_openssl,macos
+//     Turned ON custom defines: use_openssl,macos
+#define CUSTOM_DEFINE_use_openssl
 #define CUSTOM_DEFINE_macos
 
 #define __VTHREADS__ (1)
@@ -19,6 +20,16 @@ typedef struct vphp__ZValView vphp__ZValView;
 typedef struct vphp__ZValInvoke vphp__ZValInvoke;
 typedef struct vphp__ZValOwnership vphp__ZValOwnership;
 typedef struct vphp__ITask vphp__ITask;
+typedef struct net__http__Downloader net__http__Downloader;
+typedef struct net__http__Handler net__http__Handler;
+typedef struct net__Dialer net__Dialer;
+typedef struct net__Connection net__Connection;
+typedef struct io__Reader io__Reader;
+typedef struct io__Writer io__Writer;
+typedef struct io__RandomReader io__RandomReader;
+typedef struct io__ReaderWriter io__ReaderWriter;
+typedef struct io__RandomWriter io__RandomWriter;
+typedef struct rand__PRNG rand__PRNG;
 typedef struct none none;
 typedef struct vphp__TaskResult vphp__TaskResult;
 typedef struct vphp__ForeachPack_T_Map_string_vphp__DynVal vphp__ForeachPack_T_Map_string_vphp__DynVal;
@@ -47,8 +58,17 @@ typedef struct multi_return_Array_string_Array_string multi_return_Array_string_
 typedef struct multi_return_int_int_int_int multi_return_int_int_int_int;
 typedef struct multi_return_int_int_int multi_return_int_int_int;
 typedef struct multi_return_int_int_int_int_int_i64_bool multi_return_int_int_int_int_int_i64_bool;
+typedef struct multi_return_net__http__Method_net__urllib__URL_net__http__Version multi_return_net__http__Method_net__urllib__URL_net__http__Version;
+typedef struct multi_return_Map_string_string_Map_string_Array_net__http__FileData multi_return_Map_string_string_Map_string_Array_net__http__FileData;
+typedef struct multi_return_string_int_string multi_return_string_int_string;
 typedef struct multi_return_u64_u64 multi_return_u64_u64;
 typedef struct multi_return_f64_int multi_return_f64_int;
+typedef struct multi_return_int_net__Addr multi_return_int_net__Addr;
+typedef struct multi_return_string_u16 multi_return_string_u16;
+typedef struct multi_return_f64_f64 multi_return_f64_f64;
+typedef struct multi_return_os__File_string multi_return_os__File_string;
+typedef struct multi_return_u64_u8 multi_return_u64_u8;
+typedef struct multi_return_ref_sync__SpinLock_ref_sync__Subscription multi_return_ref_sync__SpinLock_ref_sync__Subscription;
 // END_multi_return_typedefs
 
 typedef struct strings__IndentParam strings__IndentParam;
@@ -66,6 +86,7 @@ typedef union strconv__Float64u strconv__Float64u;
 typedef union strconv__Float32u strconv__Float32u;
 typedef struct GCHeapUsage GCHeapUsage;
 typedef struct array array;
+typedef struct VCastTypeIndexName VCastTypeIndexName;
 typedef struct _result _result;
 typedef struct Error Error;
 typedef struct MessageError MessageError;
@@ -97,6 +118,25 @@ typedef struct net__urllib__QueryValue net__urllib__QueryValue;
 typedef struct net__urllib__Values net__urllib__Values;
 typedef struct strings__textscanner__TextScanner strings__textscanner__TextScanner;
 typedef struct term__termios__Termios term__termios__Termios;
+typedef struct arrays__WindowAttribute arrays__WindowAttribute;
+typedef struct arrays__ReverseIterator arrays__ReverseIterator;
+typedef union encoding__base64__B64_64_datablock encoding__base64__B64_64_datablock;
+typedef union encoding__base64__B64_32_datablock encoding__base64__B64_32_datablock;
+typedef struct io__BufferedReader io__BufferedReader;
+typedef struct io__BufferedReaderConfig io__BufferedReaderConfig;
+typedef struct io__BufferedReadLineConfig io__BufferedReadLineConfig;
+typedef struct io__BufferedWriter io__BufferedWriter;
+typedef struct io__BufferedWriterConfig io__BufferedWriterConfig;
+typedef struct io__CopySettings io__CopySettings;
+typedef struct io__MultiWriter io__MultiWriter;
+typedef struct io__Eof io__Eof;
+typedef struct io__NotExpected io__NotExpected;
+typedef struct io__ReadAllConfig io__ReadAllConfig;
+typedef struct io__ReaderWriterImpl io__ReaderWriterImpl;
+typedef struct net__http__chunked__ChunkScanner net__http__chunked__ChunkScanner;
+typedef union net__conv__ConversionUnion net__conv__ConversionUnion;
+typedef struct sync__stdatomic__AtomicVal sync__stdatomic__AtomicVal;
+typedef struct rand__buffer__PRNGBuffer rand__buffer__PRNGBuffer;
 typedef struct vphp__Context vphp__Context;
 typedef struct vphp__BorrowedZVal vphp__BorrowedZVal;
 typedef struct vphp__RequestOwnedZVal vphp__RequestOwnedZVal;
@@ -135,6 +175,73 @@ typedef struct os__Stat os__Stat;
 typedef struct os__Pipe os__Pipe;
 typedef struct os__IOCapture os__IOCapture;
 typedef struct os__Process os__Process;
+typedef struct rand__config__PRNGConfigStruct rand__config__PRNGConfigStruct;
+typedef struct rand__config__NormalConfigStruct rand__config__NormalConfigStruct;
+typedef struct rand__config__ShuffleConfigStruct rand__config__ShuffleConfigStruct;
+typedef struct rand__wyrand__WyRandRNG rand__wyrand__WyRandRNG;
+typedef struct rand__UUIDSession rand__UUIDSession;
+typedef struct sync__Subscription sync__Subscription;
+typedef struct sync__Channel sync__Channel;
+typedef struct sync__Cond sync__Cond;
+typedef struct sync__ManyTimes sync__ManyTimes;
+typedef struct sync__Once sync__Once;
+typedef struct sync__SpinLock sync__SpinLock;
+typedef struct sync__Mutex sync__Mutex;
+typedef struct sync__RwMutex sync__RwMutex;
+typedef struct sync__RwMutexAttr sync__RwMutexAttr;
+typedef struct sync__CondAttr sync__CondAttr;
+typedef struct sync__Semaphore sync__Semaphore;
+typedef struct sync__ThreadLocalStorage sync__ThreadLocalStorage;
+typedef struct sync__WaitGroup sync__WaitGroup;
+typedef struct io__util__TempFileOptions io__util__TempFileOptions;
+typedef struct io__util__TempDirOptions io__util__TempDirOptions;
+typedef union net__AddrData net__AddrData;
+typedef struct net__Ip6 net__Ip6;
+typedef struct net__Ip net__Ip;
+typedef struct net__Unix net__Unix;
+typedef struct net__Addr net__Addr;
+typedef struct net__ShutdownConfig net__ShutdownConfig;
+typedef struct net__RawSocket net__RawSocket;
+typedef struct net__RawConn net__RawConn;
+typedef struct net__RawSocketConfig net__RawSocketConfig;
+typedef struct net__Socket net__Socket;
+typedef struct net__TCPDialer net__TCPDialer;
+typedef struct net__TcpConn net__TcpConn;
+typedef struct net__TcpListener net__TcpListener;
+typedef struct net__ListenOptions net__ListenOptions;
+typedef struct net__TcpSocket net__TcpSocket;
+typedef struct net__UdpSocket net__UdpSocket;
+typedef struct net__UdpConn net__UdpConn;
+typedef struct net__openssl__SSLConn net__openssl__SSLConn;
+typedef struct net__openssl__SSLConnectConfig net__openssl__SSLConnectConfig;
+typedef struct net__ssl__SSLDialer net__ssl__SSLDialer;
+typedef struct net__ssl__SSLConn net__ssl__SSLConn;
+typedef struct net__ssl__SSLConnectConfig net__ssl__SSLConnectConfig;
+typedef struct net__socks__SOCKS5Dialer net__socks__SOCKS5Dialer;
+typedef struct net__http__Cookie net__http__Cookie;
+typedef struct net__http__DownloaderParams net__http__DownloaderParams;
+typedef struct net__http__SilentStreamingDownloader net__http__SilentStreamingDownloader;
+typedef struct net__http__TerminalStreamingDownloader net__http__TerminalStreamingDownloader;
+typedef struct net__http__HeaderKV net__http__HeaderKV;
+typedef struct net__http__Header net__http__Header;
+typedef struct net__http__HeaderConfig net__http__HeaderConfig;
+typedef struct net__http__HeaderQueryConfig net__http__HeaderQueryConfig;
+typedef struct net__http__HeaderRenderConfig net__http__HeaderRenderConfig;
+typedef struct net__http__HeaderKeyError net__http__HeaderKeyError;
+typedef struct net__http__FetchConfig net__http__FetchConfig;
+typedef struct net__http__PostMultipartFormConfig net__http__PostMultipartFormConfig;
+typedef struct net__http__HttpProxy net__http__HttpProxy;
+typedef struct net__http__Request net__http__Request;
+typedef struct net__http__FileData net__http__FileData;
+typedef struct net__http__UnexpectedExtraAttributeError net__http__UnexpectedExtraAttributeError;
+typedef struct net__http__MultiplePathAttributesError net__http__MultiplePathAttributesError;
+typedef struct net__http__LineSegmentIndexes net__http__LineSegmentIndexes;
+typedef struct net__http__Response net__http__Response;
+typedef struct net__http__ResponseConfig net__http__ResponseConfig;
+typedef struct net__http__Server net__http__Server;
+typedef struct net__http__WaitTillRunningParams net__http__WaitTillRunningParams;
+typedef struct net__http__HandlerWorker net__http__HandlerWorker;
+typedef struct net__http__DebugHandler net__http__DebugHandler;
 typedef struct main__VSlimContainerException main__VSlimContainerException;
 typedef struct main__VSlimContainerNotFoundException main__VSlimContainerNotFoundException;
 typedef struct main__VSlimContainer main__VSlimContainer;
@@ -146,6 +253,7 @@ typedef struct main__RouteGroup main__RouteGroup;
 typedef struct main__VSlimRequest main__VSlimRequest;
 typedef struct main__VSlimResponse main__VSlimResponse;
 typedef struct main__VSlimApp main__VSlimApp;
+typedef struct _result_void _result_void;
 typedef struct _result_int _result_int;
 typedef struct _result_f64 _result_f64;
 typedef struct _result_u64 _result_u64;
@@ -157,7 +265,6 @@ typedef struct _result_i32 _result_i32;
 typedef struct _result_u8 _result_u8;
 typedef struct _result_u16 _result_u16;
 typedef struct _result_u32 _result_u32;
-typedef struct _result_void _result_void;
 typedef struct _result_rune _result_rune;
 typedef struct _result_string _result_string;
 typedef struct _result_Array_string _result_Array_string;
@@ -169,6 +276,9 @@ typedef struct _result_net__urllib__URL _result_net__urllib__URL;
 typedef struct _result_net__urllib__ParseAuthorityRes _result_net__urllib__ParseAuthorityRes;
 typedef struct _result_bool _result_bool;
 typedef struct _result_net__urllib__Values _result_net__urllib__Values;
+typedef struct _result_io__BufferedWriter_ptr _result_io__BufferedWriter_ptr;
+typedef struct _result_Array_u8 _result_Array_u8;
+typedef struct _result_multi_return_u64_u8 _result_multi_return_u64_u8;
 typedef struct _result_vphp__DynVal _result_vphp__DynVal;
 typedef struct _result_vphp__ZVal _result_vphp__ZVal;
 typedef struct _result_Map_string_string _result_Map_string_string;
@@ -176,19 +286,49 @@ typedef struct _result_os__Command _result_os__Command;
 typedef struct _result_os__File _result_os__File;
 typedef struct _result_FILE_ptr _result_FILE_ptr;
 typedef struct _result_os__Stat _result_os__Stat;
-typedef struct _result_Array_u8 _result_Array_u8;
 typedef struct _result_strings__Builder _result_strings__Builder;
 typedef struct _result_os__Result _result_os__Result;
 typedef struct _result_os__DiskUsage _result_os__DiskUsage;
 typedef struct _result_os__Pipe _result_os__Pipe;
 typedef struct _result_os__IOCapture _result_os__IOCapture;
 typedef struct _result_anon_fn_os__signal _result_anon_fn_os__signal;
+typedef struct _result_usize _result_usize;
+typedef struct _result_f32 _result_f32;
+typedef struct _result_multi_return_f64_f64 _result_multi_return_f64_f64;
+typedef struct _result_multi_return_os__File_string _result_multi_return_os__File_string;
+typedef struct _result_multi_return_string_string _result_multi_return_string_string;
+typedef struct _result_net__Addr _result_net__Addr;
+typedef struct _result_Array_net__Addr _result_Array_net__Addr;
+typedef struct _result_multi_return_string_u16 _result_multi_return_string_u16;
+typedef struct _result_net__Connection _result_net__Connection;
+typedef struct _result_net__RawConn_ptr _result_net__RawConn_ptr;
+typedef struct _result_multi_return_int_net__Addr _result_multi_return_int_net__Addr;
+typedef struct _result_net__TcpConn_ptr _result_net__TcpConn_ptr;
+typedef struct _result_net__TcpSocket _result_net__TcpSocket;
+typedef struct _result_net__TcpListener_ptr _result_net__TcpListener_ptr;
+typedef struct _result_net__UdpConn_ptr _result_net__UdpConn_ptr;
+typedef struct _result_net__UdpSocket_ptr _result_net__UdpSocket_ptr;
+typedef struct _result_net__openssl__SSLError _result_net__openssl__SSLError;
+typedef struct _result_net__openssl__SSLConn_ptr _result_net__openssl__SSLConn_ptr;
+typedef struct _result_net__ssl__SSLConn_ptr _result_net__ssl__SSLConn_ptr;
+typedef struct _result_net__http__Response _result_net__http__Response;
+typedef struct _result_net__http__Cookie _result_net__http__Cookie;
+typedef struct _result_net__http__Request _result_net__http__Request;
+typedef struct _result_net__http__Header _result_net__http__Header;
+typedef struct _result_net__http__HttpProxy_ptr _result_net__http__HttpProxy_ptr;
+typedef struct _result_multi_return_net__http__Method_net__urllib__URL_net__http__Version _result_multi_return_net__http__Method_net__urllib__URL_net__http__Version;
+typedef struct _result_multi_return_string_int_string _result_multi_return_string_int_string;
+typedef struct _result_multi_return_int_int _result_multi_return_int_int;
 typedef struct _option_rune _option_rune;
 typedef struct _option_multi_return_string_string _option_multi_return_string_string;
 typedef struct _option_int _option_int;
+typedef struct _option_u8 _option_u8;
 typedef struct _option_string _option_string;
 typedef struct _option_anon_fn_vphp__context__vphp__ITask _option_anon_fn_vphp__context__vphp__ITask;
 typedef struct _option_main__VSlimResponse_ptr _option_main__VSlimResponse_ptr;
+typedef struct _option_net__Addr _option_net__Addr;
+typedef struct _option_net__http__Cookie _option_net__http__Cookie;
+typedef struct _option_net__TcpConn_ptr _option_net__TcpConn_ptr;
 typedef struct _option_main__VSlimResponse _option_main__VSlimResponse;
 
  // V preincludes:
@@ -908,6 +1048,912 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 
 
+#if defined(_WIN32)
+#else
+
+// inserted by module `sync.stdatomic`, file: 1.declarations.c.v:11:
+/*
+    Compatibility header for stdatomic.h that works for all compilers supported by V.
+    For TCC, we use libatomic from the OS.
+*/
+#ifndef __ATOMIC_H
+#define __ATOMIC_H
+
+#ifndef __cplusplus
+// If C just use stdatomic.h
+#ifndef __TINYC__
+#include <stdatomic.h>
+#endif
+#else
+// CPP wrapper for atomic operations that are compatible with C
+#include "atomic_cpp.h"
+#endif
+
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+    /* x86 architecture: uses PAUSE instruction for efficient spinning */
+    #define cpu_relax() __asm__ __volatile__ ("pause")
+#elif defined(__aarch64__) || defined(_M_ARM64) || defined(__arm__) || defined(_M_ARM)
+    #if defined(__TINYC__)
+        /* TCC compiler limitation: assembly not supported on ARM */
+        #define cpu_relax()
+    #else
+        /* ARM architecture: uses YIELD instruction for power-efficient spinning */
+        #define cpu_relax() __asm__ __volatile__ ("yield" ::: "memory")
+    #endif
+#elif defined(__riscv) && __riscv_xlen == 64
+    /* RISC-V 64-bit: no dedicated pause instruction, using alternative sequence */
+    #define cpu_relax() __asm__ __volatile__ ( \
+        "fence rw, rw\n\t"   /* Full memory barrier (read-write ordering) */ \
+        "andi a0, a0, 0\n\t" /* Dummy arithmetic instruction (always sets a0 = 0) */ \
+        ::: "memory", "a0")  /* Clobbers memory and a0 register to prevent optimizations */
+#elif defined(__powerpc64__) || defined(__ppc64__)
+    /* PowerPC 64-bit: use OR instruction for synchronization */
+    #define cpu_relax() __asm__ __volatile__ ("or 1,1,1\n\t" ::: "memory")
+#elif defined(__mips64)
+    /* MIPS 64-bit: use series of super-scalar NOPs */
+    #define cpu_relax() __asm__ __volatile__ ("ssnop\n\tssnop\n\tssnop\n\t" ::: "memory")
+#else
+    /* Fallback implementation for unsupported architectures */
+    #define cpu_relax() __asm__ __volatile__ ( \
+        "nop\n\t" "nop\n\t" "nop\n\t" "nop\n\t" /* Series of no-operation instructions */ \
+        ::: "memory") /* Memory clobber to prevent instruction reordering */
+#endif
+
+#ifdef __TINYC__
+
+typedef volatile long long atomic_llong;
+typedef volatile unsigned long long atomic_ullong;
+typedef volatile uintptr_t atomic_uintptr_t;
+
+extern void atomic_thread_fence (int memory_order);
+extern void __atomic_thread_fence (int memory_order);
+
+// workaround for tcc/aarch64; Note: latest prebuilt tcc works, and does not need this hack:
+#if !defined(__APPLE__)
+#if (defined(__aarch64__) || defined(_M_ARM64))
+    // `_V_atomic_thread_fence` is defined in `atomic.S`
+    extern void _V_atomic_thread_fence(int memory_order);
+    #define atomic_thread_fence(order) _V_atomic_thread_fence(order)
+    #define __atomic_thread_fence(order) _V_atomic_thread_fence(order)
+#else
+    #define atomic_thread_fence(order) __atomic_thread_fence(order)
+#endif
+#endif
+
+// use functions for 64, 32 and 8 bit from libatomic directly
+// since tcc is not capible to use "generic" C functions
+// there is no header file for libatomic so we provide function declarations here
+
+extern unsigned long long __atomic_load_8(unsigned long long* x, int mo);
+extern void __atomic_store_8(unsigned long long* x, unsigned long long y, int mo);
+extern _Bool __atomic_compare_exchange_8(unsigned long long* x, unsigned long long* expected, unsigned long long y, int mo, int mo2);
+extern unsigned long long __atomic_exchange_8(unsigned long long* x, unsigned long long y, int mo);
+extern unsigned long long __atomic_fetch_add_8(unsigned long long* x, unsigned long long y, int mo);
+extern unsigned long long __atomic_fetch_sub_8(unsigned long long* x, unsigned long long y, int mo);
+extern unsigned long long __atomic_fetch_and_8(unsigned long long* x, unsigned long long y, int mo);
+extern unsigned long long __atomic_fetch_or_8(unsigned long long* x, unsigned long long y, int mo);
+extern unsigned long long __atomic_fetch_xor_8(unsigned long long* x, unsigned long long y, int mo);
+
+extern unsigned int __atomic_load_4(unsigned int* x, int mo);
+extern void __atomic_store_4(unsigned int* x, unsigned int y, int mo);
+extern _Bool __atomic_compare_exchange_4(unsigned int* x, unsigned int* expected, unsigned int y, int mo, int mo2);
+extern unsigned int __atomic_exchange_4(unsigned int* x, unsigned int y, int mo);
+extern unsigned int __atomic_fetch_add_4(unsigned int* x, unsigned int y, int mo);
+extern unsigned int __atomic_fetch_sub_4(unsigned int* x, unsigned int y, int mo);
+extern unsigned int __atomic_fetch_and_4(unsigned int* x, unsigned int y, int mo);
+extern unsigned int __atomic_fetch_or_4(unsigned int* x, unsigned int y, int mo);
+extern unsigned int __atomic_fetch_xor_4(unsigned int* x, unsigned int y, int mo);
+
+extern unsigned short __atomic_load_2(unsigned short* x, int mo);
+extern void __atomic_store_2(unsigned short* x, unsigned short y, int mo);
+extern _Bool __atomic_compare_exchange_2(unsigned short* x, unsigned short* expected, unsigned short y, int mo, int mo2);
+extern unsigned short __atomic_exchange_2(unsigned short* x, unsigned short y, int mo);
+extern unsigned short __atomic_fetch_add_2(unsigned short* x, unsigned short y, int mo);
+extern unsigned short __atomic_fetch_sub_2(unsigned short* x, unsigned short y, int mo);
+extern unsigned short __atomic_fetch_and_2(unsigned short* x, unsigned short y, int mo);
+extern unsigned short __atomic_fetch_or_2(unsigned short* x, unsigned short y, int mo);
+extern unsigned short __atomic_fetch_xor_2(unsigned short* x, unsigned short y, int mo);
+
+extern unsigned char __atomic_load_1(unsigned char* x, int mo);
+extern void __atomic_store_1(unsigned char* x, unsigned char y, int mo);
+extern _Bool __atomic_compare_exchange_1(unsigned char* x, unsigned char* expected, unsigned char y, int mo, int mo2);
+extern unsigned char __atomic_exchange_1(unsigned char* x, unsigned char y, int mo);
+extern unsigned char __atomic_fetch_add_1(unsigned char* x, unsigned char y, int mo);
+extern unsigned char __atomic_fetch_sub_1(unsigned char* x, unsigned char y, int mo);
+extern unsigned char __atomic_fetch_and_1(unsigned char* x, unsigned char y, int mo);
+extern unsigned char __atomic_fetch_or_1(unsigned char* x, unsigned char y, int mo);
+extern unsigned char __atomic_fetch_xor_1(unsigned char* x, unsigned char y, int mo);
+
+// The default functions should work with pointers so we have to decide based on pointer size
+#if UINTPTR_MAX == 0xFFFFFFFF
+
+#define atomic_load_explicit __atomic_load_4
+#define atomic_store_explicit __atomic_store_4
+#define atomic_compare_exchange_weak_explicit __atomic_compare_exchange_4
+#define atomic_compare_exchange_strong_explicit __atomic_compare_exchange_4
+#define atomic_exchange_explicit __atomic_exchange_4
+#define atomic_fetch_add_explicit __atomic_fetch_add_4
+#define atomic_fetch_sub_explicit __atomic_sub_fetch_4
+
+
+#else
+
+#define atomic_load_explicit __atomic_load_8
+#define atomic_store_explicit __atomic_store_8
+#define atomic_compare_exchange_weak_explicit __atomic_compare_exchange_8
+#define atomic_compare_exchange_strong_explicit __atomic_compare_exchange_8
+#define atomic_exchange_explicit __atomic_exchange_8
+#define atomic_fetch_add_explicit __atomic_fetch_add_8
+#define atomic_fetch_sub_explicit __atomic_sub_fetch_8
+
+#endif
+
+// memory order policies - we use "sequentially consistent" by default
+
+#define memory_order_relaxed 0
+#define memory_order_consume 1
+#define memory_order_acquire 2
+#define memory_order_release 3
+#define memory_order_acq_rel 4
+#define memory_order_seq_cst 5
+
+static inline void** atomic_load(void** x) {
+	return (void**)atomic_load_explicit((unsigned long long*)x, memory_order_seq_cst);
+}
+static inline void atomic_store(void** x, void* y) {
+	atomic_store_explicit((unsigned long long*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak(void** x, void** expected, intptr_t y) {
+	return (int)atomic_compare_exchange_weak_explicit((unsigned long long*)x, (unsigned long long*)expected, (uintptr_t)y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong(void** x,  void** expected, intptr_t y) {
+	return (int)atomic_compare_exchange_strong_explicit((unsigned long long*)x, (unsigned long long*)expected, (uintptr_t)y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline uintptr_t atomic_exchange(void** x, void* y) {
+	return atomic_exchange_explicit((unsigned long long*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline uintptr_t atomic_fetch_add(uintptr_t* x, uintptr_t y) {
+	return atomic_fetch_add_explicit(x, y, memory_order_seq_cst);
+}
+static inline uintptr_t atomic_fetch_sub(uintptr_t* x, uintptr_t y) {
+	return atomic_fetch_sub_explicit(x, y, memory_order_seq_cst);
+}
+static inline uintptr_t atomic_fetch_and(uintptr_t* x, uintptr_t y) {
+	return atomic_fetch_and_explicit(x, y, memory_order_seq_cst);
+}
+static inline uintptr_t atomic_fetch_or(uintptr_t* x, uintptr_t y) {
+	return atomic_fetch_or_explicit(x, y, memory_order_seq_cst);
+}
+static inline uintptr_t atomic_fetch_xor(uintptr_t* x, uintptr_t y) {
+	return atomic_fetch_xor_explicit(x, y, memory_order_seq_cst);
+}
+
+#define atomic_load_ptr atomic_load
+#define atomic_store_ptr atomic_store
+#define atomic_compare_exchange_weak_ptr atomic_compare_exchange_weak
+#define atomic_compare_exchange_strong_ptr atomic_compare_exchange_strong
+#define atomic_exchange_ptr atomic_exchange
+#define atomic_fetch_add_ptr atomic_fetch_add
+#define atomic_fetch_sub_ptr atomic_fetch_sub
+#define atomic_fetch_and_ptr atomic_fetch_and
+#define atomic_fetch_or_ptr atomic_fetch_or
+#define atomic_fetch_xor_ptr atomic_fetch_xor
+
+// specialized versions for 64 bit
+
+static inline unsigned long long atomic_load_u64(unsigned long long* x) {
+	return __atomic_load_8(x, memory_order_seq_cst);
+}
+static inline void atomic_store_u64(unsigned long long* x, unsigned long long y) {
+	__atomic_store_8(x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_u64(unsigned long long* x, unsigned long long* expected, unsigned long long y) {
+	return (int)__atomic_compare_exchange_8(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_u64(unsigned long long* x, unsigned long long* expected, unsigned long long y) {
+	return (int)__atomic_compare_exchange_8(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_exchange_u64(unsigned long long* x, unsigned long long y) {
+	return __atomic_exchange_8(x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_add_u64(unsigned long long* x, unsigned long long y) {
+	return __atomic_fetch_add_8(x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_sub_u64(unsigned long long* x, unsigned long long y) {
+	return __atomic_fetch_sub_8(x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_and_u64(unsigned long long* x, unsigned long long y) {
+	return __atomic_fetch_and_8(x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_or_u64(unsigned long long* x, unsigned long long y) {
+	return __atomic_fetch_or_8(x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_xor_u64(unsigned long long* x, unsigned long long y) {
+	return __atomic_fetch_xor_8(x, y, memory_order_seq_cst);
+}
+
+static inline unsigned atomic_load_u32(unsigned* x) {
+	return __atomic_load_4(x, memory_order_seq_cst);
+}
+static inline void atomic_store_u32(unsigned* x, unsigned y) {
+	__atomic_store_4(x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_u32(unsigned* x, unsigned* expected, unsigned y) {
+	return (int)__atomic_compare_exchange_4(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_u32(unsigned* x, unsigned* expected, unsigned y) {
+	return (int)__atomic_compare_exchange_4(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned atomic_exchange_u32(unsigned* x, unsigned y) {
+	return __atomic_exchange_4(x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_add_u32(unsigned* x, unsigned y) {
+	return __atomic_fetch_add_4(x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_sub_u32(unsigned* x, unsigned y) {
+	return __atomic_fetch_sub_4(x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_and_u32(unsigned* x, unsigned y) {
+	return __atomic_fetch_and_4(x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_or_u32(unsigned* x, unsigned y) {
+	return __atomic_fetch_or_4(x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_xor_u32(unsigned* x, unsigned y) {
+	return __atomic_fetch_xor_4(x, y, memory_order_seq_cst);
+}
+
+static inline unsigned short atomic_load_u16(unsigned short* x) {
+	return __atomic_load_2(x, memory_order_seq_cst);
+}
+static inline void atomic_store_u16(void* x, unsigned short y) {
+	__atomic_store_2(x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_u16(void* x, unsigned short* expected, unsigned short y) {
+	return (int)__atomic_compare_exchange_2(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_u16(unsigned short* x, unsigned short* expected, unsigned short y) {
+	return (int)__atomic_compare_exchange_2(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned short atomic_exchange_u16(unsigned short* x, unsigned short y) {
+	return __atomic_exchange_2(x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_add_u16(unsigned short* x, unsigned short y) {
+	return __atomic_fetch_add_2(x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_sub_u16(unsigned short* x, unsigned short y) {
+	return __atomic_fetch_sub_2(x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_and_u16(unsigned short* x, unsigned short y) {
+	return __atomic_fetch_and_2(x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_or_u16(unsigned short* x, unsigned short y) {
+	return __atomic_fetch_or_2(x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_xor_u16(unsigned short* x, unsigned short y) {
+	return __atomic_fetch_xor_2(x, y, memory_order_seq_cst);
+}
+
+static inline unsigned char atomic_load_byte(unsigned char* x) {
+	return __atomic_load_1(x, memory_order_seq_cst);
+}
+static inline void atomic_store_byte(unsigned char* x, unsigned char y) {
+	__atomic_store_1(x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_byte(unsigned char* x, unsigned char* expected, unsigned char y) {
+	return __atomic_compare_exchange_1(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_byte(unsigned char* x, unsigned char* expected, unsigned char y) {
+	return __atomic_compare_exchange_1(x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned char atomic_exchange_byte(unsigned char* x, unsigned char y) {
+	return __atomic_exchange_1(x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_add_byte(unsigned char* x, unsigned char y) {
+	return __atomic_fetch_add_1(x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_sub_byte(unsigned char* x, unsigned char y) {
+	return __atomic_fetch_sub_1(x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_and_byte(unsigned char* x, unsigned char y) {
+	return __atomic_fetch_and_1(x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_or_byte(unsigned char* x, unsigned char y) {
+	return __atomic_fetch_or_1(x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_xor_byte(unsigned char* x, unsigned char y) {
+	return __atomic_fetch_xor_1(x, y, memory_order_seq_cst);
+}
+
+#ifdef __aarch64__
+// must has an `extern` to link with libatomic.a
+
+// acq_rel version
+extern inline _Bool __aarch64_cas1_acq_rel(unsigned char*ptr, unsigned char*expected, unsigned char desired) {
+    return __atomic_compare_exchange_1(
+        ptr,
+        expected,
+        desired,
+		memory_order_acq_rel,
+		memory_order_acquire
+    );
+}
+
+extern inline _Bool __aarch64_cas2_acq_rel(unsigned short*ptr, unsigned short*expected, unsigned short desired) {
+    return __atomic_compare_exchange_2(
+        ptr,
+        expected,
+        desired,
+		memory_order_acq_rel,
+		memory_order_acquire
+    );
+}
+
+extern inline _Bool __aarch64_cas4_acq_rel(unsigned int*ptr, unsigned int*expected, unsigned int desired) {
+    return __atomic_compare_exchange_4(
+        ptr,
+        expected,
+        desired,
+        memory_order_acq_rel,
+        memory_order_acquire
+    );
+}
+
+extern inline _Bool __aarch64_cas8_acq_rel(unsigned long long*ptr, unsigned long long*expected, unsigned long long desired) {
+    return __atomic_compare_exchange_8(
+        ptr,
+        expected,
+        desired,
+        memory_order_acq_rel,
+        memory_order_acquire
+    );
+}
+
+extern inline char __aarch64_ldadd1_acq_rel(char*ptr, char value) {
+    return __atomic_fetch_add_1(
+        (unsigned char*)ptr,
+        (unsigned char)value,
+        memory_order_acq_rel
+    );
+}
+
+extern inline short __aarch64_ldadd2_acq_rel(short*ptr, short value) {
+    return __atomic_fetch_add_2(
+        (unsigned short*)ptr,
+        (unsigned short)value,
+        memory_order_acq_rel
+    );
+}
+
+extern inline int __aarch64_ldadd4_acq_rel(int*ptr, int value) {
+    return __atomic_fetch_add_4(
+        (unsigned int*)ptr,
+        (unsigned int)value,
+        memory_order_acq_rel
+    );
+}
+
+extern inline long long __aarch64_ldadd8_acq_rel(long long*ptr, long long value) {
+    return __atomic_fetch_add_8(
+        (unsigned long long*)ptr,
+        (unsigned long long)value,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned char __aarch64_swp1_acq_rel(unsigned char*ptr, unsigned char newval) {
+    return __atomic_exchange_1(
+        ptr,
+        newval,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned short __aarch64_swp2_acq_rel(unsigned short*ptr, unsigned short newval) {
+    return __atomic_exchange_2(
+        ptr,
+        newval,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned int __aarch64_swp4_acq_rel(unsigned int*ptr, unsigned int newval) {
+    return __atomic_exchange_4(
+        ptr,
+        newval,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned long long __aarch64_swp8_acq_rel(unsigned long long*ptr, unsigned long long newval) {
+    return __atomic_exchange_8(
+        ptr,
+        newval,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned char __aarch64_ldclr1_acq_rel(unsigned char*ptr, unsigned char mask) {
+    return __atomic_fetch_and_1(
+        ptr,
+        ~mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned short __aarch64_ldclr2_acq_rel(unsigned short*ptr, unsigned short mask) {
+    return __atomic_fetch_and_2(
+        ptr,
+        ~mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned int __aarch64_ldclr4_acq_rel(unsigned int*ptr, unsigned int mask) {
+    return __atomic_fetch_and_4(
+        ptr,
+        ~mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned long long __aarch64_ldclr8_acq_rel(unsigned long long*ptr, unsigned long long mask) {
+    return __atomic_fetch_and_8(
+        ptr,
+        ~mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned char __aarch64_ldset1_acq_rel(unsigned char*ptr, unsigned char mask) {
+    return __atomic_fetch_or_1(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned short __aarch64_ldset2_acq_rel(unsigned short*ptr, unsigned short mask) {
+    return __atomic_fetch_or_2(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned int __aarch64_ldset4_acq_rel(unsigned int*ptr, unsigned int mask) {
+    return __atomic_fetch_or_4(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned long long __aarch64_ldset8_acq_rel(unsigned long long*ptr, unsigned long long mask) {
+    return __atomic_fetch_or_8(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned char __aarch64_ldeor1_acq_rel(unsigned char*ptr, unsigned char mask) {
+    return __atomic_fetch_xor_1(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned short __aarch64_ldeor2_acq_rel(unsigned short*ptr, unsigned short mask) {
+    return __atomic_fetch_xor_2(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned int __aarch64_ldeor4_acq_rel(unsigned int*ptr, unsigned int mask) {
+    return __atomic_fetch_xor_4(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+extern inline unsigned long long __aarch64_ldeor8_acq_rel(unsigned long long*ptr, unsigned long long mask) {
+    return __atomic_fetch_xor_8(
+        ptr,
+        mask,
+        memory_order_acq_rel
+    );
+}
+
+#define aarch64_cas_acq_rel(ptr, expected, desired)      \
+    _Generic((ptr),                                      \
+        char*:         __aarch64_cas1_acq_rel,  \
+        short*:        __aarch64_cas2_acq_rel,  \
+        int*:          __aarch64_cas4_acq_rel,  \
+        long long*:    __aarch64_cas8_acq_rel   \
+    )(ptr, expected, desired)
+
+// relax version
+extern inline _Bool __aarch64_cas1_relax(unsigned char*ptr, unsigned char*expected, unsigned char desired) {
+    return __atomic_compare_exchange_1(
+        ptr,
+        expected,
+        desired,
+		memory_order_relaxed,
+		memory_order_relaxed
+    );
+}
+
+extern inline _Bool __aarch64_cas2_relax(unsigned short*ptr, unsigned short*expected, unsigned short desired) {
+    return __atomic_compare_exchange_2(
+        ptr,
+        expected,
+        desired,
+		memory_order_relaxed,
+		memory_order_relaxed
+    );
+}
+
+extern inline _Bool __aarch64_cas4_relax(unsigned int*ptr, unsigned int*expected, unsigned int desired) {
+    return __atomic_compare_exchange_4(
+        ptr,
+        expected,
+        desired,
+        memory_order_relaxed,
+        memory_order_relaxed
+    );
+}
+
+extern inline _Bool __aarch64_cas8_relax(unsigned long long*ptr, unsigned long long*expected, unsigned long long desired) {
+    return __atomic_compare_exchange_8(
+        ptr,
+        expected,
+        desired,
+        memory_order_relaxed,
+        memory_order_relaxed
+    );
+}
+
+extern inline char __aarch64_ldadd1_relax(char*ptr, char value) {
+    return __atomic_fetch_add_1(
+        (unsigned char*)ptr,
+        (unsigned char)value,
+        memory_order_relaxed
+    );
+}
+
+extern inline short __aarch64_ldadd2_relax(short*ptr, short value) {
+    return __atomic_fetch_add_2(
+        (unsigned short*)ptr,
+        (unsigned short)value,
+        memory_order_relaxed
+    );
+}
+
+extern inline int __aarch64_ldadd4_relax(int*ptr, int value) {
+    return __atomic_fetch_add_4(
+        (unsigned int*)ptr,
+        (unsigned int)value,
+        memory_order_relaxed
+    );
+}
+
+extern inline long long __aarch64_ldadd8_relax(long long*ptr, long long value) {
+    return __atomic_fetch_add_8(
+        (unsigned long long*)ptr,
+        (unsigned long long)value,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned char __aarch64_swp1_relax(unsigned char*ptr, unsigned char newval) {
+    return __atomic_exchange_1(
+        ptr,
+        newval,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned short __aarch64_swp2_relax(unsigned short*ptr, unsigned short newval) {
+    return __atomic_exchange_2(
+        ptr,
+        newval,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned int __aarch64_swp4_relax(unsigned int*ptr, unsigned int newval) {
+    return __atomic_exchange_4(
+        ptr,
+        newval,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned long long __aarch64_swp8_relax(unsigned long long*ptr, unsigned long long newval) {
+    return __atomic_exchange_8(
+        ptr,
+        newval,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned char __aarch64_ldclr1_relax(unsigned char*ptr, unsigned char mask) {
+    return __atomic_fetch_and_1(
+        ptr,
+        ~mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned short __aarch64_ldclr2_relax(unsigned short*ptr, unsigned short mask) {
+    return __atomic_fetch_and_2(
+        ptr,
+        ~mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned int __aarch64_ldclr4_relax(unsigned int*ptr, unsigned int mask) {
+    return __atomic_fetch_and_4(
+        ptr,
+        ~mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned long long __aarch64_ldclr8_relax(unsigned long long*ptr, unsigned long long mask) {
+    return __atomic_fetch_and_8(
+        ptr,
+        ~mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned char __aarch64_ldset1_relax(unsigned char*ptr, unsigned char mask) {
+    return __atomic_fetch_or_1(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned short __aarch64_ldset2_relax(unsigned short*ptr, unsigned short mask) {
+    return __atomic_fetch_or_2(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned int __aarch64_ldset4_relax(unsigned int*ptr, unsigned int mask) {
+    return __atomic_fetch_or_4(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned long long __aarch64_ldset8_relax(unsigned long long*ptr, unsigned long long mask) {
+    return __atomic_fetch_or_8(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned char __aarch64_ldeor1_relax(unsigned char*ptr, unsigned char mask) {
+    return __atomic_fetch_xor_1(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned short __aarch64_ldeor2_relax(unsigned short*ptr, unsigned short mask) {
+    return __atomic_fetch_xor_2(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned int __aarch64_ldeor4_relax(unsigned int*ptr, unsigned int mask) {
+    return __atomic_fetch_xor_4(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+extern inline unsigned long long __aarch64_ldeor8_relax(unsigned long long*ptr, unsigned long long mask) {
+    return __atomic_fetch_xor_8(
+        ptr,
+        mask,
+        memory_order_relaxed
+    );
+}
+
+#define aarch64_cas_relax(ptr, expected, desired)      \
+    _Generic((ptr),                                      \
+        char*:         __aarch64_cas1_relax,  \
+        short*:        __aarch64_cas2_relax,  \
+        int*:          __aarch64_cas4_relax,  \
+        long long*:    __aarch64_cas8_relax   \
+    )(ptr, expected, desired)
+
+#endif // __aarch64__
+
+#else
+
+// Since V might be confused with "generic" C functions either we provide special versions
+// for gcc/clang, too
+static inline unsigned long long atomic_load_u64(uint64_t* x) {
+	return atomic_load_explicit((_Atomic (uint64_t)*)x, memory_order_seq_cst);
+}
+static inline void atomic_store_u64(uint64_t* x, uint64_t y) {
+	atomic_store_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_u64(uint64_t* x, uint64_t* expected, uint64_t y) {
+	return (int)atomic_compare_exchange_weak_explicit((_Atomic(uint64_t)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_u64(uint64_t* x, uint64_t* expected, uint64_t y) {
+	return (int)atomic_compare_exchange_strong_explicit((_Atomic(uint64_t)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_exchange_u64(uint64_t* x, uint64_t y) {
+	return atomic_exchange_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_add_u64(uint64_t* x, uint64_t y) {
+	return atomic_fetch_add_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_sub_u64(uint64_t* x, uint64_t y) {
+	return atomic_fetch_sub_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_and_u64(uint64_t* x, uint64_t y) {
+	return atomic_fetch_and_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_or_u64(uint64_t* x, uint64_t y) {
+	return atomic_fetch_or_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned long long atomic_fetch_xor_u64(uint64_t* x, uint64_t y) {
+	return atomic_fetch_xor_explicit((_Atomic(uint64_t)*)x, y, memory_order_seq_cst);
+}
+
+
+static inline void* atomic_load_ptr(void** x) {
+	return (void*)atomic_load_explicit((_Atomic(uintptr_t)*)x, memory_order_seq_cst);
+}
+static inline void atomic_store_ptr(void** x, void* y) {
+	atomic_store_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_ptr(void** x, void** expected, intptr_t y) {
+	return (int)atomic_compare_exchange_weak_explicit((_Atomic(uintptr_t)*)x, (unsigned long *)expected, (uintptr_t)y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_ptr(void** x, void** expected, intptr_t y) {
+	return (int)atomic_compare_exchange_strong_explicit((_Atomic(uintptr_t)*)x, (unsigned long *)expected, (uintptr_t)y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline void* atomic_exchange_ptr(void** x, void* y) {
+	return (void*)atomic_exchange_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline void* atomic_fetch_add_ptr(void** x, void* y) {
+	return (void*)atomic_fetch_add_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline void* atomic_fetch_sub_ptr(void** x, void* y) {
+	return (void*)atomic_fetch_sub_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline void* atomic_fetch_and_ptr(void** x, void* y) {
+	return (void*)atomic_fetch_and_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline void* atomic_fetch_or_ptr(void** x, void* y) {
+	return (void*)atomic_fetch_or_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+static inline void* atomic_fetch_xor_ptr(void** x, void* y) {
+	return (void*)atomic_fetch_xor_explicit((_Atomic(uintptr_t)*)x, (uintptr_t)y, memory_order_seq_cst);
+}
+
+
+static inline unsigned atomic_load_u32(unsigned* x) {
+	return atomic_load_explicit((_Atomic(unsigned)*)x, memory_order_seq_cst);
+}
+static inline void atomic_store_u32(unsigned* x, unsigned y) {
+	atomic_store_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_u32(unsigned* x, unsigned* expected, unsigned y) {
+	return (int)atomic_compare_exchange_weak_explicit((_Atomic(unsigned)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_u32(unsigned* x, unsigned* expected, unsigned y) {
+	return (int)atomic_compare_exchange_strong_explicit((_Atomic(unsigned)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned atomic_exchange_u32(unsigned* x, unsigned y) {
+	return atomic_exchange_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_add_u32(unsigned* x, unsigned y) {
+	return atomic_fetch_add_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_sub_u32(unsigned* x, unsigned y) {
+	return atomic_fetch_sub_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_and_u32(unsigned* x, unsigned y) {
+	return atomic_fetch_and_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_or_u32(unsigned* x, unsigned y) {
+	return atomic_fetch_or_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned atomic_fetch_xor_u32(unsigned* x, unsigned y) {
+	return atomic_fetch_xor_explicit((_Atomic(unsigned)*)x, y, memory_order_seq_cst);
+}
+
+static inline unsigned short atomic_load_u16(unsigned short* x) {
+	return atomic_load_explicit((_Atomic(unsigned short)*)x, memory_order_seq_cst);
+}
+static inline void atomic_store_u16(void* x, unsigned short y) {
+	atomic_store_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_u16(void* x, unsigned short* expected, unsigned short y) {
+	return (int)atomic_compare_exchange_weak_explicit((_Atomic(unsigned short)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_u16(unsigned short* x, unsigned short* expected, unsigned short y) {
+	return (int)atomic_compare_exchange_strong_explicit((_Atomic(unsigned short)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned short atomic_exchange_u16(unsigned short* x, unsigned short y) {
+	return atomic_exchange_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_add_u16(unsigned short* x, unsigned short y) {
+	return atomic_fetch_add_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_sub_u16(unsigned short* x, unsigned short y) {
+	return atomic_fetch_sub_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_and_u16(unsigned short* x, unsigned short y) {
+	return atomic_fetch_and_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_or_u16(unsigned short* x, unsigned short y) {
+	return atomic_fetch_or_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned short atomic_fetch_xor_u16(unsigned short* x, unsigned short y) {
+	return atomic_fetch_xor_explicit((_Atomic(unsigned short)*)x, y, memory_order_seq_cst);
+}
+
+static inline unsigned char atomic_load_byte(unsigned char* x) {
+	return atomic_load_explicit((_Atomic(unsigned char)*)x, memory_order_seq_cst);
+}
+static inline void atomic_store_byte(unsigned char* x, unsigned char y) {
+	atomic_store_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_weak_byte(unsigned char* x, unsigned char* expected, unsigned char y) {
+	return (int)atomic_compare_exchange_weak_explicit((_Atomic(unsigned char)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline int atomic_compare_exchange_strong_byte(unsigned char* x, unsigned char* expected, unsigned char y) {
+	return (int)atomic_compare_exchange_strong_explicit((_Atomic(unsigned char)*)x, expected, y, memory_order_seq_cst, memory_order_seq_cst);
+}
+static inline unsigned char atomic_exchange_byte(unsigned char* x, unsigned char y) {
+	return atomic_exchange_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_add_byte(unsigned char* x, unsigned char y) {
+	return atomic_fetch_add_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_sub_byte(unsigned char* x, unsigned char y) {
+	return atomic_fetch_sub_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_and_byte(unsigned char* x, unsigned char y) {
+	return atomic_fetch_and_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_or_byte(unsigned char* x, unsigned char y) {
+	return atomic_fetch_or_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+static inline unsigned char atomic_fetch_xor_byte(unsigned char* x, unsigned char y) {
+	return atomic_fetch_xor_explicit((_Atomic(unsigned char)*)x, y, memory_order_seq_cst);
+}
+
+#endif
+#endif
+
+#endif
+
 // added by module `vphp`, file: mod.v:5:
 
 #if defined(__has_include)
@@ -1122,6 +2168,171 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 
 
+// added by module `runtime`, file: free_memory_impl_darwin.c.v:3:
+
+#if defined(__has_include)
+#if __has_include(<mach/mach.h>)
+#include <mach/mach.h>
+#else
+#error VERROR_MESSAGE Header file <mach/mach.h>, needed for module `runtime` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <mach/mach.h>
+#endif
+
+
+// added by module `runtime`, file: free_memory_impl_darwin.c.v:4:
+
+#if defined(__has_include)
+#if __has_include(<mach/task.h>)
+#include <mach/task.h>
+#else
+#error VERROR_MESSAGE Header file <mach/task.h>, needed for module `runtime` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <mach/task.h>
+#endif
+
+
+#if defined(_WIN32)
+#else
+
+// added by module `net`, file: aasocket.c.v:19:
+
+#if defined(__has_include)
+#if __has_include(<sys/un.h>)
+#include <sys/un.h>
+#else
+#error VERROR_MESSAGE Header file <sys/un.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/un.h>
+#endif
+
+#endif
+
+// added by module `net`, file: net_nix.c.v:3:
+
+#if defined(__has_include)
+#if __has_include(<unistd.h>)
+#include <unistd.h>
+#else
+#error VERROR_MESSAGE Header file <unistd.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <unistd.h>
+#endif
+
+
+// added by module `net`, file: net_nix.c.v:4:
+
+#if defined(__has_include)
+#if __has_include(<sys/select.h>)
+#include <sys/select.h>
+#else
+#error VERROR_MESSAGE Header file <sys/select.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/select.h>
+#endif
+
+
+// added by module `net`, file: net_nix.c.v:6:
+
+#if defined(__has_include)
+#if __has_include(<arpa/inet.h>)
+#include <arpa/inet.h>
+#else
+#error VERROR_MESSAGE Header file <arpa/inet.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <arpa/inet.h>
+#endif
+
+
+// added by module `net`, file: net_nix.c.v:7:
+
+#if defined(__has_include)
+#if __has_include(<netdb.h>)
+#include <netdb.h>
+#else
+#error VERROR_MESSAGE Header file <netdb.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <netdb.h>
+#endif
+
+
+// added by module `net`, file: net_nix.c.v:8:
+#include <errno.h>
+
+// added by module `net`, file: net_nix.c.v:9:
+
+#if defined(__has_include)
+#if __has_include(<fcntl.h>)
+#include <fcntl.h>
+#else
+#error VERROR_MESSAGE Header file <fcntl.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <fcntl.h>
+#endif
+
+
+// added by module `net`, file: net_nix.c.v:10:
+
+#if defined(__has_include)
+#if __has_include(<netinet/tcp.h>)
+#include <netinet/tcp.h>
+#else
+#error VERROR_MESSAGE Header file <netinet/tcp.h>, needed for module `net` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <netinet/tcp.h>
+#endif
+
+// defined by module `net.openssl`
+#define OPENSSL_API_COMPAT 0x30000000L
+
+// added by module `net.openssl`, file: openssl.c.v:51:
+
+#if defined(__has_include)
+#if __has_include(<openssl/rand.h>)
+#include <openssl/rand.h>
+#else
+#error VERROR_MESSAGE Header file <openssl/rand.h>, needed for module `net.openssl` was not found. Please install OpenSSL development headers.
+#endif
+#else
+#include <openssl/rand.h>
+#endif
+
+
+// added by module `net.openssl`, file: openssl.c.v:52:
+
+#if defined(__has_include)
+#if __has_include(<openssl/ssl.h>)
+#include <openssl/ssl.h>
+#else
+#error VERROR_MESSAGE Header file <openssl/ssl.h>, needed for module `net.openssl` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <openssl/ssl.h>
+#endif
+
+
+// added by module `net.openssl`, file: openssl.c.v:53:
+
+#if defined(__has_include)
+#if __has_include(<openssl/err.h>)
+#include <openssl/err.h>
+#else
+#error VERROR_MESSAGE Header file <openssl/err.h>, needed for module `net.openssl` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <openssl/err.h>
+#endif
+
+
 // added by module `main`, file: bridge.v:5:
 
 #if defined(__has_include)
@@ -1195,6 +2406,8 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #define _const_vphp__zend__e_error 1
 #define _const_vphp__zend__e_warning 2
 #define _const_vphp__zend__e_notice 8
+#define _const_io__read_all_len 10240
+#define _const_io__read_all_grow_len 1024
 #define _const_vphp__e_error 1
 #define _const_vphp__e_warning 2
 #define _const_os__max_path_buffer_size 4096
@@ -1231,6 +2444,20 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #define _const_os__s_iroth 4
 #define _const_os__s_iwoth 2
 #define _const_os__s_ixoth 1
+#define _const_rand__wyrand__seed_len 2
+#define _const_io__util__retries 10000
+#define _const_net__max_ip_len 24
+#define _const_net__max_ip6_len 46
+#define _const_net__max_unix_path 104
+#define _const_net__errors_base 0
+#define _const_net__err_timed_out_code 9
+#define _const_net__msg_nosignal 16384
+#define _const_net__max_read 400
+#define _const_net__max_read_line_len 1048576
+#define _const_net__http__max_headers 50
+#define _const_net__http__max_redirects 16
+#define _const_net__http__bufsize 65536
+#define _const_net__http__default_server_port 9009
 
 // Enum definitions:
 
@@ -1497,11 +2724,339 @@ typedef enum {
 }  os__Signal;
 
 typedef enum {
+	sync__BufferElemStat__unused = 0, // 0
+	sync__BufferElemStat__writing, // 0+1
+	sync__BufferElemStat__written, // 0+2
+	sync__BufferElemStat__reading, // 0+3
+}  sync__BufferElemStat;
+
+typedef enum {
+	sync__Direction__pop, // 
+	sync__Direction__push, // +1
+}  sync__Direction;
+
+typedef enum {
+	net__Select__read, // 
+	net__Select__write, // +1
+	net__Select__except, // +2
+}  net__Select;
+
+typedef enum {
+	net__SocketType__udp = SOCK_DGRAM, // SOCK_DGRAM
+	net__SocketType__tcp = SOCK_STREAM, // SOCK_STREAM
+	net__SocketType__seqpacket = SOCK_SEQPACKET, // SOCK_SEQPACKET
+	net__SocketType__raw = SOCK_RAW, // SOCK_RAW
+}  net__SocketType;
+
+typedef enum {
+	net__AddrFamily__unix = AF_UNIX, // AF_UNIX
+	net__AddrFamily__ip = AF_INET, // AF_INET
+	net__AddrFamily__ip6 = AF_INET6, // AF_INET6
+	net__AddrFamily__unspec = AF_UNSPEC, // AF_UNSPEC
+}  net__AddrFamily;
+
+typedef enum {
+	net__ShutdownDirection__read, // 
+	net__ShutdownDirection__write, // +1
+	net__ShutdownDirection__read_and_write, // +2
+}  net__ShutdownDirection;
+
+typedef enum {
+	net__Protocol__not_set = 0, // 0
+	net__Protocol__icmp = IPPROTO_ICMP, // IPPROTO_ICMP
+	net__Protocol__tcp = IPPROTO_TCP, // IPPROTO_TCP
+	net__Protocol__udp = IPPROTO_UDP, // IPPROTO_UDP
+	net__Protocol__ipv6 = IPPROTO_IPV6, // IPPROTO_IPV6
+	net__Protocol__raw = IPPROTO_RAW, // IPPROTO_RAW
+	net__Protocol__icmpv6 = IPPROTO_ICMPV6, // IPPROTO_ICMPV6
+}  net__Protocol;
+
+typedef enum {
+	net__SocketOption__broadcast = SO_BROADCAST, // SO_BROADCAST
+	net__SocketOption__debug = SO_DEBUG, // SO_DEBUG
+	net__SocketOption__dont_route = SO_DONTROUTE, // SO_DONTROUTE
+	net__SocketOption__error = SO_ERROR, // SO_ERROR
+	net__SocketOption__keep_alive = SO_KEEPALIVE, // SO_KEEPALIVE
+	net__SocketOption__linger = SO_LINGER, // SO_LINGER
+	net__SocketOption__oob_inline = SO_OOBINLINE, // SO_OOBINLINE
+	net__SocketOption__reuse_addr = SO_REUSEADDR, // SO_REUSEADDR
+	net__SocketOption__receive_buf_size = SO_RCVBUF, // SO_RCVBUF
+	net__SocketOption__receive_low_size = SO_RCVLOWAT, // SO_RCVLOWAT
+	net__SocketOption__receive_timeout = SO_RCVTIMEO, // SO_RCVTIMEO
+	net__SocketOption__send_buf_size = SO_SNDBUF, // SO_SNDBUF
+	net__SocketOption__send_low_size = SO_SNDLOWAT, // SO_SNDLOWAT
+	net__SocketOption__send_timeout = SO_SNDTIMEO, // SO_SNDTIMEO
+	net__SocketOption__socket_type = SO_TYPE, // SO_TYPE
+	net__SocketOption__ipv6_only = IPV6_V6ONLY, // IPV6_V6ONLY
+	net__SocketOption__ip_proto_ipv6 = IPPROTO_IPV6, // IPPROTO_IPV6
+}  net__SocketOption;
+
+typedef enum {
+	net__openssl__SSLError__ssl_error_none = SSL_ERROR_NONE, // SSL_ERROR_NONE
+	net__openssl__SSLError__ssl_error_ssl = SSL_ERROR_SSL, // SSL_ERROR_SSL
+	net__openssl__SSLError__ssl_error_want_read = SSL_ERROR_WANT_READ, // SSL_ERROR_WANT_READ
+	net__openssl__SSLError__ssl_error_want_write = SSL_ERROR_WANT_WRITE, // SSL_ERROR_WANT_WRITE
+	net__openssl__SSLError__ssl_error_want_x509_lookup = SSL_ERROR_WANT_X509_LOOKUP, // SSL_ERROR_WANT_X509_LOOKUP
+	net__openssl__SSLError__ssl_error_syscall = SSL_ERROR_SYSCALL, // SSL_ERROR_SYSCALL
+	net__openssl__SSLError__ssl_error_zero_return = SSL_ERROR_ZERO_RETURN, // SSL_ERROR_ZERO_RETURN
+	net__openssl__SSLError__ssl_error_want_connect = SSL_ERROR_WANT_CONNECT, // SSL_ERROR_WANT_CONNECT
+	net__openssl__SSLError__ssl_error_want_accept = SSL_ERROR_WANT_ACCEPT, // SSL_ERROR_WANT_ACCEPT
+	net__openssl__SSLError__ssl_error_want_async = SSL_ERROR_WANT_ASYNC, // SSL_ERROR_WANT_ASYNC
+	net__openssl__SSLError__ssl_error_want_async_job = SSL_ERROR_WANT_ASYNC_JOB, // SSL_ERROR_WANT_ASYNC_JOB
+}  net__openssl__SSLError;
+
+typedef enum {
+	net__openssl__Select__read, // 
+	net__openssl__Select__write, // +1
+	net__openssl__Select__except, // +2
+}  net__openssl__Select;
+
+typedef enum {
+	net__http__SameSite__same_site_not_set, // 
+	net__http__SameSite__same_site_default_mode = 1, // 1
+	net__http__SameSite__same_site_lax_mode, // 1+1
+	net__http__SameSite__same_site_strict_mode, // 1+2
+	net__http__SameSite__same_site_none_mode, // 1+3
+}  net__http__SameSite;
+
+typedef enum {
+	net__http__CommonHeader__accept, // 
+	net__http__CommonHeader__accept_ch, // +1
+	net__http__CommonHeader__accept_charset, // +2
+	net__http__CommonHeader__accept_ch_lifetime, // +3
+	net__http__CommonHeader__accept_encoding, // +4
+	net__http__CommonHeader__accept_language, // +5
+	net__http__CommonHeader__accept_patch, // +6
+	net__http__CommonHeader__accept_post, // +7
+	net__http__CommonHeader__accept_ranges, // +8
+	net__http__CommonHeader__access_control_allow_credentials, // +9
+	net__http__CommonHeader__access_control_allow_headers, // +10
+	net__http__CommonHeader__access_control_allow_methods, // +11
+	net__http__CommonHeader__access_control_allow_origin, // +12
+	net__http__CommonHeader__access_control_expose_headers, // +13
+	net__http__CommonHeader__access_control_max_age, // +14
+	net__http__CommonHeader__access_control_request_headers, // +15
+	net__http__CommonHeader__access_control_request_method, // +16
+	net__http__CommonHeader__age, // +17
+	net__http__CommonHeader__allow, // +18
+	net__http__CommonHeader__alt_svc, // +19
+	net__http__CommonHeader__authorization, // +20
+	net__http__CommonHeader__authority, // +21
+	net__http__CommonHeader__cache_control, // +22
+	net__http__CommonHeader__clear_site_data, // +23
+	net__http__CommonHeader__connection, // +24
+	net__http__CommonHeader__content_disposition, // +25
+	net__http__CommonHeader__content_encoding, // +26
+	net__http__CommonHeader__content_language, // +27
+	net__http__CommonHeader__content_length, // +28
+	net__http__CommonHeader__content_location, // +29
+	net__http__CommonHeader__content_range, // +30
+	net__http__CommonHeader__content_security_policy, // +31
+	net__http__CommonHeader__content_security_policy_report_only, // +32
+	net__http__CommonHeader__content_type, // +33
+	net__http__CommonHeader__cookie, // +34
+	net__http__CommonHeader__cross_origin_embedder_policy, // +35
+	net__http__CommonHeader__cross_origin_opener_policy, // +36
+	net__http__CommonHeader__cross_origin_resource_policy, // +37
+	net__http__CommonHeader__date, // +38
+	net__http__CommonHeader__device_memory, // +39
+	net__http__CommonHeader__digest, // +40
+	net__http__CommonHeader__dnt, // +41
+	net__http__CommonHeader__early_data, // +42
+	net__http__CommonHeader__etag, // +43
+	net__http__CommonHeader__expect, // +44
+	net__http__CommonHeader__expect_ct, // +45
+	net__http__CommonHeader__expires, // +46
+	net__http__CommonHeader__feature_policy, // +47
+	net__http__CommonHeader__forwarded, // +48
+	net__http__CommonHeader__from, // +49
+	net__http__CommonHeader__host, // +50
+	net__http__CommonHeader__if_match, // +51
+	net__http__CommonHeader__if_modified_since, // +52
+	net__http__CommonHeader__if_none_match, // +53
+	net__http__CommonHeader__if_range, // +54
+	net__http__CommonHeader__if_unmodified_since, // +55
+	net__http__CommonHeader__index, // +56
+	net__http__CommonHeader__keep_alive, // +57
+	net__http__CommonHeader__large_allocation, // +58
+	net__http__CommonHeader__last_modified, // +59
+	net__http__CommonHeader__link, // +60
+	net__http__CommonHeader__location, // +61
+	net__http__CommonHeader__nel, // +62
+	net__http__CommonHeader__origin, // +63
+	net__http__CommonHeader__pragma, // +64
+	net__http__CommonHeader__proxy_authenticate, // +65
+	net__http__CommonHeader__proxy_authorization, // +66
+	net__http__CommonHeader__range, // +67
+	net__http__CommonHeader__referer, // +68
+	net__http__CommonHeader__referrer_policy, // +69
+	net__http__CommonHeader__retry_after, // +70
+	net__http__CommonHeader__save_data, // +71
+	net__http__CommonHeader__sec_fetch_dest, // +72
+	net__http__CommonHeader__sec_fetch_mode, // +73
+	net__http__CommonHeader__sec_fetch_site, // +74
+	net__http__CommonHeader__sec_fetch_user, // +75
+	net__http__CommonHeader__sec_websocket_accept, // +76
+	net__http__CommonHeader__sec_websocket_key, // +77
+	net__http__CommonHeader__server, // +78
+	net__http__CommonHeader__server_timing, // +79
+	net__http__CommonHeader__set_cookie, // +80
+	net__http__CommonHeader__sourcemap, // +81
+	net__http__CommonHeader__strict_transport_security, // +82
+	net__http__CommonHeader__te, // +83
+	net__http__CommonHeader__timing_allow_origin, // +84
+	net__http__CommonHeader__tk, // +85
+	net__http__CommonHeader__trailer, // +86
+	net__http__CommonHeader__transfer_encoding, // +87
+	net__http__CommonHeader__upgrade, // +88
+	net__http__CommonHeader__upgrade_insecure_requests, // +89
+	net__http__CommonHeader__user_agent, // +90
+	net__http__CommonHeader__vary, // +91
+	net__http__CommonHeader__via, // +92
+	net__http__CommonHeader__want_digest, // +93
+	net__http__CommonHeader__warning, // +94
+	net__http__CommonHeader__www_authenticate, // +95
+	net__http__CommonHeader__x_content_type_options, // +96
+	net__http__CommonHeader__x_dns_prefetch_control, // +97
+	net__http__CommonHeader__x_forwarded_for, // +98
+	net__http__CommonHeader__x_forwarded_host, // +99
+	net__http__CommonHeader__x_forwarded_proto, // +100
+	net__http__CommonHeader__x_frame_options, // +101
+	net__http__CommonHeader__x_xss_protection, // +102
+}  net__http__CommonHeader;
+
+typedef enum {
+	net__http__Method__get, // 
+	net__http__Method__head, // +1
+	net__http__Method__post, // +2
+	net__http__Method__put, // +3
+	net__http__Method__acl, // +4
+	net__http__Method__baseline_control, // +5
+	net__http__Method__bind, // +6
+	net__http__Method__checkin, // +7
+	net__http__Method__checkout, // +8
+	net__http__Method__connect, // +9
+	net__http__Method__copy, // +10
+	net__http__Method__delete, // +11
+	net__http__Method__label, // +12
+	net__http__Method__link, // +13
+	net__http__Method__lock, // +14
+	net__http__Method__merge, // +15
+	net__http__Method__mkactivity, // +16
+	net__http__Method__mkcalendar, // +17
+	net__http__Method__mkcol, // +18
+	net__http__Method__mkredirectref, // +19
+	net__http__Method__mkworkspace, // +20
+	net__http__Method__move, // +21
+	net__http__Method__options, // +22
+	net__http__Method__orderpatch, // +23
+	net__http__Method__patch, // +24
+	net__http__Method__pri, // +25
+	net__http__Method__propfind, // +26
+	net__http__Method__proppatch, // +27
+	net__http__Method__rebind, // +28
+	net__http__Method__report, // +29
+	net__http__Method__search, // +30
+	net__http__Method__trace, // +31
+	net__http__Method__unbind, // +32
+	net__http__Method__uncheckout, // +33
+	net__http__Method__unlink, // +34
+	net__http__Method__unlock, // +35
+	net__http__Method__update, // +36
+	net__http__Method__updateredirectref, // +37
+	net__http__Method__version_control, // +38
+}  net__http__Method;
+
+typedef enum {
+	net__http__ServerStatus__closed, // 
+	net__http__ServerStatus__running, // +1
+	net__http__ServerStatus__stopped, // +2
+}  net__http__ServerStatus;
+
+typedef enum {
+	net__http__Status__unknown = -1, // -1
+	net__http__Status__unassigned = 0, // 0
+	net__http__Status__cont = 100, // 100
+	net__http__Status__switching_protocols = 101, // 101
+	net__http__Status__processing = 102, // 102
+	net__http__Status__checkpoint_draft = 103, // 103
+	net__http__Status__ok = 200, // 200
+	net__http__Status__created = 201, // 201
+	net__http__Status__accepted = 202, // 202
+	net__http__Status__non_authoritative_information = 203, // 203
+	net__http__Status__no_content = 204, // 204
+	net__http__Status__reset_content = 205, // 205
+	net__http__Status__partial_content = 206, // 206
+	net__http__Status__multi_status = 207, // 207
+	net__http__Status__already_reported = 208, // 208
+	net__http__Status__im_used = 226, // 226
+	net__http__Status__multiple_choices = 300, // 300
+	net__http__Status__moved_permanently = 301, // 301
+	net__http__Status__found = 302, // 302
+	net__http__Status__see_other = 303, // 303
+	net__http__Status__not_modified = 304, // 304
+	net__http__Status__use_proxy = 305, // 305
+	net__http__Status__switch_proxy = 306, // 306
+	net__http__Status__temporary_redirect = 307, // 307
+	net__http__Status__permanent_redirect = 308, // 308
+	net__http__Status__bad_request = 400, // 400
+	net__http__Status__unauthorized = 401, // 401
+	net__http__Status__payment_required = 402, // 402
+	net__http__Status__forbidden = 403, // 403
+	net__http__Status__not_found = 404, // 404
+	net__http__Status__method_not_allowed = 405, // 405
+	net__http__Status__not_acceptable = 406, // 406
+	net__http__Status__proxy_authentication_required = 407, // 407
+	net__http__Status__request_timeout = 408, // 408
+	net__http__Status__conflict = 409, // 409
+	net__http__Status__gone = 410, // 410
+	net__http__Status__length_required = 411, // 411
+	net__http__Status__precondition_failed = 412, // 412
+	net__http__Status__request_entity_too_large = 413, // 413
+	net__http__Status__request_uri_too_long = 414, // 414
+	net__http__Status__unsupported_media_type = 415, // 415
+	net__http__Status__requested_range_not_satisfiable = 416, // 416
+	net__http__Status__expectation_failed = 417, // 417
+	net__http__Status__im_a_teapot = 418, // 418
+	net__http__Status__misdirected_request = 421, // 421
+	net__http__Status__unprocessable_entity = 422, // 422
+	net__http__Status__locked = 423, // 423
+	net__http__Status__failed_dependency = 424, // 424
+	net__http__Status__unordered_collection = 425, // 425
+	net__http__Status__upgrade_required = 426, // 426
+	net__http__Status__precondition_required = 428, // 428
+	net__http__Status__too_many_requests = 429, // 429
+	net__http__Status__request_header_fields_too_large = 431, // 431
+	net__http__Status__unavailable_for_legal_reasons = 451, // 451
+	net__http__Status__client_closed_request = 499, // 499
+	net__http__Status__internal_server_error = 500, // 500
+	net__http__Status__not_implemented = 501, // 501
+	net__http__Status__bad_gateway = 502, // 502
+	net__http__Status__service_unavailable = 503, // 503
+	net__http__Status__gateway_timeout = 504, // 504
+	net__http__Status__http_version_not_supported = 505, // 505
+	net__http__Status__variant_also_negotiates = 506, // 506
+	net__http__Status__insufficient_storage = 507, // 507
+	net__http__Status__loop_detected = 508, // 508
+	net__http__Status__bandwidth_limit_exceeded = 509, // 509
+	net__http__Status__not_extended = 510, // 510
+	net__http__Status__network_authentication_required = 511, // 511
+}  net__http__Status;
+
+typedef enum {
+	net__http__Version__unknown, // 
+	net__http__Version__v1_1, // +1
+	net__http__Version__v2_0, // +2
+	net__http__Version__v1_0, // +3
+}  net__http__Version;
+
+typedef enum {
 	main__VSlimRouteHandlerType__v_native, // 
 	main__VSlimRouteHandlerType__php_callable, // +1
 }  main__VSlimRouteHandlerType;
 
 // Thread definitions:
+typedef pthread_t __v_thread;
 typedef pthread_t __v_thread_vphp__TaskResult;
 
 // V type definitions:
@@ -1513,11 +3068,16 @@ struct IError {
 		Error* _Error;
 		MessageError* _MessageError;
 		time__TimeParseError* _time__TimeParseError;
+		io__Eof* _io__Eof;
+		io__NotExpected* _io__NotExpected;
 		os__Eof* _os__Eof;
 		os__NotExpected* _os__NotExpected;
 		os__FileNotOpenedError* _os__FileNotOpenedError;
 		os__SizeOfTypeIs0Error* _os__SizeOfTypeIs0Error;
 		os__ExecutableNotFoundError* _os__ExecutableNotFoundError;
+		net__http__HeaderKeyError* _net__http__HeaderKeyError;
+		net__http__UnexpectedExtraAttributeError* _net__http__UnexpectedExtraAttributeError;
+		net__http__MultiplePathAttributesError* _net__http__MultiplePathAttributesError;
 	};
 	u32 _typ;
 };
@@ -1581,6 +3141,7 @@ struct _result {
 typedef array Array_string;
 typedef array Array_u8;
 typedef array Array_voidptr;
+typedef array Array_VCastTypeIndexName;
 typedef array Array_int;
 typedef array Array_rune;
 typedef string Array_fixed_string_11 [11];
@@ -1611,12 +3172,34 @@ typedef array Array_char_ptr;
 typedef int Array_fixed_int_3 [3];
 typedef array Array_os__Signal;
 typedef char Array_fixed_char_256 [256];
+typedef array Array_net__http__Cookie_ptr;
+typedef array Array_net__http__HeaderConfig;
+typedef map Map_net__http__CommonHeader_string;
+typedef array Array_net__http__FileData;
+typedef map Map_string_Array_net__http__FileData;
+typedef array Array_net__http__LineSegmentIndexes;
+typedef array Array_net__http__Cookie;
+typedef chan chan_net__TcpConn_ptr;
+typedef array Array___v_thread;
 typedef array Array_net__urllib__QueryValue;
 typedef map Map_string_Array_string;
+typedef u8 Array_fixed_u8_8 [8];
+typedef u8 Array_fixed_u8_4 [4];
+typedef u8 Array_fixed_u8_16 [16];
+typedef array Array_net__Addr;
+typedef char Array_fixed_char_104 [104];
+typedef array Array_IError;
+typedef array Array_io__Writer;
+typedef array Array_u32;
+typedef array Array_sync__Channel_ptr;
+typedef array Array_sync__Direction;
+typedef array Array_sync__Subscription;
+typedef chan chan_bool;
+typedef array Array_chan_bool;
+typedef u8 Array_fixed_u8_63 [63];
 typedef u8 Array_fixed_u8_5 [5];
 typedef u8 Array_fixed_u8_25 [25];
 typedef u8 Array_fixed_u8_12 [12];
-typedef u8 Array_fixed_u8_8 [8];
 typedef u8 Array_fixed_u8_32 [32];
 typedef u8 Array_fixed_u8_64 [64];
 typedef u8 Array_fixed_u8_256 [256];
@@ -1643,11 +3226,24 @@ typedef u8 Array_fixed_u8_10 [10];
 typedef char Array_fixed_char_1024 [1024];
 typedef int Array_fixed_int_12 [12];
 typedef int Array_fixed_int_13 [13];
+typedef int Array_fixed_int_123 [123];
 typedef u8 Array_fixed_u8_4096 [4096];
 typedef u8 Array_fixed_u8_1024 [1024];
 typedef int Array_fixed_int_2 [2];
 typedef array Array_os__ProcessState;
 typedef int Array_fixed_int_6 [6];
+typedef u16 Array_fixed_u16_8 [8];
+typedef int Array_fixed_int_4 [4];
+typedef char Array_fixed_char_24 [24];
+typedef char Array_fixed_char_46 [46];
+typedef array Array_char;
+typedef array Array_net__SocketOption;
+typedef array Array_net__AddrFamily;
+typedef u8 Array_fixed_u8_400 [400];
+typedef map Map_string_net__http__CommonHeader;
+typedef array Array_net__http__Status;
+typedef u8 Array_fixed_u8_65536 [65536];
+typedef array Array_void;
 typedef Array_u8 strings__Builder;
 typedef i64 time__Duration;
 #define C__time_t time_t
@@ -1667,6 +3263,15 @@ typedef void (*vphp__ForeachCb)(vphp__ZVal,vphp__ZVal);
 typedef void (*anon_fn_string)(string);
 typedef void (*os__FnWalkContextCB)(voidptr,string);
 typedef void (*os__SignalHandler)(os__Signal);
+typedef bool (*anon_fn_u8__bool)(u8);
+typedef _result_void (*net__http__RequestRedirectFn)(net__http__Request*,int,string);
+typedef _result_void (*net__http__RequestProgressFn)(net__http__Request*,Array_u8,u64);
+typedef _result_void (*net__http__RequestProgressBodyFn)(net__http__Request*,Array_u8,u64,u64,int);
+typedef _result_void (*net__http__RequestFinishFn)(net__http__Request*,u64);
+typedef _result_int (*net__http__FnReceiveChunk)(voidptr,u8*,int);
+typedef void (*anon_fn_mut_net__http__server)(net__http__Server*);
+typedef void (*anon_fn_)();
+typedef void (*anon_fn_voidptr)(voidptr);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__dynval)(vphp__ZVal,vphp__ZVal,Map_string_vphp__DynVal*);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_array_string)(vphp__ZVal,vphp__ZVal,Array_string*);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_map_string_string)(vphp__ZVal,vphp__ZVal,Map_string_string*);
@@ -1675,6 +3280,82 @@ typedef main__VSlimResponse (*main__VSlimMiddleware)(main__VSlimRequest,main__VS
 struct vphp__ITask {
 	union {
 		void* _object;
+	};
+	u32 _typ;
+};
+struct net__http__Downloader {
+	union {
+		void* _object;
+		voidptr* _voidptr;
+		net__http__TerminalStreamingDownloader* _net__http__TerminalStreamingDownloader;
+		net__http__SilentStreamingDownloader* _net__http__SilentStreamingDownloader;
+	};
+	u32 _typ;
+};
+struct net__http__Handler {
+	union {
+		void* _object;
+		net__http__DebugHandler* _net__http__DebugHandler;
+		voidptr* _voidptr;
+	};
+	u32 _typ;
+};
+struct net__Dialer {
+	union {
+		void* _object;
+		net__TCPDialer* _net__TCPDialer;
+		voidptr* _voidptr;
+		net__ssl__SSLDialer* _net__ssl__SSLDialer;
+		net__socks__SOCKS5Dialer* _net__socks__SOCKS5Dialer;
+	};
+	u32 _typ;
+};
+struct net__Connection {
+	union {
+		void* _object;
+		net__TcpConn* _net__TcpConn;
+		voidptr* _voidptr;
+		net__ssl__SSLConn* _net__ssl__SSLConn;
+		net__openssl__SSLConn* _net__openssl__SSLConn;
+	};
+	u32 _typ;
+};
+struct io__Reader {
+	union {
+		void* _object;
+		net__TcpConn* _net__TcpConn;
+		voidptr* _voidptr;
+		os__File* _os__File;
+		os__Pipe* _os__Pipe;
+		net__ssl__SSLConn* _net__ssl__SSLConn;
+		io__BufferedReader* _io__BufferedReader;
+		net__openssl__SSLConn* _net__openssl__SSLConn;
+		io__ReaderWriterImpl* _io__ReaderWriterImpl;
+	};
+	u32 _typ;
+};
+struct io__Writer {
+	union {
+		void* _object;
+		io__MultiWriter* _io__MultiWriter;
+		voidptr* _voidptr;
+		os__File* _os__File;
+		os__Pipe* _os__Pipe;
+		net__ssl__SSLConn* _net__ssl__SSLConn;
+		net__TcpConn* _net__TcpConn;
+		net__openssl__SSLConn* _net__openssl__SSLConn;
+		net__RawConn* _net__RawConn;
+		net__UdpConn* _net__UdpConn;
+		io__BufferedWriter* _io__BufferedWriter;
+		io__ReaderWriterImpl* _io__ReaderWriterImpl;
+	};
+	u32 _typ;
+};
+struct rand__PRNG {
+	union {
+		void* _object;
+		rand__wyrand__WyRandRNG* _rand__wyrand__WyRandRNG;
+		voidptr* _voidptr;
 	};
 	u32 _typ;
 };
@@ -1758,9 +3439,52 @@ struct os__Uname {
 	string machine;
 };
 
+struct net__http__HeaderKV {
+	string key;
+	string value;
+};
+
+struct net__http__FileData {
+	string filename;
+	string content_type;
+	string data;
+};
+
+struct net__http__MultiplePathAttributesError {
+	Error Error;
+};
+
+struct net__http__DebugHandler {
+	E_STRUCT_DECL;
+};
+
 struct net__urllib__QueryValue {
 	string key;
 	string value;
+};
+
+struct net__TCPDialer {
+	E_STRUCT_DECL;
+};
+
+struct io__Eof {
+	Error Error;
+};
+
+struct sync__Subscription {
+	sync__Semaphore* sem;
+	sync__Subscription** prev;
+	sync__Subscription* nxt;
+};
+
+struct io__util__TempFileOptions {
+	string path;
+	string pattern;
+};
+
+struct io__util__TempDirOptions {
+	string path;
+	string pattern;
 };
 
 struct GCHeapUsage {
@@ -1769,6 +3493,11 @@ struct GCHeapUsage {
 	usize total_bytes;
 	usize unmapped_bytes;
 	usize bytes_since_gc;
+};
+
+struct VCastTypeIndexName {
+	int tindex;
+	string tname;
 };
 
 struct MessageError {
@@ -2106,6 +3835,72 @@ struct time__StopWatch {
 	u64 start;
 	u64 end;
 };
+typedef net__http__HeaderKV Array_fixed_net__http__HeaderKV_50 [50];
+
+struct net__http__HeaderConfig {
+	net__http__CommonHeader key;
+	string value;
+};
+
+struct net__http__HeaderQueryConfig {
+	bool exact;
+};
+
+struct net__http__HeaderRenderConfig {
+	net__http__Version version;
+	bool coerce;
+	bool canonicalize;
+};
+
+struct net__http__HeaderKeyError {
+	Error Error;
+	int code;
+	string header;
+	u8 invalid_char;
+};
+
+struct net__http__HttpProxy {
+	string scheme;
+	string username;
+	string password;
+	string host;
+	string hostname;
+	int port;
+	string url;
+};
+
+struct io__BufferedReader {
+	io__Reader reader;
+	Array_u8 buf;
+	int offset;
+	int len;
+	int fails;
+	int mfails;
+	bool end_of_stream;
+	int total_read;
+};
+
+struct net__http__UnexpectedExtraAttributeError {
+	Error Error;
+	Array_string attributes;
+};
+
+struct net__http__LineSegmentIndexes {
+	int start;
+	int end;
+};
+
+struct net__http__WaitTillRunningParams {
+	int max_retries;
+	int retry_period_ms;
+};
+
+struct net__http__HandlerWorker {
+	int id;
+	chan_net__TcpConn_ptr ch;
+	int max_keep_alive_requests;
+	net__http__Handler handler;
+};
 
 struct net__urllib__Userinfo {
 	string username;
@@ -2124,6 +3919,145 @@ struct strings__textscanner__TextScanner {
 	int pos;
 };
 typedef term__termios__Cc Array_fixed_term__termios__Cc_20 [20];
+
+struct net__openssl__SSLConnectConfig {
+	string verify;
+	string cert;
+	string cert_key;
+	bool validate;
+	bool in_memory_verification;
+};
+
+struct arrays__WindowAttribute {
+	int size;
+	int step;
+};
+
+struct net__ShutdownConfig {
+	net__ShutdownDirection how;
+};
+
+struct net__Socket {
+	int handle;
+};
+
+struct net__RawSocketConfig {
+	net__AddrFamily family;
+	net__Protocol protocol;
+};
+
+struct net__ListenOptions {
+	bool dualstack;
+	int backlog;
+};
+
+struct net__socks__SOCKS5Dialer {
+	net__Dialer dialer;
+	string proxy_address;
+	string username;
+	string password;
+};
+
+struct io__BufferedReaderConfig {
+	io__Reader reader;
+	int cap;
+	int retries;
+};
+
+struct io__BufferedReadLineConfig {
+	u8 delim;
+};
+
+struct io__NotExpected {
+	string cause;
+	int code;
+};
+
+struct io__BufferedWriter {
+	int n;
+	io__Writer wr;
+	Array_u8 buf;
+};
+
+struct io__BufferedWriterConfig {
+	io__Writer writer;
+	int cap;
+};
+
+struct io__CopySettings {
+	int buffer_size;
+};
+
+struct io__MultiWriter {
+	Array_io__Writer writers;
+};
+
+struct io__ReadAllConfig {
+	bool read_to_end_of_stream;
+	io__Reader reader;
+};
+
+struct io__ReaderWriterImpl {
+	io__Reader r;
+	io__Writer w;
+};
+
+struct rand__UUIDSession {
+	u8 counter;
+};
+
+struct rand__config__PRNGConfigStruct {
+	Array_u32 seed_;
+};
+
+struct rand__config__NormalConfigStruct {
+	f64 mu;
+	f64 sigma;
+};
+
+struct rand__config__ShuffleConfigStruct {
+	int start;
+	int end;
+};
+
+struct net__http__chunked__ChunkScanner {
+	int pos;
+	string text;
+};
+
+struct sync__Semaphore {
+	pthread_mutex_t mtx;
+	pthread_cond_t cond;
+	u32 count;
+};
+
+struct sync__Mutex {
+	pthread_mutex_t mutex;
+};
+
+struct sync__RwMutex {
+	pthread_rwlock_t mutex;
+};
+
+struct sync__RwMutexAttr {
+	pthread_rwlockattr_t attr;
+};
+
+struct sync__CondAttr {
+	pthread_condattr_t attr;
+};
+
+union net__conv__ConversionUnion {
+	u64 as_int64;
+	u32 as_int32;
+	f64 as_double64;
+	f32 as_double32;
+};
+
+struct rand__buffer__PRNGBuffer {
+	int bytes_left;
+	u64 buffer;
+};
 
 struct vphp__ForeachPack_T_Map_string_vphp__DynVal {
 	anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__dynval cb;
@@ -2229,6 +4163,31 @@ struct os__Process {
 	voidptr wdata;
 	bool create_no_window;
 };
+
+struct net__http__Cookie {
+	string name;
+	string value;
+	string path;
+	string domain;
+	time__Time expires;
+	string raw_expires;
+	int max_age;
+	bool secure;
+	bool http_only;
+	net__http__SameSite same_site;
+	string raw;
+	Array_string unparsed;
+};
+
+struct net__http__Header {
+	Array_fixed_net__http__HeaderKV_50 data;
+	int cur_pos;
+};
+
+struct net__http__SilentStreamingDownloader {
+	string path;
+	os__File f;
+};
 struct _option_net__urllib__Userinfo {
 	byte state;
 	IError err;
@@ -2250,6 +4209,113 @@ struct net__urllib__URL {
 struct net__urllib__ParseAuthorityRes {
 	_option_net__urllib__Userinfo user;
 	string host;
+};
+
+struct net__ssl__SSLConnectConfig {
+	net__openssl__SSLConnectConfig SSLConnectConfig;
+};
+
+struct net__openssl__SSLConn {
+	net__openssl__SSLConnectConfig config;
+	SSL_CTX* sslctx;
+	SSL* ssl;
+	int handle;
+	time__Duration duration;
+	bool owns_socket;
+};
+
+union encoding__base64__B64_64_datablock {
+	u64 data;
+	Array_fixed_u8_8 data_byte;
+};
+
+union encoding__base64__B64_32_datablock {
+	u32 data;
+	Array_fixed_u8_4 data_byte;
+};
+
+struct net__Unix {
+	Array_fixed_char_104 path;
+};
+#pragma pack(push, 1)
+
+struct net__Ip {
+	u16 port;
+	Array_fixed_u8_4 addr;
+	Array_fixed_u8_8 sin_pad;
+};
+#pragma pack(pop)
+#pragma pack(push, 1)
+
+struct net__Ip6 {
+	u16 port;
+	u32 flow_info;
+	Array_fixed_u8_16 addr;
+	u32 scope_id;
+};
+#pragma pack(pop)
+
+struct net__TcpSocket {
+	net__Socket Socket;
+};
+
+struct rand__wyrand__WyRandRNG {
+	rand__buffer__PRNGBuffer PRNGBuffer;
+	u64 state;
+	int bytes_left;
+	u64 buffer;
+};
+
+struct sync__SpinLock {
+	u8 locked;
+	Array_fixed_u8_63 padding;
+};
+
+struct sync__Channel {
+	u8* ringbuf;
+	u8* statusbuf;
+	u32 objsize;
+	sync__Semaphore writesem;
+	sync__Semaphore readsem;
+	sync__Semaphore writesem_im;
+	sync__Semaphore readsem_im;
+	atomic_uintptr_t write_adr;
+	atomic_uintptr_t read_adr;
+	atomic_uintptr_t adr_read;
+	atomic_uintptr_t adr_written;
+	u32 write_free;
+	u32 read_avail;
+	u32 buf_elem_write_idx;
+	u32 buf_elem_read_idx;
+	sync__Subscription* write_subscriber;
+	sync__Subscription* read_subscriber;
+	sync__SpinLock* write_sub_mtx;
+	sync__SpinLock* read_sub_mtx;
+	u16 closed;
+	u32 cap;
+};
+
+struct sync__Cond {
+	sync__Mutex* mutex;
+	sync__Mutex inner_mutex;
+	Array_chan_bool waiters;
+};
+
+struct sync__ManyTimes {
+	sync__RwMutex m;
+	u64 times;
+	u64 count;
+};
+
+struct sync__Once {
+	sync__RwMutex m;
+	u64 count;
+};
+
+struct sync__WaitGroup {
+	u32 task_count;
+	u32 wait_count;
+	sync__Semaphore sem;
 };
 
 struct main__VSlimApp {
@@ -2295,6 +4361,181 @@ struct os__FileInfo {
 	os__FileMode FileMode;
 	u64 size;
 	i64 mtime;
+};
+
+struct net__http__Request {
+	Map_string_string cookies;
+	net__http__Version version;
+	net__http__Method method;
+	net__http__Header header;
+	string host;
+	string data;
+	string url;
+	string user_agent;
+	bool verbose;
+	voidptr user_ptr;
+	net__http__HttpProxy* proxy;
+	i64 read_timeout;
+	i64 write_timeout;
+	bool validate;
+	string verify;
+	string cert;
+	string cert_key;
+	bool in_memory_verification;
+	bool allow_redirect;
+	int max_retries;
+	net__http__RequestRedirectFn on_redirect;
+	net__http__RequestProgressFn on_progress;
+	net__http__RequestProgressBodyFn on_progress_body;
+	net__http__RequestFinishFn on_finish;
+	i64 stop_copying_limit;
+	i64 stop_receiving_limit;
+};
+
+struct net__http__Response {
+	string body;
+	net__http__Header header;
+	int status_code;
+	string status_msg;
+	string http_version;
+};
+
+struct net__ssl__SSLConn {
+	net__openssl__SSLConn SSLConn;
+};
+
+struct net__http__FetchConfig {
+	string url;
+	net__http__Method method;
+	net__http__Header header;
+	string data;
+	Map_string_string params;
+	Map_string_string cookies;
+	string user_agent;
+	voidptr user_ptr;
+	bool verbose;
+	net__http__HttpProxy* proxy;
+	bool validate;
+	string verify;
+	string cert;
+	string cert_key;
+	bool in_memory_verification;
+	bool allow_redirect;
+	int max_retries;
+	net__http__RequestRedirectFn on_redirect;
+	net__http__RequestProgressFn on_progress;
+	net__http__RequestProgressBodyFn on_progress_body;
+	net__http__RequestFinishFn on_finish;
+	i64 stop_copying_limit;
+	i64 stop_receiving_limit;
+};
+
+struct net__http__TerminalStreamingDownloader {
+	net__http__SilentStreamingDownloader SilentStreamingDownloader;
+	time__Time start_time;
+	time__Time past_time;
+	u64 past_received;
+};
+
+struct net__http__PostMultipartFormConfig {
+	Map_string_string form;
+	Map_string_Array_net__http__FileData files;
+	net__http__Header header;
+};
+
+struct net__TcpConn {
+	net__TcpSocket sock;
+	int handle;
+	time__Time write_deadline;
+	time__Time read_deadline;
+	time__Duration read_timeout;
+	time__Duration write_timeout;
+	bool is_blocking;
+};
+
+struct net__http__ResponseConfig {
+	net__http__Version version;
+	net__http__Status status;
+	net__http__Header header;
+	string body;
+};
+
+struct net__TcpListener {
+	net__TcpSocket sock;
+	time__Duration accept_timeout;
+	time__Time accept_deadline;
+	bool is_blocking;
+};
+
+struct net__ssl__SSLDialer {
+	net__ssl__SSLConnectConfig config;
+};
+
+union net__AddrData {
+	net__Unix Unix;
+	net__Ip Ip;
+	net__Ip6 Ip6;
+};
+
+struct net__http__DownloaderParams {
+	net__http__FetchConfig FetchConfig;
+	net__http__Downloader* downloader;
+};
+
+struct net__http__Server {
+	net__http__ServerStatus state;
+	string addr;
+	net__http__Handler handler;
+	time__Duration read_timeout;
+	time__Duration write_timeout;
+	time__Duration accept_timeout;
+	int pool_channel_slots;
+	int worker_num;
+	int max_keep_alive_requests;
+	net__TcpListener listener;
+	anon_fn_mut_net__http__server on_running;
+	anon_fn_mut_net__http__server on_stopped;
+	anon_fn_mut_net__http__server on_closed;
+	bool show_startup_message;
+};
+#pragma pack(push, 1)
+
+struct net__Addr {
+	u8 len;
+	u8 f;
+	net__AddrData addr;
+};
+#pragma pack(pop)
+
+struct net__RawSocket {
+	net__Socket Socket;
+	net__Addr l;
+	bool has_r;
+	net__Addr r;
+	net__Protocol protocol;
+};
+
+struct net__UdpSocket {
+	net__Socket Socket;
+	net__Addr l;
+	bool has_r;
+	net__Addr r;
+};
+
+struct net__RawConn {
+	net__RawSocket sock;
+	time__Time write_deadline;
+	time__Time read_deadline;
+	time__Duration read_timeout;
+	time__Duration write_timeout;
+};
+
+struct net__UdpConn {
+	net__UdpSocket sock;
+	time__Time write_deadline;
+	time__Time read_deadline;
+	time__Duration read_timeout;
+	time__Duration write_timeout;
 };
 // #end sorted_symbols
 
@@ -2410,6 +4651,23 @@ struct multi_return_int_int_int_int_int_i64_bool {
 	bool arg6;
 };
 
+struct multi_return_net__http__Method_net__urllib__URL_net__http__Version {
+	net__http__Method arg0;
+	net__urllib__URL arg1;
+	net__http__Version arg2;
+};
+
+struct multi_return_Map_string_string_Map_string_Array_net__http__FileData {
+	Map_string_string arg0;
+	Map_string_Array_net__http__FileData arg1;
+};
+
+struct multi_return_string_int_string {
+	string arg0;
+	int arg1;
+	string arg2;
+};
+
 struct multi_return_u64_u64 {
 	u64 arg0;
 	u64 arg1;
@@ -2420,6 +4678,36 @@ struct multi_return_f64_int {
 	int arg1;
 };
 
+struct multi_return_int_net__Addr {
+	int arg0;
+	net__Addr arg1;
+};
+
+struct multi_return_string_u16 {
+	string arg0;
+	u16 arg1;
+};
+
+struct multi_return_f64_f64 {
+	f64 arg0;
+	f64 arg1;
+};
+
+struct multi_return_os__File_string {
+	os__File arg0;
+	string arg1;
+};
+
+struct multi_return_u64_u8 {
+	u64 arg0;
+	u8 arg1;
+};
+
+struct multi_return_ref_sync__SpinLock_ref_sync__Subscription {
+	sync__SpinLock* arg0;
+	sync__Subscription** arg1;
+};
+
 // END_multi_return_structs
 
 
@@ -2427,8 +4715,20 @@ typedef struct thread_arg_vphp__ITask_run {
 	vphp__TaskResult (*fn) (vphp__ITask);
 	vphp__ITask arg0;
 } thread_arg_vphp__ITask_run;
+
+typedef struct thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731 {
+	void (*fn) (sync__WaitGroup*, void (*) ());
+	sync__WaitGroup* arg1;
+	void (*arg2) ();
+} thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731;
+
+typedef struct thread_arg_net__http__HandlerWorker_process_requests {
+	void (*fn) (net__http__HandlerWorker*);
+	net__http__HandlerWorker* arg0;
+} thread_arg_net__http__HandlerWorker_process_requests;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
+static bool Array_net__http__Status_contains(Array_net__http__Status a, net__http__Status v);
 static int Array_string_index(Array_string a, string v);
 
 // V Option_xxx definitions:
@@ -2450,6 +4750,12 @@ struct _option_int {
 	byte data[sizeof(int) > 1 ? sizeof(int) : 1];
 };
 
+struct _option_u8 {
+	byte state;
+	IError err;
+	byte data[sizeof(u8) > 1 ? sizeof(u8) : 1];
+};
+
 struct _option_string {
 	byte state;
 	IError err;
@@ -2468,6 +4774,24 @@ struct _option_main__VSlimResponse_ptr {
 	byte data[sizeof(main__VSlimResponse*) > 1 ? sizeof(main__VSlimResponse*) : 1];
 };
 
+struct _option_net__Addr {
+	byte state;
+	IError err;
+	byte data[sizeof(net__Addr) > 1 ? sizeof(net__Addr) : 1];
+};
+
+struct _option_net__http__Cookie {
+	byte state;
+	IError err;
+	byte data[sizeof(net__http__Cookie) > 1 ? sizeof(net__http__Cookie) : 1];
+};
+
+struct _option_net__TcpConn_ptr {
+	byte state;
+	IError err;
+	byte data[sizeof(net__TcpConn*) > 1 ? sizeof(net__TcpConn*) : 1];
+};
+
 struct _option_main__VSlimResponse {
 	byte state;
 	IError err;
@@ -2476,6 +4800,12 @@ struct _option_main__VSlimResponse {
 
 
 // V result_xxx definitions:
+struct _result_void {
+	bool is_error;
+	IError err;
+	byte data[sizeof(u8) > 1 ? sizeof(u8) : 1];
+};
+
 struct _result_int {
 	bool is_error;
 	IError err;
@@ -2540,12 +4870,6 @@ struct _result_u32 {
 	bool is_error;
 	IError err;
 	byte data[sizeof(u32) > 1 ? sizeof(u32) : 1];
-};
-
-struct _result_void {
-	bool is_error;
-	IError err;
-	byte data[sizeof(u8) > 1 ? sizeof(u8) : 1];
 };
 
 struct _result_rune {
@@ -2614,6 +4938,24 @@ struct _result_net__urllib__Values {
 	byte data[sizeof(net__urllib__Values) > 1 ? sizeof(net__urllib__Values) : 1];
 };
 
+struct _result_io__BufferedWriter_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(io__BufferedWriter*) > 1 ? sizeof(io__BufferedWriter*) : 1];
+};
+
+struct _result_Array_u8 {
+	bool is_error;
+	IError err;
+	byte data[sizeof(Array_u8) > 1 ? sizeof(Array_u8) : 1];
+};
+
+struct _result_multi_return_u64_u8 {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_u64_u8) > 1 ? sizeof(multi_return_u64_u8) : 1];
+};
+
 struct _result_vphp__DynVal {
 	bool is_error;
 	IError err;
@@ -2656,12 +4998,6 @@ struct _result_os__Stat {
 	byte data[sizeof(os__Stat) > 1 ? sizeof(os__Stat) : 1];
 };
 
-struct _result_Array_u8 {
-	bool is_error;
-	IError err;
-	byte data[sizeof(Array_u8) > 1 ? sizeof(Array_u8) : 1];
-};
-
 struct _result_strings__Builder {
 	bool is_error;
 	IError err;
@@ -2698,6 +5034,168 @@ struct _result_anon_fn_os__signal {
 	byte data[sizeof(void*) > 1 ? sizeof(void*) : 1];
 };
 
+struct _result_usize {
+	bool is_error;
+	IError err;
+	byte data[sizeof(usize) > 1 ? sizeof(usize) : 1];
+};
+
+struct _result_f32 {
+	bool is_error;
+	IError err;
+	byte data[sizeof(f32) > 1 ? sizeof(f32) : 1];
+};
+
+struct _result_multi_return_f64_f64 {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_f64_f64) > 1 ? sizeof(multi_return_f64_f64) : 1];
+};
+
+struct _result_multi_return_os__File_string {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_os__File_string) > 1 ? sizeof(multi_return_os__File_string) : 1];
+};
+
+struct _result_multi_return_string_string {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_string_string) > 1 ? sizeof(multi_return_string_string) : 1];
+};
+
+struct _result_net__Addr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__Addr) > 1 ? sizeof(net__Addr) : 1];
+};
+
+struct _result_Array_net__Addr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(Array_net__Addr) > 1 ? sizeof(Array_net__Addr) : 1];
+};
+
+struct _result_multi_return_string_u16 {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_string_u16) > 1 ? sizeof(multi_return_string_u16) : 1];
+};
+
+struct _result_net__Connection {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__Connection) > 1 ? sizeof(net__Connection) : 1];
+};
+
+struct _result_net__RawConn_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__RawConn*) > 1 ? sizeof(net__RawConn*) : 1];
+};
+
+struct _result_multi_return_int_net__Addr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_int_net__Addr) > 1 ? sizeof(multi_return_int_net__Addr) : 1];
+};
+
+struct _result_net__TcpConn_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__TcpConn*) > 1 ? sizeof(net__TcpConn*) : 1];
+};
+
+struct _result_net__TcpSocket {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__TcpSocket) > 1 ? sizeof(net__TcpSocket) : 1];
+};
+
+struct _result_net__TcpListener_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__TcpListener*) > 1 ? sizeof(net__TcpListener*) : 1];
+};
+
+struct _result_net__UdpConn_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__UdpConn*) > 1 ? sizeof(net__UdpConn*) : 1];
+};
+
+struct _result_net__UdpSocket_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__UdpSocket*) > 1 ? sizeof(net__UdpSocket*) : 1];
+};
+
+struct _result_net__openssl__SSLError {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__openssl__SSLError) > 1 ? sizeof(net__openssl__SSLError) : 1];
+};
+
+struct _result_net__openssl__SSLConn_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__openssl__SSLConn*) > 1 ? sizeof(net__openssl__SSLConn*) : 1];
+};
+
+struct _result_net__ssl__SSLConn_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__ssl__SSLConn*) > 1 ? sizeof(net__ssl__SSLConn*) : 1];
+};
+
+struct _result_net__http__Response {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__http__Response) > 1 ? sizeof(net__http__Response) : 1];
+};
+
+struct _result_net__http__Cookie {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__http__Cookie) > 1 ? sizeof(net__http__Cookie) : 1];
+};
+
+struct _result_net__http__Request {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__http__Request) > 1 ? sizeof(net__http__Request) : 1];
+};
+
+struct _result_net__http__Header {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__http__Header) > 1 ? sizeof(net__http__Header) : 1];
+};
+
+struct _result_net__http__HttpProxy_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(net__http__HttpProxy*) > 1 ? sizeof(net__http__HttpProxy*) : 1];
+};
+
+struct _result_multi_return_net__http__Method_net__urllib__URL_net__http__Version {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_net__http__Method_net__urllib__URL_net__http__Version) > 1 ? sizeof(multi_return_net__http__Method_net__urllib__URL_net__http__Version) : 1];
+};
+
+struct _result_multi_return_string_int_string {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_string_int_string) > 1 ? sizeof(multi_return_string_int_string) : 1];
+};
+
+struct _result_multi_return_int_int {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_int_int) > 1 ? sizeof(multi_return_int_int) : 1];
+};
+
 
 // V definitions:
 static char * v_typeof_interface_IError(u32 sidx);
@@ -2705,6 +5203,20 @@ u32 v_typeof_interface_idx_IError(u32 sidx);
 char * v_typeof_sumtype_vphp__TaskResult(u32);
 static char * v_typeof_interface_vphp__ITask(u32 sidx);
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx);
+static char * v_typeof_interface_net__http__Downloader(u32 sidx);
+u32 v_typeof_interface_idx_net__http__Downloader(u32 sidx);
+static char * v_typeof_interface_net__http__Handler(u32 sidx);
+u32 v_typeof_interface_idx_net__http__Handler(u32 sidx);
+static char * v_typeof_interface_net__Dialer(u32 sidx);
+u32 v_typeof_interface_idx_net__Dialer(u32 sidx);
+static char * v_typeof_interface_net__Connection(u32 sidx);
+u32 v_typeof_interface_idx_net__Connection(u32 sidx);
+static char * v_typeof_interface_io__Reader(u32 sidx);
+u32 v_typeof_interface_idx_io__Reader(u32 sidx);
+static char * v_typeof_interface_io__Writer(u32 sidx);
+u32 v_typeof_interface_idx_io__Writer(u32 sidx);
+static char * v_typeof_interface_rand__PRNG(u32 sidx);
+u32 v_typeof_interface_idx_rand__PRNG(u32 sidx);
 // end of definitions #endif
 strings__Builder strings__new_builder(int initial_size);
 Array_u8 strings__Builder_reuse_as_plain_u8_array(strings__Builder* b);
@@ -3017,6 +5529,7 @@ string builtin__vcurrent_hash(void);
 u64 builtin__v_getpid(void);
 u64 builtin__v_gettid(void);
 bool builtin__isnil(voidptr v);
+VV_LOC voidptr builtin____as_cast(voidptr obj, int obj_type, int expected_type);
 VV_LOC void builtin__builtin_init(void);
 void builtin__panic_lasterr(string base);
 void builtin__gc_check_leaks(void);
@@ -3176,6 +5689,7 @@ VV_LOC DenseArray builtin__DenseArray_clone(DenseArray* d);
 map builtin__map_clone(map* m);
 void builtin__map_free(map* m);
 void builtin__VAssertMetaInfo_free(VAssertMetaInfo* ami);
+VV_LOC void builtin____print_assert_failure(VAssertMetaInfo* i);
 void builtin__IError_free(IError* ie);
 void builtin__panic_option_not_set(string s);
 void builtin__panic_result_not_set(string s);
@@ -3327,6 +5841,7 @@ void Array_string_sort_ignore_case(Array_string* s);
 void Array_string_sort_by_len(Array_string* s);
 string builtin__string_str(string s);
 VV_LOC u8 builtin__string_at(string s, int idx);
+VV_LOC _option_u8 builtin__string_at_with_check(string s, int idx);
 bool builtin__string_is_oct(string str);
 bool builtin__string_is_bin(string str);
 bool builtin__string_is_hex(string str);
@@ -3626,6 +6141,72 @@ int term__termios__tcsetattr(int fd, int optional_actions, term__termios__Termio
 int term__termios__ioctl(int fd, u64 request, voidptr arg);
 int term__termios__set_state(int fd, term__termios__Termios new_state);
 void term__termios__Termios_disable_echo(term__termios__Termios* t);
+Array_string arrays__uniq_T_string(Array_string a);
+int encoding__base64__encode_in_buffer(Array_u8 data, u8* buffer);
+VV_LOC int encoding__base64__encode_from_buffer(u8* dest, u8* src, int src_len);
+int encoding__base64__decode_in_buffer(string* data, u8* buffer);
+int encoding__base64__decode_in_buffer_bytes(Array_u8 data, u8* buffer);
+VV_LOC int encoding__base64__decode_from_buffer(u8* dest, u8* src, int src_len);
+Array_u8 encoding__base64__decode(string data);
+string encoding__base64__decode_str(string data);
+string encoding__base64__encode(Array_u8 data);
+string encoding__base64__encode_str(string data);
+VV_LOC string encoding__base64__alloc_and_encode(u8* src, int len);
+Array_u8 encoding__base64__url_decode(string data);
+string encoding__base64__url_decode_str(string data);
+string encoding__base64__url_encode(Array_u8 data);
+string encoding__base64__url_encode_str(string data);
+VV_LOC u64 encoding__base64__assemble64(u8 n1, u8 n2, u8 n3, u8 n4, u8 n5, u8 n6, u8 n7, u8 n8);
+VV_LOC u32 encoding__base64__assemble32(u8 n1, u8 n2, u8 n3, u8 n4);
+io__BufferedReader* io__new_buffered_reader(io__BufferedReaderConfig o);
+_result_int io__BufferedReader_read(io__BufferedReader* r, Array_u8* buf);
+void io__BufferedReader_free(io__BufferedReader* r);
+VV_LOC bool io__BufferedReader_fill_buffer(io__BufferedReader* r);
+VV_LOC bool io__BufferedReader_needs_fill(io__BufferedReader r);
+bool io__BufferedReader_end_of_stream(io__BufferedReader r);
+_result_string io__BufferedReader_read_line(io__BufferedReader* r, io__BufferedReadLineConfig config);
+_result_io__BufferedWriter_ptr io__new_buffered_writer(io__BufferedWriterConfig o);
+void io__BufferedWriter_reset(io__BufferedWriter* b);
+int io__BufferedWriter_buffered(io__BufferedWriter b);
+_result_void io__BufferedWriter_flush(io__BufferedWriter* b);
+int io__BufferedWriter_available(io__BufferedWriter b);
+_result_int io__BufferedWriter_write(io__BufferedWriter* b, Array_u8 src);
+_result_void io__cp(io__Reader* src, io__Writer* dst, io__CopySettings params);
+io__Writer io__new_multi_writer(Array_io__Writer writers);
+_result_int io__MultiWriter_write(io__MultiWriter* m, Array_u8 buf);
+VV_LOC string io__NotExpected_msg(io__NotExpected err);
+VV_LOC int io__NotExpected_code(io__NotExpected err);
+_result_Array_u8 io__read_all(io__ReadAllConfig config);
+_result_Array_u8 io__read_any(io__Reader* r);
+_result_int io__ReaderWriterImpl_read(io__ReaderWriterImpl* r, Array_u8* buf);
+_result_int io__ReaderWriterImpl_write(io__ReaderWriterImpl* r, Array_u8 buf);
+io__ReaderWriterImpl io__make_readerwriter(io__Reader r, io__Writer w);
+VV_LOC u32 net__http__chunked__ChunkScanner_read_chunk_size(net__http__chunked__ChunkScanner* s);
+VV_LOC u8 net__http__chunked__unhex(u8 c);
+VV_LOC void net__http__chunked__ChunkScanner_skip_crlf(net__http__chunked__ChunkScanner* s);
+VV_LOC _result_string net__http__chunked__ChunkScanner_read_chunk(net__http__chunked__ChunkScanner* s, u32 chunksize);
+_result_string net__http__chunked__decode(string text);
+f32 net__conv__htonf32(f32 host);
+f64 net__conv__htonf64(f64 host);
+u64 net__conv__hton64(u64 host);
+u32 net__conv__hton32(u32 host);
+u16 net__conv__hton16(u16 host);
+u64 net__conv__ntoh64(u64 net);
+u32 net__conv__ntoh32(u32 net);
+u16 net__conv__ntoh16(u16 net);
+_result_Array_u8 net__conv__u64tovarint(u64 n);
+_result_multi_return_u64_u8 net__conv__varinttou64(Array_u8 b);
+u64 net__conv__reverse_bytes_u64(u64 a);
+u32 net__conv__reverse_bytes_u32(u32 a);
+u16 net__conv__reverse_bytes_u16(u16 a);
+u64 sync__stdatomic__add_u64(u64* ptr, int delta);
+u64 sync__stdatomic__sub_u64(u64* ptr, int delta);
+i64 sync__stdatomic__add_i64(i64* ptr, int delta);
+i64 sync__stdatomic__sub_i64(i64* ptr, int delta);
+void sync__stdatomic__store_u64(u64* ptr, u64 val);
+u64 sync__stdatomic__load_u64(u64* ptr);
+void sync__stdatomic__store_i64(i64* ptr, i64 val);
+i64 sync__stdatomic__load_i64(i64* ptr);
 vphp__Context vphp__Context__static__new(zend_execute_data* ex, zval* ret);
 vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
 int vphp__Context_num_args(vphp__Context ctx);
@@ -4258,6 +6839,510 @@ os__FileMode os__Stat_get_mode(os__Stat st);
 bool os__is_dir(string path);
 bool os__is_link(string path);
 VV_LOC os__PathKind os__kind_of_existing_path(string path);
+VV_LOC u32 rand__seed__nr_next(u32 prev);
+Array_u32 rand__seed__time_seed_array(int count);
+u32 rand__seed__time_seed_32(void);
+u64 rand__seed__time_seed_64(void);
+VV_LOC _result_usize runtime__free_memory_impl(void);
+int runtime__nr_jobs(void);
+bool runtime__is_32bit(void);
+bool runtime__is_64bit(void);
+bool runtime__is_little_endian(void);
+bool runtime__is_big_endian(void);
+int runtime__nr_cpus(void);
+_result_usize runtime__total_memory(void);
+_result_usize runtime__free_memory(void);
+_result_u64 runtime__used_memory(void);
+void rand__wyrand__WyRandRNG_seed(rand__wyrand__WyRandRNG* rng, Array_u32 seed_data);
+u8 rand__wyrand__WyRandRNG_u8(rand__wyrand__WyRandRNG* rng);
+u16 rand__wyrand__WyRandRNG_u16(rand__wyrand__WyRandRNG* rng);
+u32 rand__wyrand__WyRandRNG_u32(rand__wyrand__WyRandRNG* rng);
+int rand__wyrand__WyRandRNG_block_size(rand__wyrand__WyRandRNG* rng);
+void rand__wyrand__WyRandRNG_free(rand__wyrand__WyRandRNG* rng);
+u64 rand__wyrand__WyRandRNG_u64(rand__wyrand__WyRandRNG* rng);
+VV_LOC f64 rand__msqrt(f64 a);
+VV_LOC f64 rand__mlog(f64 a);
+VV_LOC multi_return_f64_int rand__frexp(f64 x);
+VV_LOC f64 rand__scalbn(f64 x, int n_);
+VV_LOC f64 rand__f64_from_bits(u64 b);
+VV_LOC u64 rand__f64_bits(f64 f);
+string rand__uuid_v4(void);
+VV_LOC string rand__internal_uuid(u8 version, u64 rand_1, u64 rand_2);
+string rand__uuid_v7(void);
+rand__UUIDSession rand__new_uuid_v7_session(void);
+string rand__UUIDSession_next(rand__UUIDSession* u);
+VV_LOC string rand__internal_ulid_at_millisecond(rand__PRNG* rng, u64 unix_time_milli);
+VV_LOC string rand__internal_string_from_set(rand__PRNG* rng, string charset, int len);
+VV_LOC void rand__internal_fill_buffer_from_set(rand__PRNG* rng, string charset, Array_u8* buf);
+VV_LOC void rand__deinit(void);
+VV_LOC void rand__init(void);
+VV_LOC void rand__read_32(rand__PRNG* rng, Array_u8* buf);
+VV_LOC void rand__read_64(rand__PRNG* rng, Array_u8* buf);
+VV_LOC void rand__read_internal(rand__PRNG* rng, Array_u8* buf);
+rand__PRNG* rand__new_default(rand__config__PRNGConfigStruct config_);
+rand__PRNG* rand__get_current_rng(void);
+void rand__set_rng(rand__PRNG* rng);
+void rand__seed(Array_u32 seed);
+_result_Array_u8 rand__PRNG_bytes(rand__PRNG* rng, int bytes_needed);
+void rand__PRNG_read(rand__PRNG* rng, Array_u8* buf);
+_result_i32 rand__PRNG_i32n(rand__PRNG* rng, i32 max);
+_result_u32 rand__PRNG_u32n(rand__PRNG* rng, u32 max);
+_result_u64 rand__PRNG_u64n(rand__PRNG* rng, u64 max);
+_result_u32 rand__PRNG_u32_in_range(rand__PRNG* rng, u32 min, u32 max);
+_result_u64 rand__PRNG_u64_in_range(rand__PRNG* rng, u64 min, u64 max);
+i8 rand__PRNG_i8(rand__PRNG* rng);
+i16 rand__PRNG_i16(rand__PRNG* rng);
+i32 rand__PRNG_i32(rand__PRNG* rng);
+int rand__PRNG_int(rand__PRNG* rng);
+i64 rand__PRNG_i64(rand__PRNG* rng);
+int rand__PRNG_int31(rand__PRNG* rng);
+i64 rand__PRNG_int63(rand__PRNG* rng);
+_result_int rand__PRNG_intn(rand__PRNG* rng, int max);
+_result_i64 rand__PRNG_i64n(rand__PRNG* rng, i64 max);
+_result_int rand__PRNG_int_in_range(rand__PRNG* rng, int min, int max);
+_result_i32 rand__PRNG_i32_in_range(rand__PRNG* rng, i32 min, i32 max);
+_result_i64 rand__PRNG_i64_in_range(rand__PRNG* rng, i64 min, i64 max);
+f32 rand__PRNG_f32(rand__PRNG* rng);
+f32 rand__PRNG_f32cp(rand__PRNG* rng);
+f64 rand__PRNG_f64(rand__PRNG* rng);
+f64 rand__PRNG_f64cp(rand__PRNG* rng);
+_result_f32 rand__PRNG_f32n(rand__PRNG* rng, f32 max);
+_result_f64 rand__PRNG_f64n(rand__PRNG* rng, f64 max);
+_result_f32 rand__PRNG_f32_in_range(rand__PRNG* rng, f32 min, f32 max);
+_result_f64 rand__PRNG_f64_in_range(rand__PRNG* rng, f64 min, f64 max);
+string rand__PRNG_ulid(rand__PRNG* rng);
+string rand__PRNG_ulid_at_millisecond(rand__PRNG* rng, u64 unix_time_milli);
+string rand__PRNG_string_from_set(rand__PRNG* rng, string charset, int len);
+string rand__PRNG_string(rand__PRNG* rng, int len);
+string rand__PRNG_hex(rand__PRNG* rng, int len);
+string rand__PRNG_ascii(rand__PRNG* rng, int len);
+void rand__PRNG_fill_buffer_from_set(rand__PRNG* rng, string charset, Array_u8* buf);
+_result_bool rand__PRNG_bernoulli(rand__PRNG* rng, f64 p);
+_result_f64 rand__PRNG_normal(rand__PRNG* rng, rand__config__NormalConfigStruct conf);
+_result_multi_return_f64_f64 rand__PRNG_normal_pair(rand__PRNG* rng, rand__config__NormalConfigStruct conf);
+_result_int rand__PRNG_binomial(rand__PRNG* rng, int n, f64 p);
+f64 rand__PRNG_exponential(rand__PRNG* rng, f64 lambda);
+u8 rand__u8(void);
+u16 rand__u16(void);
+u32 rand__u32(void);
+u64 rand__u64(void);
+_result_u32 rand__u32n(u32 max);
+_result_u64 rand__u64n(u64 max);
+_result_u32 rand__u32_in_range(u32 min, u32 max);
+_result_u64 rand__u64_in_range(u64 min, u64 max);
+i8 rand__i8(void);
+i16 rand__i16(void);
+i32 rand__i32(void);
+int rand__int(void);
+_result_i32 rand__i32n(i32 max);
+_result_int rand__intn(int max);
+_result_int rand__int_in_range(int min, int max);
+_result_i32 rand__i32_in_range(i32 min, i32 max);
+int rand__int31(void);
+i64 rand__i64(void);
+_result_i64 rand__i64n(i64 max);
+_result_i64 rand__i64_in_range(i64 min, i64 max);
+i64 rand__int63(void);
+f32 rand__f32(void);
+f32 rand__f32cp(void);
+f64 rand__f64(void);
+f64 rand__f64cp(void);
+_result_f32 rand__f32n(f32 max);
+_result_f64 rand__f64n(f64 max);
+_result_f32 rand__f32_in_range(f32 min, f32 max);
+_result_f64 rand__f64_in_range(f64 min, f64 max);
+_result_Array_u8 rand__bytes(int bytes_needed);
+void rand__read(Array_u8* buf);
+string rand__ulid(void);
+string rand__ulid_at_millisecond(u64 unix_time_milli);
+string rand__string_from_set(string charset, int len);
+void rand__fill_buffer_from_set(string charset, Array_u8* buf);
+string rand__string(int len);
+string rand__hex(int len);
+string rand__ascii(int len);
+_result_bool rand__bernoulli(f64 p);
+_result_f64 rand__normal(rand__config__NormalConfigStruct config_);
+_result_multi_return_f64_f64 rand__normal_pair(rand__config__NormalConfigStruct config_);
+_result_int rand__binomial(int n, f64 p);
+f64 rand__exponential(f64 lambda);
+VV_LOC sync__Channel* sync__new_channel_st(u32 n, u32 st);
+void sync__Channel_close(sync__Channel* ch);
+int sync__Channel_len(sync__Channel* ch);
+bool sync__Channel_closed(sync__Channel* ch);
+void sync__Channel_push(sync__Channel* ch, voidptr src);
+ChanState sync__Channel_try_push(sync__Channel* ch, voidptr src);
+VV_LOC ChanState sync__Channel_try_push_priv(sync__Channel* ch, voidptr src, bool no_block);
+bool sync__Channel_pop(sync__Channel* ch, voidptr dest);
+ChanState sync__Channel_try_pop(sync__Channel* ch, voidptr dest);
+VV_LOC ChanState sync__Channel_try_pop_priv(sync__Channel* ch, voidptr dest, bool no_block);
+int sync__channel_select(Array_sync__Channel_ptr* channels, Array_sync__Direction dir, Array_voidptr* objrefs, time__Duration timeout);
+string sync__Mutex_str(sync__Mutex* m);
+string sync__RwMutex_str(sync__RwMutex* m);
+sync__Cond* sync__new_cond(sync__Mutex* m);
+void sync__Cond_wait(sync__Cond* c);
+void sync__Cond_signal(sync__Cond* c);
+void sync__Cond_broadcast(sync__Cond* c);
+sync__ManyTimes* sync__new_many_times(u64 times);
+void sync__ManyTimes_do(sync__ManyTimes* m, void (*f)());
+VV_LOC void sync__ManyTimes_do_slow(sync__ManyTimes* m, void (*f)());
+sync__Once* sync__new_once(void);
+void sync__Once_do(sync__Once* o, void (*f)());
+VV_LOC void sync__Once_do_slow(sync__Once* o, void (*f)());
+void sync__Once_do_with_param(sync__Once* o, void (*f)(voidptr ), voidptr param);
+VV_LOC void sync__Once_do_slow_with_param(sync__Once* o, void (*f)(voidptr ), voidptr param);
+VV_LOC void sync__cpanic(int res);
+VV_LOC void sync__should_be_zero(int res);
+sync__SpinLock* sync__new_spin_lock(void);
+void sync__SpinLock_lock(sync__SpinLock* s);
+bool sync__SpinLock_try_lock(sync__SpinLock* s);
+void sync__SpinLock_unlock(sync__SpinLock* s);
+void sync__SpinLock_destroy(sync__SpinLock* s);
+sync__Mutex* sync__new_mutex(void);
+void sync__Mutex_init(sync__Mutex* m);
+sync__RwMutex* sync__new_rwmutex(void);
+void sync__RwMutex_init(sync__RwMutex* m);
+void sync__Mutex_lock(sync__Mutex* m);
+bool sync__Mutex_try_lock(sync__Mutex* m);
+void sync__Mutex_unlock(sync__Mutex* m);
+void sync__Mutex_destroy(sync__Mutex* m);
+void sync__RwMutex_rlock(sync__RwMutex* m);
+void sync__RwMutex_lock(sync__RwMutex* m);
+bool sync__RwMutex_try_rlock(sync__RwMutex* m);
+bool sync__RwMutex_try_wlock(sync__RwMutex* m);
+void sync__RwMutex_destroy(sync__RwMutex* m);
+void sync__RwMutex_runlock(sync__RwMutex* m);
+void sync__RwMutex_unlock(sync__RwMutex* m);
+sync__Semaphore* sync__new_semaphore(void);
+sync__Semaphore* sync__new_semaphore_init(u32 n);
+void sync__Semaphore_init(sync__Semaphore* sem, u32 n);
+void sync__Semaphore_post(sync__Semaphore* sem);
+void sync__Semaphore_wait(sync__Semaphore* sem);
+bool sync__Semaphore_try_wait(sync__Semaphore* sem);
+bool sync__Semaphore_timed_wait(sync__Semaphore* sem, time__Duration timeout);
+void sync__Semaphore_destroy(sync__Semaphore* sem);
+sync__WaitGroup* sync__new_waitgroup(void);
+void sync__WaitGroup_init(sync__WaitGroup* wg);
+void sync__WaitGroup_add(sync__WaitGroup* wg, int delta);
+void sync__WaitGroup_done(sync__WaitGroup* wg);
+void sync__WaitGroup_wait(sync__WaitGroup* wg);
+void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)());
+VV_LOC void anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)());
+u64 sync__thread_id(void);
+_result_multi_return_os__File_string io__util__temp_file(io__util__TempFileOptions tfo);
+VV_LOC _result_string io__util__error_for_temporary_folder(string fn_name, string d);
+_result_string io__util__temp_dir(io__util__TempDirOptions tdo);
+VV_LOC string io__util__random_number(void);
+VV_LOC _result_multi_return_string_string io__util__prefix_and_suffix(string pattern);
+net__Addr net__new_ip6(u16 port, Array_fixed_u8_16 addr);
+net__Addr net__new_ip(u16 port, Array_fixed_u8_4 addr);
+VV_LOC _result_net__Addr net__temp_unix(void);
+net__AddrFamily net__Addr_family(net__Addr a);
+_result_u16 net__Addr_port(net__Addr a);
+string net__Ip_str(net__Ip a);
+string net__Ip6_str(net__Ip6 a);
+u32 net__Addr_len(net__Addr a);
+_result_Array_net__Addr net__resolve_addrs(string addr, net__AddrFamily family, net__SocketType typ);
+_result_Array_net__Addr net__resolve_addrs_fuzzy(string addr, net__SocketType typ);
+_result_Array_net__Addr net__resolve_ipaddrs(string addr, net__AddrFamily family, net__SocketType typ);
+string net__Addr_str(net__Addr a);
+net__Addr net__addr_from_socket_handle(int handle);
+_result_net__Addr net__peer_addr_from_socket_handle(int handle);
+int net__shutdown(int handle, net__ShutdownConfig config);
+_result_void net__close(int handle);
+VV_LOC _result_bool net__select(int handle, net__Select test, time__Duration timeout);
+VV_LOC _result_bool net__select_deadline(int handle, net__Select test, time__Time deadline);
+VV_LOC _result_void net__wait_for_common(int handle, time__Time deadline, time__Duration timeout, net__Select test);
+VV_LOC _result_void net__wait_for_write(int handle, time__Time deadline, time__Duration timeout);
+VV_LOC _result_void net__wait_for_read(int handle, time__Time deadline, time__Duration timeout);
+_result_int net__socket_error_message(int potential_code, string s);
+_result_int net__socket_error(int potential_code);
+_result_void net__wrap_error(int error_code);
+VV_LOC _result_int net__wrap_read_result(int result);
+int net__error_code(void);
+VV_LOC void net__init(void);
+_result_net__RawConn_ptr net__new_raw_socket(net__RawSocketConfig config);
+_result_int net__RawConn_write_ptr(net__RawConn* c, u8* b, int len);
+_result_int net__RawConn_write(net__RawConn* c, Array_u8 buf);
+_result_int net__RawConn_write_string(net__RawConn* c, string s);
+_result_int net__RawConn_write_to_ptr(net__RawConn* c, net__Addr addr, u8* b, int len);
+_result_int net__RawConn_write_to(net__RawConn* c, net__Addr addr, Array_u8 buf);
+_result_int net__RawConn_write_to_string(net__RawConn* c, net__Addr addr, string s);
+_result_multi_return_int_net__Addr net__RawConn_read_ptr(net__RawConn* c, u8* buf_ptr, int len);
+_result_multi_return_int_net__Addr net__RawConn_read(net__RawConn* c, Array_u8* buf);
+_result_time__Time net__RawConn_read_deadline(net__RawConn* c);
+void net__RawConn_set_read_deadline(net__RawConn* c, time__Time deadline);
+_result_time__Time net__RawConn_write_deadline(net__RawConn* c);
+void net__RawConn_set_write_deadline(net__RawConn* c, time__Time deadline);
+time__Duration net__RawConn_read_timeout(net__RawConn* c);
+void net__RawConn_set_read_timeout(net__RawConn* c, time__Duration t);
+time__Duration net__RawConn_write_timeout(net__RawConn* c);
+void net__RawConn_set_write_timeout(net__RawConn* c, time__Duration t);
+_result_void net__RawConn_wait_for_read(net__RawConn* c);
+_result_void net__RawConn_wait_for_write(net__RawConn* c);
+string net__RawConn_str(net__RawConn* c);
+_result_void net__RawConn_close(net__RawConn* c);
+void net__RawConn_set_remote(net__RawConn* c, net__Addr addr);
+net__Protocol net__RawConn_protocol(net__RawConn* c);
+_result_void net__RawSocket_set_option_bool(net__RawSocket* s, net__SocketOption opt, bool value);
+_result_void net__RawSocket_set_option_int(net__RawSocket* s, net__SocketOption opt, int value);
+_result_void net__RawSocket_set_ip_header_included(net__RawSocket* s, bool on);
+_result_void net__RawSocket_close(net__RawSocket* s);
+_result_bool net__RawSocket_select(net__RawSocket* s, net__Select test, time__Duration timeout);
+_option_net__Addr net__RawSocket_remote(net__RawSocket* s);
+_result_net__Addr net__RawConn_addr(net__RawConn* c);
+_result_net__Addr net__Socket_address(net__Socket* s);
+_result_void net__set_blocking(int handle, bool state);
+_result_net__Connection net__TCPDialer_dial(net__TCPDialer t, string address);
+net__Dialer net__default_tcp_dialer(void);
+_result_net__TcpConn_ptr net__dial_tcp(string oaddress);
+_result_net__TcpConn_ptr net__dial_tcp_with_bind(string saddr, string laddr);
+_result_void net__TcpConn_close(net__TcpConn* c);
+_result_int net__TcpConn_read_ptr(net__TcpConn _v_toheap_c, u8* buf_ptr, int len);
+_result_int net__TcpConn_read(net__TcpConn _v_toheap_c, Array_u8* buf);
+_result_time__Time net__TcpConn_read_deadline(net__TcpConn* c);
+_result_int net__TcpConn_write_ptr(net__TcpConn* c, u8* b, int len);
+_result_int net__TcpConn_write(net__TcpConn* c, Array_u8 bytes);
+_result_int net__TcpConn_write_string(net__TcpConn* c, string s);
+void net__TcpConn_set_read_deadline(net__TcpConn* c, time__Time deadline);
+_result_time__Time net__TcpConn_write_deadline(net__TcpConn* c);
+void net__TcpConn_set_write_deadline(net__TcpConn* c, time__Time deadline);
+time__Duration net__TcpConn_read_timeout(net__TcpConn* c);
+void net__TcpConn_set_read_timeout(net__TcpConn* c, time__Duration t);
+time__Duration net__TcpConn_write_timeout(net__TcpConn* c);
+void net__TcpConn_set_write_timeout(net__TcpConn* c, time__Duration t);
+_result_void net__TcpConn_wait_for_read(net__TcpConn _v_toheap_c);
+_result_void net__TcpConn_wait_for_write(net__TcpConn* c);
+_result_void net__TcpConn_set_sock(net__TcpConn* c);
+_result_net__Addr net__TcpConn_peer_addr(net__TcpConn* c);
+_result_string net__TcpConn_peer_ip(net__TcpConn* c);
+_result_net__Addr net__TcpConn_addr(net__TcpConn* c);
+string net__TcpConn_str(net__TcpConn _v_toheap_c);
+_result_net__TcpListener_ptr net__listen_tcp(net__AddrFamily family, string saddr, net__ListenOptions options);
+_result_net__TcpConn_ptr net__TcpListener_accept(net__TcpListener* l);
+_result_net__TcpConn_ptr net__TcpListener_accept_only(net__TcpListener* l);
+_result_time__Time net__TcpListener_accept_deadline(net__TcpListener* c);
+void net__TcpListener_set_accept_deadline(net__TcpListener* c, time__Time deadline);
+time__Duration net__TcpListener_accept_timeout(net__TcpListener* c);
+void net__TcpListener_set_accept_timeout(net__TcpListener* c, time__Duration t);
+_result_void net__TcpListener_wait_for_accept(net__TcpListener* c);
+_result_void net__TcpListener_close(net__TcpListener* c);
+_result_net__Addr net__TcpListener_addr(net__TcpListener* c);
+_result_net__TcpSocket net__new_tcp_socket(net__AddrFamily family);
+VV_LOC _result_net__TcpSocket net__tcp_socket_from_handle(int sockfd);
+net__TcpSocket net__tcp_socket_from_handle_raw(int sockfd);
+VV_LOC _result_void net__TcpSocket_set_option(net__TcpSocket* s, int level, int opt, int value);
+_result_void net__TcpSocket_set_option_bool(net__TcpSocket* s, net__SocketOption opt, bool value);
+_result_void net__TcpSocket_set_option_int(net__TcpSocket* s, net__SocketOption opt, int value);
+_result_void net__TcpSocket_set_dualstack(net__TcpSocket* s, bool on);
+VV_LOC _result_void net__TcpSocket_set_default_options(net__TcpSocket* s);
+_result_void net__TcpSocket_bind(net__TcpSocket* s, string addr);
+VV_LOC _result_void net__TcpSocket_close(net__TcpSocket* s);
+VV_LOC _result_void net__TcpSocket_connect(net__TcpSocket* s, net__Addr a);
+bool net__TcpConn_get_blocking(net__TcpConn* con);
+_result_void net__TcpConn_set_blocking(net__TcpConn* con, bool state);
+string net__TcpConn_read_line(net__TcpConn* con);
+string net__TcpConn_read_line_max(net__TcpConn* con, int max_line_len);
+_result_net__UdpConn_ptr net__dial_udp(string raddr);
+_result_int net__UdpConn_write_ptr(net__UdpConn* c, u8* b, int len);
+_result_int net__UdpConn_write(net__UdpConn* c, Array_u8 buf);
+_result_int net__UdpConn_write_string(net__UdpConn* c, string s);
+_result_int net__UdpConn_write_to_ptr(net__UdpConn* c, net__Addr addr, u8* b, int len);
+_result_int net__UdpConn_write_to(net__UdpConn* c, net__Addr addr, Array_u8 buf);
+_result_int net__UdpConn_write_to_string(net__UdpConn* c, net__Addr addr, string s);
+_result_multi_return_int_net__Addr net__UdpConn_read_ptr(net__UdpConn* c, u8* buf_ptr, int len);
+_result_multi_return_int_net__Addr net__UdpConn_read(net__UdpConn* c, Array_u8* buf);
+_result_time__Time net__UdpConn_read_deadline(net__UdpConn* c);
+void net__UdpConn_set_read_deadline(net__UdpConn* c, time__Time deadline);
+_result_time__Time net__UdpConn_write_deadline(net__UdpConn* c);
+void net__UdpConn_set_write_deadline(net__UdpConn* c, time__Time deadline);
+time__Duration net__UdpConn_read_timeout(net__UdpConn* c);
+void net__UdpConn_set_read_timeout(net__UdpConn* c, time__Duration t);
+time__Duration net__UdpConn_write_timeout(net__UdpConn* c);
+void net__UdpConn_set_write_timeout(net__UdpConn* c, time__Duration t);
+_result_void net__UdpConn_wait_for_read(net__UdpConn* c);
+_result_void net__UdpConn_wait_for_write(net__UdpConn* c);
+string net__UdpConn_str(net__UdpConn* c);
+_result_void net__UdpConn_close(net__UdpConn* c);
+_result_net__UdpConn_ptr net__listen_udp(string laddr);
+VV_LOC _result_net__UdpSocket_ptr net__new_udp_socket(net__Addr local_addr);
+VV_LOC _result_net__UdpSocket_ptr net__new_udp_socket_for_remote(net__Addr raddr);
+_result_void net__UdpSocket_set_option_bool(net__UdpSocket* s, net__SocketOption opt, bool value);
+_result_void net__UdpSocket_set_dualstack(net__UdpSocket* s, bool on);
+_result_void net__UdpSocket_close(net__UdpSocket* s);
+_result_bool net__UdpSocket_select(net__UdpSocket* s, net__Select test, time__Duration timeout);
+_option_net__Addr net__UdpSocket_remote(net__UdpSocket* s);
+_result_u16 net__validate_port(int port);
+_result_multi_return_string_u16 net__split_address(string addr);
+VV_LOC string C__SSL_str(SSL* s);
+VV_LOC string C__SSL_CTX_str(SSL_CTX* c);
+VV_LOC void net__openssl__init(void);
+VV_LOC _result_net__openssl__SSLError net__openssl__ssl_error(int ret, voidptr ssl);
+_result_net__openssl__SSLConn_ptr net__openssl__new_ssl_conn(net__openssl__SSLConnectConfig config);
+_result_void net__openssl__SSLConn_close(net__openssl__SSLConn* s);
+_result_void net__openssl__SSLConn_shutdown(net__openssl__SSLConn* s);
+VV_LOC _result_void net__openssl__SSLConn_init(net__openssl__SSLConn* s);
+_result_void net__openssl__SSLConn_connect(net__openssl__SSLConn* s, net__TcpConn* tcp_conn, string hostname);
+_result_void net__openssl__SSLConn_dial(net__openssl__SSLConn* s, string hostname, int port);
+VV_LOC _result_void net__openssl__SSLConn_complete_connect(net__openssl__SSLConn* s);
+_result_net__Addr net__openssl__SSLConn_addr(net__openssl__SSLConn* s);
+_result_net__Addr net__openssl__SSLConn_peer_addr(net__openssl__SSLConn* s);
+_result_int net__openssl__SSLConn_socket_read_into_ptr(net__openssl__SSLConn* s, u8* buf_ptr, int len);
+_result_int net__openssl__SSLConn_read(net__openssl__SSLConn* s, Array_u8* buffer);
+_result_int net__openssl__SSLConn_write_ptr(net__openssl__SSLConn* s, u8* bytes, int len);
+_result_int net__openssl__SSLConn_write(net__openssl__SSLConn* s, Array_u8 bytes);
+_result_int net__openssl__SSLConn_write_string(net__openssl__SSLConn* s, string str);
+VV_LOC _result_bool net__openssl__select(int handle, net__openssl__Select test, time__Duration timeout);
+VV_LOC _result_void net__openssl__wait_for(int handle, net__openssl__Select what, time__Duration timeout);
+VV_LOC _result_void net__openssl__SSLConn_wait_for_write(net__openssl__SSLConn* s, time__Duration timeout);
+VV_LOC _result_void net__openssl__SSLConn_wait_for_read(net__openssl__SSLConn* s, time__Duration timeout);
+net__Dialer net__ssl__new_ssl_dialer(net__ssl__SSLConnectConfig config);
+_result_net__Connection net__ssl__SSLDialer_dial(net__ssl__SSLDialer d, string address);
+_result_net__ssl__SSLConn_ptr net__ssl__new_ssl_conn(net__ssl__SSLConnectConfig config);
+_result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, string username, string password);
+_result_net__ssl__SSLConn_ptr net__socks__socks5_ssl_dial(string proxy_url, string host, string username, string password);
+net__Dialer net__socks__new_socks5_dialer(net__Dialer base, string proxy_address, string username, string password);
+_result_net__Connection net__socks__SOCKS5Dialer_dial(net__socks__SOCKS5Dialer sd, string address);
+VV_LOC _result_net__Connection net__socks__handshake(net__Connection* con, string host, string username, string password);
+VV_LOC string net__socks__reply(u8 code);
+VV_LOC _result_Array_u8 net__socks__parse_ipv4(string addr);
+VV_LOC _result_net__http__Response net__http__Request_ssl_do(net__http__Request* req, int port, net__http__Method method, string host_name, string path);
+VV_LOC _result_net__http__Response net__http__net_ssl_do(net__http__Request* req, int port, net__http__Method method, string host_name, string path);
+VV_LOC _result_int net__http__read_from_ssl_connection_cb(voidptr con, u8* buf, int bufsize);
+VV_LOC _result_net__http__Response net__http__Request_do_request(net__http__Request* req, string req_headers, net__ssl__SSLConn* ssl_conn);
+Array_net__http__Cookie_ptr net__http__read_cookies(net__http__Header h, string filter);
+string net__http__Cookie_str(net__http__Cookie* c);
+VV_LOC string net__http__sanitize(bool (*valid)(u8 ), string v);
+string net__http__sanitize_cookie_value(string v);
+VV_LOC string net__http__sanitize_cookie_path(string v);
+VV_LOC bool net__http__valid_cookie_value_byte(u8 b);
+VV_LOC bool net__http__valid_cookie_path_byte(u8 b);
+VV_LOC bool net__http__valid_cookie_domain(string v);
+bool net__http__is_cookie_domain_name(string _s);
+VV_LOC _result_string net__http__parse_cookie_value(string _raw, bool allow_double_quote);
+VV_LOC bool net__http__is_cookie_name_valid(string name);
+VV_LOC _result_net__http__Cookie net__http__parse_cookie(string line);
+_result_void net__http__download_file(string url, string out_file_path);
+_result_void net__http__download_file_with_cookies(string url, string out_file_path, Map_string_string cookies);
+_result_net__http__Response net__http__download_file_with_progress(string url, string path, net__http__DownloaderParams params);
+VV_LOC _result_void net__http__download_progres_cb(net__http__Request* request, Array_u8 chunk, u64 body_so_far, u64 expected_size, int status_code);
+_result_void net__http__SilentStreamingDownloader_on_start(net__http__SilentStreamingDownloader* d, net__http__Request* request, string path);
+_result_void net__http__SilentStreamingDownloader_on_chunk(net__http__SilentStreamingDownloader* d, net__http__Request* request, Array_u8 chunk, u64 already_received, u64 expected);
+_result_void net__http__SilentStreamingDownloader_on_finish(net__http__SilentStreamingDownloader* d, net__http__Request* request, net__http__Response* response);
+_result_void net__http__TerminalStreamingDownloader_on_start(net__http__TerminalStreamingDownloader* d, net__http__Request* request, string path);
+_result_void net__http__TerminalStreamingDownloader_on_chunk(net__http__TerminalStreamingDownloader* d, net__http__Request* request, Array_u8 chunk, u64 already_received, u64 expected);
+_result_void net__http__TerminalStreamingDownloader_on_finish(net__http__TerminalStreamingDownloader* d, net__http__Request* request, net__http__Response* response);
+string net__http__CommonHeader_str(net__http__CommonHeader h);
+void net__http__Header_free(net__http__Header* h);
+net__http__Header net__http__new_header(Array_net__http__HeaderConfig kvs);
+net__http__Header net__http__new_header_from_map(Map_net__http__CommonHeader_string kvs);
+_result_net__http__Header net__http__new_custom_header_from_map(Map_string_string kvs);
+void net__http__Header_add(net__http__Header* h, net__http__CommonHeader key, string value);
+_result_void net__http__Header_add_custom(net__http__Header* h, string key, string value);
+void net__http__Header_add_map(net__http__Header* h, Map_net__http__CommonHeader_string kvs);
+_result_void net__http__Header_add_custom_map(net__http__Header* h, Map_string_string kvs);
+void net__http__Header_set(net__http__Header* h, net__http__CommonHeader key, string value);
+_result_void net__http__Header_set_custom(net__http__Header* h, string key, string value);
+void net__http__Header_delete(net__http__Header* h, net__http__CommonHeader key);
+void net__http__Header_delete_custom(net__http__Header* h, string key);
+bool net__http__Header_contains(net__http__Header h, net__http__CommonHeader key);
+bool net__http__Header_contains_custom(net__http__Header h, string key, net__http__HeaderQueryConfig flags);
+_result_string net__http__Header_get(net__http__Header h, net__http__CommonHeader key);
+_result_string net__http__Header_get_custom(net__http__Header h, string key, net__http__HeaderQueryConfig flags);
+_result_string net__http__Header_starting_with(net__http__Header h, string key);
+Array_string net__http__Header_values(net__http__Header h, net__http__CommonHeader key);
+Array_string net__http__Header_custom_values(net__http__Header h, string key, net__http__HeaderQueryConfig flags);
+Array_string net__http__Header_keys(net__http__Header h);
+string net__http__Header_render(net__http__Header h, net__http__HeaderRenderConfig flags);
+void net__http__Header_render_into_sb(net__http__Header h, strings__Builder* sb, net__http__HeaderRenderConfig flags);
+net__http__Header net__http__Header_join(net__http__Header h, net__http__Header other);
+VV_LOC string net__http__canonicalize(string name);
+string net__http__HeaderKeyError_msg(net__http__HeaderKeyError err);
+int net__http__HeaderKeyError_code(net__http__HeaderKeyError err);
+VV_LOC _result_void net__http__is_valid(string header);
+VV_LOC bool net__http__is_token(u8 b);
+string net__http__Header_str(net__http__Header h);
+VV_LOC _result_net__http__Header net__http__parse_headers(string s);
+VV_LOC _result_multi_return_string_string net__http__parse_header(string s);
+VV_LOC _result_int net__http__parse_header_fast(string s);
+net__http__Request net__http__new_request(net__http__Method method, string url_, string data);
+_result_net__http__Response net__http__get(string url);
+_result_net__http__Response net__http__post(string url, string data);
+_result_net__http__Response net__http__post_json(string url, string data);
+_result_net__http__Response net__http__post_form(string url, Map_string_string data);
+_result_net__http__Response net__http__post_form_with_cookies(string url, Map_string_string data, Map_string_string cookies);
+_result_net__http__Response net__http__post_multipart_form(string url, net__http__PostMultipartFormConfig conf);
+_result_net__http__Response net__http__put(string url, string data);
+_result_net__http__Response net__http__patch(string url, string data);
+_result_net__http__Response net__http__head(string url);
+_result_net__http__Response net__http__delete(string url);
+_result_net__http__Request net__http__prepare(net__http__FetchConfig config);
+_result_net__http__Response net__http__fetch(net__http__FetchConfig config);
+string net__http__get_text(string url);
+string net__http__url_encode_form_data(Map_string_string data);
+VV_LOC _result_string net__http__build_url_from_fetch(net__http__FetchConfig config);
+_result_net__http__HttpProxy_ptr net__http__new_http_proxy(string raw_url);
+VV_LOC string net__http__HttpProxy_build_proxy_headers(net__http__HttpProxy* pr, string host);
+VV_LOC _result_net__http__Response net__http__HttpProxy_http_do(net__http__HttpProxy* pr, net__urllib__URL host, net__http__Method _method, string path, net__http__Request* req);
+VV_LOC _result_net__TcpConn_ptr net__http__HttpProxy_dial(net__http__HttpProxy* pr, string host);
+VV_LOC _result_net__ssl__SSLConn_ptr net__http__HttpProxy_ssl_dial(net__http__HttpProxy* pr, string host);
+string net__http__Method_str(net__http__Method m);
+net__http__Method net__http__method_from_str(string m);
+VV_LOC void net__http__Request_free(net__http__Request* req);
+void net__http__Request_add_header(net__http__Request* req, net__http__CommonHeader key, string val);
+_result_void net__http__Request_add_custom_header(net__http__Request* req, string key, string val);
+void net__http__Request_add_cookie(net__http__Request* req, net__http__Cookie c);
+_option_net__http__Cookie net__http__Request_cookie(net__http__Request* req, string name);
+_result_net__http__Response net__http__Request_do(net__http__Request* req);
+VV_LOC _result_net__http__Response net__http__Request_method_and_url_to_response(net__http__Request* req, net__http__Method method, net__urllib__URL url);
+VV_LOC string net__http__Request_build_request_headers(net__http__Request* req, net__http__Method method, string host_name, int port, string path);
+VV_LOC string net__http__Request_build_request_cookies_header(net__http__Request* req);
+VV_LOC _result_net__http__Response net__http__Request_http_do(net__http__Request* req, string host, net__http__Method method, string path);
+VV_LOC _result_void net__http__Request_receive_all_data_from_cb_in_builder(net__http__Request* req, strings__Builder* content, voidptr con, _result_int (*receive_chunk_cb)(voidptr con, u8* buf, int bufsize));
+VV_LOC _result_int net__http__read_from_tcp_connection_cb(voidptr con, u8* buf, int bufsize);
+VV_LOC _result_Array_u8 net__http__Request_read_all_from_client_connection(net__http__Request* req, net__TcpConn* r);
+string net__http__Request_referer(net__http__Request* req);
+_result_net__http__Request net__http__parse_request(io__BufferedReader* reader);
+_result_net__http__Request net__http__parse_request_head(io__BufferedReader* reader);
+_result_net__http__Request net__http__parse_request_head_str(string s);
+_result_net__http__Request net__http__parse_request_str(string s);
+VV_LOC _result_multi_return_net__http__Method_net__urllib__URL_net__http__Version net__http__parse_request_line(string line);
+Map_string_string net__http__parse_form(string body);
+string net__http__UnexpectedExtraAttributeError_msg(net__http__UnexpectedExtraAttributeError err);
+string net__http__MultiplePathAttributesError_msg(net__http__MultiplePathAttributesError err);
+VV_LOC multi_return_string_string net__http__multipart_form_body(Map_string_string form, Map_string_Array_net__http__FileData files);
+multi_return_Map_string_string_Map_string_Array_net__http__FileData net__http__parse_multipart_form(string body, string boundary);
+VV_LOC Map_string_string net__http__parse_disposition(string line);
+VV_LOC bool net__http__is_no_need_retry_error(int err_code);
+VV_LOC void net__http__Response_free(net__http__Response* resp);
+Array_u8 net__http__Response_bytes(net__http__Response resp);
+string net__http__Response_bytestr(net__http__Response resp);
+_result_net__http__Response net__http__parse_response(string resp);
+VV_LOC _result_multi_return_string_int_string net__http__parse_status_line(string line);
+Array_net__http__Cookie net__http__Response_cookies(net__http__Response r);
+net__http__Status net__http__Response_status(net__http__Response r);
+void net__http__Response_set_status(net__http__Response* r, net__http__Status s);
+net__http__Version net__http__Response_version(net__http__Response r);
+void net__http__Response_set_version(net__http__Response* r, net__http__Version v);
+net__http__Response net__http__new_response(net__http__ResponseConfig conf);
+VV_LOC _result_multi_return_int_int net__http__find_headers_range(string data);
+void net__http__Server_listen_and_serve(net__http__Server* s);
+void net__http__Server_stop(net__http__Server* s);
+void net__http__Server_close(net__http__Server* s);
+net__http__ServerStatus net__http__Server_status(net__http__Server* s);
+_result_int net__http__Server_wait_till_running(net__http__Server* s, net__http__WaitTillRunningParams params);
+VV_LOC __v_thread net__http__new_handler_worker(int wid, chan_net__TcpConn_ptr ch, net__http__Handler handler, int max_keep_alive_requests);
+VV_LOC void net__http__HandlerWorker_process_requests(net__http__HandlerWorker* w);
+VV_LOC void net__http__HandlerWorker_handle_conn(net__http__HandlerWorker* w, net__TcpConn* conn);
+VV_LOC net__http__Response net__http__DebugHandler_handle(net__http__DebugHandler d, net__http__Request req);
+net__http__Status net__http__status_from_int(int code);
+string net__http__Status_str(net__http__Status code);
+int net__http__Status_int(net__http__Status code);
+bool net__http__Status_is_valid(net__http__Status code);
+bool net__http__Status_is_error(net__http__Status code);
+bool net__http__Status_is_success(net__http__Status code);
+string net__http__Version_str(net__http__Version v);
+net__http__Version net__http__version_from_str(string v);
+multi_return_int_int net__http__Version_protos(net__http__Version v);
 voidptr main__routegroup_new_raw(void);
 VV_EXP voidptr RouteGroup_new_raw(void); // exported fn main.routegroup_new_raw
 void main__routegroup_free_raw(voidptr ptr);
@@ -4378,6 +7463,22 @@ void main__vphp_wrap_vslimrequest_all_inputs(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_all_inputs(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_all_inputs
 void main__vphp_wrap_vslimrequest_parsed_body(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_parsed_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_parsed_body
+void main__vphp_wrap_vslimrequest_body_format(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_body_format(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_body_format
+void main__vphp_wrap_vslimrequest_is_json_body(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_is_json_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_is_json_body
+void main__vphp_wrap_vslimrequest_is_form_body(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_is_form_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_is_form_body
+void main__vphp_wrap_vslimrequest_is_multipart_body(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_is_multipart_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_is_multipart_body
+void main__vphp_wrap_vslimrequest_json_body(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_json_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_json_body
+void main__vphp_wrap_vslimrequest_form_body(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_form_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_form_body
+void main__vphp_wrap_vslimrequest_multipart_body(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_multipart_body(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_multipart_body
+void main__vphp_wrap_vslimrequest_parse_error(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimRequest_parse_error(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_parse_error
 void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimrequest_query_all
 void main__vphp_wrap_vslimrequest_header(voidptr ptr, vphp__Context ctx);
@@ -4745,6 +7846,8 @@ Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_
 VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler);
 VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base);
 VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base);
+VV_LOC int main__vslim_max_body_bytes(void);
+VV_LOC _option_main__VSlimResponse main__validate_request_payload(main__VSlimApp* app, main__VSlimRequest* req, vphp__BorrowedZVal request_payload);
 VV_LOC vphp__ZVal main__dispatch_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload, int index);
 VV_LOC vphp__ZVal main__run_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload);
 VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_before_hooks(main__VSlimApp* app, string path);
@@ -4757,13 +7860,13 @@ VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* ap
 VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, main__VSlimResponse _v_toheap_terminal);
 VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal);
 VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__BorrowedZVal payload);
-struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx {
+struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx {
 	vphp__BorrowedZVal payload;
 	vphp__RequestOwnedZVal mw;
 };
 
-struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx;
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181(void);
+struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx;
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148(void);
 VV_LOC vphp__ZVal main__with_active_middleware_chain(main__MiddlewareChain* chain, vphp__ZVal (*invoke)());
 VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal _request_payload);
 VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__BorrowedZVal request_payload, main__VSlimResponse _v_toheap_initial);
@@ -4781,7 +7884,7 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40008(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40975(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
@@ -4812,6 +7915,14 @@ string main__VSlimRequest_input_or(main__VSlimRequest* r, string key, string def
 bool main__VSlimRequest_has_input(main__VSlimRequest* r, string key);
 Map_string_string main__VSlimRequest_all_inputs(main__VSlimRequest* r);
 Map_string_string main__VSlimRequest_parsed_body(main__VSlimRequest* r);
+string main__VSlimRequest_body_format(main__VSlimRequest* r);
+bool main__VSlimRequest_is_json_body(main__VSlimRequest* r);
+bool main__VSlimRequest_is_form_body(main__VSlimRequest* r);
+bool main__VSlimRequest_is_multipart_body(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_json_body(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_form_body(main__VSlimRequest* r);
+Map_string_string main__VSlimRequest_multipart_body(main__VSlimRequest* r);
+string main__VSlimRequest_parse_error(main__VSlimRequest* r);
 Map_string_string main__VSlimRequest_query_all(main__VSlimRequest* r);
 string main__VSlimRequest_header(main__VSlimRequest* r, string name);
 Map_string_string main__VSlimRequest_headers(main__VSlimRequest* r);
@@ -4854,6 +7965,7 @@ main__VSlimRequest* main__new_vslim_request_from_zval(vphp__ZVal envelope);
 VV_LOC main__VSlimRequest main__request_from_envelope(vphp__ZVal envelope);
 VV_LOC void main__apply_request_defaults(main__VSlimRequest* r);
 VV_LOC Map_string_string main__normalize_header_map(Map_string_string headers);
+VV_LOC string main__multipart_boundary_from_content_type(string content_type);
 main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type);
 string main__VSlimResponse_header(main__VSlimResponse* r, string name);
 Map_string_string main__VSlimResponse_headers(main__VSlimResponse* r);
@@ -4934,6 +8046,11 @@ static string time__FormatTime_str(time__FormatTime it);
 static string time__FormatDate_str(time__FormatDate it);
 string _option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it);
 string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it, int indent_count);
+static string net__TcpSocket_str(net__TcpSocket it);
+static string indent_net__TcpSocket_str(net__TcpSocket it, int indent_count);
+static string net__openssl__SSLError_str(net__openssl__SSLError it);
+static string net__Socket_str(net__Socket it);
+static string indent_net__Socket_str(net__Socket it, int indent_count);
 bool Array_rune_arr_eq(Array_rune a, Array_rune b);
 
 // V global/const non-precomputed definitions:
@@ -4947,6 +8064,7 @@ string _const_si_g64_code; // a string literal, inited later
 string _const_time__days_string; // a string literal, inited later
 string _const_time__months_string; // a string literal, inited later
 string _const_net__urllib__err_msg_escape; // a string literal, inited later
+string _const_encoding__base64__enc_table; // a string literal, inited later
 string _const_os__fslash_str; // a string literal, inited later
 string _const_os__dot_dot; // a string literal, inited later
 string _const_os__empty_str; // a string literal, inited later
@@ -4954,6 +8072,12 @@ string _const_os__dot_str; // a string literal, inited later
 string _const_os__path_separator; // a string literal, inited later
 string _const_os__path_delimiter; // a string literal, inited later
 string _const_os__path_devnull; // a string literal, inited later
+string _const_rand__ulid_encoding; // a string literal, inited later
+string _const_rand__english_letters; // a string literal, inited later
+string _const_rand__hex_chars; // a string literal, inited later
+string _const_rand__ascii_chars; // a string literal, inited later
+string _const_net__http__content_type_default; // a string literal, inited later
+string _const_net__http__headers_body_boundary; // a string literal, inited later
 builtin__closure__Closure g_closure; // global 6
 
 Array_fixed_u8_12 _const_builtin__closure__closure_thunk; // inited later
@@ -5188,6 +8312,8 @@ voidptr g_main_argv = ((void*)0); // global 6
 
 voidptr g_live_reload_info; // global 6
 
+Array_VCastTypeIndexName as_cast_type_indexes; // global 6
+
 IError _const_none__; // inited later
 const i8 _const_min_i8 = -128; // precomputed2
 const i8 _const_max_i8 = 127; // precomputed2
@@ -5300,6 +8426,13 @@ i64 _const_time__absolute_zero_year; // inited later
 Array_fixed_int_13 _const_time__days_before = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}; // fixed array const
 u64 _const_time__start_time; // inited later
 mach_timebase_info_data_t _const_time__time_base; // inited later
+Array_fixed_int_123 _const_encoding__base64__index = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 63, 62, 62, 63, 
+52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 0, 0, 0, 
+0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 
+15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 63, 
+0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51}; // fixed array const
 vphp__TaskRegistry* g_registry; // global 6
 
 int _const_os__o_rdonly; // inited later
@@ -5317,6 +8450,46 @@ int _const_os__fd_stdout; // inited later
 int _const_os__fd_stderr; // inited later
 u64 g_main_thread_id; // global 6
 
+const u64 _const_rand__wyrand__wyp0 = 3257665815644502181U; // precomputed2
+const u64 _const_rand__wyrand__wyp1 = 10067880064238660809U; // precomputed2
+const f64 _const_rand__sqrt2 = 1.4142135623730951; // precomputed2
+rand__PRNG* default_rng; // global 6
+
+f64 _const_rand__reciprocal_2_23rd; // inited later
+f64 _const_rand__reciprocal_2_52nd; // inited later
+u32 _const_rand__ieee754_mantissa_f32_mask; // inited later
+const u64 _const_rand__ieee754_mantissa_f64_mask = 4503599627370495U; // precomputed2
+const u32 _const_sync__spinloops = 750; // precomputed2
+const u32 _const_sync__spinloops_sem = 4000; // precomputed2
+Array_fixed_u8_16 _const_net__addr_ip6_any = {((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0))}; // fixed array const
+Array_fixed_u8_4 _const_net__addr_ip_any = {((u8)(0)), ((u8)(0)), ((u8)(0)), ((u8)(0))}; // fixed array const
+u32 _const_net__aoffset; // inited later
+time__Time _const_net__no_deadline; // inited later
+time__Duration _const_net__no_timeout; // inited later
+IError _const_net__err_new_socket_failed; // inited later
+IError _const_net__err_option_not_settable; // inited later
+IError _const_net__err_option_wrong_type; // inited later
+IError _const_net__err_port_out_of_range; // inited later
+IError _const_net__err_no_udp_remote; // inited later
+IError _const_net__err_connect_failed; // inited later
+IError _const_net__err_connect_timed_out; // inited later
+IError _const_net__err_timed_out; // inited later
+IError _const_net__err_connection_refused; // inited later
+int _const_net__msg_dontwait; // inited later
+int _const_net__error_ewouldblock; // inited later
+int _const_net__error_einprogress; // inited later
+int _const_net__error_eagain; // inited later
+int _const_net__error_eintr; // inited later
+Array_net__SocketOption _const_net__opts_bool; // inited later
+Array_net__SocketOption _const_net__opts_int; // inited later
+Array_net__SocketOption _const_net__opts_can_set; // inited later
+const u8 _const_net__socks__socks_version5 = 5; // precomputed2
+const u8 _const_net__socks__addr_type_ipv4 = 1; // precomputed2
+const u8 _const_net__socks__addr_type_fqdn = 3; // precomputed2
+const u8 _const_net__socks__no_auth = 0; // precomputed2
+const u8 _const_net__socks__auth_user_password = 2; // precomputed2
+net__http__Downloader* _const_net__http__zz; // inited later
+Map_string_net__http__CommonHeader _const_net__http__common_header_map; // inited later
 Array_main__MiddlewareChain_ptr active_middleware_chains; // global 6
 
 bool vslim_trace_mem_cache_inited; // global 6
@@ -5330,10 +8503,17 @@ u64 vslim_trace_mem_counter; // global 6
 u32 _const_builtin__closure__closure_size_1; // inited later
 time__Duration _const_time__microsecond; // inited later
 Array_string _const_os__args; // inited later
+time__Duration _const_net__infinite_timeout; // inited later
 int _const_builtin__closure__closure_size; // inited later
 time__Duration _const_time__millisecond; // inited later
 time__Duration _const_time__second; // inited later
 time__Duration _const_time__minute; // inited later
+time__Duration _const_net__raw_default_read_timeout; // inited later
+time__Duration _const_net__raw_default_write_timeout; // inited later
+i64 _const_net__tcp_default_read_timeout; // inited later
+i64 _const_net__tcp_default_write_timeout; // inited later
+time__Duration _const_net__udp_default_read_timeout; // inited later
+time__Duration _const_net__udp_default_write_timeout; // inited later
 time__Duration _const_time__hour; // inited later
 
 // V interface table:
@@ -5347,17 +8527,27 @@ static IError I_MessageError_to_Interface_IError(MessageError* x);
 const u32 _IError_MessageError_index = 3;
 static IError I_time__TimeParseError_to_Interface_IError(time__TimeParseError* x);
 const u32 _IError_time__TimeParseError_index = 4;
+static IError I_io__Eof_to_Interface_IError(io__Eof* x);
+const u32 _IError_io__Eof_index = 5;
+static IError I_io__NotExpected_to_Interface_IError(io__NotExpected* x);
+const u32 _IError_io__NotExpected_index = 6;
 static IError I_os__Eof_to_Interface_IError(os__Eof* x);
-const u32 _IError_os__Eof_index = 5;
+const u32 _IError_os__Eof_index = 7;
 static IError I_os__NotExpected_to_Interface_IError(os__NotExpected* x);
-const u32 _IError_os__NotExpected_index = 6;
+const u32 _IError_os__NotExpected_index = 8;
 static IError I_os__FileNotOpenedError_to_Interface_IError(os__FileNotOpenedError* x);
-const u32 _IError_os__FileNotOpenedError_index = 7;
+const u32 _IError_os__FileNotOpenedError_index = 9;
 static IError I_os__SizeOfTypeIs0Error_to_Interface_IError(os__SizeOfTypeIs0Error* x);
-const u32 _IError_os__SizeOfTypeIs0Error_index = 8;
+const u32 _IError_os__SizeOfTypeIs0Error_index = 10;
 static IError I_os__ExecutableNotFoundError_to_Interface_IError(os__ExecutableNotFoundError* x);
-const u32 _IError_os__ExecutableNotFoundError_index = 9;
-// ^^^ number of types for interface IError: 10
+const u32 _IError_os__ExecutableNotFoundError_index = 11;
+static IError I_net__http__HeaderKeyError_to_Interface_IError(net__http__HeaderKeyError* x);
+const u32 _IError_net__http__HeaderKeyError_index = 12;
+static IError I_net__http__UnexpectedExtraAttributeError_to_Interface_IError(net__http__UnexpectedExtraAttributeError* x);
+const u32 _IError_net__http__UnexpectedExtraAttributeError_index = 13;
+static IError I_net__http__MultiplePathAttributesError_to_Interface_IError(net__http__MultiplePathAttributesError* x);
+const u32 _IError_net__http__MultiplePathAttributesError_index = 14;
+// ^^^ number of types for interface IError: 15
 
 // Methods wrapper for interface "IError"
 static inline int builtin__None___code_Interface_IError_method_wrapper(None__* err) {
@@ -5383,6 +8573,18 @@ static inline int builtin__time__TimeParseError_code_Interface_IError_method_wra
 }
 static inline string time__TimeParseError_msg_Interface_IError_method_wrapper(time__TimeParseError* err) {
 	return time__TimeParseError_msg(*err);
+}
+static inline int builtin__io__Eof_code_Interface_IError_method_wrapper(io__Eof* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string builtin__io__Eof_msg_Interface_IError_method_wrapper(io__Eof* err) {
+	return builtin__Error_msg(err->Error);
+}
+static inline int io__NotExpected_code_Interface_IError_method_wrapper(io__NotExpected* err) {
+	return io__NotExpected_code(*err);
+}
+static inline string io__NotExpected_msg_Interface_IError_method_wrapper(io__NotExpected* err) {
+	return io__NotExpected_msg(*err);
 }
 static inline int builtin__os__Eof_code_Interface_IError_method_wrapper(os__Eof* err) {
 	return builtin__Error_code(err->Error);
@@ -5414,13 +8616,31 @@ static inline int builtin__os__ExecutableNotFoundError_code_Interface_IError_met
 static inline string os__ExecutableNotFoundError_msg_Interface_IError_method_wrapper(os__ExecutableNotFoundError* err) {
 	return os__ExecutableNotFoundError_msg(*err);
 }
+static inline int net__http__HeaderKeyError_code_Interface_IError_method_wrapper(net__http__HeaderKeyError* err) {
+	return net__http__HeaderKeyError_code(*err);
+}
+static inline string net__http__HeaderKeyError_msg_Interface_IError_method_wrapper(net__http__HeaderKeyError* err) {
+	return net__http__HeaderKeyError_msg(*err);
+}
+static inline int builtin__net__http__UnexpectedExtraAttributeError_code_Interface_IError_method_wrapper(net__http__UnexpectedExtraAttributeError* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string net__http__UnexpectedExtraAttributeError_msg_Interface_IError_method_wrapper(net__http__UnexpectedExtraAttributeError* err) {
+	return net__http__UnexpectedExtraAttributeError_msg(*err);
+}
+static inline int builtin__net__http__MultiplePathAttributesError_code_Interface_IError_method_wrapper(net__http__MultiplePathAttributesError* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string net__http__MultiplePathAttributesError_msg_Interface_IError_method_wrapper(net__http__MultiplePathAttributesError* err) {
+	return net__http__MultiplePathAttributesError_msg(*err);
+}
 
 struct _IError_interface_methods {
 	int (*_method_code)(void* _);
 	string (*_method_msg)(void* _);
 };
 
-struct _IError_interface_methods IError_name_table[10] = {
+struct _IError_interface_methods IError_name_table[15] = {
 	{
 		._method_code = (void*) builtin__None___code_Interface_IError_method_wrapper,
 		._method_msg = (void*) builtin__None___msg_Interface_IError_method_wrapper,
@@ -5442,6 +8662,14 @@ struct _IError_interface_methods IError_name_table[10] = {
 		._method_msg = (void*) time__TimeParseError_msg_Interface_IError_method_wrapper,
 	},
 	{
+		._method_code = (void*) builtin__io__Eof_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) builtin__io__Eof_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) io__NotExpected_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) io__NotExpected_msg_Interface_IError_method_wrapper,
+	},
+	{
 		._method_code = (void*) builtin__os__Eof_code_Interface_IError_method_wrapper,
 		._method_msg = (void*) builtin__os__Eof_msg_Interface_IError_method_wrapper,
 	},
@@ -5460,6 +8688,18 @@ struct _IError_interface_methods IError_name_table[10] = {
 	{
 		._method_code = (void*) builtin__os__ExecutableNotFoundError_code_Interface_IError_method_wrapper,
 		._method_msg = (void*) os__ExecutableNotFoundError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) net__http__HeaderKeyError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) net__http__HeaderKeyError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__net__http__UnexpectedExtraAttributeError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) net__http__UnexpectedExtraAttributeError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__net__http__MultiplePathAttributesError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) net__http__MultiplePathAttributesError_msg_Interface_IError_method_wrapper,
 	},
 };
 
@@ -5509,6 +8749,24 @@ return (IError) {
 	};
 }
 
+// Casting functions for converting "io__Eof" to interface "IError"
+
+static inline IError I_io__Eof_to_Interface_IError(io__Eof* x) {
+return (IError) {
+		._io__Eof = x,
+		._typ = _IError_io__Eof_index,
+	};
+}
+
+// Casting functions for converting "io__NotExpected" to interface "IError"
+
+static inline IError I_io__NotExpected_to_Interface_IError(io__NotExpected* x) {
+return (IError) {
+		._io__NotExpected = x,
+		._typ = _IError_io__NotExpected_index,
+	};
+}
+
 // Casting functions for converting "os__Eof" to interface "IError"
 
 static inline IError I_os__Eof_to_Interface_IError(os__Eof* x) {
@@ -5554,6 +8812,33 @@ return (IError) {
 	};
 }
 
+// Casting functions for converting "net__http__HeaderKeyError" to interface "IError"
+
+static inline IError I_net__http__HeaderKeyError_to_Interface_IError(net__http__HeaderKeyError* x) {
+return (IError) {
+		._net__http__HeaderKeyError = x,
+		._typ = _IError_net__http__HeaderKeyError_index,
+	};
+}
+
+// Casting functions for converting "net__http__UnexpectedExtraAttributeError" to interface "IError"
+
+static inline IError I_net__http__UnexpectedExtraAttributeError_to_Interface_IError(net__http__UnexpectedExtraAttributeError* x) {
+return (IError) {
+		._net__http__UnexpectedExtraAttributeError = x,
+		._typ = _IError_net__http__UnexpectedExtraAttributeError_index,
+	};
+}
+
+// Casting functions for converting "net__http__MultiplePathAttributesError" to interface "IError"
+
+static inline IError I_net__http__MultiplePathAttributesError_to_Interface_IError(net__http__MultiplePathAttributesError* x) {
+return (IError) {
+		._net__http__MultiplePathAttributesError = x,
+		._typ = _IError_net__http__MultiplePathAttributesError_index,
+	};
+}
+
 // ^^^ number of types for interface vphp__ITask: 0
 
 // Methods wrapper for interface "vphp__ITask"
@@ -5564,6 +8849,630 @@ struct _vphp__ITask_interface_methods {
 
 struct _vphp__ITask_interface_methods vphp__ITask_name_table[1];
 
+
+static net__http__Downloader I_voidptr_to_Interface_net__http__Downloader(voidptr* x);
+const u32 _net__http__Downloader_voidptr_index = 0;
+static net__http__Downloader I_net__http__TerminalStreamingDownloader_to_Interface_net__http__Downloader(net__http__TerminalStreamingDownloader* x);
+const u32 _net__http__Downloader_net__http__TerminalStreamingDownloader_index = 1;
+static net__http__Downloader I_net__http__SilentStreamingDownloader_to_Interface_net__http__Downloader(net__http__SilentStreamingDownloader* x);
+const u32 _net__http__Downloader_net__http__SilentStreamingDownloader_index = 2;
+// ^^^ number of types for interface net__http__Downloader: 3
+
+// Methods wrapper for interface "net__http__Downloader"
+
+struct _net__http__Downloader_interface_methods {
+	_result_void (*_method_on_chunk)(void* _, net__http__Request* request, Array_u8 chunk, u64 already_received, u64 expected);
+	_result_void (*_method_on_finish)(void* _, net__http__Request* request, net__http__Response* response);
+	_result_void (*_method_on_start)(void* _, net__http__Request* request, string path);
+};
+
+struct _net__http__Downloader_interface_methods net__http__Downloader_name_table[3] = {
+	{
+		._method_on_chunk = (void*) 0,
+		._method_on_finish = (void*) 0,
+		._method_on_start = (void*) 0,
+	},
+	{
+		._method_on_chunk = (void*) net__http__TerminalStreamingDownloader_on_chunk,
+		._method_on_finish = (void*) net__http__TerminalStreamingDownloader_on_finish,
+		._method_on_start = (void*) net__http__TerminalStreamingDownloader_on_start,
+	},
+	{
+		._method_on_chunk = (void*) net__http__SilentStreamingDownloader_on_chunk,
+		._method_on_finish = (void*) net__http__SilentStreamingDownloader_on_finish,
+		._method_on_start = (void*) net__http__SilentStreamingDownloader_on_start,
+	},
+};
+
+
+// Casting functions for converting "voidptr" to interface "net__http__Downloader"
+
+static inline net__http__Downloader I_voidptr_to_Interface_net__http__Downloader(voidptr* x) {
+return (net__http__Downloader) {
+		._voidptr = x,
+		._typ = _net__http__Downloader_voidptr_index,
+	};
+}
+
+// Casting functions for converting "net__http__TerminalStreamingDownloader" to interface "net__http__Downloader"
+
+static inline net__http__Downloader I_net__http__TerminalStreamingDownloader_to_Interface_net__http__Downloader(net__http__TerminalStreamingDownloader* x) {
+return (net__http__Downloader) {
+		._net__http__TerminalStreamingDownloader = x,
+		._typ = _net__http__Downloader_net__http__TerminalStreamingDownloader_index,
+	};
+}
+
+// Casting functions for converting "net__http__SilentStreamingDownloader" to interface "net__http__Downloader"
+
+static inline net__http__Downloader I_net__http__SilentStreamingDownloader_to_Interface_net__http__Downloader(net__http__SilentStreamingDownloader* x) {
+return (net__http__Downloader) {
+		._net__http__SilentStreamingDownloader = x,
+		._typ = _net__http__Downloader_net__http__SilentStreamingDownloader_index,
+	};
+}
+
+static net__http__Handler I_net__http__DebugHandler_to_Interface_net__http__Handler(net__http__DebugHandler* x);
+const u32 _net__http__Handler_net__http__DebugHandler_index = 0;
+static net__http__Handler I_voidptr_to_Interface_net__http__Handler(voidptr* x);
+const u32 _net__http__Handler_voidptr_index = 1;
+// ^^^ number of types for interface net__http__Handler: 2
+
+// Methods wrapper for interface "net__http__Handler"
+static inline net__http__Response net__http__DebugHandler_handle_Interface_net__http__Handler_method_wrapper(net__http__DebugHandler* d, net__http__Request req) {
+	return net__http__DebugHandler_handle(*d, req);
+}
+
+struct _net__http__Handler_interface_methods {
+	net__http__Response (*_method_handle)(void* _, net__http__Request );
+};
+
+struct _net__http__Handler_interface_methods net__http__Handler_name_table[2] = {
+	{
+		._method_handle = (void*) net__http__DebugHandler_handle_Interface_net__http__Handler_method_wrapper,
+	},
+	{
+		._method_handle = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "net__http__DebugHandler" to interface "net__http__Handler"
+
+static inline net__http__Handler I_net__http__DebugHandler_to_Interface_net__http__Handler(net__http__DebugHandler* x) {
+return (net__http__Handler) {
+		._net__http__DebugHandler = x,
+		._typ = _net__http__Handler_net__http__DebugHandler_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "net__http__Handler"
+
+static inline net__http__Handler I_voidptr_to_Interface_net__http__Handler(voidptr* x) {
+return (net__http__Handler) {
+		._voidptr = x,
+		._typ = _net__http__Handler_voidptr_index,
+	};
+}
+
+static net__Dialer I_net__TCPDialer_to_Interface_net__Dialer(net__TCPDialer* x);
+const u32 _net__Dialer_net__TCPDialer_index = 0;
+static net__Dialer I_voidptr_to_Interface_net__Dialer(voidptr* x);
+const u32 _net__Dialer_voidptr_index = 1;
+static net__Dialer I_net__ssl__SSLDialer_to_Interface_net__Dialer(net__ssl__SSLDialer* x);
+const u32 _net__Dialer_net__ssl__SSLDialer_index = 2;
+static net__Dialer I_net__socks__SOCKS5Dialer_to_Interface_net__Dialer(net__socks__SOCKS5Dialer* x);
+const u32 _net__Dialer_net__socks__SOCKS5Dialer_index = 3;
+// ^^^ number of types for interface net__Dialer: 4
+
+// Methods wrapper for interface "net__Dialer"
+static inline _result_net__Connection net__TCPDialer_dial_Interface_net__Dialer_method_wrapper(net__TCPDialer* t, string address) {
+	return net__TCPDialer_dial(*t, address);
+}
+static inline _result_net__Connection net__ssl__SSLDialer_dial_Interface_net__Dialer_method_wrapper(net__ssl__SSLDialer* d, string address) {
+	return net__ssl__SSLDialer_dial(*d, address);
+}
+static inline _result_net__Connection net__socks__SOCKS5Dialer_dial_Interface_net__Dialer_method_wrapper(net__socks__SOCKS5Dialer* sd, string address) {
+	return net__socks__SOCKS5Dialer_dial(*sd, address);
+}
+
+struct _net__Dialer_interface_methods {
+	_result_net__Connection (*_method_dial)(void* _, string address);
+};
+
+struct _net__Dialer_interface_methods net__Dialer_name_table[4] = {
+	{
+		._method_dial = (void*) net__TCPDialer_dial_Interface_net__Dialer_method_wrapper,
+	},
+	{
+		._method_dial = (void*) 0,
+	},
+	{
+		._method_dial = (void*) net__ssl__SSLDialer_dial_Interface_net__Dialer_method_wrapper,
+	},
+	{
+		._method_dial = (void*) net__socks__SOCKS5Dialer_dial_Interface_net__Dialer_method_wrapper,
+	},
+};
+
+
+// Casting functions for converting "net__TCPDialer" to interface "net__Dialer"
+
+static inline net__Dialer I_net__TCPDialer_to_Interface_net__Dialer(net__TCPDialer* x) {
+return (net__Dialer) {
+		._net__TCPDialer = x,
+		._typ = _net__Dialer_net__TCPDialer_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "net__Dialer"
+
+static inline net__Dialer I_voidptr_to_Interface_net__Dialer(voidptr* x) {
+return (net__Dialer) {
+		._voidptr = x,
+		._typ = _net__Dialer_voidptr_index,
+	};
+}
+
+// Casting functions for converting "net__ssl__SSLDialer" to interface "net__Dialer"
+
+static inline net__Dialer I_net__ssl__SSLDialer_to_Interface_net__Dialer(net__ssl__SSLDialer* x) {
+return (net__Dialer) {
+		._net__ssl__SSLDialer = x,
+		._typ = _net__Dialer_net__ssl__SSLDialer_index,
+	};
+}
+
+// Casting functions for converting "net__socks__SOCKS5Dialer" to interface "net__Dialer"
+
+static inline net__Dialer I_net__socks__SOCKS5Dialer_to_Interface_net__Dialer(net__socks__SOCKS5Dialer* x) {
+return (net__Dialer) {
+		._net__socks__SOCKS5Dialer = x,
+		._typ = _net__Dialer_net__socks__SOCKS5Dialer_index,
+	};
+}
+
+static net__Connection I_net__TcpConn_to_Interface_net__Connection(net__TcpConn* x);
+const u32 _net__Connection_net__TcpConn_index = 0;
+static net__Connection I_voidptr_to_Interface_net__Connection(voidptr* x);
+const u32 _net__Connection_voidptr_index = 1;
+static net__Connection I_net__ssl__SSLConn_to_Interface_net__Connection(net__ssl__SSLConn* x);
+const u32 _net__Connection_net__ssl__SSLConn_index = 2;
+static net__Connection I_net__openssl__SSLConn_to_Interface_net__Connection(net__openssl__SSLConn* x);
+const u32 _net__Connection_net__openssl__SSLConn_index = 3;
+// ^^^ number of types for interface net__Connection: 4
+
+// Methods wrapper for interface "net__Connection"
+static inline _result_int net__TcpConn_read_Interface_net__Connection_method_wrapper(net__TcpConn* c, Array_u8* buf) {
+	return net__TcpConn_read(*c, buf);
+}
+
+struct _net__Connection_interface_methods {
+	_result_net__Addr (*_method_addr)(void* _);
+	_result_void (*_method_close)(void* _);
+	_result_net__Addr (*_method_peer_addr)(void* _);
+	_result_int (*_method_read)(void* _, Array_u8* );
+	_result_int (*_method_write)(void* _, Array_u8 );
+};
+
+struct _net__Connection_interface_methods net__Connection_name_table[4] = {
+	{
+		._method_addr = (void*) net__TcpConn_addr,
+		._method_close = (void*) net__TcpConn_close,
+		._method_peer_addr = (void*) net__TcpConn_peer_addr,
+		._method_read = (void*) net__TcpConn_read_Interface_net__Connection_method_wrapper,
+		._method_write = (void*) net__TcpConn_write,
+	},
+	{
+		._method_addr = (void*) 0,
+		._method_close = (void*) 0,
+		._method_peer_addr = (void*) 0,
+		._method_read = (void*) 0,
+		._method_write = (void*) 0,
+	},
+	{
+		._method_addr = (void*) net__openssl__SSLConn_addr,
+		._method_close = (void*) net__openssl__SSLConn_close,
+		._method_peer_addr = (void*) net__openssl__SSLConn_peer_addr,
+		._method_read = (void*) net__openssl__SSLConn_read,
+		._method_write = (void*) net__openssl__SSLConn_write,
+	},
+	{
+		._method_addr = (void*) net__openssl__SSLConn_addr,
+		._method_close = (void*) net__openssl__SSLConn_close,
+		._method_peer_addr = (void*) net__openssl__SSLConn_peer_addr,
+		._method_read = (void*) net__openssl__SSLConn_read,
+		._method_write = (void*) net__openssl__SSLConn_write,
+	},
+};
+
+
+// Casting functions for converting "net__TcpConn" to interface "net__Connection"
+
+static inline net__Connection I_net__TcpConn_to_Interface_net__Connection(net__TcpConn* x) {
+return (net__Connection) {
+		._net__TcpConn = x,
+		._typ = _net__Connection_net__TcpConn_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "net__Connection"
+
+static inline net__Connection I_voidptr_to_Interface_net__Connection(voidptr* x) {
+return (net__Connection) {
+		._voidptr = x,
+		._typ = _net__Connection_voidptr_index,
+	};
+}
+
+// Casting functions for converting "net__ssl__SSLConn" to interface "net__Connection"
+
+static inline net__Connection I_net__ssl__SSLConn_to_Interface_net__Connection(net__ssl__SSLConn* x) {
+return (net__Connection) {
+		._net__ssl__SSLConn = x,
+		._typ = _net__Connection_net__ssl__SSLConn_index,
+	};
+}
+
+// Casting functions for converting "net__openssl__SSLConn" to interface "net__Connection"
+
+static inline net__Connection I_net__openssl__SSLConn_to_Interface_net__Connection(net__openssl__SSLConn* x) {
+return (net__Connection) {
+		._net__openssl__SSLConn = x,
+		._typ = _net__Connection_net__openssl__SSLConn_index,
+	};
+}
+
+static io__Reader I_net__TcpConn_to_Interface_io__Reader(net__TcpConn* x);
+const u32 _io__Reader_net__TcpConn_index = 0;
+static io__Reader I_voidptr_to_Interface_io__Reader(voidptr* x);
+const u32 _io__Reader_voidptr_index = 1;
+static io__Reader I_os__File_to_Interface_io__Reader(os__File* x);
+const u32 _io__Reader_os__File_index = 2;
+static io__Reader I_os__Pipe_to_Interface_io__Reader(os__Pipe* x);
+const u32 _io__Reader_os__Pipe_index = 3;
+static io__Reader I_net__ssl__SSLConn_to_Interface_io__Reader(net__ssl__SSLConn* x);
+const u32 _io__Reader_net__ssl__SSLConn_index = 4;
+static io__Reader I_io__BufferedReader_to_Interface_io__Reader(io__BufferedReader* x);
+const u32 _io__Reader_io__BufferedReader_index = 5;
+static io__Reader I_net__openssl__SSLConn_to_Interface_io__Reader(net__openssl__SSLConn* x);
+const u32 _io__Reader_net__openssl__SSLConn_index = 6;
+static io__Reader I_io__ReaderWriterImpl_to_Interface_io__Reader(io__ReaderWriterImpl* x);
+const u32 _io__Reader_io__ReaderWriterImpl_index = 7;
+// ^^^ number of types for interface io__Reader: 8
+
+// Methods wrapper for interface "io__Reader"
+static inline _result_int net__TcpConn_read_Interface_io__Reader_method_wrapper(net__TcpConn* c, Array_u8* buf) {
+	return net__TcpConn_read(*c, buf);
+}
+
+struct _io__Reader_interface_methods {
+	_result_int (*_method_read)(void* _, Array_u8* buf);
+};
+
+struct _io__Reader_interface_methods io__Reader_name_table[8] = {
+	{
+		._method_read = (void*) net__TcpConn_read_Interface_io__Reader_method_wrapper,
+	},
+	{
+		._method_read = (void*) 0,
+	},
+	{
+		._method_read = (void*) os__File_read,
+	},
+	{
+		._method_read = (void*) os__Pipe_read,
+	},
+	{
+		._method_read = (void*) net__openssl__SSLConn_read,
+	},
+	{
+		._method_read = (void*) io__BufferedReader_read,
+	},
+	{
+		._method_read = (void*) net__openssl__SSLConn_read,
+	},
+	{
+		._method_read = (void*) io__ReaderWriterImpl_read,
+	},
+};
+
+
+// Casting functions for converting "net__TcpConn" to interface "io__Reader"
+
+static inline io__Reader I_net__TcpConn_to_Interface_io__Reader(net__TcpConn* x) {
+return (io__Reader) {
+		._net__TcpConn = x,
+		._typ = _io__Reader_net__TcpConn_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "io__Reader"
+
+static inline io__Reader I_voidptr_to_Interface_io__Reader(voidptr* x) {
+return (io__Reader) {
+		._voidptr = x,
+		._typ = _io__Reader_voidptr_index,
+	};
+}
+
+// Casting functions for converting "os__File" to interface "io__Reader"
+
+static inline io__Reader I_os__File_to_Interface_io__Reader(os__File* x) {
+return (io__Reader) {
+		._os__File = x,
+		._typ = _io__Reader_os__File_index,
+	};
+}
+
+// Casting functions for converting "os__Pipe" to interface "io__Reader"
+
+static inline io__Reader I_os__Pipe_to_Interface_io__Reader(os__Pipe* x) {
+return (io__Reader) {
+		._os__Pipe = x,
+		._typ = _io__Reader_os__Pipe_index,
+	};
+}
+
+// Casting functions for converting "net__ssl__SSLConn" to interface "io__Reader"
+
+static inline io__Reader I_net__ssl__SSLConn_to_Interface_io__Reader(net__ssl__SSLConn* x) {
+return (io__Reader) {
+		._net__ssl__SSLConn = x,
+		._typ = _io__Reader_net__ssl__SSLConn_index,
+	};
+}
+
+// Casting functions for converting "io__BufferedReader" to interface "io__Reader"
+
+static inline io__Reader I_io__BufferedReader_to_Interface_io__Reader(io__BufferedReader* x) {
+return (io__Reader) {
+		._io__BufferedReader = x,
+		._typ = _io__Reader_io__BufferedReader_index,
+	};
+}
+
+// Casting functions for converting "net__openssl__SSLConn" to interface "io__Reader"
+
+static inline io__Reader I_net__openssl__SSLConn_to_Interface_io__Reader(net__openssl__SSLConn* x) {
+return (io__Reader) {
+		._net__openssl__SSLConn = x,
+		._typ = _io__Reader_net__openssl__SSLConn_index,
+	};
+}
+
+// Casting functions for converting "io__ReaderWriterImpl" to interface "io__Reader"
+
+static inline io__Reader I_io__ReaderWriterImpl_to_Interface_io__Reader(io__ReaderWriterImpl* x) {
+return (io__Reader) {
+		._io__ReaderWriterImpl = x,
+		._typ = _io__Reader_io__ReaderWriterImpl_index,
+	};
+}
+
+static io__Writer I_io__MultiWriter_to_Interface_io__Writer(io__MultiWriter* x);
+const u32 _io__Writer_io__MultiWriter_index = 0;
+static io__Writer I_voidptr_to_Interface_io__Writer(voidptr* x);
+const u32 _io__Writer_voidptr_index = 1;
+static io__Writer I_os__File_to_Interface_io__Writer(os__File* x);
+const u32 _io__Writer_os__File_index = 2;
+static io__Writer I_os__Pipe_to_Interface_io__Writer(os__Pipe* x);
+const u32 _io__Writer_os__Pipe_index = 3;
+static io__Writer I_net__ssl__SSLConn_to_Interface_io__Writer(net__ssl__SSLConn* x);
+const u32 _io__Writer_net__ssl__SSLConn_index = 4;
+static io__Writer I_net__TcpConn_to_Interface_io__Writer(net__TcpConn* x);
+const u32 _io__Writer_net__TcpConn_index = 5;
+static io__Writer I_net__openssl__SSLConn_to_Interface_io__Writer(net__openssl__SSLConn* x);
+const u32 _io__Writer_net__openssl__SSLConn_index = 6;
+static io__Writer I_net__RawConn_to_Interface_io__Writer(net__RawConn* x);
+const u32 _io__Writer_net__RawConn_index = 7;
+static io__Writer I_net__UdpConn_to_Interface_io__Writer(net__UdpConn* x);
+const u32 _io__Writer_net__UdpConn_index = 8;
+static io__Writer I_io__BufferedWriter_to_Interface_io__Writer(io__BufferedWriter* x);
+const u32 _io__Writer_io__BufferedWriter_index = 9;
+static io__Writer I_io__ReaderWriterImpl_to_Interface_io__Writer(io__ReaderWriterImpl* x);
+const u32 _io__Writer_io__ReaderWriterImpl_index = 10;
+// ^^^ number of types for interface io__Writer: 11
+
+// Methods wrapper for interface "io__Writer"
+
+struct _io__Writer_interface_methods {
+	_result_int (*_method_write)(void* _, Array_u8 buf);
+};
+
+struct _io__Writer_interface_methods io__Writer_name_table[11] = {
+	{
+		._method_write = (void*) io__MultiWriter_write,
+	},
+	{
+		._method_write = (void*) 0,
+	},
+	{
+		._method_write = (void*) os__File_write,
+	},
+	{
+		._method_write = (void*) os__Pipe_write,
+	},
+	{
+		._method_write = (void*) net__openssl__SSLConn_write,
+	},
+	{
+		._method_write = (void*) net__TcpConn_write,
+	},
+	{
+		._method_write = (void*) net__openssl__SSLConn_write,
+	},
+	{
+		._method_write = (void*) net__RawConn_write,
+	},
+	{
+		._method_write = (void*) net__UdpConn_write,
+	},
+	{
+		._method_write = (void*) io__BufferedWriter_write,
+	},
+	{
+		._method_write = (void*) io__ReaderWriterImpl_write,
+	},
+};
+
+
+// Casting functions for converting "io__MultiWriter" to interface "io__Writer"
+
+static inline io__Writer I_io__MultiWriter_to_Interface_io__Writer(io__MultiWriter* x) {
+return (io__Writer) {
+		._io__MultiWriter = x,
+		._typ = _io__Writer_io__MultiWriter_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "io__Writer"
+
+static inline io__Writer I_voidptr_to_Interface_io__Writer(voidptr* x) {
+return (io__Writer) {
+		._voidptr = x,
+		._typ = _io__Writer_voidptr_index,
+	};
+}
+
+// Casting functions for converting "os__File" to interface "io__Writer"
+
+static inline io__Writer I_os__File_to_Interface_io__Writer(os__File* x) {
+return (io__Writer) {
+		._os__File = x,
+		._typ = _io__Writer_os__File_index,
+	};
+}
+
+// Casting functions for converting "os__Pipe" to interface "io__Writer"
+
+static inline io__Writer I_os__Pipe_to_Interface_io__Writer(os__Pipe* x) {
+return (io__Writer) {
+		._os__Pipe = x,
+		._typ = _io__Writer_os__Pipe_index,
+	};
+}
+
+// Casting functions for converting "net__ssl__SSLConn" to interface "io__Writer"
+
+static inline io__Writer I_net__ssl__SSLConn_to_Interface_io__Writer(net__ssl__SSLConn* x) {
+return (io__Writer) {
+		._net__ssl__SSLConn = x,
+		._typ = _io__Writer_net__ssl__SSLConn_index,
+	};
+}
+
+// Casting functions for converting "net__TcpConn" to interface "io__Writer"
+
+static inline io__Writer I_net__TcpConn_to_Interface_io__Writer(net__TcpConn* x) {
+return (io__Writer) {
+		._net__TcpConn = x,
+		._typ = _io__Writer_net__TcpConn_index,
+	};
+}
+
+// Casting functions for converting "net__openssl__SSLConn" to interface "io__Writer"
+
+static inline io__Writer I_net__openssl__SSLConn_to_Interface_io__Writer(net__openssl__SSLConn* x) {
+return (io__Writer) {
+		._net__openssl__SSLConn = x,
+		._typ = _io__Writer_net__openssl__SSLConn_index,
+	};
+}
+
+// Casting functions for converting "net__RawConn" to interface "io__Writer"
+
+static inline io__Writer I_net__RawConn_to_Interface_io__Writer(net__RawConn* x) {
+return (io__Writer) {
+		._net__RawConn = x,
+		._typ = _io__Writer_net__RawConn_index,
+	};
+}
+
+// Casting functions for converting "net__UdpConn" to interface "io__Writer"
+
+static inline io__Writer I_net__UdpConn_to_Interface_io__Writer(net__UdpConn* x) {
+return (io__Writer) {
+		._net__UdpConn = x,
+		._typ = _io__Writer_net__UdpConn_index,
+	};
+}
+
+// Casting functions for converting "io__BufferedWriter" to interface "io__Writer"
+
+static inline io__Writer I_io__BufferedWriter_to_Interface_io__Writer(io__BufferedWriter* x) {
+return (io__Writer) {
+		._io__BufferedWriter = x,
+		._typ = _io__Writer_io__BufferedWriter_index,
+	};
+}
+
+// Casting functions for converting "io__ReaderWriterImpl" to interface "io__Writer"
+
+static inline io__Writer I_io__ReaderWriterImpl_to_Interface_io__Writer(io__ReaderWriterImpl* x) {
+return (io__Writer) {
+		._io__ReaderWriterImpl = x,
+		._typ = _io__Writer_io__ReaderWriterImpl_index,
+	};
+}
+
+static rand__PRNG I_rand__wyrand__WyRandRNG_to_Interface_rand__PRNG(rand__wyrand__WyRandRNG* x);
+const u32 _rand__PRNG_rand__wyrand__WyRandRNG_index = 0;
+static rand__PRNG I_voidptr_to_Interface_rand__PRNG(voidptr* x);
+const u32 _rand__PRNG_voidptr_index = 1;
+// ^^^ number of types for interface rand__PRNG: 2
+
+// Methods wrapper for interface "rand__PRNG"
+
+struct _rand__PRNG_interface_methods {
+	int (*_method_block_size)(void* _);
+	void (*_method__v_free)(void* _);
+	void (*_method_seed)(void* _, Array_u32 seed_data);
+	u16 (*_method_u16)(void* _);
+	u32 (*_method_u32)(void* _);
+	u64 (*_method_u64)(void* _);
+	u8 (*_method_u8)(void* _);
+};
+
+struct _rand__PRNG_interface_methods rand__PRNG_name_table[2] = {
+	{
+		._method_block_size = (void*) rand__wyrand__WyRandRNG_block_size,
+		._method__v_free = (void*) rand__wyrand__WyRandRNG_free,
+		._method_seed = (void*) rand__wyrand__WyRandRNG_seed,
+		._method_u16 = (void*) rand__wyrand__WyRandRNG_u16,
+		._method_u32 = (void*) rand__wyrand__WyRandRNG_u32,
+		._method_u64 = (void*) rand__wyrand__WyRandRNG_u64,
+		._method_u8 = (void*) rand__wyrand__WyRandRNG_u8,
+	},
+	{
+		._method_block_size = (void*) 0,
+		._method__v_free = (void*) 0,
+		._method_seed = (void*) 0,
+		._method_u16 = (void*) 0,
+		._method_u32 = (void*) 0,
+		._method_u64 = (void*) 0,
+		._method_u8 = (void*) 0,
+	},
+};
+
+
+// Casting functions for converting "rand__wyrand__WyRandRNG" to interface "rand__PRNG"
+
+static inline rand__PRNG I_rand__wyrand__WyRandRNG_to_Interface_rand__PRNG(rand__wyrand__WyRandRNG* x) {
+return (rand__PRNG) {
+		._rand__wyrand__WyRandRNG = x,
+		._typ = _rand__PRNG_rand__wyrand__WyRandRNG_index,
+	};
+}
+
+// Casting functions for converting "voidptr" to interface "rand__PRNG"
+
+static inline rand__PRNG I_voidptr_to_Interface_rand__PRNG(voidptr* x) {
+return (rand__PRNG) {
+		._voidptr = x,
+		._typ = _rand__PRNG_voidptr_index,
+	};
+}
 
 
 // V sort fn definitions:
@@ -5588,11 +9497,44 @@ VV_LOC  int compare_4304664230910251370_string(string* a, string* b) {
 }
 
 
+// V channel code:
+
+static inline net__TcpConn* __chan_net__TcpConn_ptr_popval(chan_net__TcpConn_ptr ch) {
+	net__TcpConn* val;
+	sync__Channel_try_pop_priv(ch, &val, false);
+	return val;
+}
+
+static inline void __chan_net__TcpConn_ptr_pushval(chan_net__TcpConn_ptr ch, net__TcpConn* val) {
+	sync__Channel_try_push_priv(ch, &val, false);
+}
+
+static inline bool __chan_bool_popval(chan_bool ch) {
+	bool val;
+	sync__Channel_try_pop_priv(ch, &val, false);
+	return val;
+}
+
+static inline void __chan_bool_pushval(chan_bool ch, bool val) {
+	sync__Channel_try_push_priv(ch, &val, false);
+}
+
+static inline _option_net__TcpConn_ptr __Option_chan_net__TcpConn_ptr_popval(chan_net__TcpConn_ptr ch) {
+	_option_net__TcpConn_ptr _tmp = {0};
+	if (sync__Channel_try_pop_priv(ch, _tmp.data, false)) {
+		return (_option_net__TcpConn_ptr){ .state = 2, .err = builtin___v_error(_S("channel closed")), .data = {E_STRUCT} };
+	}
+	return _tmp;
+}
+
 // end of V out (header)
 
 // V gowrappers waiter fns:
 vphp__TaskResult __v_thread_vphp__TaskResult_wait(__v_thread_vphp__TaskResult thread);
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
+void* anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731 *arg);
+void __v_thread_wait(__v_thread thread);
+void* net__http__HandlerWorker_process_requests_thread_wrapper(thread_arg_net__http__HandlerWorker_process_requests *arg);
 
 // V auto str functions:
 static string time__FormatTime_str(time__FormatTime it) { /* gen_str_for_enum */
@@ -5633,8 +9575,48 @@ string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it
 	}
 	return _S("Option(none)");
 }
+static string net__TcpSocket_str(net__TcpSocket it) { return indent_net__TcpSocket_str(it, 0);}
+static string net__openssl__SSLError_str(net__openssl__SSLError it) { /* gen_str_for_enum */
+		if(it == net__openssl__SSLError__ssl_error_none){ return _S("ssl_error_none"); }
+		if(it == net__openssl__SSLError__ssl_error_ssl){ return _S("ssl_error_ssl"); }
+		if(it == net__openssl__SSLError__ssl_error_want_read){ return _S("ssl_error_want_read"); }
+		if(it == net__openssl__SSLError__ssl_error_want_write){ return _S("ssl_error_want_write"); }
+		if(it == net__openssl__SSLError__ssl_error_want_x509_lookup){ return _S("ssl_error_want_x509_lookup"); }
+		if(it == net__openssl__SSLError__ssl_error_syscall){ return _S("ssl_error_syscall"); }
+		if(it == net__openssl__SSLError__ssl_error_zero_return){ return _S("ssl_error_zero_return"); }
+		if(it == net__openssl__SSLError__ssl_error_want_connect){ return _S("ssl_error_want_connect"); }
+		if(it == net__openssl__SSLError__ssl_error_want_accept){ return _S("ssl_error_want_accept"); }
+		if(it == net__openssl__SSLError__ssl_error_want_async){ return _S("ssl_error_want_async"); }
+		if(it == net__openssl__SSLError__ssl_error_want_async_job){ return _S("ssl_error_want_async_job"); }
+		return _S("unknown enum value");
+}
+static string net__Socket_str(net__Socket it) { return indent_net__Socket_str(it, 0);}
 
 // V auto functions:
+string indent_net__TcpSocket_str(net__TcpSocket it, int indent_count) {
+	string indents = builtin__string_repeat(_S("    "), indent_count);
+	string _t1 = indent_net__Socket_str(it.Socket, indent_count + 1);
+	string res = builtin__str_intp( 7, _MOV((StrIntpData[]){
+		{_S("net.TcpSocket{\n"), 0, {.d_c=0}},
+		{_SLIT0, 0xfe10, {.d_s=indents}}, {_S("    Socket: "), 0, {.d_c=0}}, {_S(""), 16, {.d_s=_t1}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("}"), 0, {.d_c=0}},
+	}));
+	builtin__string_free(&_t1);
+	builtin__string_free(&indents);
+	return res;
+}
+
+string indent_net__Socket_str(net__Socket it, int indent_count) {
+	string indents = builtin__string_repeat(_S("    "), indent_count);
+	string res = builtin__str_intp( 7, _MOV((StrIntpData[]){
+		{_S("net.Socket{\n"), 0, {.d_c=0}},
+		{_SLIT0, 0xfe10, {.d_s=indents}}, {_S("    handle: "), 0, {.d_c=0}}, {_S(""), 7, {.d_i32=it.handle}}, {_S(""), 0, {.d_c=0}},
+		{_S("\n"), 0xfe10, {.d_s=indents}}, {_S("}"), 0, {.d_c=0}},
+	}));
+	builtin__string_free(&indents);
+	return res;
+}
+
 static bool Array_u8_contains(Array_u8 a, u8 v) {
 	for (int i = 0; i < a.len; ++i) {
 		if (((u8*)a.data)[i] == v) {
@@ -5647,6 +9629,15 @@ static bool Array_u8_contains(Array_u8 a, u8 v) {
 static bool Array_string_contains(Array_string a, string v) {
 	for (int i = 0; i < a.len; ++i) {
 		if (builtin__fast_string_eq(((string*)a.data)[i], v)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool Array_net__http__Status_contains(Array_net__http__Status a, net__http__Status v) {
+	for (int i = 0; i < a.len; ++i) {
+		if (((net__http__Status*)a.data)[i] == v) {
 			return true;
 		}
 	}
@@ -5694,6 +9685,22 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 	builtin___v_free(arg);
 	return ret_ptr;
 }
+void* anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731_thread_wrapper(thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731 *arg) {
+	arg->fn(arg->arg1, arg->arg2);
+	builtin___v_free(arg);
+	return 0;
+}
+
+void __v_thread_wait(__v_thread thread) {
+	if ((unsigned long int)thread == 0) { builtin___v_panic(_S("unable to join thread")); }
+	int stat = pthread_join(thread, (void **)NULL);
+	if (stat != 0) { builtin___v_panic(_S("unable to join thread")); }
+}
+void* net__http__HandlerWorker_process_requests_thread_wrapper(thread_arg_net__http__HandlerWorker_process_requests *arg) {
+	arg->fn(arg->arg0);
+	builtin___v_free(arg);
+	return 0;
+}
 
 // V anon functions:
 VV_LOC void anon_fn_3035ace31b993c50_81_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
@@ -5726,12 +9733,17 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_map_string_str
 	builtin__map_set(m, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181(void) {
-	struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+	VV_LOC void anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731(sync__WaitGroup* wg, void (*f)(void)) {
+	f();
+	sync__WaitGroup_done(wg);
+}
+
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148(void) {
+	struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40008(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40975(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -5749,11 +9761,16 @@ static char * v_typeof_interface_IError(u32 sidx) {
 	if (sidx == _IError_Error_index) return "Error";
 	if (sidx == _IError_MessageError_index) return "MessageError";
 	if (sidx == _IError_time__TimeParseError_index) return "time.TimeParseError";
+	if (sidx == _IError_io__Eof_index) return "io.Eof";
+	if (sidx == _IError_io__NotExpected_index) return "io.NotExpected";
 	if (sidx == _IError_os__Eof_index) return "os.Eof";
 	if (sidx == _IError_os__NotExpected_index) return "os.NotExpected";
 	if (sidx == _IError_os__FileNotOpenedError_index) return "os.FileNotOpenedError";
 	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return "os.SizeOfTypeIs0Error";
 	if (sidx == _IError_os__ExecutableNotFoundError_index) return "os.ExecutableNotFoundError";
+	if (sidx == _IError_net__http__HeaderKeyError_index) return "net.http.HeaderKeyError";
+	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return "net.http.UnexpectedExtraAttributeError";
+	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return "net.http.MultiplePathAttributesError";
 	return "unknown IError";
 }
 
@@ -5763,11 +9780,16 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_Error_index) return 63;
 	if (sidx == _IError_MessageError_index) return 64;
 	if (sidx == _IError_time__TimeParseError_index) return 290;
+	if (sidx == _IError_io__Eof_index) return 457;
+	if (sidx == _IError_io__NotExpected_index) return 458;
 	if (sidx == _IError_os__Eof_index) return 233;
 	if (sidx == _IError_os__NotExpected_index) return 234;
 	if (sidx == _IError_os__FileNotOpenedError_index) return 236;
 	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 237;
 	if (sidx == _IError_os__ExecutableNotFoundError_index) return 255;
+	if (sidx == _IError_net__http__HeaderKeyError_index) return 319;
+	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 335;
+	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 336;
 	return 30;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
@@ -5807,6 +9829,123 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
 	return 198;
+}
+static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
+	if (sidx == _net__http__Downloader_voidptr_index) return "voidptr";
+	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return "net.http.TerminalStreamingDownloader";
+	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return "net.http.SilentStreamingDownloader";
+	return "unknown net.http.Downloader";
+}
+
+u32 v_typeof_interface_idx_net__http__Downloader(u32 sidx) {
+	if (sidx == _net__http__Downloader_voidptr_index) return 2;
+	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 307;
+	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 309;
+	return 305;
+}
+static char * v_typeof_interface_net__http__Handler(u32 sidx) {
+	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return "net.http.DebugHandler";
+	if (sidx == _net__http__Handler_voidptr_index) return "voidptr";
+	return "unknown net.http.Handler";
+}
+
+u32 v_typeof_interface_idx_net__http__Handler(u32 sidx) {
+	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 346;
+	if (sidx == _net__http__Handler_voidptr_index) return 2;
+	return 345;
+}
+static char * v_typeof_interface_net__Dialer(u32 sidx) {
+	if (sidx == _net__Dialer_net__TCPDialer_index) return "net.TCPDialer";
+	if (sidx == _net__Dialer_voidptr_index) return "voidptr";
+	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return "net.ssl.SSLDialer";
+	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return "net.socks.SOCKS5Dialer";
+	return "unknown net.Dialer";
+}
+
+u32 v_typeof_interface_idx_net__Dialer(u32 sidx) {
+	if (sidx == _net__Dialer_net__TCPDialer_index) return 446;
+	if (sidx == _net__Dialer_voidptr_index) return 2;
+	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 384;
+	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 453;
+	return 385;
+}
+static char * v_typeof_interface_net__Connection(u32 sidx) {
+	if (sidx == _net__Connection_net__TcpConn_index) return "net.TcpConn";
+	if (sidx == _net__Connection_voidptr_index) return "voidptr";
+	if (sidx == _net__Connection_net__ssl__SSLConn_index) return "net.ssl.SSLConn";
+	if (sidx == _net__Connection_net__openssl__SSLConn_index) return "net.openssl.SSLConn";
+	return "unknown net.Connection";
+}
+
+u32 v_typeof_interface_idx_net__Connection(u32 sidx) {
+	if (sidx == _net__Connection_net__TcpConn_index) return 331;
+	if (sidx == _net__Connection_voidptr_index) return 2;
+	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 299;
+	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 387;
+	return 386;
+}
+static char * v_typeof_interface_io__Reader(u32 sidx) {
+	if (sidx == _io__Reader_net__TcpConn_index) return "net.TcpConn";
+	if (sidx == _io__Reader_voidptr_index) return "voidptr";
+	if (sidx == _io__Reader_os__File_index) return "os.File";
+	if (sidx == _io__Reader_os__Pipe_index) return "os.Pipe";
+	if (sidx == _io__Reader_net__ssl__SSLConn_index) return "net.ssl.SSLConn";
+	if (sidx == _io__Reader_io__BufferedReader_index) return "io.BufferedReader";
+	if (sidx == _io__Reader_net__openssl__SSLConn_index) return "net.openssl.SSLConn";
+	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return "io.ReaderWriterImpl";
+	return "unknown io.Reader";
+}
+
+u32 v_typeof_interface_idx_io__Reader(u32 sidx) {
+	if (sidx == _io__Reader_net__TcpConn_index) return 331;
+	if (sidx == _io__Reader_voidptr_index) return 2;
+	if (sidx == _io__Reader_os__File_index) return 235;
+	if (sidx == _io__Reader_os__Pipe_index) return 265;
+	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 299;
+	if (sidx == _io__Reader_io__BufferedReader_index) return 333;
+	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 387;
+	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 468;
+	return 454;
+}
+static char * v_typeof_interface_io__Writer(u32 sidx) {
+	if (sidx == _io__Writer_io__MultiWriter_index) return "io.MultiWriter";
+	if (sidx == _io__Writer_voidptr_index) return "voidptr";
+	if (sidx == _io__Writer_os__File_index) return "os.File";
+	if (sidx == _io__Writer_os__Pipe_index) return "os.Pipe";
+	if (sidx == _io__Writer_net__ssl__SSLConn_index) return "net.ssl.SSLConn";
+	if (sidx == _io__Writer_net__TcpConn_index) return "net.TcpConn";
+	if (sidx == _io__Writer_net__openssl__SSLConn_index) return "net.openssl.SSLConn";
+	if (sidx == _io__Writer_net__RawConn_index) return "net.RawConn";
+	if (sidx == _io__Writer_net__UdpConn_index) return "net.UdpConn";
+	if (sidx == _io__Writer_io__BufferedWriter_index) return "io.BufferedWriter";
+	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return "io.ReaderWriterImpl";
+	return "unknown io.Writer";
+}
+
+u32 v_typeof_interface_idx_io__Writer(u32 sidx) {
+	if (sidx == _io__Writer_io__MultiWriter_index) return 464;
+	if (sidx == _io__Writer_voidptr_index) return 2;
+	if (sidx == _io__Writer_os__File_index) return 235;
+	if (sidx == _io__Writer_os__Pipe_index) return 265;
+	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 299;
+	if (sidx == _io__Writer_net__TcpConn_index) return 331;
+	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 387;
+	if (sidx == _io__Writer_net__RawConn_index) return 442;
+	if (sidx == _io__Writer_net__UdpConn_index) return 451;
+	if (sidx == _io__Writer_io__BufferedWriter_index) return 460;
+	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 468;
+	return 459;
+}
+static char * v_typeof_interface_rand__PRNG(u32 sidx) {
+	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return "rand.wyrand.WyRandRNG";
+	if (sidx == _rand__PRNG_voidptr_index) return "voidptr";
+	return "unknown rand.PRNG";
+}
+
+u32 v_typeof_interface_idx_rand__PRNG(u32 sidx) {
+	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 474;
+	if (sidx == _rand__PRNG_voidptr_index) return 2;
+	return 471;
 }
 // << typeof() support for sum types
 
@@ -11313,6 +15452,24 @@ u64 builtin__v_gettid(void) {
 inline bool builtin__isnil(voidptr v) {
 	return v == 0;
 }
+VV_LOC voidptr builtin____as_cast(voidptr obj, int obj_type, int expected_type) {
+	if (obj_type != expected_type) {
+		string obj_name = builtin__string_clone(((VCastTypeIndexName*)as_cast_type_indexes.data)[0].tname);
+		string expected_name = builtin__string_clone(((VCastTypeIndexName*)as_cast_type_indexes.data)[0].tname);
+		for (int _t1 = 0; _t1 < as_cast_type_indexes.len; ++_t1) {
+			VCastTypeIndexName x = ((VCastTypeIndexName*)as_cast_type_indexes.data)[_t1];
+			if (x.tindex == obj_type) {
+				obj_name = builtin__string_clone(x.tname);
+			}
+			if (x.tindex == expected_type) {
+				expected_name = builtin__string_clone(x.tname);
+			}
+		}
+		builtin___v_panic(builtin__string__plus(builtin__string__plus(builtin__string__plus(builtin__string__plus(_S("as cast: cannot cast `"), obj_name), _S("` to `")), expected_name), _S("`")));
+		VUNREACHABLE();
+	}
+	return obj;
+}
 VV_LOC void builtin__builtin_init(void) {
 }
 VNORETURN void builtin__panic_lasterr(string base) {
@@ -12816,6 +16973,24 @@ void builtin__VAssertMetaInfo_free(VAssertMetaInfo* ami) {
 		builtin__string_free(&ami->lvalue);
 		builtin__string_free(&ami->rvalue);
 		builtin__string_free(&ami->message);
+	}
+}
+VV_LOC void builtin____print_assert_failure(VAssertMetaInfo* i) {
+	builtin__eprintln(builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = i->fpath}}, {_S(":"), 0xfe07, {.d_i32 = (int)(i->line_nr + 1)}}, {_S(": FAIL: fn "), 0xfe10, {.d_s = i->fn_name}}, {_S(": assert "), 0xfe10, {.d_s = i->src}}, {_SLIT0, 0, { .d_c = 0 }}})));
+	if (i->op.len > 0 && !builtin__fast_string_eq(i->op, _S("call"))) {
+		if (builtin__string__eq(i->llabel, i->lvalue)) {
+			builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("   left value: "), 0xfe10, {.d_s = i->llabel}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		} else {
+			builtin__eprintln(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("   left value: "), 0xfe10, {.d_s = i->llabel}}, {_S(" = "), 0xfe10, {.d_s = i->lvalue}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		if (builtin__string__eq(i->rlabel, i->rvalue)) {
+			builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("  right value: "), 0xfe10, {.d_s = i->rlabel}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		} else {
+			builtin__eprintln(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("  right value: "), 0xfe10, {.d_s = i->rlabel}}, {_S(" = "), 0xfe10, {.d_s = i->rvalue}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+	}
+	if (i->has_msg) {
+		builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("      message: "), 0xfe10, {.d_s = i->message}}, {_SLIT0, 0, { .d_c = 0 }}})));
 	}
 }
 void builtin__IError_free(IError* ie) {
@@ -14949,6 +19124,18 @@ VV_LOC u8 builtin__string_at(string s, int idx) {
 	}
 	#endif
 	return s.str[idx];
+}
+VV_LOC _option_u8 builtin__string_at_with_check(string s, int idx) {
+	if (idx < 0 || idx >= s.len) {
+		return (_option_u8){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+	}
+	{ // Unsafe block
+		_option_u8 _t2;
+		builtin___option_ok(&(u8[]) { s.str[idx] }, (_option*)(&_t2), sizeof(u8));
+		 
+		return _t2;
+	}
+	return (_option_u8){.state=2, .err=_const_none__, .data={E_STRUCT}};
 }
 bool builtin__string_is_oct(string str) {
 	int i = 0;
@@ -20244,6 +24431,754 @@ int term__termios__set_state(int fd, term__termios__Termios new_state) {
 }
 void term__termios__Termios_disable_echo(term__termios__Termios* t) {
 	t->c_lflag &= term__termios__invert(((usize)(ECHO)));
+}
+Array_string arrays__uniq_T_string(Array_string a) {
+	Array_string res = builtin____new_array_with_default(0, (int)(a.len / 10), sizeof(string), 0);
+	int j = -1;
+	if (a.len > 0) {
+		j = 0;
+		builtin__array_push((array*)&res, _MOV((string[]){ (*(string*)builtin__array_get(a, 0)) }));
+	}
+	for (int idx = 0; idx < a.len; ++idx) {
+		string e = ((string*)a.data)[idx];
+		if (builtin__string__eq((*(string*)builtin__array_get(a, j)), e)) {
+			continue;
+		}
+		j = idx;
+		builtin__array_push((array*)&res, _MOV((string[]){ builtin__string_clone(e) }));
+	}
+	return res;
+}
+int encoding__base64__encode_in_buffer(Array_u8 data, u8* buffer) {
+	return encoding__base64__encode_from_buffer(buffer, data.data, data.len);
+}
+VV_LOC int encoding__base64__encode_from_buffer(u8* dest, u8* src, int src_len) {
+	if (src_len == 0) {
+		return 0;
+	}
+	int output_length = (int)(4 * ((int)(((int)(src_len + 2)) / 3)));
+	u8* d = src;
+	u8* b = dest;
+	u8* etable = _const_encoding__base64__enc_table.str;
+	int di = 0;
+	int si = 0;
+	int n = (int)(((int)(src_len / 3)) * 3);
+	for (;;) {
+		if (!(si < n)) break;
+		{ // Unsafe block
+			u32 val = (((((u32)(d[(int)(si + 0)])) << 16) | (((u32)(d[(int)(si + 1)])) << 8)) | ((u32)(d[(int)(si + 2)])));
+			b[(int)(di + 0)] = etable[(((val >> 18)) & 0x3F)];
+			b[(int)(di + 1)] = etable[(((val >> 12)) & 0x3F)];
+			b[(int)(di + 2)] = etable[(((val >> 6)) & 0x3F)];
+			b[(int)(di + 3)] = etable[(val & 0x3F)];
+		}
+		si += 3;
+		di += 4;
+	}
+	int remain = (int)(src_len - si);
+	if (remain == 0) {
+		return output_length;
+	}
+	{ // Unsafe block
+		u32 val = (((u32)(d[(int)(si + 0)])) << 16);
+		if (remain == 2) {
+			val |= (((u32)(d[(int)(si + 1)])) << 8);
+		}
+		b[(int)(di + 0)] = etable[(((val >> 18)) & 0x3F)];
+		b[(int)(di + 1)] = etable[(((val >> 12)) & 0x3F)];
+		switch (remain) {
+			case 2: {
+				b[(int)(di + 2)] = etable[(((val >> 6)) & 0x3F)];
+				b[(int)(di + 3)] = ((u8)('='));
+				break;
+			}
+			case 1: {
+				b[(int)(di + 2)] = ((u8)('='));
+				b[(int)(di + 3)] = ((u8)('='));
+				break;
+			}
+			default: {
+				{
+					builtin___v_panic(_S("base64: This case should never occur."));
+					VUNREACHABLE();
+					break;
+				}
+			}
+		}
+		
+	}
+	return output_length;
+}
+int encoding__base64__decode_in_buffer(string* data, u8* buffer) {
+	return encoding__base64__decode_from_buffer(buffer, data->str, data->len);
+}
+int encoding__base64__decode_in_buffer_bytes(Array_u8 data, u8* buffer) {
+	return encoding__base64__decode_from_buffer(buffer, data.data, data.len);
+}
+VV_LOC int encoding__base64__decode_from_buffer(u8* dest, u8* src, int src_len) {
+	if (src_len < 4) {
+		return 0;
+	}
+	int padding = 0;
+	if (src[(int)(src_len - 1)] == '=') {
+		if (src[(int)(src_len - 2)] == '=') {
+			padding = 2;
+		} else {
+			padding = 1;
+		}
+	}
+	u8* d = src;
+	u8* b = dest;
+	{ // Unsafe block
+		int n_decoded_bytes = 0;
+		int si = 0;
+		encoding__base64__B64_64_datablock datablock_64 = ((encoding__base64__B64_64_datablock){.data = 0,});
+		encoding__base64__B64_32_datablock datablock_32 = ((encoding__base64__B64_32_datablock){.data = 0,});
+		for (;;) {
+			if (!((int)(src_len - si) >= 8)) break;
+			datablock_64.data = encoding__base64__assemble64(((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 0)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 1)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 2)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 3)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 4)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 5)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 6)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 7)], 123)])));
+			#if defined(TARGET_ORDER_IS_LITTLE)
+			{
+				b[(int)(n_decoded_bytes + 0)] = datablock_64.data_byte[7];
+				b[(int)(n_decoded_bytes + 1)] = datablock_64.data_byte[6];
+				b[(int)(n_decoded_bytes + 2)] = datablock_64.data_byte[5];
+				b[(int)(n_decoded_bytes + 3)] = datablock_64.data_byte[4];
+				b[(int)(n_decoded_bytes + 4)] = datablock_64.data_byte[3];
+				b[(int)(n_decoded_bytes + 5)] = datablock_64.data_byte[2];
+			}
+			#else
+			{
+			}
+			#endif
+			n_decoded_bytes += 6;
+			si += 8;
+		}
+		for (;;) {
+			if (!((int)(src_len - si) >= 4)) break;
+			datablock_32.data = encoding__base64__assemble32(((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 0)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 1)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 2)], 123)])), ((u8)(_const_encoding__base64__index[builtin__v_fixed_index(d[(int)(si + 3)], 123)])));
+			#if defined(TARGET_ORDER_IS_LITTLE)
+			{
+				b[(int)(n_decoded_bytes + 0)] = datablock_32.data_byte[3];
+				b[(int)(n_decoded_bytes + 1)] = datablock_32.data_byte[2];
+				b[(int)(n_decoded_bytes + 2)] = datablock_32.data_byte[1];
+				b[(int)(n_decoded_bytes + 3)] = datablock_32.data_byte[0];
+			}
+			#else
+			{
+			}
+			#endif
+			n_decoded_bytes += 3;
+			si += 4;
+		}
+		return (int)(n_decoded_bytes - padding);
+	}
+	return 0;
+}
+Array_u8 encoding__base64__decode(string data) {
+	i64 size = (i64)((i64)(((i64)(data.len)) * 3) / 4);
+	if (size <= 0 || (int)(data.len % 4) != 0) {
+		return builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+	}
+	size = (((i64)(size + 3)) & ~0x03);
+	{ // Unsafe block
+		u8* buffer = builtin___v_malloc(((int)(size)));
+		int n = encoding__base64__decode_in_buffer((voidptr)&data, buffer);
+		return builtin__u8_vbytes(buffer, n);
+	}
+	return builtin____new_array(0, 0, sizeof(u8));
+}
+string encoding__base64__decode_str(string data) {
+	int size = (int)((int)(data.len * 3) / 4);
+	if (size <= 0 || (int)(data.len % 4) != 0) {
+		return _S("");
+	}
+	{ // Unsafe block
+		u8* buffer = builtin__malloc_noscan((int)(size + 1));
+		buffer[size] = 0;
+		int blen = encoding__base64__decode_in_buffer((voidptr)&data, buffer);
+		return builtin__tos(buffer, blen);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string encoding__base64__encode(Array_u8 data) {
+	return encoding__base64__alloc_and_encode(data.data, data.len);
+}
+string encoding__base64__encode_str(string data) {
+	return encoding__base64__alloc_and_encode(data.str, data.len);
+}
+VV_LOC string encoding__base64__alloc_and_encode(u8* src, int len) {
+	if (len == 0) {
+		return _S("");
+	}
+	int size = (int)(4 * ((int)(((int)(len + 2)) / 3)));
+	if (size <= 0) {
+		return _S("");
+	}
+	{ // Unsafe block
+		u8* buffer = builtin__malloc_noscan((int)(size + 1));
+		buffer[size] = 0;
+		int blen = encoding__base64__encode_from_buffer(buffer, src, len);
+		return builtin__tos(buffer, blen);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+Array_u8 encoding__base64__url_decode(string data) {
+	string result = builtin__string_replace_each(data, builtin__new_array_from_c_array(4, 4, sizeof(string), _MOV((string[4]){_S("-"), _S("+"), _S("_"), _S("/")})));
+	int _t1 = (int)(result.len % 4);
+		switch (_t1) {
+		case 2: {
+			result = builtin__string__plus(result, _S("=="));
+			break;
+		}
+		case 3: {
+			result = builtin__string__plus(result, _S("="));
+			break;
+		}
+		default: {
+			{
+				break;
+			}
+		}
+	}
+	
+	return encoding__base64__decode(result);
+}
+string encoding__base64__url_decode_str(string data) {
+	string result = builtin__string_replace_each(data, builtin__new_array_from_c_array(4, 4, sizeof(string), _MOV((string[4]){_S("-"), _S("+"), _S("_"), _S("/")})));
+	int _t1 = (int)(result.len % 4);
+		switch (_t1) {
+		case 2: {
+			result = builtin__string__plus(result, _S("=="));
+			break;
+		}
+		case 3: {
+			result = builtin__string__plus(result, _S("="));
+			break;
+		}
+		default: {
+			{
+				break;
+			}
+		}
+	}
+	
+	return encoding__base64__decode_str(result);
+}
+string encoding__base64__url_encode(Array_u8 data) {
+	return builtin__string_replace_each(encoding__base64__encode(data), builtin__new_array_from_c_array(6, 6, sizeof(string), _MOV((string[6]){_S("+"), _S("-"), _S("/"), _S("_"), _S("="), _S("")})));
+}
+string encoding__base64__url_encode_str(string data) {
+	return builtin__string_replace_each(encoding__base64__encode_str(data), builtin__new_array_from_c_array(6, 6, sizeof(string), _MOV((string[6]){_S("+"), _S("-"), _S("/"), _S("_"), _S("="), _S("")})));
+}
+VV_LOC u64 encoding__base64__assemble64(u8 n1, u8 n2, u8 n3, u8 n4, u8 n5, u8 n6, u8 n7, u8 n8) {
+	return ((((((((((u64)(n1)) << 58) | (((u64)(n2)) << 52)) | (((u64)(n3)) << 46)) | (((u64)(n4)) << 40)) | (((u64)(n5)) << 34)) | (((u64)(n6)) << 28)) | (((u64)(n7)) << 22)) | (((u64)(n8)) << 16));
+}
+VV_LOC u32 encoding__base64__assemble32(u8 n1, u8 n2, u8 n3, u8 n4) {
+	return ((((((u32)(n1)) << 26) | (((u32)(n2)) << 20)) | (((u32)(n3)) << 14)) | (((u32)(n4)) << 8));
+}
+io__BufferedReader* io__new_buffered_reader(io__BufferedReaderConfig o) {
+	if (o.cap <= 0) {
+		builtin___v_panic(_S("new_buffered_reader should be called with a positive `cap`"));
+		VUNREACHABLE();
+	}
+	io__BufferedReader* r = ((io__BufferedReader*)builtin__memdup(&(io__BufferedReader){.reader = o.reader,.buf = builtin____new_array_with_default(o.cap, o.cap, sizeof(u8), 0),.offset = 0,.len = 0,.fails = 0,.mfails = o.retries,.end_of_stream = 0,.total_read = 0,}, sizeof(io__BufferedReader)));
+	return r;
+}
+_result_int io__BufferedReader_read(io__BufferedReader* r, Array_u8* buf) {
+	if (r->end_of_stream) {
+		return (_result_int){ .is_error=true, .err=I_io__Eof_to_Interface_IError(((io__Eof*)builtin__memdup(&(io__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(io__Eof)))), .data={E_STRUCT} };
+	}
+	if (io__BufferedReader_needs_fill(*r)) {
+		if (!io__BufferedReader_fill_buffer(r)) {
+			return (_result_int){ .is_error=true, .err=I_io__Eof_to_Interface_IError(((io__Eof*)builtin__memdup(&(io__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(io__Eof)))), .data={E_STRUCT} };
+		}
+	}
+	int read = builtin__copy(buf, builtin__array_slice(r->buf, r->offset, r->len));
+	if (read == 0) {
+		return (_result_int){ .is_error=true, .err=I_io__NotExpected_to_Interface_IError(((io__NotExpected*)builtin__memdup(&(io__NotExpected){.cause = _S("invalid copy of buffer"),.code = -1,}, sizeof(io__NotExpected)))), .data={E_STRUCT} };
+	}
+	r->offset += read;
+	r->total_read += read;
+	_result_int _t4;
+	builtin___result_ok(&(int[]) { read }, (_result*)(&_t4), sizeof(int));
+	 
+	return _t4;
+}
+void io__BufferedReader_free(io__BufferedReader* r) {
+	builtin__array_free(&r->buf);
+}
+VV_LOC bool io__BufferedReader_fill_buffer(io__BufferedReader* r) {
+	if (r->end_of_stream) {
+		return true;
+	}
+	r->offset = 0;
+	r->len = 0;
+	_result_int _t2 = io__Reader_name_table[r->reader._typ]._method_read(r->reader._object, &r->buf);
+	if (_t2.is_error) {
+		r->end_of_stream = true;
+		return false;
+	}
+	
+ 	r->len = (*(int*)_t2.data);
+	if (r->len == 0) {
+		r->fails++;
+	} else {
+		r->fails = 0;
+	}
+	if (r->fails >= r->mfails) {
+		r->end_of_stream = true;
+		return false;
+	}
+	return true;
+}
+VV_LOC bool io__BufferedReader_needs_fill(io__BufferedReader r) {
+	return r.offset >= r.len;
+}
+bool io__BufferedReader_end_of_stream(io__BufferedReader r) {
+	return r.end_of_stream;
+}
+_result_string io__BufferedReader_read_line(io__BufferedReader* r, io__BufferedReadLineConfig config) {
+	if (r->end_of_stream) {
+		return (_result_string){ .is_error=true, .err=I_io__Eof_to_Interface_IError(((io__Eof*)builtin__memdup(&(io__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(io__Eof)))), .data={E_STRUCT} };
+	}
+	Array_u8 line = builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+	for (;;) {
+		if (io__BufferedReader_needs_fill(*r)) {
+			if (!io__BufferedReader_fill_buffer(r)) {
+				if (line.len == 0) {
+					return (_result_string){ .is_error=true, .err=I_io__Eof_to_Interface_IError(((io__Eof*)builtin__memdup(&(io__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(io__Eof)))), .data={E_STRUCT} };
+				}
+				_result_string _t3;
+				builtin___result_ok(&(string[]) { Array_u8_bytestr(line) }, (_result*)(&_t3), sizeof(string));
+				 
+				return _t3;
+			}
+		}
+		int i = r->offset;
+		for (; i < r->len; i++) {
+			r->total_read++;
+			u8 c = (*(u8*)builtin__array_get(r->buf, i));
+			if (c == config.delim) {
+				if (i != 0 && config.delim == '\n' && (*(u8*)builtin__array_get(r->buf, (int)(i - 1))) == '\r') {
+					int x = (int)(i - 1);
+					_PUSH_MANY(&line, (builtin__array_slice(r->buf, r->offset, x)), _t4, Array_u8);
+				} else {
+					_PUSH_MANY(&line, (builtin__array_slice(r->buf, r->offset, i)), _t5, Array_u8);
+				}
+				r->offset = (int)(i + 1);
+				_result_string _t6;
+				builtin___result_ok(&(string[]) { Array_u8_bytestr(line) }, (_result*)(&_t6), sizeof(string));
+				 
+				return _t6;
+			}
+		}
+		_PUSH_MANY(&line, (builtin__array_slice(r->buf, r->offset, i)), _t7, Array_u8);
+		r->offset = i;
+	}
+	return (_result_string){ .is_error=true, .err=I_io__Eof_to_Interface_IError(((io__Eof*)builtin__memdup(&(io__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(io__Eof)))), .data={E_STRUCT} };
+}
+_result_io__BufferedWriter_ptr io__new_buffered_writer(io__BufferedWriterConfig o) {
+	if (o.cap < 1) {
+		return (_result_io__BufferedWriter_ptr){ .is_error=true, .err=builtin___v_error(_S("`o.cap` must be a positive integer")), .data={E_STRUCT} };
+	}
+	_result_io__BufferedWriter_ptr _t2;
+	builtin___result_ok(&(io__BufferedWriter*[]) { ((io__BufferedWriter*)builtin__memdup(&(io__BufferedWriter){.n = 0,.wr = o.writer,.buf = builtin____new_array_with_default(o.cap, 0, sizeof(u8), 0),}, sizeof(io__BufferedWriter))) }, (_result*)(&_t2), sizeof(io__BufferedWriter*));
+	 
+	return _t2;
+}
+void io__BufferedWriter_reset(io__BufferedWriter* b) {
+	int cap = b->buf.len;
+	b->buf = builtin____new_array_with_default(cap, 0, sizeof(u8), 0);
+	b->n = 0;
+}
+int io__BufferedWriter_buffered(io__BufferedWriter b) {
+	return b.n;
+}
+_result_void io__BufferedWriter_flush(io__BufferedWriter* b) {
+	if (io__BufferedWriter_buffered(*b) == 0) {
+		return (_result_void){0};
+	}
+	_result_int _t1 = io__Writer_name_table[b->wr._typ]._method_write(b->wr._object, builtin__array_slice(b->buf, 0, b->n));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	int n = (*(int*)_t1.data);
+	if (n < b->n) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("Writer accepted less bytes than expected without returning any explicit error.")), .data={E_STRUCT} };
+	}
+	b->n = 0;
+	return (_result_void){0};
+}
+int io__BufferedWriter_available(io__BufferedWriter b) {
+	return (int)(b.buf.len - b.n);
+}
+_result_int io__BufferedWriter_write(io__BufferedWriter* b, Array_u8 src) {
+	Array_u8 p = builtin__array_clone_to_depth(&src, 0);
+	int nn = 0;
+	for (;;) {
+		if (!(p.len > io__BufferedWriter_available(*b))) break;
+		int n = 0;
+		if (io__BufferedWriter_buffered(*b) == 0) {
+			_result_int _t1 = io__Writer_name_table[b->wr._typ]._method_write(b->wr._object, p);
+			if (_t1.is_error) {
+				_result_int _t2 = {0};
+				_t2.is_error = true;
+				_t2.err = _t1.err;
+				return _t2;
+			}
+			
+ 			n = (*(int*)_t1.data);
+		} else {
+			n = builtin__copy(&(array[]){builtin__array_slice(b->buf, b->n, 2147483647)}[0], p);
+			b->n += n;
+			_result_void _t3 = io__BufferedWriter_flush(b);
+			if (_t3.is_error) {
+				_result_int _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ ;
+		}
+		nn += n;
+		p = builtin__array_clone_static_to_depth(builtin__array_slice(p, n, 2147483647), 0);
+	}
+	int n = builtin__copy(&(array[]){builtin__array_slice(b->buf, b->n, 2147483647)}[0], p);
+	b->n += n;
+	nn += n;
+	_result_int _t5;
+	builtin___result_ok(&(int[]) { nn }, (_result*)(&_t5), sizeof(int));
+	 
+	return _t5;
+}
+_result_void io__cp(io__Reader* src, io__Writer* dst, io__CopySettings params) {
+	Array_u8 buf = builtin____new_array_with_default(params.buffer_size, 0, sizeof(u8), 0);
+	for (;;) {
+		_result_int _t1 = io__Reader_name_table[src->_typ]._method_read(src->_object, &buf);
+		if (_t1.is_error) {
+			break;
+		}
+		
+ 		int bytes = (*(int*)_t1.data);
+		_result_int _t2 = io__Writer_name_table[dst->_typ]._method_write(dst->_object, builtin__array_slice(buf, 0, bytes));
+		if (_t2.is_error) {
+			IError err = _t2.err;
+			_result_void _t3 = (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+				{ // defer begin
+					builtin__array_free(&buf);
+				} // defer end
+			return _t3;
+		}
+		
+ ;
+	}
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return (_result_void){0};
+}
+io__Writer io__new_multi_writer(Array_io__Writer writers) {
+	return I_io__MultiWriter_to_Interface_io__Writer(((io__MultiWriter*)builtin__memdup(&(io__MultiWriter){.writers = writers,}, sizeof(io__MultiWriter))));
+}
+_result_int io__MultiWriter_write(io__MultiWriter* m, Array_u8 buf) {
+	for (int _t1 = 0; _t1 < m->writers.len; ++_t1) {
+		io__Writer* w = ((io__Writer*)m->writers.data) + _t1;
+		_result_int _t2 = io__Writer_name_table[w->_typ]._method_write(w->_object, buf);
+		if (_t2.is_error) {
+			_result_int _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		int n = (*(int*)_t2.data);
+		if (n != buf.len) {
+			return (_result_int){ .is_error=true, .err=builtin___v_error(_S("io: incomplete write to writer of MultiWriter")), .data={E_STRUCT} };
+		}
+	}
+	_result_int _t5;
+	builtin___result_ok(&(int[]) { buf.len }, (_result*)(&_t5), sizeof(int));
+	 
+	return _t5;
+}
+VV_LOC string io__NotExpected_msg(io__NotExpected err) {
+	return err.cause;
+}
+VV_LOC int io__NotExpected_code(io__NotExpected err) {
+	return err.code;
+}
+_result_Array_u8 io__read_all(io__ReadAllConfig config) {
+	io__Reader r = config.reader;
+	bool read_till_eof = config.read_to_end_of_stream;
+	Array_u8 b = builtin____new_array_with_default(_const_io__read_all_len, 0, sizeof(u8), 0);
+	int read = 0;
+	for (;;) {
+		_result_int _t1 = io__Reader_name_table[r._typ]._method_read(r._object, &(array[]){builtin__array_slice(b, read, 2147483647)}[0]);
+		if (_t1.is_error) {
+			break;
+		}
+		
+ 		int new_read = (*(int*)_t1.data);
+		read += new_read;
+		if (!read_till_eof && read == 0) {
+			break;
+		}
+		if (b.len == read) {
+			builtin__array_grow_len(&b, _const_io__read_all_grow_len);
+		}
+	}
+	_result_Array_u8 _t2;
+	builtin___result_ok(&(Array_u8[]) { builtin__array_slice(b, 0, read) }, (_result*)(&_t2), sizeof(Array_u8));
+	 
+	return _t2;
+}
+_result_Array_u8 io__read_any(io__Reader* r) {
+	Array_u8 b = builtin____new_array_with_default(_const_io__read_all_len, 0, sizeof(u8), 0);
+	int read = 0;
+	for (;;) {
+		_result_int _t1 = io__Reader_name_table[r->_typ]._method_read(r->_object, &(array[]){builtin__array_slice(b, read, 2147483647)}[0]);
+		if (_t1.is_error) {
+			return (_result_Array_u8){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+		}
+		
+ 		int new_read = (*(int*)_t1.data);
+		read += new_read;
+		if (new_read == 0) {
+			break;
+		}
+		if (b.len == read) {
+			builtin__array_grow_len(&b, _const_io__read_all_grow_len);
+		}
+	}
+	_result_Array_u8 _t3;
+	builtin___result_ok(&(Array_u8[]) { builtin__array_slice(b, 0, read) }, (_result*)(&_t3), sizeof(Array_u8));
+	 
+	return _t3;
+}
+_result_int io__ReaderWriterImpl_read(io__ReaderWriterImpl* r, Array_u8* buf) {
+	return io__Reader_name_table[r->r._typ]._method_read(r->r._object, buf);
+}
+_result_int io__ReaderWriterImpl_write(io__ReaderWriterImpl* r, Array_u8 buf) {
+	return io__Writer_name_table[r->w._typ]._method_write(r->w._object, buf);
+}
+io__ReaderWriterImpl io__make_readerwriter(io__Reader r, io__Writer w) {
+	return ((io__ReaderWriterImpl){.r = r,.w = w,});
+}
+VV_LOC u32 net__http__chunked__ChunkScanner_read_chunk_size(net__http__chunked__ChunkScanner* s) {
+	u32 n = ((u32)(0));
+	for (;;) {
+		if (s->pos >= s->text.len) {
+			break;
+		}
+		u8 c = builtin__string_at(s->text, s->pos);
+		if (!builtin__u8_is_hex_digit(c)) {
+			break;
+		}
+		n = (n << 4);
+		n += ((u32)(net__http__chunked__unhex(c)));
+		s->pos++;
+	}
+	return n;
+}
+VV_LOC u8 net__http__chunked__unhex(u8 c) {
+	if ('0' <= c && c <= '9') {
+		return (rune)(c - '0');
+	} else if ('a' <= c && c <= 'f') {
+		return (rune)((rune)(c - 'a') + 10);
+	} else if ('A' <= c && c <= 'F') {
+		return (rune)((rune)(c - 'A') + 10);
+	}
+	return 0;
+}
+VV_LOC void net__http__chunked__ChunkScanner_skip_crlf(net__http__chunked__ChunkScanner* s) {
+	s->pos += 2;
+}
+VV_LOC _result_string net__http__chunked__ChunkScanner_read_chunk(net__http__chunked__ChunkScanner* s, u32 chunksize) {
+	int startpos = s->pos;
+	s->pos += ((int)(chunksize));
+	if (s->pos > s->text.len) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(_S("invalid chunksize")), .data={E_STRUCT} };
+	}
+	_result_string _t2;
+	builtin___result_ok(&(string[]) { builtin__string_substr(s->text, startpos, s->pos) }, (_result*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+_result_string net__http__chunked__decode(string text) {
+	strings__Builder sb = strings__new_builder(100);
+	net__http__chunked__ChunkScanner cscanner = ((net__http__chunked__ChunkScanner){.pos = 0,.text = text,});
+	for (;;) {
+		u32 csize = net__http__chunked__ChunkScanner_read_chunk_size(&cscanner);
+		if (0 == csize) {
+			break;
+		}
+		net__http__chunked__ChunkScanner_skip_crlf(&cscanner);
+		_result_string _t1 = net__http__chunked__ChunkScanner_read_chunk(&cscanner, csize);
+		if (_t1.is_error) {
+			_result_string _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		string ch = (*(string*)_t1.data);
+		strings__Builder_write_string(&sb, ch);
+		net__http__chunked__ChunkScanner_skip_crlf(&cscanner);
+	}
+	net__http__chunked__ChunkScanner_skip_crlf(&cscanner);
+	_result_string _t3;
+	builtin___result_ok(&(string[]) { strings__Builder_str(&sb) }, (_result*)(&_t3), sizeof(string));
+	 
+	return _t3;
+}
+f32 net__conv__htonf32(f32 host) {
+	#if defined(TARGET_ORDER_IS_LITTLE)
+	{
+		net__conv__ConversionUnion convert = ((net__conv__ConversionUnion){.as_double32 = host,});
+		convert.as_int32 = net__conv__hton32(convert.as_int32);
+		return convert.as_double32;
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+f64 net__conv__htonf64(f64 host) {
+	#if defined(TARGET_ORDER_IS_LITTLE)
+	{
+		net__conv__ConversionUnion convert = ((net__conv__ConversionUnion){.as_double64 = host,});
+		convert.as_int64 = net__conv__hton64(convert.as_int64);
+		return convert.as_double64;
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+u64 net__conv__hton64(u64 host) {
+	#if defined(TARGET_ORDER_IS_LITTLE)
+	{
+		return net__conv__reverse_bytes_u64(host);
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+u32 net__conv__hton32(u32 host) {
+	#if defined(TARGET_ORDER_IS_LITTLE)
+	{
+		return net__conv__reverse_bytes_u32(host);
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+u16 net__conv__hton16(u16 host) {
+	#if defined(TARGET_ORDER_IS_LITTLE)
+	{
+		return net__conv__reverse_bytes_u16(host);
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+u64 net__conv__ntoh64(u64 net) {
+	return net__conv__hton64(net);
+}
+u32 net__conv__ntoh32(u32 net) {
+	return net__conv__hton32(net);
+}
+u16 net__conv__ntoh16(u16 net) {
+	return net__conv__hton16(net);
+}
+_result_Array_u8 net__conv__u64tovarint(u64 n) {
+	if (n > (((u64)(1)) << 62)) {
+		return (_result_Array_u8){ .is_error=true, .err=builtin___v_error(_S("cannot encode more than 2^62-1")), .data={E_STRUCT} };
+	}
+	bool _t2 = true;
+	u8 msb = ((_t2 == (n < 64))? (((u8)(0b00))) : (_t2 == (n < 16384))? (((u8)(0b01))) : (_t2 == (n < 1073741824))? (((u8)(0b10))) : (((u8)(0b11))));
+	int len = (1 << msb);
+	Array_u8 result = builtin____new_array_with_default(len, 0, sizeof(u8), 0);
+	u64 tn = n;
+	for (int i = 0; i < len; ++i) {
+		builtin__array_set(&result, (int)((int)(len - 1) - i), &(u8[]) { ((u8)((u64)(tn % 256))) });
+		tn /= 256;
+	}
+	(*(u8*)builtin__array_get(result, 0)) |= (msb << 6);
+	_result_Array_u8 _t3;
+	builtin___result_ok(&(Array_u8[]) { result }, (_result*)(&_t3), sizeof(Array_u8));
+	 
+	return _t3;
+}
+_result_multi_return_u64_u8 net__conv__varinttou64(Array_u8 b) {
+	if (b.len == 0) {
+		return (_result_multi_return_u64_u8){ .is_error=true, .err=builtin___v_error(_S("cannot parse vluint from empty byte array")), .data={E_STRUCT} };
+	}
+	u8 msb = ((*(u8*)builtin__array_get(b, 0)) >> 6);
+	u8 len = ((u8)((1 << msb)));
+	if (len > b.len) {
+		return (_result_multi_return_u64_u8){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("expected "), 0xfe02, {.d_u8 = len}}, {_S(" bytes but got "), 0xfe07, {.d_i32 = b.len}}, {_S(" bytes"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	u64 n = ((u64)(((*(u8*)builtin__array_get(b, 0)) & 0b00111111)));
+	for (u8 i = 1; i < len; ++i) {
+		n = (u64)((u64)(n * 256) + (*(u8*)builtin__array_get(b, i)));
+	}
+	_result_multi_return_u64_u8 _t3;
+	builtin___result_ok(&(multi_return_u64_u8[]) { (multi_return_u64_u8){.arg0=n, .arg1=len} }, (_result*)(&_t3), sizeof(multi_return_u64_u8));
+	return _t3;
+}
+inline u64 net__conv__reverse_bytes_u64(u64 a) {
+	return (((((((((((a >> 56)) & 0x00000000000000FF)) | ((((a >> 40)) & 0x000000000000FF00))) | ((((a >> 24)) & 0x0000000000FF0000))) | ((((a >> 8)) & 0x00000000FF000000U))) | ((((a << 8)) & 0x000000FF00000000LL))) | ((((a << 24)) & 0x0000FF0000000000LL))) | ((((a << 40)) & 0x00FF000000000000LL))) | ((((a << 56)) & 0xFF00000000000000ULL)));
+}
+inline u32 net__conv__reverse_bytes_u32(u32 a) {
+	return (((((((a >> 24)) & 0x000000FF)) | ((((a >> 8)) & 0x0000FF00))) | ((((a << 8)) & 0x00FF0000))) | ((((a << 24)) & 0xFF000000U)));
+}
+inline u16 net__conv__reverse_bytes_u16(u16 a) {
+	return (((((a >> 8)) & 0x00FF)) | ((((a << 8)) & 0xFF00)));
+}
+#if defined(_WIN32)
+#else
+#endif
+inline u64 sync__stdatomic__add_u64(u64* ptr, int delta) {
+	atomic_fetch_add_u64(((voidptr)(ptr)), delta);
+	return *ptr;
+}
+inline u64 sync__stdatomic__sub_u64(u64* ptr, int delta) {
+	atomic_fetch_sub_u64(((voidptr)(ptr)), delta);
+	return *ptr;
+}
+inline i64 sync__stdatomic__add_i64(i64* ptr, int delta) {
+	atomic_fetch_add_u64(((voidptr)(ptr)), delta);
+	return *ptr;
+}
+inline i64 sync__stdatomic__sub_i64(i64* ptr, int delta) {
+	atomic_fetch_sub_u64(((voidptr)(ptr)), delta);
+	return *ptr;
+}
+inline void sync__stdatomic__store_u64(u64* ptr, u64 val) {
+	atomic_store_u64(((voidptr)(ptr)), val);
+}
+inline u64 sync__stdatomic__load_u64(u64* ptr) {
+	return atomic_load_u64(((voidptr)(ptr)));
+}
+inline void sync__stdatomic__store_i64(i64* ptr, i64 val) {
+	atomic_store_u64(((voidptr)(ptr)), val);
+}
+inline i64 sync__stdatomic__load_i64(i64* ptr) {
+	return ((i64)(atomic_load_u64(((voidptr)(ptr)))));
 }
 vphp__Context vphp__Context__static__new(zend_execute_data* ex, zval* ret) {
 	return ((vphp__Context){.ex = ex,.ret = ret,});
@@ -25897,7 +30832,7 @@ string os__expand_tilde_to_home(string path) {
 		string hdir = os__home_dir();
 		return builtin__string_trim_right(hdir, _const_os__path_separator);
 	}
-	string source = _S("~/");
+	string source = builtin__string__plus(_S("~"), _S("/"));
 	if (builtin__string_starts_with(path, source)) {
 		string hdir = os__home_dir();
 		string trimmed = builtin__string_trim_right(hdir, _const_os__path_separator);
@@ -27567,6 +32502,8730 @@ VV_LOC os__PathKind os__kind_of_existing_path(string path) {
 	res.is_link = os__Stat_get_filetype(attr) == os__FileType__symbolic_link;
 	return res;
 }
+inline VV_LOC u32 rand__seed__nr_next(u32 prev) {
+	return (u32)((u32)(prev * 1664525) + 1013904223);
+}
+Array_u32 rand__seed__time_seed_array(int count) {
+	u64 ctime = time__sys_mono_now();
+	u32 seed = ((u32)(((ctime >> 32) ^ ((ctime & 0x00000000FFFFFFFFU)))));
+	Array_u32 seed_data = builtin____new_array_with_default(0, count, sizeof(u32), 0);
+	for (int _t1 = 0; _t1 < count; ++_t1) {
+		seed = rand__seed__nr_next(seed);
+		builtin__array_push((array*)&seed_data, _MOV((u32[]){ rand__seed__nr_next(seed) }));
+	}
+	return seed_data;
+}
+u32 rand__seed__time_seed_32(void) {
+	Array_u32 sa = rand__seed__time_seed_array(1);
+	u32 res = (*(u32*)builtin__array_get(sa, 0));
+	builtin__array_free(&sa);
+	return res;
+}
+u64 rand__seed__time_seed_64(void) {
+	Array_u32 seed_data = rand__seed__time_seed_array(2);
+	u64 lower = ((u64)((*(u32*)builtin__array_get(seed_data, 0))));
+	u64 upper = ((u64)((*(u32*)builtin__array_get(seed_data, 1))));
+	builtin__array_free(&seed_data);
+	u64 res = (lower | ((upper << 32)));
+	return res;
+}
+VV_LOC _result_usize runtime__free_memory_impl(void) {
+	{
+		vm_statistics64_data_t hs = ((vm_statistics64_data_t){.free_count = 0,.purgeable_count = 0,.speculative_count = 0,.external_page_count = 0,});
+		u32 vmsz = ((u32)(HOST_VM_INFO64_COUNT));
+		u32 hps = ((u32)(0));
+		host_t host = mach_host_self();
+		{ // Unsafe block
+			i32 retval_1 = host_statistics64(host, HOST_VM_INFO64, ((int*)(&hs)), &vmsz);
+			if (retval_1 != KERN_SUCCESS) {
+				_result_usize _t1 = (_result_usize){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("free_memory: `C.host_statistics64()` return = "), 0xfe07, {.d_i32 = retval_1}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+					{ // defer begin
+						mach_port_deallocate(mach_task_self(), host);
+					} // defer end
+				return _t1;
+			}
+			i32 retval_2 = host_page_size(host, ((vm_size_t*)(&hps)));
+			if (retval_2 != KERN_SUCCESS) {
+				_result_usize _t2 = (_result_usize){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("free_memory: `C.host_page_size()` return = "), 0xfe07, {.d_i32 = retval_2}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+					{ // defer begin
+						mach_port_deallocate(mach_task_self(), host);
+					} // defer end
+				return _t2;
+			}
+		}
+		_result_usize _t3;
+		builtin___result_ok(&(usize[]) { ((usize)((u64)(((u64)(hs.free_count)) * ((u64)(hps))))) }, (_result*)(&_t3), sizeof(usize));
+		 
+			{ // defer begin
+				mach_port_deallocate(mach_task_self(), host);
+			} // defer end
+		return _t3;
+		{ // defer begin
+			mach_port_deallocate(mach_task_self(), host);
+		} // defer end
+	}
+	_result_usize _t4 = (_result_usize){ .is_error=true, .err=builtin___v_error(_S("free_memory: not implemented")), .data={E_STRUCT} };
+	return _t4;
+}
+int runtime__nr_jobs(void) {
+	int cpus = (int)(runtime__nr_cpus() - 1);
+	int vjobs = builtin__string_int(os__getenv(_S("VJOBS")));
+	if (vjobs > 0) {
+		cpus = vjobs;
+	}
+	if (cpus == 0) {
+		return 1;
+	}
+	return cpus;
+}
+bool runtime__is_32bit(void) {
+	return false;
+}
+bool runtime__is_64bit(void) {
+	#if defined(TARGET_IS_64BIT)
+	{
+		return true;
+	}
+	#endif
+	return false;
+}
+bool runtime__is_little_endian(void) {
+	#if defined(TARGET_ORDER_IS_LITTLE)
+	{
+		return true;
+	}
+	#endif
+	return false;
+}
+bool runtime__is_big_endian(void) {
+	return false;
+}
+int runtime__nr_cpus(void) {
+	return ((int)(sysconf(_SC_NPROCESSORS_ONLN)));
+}
+_result_usize runtime__total_memory(void) {
+	usize page_size = ((usize)(sysconf(_SC_PAGESIZE)));
+	int c_errno_1 = errno;
+	if (page_size == ((usize)(-1))) {
+		return (_result_usize){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("total_memory: `C.sysconf(C._SC_PAGESIZE)` return error code = "), 0xfe07, {.d_i32 = c_errno_1}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	usize phys_pages = ((usize)(sysconf(_SC_PHYS_PAGES)));
+	int c_errno_2 = errno;
+	if (phys_pages == ((usize)(-1))) {
+		return (_result_usize){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("total_memory: `C.sysconf(C._SC_PHYS_PAGES)` return error code = "), 0xfe07, {.d_i32 = c_errno_2}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_result_usize _t3;
+	builtin___result_ok(&(usize[]) { (usize)(page_size * phys_pages) }, (_result*)(&_t3), sizeof(usize));
+	 
+	return _t3;
+}
+_result_usize runtime__free_memory(void) {
+	_result_usize _t2 = runtime__free_memory_impl();
+	if (_t2.is_error) {
+		_result_usize _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_usize _t1;
+	builtin___result_ok(&(usize[]) { (*(usize*)_t2.data) }, (_result*)(&_t1), sizeof(usize));
+	 
+	return _t1;
+}
+_result_u64 runtime__used_memory(void) {
+	struct task_basic_info info = ((struct task_basic_info){.resident_size = 0,});
+	u64 count = ((u64)(MACH_TASK_BASIC_INFO_COUNT));
+	if (task_info(mach_task_self(), TASK_BASIC_INFO, &info, &count) == KERN_SUCCESS) {
+		_result_u64 _t1;
+		builtin___result_ok(&(u64[]) { info.resident_size }, (_result*)(&_t1), sizeof(u64));
+		 
+		return _t1;
+	}
+	_result_u64 _t2;
+	builtin___result_ok(&(u64[]) { 0 }, (_result*)(&_t2), sizeof(u64));
+	 
+	return _t2;
+}
+void rand__wyrand__WyRandRNG_seed(rand__wyrand__WyRandRNG* rng, Array_u32 seed_data) {
+	if (seed_data.len != 2) {
+		builtin__eprintln(_S("WyRandRNG needs 2 32-bit unsigned integers as the seed."));
+		builtin___v_exit(1);
+		VUNREACHABLE();
+	}
+	rng->state = ((*(u32*)builtin__array_get(seed_data, 0)) | ((((u64)((*(u32*)builtin__array_get(seed_data, 1)))) << 32)));
+	rng->bytes_left = 0;
+	rng->buffer = 0;
+}
+inline u8 rand__wyrand__WyRandRNG_u8(rand__wyrand__WyRandRNG* rng) {
+	if (rng->bytes_left >= 1) {
+		rng->bytes_left -= 1;
+		u8 value = ((u8)(rng->buffer));
+		rng->buffer >>= 8;
+		return value;
+	}
+	rng->buffer = rand__wyrand__WyRandRNG_u64(rng);
+	rng->bytes_left = 7;
+	u8 value = ((u8)(rng->buffer));
+	rng->buffer >>= 8;
+	return value;
+}
+inline u16 rand__wyrand__WyRandRNG_u16(rand__wyrand__WyRandRNG* rng) {
+	if (rng->bytes_left >= 2) {
+		rng->bytes_left -= 2;
+		u16 value = ((u16)(rng->buffer));
+		rng->buffer >>= 16;
+		return value;
+	}
+	u64 ans = rand__wyrand__WyRandRNG_u64(rng);
+	rng->buffer = (ans >> 16);
+	rng->bytes_left = 6;
+	return ((u16)(ans));
+}
+inline u32 rand__wyrand__WyRandRNG_u32(rand__wyrand__WyRandRNG* rng) {
+	if (rng->bytes_left >= 4) {
+		rng->bytes_left -= 4;
+		u32 value = ((u32)(rng->buffer));
+		rng->buffer >>= 32;
+		return value;
+	}
+	u64 ans = rand__wyrand__WyRandRNG_u64(rng);
+	rng->buffer = (ans >> 32);
+	rng->bytes_left = 4;
+	return ((u32)(ans));
+}
+inline int rand__wyrand__WyRandRNG_block_size(rand__wyrand__WyRandRNG* rng) {
+	return 64;
+}
+void rand__wyrand__WyRandRNG_free(rand__wyrand__WyRandRNG* rng) {
+	builtin___v_free(rng);
+}
+inline u64 rand__wyrand__WyRandRNG_u64(rand__wyrand__WyRandRNG* rng) {
+	{ // Unsafe block
+		u64 seed1 = rng->state;
+		seed1 += _const_rand__wyrand__wyp0;
+		rng->state = seed1;
+		return _wymix((seed1 ^ _const_rand__wyrand__wyp1), seed1);
+	}
+	return 0;
+}
+inline VV_LOC f64 rand__msqrt(f64 a) {
+	if (a == 0) {
+		return a;
+	}
+	f64 x = a;
+	multi_return_f64_int mr_867 = rand__frexp(x);
+	f64 z = mr_867.arg0;
+	int ex = mr_867.arg1;
+	f64 w = x;
+	x = (f64)(((f64)(4.173075996388649989089e-1)) + (f64)(((f64)(5.9016206709064458299663e-1)) * z));
+	if (((ex & 1)) != 0) {
+		x *= _const_rand__sqrt2;
+	}
+	x = rand__scalbn(x, (ex >> 1));
+	x = (f64)(((f64)(0.5)) * ((f64)(x + (f64)(w / x))));
+	x = (f64)(((f64)(0.5)) * ((f64)(x + (f64)(w / x))));
+	x = (f64)(((f64)(0.5)) * ((f64)(x + (f64)(w / x))));
+	return x;
+}
+VV_LOC f64 rand__mlog(f64 a) {
+	f64 ln2_lo = 1.90821492927058770002e-10;
+	f64 ln2_hi = 0.693147180369123816490;
+	f64 l1 = 0.6666666666666735130;
+	f64 l2 = 0.3999999999940941908;
+	f64 l3 = 0.2857142874366239149;
+	f64 l4 = 0.2222219843214978396;
+	f64 l5 = 0.1818357216161805012;
+	f64 l6 = 0.1531383769920937332;
+	f64 l7 = 0.1479819860511658591;
+	f64 x = a;
+	multi_return_f64_int mr_1639 = rand__frexp(x);
+	f64 f1 = mr_1639.arg0;
+	int ki = mr_1639.arg1;
+	if (f1 < ((f64)((float_literal)(1.41421356237309504880168872420969807856967187537694807317667974 / 2)))) {
+		f1 *= 2;
+		ki--;
+	}
+	f64 f = (f64)(f1 - 1);
+	f64 k = ((f64)(ki));
+	f64 s = (f64)(f / ((f64)(2 + f)));
+	f64 s2 = (f64)(s * s);
+	f64 s4 = (f64)(s2 * s2);
+	f64 t1 = (f64)(s2 * ((f64)(l1 + (f64)(s4 * ((f64)(l3 + (f64)(s4 * ((f64)(l5 + (f64)(s4 * l7))))))))));
+	f64 t2 = (f64)(s4 * ((f64)(l2 + (f64)(s4 * ((f64)(l4 + (f64)(s4 * l6)))))));
+	f64 r = (f64)(t1 + t2);
+	f64 hfsq = (f64)((f64)(((f64)(0.5)) * f) * f);
+	return (f64)((f64)(k * ln2_hi) - ((f64)(((f64)(hfsq - ((f64)((f64)(s * ((f64)(hfsq + r))) + (f64)(k * ln2_lo))))) - f)));
+}
+VV_LOC multi_return_f64_int rand__frexp(f64 x) {
+	u64 y = rand__f64_bits(x);
+	int ee = ((int)((((y >> 52)) & 0x7ff)));
+	if (ee == 0) {
+		if (x != ((f64)(0.0))) {
+			f64 x1p64 = rand__f64_from_bits(((u64)(0x43f0000000000000LL)));
+			multi_return_f64_int mr_2130 = rand__frexp((f64)(x * x1p64));
+			f64 z = mr_2130.arg0;
+			int e_ = mr_2130.arg1;
+			return (multi_return_f64_int){.arg0=z, .arg1=(int)(e_ - 64)};
+		}
+		return (multi_return_f64_int){.arg0=x, .arg1=0};
+	} else if (ee == 0x7ff) {
+		return (multi_return_f64_int){.arg0=x, .arg1=0};
+	}
+	int e_ = (int)(ee - 0x3fe);
+	y &= ((u64)(0x800fffffffffffffULL));
+	y |= ((u64)(0x3fe0000000000000LL));
+	return (multi_return_f64_int){.arg0=rand__f64_from_bits(y), .arg1=e_};
+}
+VV_LOC f64 rand__scalbn(f64 x, int n_) {
+	int n = n_;
+	f64 x1p1023 = rand__f64_from_bits(((u64)(0x7fe0000000000000LL)));
+	f64 x1p53 = rand__f64_from_bits(((u64)(0x4340000000000000LL)));
+	f64 x1p_1022 = rand__f64_from_bits(((u64)(0x0010000000000000LL)));
+	f64 y = x;
+	if (n > 1023) {
+		y *= x1p1023;
+		n -= 1023;
+		if (n > 1023) {
+			y *= x1p1023;
+			n -= 1023;
+			if (n > 1023) {
+				n = 1023;
+			}
+		}
+	} else if (n < -1022) {
+		y *= (f64)(x1p_1022 * x1p53);
+		n += (int_literal)(1022 - 53);
+		if (n < -1022) {
+			y *= (f64)(x1p_1022 * x1p53);
+			n += (int_literal)(1022 - 53);
+			if (n < -1022) {
+				n = -1022;
+			}
+		}
+	}
+	return (f64)(y * rand__f64_from_bits((((u64)(((int)(0x3ff + n)))) << 52)));
+}
+inline VV_LOC f64 rand__f64_from_bits(u64 b) {
+	return *((f64*)(&b));
+}
+inline VV_LOC u64 rand__f64_bits(f64 f) {
+	return *((u64*)(&f));
+}
+string rand__uuid_v4(void) {
+	u64 rand_1 = rand__PRNG_name_table[default_rng->_typ]._method_u64(default_rng->_object);
+	u64 rand_2 = rand__PRNG_name_table[default_rng->_typ]._method_u64(default_rng->_object);
+	return rand__internal_uuid(4, rand_1, rand_2);
+}
+inline VV_LOC string rand__internal_uuid(u8 version, u64 rand_1, u64 rand_2) {
+	Array_fixed_u16_8 parts = {0};
+	parts[0] = ((u16)((rand_1 >> 48)));
+	parts[1] = ((u16)((rand_1 >> 32)));
+	parts[2] = ((u16)((rand_1 >> 16)));
+	parts[3] = ((u16)(rand_1));
+	parts[4] = ((u16)((rand_2 >> 48)));
+	parts[5] = ((u16)((rand_2 >> 32)));
+	parts[6] = ((u16)((rand_2 >> 16)));
+	parts[7] = ((u16)(rand_2));
+	parts[3] = (((parts[3] & 0x0FFF)) | ((((u16)(version)) << 12)));
+	parts[4] = (((parts[4] & 0x3FFF)) | 0x8000);
+	u8* buf = builtin__malloc_noscan(37);
+	int start = 0;
+	{ // Unsafe block
+		for (int i = 0; i < 8; ++i) {
+			u16 val = parts[i];
+			buf[start] = _const_rand__hex_chars.str[ (((val >> 12)) & 0xF)];
+			buf[(int)(start + 1)] = _const_rand__hex_chars.str[ (((val >> 8)) & 0xF)];
+			buf[(int)(start + 2)] = _const_rand__hex_chars.str[ (((val >> 4)) & 0xF)];
+			buf[(int)(start + 3)] = _const_rand__hex_chars.str[ (val & 0xF)];
+			start += 4;
+			if (start == 8 || start == 13 || start == 18 || start == 23) {
+				buf[start] = '-';
+				start++;
+			}
+		}
+		buf[36] = 0;
+		return builtin__u8_vstring_with_len(buf, 36);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string rand__uuid_v7(void) {
+	u64 timestamp_48 = (((u64)(time__Time_unix_milli(time__now()))) << 16);
+	u64 rand_1 = (timestamp_48 | rand__PRNG_name_table[default_rng->_typ]._method_u16(default_rng->_object));
+	u64 rand_2 = rand__PRNG_name_table[default_rng->_typ]._method_u64(default_rng->_object);
+	return rand__internal_uuid(7, rand_1, rand_2);
+}
+rand__UUIDSession rand__new_uuid_v7_session(void) {
+	return ((rand__UUIDSession){.counter = 0,});
+}
+string rand__UUIDSession_next(rand__UUIDSession* u) {
+	u64 timestamp = ((u64)(time__Time_unix_nano(time__now())));
+	u64 timestamp_shift_4bits = (((timestamp & 0xFFFFFFFFFFFF0000ULL)) | ((((timestamp & 0x000000000000FFFF)) >> 4)));
+	u64 rand_1 = (((timestamp_shift_4bits & 0xFFFFFFFFFFFFFFC0ULL)) | ((u64)((u->counter & 0x3F))));
+	u64 rand_2 = rand__PRNG_name_table[default_rng->_typ]._method_u64(default_rng->_object);
+	u->counter++;
+	return rand__internal_uuid(7, rand_1, rand_2);
+}
+VV_LOC string rand__internal_ulid_at_millisecond(rand__PRNG* rng, u64 unix_time_milli) {
+	int buflen = 26;
+	u8* buf = builtin__malloc_noscan(27);
+	u64 t = unix_time_milli;
+	int i = 9;
+	for (;;) {
+		if (!(i >= 0)) break;
+		{ // Unsafe block
+			buf[i] = _const_rand__ulid_encoding.str[ (t & 0x1F)];
+		}
+		t = (t >> 5);
+		i--;
+	}
+	u64 x = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+	i = 10;
+	for (;;) {
+		if (!(i < 19)) break;
+		{ // Unsafe block
+			buf[i] = _const_rand__ulid_encoding.str[ (x & 0x1F)];
+		}
+		x = (x >> 5);
+		i++;
+	}
+	x = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+	for (;;) {
+		if (!(i < 26)) break;
+		{ // Unsafe block
+			buf[i] = _const_rand__ulid_encoding.str[ (x & 0x1F)];
+		}
+		x = (x >> 5);
+		i++;
+	}
+	{ // Unsafe block
+		buf[26] = 0;
+		return builtin__u8_vstring_with_len(buf, buflen);
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC string rand__internal_string_from_set(rand__PRNG* rng, string charset, int len) {
+	if (len == 0) {
+		return _S("");
+	}
+	u8* buf = builtin__malloc_noscan((int)(len + 1));
+	for (int i = 0; i < len; ++i) {
+		{ // Unsafe block
+			buf[i] = charset.str[ (u32)(rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object) % ((u32)(charset.len)))];
+		}
+	}
+	{ // Unsafe block
+		buf[len] = 0;
+	}
+	return builtin__u8_vstring_with_len(buf, len);
+}
+VV_LOC void rand__internal_fill_buffer_from_set(rand__PRNG* rng, string charset, Array_u8* buf) {
+	if (buf->len == 0) {
+		return;
+	}
+	int blen = buf->len;
+	for (int i = 0; i < blen; ++i) {
+		{ // Unsafe block
+			((u8*)buf->data)[i] = charset.str[ (u32)(rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object) % ((u32)(charset.len)))];
+		}
+	}
+}
+VV_LOC void rand__deinit(void) {
+	{ // Unsafe block
+		rand__PRNG_name_table[default_rng->_typ]._method__v_free(default_rng->_object);
+		builtin___v_free(default_rng);
+	}
+}
+VV_LOC void rand__init(void) {
+	default_rng = rand__new_default(((rand__config__PRNGConfigStruct){.seed_ = rand__seed__time_seed_array(2),}));
+	_result_void _t1 = builtin__at_exit((voidptr)rand__deinit);
+	(void)_t1;
+ ;
+}
+VV_LOC void rand__read_32(rand__PRNG* rng, Array_u8* buf) {
+	u32* p32 = ((u32*)(buf->data));
+	int u32s = (int)(buf->len / 4);
+	for (int i = 0; i < u32s; ++i) {
+		{ // Unsafe block
+			*(p32 + i) = rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object);
+		}
+	}
+	for (int i = (int)(u32s * 4); i < buf->len; ++i) {
+		((u8*)buf->data)[i] = rand__PRNG_name_table[rng->_typ]._method_u8(rng->_object);
+	}
+}
+VV_LOC void rand__read_64(rand__PRNG* rng, Array_u8* buf) {
+	u64* p64 = ((u64*)(buf->data));
+	if ((((u64)(p64)) & 0xF) != 0) {
+		for (int i = 0; i < buf->len; ++i) {
+			((u8*)buf->data)[i] = rand__PRNG_name_table[rng->_typ]._method_u8(rng->_object);
+		}
+		return;
+	}
+	int u64s = (int)(buf->len / 8);
+	for (int i = 0; i < u64s; ++i) {
+		{ // Unsafe block
+			*(p64 + i) = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+		}
+	}
+	for (int i = (int)(u64s * 8); i < buf->len; ++i) {
+		((u8*)buf->data)[i] = rand__PRNG_name_table[rng->_typ]._method_u8(rng->_object);
+	}
+}
+VV_LOC void rand__read_internal(rand__PRNG* rng, Array_u8* buf) {
+	int _t1 = rand__PRNG_name_table[rng->_typ]._method_block_size(rng->_object);
+		switch (_t1) {
+		case 32: {
+			rand__read_32(rng, buf);
+			break;
+		}
+		case 64: {
+			rand__read_64(rng, buf);
+			break;
+		}
+		default: {
+			{
+				for (int i = 0; i < buf->len; ++i) {
+					((u8*)buf->data)[i] = rand__PRNG_name_table[rng->_typ]._method_u8(rng->_object);
+				}
+				break;
+			}
+		}
+	}
+	
+}
+rand__PRNG* rand__new_default(rand__config__PRNGConfigStruct config_) {
+	rand__wyrand__WyRandRNG* rng = ((rand__wyrand__WyRandRNG*)builtin__memdup(&(rand__wyrand__WyRandRNG){.PRNGBuffer = ((rand__buffer__PRNGBuffer){.bytes_left = 0,.buffer = 0,}),.state = rand__seed__time_seed_64(),.bytes_left = 0,.buffer = 0,}, sizeof(rand__wyrand__WyRandRNG)));
+	rand__wyrand__WyRandRNG_seed(rng, config_.seed_);
+	builtin__array_free(&config_.seed_);
+	return HEAP(rand__PRNG, I_rand__wyrand__WyRandRNG_to_Interface_rand__PRNG(rng));
+}
+rand__PRNG* rand__get_current_rng(void) {
+	return default_rng;
+}
+void rand__set_rng(rand__PRNG* rng) {
+	default_rng = rng;
+}
+void rand__seed(Array_u32 seed) {
+	rand__PRNG_name_table[default_rng->_typ]._method_seed(default_rng->_object, seed);
+}
+inline _result_Array_u8 rand__PRNG_bytes(rand__PRNG* rng, int bytes_needed) {
+	if (bytes_needed < 0) {
+		return (_result_Array_u8){ .is_error=true, .err=builtin___v_error(_S("can not read < 0 random bytes")), .data={E_STRUCT} };
+	}
+	Array_u8 buffer = builtin____new_array_with_default(bytes_needed, 0, sizeof(u8), 0);
+	rand__read_internal(rng, &buffer);
+	_result_Array_u8 _t2;
+	builtin___result_ok(&(Array_u8[]) { buffer }, (_result*)(&_t2), sizeof(Array_u8));
+	 
+	return _t2;
+}
+void rand__PRNG_read(rand__PRNG* rng, Array_u8* buf) {
+	rand__read_internal(rng, buf);
+}
+inline _result_i32 rand__PRNG_i32n(rand__PRNG* rng, i32 max) {
+	_result_int _t2 = rand__PRNG_intn(rng, max);
+	if (_t2.is_error) {
+		_result_i32 _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_i32 _t1;
+	builtin___result_ok(&(i32[]) { ((i32)((*(int*)_t2.data))) }, (_result*)(&_t1), sizeof(i32));
+	 
+	return _t1;
+}
+inline _result_u32 rand__PRNG_u32n(rand__PRNG* rng, u32 max) {
+	if (max == 0) {
+		return (_result_u32){ .is_error=true, .err=builtin___v_error(_S("max must be positive integer")), .data={E_STRUCT} };
+	}
+	int bit_len = math__bits__len_32(max);
+	if (_unlikely_(bit_len == 32)) {
+		for (;;) {
+			u32 value = rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object);
+			if (value < max) {
+				_result_u32 _t2;
+				builtin___result_ok(&(u32[]) { value }, (_result*)(&_t2), sizeof(u32));
+				 
+				return _t2;
+			}
+		}
+	} else {
+		u32 mask = (_unlikely_(bit_len == 31) ? (((u32)(0x7FFFFFFF))) : ((u32)(((((u32)(1)) << ((int)(bit_len + 1)))) - 1)));
+		for (;;) {
+			u32 value = (rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object) & mask);
+			if (value < max) {
+				_result_u32 _t3;
+				builtin___result_ok(&(u32[]) { value }, (_result*)(&_t3), sizeof(u32));
+				 
+				return _t3;
+			}
+		}
+	}
+	_result_u32 _t4;
+	builtin___result_ok(&(u32[]) { ((u32)(0)) }, (_result*)(&_t4), sizeof(u32));
+	 
+	return _t4;
+}
+inline _result_u64 rand__PRNG_u64n(rand__PRNG* rng, u64 max) {
+	if (max == 0) {
+		return (_result_u64){ .is_error=true, .err=builtin___v_error(_S("max must be positive integer")), .data={E_STRUCT} };
+	}
+	int bit_len = math__bits__len_64(max);
+	if (_unlikely_(bit_len == 64)) {
+		for (;;) {
+			u64 value = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+			if (value < max) {
+				_result_u64 _t2;
+				builtin___result_ok(&(u64[]) { value }, (_result*)(&_t2), sizeof(u64));
+				 
+				return _t2;
+			}
+		}
+	} else {
+		u64 mask = (_unlikely_(bit_len == 63) ? (((u64)(0x7FFFFFFFFFFFFFFFLL))) : ((u64)(((((u64)(1)) << ((int)(bit_len + 1)))) - 1)));
+		for (;;) {
+			u64 value = (rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object) & mask);
+			if (value < max) {
+				_result_u64 _t3;
+				builtin___result_ok(&(u64[]) { value }, (_result*)(&_t3), sizeof(u64));
+				 
+				return _t3;
+			}
+		}
+	}
+	_result_u64 _t4;
+	builtin___result_ok(&(u64[]) { ((u64)(0)) }, (_result*)(&_t4), sizeof(u64));
+	 
+	return _t4;
+}
+inline _result_u32 rand__PRNG_u32_in_range(rand__PRNG* rng, u32 min, u32 max) {
+	if (max <= min) {
+		return (_result_u32){ .is_error=true, .err=builtin___v_error(_S("max must be greater than min")), .data={E_STRUCT} };
+	}
+	_result_u32 _t3 = rand__PRNG_u32n(rng, (u32)(max - min));
+	if (_t3.is_error) {
+		_result_u32 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_u32 _t2;
+	builtin___result_ok(&(u32[]) { (u32)(min + (*(u32*)_t3.data)) }, (_result*)(&_t2), sizeof(u32));
+	 
+	return _t2;
+}
+inline _result_u64 rand__PRNG_u64_in_range(rand__PRNG* rng, u64 min, u64 max) {
+	if (max <= min) {
+		return (_result_u64){ .is_error=true, .err=builtin___v_error(_S("max must be greater than min")), .data={E_STRUCT} };
+	}
+	_result_u64 _t3 = rand__PRNG_u64n(rng, (u64)(max - min));
+	if (_t3.is_error) {
+		_result_u64 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_u64 _t2;
+	builtin___result_ok(&(u64[]) { (u64)(min + (*(u64*)_t3.data)) }, (_result*)(&_t2), sizeof(u64));
+	 
+	return _t2;
+}
+inline i8 rand__PRNG_i8(rand__PRNG* rng) {
+	return ((i8)(rand__PRNG_name_table[rng->_typ]._method_u8(rng->_object)));
+}
+inline i16 rand__PRNG_i16(rand__PRNG* rng) {
+	return ((i16)(rand__PRNG_name_table[rng->_typ]._method_u16(rng->_object)));
+}
+inline i32 rand__PRNG_i32(rand__PRNG* rng) {
+	return ((i32)(rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object)));
+}
+inline int rand__PRNG_int(rand__PRNG* rng) {
+	return ((int)(rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object)));
+}
+inline i64 rand__PRNG_i64(rand__PRNG* rng) {
+	return ((i64)(rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object)));
+}
+inline int rand__PRNG_int31(rand__PRNG* rng) {
+	return ((int)((rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object) & ((u32)(0x7FFFFFFF)))));
+}
+inline i64 rand__PRNG_int63(rand__PRNG* rng) {
+	return ((i64)((rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object) & ((u64)(0x7FFFFFFFFFFFFFFFLL)))));
+}
+inline _result_int rand__PRNG_intn(rand__PRNG* rng, int max) {
+	if (max <= 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("max has to be positive.")), .data={E_STRUCT} };
+	}
+	_result_u32 _t3 = rand__PRNG_u32n(rng, ((u32)(max)));
+	if (_t3.is_error) {
+		_result_int _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_int _t2;
+	builtin___result_ok(&(int[]) { ((int)((*(u32*)_t3.data))) }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+inline _result_i64 rand__PRNG_i64n(rand__PRNG* rng, i64 max) {
+	if (max <= 0) {
+		return (_result_i64){ .is_error=true, .err=builtin___v_error(_S("max has to be positive.")), .data={E_STRUCT} };
+	}
+	_result_u64 _t3 = rand__PRNG_u64n(rng, ((u64)(max)));
+	if (_t3.is_error) {
+		_result_i64 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_i64 _t2;
+	builtin___result_ok(&(i64[]) { ((i64)((*(u64*)_t3.data))) }, (_result*)(&_t2), sizeof(i64));
+	 
+	return _t2;
+}
+inline _result_int rand__PRNG_int_in_range(rand__PRNG* rng, int min, int max) {
+	if (max <= min) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("max must be greater than min")), .data={E_STRUCT} };
+	}
+	_result_int _t3 = rand__PRNG_intn(rng, (int)(max - min));
+	if (_t3.is_error) {
+		_result_int _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_int _t2;
+	builtin___result_ok(&(int[]) { (int)(min + (*(int*)_t3.data)) }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+inline _result_i32 rand__PRNG_i32_in_range(rand__PRNG* rng, i32 min, i32 max) {
+	if (max <= min) {
+		return (_result_i32){ .is_error=true, .err=builtin___v_error(_S("max must be greater than min")), .data={E_STRUCT} };
+	}
+	_result_int _t3 = rand__PRNG_intn(rng, (i32)(max - min));
+	if (_t3.is_error) {
+		_result_i32 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_i32 _t2;
+	builtin___result_ok(&(i32[]) { (i32)(min + ((i32)((*(int*)_t3.data)))) }, (_result*)(&_t2), sizeof(i32));
+	 
+	return _t2;
+}
+inline _result_i64 rand__PRNG_i64_in_range(rand__PRNG* rng, i64 min, i64 max) {
+	if (max <= min) {
+		return (_result_i64){ .is_error=true, .err=builtin___v_error(_S("max must be greater than min")), .data={E_STRUCT} };
+	}
+	_result_i64 _t3 = rand__PRNG_i64n(rng, (i64)(max - min));
+	if (_t3.is_error) {
+		_result_i64 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_i64 _t2;
+	builtin___result_ok(&(i64[]) { (i64)(min + (*(i64*)_t3.data)) }, (_result*)(&_t2), sizeof(i64));
+	 
+	return _t2;
+}
+inline f32 rand__PRNG_f32(rand__PRNG* rng) {
+	return ((f32)((f64)(((rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object) >> 9)) * _const_rand__reciprocal_2_23rd)));
+}
+inline f32 rand__PRNG_f32cp(rand__PRNG* rng) {
+	u32 x = rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object);
+	u32 exp = ((u32)(126));
+	u32 mask = (((u32)(1)) << 31);
+	if (_unlikely_(x == 0)) {
+		x = rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object);
+		exp -= 31;
+	}
+	for (;;) {
+		if ((x & mask) != 0) {
+			mask >>= 1;
+			exp -= 1;
+		} else {
+			break;
+		}
+	}
+	if (exp < 118) {
+		x = rand__PRNG_name_table[rng->_typ]._method_u32(rng->_object);
+	}
+	x = (((exp << 23)) | (((x >> 8)) & _const_rand__ieee754_mantissa_f32_mask));
+	return math__bits__f32_from_bits(x);
+}
+inline f64 rand__PRNG_f64(rand__PRNG* rng) {
+	return ((f64)((f64)(((rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object) >> 12)) * _const_rand__reciprocal_2_52nd)));
+}
+inline f64 rand__PRNG_f64cp(rand__PRNG* rng) {
+	u64 x = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+	u64 exp = ((u64)(1022));
+	u64 mask = (((u64)(1)) << 63);
+	u32 bitcount = ((u32)(0));
+	if (_unlikely_(x == 0)) {
+		x = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+		exp -= 31;
+	}
+	for (;;) {
+		if ((x & mask) != 0) {
+			mask >>= 1;
+			bitcount += 1;
+		} else {
+			break;
+		}
+	}
+	exp -= bitcount;
+	if (bitcount > 11) {
+		x = rand__PRNG_name_table[rng->_typ]._method_u64(rng->_object);
+	}
+	x = (((exp << 52)) | ((x & _const_rand__ieee754_mantissa_f64_mask)));
+	return math__bits__f64_from_bits(x);
+}
+inline _result_f32 rand__PRNG_f32n(rand__PRNG* rng, f32 max) {
+	if (max < 0) {
+		return (_result_f32){ .is_error=true, .err=builtin___v_error(_S("max has to be non-negative.")), .data={E_STRUCT} };
+	}
+	_result_f32 _t2;
+	builtin___result_ok(&(f32[]) { (f32)(rand__PRNG_f32(rng) * max) }, (_result*)(&_t2), sizeof(f32));
+	 
+	return _t2;
+}
+inline _result_f64 rand__PRNG_f64n(rand__PRNG* rng, f64 max) {
+	if (max < 0) {
+		return (_result_f64){ .is_error=true, .err=builtin___v_error(_S("max has to be non-negative.")), .data={E_STRUCT} };
+	}
+	_result_f64 _t2;
+	builtin___result_ok(&(f64[]) { (f64)(rand__PRNG_f64(rng) * max) }, (_result*)(&_t2), sizeof(f64));
+	 
+	return _t2;
+}
+inline _result_f32 rand__PRNG_f32_in_range(rand__PRNG* rng, f32 min, f32 max) {
+	if (max < min) {
+		return (_result_f32){ .is_error=true, .err=builtin___v_error(_S("max must be greater than or equal to min")), .data={E_STRUCT} };
+	}
+	_result_f32 _t3 = rand__PRNG_f32n(rng, (f32)(max - min));
+	if (_t3.is_error) {
+		_result_f32 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_f32 _t2;
+	builtin___result_ok(&(f32[]) { (f32)(min + (*(f32*)_t3.data)) }, (_result*)(&_t2), sizeof(f32));
+	 
+	return _t2;
+}
+inline _result_f64 rand__PRNG_f64_in_range(rand__PRNG* rng, f64 min, f64 max) {
+	if (max < min) {
+		return (_result_f64){ .is_error=true, .err=builtin___v_error(_S("max must be greater than or equal to min")), .data={E_STRUCT} };
+	}
+	_result_f64 _t3 = rand__PRNG_f64n(rng, (f64)(max - min));
+	if (_t3.is_error) {
+		_result_f64 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	_result_f64 _t2;
+	builtin___result_ok(&(f64[]) { (f64)(min + (*(f64*)_t3.data)) }, (_result*)(&_t2), sizeof(f64));
+	 
+	return _t2;
+}
+string rand__PRNG_ulid(rand__PRNG* rng) {
+	return rand__internal_ulid_at_millisecond(rng, ((u64)(time__Time_unix_milli(time__utc()))));
+}
+string rand__PRNG_ulid_at_millisecond(rand__PRNG* rng, u64 unix_time_milli) {
+	return rand__internal_ulid_at_millisecond(rng, unix_time_milli);
+}
+string rand__PRNG_string_from_set(rand__PRNG* rng, string charset, int len) {
+	return rand__internal_string_from_set(rng, charset, len);
+}
+string rand__PRNG_string(rand__PRNG* rng, int len) {
+	return rand__internal_string_from_set(rng, _const_rand__english_letters, len);
+}
+string rand__PRNG_hex(rand__PRNG* rng, int len) {
+	return rand__internal_string_from_set(rng, _const_rand__hex_chars, len);
+}
+string rand__PRNG_ascii(rand__PRNG* rng, int len) {
+	return rand__internal_string_from_set(rng, _const_rand__ascii_chars, len);
+}
+inline void rand__PRNG_fill_buffer_from_set(rand__PRNG* rng, string charset, Array_u8* buf) {
+	rand__internal_fill_buffer_from_set(rng, charset, buf);
+}
+_result_bool rand__PRNG_bernoulli(rand__PRNG* rng, f64 p) {
+	if (p < 0 || p > 1) {
+		return (_result_bool){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x1fe0f, {.d_f64 = p}}, {_S(" is not a valid probability value."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_result_bool _t2;
+	builtin___result_ok(&(bool[]) { rand__PRNG_f64(rng) <= p }, (_result*)(&_t2), sizeof(bool));
+	 
+	return _t2;
+}
+_result_f64 rand__PRNG_normal(rand__PRNG* rng, rand__config__NormalConfigStruct conf) {
+	_result_multi_return_f64_f64 _t1 = rand__PRNG_normal_pair(rng, conf);
+	if (_t1.is_error) {
+		_result_f64 _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_f64_f64 mr_12773 = (*(multi_return_f64_f64*)_t1.data);
+	f64 x = mr_12773.arg0;
+	_result_f64 _t3;
+	builtin___result_ok(&(f64[]) { x }, (_result*)(&_t3), sizeof(f64));
+	 
+	return _t3;
+}
+_result_multi_return_f64_f64 rand__PRNG_normal_pair(rand__PRNG* rng, rand__config__NormalConfigStruct conf) {
+	if (conf.sigma <= 0) {
+		return (_result_multi_return_f64_f64){ .is_error=true, .err=builtin___v_error(_S("Standard deviation must be positive")), .data={E_STRUCT} };
+	}
+	for (;;) {
+		_result_f64 _t2 = rand__PRNG_f64_in_range(rng, -1, 1);
+		if (_t2.is_error) {
+			*(f64*) _t2.data = 0.0;
+		}
+		
+ 		f64 u = (*(f64*)_t2.data);
+		_result_f64 _t3 = rand__PRNG_f64_in_range(rng, -1, 1);
+		if (_t3.is_error) {
+			*(f64*) _t3.data = 0.0;
+		}
+		
+ 		f64 v = (*(f64*)_t3.data);
+		f64 s = (f64)((f64)(u * u) + (f64)(v * v));
+		if (s >= 1 || s == 0) {
+			continue;
+		}
+		f64 t = rand__msqrt((f64)((f64)(-2 * rand__mlog(s)) / s));
+		f64 x = (f64)(conf.mu + (f64)((f64)(conf.sigma * t) * u));
+		f64 y = (f64)(conf.mu + (f64)((f64)(conf.sigma * t) * v));
+		_result_multi_return_f64_f64 _t4;
+		builtin___result_ok(&(multi_return_f64_f64[]) { (multi_return_f64_f64){.arg0=x, .arg1=y} }, (_result*)(&_t4), sizeof(multi_return_f64_f64));
+		return _t4;
+	}
+	return (_result_multi_return_f64_f64){ .is_error=true, .err=builtin___v_error(_S("Implementation error. Please file an issue.")), .data={E_STRUCT} };
+}
+_result_int rand__PRNG_binomial(rand__PRNG* rng, int n, f64 p) {
+	if (p < 0 || p > 1) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x1fe0f, {.d_f64 = p}}, {_S(" is not a valid probability value."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	int count = 0;
+	for (int _t2 = 0; _t2 < n; ++_t2) {
+		_result_bool _t3 = rand__PRNG_bernoulli(rng, p);
+		if (_t3.is_error) {
+			_result_int _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ 		if ((*(bool*)_t3.data)) {
+			count++;
+		}
+	}
+	_result_int _t5;
+	builtin___result_ok(&(int[]) { count }, (_result*)(&_t5), sizeof(int));
+	 
+	return _t5;
+}
+f64 rand__PRNG_exponential(rand__PRNG* rng, f64 lambda) {
+	if (lambda <= 0) {
+		builtin___v_panic(_S("The rate (lambda) must be positive."));
+		VUNREACHABLE();
+	}
+	return (f64)(-rand__mlog(rand__PRNG_f64(rng)) / lambda);
+}
+u8 rand__u8(void) {
+	return rand__PRNG_name_table[default_rng->_typ]._method_u8(default_rng->_object);
+}
+u16 rand__u16(void) {
+	return rand__PRNG_name_table[default_rng->_typ]._method_u16(default_rng->_object);
+}
+u32 rand__u32(void) {
+	return rand__PRNG_name_table[default_rng->_typ]._method_u32(default_rng->_object);
+}
+u64 rand__u64(void) {
+	return rand__PRNG_name_table[default_rng->_typ]._method_u64(default_rng->_object);
+}
+_result_u32 rand__u32n(u32 max) {
+	return rand__PRNG_u32n(default_rng, max);
+}
+_result_u64 rand__u64n(u64 max) {
+	return rand__PRNG_u64n(default_rng, max);
+}
+_result_u32 rand__u32_in_range(u32 min, u32 max) {
+	return rand__PRNG_u32_in_range(default_rng, min, max);
+}
+_result_u64 rand__u64_in_range(u64 min, u64 max) {
+	return rand__PRNG_u64_in_range(default_rng, min, max);
+}
+i8 rand__i8(void) {
+	return rand__PRNG_i8(default_rng);
+}
+i16 rand__i16(void) {
+	return rand__PRNG_i16(default_rng);
+}
+i32 rand__i32(void) {
+	return rand__PRNG_i32(default_rng);
+}
+int rand__int(void) {
+	return rand__PRNG_int(default_rng);
+}
+_result_i32 rand__i32n(i32 max) {
+	return rand__PRNG_i32n(default_rng, max);
+}
+_result_int rand__intn(int max) {
+	return rand__PRNG_intn(default_rng, max);
+}
+_result_int rand__int_in_range(int min, int max) {
+	return rand__PRNG_int_in_range(default_rng, min, max);
+}
+_result_i32 rand__i32_in_range(i32 min, i32 max) {
+	return rand__PRNG_i32_in_range(default_rng, min, max);
+}
+int rand__int31(void) {
+	return rand__PRNG_int31(default_rng);
+}
+i64 rand__i64(void) {
+	return rand__PRNG_i64(default_rng);
+}
+_result_i64 rand__i64n(i64 max) {
+	return rand__PRNG_i64n(default_rng, max);
+}
+_result_i64 rand__i64_in_range(i64 min, i64 max) {
+	return rand__PRNG_i64_in_range(default_rng, min, max);
+}
+i64 rand__int63(void) {
+	return rand__PRNG_int63(default_rng);
+}
+f32 rand__f32(void) {
+	return rand__PRNG_f32(default_rng);
+}
+f32 rand__f32cp(void) {
+	return rand__PRNG_f32cp(default_rng);
+}
+f64 rand__f64(void) {
+	return rand__PRNG_f64(default_rng);
+}
+f64 rand__f64cp(void) {
+	return rand__PRNG_f64cp(default_rng);
+}
+_result_f32 rand__f32n(f32 max) {
+	return rand__PRNG_f32n(default_rng, max);
+}
+_result_f64 rand__f64n(f64 max) {
+	return rand__PRNG_f64n(default_rng, max);
+}
+_result_f32 rand__f32_in_range(f32 min, f32 max) {
+	return rand__PRNG_f32_in_range(default_rng, min, max);
+}
+_result_f64 rand__f64_in_range(f64 min, f64 max) {
+	return rand__PRNG_f64_in_range(default_rng, min, max);
+}
+_result_Array_u8 rand__bytes(int bytes_needed) {
+	return rand__PRNG_bytes(default_rng, bytes_needed);
+}
+void rand__read(Array_u8* buf) {
+	rand__read_internal(default_rng, buf);
+}
+string rand__ulid(void) {
+	return rand__PRNG_ulid(default_rng);
+}
+string rand__ulid_at_millisecond(u64 unix_time_milli) {
+	return rand__PRNG_ulid_at_millisecond(default_rng, unix_time_milli);
+}
+string rand__string_from_set(string charset, int len) {
+	return rand__PRNG_string_from_set(default_rng, charset, len);
+}
+inline void rand__fill_buffer_from_set(string charset, Array_u8* buf) {
+	rand__PRNG_fill_buffer_from_set(default_rng, charset, buf);
+}
+string rand__string(int len) {
+	return rand__string_from_set(_const_rand__english_letters, len);
+}
+string rand__hex(int len) {
+	return rand__string_from_set(_const_rand__hex_chars, len);
+}
+string rand__ascii(int len) {
+	return rand__string_from_set(_const_rand__ascii_chars, len);
+}
+_result_bool rand__bernoulli(f64 p) {
+	return rand__PRNG_bernoulli(default_rng, p);
+}
+_result_f64 rand__normal(rand__config__NormalConfigStruct config_) {
+	return rand__PRNG_normal(default_rng, config_);
+}
+_result_multi_return_f64_f64 rand__normal_pair(rand__config__NormalConfigStruct config_) {
+	return rand__PRNG_normal_pair(default_rng, config_);
+}
+_result_int rand__binomial(int n, f64 p) {
+	return rand__PRNG_binomial(default_rng, n, p);
+}
+f64 rand__exponential(f64 lambda) {
+	return rand__PRNG_exponential(default_rng, lambda);
+}
+VV_LOC sync__Channel* sync__new_channel_st(u32 n, u32 st) {
+	u32 wsem = (n > 0 ? (n) : (1));
+	u32 rsem = (n > 0 ? (((u32)(0))) : (1));
+	u8* rbuf = (n > 0 ? (builtin___v_malloc(((int)((u32)(n * st))))) : (((u8*)(((void*)0)))));
+	u8* sbuf = (n > 0 ? (builtin__vcalloc_noscan(((int)((u32)(n * 2))))) : (((u8*)(((void*)0)))));
+	sync__Channel *ch = HEAP(sync__Channel, (((sync__Channel){
+		.ringbuf = rbuf,
+		.statusbuf = sbuf,
+		.objsize = st,
+		.writesem = ((sync__Semaphore){.count = 0,}),
+		.readsem = ((sync__Semaphore){.count = 0,}),
+		.writesem_im = ((sync__Semaphore){.count = 0,}),
+		.readsem_im = ((sync__Semaphore){.count = 0,}),
+		.write_free = n,
+		.read_avail = 0,
+		.buf_elem_write_idx = 0,
+		.buf_elem_read_idx = 0,
+		.write_subscriber = ((void*)0),
+		.read_subscriber = ((void*)0),
+		.write_sub_mtx = sync__new_spin_lock(),
+		.read_sub_mtx = sync__new_spin_lock(),
+		.closed = 0,
+		.cap = n,
+	})));
+	sync__Semaphore_init(&(*(ch)).writesem, wsem);
+	sync__Semaphore_init(&(*(ch)).readsem, rsem);
+	sync__Semaphore_init(&(*(ch)).writesem_im, 0);
+	sync__Semaphore_init(&(*(ch)).readsem_im, 0);
+	return &(*(ch));
+}
+void sync__Channel_close(sync__Channel* ch) {
+	u16 open_val = ((u16)(0));
+	if (!atomic_compare_exchange_strong_u16(&ch->closed, &open_val, 1)) {
+		return;
+	}
+	voidptr nulladr = ((void*)0);
+	for (;;) {
+		if (!(!atomic_compare_exchange_weak_ptr(((voidptr)(&ch->adr_written)), ((voidptr)(&nulladr)), ((isize)(-1))))) break;
+		nulladr = ((void*)0);
+	}
+	sync__Semaphore_post(&ch->readsem_im);
+	sync__Semaphore_post(&ch->readsem);
+	sync__SpinLock_lock(ch->read_sub_mtx);
+	if (ch->read_subscriber != ((void*)0)) {
+		sync__Semaphore_post(ch->read_subscriber->sem);
+	}
+	sync__SpinLock_unlock(ch->read_sub_mtx);
+	sync__SpinLock_lock(ch->write_sub_mtx);
+	if (ch->write_subscriber != ((void*)0)) {
+		sync__Semaphore_post(ch->write_subscriber->sem);
+	}
+	sync__SpinLock_unlock(ch->write_sub_mtx);
+	sync__Semaphore_post(&ch->writesem);
+	if (ch->cap == 0) {
+		atomic_store_ptr(((voidptr*)(&ch->read_adr)), ((void*)0));
+	}
+	sync__Semaphore_post(&ch->writesem_im);
+}
+inline int sync__Channel_len(sync__Channel* ch) {
+	return ((int)(atomic_load_u32(&ch->read_avail)));
+}
+inline bool sync__Channel_closed(sync__Channel* ch) {
+	return atomic_load_u16(&ch->closed) != 0;
+}
+inline void sync__Channel_push(sync__Channel* ch, voidptr src) {
+	if (sync__Channel_try_push_priv(ch, src, false) == ChanState__closed) {
+		builtin___v_panic(_S("push on closed channel"));
+		VUNREACHABLE();
+	}
+}
+inline ChanState sync__Channel_try_push(sync__Channel* ch, voidptr src) {
+	return sync__Channel_try_push_priv(ch, src, true);
+}
+VV_LOC ChanState sync__Channel_try_push_priv(sync__Channel* ch, voidptr src, bool no_block) {
+	if (atomic_load_u16(&ch->closed) != 0) {
+		return ChanState__closed;
+	}
+	multi_return_u32_u32 mr_4744 = (no_block ? ((multi_return_u32_u32){.arg0=((u32)(1)),.arg1=((u32)(1))}) : ((multi_return_u32_u32){.arg0=_const_sync__spinloops,.arg1=_const_sync__spinloops_sem}));
+	u32 spinloops_sem_ = mr_4744.arg0;
+	u32 spinloops_ = mr_4744.arg1;
+	bool have_swapped = false;
+	for (;;) {
+		bool got_sem = false;
+		voidptr wradr = atomic_load_ptr(((voidptr*)(&ch->write_adr)));
+		for (;;) {
+			if (!(wradr != NULL)) break;
+			if (atomic_compare_exchange_strong_ptr(((voidptr)(&ch->write_adr)), ((voidptr)(&wradr)), ((isize)(0)))) {
+				memcpy(wradr, src, ch->objsize);
+				voidptr nulladr = ((void*)0);
+				for (;;) {
+					if (!(!atomic_compare_exchange_weak_ptr(((voidptr)(&ch->adr_written)), ((voidptr)(&nulladr)), ((isize)(wradr))))) break;
+					nulladr = ((void*)0);
+				}
+				sync__Semaphore_post(&ch->readsem_im);
+				return ChanState__success;
+			}
+		}
+		if (no_block && ch->cap == 0) {
+			return ChanState__not_ready;
+		}
+		for (u32 _t4 = 0; _t4 < spinloops_sem_; ++_t4) {
+			if (got_sem) {
+				break;
+			}
+			got_sem = sync__Semaphore_try_wait(&ch->writesem);
+		}
+		if (!got_sem) {
+			if (no_block) {
+				return ChanState__not_ready;
+			}
+			sync__Semaphore_wait(&ch->writesem);
+		}
+		if (atomic_load_u16(&ch->closed) != 0) {
+			sync__Semaphore_post(&ch->writesem);
+			return ChanState__closed;
+		}
+		if (ch->cap == 0) {
+			bool read_in_progress = false;
+			atomic_store_ptr(((voidptr*)(&ch->read_adr)), src);
+			wradr = atomic_load_ptr(((voidptr*)(&ch->write_adr)));
+			if (wradr != NULL) {
+				voidptr src2 = src;
+				if (atomic_compare_exchange_strong_ptr(((voidptr)(&ch->read_adr)), ((voidptr)(&src2)), ((isize)(0)))) {
+					sync__Semaphore_post(&ch->writesem);
+					continue;
+				} else {
+					read_in_progress = true;
+				}
+			}
+			if (!read_in_progress) {
+				sync__SpinLock_lock(ch->read_sub_mtx);
+				if (ch->read_subscriber != ((void*)0)) {
+					sync__Semaphore_post(ch->read_subscriber->sem);
+				}
+				sync__SpinLock_unlock(ch->read_sub_mtx);
+			}
+			voidptr src2 = src;
+			for (u32 sp = ((u32)(0)); sp < spinloops_ || read_in_progress; sp++) {
+				if (atomic_compare_exchange_strong_ptr(((voidptr)(&ch->adr_read)), ((voidptr)(&src2)), ((isize)(0)))) {
+					have_swapped = true;
+					read_in_progress = true;
+					break;
+				}
+				src2 = src;
+			}
+			bool got_im_sem = false;
+			for (u32 sp = ((u32)(0)); sp < spinloops_sem_ || read_in_progress; sp++) {
+				got_im_sem = sync__Semaphore_try_wait(&ch->writesem_im);
+				if (got_im_sem) {
+					break;
+				}
+			}
+			for (;;) {
+				if (got_im_sem) {
+					got_im_sem = false;
+				} else {
+					sync__Semaphore_wait(&ch->writesem_im);
+				}
+				if (atomic_load_u16(&ch->closed) != 0) {
+					if (have_swapped || atomic_compare_exchange_strong_ptr(((voidptr)(&ch->adr_read)), ((voidptr)(&src2)), ((isize)(0)))) {
+						sync__Semaphore_post(&ch->writesem);
+						return ChanState__success;
+					} else {
+						return ChanState__closed;
+					}
+				}
+				if (have_swapped || atomic_compare_exchange_strong_ptr(((voidptr)(&ch->adr_read)), ((voidptr)(&src2)), ((isize)(0)))) {
+					sync__Semaphore_post(&ch->writesem);
+					break;
+				} else {
+					sync__Semaphore_post(&ch->writesem_im);
+					if (src2 == ((voidptr)(-1))) {
+						sync__Semaphore_post(&ch->readsem);
+						return ChanState__closed;
+					}
+					src2 = src;
+				}
+			}
+			return ChanState__success;
+		} else {
+			bool space_in_queue = false;
+			u32 wr_free = atomic_load_u32(&ch->write_free);
+			for (;;) {
+				if (!(wr_free > 0)) break;
+				space_in_queue = atomic_compare_exchange_weak_u32(&ch->write_free, &wr_free, (u32)(wr_free - 1));
+				if (space_in_queue) {
+					break;
+				}
+			}
+			if (space_in_queue) {
+				u32 wr_idx = atomic_load_u32(&ch->buf_elem_write_idx);
+				for (;;) {
+					u32 new_wr_idx = (u32)(wr_idx + 1);
+					for (;;) {
+						if (!(new_wr_idx >= ch->cap)) break;
+						new_wr_idx -= ch->cap;
+					}
+					if (atomic_compare_exchange_strong_u32(&ch->buf_elem_write_idx, &wr_idx, new_wr_idx)) {
+						break;
+					}
+				}
+				u8* wr_ptr = ch->ringbuf;
+				u8* status_adr = ch->statusbuf;
+				{ // Unsafe block
+					wr_ptr += ((u32)(wr_idx * ch->objsize));
+					status_adr += (u32)(wr_idx * sizeof(u16));
+				}
+				u16 expected_status = ((u16)(sync__BufferElemStat__unused));
+				for (;;) {
+					if (!(!atomic_compare_exchange_weak_u16(status_adr, &expected_status, ((u16)(sync__BufferElemStat__writing))))) break;
+					expected_status = ((u16)(sync__BufferElemStat__unused));
+				}
+				memcpy(wr_ptr, src, ch->objsize);
+				atomic_store_u16(((u16*)(status_adr)), ((u16)(sync__BufferElemStat__written)));
+				atomic_fetch_add_u32(((voidptr)(&ch->read_avail)), 1);
+				sync__Semaphore_post(&ch->readsem);
+				sync__SpinLock_lock(ch->read_sub_mtx);
+				if (ch->read_subscriber != ((void*)0)) {
+					sync__Semaphore_post(ch->read_subscriber->sem);
+				}
+				sync__SpinLock_unlock(ch->read_sub_mtx);
+				return ChanState__success;
+			} else {
+				if (no_block) {
+					return ChanState__not_ready;
+				}
+				sync__Semaphore_post(&ch->writesem);
+			}
+		}
+	}
+	builtin___v_panic(_S("unknown `try_push_priv` state"));
+	VUNREACHABLE();
+	return 0;
+}
+inline bool sync__Channel_pop(sync__Channel* ch, voidptr dest) {
+	return sync__Channel_try_pop_priv(ch, dest, false) == ChanState__success;
+}
+inline ChanState sync__Channel_try_pop(sync__Channel* ch, voidptr dest) {
+	return sync__Channel_try_pop_priv(ch, dest, true);
+}
+VV_LOC ChanState sync__Channel_try_pop_priv(sync__Channel* ch, voidptr dest, bool no_block) {
+	multi_return_u32_u32 mr_9469 = (no_block ? ((multi_return_u32_u32){.arg0=((u32)(1)),.arg1=((u32)(1))}) : ((multi_return_u32_u32){.arg0=_const_sync__spinloops,.arg1=_const_sync__spinloops_sem}));
+	u32 spinloops_sem_ = mr_9469.arg0;
+	u32 spinloops_ = mr_9469.arg1;
+	bool have_swapped = false;
+	bool write_in_progress = false;
+	for (;;) {
+		bool got_sem = false;
+		if (ch->cap == 0) {
+			voidptr rdadr = atomic_load_ptr(((voidptr*)(&ch->read_adr)));
+			for (;;) {
+				if (!(rdadr != NULL)) break;
+				if (atomic_compare_exchange_strong_ptr(((voidptr)(&ch->read_adr)), ((voidptr)(&rdadr)), ((isize)(0)))) {
+					memcpy(dest, rdadr, ch->objsize);
+					voidptr nulladr = ((void*)0);
+					for (;;) {
+						if (!(!atomic_compare_exchange_weak_ptr(((voidptr)(&ch->adr_read)), ((voidptr)(&nulladr)), ((isize)(rdadr))))) break;
+						nulladr = ((void*)0);
+					}
+					sync__Semaphore_post(&ch->writesem_im);
+					return ChanState__success;
+				}
+			}
+			if (no_block) {
+				if (atomic_load_u16(&ch->closed) == 0) {
+					return ChanState__not_ready;
+				} else {
+					return ChanState__closed;
+				}
+			}
+		}
+		for (u32 _t4 = 0; _t4 < spinloops_sem_; ++_t4) {
+			if (got_sem) {
+				break;
+			}
+			got_sem = sync__Semaphore_try_wait(&ch->readsem);
+		}
+		if (!got_sem) {
+			if (no_block) {
+				if (atomic_load_u16(&ch->closed) == 0) {
+					return ChanState__not_ready;
+				} else {
+					return ChanState__closed;
+				}
+			}
+			sync__Semaphore_wait(&ch->readsem);
+		}
+		if (ch->cap > 0) {
+			bool obj_in_queue = false;
+			u32 rd_avail = atomic_load_u32(&ch->read_avail);
+			for (;;) {
+				if (!(rd_avail > 0)) break;
+				obj_in_queue = atomic_compare_exchange_weak_u32(&ch->read_avail, &rd_avail, (u32)(rd_avail - 1));
+				if (obj_in_queue) {
+					break;
+				}
+			}
+			if (obj_in_queue) {
+				u32 rd_idx = atomic_load_u32(&ch->buf_elem_read_idx);
+				for (;;) {
+					u32 new_rd_idx = (u32)(rd_idx + 1);
+					for (;;) {
+						if (!(new_rd_idx >= ch->cap)) break;
+						new_rd_idx -= ch->cap;
+					}
+					if (atomic_compare_exchange_weak_u32(&ch->buf_elem_read_idx, &rd_idx, new_rd_idx)) {
+						break;
+					}
+				}
+				u8* rd_ptr = ch->ringbuf;
+				u8* status_adr = ch->statusbuf;
+				{ // Unsafe block
+					rd_ptr += (u32)(rd_idx * ch->objsize);
+					status_adr += (u32)(rd_idx * sizeof(u16));
+				}
+				u16 expected_status = ((u16)(sync__BufferElemStat__written));
+				for (;;) {
+					if (!(!atomic_compare_exchange_weak_u16(status_adr, &expected_status, ((u16)(sync__BufferElemStat__reading))))) break;
+					expected_status = ((u16)(sync__BufferElemStat__written));
+				}
+				memcpy(dest, rd_ptr, ch->objsize);
+				atomic_store_u16(((u16*)(status_adr)), ((u16)(sync__BufferElemStat__unused)));
+				atomic_fetch_add_u32(((voidptr)(&ch->write_free)), 1);
+				sync__Semaphore_post(&ch->writesem);
+				sync__SpinLock_lock(ch->write_sub_mtx);
+				if (ch->write_subscriber != ((void*)0)) {
+					sync__Semaphore_post(ch->write_subscriber->sem);
+				}
+				sync__SpinLock_unlock(ch->write_sub_mtx);
+				return ChanState__success;
+			}
+		}
+		atomic_store_ptr(((voidptr*)(&ch->write_adr)), dest);
+		if (ch->cap == 0) {
+			voidptr rdadr = atomic_load_ptr(((voidptr*)(&ch->read_adr)));
+			if (rdadr != NULL) {
+				voidptr dest2 = dest;
+				if (atomic_compare_exchange_strong_ptr(((voidptr)(&ch->write_adr)), ((voidptr)(&dest2)), ((isize)(0)))) {
+					sync__Semaphore_post(&ch->readsem);
+					continue;
+				} else {
+					write_in_progress = true;
+				}
+			}
+		}
+		if (ch->cap == 0 && !write_in_progress) {
+			sync__SpinLock_lock(ch->write_sub_mtx);
+			if (ch->write_subscriber != ((void*)0)) {
+				sync__Semaphore_post(ch->write_subscriber->sem);
+			}
+			sync__SpinLock_unlock(ch->write_sub_mtx);
+		}
+		voidptr dest2 = dest;
+		for (u32 sp = ((u32)(0)); sp < spinloops_ || write_in_progress; sp++) {
+			if (atomic_compare_exchange_strong_ptr(((voidptr)(&ch->adr_written)), ((voidptr)(&dest2)), ((isize)(0)))) {
+				have_swapped = true;
+				break;
+			} else if (dest2 == ((voidptr)(-1))) {
+				sync__Semaphore_post(&ch->readsem);
+				return ChanState__closed;
+			}
+			dest2 = dest;
+		}
+		bool got_im_sem = false;
+		for (u32 sp = ((u32)(0)); sp < spinloops_sem_ || write_in_progress; sp++) {
+			got_im_sem = sync__Semaphore_try_wait(&ch->readsem_im);
+			if (got_im_sem) {
+				break;
+			}
+		}
+		for (;;) {
+			if (got_im_sem) {
+				got_im_sem = false;
+			} else {
+				sync__Semaphore_wait(&ch->readsem_im);
+			}
+			if (have_swapped || atomic_compare_exchange_strong_ptr(((voidptr)(&ch->adr_written)), ((voidptr)(&dest2)), ((isize)(0)))) {
+				sync__Semaphore_post(&ch->readsem);
+				break;
+			} else {
+				sync__Semaphore_post(&ch->readsem_im);
+				if (dest2 == ((voidptr)(-1))) {
+					sync__Semaphore_post(&ch->readsem);
+					return ChanState__closed;
+				}
+				dest2 = dest;
+			}
+		}
+		break;
+	}
+	return ChanState__success;
+}
+int sync__channel_select(Array_sync__Channel_ptr* channels, Array_sync__Direction dir, Array_voidptr* objrefs, time__Duration timeout) {
+	Array_sync__Subscription subscr = builtin____new_array_with_default(channels->len, 0, sizeof(sync__Subscription), (voidptr)&(sync__Subscription[]){(sync__Subscription){.sem = ((void*)0),.prev = ((void*)0),.nxt = ((void*)0),}}[0]);
+	sync__Semaphore *sem = HEAP(sync__Semaphore, (((sync__Semaphore){.count = 0,})));
+	sync__Semaphore_init(&(*(sem)), 0);
+	for (int i = 0; i < channels->len; ++i) {
+		sync__Channel* ch = ((sync__Channel**)channels->data)[i];
+		(*(sync__Subscription*)builtin__array_get(subscr, i)).sem = &(*(sem));
+		multi_return_ref_sync__SpinLock_ref_sync__Subscription mr_14535 = ((*(sync__Direction*)builtin__array_get(dir, i)) == sync__Direction__push ? ((multi_return_ref_sync__SpinLock_ref_sync__Subscription){.arg0=ch->write_sub_mtx,.arg1=&ch->write_subscriber}) : ((multi_return_ref_sync__SpinLock_ref_sync__Subscription){.arg0=ch->read_sub_mtx,.arg1=&ch->read_subscriber}));
+		sync__SpinLock* sub_mtx = mr_14535.arg0;
+		sync__Subscription** subscriber = mr_14535.arg1;
+		sync__SpinLock_lock(sub_mtx);
+		(*(sync__Subscription*)builtin__array_get(subscr, i)).prev = subscriber;
+		{ // Unsafe block
+			(*(sync__Subscription*)builtin__array_get(subscr, i)).nxt = ((sync__Subscription*)(atomic_exchange_ptr(((voidptr*)(subscriber)), &(*(sync__Subscription*)builtin__array_get(subscr, i)))));
+		}
+		if (((voidptr)((*(sync__Subscription*)builtin__array_get(subscr, i)).nxt)) != ((void*)0)) {
+			(*(sync__Subscription*)builtin__array_get(subscr, i)).nxt->prev = &(*(sync__Subscription*)builtin__array_get(subscr, i)).nxt;
+		}
+		sync__SpinLock_unlock(sub_mtx);
+	}
+	time__StopWatch stopwatch = (timeout == _const_time__infinite || timeout <= 0 ? (((time__StopWatch){.elapsed = 0,.start = 0,.end = 0,})) : (time__new_stopwatch(((time__StopWatchOptions){.auto_start = true,}))));
+	int event_idx = -1;
+	outer:
+	for (;;) {
+		_result_int _t1 = rand__intn(channels->len);
+		if (_t1.is_error) {
+			*(int*) _t1.data = 0;
+		}
+		
+ 		int rnd = (*(int*)_t1.data);
+		int num_closed = 0;
+		for (int j = 0; j < channels->len; ++j) {
+			int i = (int)(j + rnd);
+			if (i >= channels->len) {
+				i -= channels->len;
+			}
+			ChanState stat = ((*(sync__Direction*)builtin__array_get(dir, i)) == sync__Direction__push ? (sync__Channel_try_push_priv((*(sync__Channel**)builtin__array_get(*channels, i)), (*(voidptr*)builtin__array_get(*objrefs, i)), true)) : (sync__Channel_try_pop_priv((*(sync__Channel**)builtin__array_get(*channels, i)), (*(voidptr*)builtin__array_get(*objrefs, i)), true)));
+			if (stat == ChanState__success) {
+				event_idx = i;
+				goto outer__break;
+			} else if (stat == ChanState__closed) {
+				num_closed++;
+			}
+		}
+		if (num_closed == channels->len) {
+			event_idx = -2;
+			goto outer__break;
+		}
+		if (timeout <= 0) {
+			goto outer__break;
+		}
+		if (timeout != _const_time__infinite) {
+			time__Duration remaining = timeout - time__StopWatch_elapsed(stopwatch);
+			if (!sync__Semaphore_timed_wait(&(*(sem)), remaining)) {
+				goto outer__break;
+			}
+		} else {
+			sync__Semaphore_wait(&(*(sem)));
+		}
+		outer__continue: {}
+	}
+	outer__break: {}
+	for (int i = 0; i < channels->len; ++i) {
+		sync__Channel* ch = ((sync__Channel**)channels->data)[i];
+		sync__SpinLock* sub_mtx = ((*(sync__Direction*)builtin__array_get(dir, i)) == sync__Direction__push ? (ch->write_sub_mtx) : (ch->read_sub_mtx));
+		sync__SpinLock_lock(sub_mtx);
+		{ // Unsafe block
+			*(*(sync__Subscription*)builtin__array_get(subscr, i)).prev = (*(sync__Subscription*)builtin__array_get(subscr, i)).nxt;
+		}
+		if ((*(sync__Subscription*)builtin__array_get(subscr, i)).nxt != 0) {
+			(*(sync__Subscription*)builtin__array_get(subscr, i)).nxt->prev = (*(sync__Subscription*)builtin__array_get(subscr, i)).prev;
+			sync__Semaphore_post((*(sync__Subscription*)builtin__array_get(subscr, i)).nxt->sem);
+		}
+		sync__SpinLock_unlock(sub_mtx);
+	}
+	sync__Semaphore_destroy(&(*(sem)));
+	return event_idx;
+}
+string sync__Mutex_str(sync__Mutex* m) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Mutex("), 0xfe11, {.d_p = (void*)(((voidptr)(m)))}}, {_S(")"), 0, { .d_c = 0 }}}));
+}
+string sync__RwMutex_str(sync__RwMutex* m) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("RwMutex("), 0xfe11, {.d_p = (void*)(((voidptr)(m)))}}, {_S(")"), 0, { .d_c = 0 }}}));
+}
+sync__Cond* sync__new_cond(sync__Mutex* m) {
+	return ((sync__Cond*)builtin__memdup(&(sync__Cond){.mutex = m,.inner_mutex = *sync__new_mutex(),.waiters = builtin____new_array_with_default(0, 0, sizeof(chan_bool), 0),}, sizeof(sync__Cond)));
+}
+void sync__Cond_wait(sync__Cond* c) {
+	chan_bool ch = sync__new_channel_st(1, sizeof(bool)>0 ? sizeof(bool) : 1);
+	sync__Mutex_lock(&c->inner_mutex);
+	builtin__array_push((array*)&c->waiters, _MOV((chan_bool[]){ ch }));
+	sync__Mutex_unlock(&c->inner_mutex);
+	sync__Mutex_unlock(c->mutex);
+	{bool _ = __chan_bool_popval(ch);}
+	;
+	sync__Mutex_lock(&c->inner_mutex);
+	for (int i = (int)(c->waiters.len - 1); i >= 0; i--) {
+		if (((chan_bool*)c->waiters.data)[i] == ch) {
+			builtin__array_delete(&c->waiters, i);
+			break;
+		}
+	}
+	sync__Mutex_unlock(&c->inner_mutex);
+	sync__Mutex_lock(c->mutex);
+	{ // defer begin
+		sync__Channel_close(ch);
+	} // defer end
+}
+void sync__Cond_signal(sync__Cond* c) {
+	sync__Mutex_lock(&c->inner_mutex);
+	if (c->waiters.len > 0) {
+		chan_bool waiter = ((chan_bool*)c->waiters.data)[0];
+		builtin__array_delete(&c->waiters, 0);
+		if (!sync__Channel_closed(waiter)) {
+			__chan_bool_pushval(waiter, true);
+		}
+	}
+	{ // defer begin
+		sync__Mutex_unlock(&c->inner_mutex);
+	} // defer end
+}
+void sync__Cond_broadcast(sync__Cond* c) {
+	sync__Mutex_lock(&c->inner_mutex);
+	for (int i = 0; i < c->waiters.len; ++i) {
+		chan_bool waiter = ((chan_bool*)c->waiters.data)[i];
+		if (!sync__Channel_closed(waiter)) {
+			__chan_bool_pushval(waiter, true);
+		}
+	}
+	builtin__array_clear(&c->waiters);
+	{ // defer begin
+		sync__Mutex_unlock(&c->inner_mutex);
+	} // defer end
+}
+sync__ManyTimes* sync__new_many_times(u64 times) {
+	sync__ManyTimes* many_times = ((sync__ManyTimes*)builtin__memdup(&(sync__ManyTimes){.m = ((sync__RwMutex){E_STRUCT}),.times = times,.count = 0,}, sizeof(sync__ManyTimes)));
+	sync__RwMutex_init(&many_times->m);
+	return many_times;
+}
+void sync__ManyTimes_do(sync__ManyTimes* m, void (*f)(void)) {
+	if (sync__stdatomic__load_u64(&m->count) < m->times) {
+		sync__ManyTimes_do_slow(m, (voidptr)f);
+	}
+}
+VV_LOC void sync__ManyTimes_do_slow(sync__ManyTimes* m, void (*f)(void)) {
+	sync__RwMutex_lock(&m->m);
+	if (m->count < m->times) {
+		sync__stdatomic__store_u64(&m->count, (u64)(m->count + 1));
+		f();
+	}
+	sync__RwMutex_unlock(&m->m);
+}
+sync__Once* sync__new_once(void) {
+	sync__Once* once = ((sync__Once*)builtin__memdup(&(sync__Once){.m = ((sync__RwMutex){E_STRUCT}),.count = 0,}, sizeof(sync__Once)));
+	sync__RwMutex_init(&once->m);
+	return once;
+}
+void sync__Once_do(sync__Once* o, void (*f)(void)) {
+	if (sync__stdatomic__load_u64(&o->count) < 1) {
+		sync__Once_do_slow(o, (voidptr)f);
+	}
+}
+VV_LOC void sync__Once_do_slow(sync__Once* o, void (*f)(void)) {
+	sync__RwMutex_lock(&o->m);
+	if (o->count < 1) {
+		sync__stdatomic__store_u64(&o->count, 1);
+		f();
+	}
+	sync__RwMutex_unlock(&o->m);
+}
+void sync__Once_do_with_param(sync__Once* o, void (*f)(voidptr ), voidptr param) {
+	if (sync__stdatomic__load_u64(&o->count) < 1) {
+		sync__Once_do_slow_with_param(o, (voidptr)f, param);
+	}
+}
+VV_LOC void sync__Once_do_slow_with_param(sync__Once* o, void (*f)(voidptr ), voidptr param) {
+	sync__RwMutex_lock(&o->m);
+	if (o->count < 1) {
+		sync__stdatomic__store_u64(&o->count, 1);
+		f(param);
+	}
+	sync__RwMutex_unlock(&o->m);
+}
+VNORETURN VV_LOC void sync__cpanic(int res) {
+	builtin___v_panic(builtin__tos_clone(((u8*)(strerror(res)))));
+	VUNREACHABLE();
+	while(1);
+}
+VV_LOC void sync__should_be_zero(int res) {
+	if (res != 0) {
+		sync__cpanic(res);
+		VUNREACHABLE();
+	}
+}
+sync__SpinLock* sync__new_spin_lock(void) {
+	sync__SpinLock* the_lock = ((sync__SpinLock*)builtin__memdup(&(sync__SpinLock){.locked = 0,.padding = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},}, sizeof(sync__SpinLock)));
+	atomic_thread_fence(memory_order_release);
+	return the_lock;
+}
+inline void sync__SpinLock_lock(sync__SpinLock* s) {
+	u8 expected = ((u8)(0));
+	int spin_count = 0;
+	int max_spins = 100;
+	int base_delay = 100;
+	int max_delay = 10000;
+	for (;;) {
+		if (atomic_compare_exchange_weak_byte(&s->locked, &expected, 1)) {
+			atomic_thread_fence(memory_order_acquire);
+			return;
+		}
+		spin_count++;
+		if (spin_count > max_spins) {
+			int exponent = builtin__int_min((int)(spin_count / max_spins), 10);
+			int delay = builtin__int_min((int)(base_delay * ((1 << exponent))), max_delay);
+			time__sleep(delay * _const_time__nanosecond);
+		} else {
+			cpu_relax();
+		}
+		expected = 0;
+	}
+}
+inline bool sync__SpinLock_try_lock(sync__SpinLock* s) {
+	if (atomic_load_byte(&s->locked) == 0) {
+		u8 expected = ((u8)(0));
+		if (atomic_compare_exchange_weak_byte(&s->locked, &expected, 1)) {
+			atomic_thread_fence(memory_order_acquire);
+			return true;
+		}
+	}
+	return false;
+}
+inline void sync__SpinLock_unlock(sync__SpinLock* s) {
+	atomic_thread_fence(memory_order_release);
+	atomic_store_byte(&s->locked, 0);
+}
+void sync__SpinLock_destroy(sync__SpinLock* s) {
+}
+sync__Mutex* sync__new_mutex(void) {
+	sync__Mutex* m = ((sync__Mutex*)builtin__memdup(&(sync__Mutex){E_STRUCT}, sizeof(sync__Mutex)));
+	sync__Mutex_init(m);
+	return m;
+}
+void sync__Mutex_init(sync__Mutex* m) {
+	sync__should_be_zero(pthread_mutex_init(&m->mutex, NULL));
+}
+sync__RwMutex* sync__new_rwmutex(void) {
+	sync__RwMutex* m = ((sync__RwMutex*)builtin__memdup(&(sync__RwMutex){E_STRUCT}, sizeof(sync__RwMutex)));
+	sync__RwMutex_init(m);
+	return m;
+}
+void sync__RwMutex_init(sync__RwMutex* m) {
+	sync__RwMutexAttr a = ((sync__RwMutexAttr){E_STRUCT});
+	sync__should_be_zero(pthread_rwlockattr_init(&a.attr));
+	pthread_rwlockattr_setkind_np(&a.attr, PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP);
+	sync__should_be_zero(pthread_rwlock_init(&m->mutex, &a.attr));
+}
+inline void sync__Mutex_lock(sync__Mutex* m) {
+	pthread_mutex_lock(&m->mutex);
+}
+inline bool sync__Mutex_try_lock(sync__Mutex* m) {
+	return pthread_mutex_trylock(&m->mutex) == 0;
+}
+inline void sync__Mutex_unlock(sync__Mutex* m) {
+	pthread_mutex_unlock(&m->mutex);
+}
+void sync__Mutex_destroy(sync__Mutex* m) {
+	sync__should_be_zero(pthread_mutex_destroy(&m->mutex));
+}
+inline void sync__RwMutex_rlock(sync__RwMutex* m) {
+	pthread_rwlock_rdlock(&m->mutex);
+}
+inline void sync__RwMutex_lock(sync__RwMutex* m) {
+	pthread_rwlock_wrlock(&m->mutex);
+}
+inline bool sync__RwMutex_try_rlock(sync__RwMutex* m) {
+	return pthread_rwlock_tryrdlock(&m->mutex) == 0;
+}
+inline bool sync__RwMutex_try_wlock(sync__RwMutex* m) {
+	return pthread_rwlock_trywrlock(&m->mutex) == 0;
+}
+void sync__RwMutex_destroy(sync__RwMutex* m) {
+	sync__should_be_zero(pthread_rwlock_destroy(&m->mutex));
+}
+inline void sync__RwMutex_runlock(sync__RwMutex* m) {
+	pthread_rwlock_unlock(&m->mutex);
+}
+inline void sync__RwMutex_unlock(sync__RwMutex* m) {
+	pthread_rwlock_unlock(&m->mutex);
+}
+sync__Semaphore* sync__new_semaphore(void) {
+	return sync__new_semaphore_init(0);
+}
+sync__Semaphore* sync__new_semaphore_init(u32 n) {
+	sync__Semaphore* sem = ((sync__Semaphore*)builtin__memdup(&(sync__Semaphore){.count = 0,}, sizeof(sync__Semaphore)));
+	sync__Semaphore_init(sem, n);
+	return sem;
+}
+void sync__Semaphore_init(sync__Semaphore* sem, u32 n) {
+	atomic_store_u32(&sem->count, n);
+	sync__should_be_zero(pthread_mutex_init(&sem->mtx, NULL));
+	sync__CondAttr attr = ((sync__CondAttr){E_STRUCT});
+	sync__should_be_zero(pthread_condattr_init(&attr.attr));
+	pthread_condattr_setpshared(&attr.attr, PTHREAD_PROCESS_PRIVATE);
+	pthread_cond_init(&sem->cond, &attr.attr);
+	pthread_condattr_destroy(&attr.attr);
+}
+void sync__Semaphore_post(sync__Semaphore* sem) {
+	u32 c = atomic_load_u32(&sem->count);
+	for (;;) {
+		if (!(c > 1)) break;
+		if (atomic_compare_exchange_weak_u32(&sem->count, &c, (u32)(c + 1))) {
+			return;
+		}
+	}
+	pthread_mutex_lock(&sem->mtx);
+	c = atomic_fetch_add_u32(&sem->count, 1);
+	if (c == 0) {
+		pthread_cond_signal(&sem->cond);
+	}
+	pthread_mutex_unlock(&sem->mtx);
+}
+void sync__Semaphore_wait(sync__Semaphore* sem) {
+	u32 c = atomic_load_u32(&sem->count);
+	for (;;) {
+		if (!(c > 0)) break;
+		if (atomic_compare_exchange_weak_u32(&sem->count, &c, (u32)(c - 1))) {
+			return;
+		}
+	}
+	pthread_mutex_lock(&sem->mtx);
+	c = atomic_load_u32(&sem->count);
+	outer:
+	for (;;) {
+		if (c == 0) {
+			pthread_cond_wait(&sem->cond, &sem->mtx);
+			c = atomic_load_u32(&sem->count);
+		}
+		for (;;) {
+			if (!(c > 0)) break;
+			if (atomic_compare_exchange_weak_u32(&sem->count, &c, (u32)(c - 1))) {
+				if (c > 1) {
+					pthread_cond_signal(&sem->cond);
+				}
+				goto outer__break;
+			}
+		}
+		outer__continue: {}
+	}
+	outer__break: {}
+	pthread_mutex_unlock(&sem->mtx);
+}
+bool sync__Semaphore_try_wait(sync__Semaphore* sem) {
+	u32 c = atomic_load_u32(&sem->count);
+	for (;;) {
+		if (!(c > 0)) break;
+		if (atomic_compare_exchange_weak_u32(&sem->count, &c, (u32)(c - 1))) {
+			return true;
+		}
+	}
+	return false;
+}
+bool sync__Semaphore_timed_wait(sync__Semaphore* sem, time__Duration timeout) {
+	u32 c = atomic_load_u32(&sem->count);
+	for (;;) {
+		if (!(c > 0)) break;
+		if (atomic_compare_exchange_weak_u32(&sem->count, &c, (u32)(c - 1))) {
+			return true;
+		}
+	}
+	pthread_mutex_lock(&sem->mtx);
+	struct timespec t_spec = time__Duration_timespec(timeout);
+	int res = 0;
+	c = atomic_load_u32(&sem->count);
+	outer:
+	for (;;) {
+		if (c == 0) {
+			res = pthread_cond_timedwait(&sem->cond, &sem->mtx, &t_spec);
+			if (res == ETIMEDOUT) {
+				goto outer__break;
+			}
+			c = atomic_load_u32(&sem->count);
+		}
+		for (;;) {
+			if (!(c > 0)) break;
+			if (atomic_compare_exchange_weak_u32(&sem->count, &c, (u32)(c - 1))) {
+				if (c > 1) {
+					pthread_cond_signal(&sem->cond);
+				}
+				goto outer__break;
+			}
+		}
+		outer__continue: {}
+	}
+	outer__break: {}
+	pthread_mutex_unlock(&sem->mtx);
+	return res == 0;
+}
+void sync__Semaphore_destroy(sync__Semaphore* sem) {
+	sync__should_be_zero(pthread_cond_destroy(&sem->cond));
+	sync__should_be_zero(pthread_mutex_destroy(&sem->mtx));
+}
+sync__WaitGroup* sync__new_waitgroup(void) {
+	sync__WaitGroup *wg = HEAP(sync__WaitGroup, (((sync__WaitGroup){.task_count = 0,.wait_count = 0,.sem = ((sync__Semaphore){.count = 0,}),})));
+	sync__WaitGroup_init(&(*(wg)));
+	return &(*(wg));
+}
+void sync__WaitGroup_init(sync__WaitGroup* wg) {
+	sync__Semaphore_init(&wg->sem, 0);
+}
+void sync__WaitGroup_add(sync__WaitGroup* wg, int delta) {
+	int old_nrjobs = ((int)(atomic_fetch_add_u32(((voidptr)(&wg->task_count)), ((u32)(delta)))));
+	int new_nrjobs = (int)(old_nrjobs + delta);
+	u32 num_waiters = atomic_load_u32(&wg->wait_count);
+	if (new_nrjobs < 0) {
+		builtin___v_panic(_S("Negative number of jobs in waitgroup"));
+		VUNREACHABLE();
+	}
+	if (new_nrjobs == 0 && num_waiters > 0) {
+		for (;;) {
+			if (!(!atomic_compare_exchange_weak_u32(&wg->wait_count, &num_waiters, 0))) break;
+			if (num_waiters == 0) {
+				return;
+			}
+		}
+		for (;;) {
+			if (!((num_waiters > 0))) break;
+			sync__Semaphore_post(&wg->sem);
+			num_waiters--;
+		}
+	}
+}
+void sync__WaitGroup_done(sync__WaitGroup* wg) {
+	sync__WaitGroup_add(wg, -1);
+}
+void sync__WaitGroup_wait(sync__WaitGroup* wg) {
+	int nrjobs = ((int)(atomic_load_u32(&wg->task_count)));
+	if (nrjobs == 0) {
+		return;
+	}
+	atomic_fetch_add_u32(((voidptr)(&wg->wait_count)), 1);
+	sync__Semaphore_wait(&wg->sem);
+}
+void sync__WaitGroup_go(sync__WaitGroup* wg, void (*f)(void)) {
+	sync__WaitGroup_add(wg, 1);
+	// start go
+	thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731 *arg__t1 = (thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731 *) builtin___v_malloc(sizeof(thread_arg_anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731));
+	arg__t1->fn = anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731;
+	arg__t1->arg1 = wg;
+	arg__t1->arg2 = f;
+	pthread_t thread__t1;
+	pthread_attr_t thread__t1_attributes;
+	pthread_attr_init(&thread__t1_attributes);
+	pthread_attr_setstacksize(&thread__t1_attributes, 8388608); // fn: 
+	int _t1_thr_res = pthread_create(&thread__t1, &thread__t1_attributes, (void*)anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731_thread_wrapper, arg__t1);
+	if (_t1_thr_res) builtin__panic_error_number(builtin__tos3("`go anon_fn_aa8c1b3ce4c55ec6_210_mut_sync__waitgroup_anon_fn__2731()`: "), _t1_thr_res);
+	pthread_detach(thread__t1);
+	// end go
+	;
+}
+u64 sync__thread_id(void) {
+	return ((u64)(pthread_self()));
+}
+_result_multi_return_os__File_string io__util__temp_file(io__util__TempFileOptions tfo) {
+	string d = tfo.path;
+	if ((d).len == 0) {
+		d = os__temp_dir();
+	}
+	_result_void _t1 = os__ensure_folder_is_writable(d);
+	if (_t1.is_error) {
+		return (_result_multi_return_os__File_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("temp_file"), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" could not create temporary file in \""), 0xfe10, {.d_s = d}}, {_S("\". Please ensure write permissions."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	
+ ;
+	d = builtin__string_trim_right(d, _const_os__path_separator);
+	_result_multi_return_string_string _t3 = io__util__prefix_and_suffix(tfo.pattern);
+	if (_t3.is_error) {
+		IError err = _t3.err;
+		return (_result_multi_return_os__File_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("temp_file"), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_SLIT0, 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	
+ 	multi_return_string_string mr_547 = (*(multi_return_string_string*)_t3.data);
+	string prefix = mr_547.arg0;
+	string suffix = mr_547.arg1;
+	for (int retry = 0; retry < 10000; retry++) {
+		string path = os__join_path(d, builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__string__plus(builtin__string__plus(prefix, io__util__random_number()), suffix)})));
+		string mode = _S("rw+");
+		_result_os__File _t5 = os__open_file(path, mode, builtin__new_array_from_c_array(1, 1, sizeof(int), _MOV((int[1]){0600})));
+		if (_t5.is_error) {
+			continue;
+		}
+		
+ 		os__File file = (*(os__File*)_t5.data);
+		if (os__exists(path) && os__is_file(path)) {
+			_result_multi_return_os__File_string _t6;
+			builtin___result_ok(&(multi_return_os__File_string[]) { (multi_return_os__File_string){.arg0=file, .arg1=path} }, (_result*)(&_t6), sizeof(multi_return_os__File_string));
+			return _t6;
+		}
+	}
+	return (_result_multi_return_os__File_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("temp_file"), builtin__str_intp(3, _MOV((StrIntpData[]){{_S(" could not create temporary file in \""), 0xfe10, {.d_s = d}}, {_S("\". Retry limit ("), 0xfe07, {.d_i32 = _const_io__util__retries}}, {_S(") exhausted. Please ensure write permissions."), 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+}
+VV_LOC _result_string io__util__error_for_temporary_folder(string fn_name, string d) {
+	return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = fn_name}}, {_S(" could not create temporary directory \""), 0xfe10, {.d_s = d}}, {_S("\". Please ensure you have write permissions for it."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+_result_string io__util__temp_dir(io__util__TempDirOptions tdo) {
+	string d = tdo.path;
+	if ((d).len == 0) {
+		d = os__temp_dir();
+	}
+	_result_void _t1 = os__ensure_folder_is_writable(d);
+	if (_t1.is_error) {
+		return io__util__error_for_temporary_folder(_S("temp_dir"), d);
+	}
+	
+ ;
+	d = builtin__string_trim_right(d, _const_os__path_separator);
+	_result_multi_return_string_string _t3 = io__util__prefix_and_suffix(tdo.pattern);
+	if (_t3.is_error) {
+		IError err = _t3.err;
+		return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("temp_dir"), builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_SLIT0, 0, { .d_c = 0 }}})))), .data={E_STRUCT} };
+	}
+	
+ 	multi_return_string_string mr_1644 = (*(multi_return_string_string*)_t3.data);
+	string prefix = mr_1644.arg0;
+	string suffix = mr_1644.arg1;
+	for (int retry = 0; retry < 10000; retry++) {
+		string path = os__join_path(d, builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__string__plus(builtin__string__plus(prefix, io__util__random_number()), suffix)})));
+		_result_void _t5 = os__mkdir_all(path, ((os__MkdirParams){.mode = 0777,}));
+		if (_t5.is_error) {
+			continue;
+		}
+		
+ ;
+		if (os__is_dir(path) && os__exists(path)) {
+			_result_void _t6 = os__ensure_folder_is_writable(path);
+			if (_t6.is_error) {
+				return io__util__error_for_temporary_folder(_S("temp_dir"), d);
+			}
+			
+ ;
+			_result_string _t8;
+			builtin___result_ok(&(string[]) { path }, (_result*)(&_t8), sizeof(string));
+			 
+			return _t8;
+		}
+	}
+	return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = _S("temp_dir")}}, {_S(" could not create temporary directory \""), 0xfe10, {.d_s = d}}, {_S("\". Retry limit ("), 0xfe07, {.d_i32 = _const_io__util__retries}}, {_S(") exhausted."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC string io__util__random_number(void) {
+	_result_u32 _t1 = rand__u32n(1000000000);
+	if (_t1.is_error) {
+		*(u32*) _t1.data = 0;
+	}
+	
+ 	string s = builtin__u32_str(((u32)(1000000000 + ((u32)(((u32)(os__getpid())) + (*(u32*)_t1.data))))));
+	return builtin__string_substr(s, 1, s.len);
+}
+VV_LOC _result_multi_return_string_string io__util__prefix_and_suffix(string pattern) {
+	if (builtin__string_contains(pattern, _const_os__path_separator)) {
+		return (_result_multi_return_string_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("pattern cannot contain path separators ("), 0xfe10, {.d_s = _const_os__path_separator}}, {_S(")."), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_option_multi_return_string_string _t2 = builtin__string_rsplit_once(pattern, _S("*"));
+	if (_t2.state != 0) {
+		*(multi_return_string_string*) _t2.data = (multi_return_string_string){.arg0=pattern,.arg1=_S("")};
+	}
+	
+ 	multi_return_string_string mr_2487 = (*(multi_return_string_string*)_t2.data);
+	string prefix = mr_2487.arg0;
+	string suffix = mr_2487.arg1;
+	_result_multi_return_string_string _t3;
+	builtin___result_ok(&(multi_return_string_string[]) { (multi_return_string_string){.arg0=prefix, .arg1=suffix} }, (_result*)(&_t3), sizeof(multi_return_string_string));
+	return _t3;
+}
+#if defined(_WIN32)
+#else
+#endif
+net__Addr net__new_ip6(u16 port, Array_fixed_u8_16 addr) {
+	u16 n_port = net__conv__hton16(port);
+	net__Addr a = ((net__Addr){.len = 0,.f = ((u8)(net__AddrFamily__ip6)),.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = n_port,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+	builtin__vmemcpy(&a.addr.Ip6.addr[0], &addr[0], 16);
+	return a;
+}
+net__Addr net__new_ip(u16 port, Array_fixed_u8_4 addr) {
+	u16 n_port = net__conv__hton16(port);
+	net__Addr a = ((net__Addr){.len = 0,.f = ((u8)(net__AddrFamily__ip)),.addr = ((net__AddrData){.Ip = ((net__Ip){.port = n_port,.addr = {0, 0, 0, 0},.sin_pad = {0, 0, 0, 0, 0, 0, 0, 0},}),}),});
+	builtin__vmemcpy(&a.addr.Ip.addr[0], &addr[0], 4);
+	return a;
+}
+VV_LOC _result_net__Addr net__temp_unix(void) {
+	_result_multi_return_os__File_string _t1 = io__util__temp_file(((io__util__TempFileOptions){.path = os__temp_dir(),.pattern = (string){.str=(byteptr)"", .is_lit=1},}));
+	if (_t1.is_error) {
+		_result_net__Addr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_os__File_string mr_968 = (*(multi_return_os__File_string*)_t1.data);
+	os__File file = mr_968.arg0;
+	string filename = mr_968.arg1;
+	os__File_close(&file);
+	_result_void _t3 = os__rm(filename);
+	if (_t3.is_error) {
+		_result_net__Addr _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	_result_Array_net__Addr _t5 = net__resolve_addrs(filename, net__AddrFamily__unix, net__SocketType__udp);
+	if (_t5.is_error) {
+		_result_net__Addr _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t5.data);
+	_result_net__Addr _t7;
+	builtin___result_ok(&(net__Addr[]) { (*(net__Addr*)builtin__array_get(addrs, 0)) }, (_result*)(&_t7), sizeof(net__Addr));
+	 
+	return _t7;
+}
+net__AddrFamily net__Addr_family(net__Addr a) {
+	return ((net__AddrFamily)(a.f));
+}
+_result_u16 net__Addr_port(net__Addr a) {
+	net__AddrFamily _t1 = ((net__AddrFamily)(a.f));
+	
+	if (_t1 == (net__AddrFamily__ip)) {
+		{ // Unsafe block
+			_result_u16 _t2;
+			builtin___result_ok(&(u16[]) { net__conv__ntoh16(a.addr.Ip.port) }, (_result*)(&_t2), sizeof(u16));
+			 
+			return _t2;
+		}
+	}
+	else if (_t1 == (net__AddrFamily__ip6)) {
+		{ // Unsafe block
+			_result_u16 _t3;
+			builtin___result_ok(&(u16[]) { net__conv__ntoh16(a.addr.Ip6.port) }, (_result*)(&_t3), sizeof(u16));
+			 
+			return _t3;
+		}
+	}
+	else if (_t1 == (net__AddrFamily__unix)) {
+		return (_result_u16){ .is_error=true, .err=builtin___v_error(_S("unix addr has no port")), .data={E_STRUCT} };
+	}
+	else if (_t1 == (net__AddrFamily__unspec)) {
+		return (_result_u16){ .is_error=true, .err=builtin___v_error(_S("cannot find port for unspec addr family")), .data={E_STRUCT} };
+	}
+	return (_result_u16){0};
+}
+string net__Ip_str(net__Ip a) {
+	Array_fixed_char_24 buf = {0};
+	char* res = ((char*)(inet_ntop(net__AddrFamily__ip, &a.addr, &buf[0], 24)));
+	if (res == 0) {
+		return _S("<Unknown>");
+	}
+	string saddr = builtin__cstring_to_vstring(&buf[0]);
+	u16 port = net__conv__ntoh16(a.port);
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = saddr}}, {_S(":"), 0xfe04, {.d_u16 = port}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+string net__Ip6_str(net__Ip6 a) {
+	Array_fixed_char_46 buf = {0};
+	char* res = ((char*)(inet_ntop(net__AddrFamily__ip6, &a.addr, &buf[0], 46)));
+	if (res == 0) {
+		return _S("<Unknown>");
+	}
+	string saddr = builtin__cstring_to_vstring(&buf[0]);
+	u16 port = net__conv__ntoh16(a.port);
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_S("["), 0xfe10, {.d_s = saddr}}, {_S("]:"), 0xfe04, {.d_u16 = port}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+u32 net__Addr_len(net__Addr a) {
+	net__AddrFamily _t1 = net__Addr_family(a);
+	
+	if (_t1 == (net__AddrFamily__ip)) {
+		return (u32)(sizeof(net__Ip) + _const_net__aoffset);
+	}
+	else if (_t1 == (net__AddrFamily__ip6)) {
+		return (u32)(sizeof(net__Ip6) + _const_net__aoffset);
+	}
+	else if (_t1 == (net__AddrFamily__unix)) {
+		return (u32)(sizeof(net__Unix) + _const_net__aoffset);
+	}
+	else {
+		builtin___v_panic(_S("Unknown address family"));
+		VUNREACHABLE();
+	}
+	return 0;
+}
+_result_Array_net__Addr net__resolve_addrs(string addr, net__AddrFamily family, net__SocketType typ) {
+
+	if (family == (net__AddrFamily__ip) || family == (net__AddrFamily__ip6) || family == (net__AddrFamily__unspec)) {
+		return net__resolve_ipaddrs(addr, family, typ);
+	}
+	else if (family == (net__AddrFamily__unix)) {
+		net__Unix resolved = ((net__Unix){.path = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},});
+		if (addr.len > 104) {
+			return (_result_Array_net__Addr){ .is_error=true, .err=builtin___v_error(_S("net: resolve_addrs Unix socket address is too long")), .data={E_STRUCT} };
+		}
+		memcpy(&resolved.path, addr.str, addr.len);
+		_result_Array_net__Addr _t3;
+		builtin___result_ok(&(Array_net__Addr[]) { builtin__new_array_from_c_array(1, 1, sizeof(net__Addr), _MOV((net__Addr[1]){((net__Addr){.len = 0,.f = ((u8)(net__AddrFamily__unix)),.addr = ((net__AddrData){.Unix = resolved,}),})})) }, (_result*)(&_t3), sizeof(Array_net__Addr));
+		 
+		return _t3;
+	}
+	return (_result_Array_net__Addr){0};
+}
+_result_Array_net__Addr net__resolve_addrs_fuzzy(string addr, net__SocketType typ) {
+	if (addr.len == 0) {
+		return (_result_Array_net__Addr){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+	}
+	if (builtin__string_contains(addr, _S(":"))) {
+		return net__resolve_addrs(addr, net__AddrFamily__unspec, typ);
+	}
+	return net__resolve_addrs(addr, net__AddrFamily__unix, typ);
+}
+_result_Array_net__Addr net__resolve_ipaddrs(string addr, net__AddrFamily family, net__SocketType typ) {
+	_result_multi_return_string_u16 _t1 = net__split_address(addr);
+	if (_t1.is_error) {
+		_result_Array_net__Addr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_string_u16 mr_3968 = (*(multi_return_string_u16*)_t1.data);
+	string address = mr_3968.arg0;
+	u16 port = mr_3968.arg1;
+	if (builtin__string_at(addr, 0) == ':') {
+
+		if (family == (net__AddrFamily__ip6)) {
+			_result_Array_net__Addr _t3;
+			builtin___result_ok(&(Array_net__Addr[]) { builtin__new_array_from_c_array(1, 1, sizeof(net__Addr), _MOV((net__Addr[1]){net__new_ip6(port, _const_net__addr_ip6_any)})) }, (_result*)(&_t3), sizeof(Array_net__Addr));
+			 
+			return _t3;
+		}
+		else if (family == (net__AddrFamily__ip) || family == (net__AddrFamily__unspec)) {
+			_result_Array_net__Addr _t4;
+			builtin___result_ok(&(Array_net__Addr[]) { builtin__new_array_from_c_array(1, 1, sizeof(net__Addr), _MOV((net__Addr[1]){net__new_ip(port, _const_net__addr_ip_any)})) }, (_result*)(&_t4), sizeof(Array_net__Addr));
+			 
+			return _t4;
+		}
+		else {
+		}
+	}
+	struct addrinfo hints;
+	builtin__vmemset(&hints, 0, ((int)(sizeof(struct addrinfo))));
+	hints.ai_family = ((int)(family));
+	hints.ai_socktype = ((int)(typ));
+	hints.ai_flags = AI_PASSIVE;
+	struct addrinfo* results = ((struct addrinfo*)(((void*)0)));
+	string sport = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe04, {.d_u16 = port}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		i32 x = getaddrinfo(((char*)(address.str)), ((char*)(sport.str)), &hints, &results);
+		_result_void _t6 = net__wrap_error(x);
+		if (_t6.is_error) {
+			_result_Array_net__Addr _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+	}
+	#endif
+	Array_net__Addr addresses = builtin____new_array_with_default(0, 0, sizeof(net__Addr), 0);
+	for (struct addrinfo* result = results; !builtin__isnil(result); result = result->ai_next) {
+		net__AddrFamily _t8 = ((net__AddrFamily)(result->ai_family));
+		
+		if (_t8 == (net__AddrFamily__ip)) {
+			net__Addr new_addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip = ((net__Ip){.port = 0,.addr = {0, 0, 0, 0},.sin_pad = {0, 0, 0, 0, 0, 0, 0, 0},}),}),});
+			memcpy(&new_addr, result->ai_addr, result->ai_addrlen);
+			builtin__array_push((array*)&addresses, _MOV((net__Addr[]){ new_addr }));
+		}
+		else if (_t8 == (net__AddrFamily__ip6)) {
+			net__Addr new_addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+			memcpy(&new_addr, result->ai_addr, result->ai_addrlen);
+			builtin__array_push((array*)&addresses, _MOV((net__Addr[]){ new_addr }));
+		}
+		else {
+			builtin___v_panic(builtin__string__plus(_S("Unexpected address family "), builtin__int_str(result->ai_family)));
+			VUNREACHABLE();
+		}
+	}
+	_result_Array_net__Addr _t11;
+	builtin___result_ok(&(Array_net__Addr[]) { addresses }, (_result*)(&_t11), sizeof(Array_net__Addr));
+	 
+		{ // defer begin
+			freeaddrinfo(results);
+		} // defer end
+	return _t11;
+}
+string net__Addr_str(net__Addr a) {
+	net__AddrFamily _t1 = ((net__AddrFamily)(a.f));
+	
+	if (_t1 == (net__AddrFamily__ip)) {
+		{ // Unsafe block
+			return net__Ip_str(a.addr.Ip);
+		}
+	}
+	else if (_t1 == (net__AddrFamily__ip6)) {
+		{ // Unsafe block
+			return net__Ip6_str(a.addr.Ip6);
+		}
+	}
+	else if (_t1 == (net__AddrFamily__unix)) {
+		{ // Unsafe block
+			return builtin__tos_clone(builtin__array_slice(builtin__new_array_from_c_array(104, 104, sizeof(char), a.addr.Unix.path), 0, _const_net__max_unix_path).data);
+		}
+	}
+	else if (_t1 == (net__AddrFamily__unspec)) {
+		return _S("<.unspec>");
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+net__Addr net__addr_from_socket_handle(int handle) {
+	net__Addr addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+	u32 size = sizeof(net__Addr);
+	getsockname(handle, ((voidptr)(&addr)), &size);
+	return addr;
+}
+_result_net__Addr net__peer_addr_from_socket_handle(int handle) {
+	net__Addr addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+	u32 size = sizeof(net__Addr);
+	_result_int _t1 = net__socket_error_message(getpeername(handle, ((voidptr)(&addr)), &size), _S("peer_addr_from_socket_handle failed"));
+	if (_t1.is_error) {
+		_result_net__Addr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_net__Addr _t3;
+	builtin___result_ok(&(net__Addr[]) { addr }, (_result*)(&_t3), sizeof(net__Addr));
+	 
+	return _t3;
+}
+int net__shutdown(int handle, net__ShutdownConfig config) {
+	i32 res = shutdown(handle, ((int)(config.how)));
+	#if !defined(CUSTOM_DEFINE_net_nonblocking_sockets)
+	{
+		return res;
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+_result_void net__close(int handle) {
+	i32 _t1;
+	#if defined(_WIN32)
+	#else
+		_t1 = close(handle);
+		;
+	#endif
+		i32 res = _t1;
+	#if !defined(CUSTOM_DEFINE_net_nonblocking_sockets)
+	{
+		_result_int _t3 = net__socket_error(res);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_void){0};
+}
+VV_LOC _result_bool net__select(int handle, net__Select test, time__Duration timeout) {
+	fd_set set = ((fd_set){E_STRUCT});
+	FD_ZERO(&set);
+	FD_SET(handle, &set);
+	time__Duration seconds = timeout / _const_time__second;
+	i64 microseconds = time__Duration_microseconds(((time__Duration)(timeout - (seconds * _const_time__second))));
+	struct timeval *tt = HEAP(struct timeval, (((struct timeval){.tv_sec = ((u64)(seconds)),.tv_usec = ((u64)(microseconds)),})));
+	struct timeval* timeval_timeout = &(*(tt));
+	if (timeout == _const_net__infinite_timeout) {
+		timeval_timeout = ((struct timeval*)(((void*)0)));
+	}
+
+	if (test == (net__Select__read)) {
+		_result_int _t1 = net__socket_error(select((int)(handle + 1), &set, NULL, NULL, timeval_timeout));
+		if (_t1.is_error) {
+			_result_bool _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	else if (test == (net__Select__write)) {
+		_result_int _t3 = net__socket_error(select((int)(handle + 1), NULL, &set, NULL, timeval_timeout));
+		if (_t3.is_error) {
+			_result_bool _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	}
+	else if (test == (net__Select__except)) {
+		_result_int _t5 = net__socket_error(select((int)(handle + 1), NULL, NULL, &set, timeval_timeout));
+		if (_t5.is_error) {
+			_result_bool _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+	}
+	_result_bool _t7;
+	builtin___result_ok(&(bool[]) { FD_ISSET(handle, &set) != 0 }, (_result*)(&_t7), sizeof(bool));
+	 
+	return _t7;
+}
+inline VV_LOC _result_bool net__select_deadline(int handle, net__Select test, time__Time deadline) {
+	bool infinite = time__Time_unix(deadline) == 0;
+	for (;;) {
+		if (!(infinite || !time__Time__lt(deadline, time__now()))) break;
+		time__Duration timeout = (infinite ? (_const_net__infinite_timeout) : (time__Time__minus(deadline, time__now())));
+		_result_bool _t1 = net__select(handle, test, timeout);
+		if (_t1.is_error) {
+			IError err = _t1.err;
+			if (IError_name_table[err._typ]._method_code(err._object) == EINTR) {
+				continue;
+			}
+			return (_result_bool){ .is_error=true, .err=err, .data={E_STRUCT} };
+		}
+		
+ 		bool ready = (*(bool*)_t1.data);
+		_result_bool _t3;
+		builtin___result_ok(&(bool[]) { ready }, (_result*)(&_t3), sizeof(bool));
+		 
+		return _t3;
+	}
+	return (_result_bool){ .is_error=true, .err=_const_net__err_timed_out, .data={E_STRUCT} };
+}
+VV_LOC _result_void net__wait_for_common(int handle, time__Time deadline, time__Duration timeout, net__Select test) {
+	time__Time _t1; /* if prepend */
+	if (timeout == _const_net__infinite_timeout) {
+		_t1 = time__unix(0);
+		goto _t2;
+	};
+	if (timeout == 0) {
+		_t1 = deadline;
+		goto _t2;
+	};
+	if (timeout < 0) {
+		builtin___v_panic(_S("invalid negative timeout"));
+		VUNREACHABLE();
+		goto _t2;
+	};
+	{
+		_t1 = time__Time_add(time__now(), timeout);
+	}
+	_t2: {};
+		time__Time real_deadline = _t1;
+	_result_bool _t3 = net__select_deadline(handle, test, real_deadline);
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	bool ready = (*(bool*)_t3.data);
+	if (ready) {
+		return (_result_void){0};
+	}
+	return (_result_void){ .is_error=true, .err=_const_net__err_timed_out, .data={E_STRUCT} };
+}
+VV_LOC _result_void net__wait_for_write(int handle, time__Time deadline, time__Duration timeout) {
+	return net__wait_for_common(handle, deadline, timeout, net__Select__write);
+}
+VV_LOC _result_void net__wait_for_read(int handle, time__Time deadline, time__Duration timeout) {
+	return net__wait_for_common(handle, deadline, timeout, net__Select__read);
+}
+_result_int net__socket_error_message(int potential_code, string s) {
+	_result_int _t2 = net__socket_error(potential_code);
+	if (_t2.is_error) {
+		IError err = _t2.err;
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; "), 0xfe10, {.d_s = s}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	_result_int _t1;
+	builtin___result_ok(&(int[]) { (*(int*)_t2.data) }, (_result*)(&_t1), sizeof(int));
+	 
+	return _t1;
+}
+_result_int net__socket_error(int potential_code) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		if (potential_code < 0) {
+			int last_error = net__error_code();
+			return (_result_int){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net: socket error: "), 0xfe07, {.d_i32 = last_error}}, {_SLIT0, 0, { .d_c = 0 }}})), last_error), .data={E_STRUCT} };
+		}
+	}
+	#endif
+	_result_int _t3;
+	builtin___result_ok(&(int[]) { potential_code }, (_result*)(&_t3), sizeof(int));
+	 
+	return _t3;
+}
+_result_void net__wrap_error(int error_code) {
+	if (error_code == 0) {
+		return (_result_void){0};
+	}
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net: socket error: "), 0xfe07, {.d_i32 = error_code}}, {_SLIT0, 0, { .d_c = 0 }}})), error_code), .data={E_STRUCT} };
+	}
+	#endif
+	return (_result_void){0};
+}
+inline VV_LOC _result_int net__wrap_read_result(int result) {
+	if (result == 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+	}
+	_result_int _t2;
+	builtin___result_ok(&(int[]) { result }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+int net__error_code(void) {
+	return errno;
+}
+VV_LOC void net__init(void) {
+}
+_result_net__RawConn_ptr net__new_raw_socket(net__RawSocketConfig config) {
+	_result_int _t1 = net__socket_error(socket(config.family, net__SocketType__raw, ((int)(config.protocol))));
+	if (_t1.is_error) {
+		_result_net__RawConn_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	int sockfd = (*(int*)_t1.data);
+	net__RawSocket* s = ((net__RawSocket*)builtin__memdup(&(net__RawSocket){.Socket = ((net__Socket){.handle = sockfd,}),.l = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),}),.has_r = 0,.r = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),}),.protocol = config.protocol,}, sizeof(net__RawSocket)));
+	_result_net__RawConn_ptr _t3;
+	builtin___result_ok(&(net__RawConn*[]) { ((net__RawConn*)builtin__memdup(&(net__RawConn){.sock = *s,.write_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_timeout = _const_net__raw_default_read_timeout,.write_timeout = _const_net__raw_default_write_timeout,}, sizeof(net__RawConn))) }, (_result*)(&_t3), sizeof(net__RawConn*));
+	 
+	return _t3;
+}
+_result_int net__RawConn_write_ptr(net__RawConn* c, u8* b, int len) {
+	_option_net__Addr _t1 = net__RawSocket_remote(&c->sock);
+	if (_t1.state != 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("no remote address set for raw socket")), .data={E_STRUCT} };
+	}
+	
+ 	net__Addr remote = (*(net__Addr*)_t1.data);
+	return net__RawConn_write_to_ptr(c, remote, b, len);
+}
+_result_int net__RawConn_write(net__RawConn* c, Array_u8 buf) {
+	return net__RawConn_write_ptr(c, buf.data, buf.len);
+}
+_result_int net__RawConn_write_string(net__RawConn* c, string s) {
+	return net__RawConn_write_ptr(c, s.str, s.len);
+}
+_result_int net__RawConn_write_to_ptr(net__RawConn* c, net__Addr addr, u8* b, int len) {
+	i32 res = sendto(c->sock.Socket.handle, b, len, 0, ((voidptr)(&addr)), net__Addr_len(addr));
+	if (res >= 0) {
+		_result_int _t1;
+		builtin___result_ok(&(int[]) { res }, (_result*)(&_t1), sizeof(int));
+		 
+		return _t1;
+	}
+	int code = net__error_code();
+	if (code == ((int)(_const_net__error_ewouldblock))) {
+		_result_void _t2 = net__RawConn_wait_for_write(c);
+		if (_t2.is_error) {
+			_result_int _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+		_result_int _t4 = net__socket_error(sendto(c->sock.Socket.handle, b, len, 0, ((voidptr)(&addr)), net__Addr_len(addr)));
+		if (_t4.is_error) {
+			_result_int _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	} else {
+		_result_void _t6 = net__wrap_error(code);
+		if (_t6.is_error) {
+			_result_int _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+	}
+	return (_result_int){ .is_error=true, .err=builtin___v_error(_S("write failed")), .data={E_STRUCT} };
+}
+_result_int net__RawConn_write_to(net__RawConn* c, net__Addr addr, Array_u8 buf) {
+	return net__RawConn_write_to_ptr(c, addr, buf.data, buf.len);
+}
+_result_int net__RawConn_write_to_string(net__RawConn* c, net__Addr addr, string s) {
+	return net__RawConn_write_to_ptr(c, addr, s.str, s.len);
+}
+_result_multi_return_int_net__Addr net__RawConn_read_ptr(net__RawConn* c, u8* buf_ptr, int len) {
+	net__Addr addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+	u32 addr_len = sizeof(net__Addr);
+	_result_int _t1 = net__wrap_read_result(recvfrom(c->sock.Socket.handle, ((voidptr)(buf_ptr)), len, 0, ((voidptr)(&addr)), &addr_len));
+	if (_t1.is_error) {
+		_result_multi_return_int_net__Addr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	int res = (*(int*)_t1.data);
+	if (res > 0) {
+		_result_multi_return_int_net__Addr _t3;
+		builtin___result_ok(&(multi_return_int_net__Addr[]) { (multi_return_int_net__Addr){.arg0=res, .arg1=addr} }, (_result*)(&_t3), sizeof(multi_return_int_net__Addr));
+		return _t3;
+	}
+	int code = net__error_code();
+	if (code == ((int)(_const_net__error_ewouldblock))) {
+		_result_void _t4 = net__RawConn_wait_for_read(c);
+		if (_t4.is_error) {
+			_result_multi_return_int_net__Addr _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+		_result_int _t6 = net__wrap_read_result(recvfrom(c->sock.Socket.handle, ((voidptr)(buf_ptr)), len, 0, ((voidptr)(&addr)), &addr_len));
+		if (_t6.is_error) {
+			_result_multi_return_int_net__Addr _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ 		res = (*(int*)_t6.data);
+		_result_int _t8 = net__socket_error(res);
+		if (_t8.is_error) {
+			_result_multi_return_int_net__Addr _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ 		int res2 = (*(int*)_t8.data);
+		_result_multi_return_int_net__Addr _t10;
+		builtin___result_ok(&(multi_return_int_net__Addr[]) { (multi_return_int_net__Addr){.arg0=res2, .arg1=addr} }, (_result*)(&_t10), sizeof(multi_return_int_net__Addr));
+		return _t10;
+	} else {
+		_result_void _t11 = net__wrap_error(code);
+		if (_t11.is_error) {
+			_result_multi_return_int_net__Addr _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ ;
+	}
+	return (_result_multi_return_int_net__Addr){ .is_error=true, .err=builtin___v_error(_S("read failed")), .data={E_STRUCT} };
+}
+_result_multi_return_int_net__Addr net__RawConn_read(net__RawConn* c, Array_u8* buf) {
+	_result_multi_return_int_net__Addr _t2 = net__RawConn_read_ptr(c, buf->data, buf->len);
+	if (_t2.is_error) {
+		_result_multi_return_int_net__Addr _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_multi_return_int_net__Addr _t1;
+	builtin___result_ok(&(multi_return_int_net__Addr[]) { (*(multi_return_int_net__Addr*)_t2.data) }, (_result*)(&_t1), sizeof(multi_return_int_net__Addr));
+	 
+	return _t1;
+}
+_result_time__Time net__RawConn_read_deadline(net__RawConn* c) {
+	if (time__Time_unix(c->read_deadline) == 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->read_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+void net__RawConn_set_read_deadline(net__RawConn* c, time__Time deadline) {
+	c->read_deadline = deadline;
+}
+_result_time__Time net__RawConn_write_deadline(net__RawConn* c) {
+	if (time__Time_unix(c->write_deadline) == 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->write_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+void net__RawConn_set_write_deadline(net__RawConn* c, time__Time deadline) {
+	c->write_deadline = deadline;
+}
+time__Duration net__RawConn_read_timeout(net__RawConn* c) {
+	return c->read_timeout;
+}
+void net__RawConn_set_read_timeout(net__RawConn* c, time__Duration t) {
+	c->read_timeout = t;
+}
+time__Duration net__RawConn_write_timeout(net__RawConn* c) {
+	return c->write_timeout;
+}
+void net__RawConn_set_write_timeout(net__RawConn* c, time__Duration t) {
+	c->write_timeout = t;
+}
+inline _result_void net__RawConn_wait_for_read(net__RawConn* c) {
+	return net__wait_for_read(c->sock.Socket.handle, c->read_deadline, c->read_timeout);
+}
+inline _result_void net__RawConn_wait_for_write(net__RawConn* c) {
+	return net__wait_for_write(c->sock.Socket.handle, c->write_deadline, c->write_timeout);
+}
+string net__RawConn_str(net__RawConn* c) {
+	return _S("RawConn");
+}
+_result_void net__RawConn_close(net__RawConn* c) {
+	return net__RawSocket_close(&c->sock);
+}
+void net__RawConn_set_remote(net__RawConn* c, net__Addr addr) {
+	c->sock.has_r = true;
+	c->sock.r = addr;
+}
+net__Protocol net__RawConn_protocol(net__RawConn* c) {
+	return c->sock.protocol;
+}
+_result_void net__RawSocket_set_option_bool(net__RawSocket* s, net__SocketOption opt, bool value) {
+	int x = (int[]){(value)?1:0}[0];
+	_result_int _t1 = net__socket_error(setsockopt(s->Socket.handle, SOL_SOCKET, ((int)(opt)), &x, sizeof(int)));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__RawSocket_set_option_int(net__RawSocket* s, net__SocketOption opt, int value) {
+	_result_int _t1 = net__socket_error(setsockopt(s->Socket.handle, SOL_SOCKET, ((int)(opt)), &value, sizeof(int)));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__RawSocket_set_ip_header_included(net__RawSocket* s, bool on) {
+	int x = (int[]){(on)?1:0}[0];
+	_result_int _t1 = net__socket_error(setsockopt(s->Socket.handle, IPPROTO_IP, IP_HDRINCL, &x, sizeof(int)));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__RawSocket_close(net__RawSocket* s) {
+	net__shutdown(s->Socket.handle, ((net__ShutdownConfig){.how = net__ShutdownDirection__read_and_write,}));
+	return net__close(s->Socket.handle);
+}
+_result_bool net__RawSocket_select(net__RawSocket* s, net__Select test, time__Duration timeout) {
+	return net__select(s->Socket.handle, test, timeout);
+}
+_option_net__Addr net__RawSocket_remote(net__RawSocket* s) {
+	if (s->has_r) {
+		_option_net__Addr _t1;
+		builtin___option_ok(&(net__Addr[]) { s->r }, (_option*)(&_t1), sizeof(net__Addr));
+		 
+		return _t1;
+	}
+	return (_option_net__Addr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+}
+_result_net__Addr net__RawConn_addr(net__RawConn* c) {
+	return net__Socket_address(&c->sock.Socket);
+}
+_result_net__Addr net__Socket_address(net__Socket* s) {
+	_result_net__Addr _t1;
+	builtin___result_ok(&(net__Addr[]) { net__addr_from_socket_handle(s->handle) }, (_result*)(&_t1), sizeof(net__Addr));
+	 
+	return _t1;
+}
+_result_void net__set_blocking(int handle, bool state) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		i32 flags = fcntl(handle, F_GETFL, 0);
+		if (state) {
+			flags &= ~O_NONBLOCK;
+		} else {
+			flags |= O_NONBLOCK;
+		}
+		_result_int _t2 = net__socket_error(fcntl(handle, F_SETFL, flags));
+		if (_t2.is_error) {
+			_result_void _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+	}
+	#endif
+	return (_result_void){0};
+}
+_result_net__Connection net__TCPDialer_dial(net__TCPDialer t, string address) {
+	_result_net__TcpConn_ptr _t2 = net__dial_tcp(address);
+	if (_t2.is_error) {
+		_result_net__Connection _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_net__Connection _t1;
+	builtin___result_ok(&(net__Connection[]) { I_net__TcpConn_to_Interface_net__Connection((*(net__TcpConn**)_t2.data)) }, (_result*)(&_t1), sizeof(net__Connection));
+	 
+	return _t1;
+}
+net__Dialer net__default_tcp_dialer(void) {
+	return I_net__TCPDialer_to_Interface_net__Dialer(((net__TCPDialer*)builtin__memdup(&(net__TCPDialer){E_STRUCT}, sizeof(net__TCPDialer))));
+}
+_result_net__TcpConn_ptr net__dial_tcp(string oaddress) {
+	string address = oaddress;
+	_result_Array_net__Addr _t1 = net__resolve_addrs_fuzzy(address, net__SocketType__tcp);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not resolve address "), 0xfe10, {.d_s = address}}, {_S(" in dial_tcp"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t1.data);
+	Array_IError errs = builtin____new_array_with_default(0, 0, sizeof(IError), 0);
+	for (int _t3 = 0; _t3 < addrs.len; ++_t3) {
+		net__Addr addr = ((net__Addr*)addrs.data)[_t3];
+		_result_net__TcpSocket _t4 = net__new_tcp_socket(net__Addr_family(addr));
+		if (_t4.is_error) {
+			IError err = _t4.err;
+			return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not create new tcp socket in dial_tcp"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		
+ 		net__TcpSocket s = (*(net__TcpSocket*)_t4.data);
+		_result_void _t6 = net__TcpSocket_connect(&s, addr);
+		if (_t6.is_error) {
+			IError err = _t6.err;
+			builtin__array_push((array*)&errs, _MOV((IError[]){ err }));
+			_result_void _t8 = net__TcpSocket_close(&s);
+			if (_t8.is_error) {
+				continue;
+			}
+			
+ ;
+			continue;
+		}
+		
+ ;
+		net__TcpConn* conn = ((net__TcpConn*)builtin__memdup(&(net__TcpConn){.sock = s,.handle = 0,.write_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_timeout = _const_net__tcp_default_read_timeout,.write_timeout = _const_net__tcp_default_write_timeout,.is_blocking = true,}, sizeof(net__TcpConn)));
+		_result_net__TcpConn_ptr _t9;
+		builtin___result_ok(&(net__TcpConn*[]) { conn }, (_result*)(&_t9), sizeof(net__TcpConn*));
+		 
+		return _t9;
+	}
+	strings__Builder err_builder = strings__new_builder(1024);
+	{
+		strings__Builder_write_string(&err_builder, _S("dial_tcp failed for address "));
+		strings__Builder_write_string(&err_builder, address);
+		strings__Builder_write_string(&err_builder, _S("\n"));
+	}
+	strings__Builder_write_string(&err_builder, _S("tried addrs:\n"));
+	for (int i = 0; i < errs.len; i++) {
+		net__Addr addr = (*(net__Addr*)builtin__array_get(addrs, i));
+		IError why = (*(IError*)builtin__array_get(errs, i));
+		strings__Builder_write_string(&err_builder, builtin__str_intp(3, _MOV((StrIntpData[]){{_S("\t"), 0xfe10, {.d_s = net__Addr_str(addr)}}, {_S(": "), 0xfe10, {.d_s = builtin__IError_str(why)}}, {_S("\n"), 0, { .d_c = 0 }}})));
+	}
+	return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(strings__Builder_str(&err_builder)), .data={E_STRUCT} };
+}
+_result_net__TcpConn_ptr net__dial_tcp_with_bind(string saddr, string laddr) {
+	_result_Array_net__Addr _t1 = net__resolve_addrs_fuzzy(saddr, net__SocketType__tcp);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not resolve address "), 0xfe10, {.d_s = saddr}}, {_S(" in dial_tcp_with_bind"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t1.data);
+	for (int _t3 = 0; _t3 < addrs.len; ++_t3) {
+		net__Addr addr = ((net__Addr*)addrs.data)[_t3];
+		_result_net__TcpSocket _t4 = net__new_tcp_socket(net__Addr_family(addr));
+		if (_t4.is_error) {
+			IError err = _t4.err;
+			return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not create new tcp socket in dial_tcp_with_bind"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		
+ 		net__TcpSocket s = (*(net__TcpSocket*)_t4.data);
+		_result_void _t6 = net__TcpSocket_bind(&s, laddr);
+		if (_t6.is_error) {
+			_result_void _t7 = net__TcpSocket_close(&s);
+			if (_t7.is_error) {
+				continue;
+			}
+			
+ ;
+			continue;
+		}
+		
+ ;
+		_result_void _t8 = net__TcpSocket_connect(&s, addr);
+		if (_t8.is_error) {
+			_result_void _t9 = net__TcpSocket_close(&s);
+			if (_t9.is_error) {
+				continue;
+			}
+			
+ ;
+			continue;
+		}
+		
+ ;
+		net__TcpConn* conn = ((net__TcpConn*)builtin__memdup(&(net__TcpConn){.sock = s,.handle = 0,.write_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_timeout = _const_net__tcp_default_read_timeout,.write_timeout = _const_net__tcp_default_write_timeout,.is_blocking = true,}, sizeof(net__TcpConn)));
+		_result_net__TcpConn_ptr _t10;
+		builtin___result_ok(&(net__TcpConn*[]) { conn }, (_result*)(&_t10), sizeof(net__TcpConn*));
+		 
+		return _t10;
+	}
+	return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("dial_tcp_with_bind failed for address "), 0xfe10, {.d_s = saddr}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+_result_void net__TcpConn_close(net__TcpConn* c) {
+	_result_void _t1 = net__TcpSocket_close(&c->sock);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_int net__TcpConn_read_ptr(net__TcpConn _v_toheap_c, u8* buf_ptr, int len) {
+net__TcpConn* c = HEAP(net__TcpConn, _v_toheap_c);
+	bool should_ewouldblock = false;
+	i32 _t1;
+	#if defined(CUSTOM_DEFINE_is_coroutine)
+	#else
+		{
+			bool has_data = true;
+			if ((*(c)).is_blocking) {
+				_result_bool _t2;
+				if (_t2 = net__select((*(c)).sock.Socket.handle, net__Select__read, 1), !_t2.is_error) {
+					bool ok = *(bool*)_t2.data;
+					has_data = ok;
+				} else {
+					false;
+				}
+			}
+		i32 _t3; /* if prepend */
+		if (has_data) {
+			_t3 = recv((*(c)).sock.Socket.handle, ((voidptr)(buf_ptr)), len, _const_net__msg_dontwait);
+			goto _t4;
+		};
+		{
+			should_ewouldblock = true;
+			_t3 = -1;
+		}
+	_t4: {};
+					_t1 = _t3;
+		}
+	#endif
+		i32 res = _t1;
+	int ecode = net__error_code();
+	if (res > 0) {
+		_result_int _t5;
+		builtin___result_ok(&(int[]) { res }, (_result*)(&_t5), sizeof(int));
+		 
+		return _t5;
+	}
+	int code = (should_ewouldblock ? (((int)(_const_net__error_ewouldblock))) : (ecode));
+	if (code == ((int)(_const_net__error_ewouldblock)) || code == ((int)(_const_net__error_eagain)) || code == EINTR) {
+		_result_void _t6 = net__TcpConn_wait_for_read((*(c)));
+		if (_t6.is_error) {
+			_result_int _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+		i32 _t8;
+		#if defined(CUSTOM_DEFINE_is_coroutine)
+		#else
+			_t8 = recv((*(c)).sock.Socket.handle, ((voidptr)(buf_ptr)), len, _const_net__msg_dontwait);
+			;
+		#endif
+				res = _t8;
+		return net__socket_error(res);
+	} else {
+		_result_void _t10 = net__wrap_error(code);
+		if (_t10.is_error) {
+			_result_int _t11 = {0};
+			_t11.is_error = true;
+			_t11.err = _t10.err;
+			return _t11;
+		}
+		
+ ;
+	}
+	return (_result_int){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+_result_int net__TcpConn_read(net__TcpConn _v_toheap_c, Array_u8* buf) {
+net__TcpConn* c = HEAP(net__TcpConn, _v_toheap_c);
+	_result_int _t2 = net__TcpConn_read_ptr((*(c)), buf->data, buf->len);
+	if (_t2.is_error) {
+		_result_int _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_int _t1;
+	builtin___result_ok(&(int[]) { (*(int*)_t2.data) }, (_result*)(&_t1), sizeof(int));
+	 
+	return _t1;
+}
+_result_time__Time net__TcpConn_read_deadline(net__TcpConn* c) {
+	if (time__Time_unix(c->read_deadline) == 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->read_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+_result_int net__TcpConn_write_ptr(net__TcpConn* c, u8* b, int len) {
+	{ // Unsafe block
+		u8* ptr_base = ((u8*)(b));
+		int total_sent = 0;
+		for (;;) {
+			if (!(total_sent < len)) break;
+			u8* ptr = ptr_base + total_sent;
+			int remaining = (int)(len - total_sent);
+			i32 _t1;
+			#if defined(CUSTOM_DEFINE_is_coroutine)
+			#else
+				_t1 = send(c->sock.Socket.handle, ptr, remaining, _const_net__msg_nosignal);
+				;
+			#endif
+						i32 sent = _t1;
+			int code = net__error_code();
+			if (sent < 0) {
+				if (code == ((int)(_const_net__error_ewouldblock)) || code == ((int)(_const_net__error_eagain)) || code == EINTR) {
+					_result_void _t2 = net__TcpConn_wait_for_write(c);
+					if (_t2.is_error) {
+						_result_int _t3 = {0};
+						_t3.is_error = true;
+						_t3.err = _t2.err;
+						return _t3;
+					}
+					
+ ;
+					continue;
+				} else {
+					_result_void _t4 = net__wrap_error(code);
+					if (_t4.is_error) {
+						_result_int _t5 = {0};
+						_t5.is_error = true;
+						_t5.err = _t4.err;
+						return _t5;
+					}
+					
+ ;
+				}
+			}
+			total_sent += sent;
+		}
+		_result_int _t6;
+		builtin___result_ok(&(int[]) { total_sent }, (_result*)(&_t6), sizeof(int));
+		 
+		return _t6;
+	}
+	return (_result_int){0};
+}
+_result_int net__TcpConn_write(net__TcpConn* c, Array_u8 bytes) {
+	return net__TcpConn_write_ptr(c, bytes.data, bytes.len);
+}
+_result_int net__TcpConn_write_string(net__TcpConn* c, string s) {
+	return net__TcpConn_write_ptr(c, s.str, s.len);
+}
+void net__TcpConn_set_read_deadline(net__TcpConn* c, time__Time deadline) {
+	c->read_deadline = deadline;
+}
+_result_time__Time net__TcpConn_write_deadline(net__TcpConn* c) {
+	if (time__Time_unix(c->write_deadline) == 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->write_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+void net__TcpConn_set_write_deadline(net__TcpConn* c, time__Time deadline) {
+	c->write_deadline = deadline;
+}
+time__Duration net__TcpConn_read_timeout(net__TcpConn* c) {
+	return c->read_timeout;
+}
+void net__TcpConn_set_read_timeout(net__TcpConn* c, time__Duration t) {
+	c->read_timeout = t;
+}
+time__Duration net__TcpConn_write_timeout(net__TcpConn* c) {
+	return c->write_timeout;
+}
+void net__TcpConn_set_write_timeout(net__TcpConn* c, time__Duration t) {
+	c->write_timeout = t;
+}
+inline _result_void net__TcpConn_wait_for_read(net__TcpConn _v_toheap_c) {
+net__TcpConn* c = HEAP(net__TcpConn, _v_toheap_c);
+	return net__wait_for_read((*(c)).sock.Socket.handle, (*(c)).read_deadline, (*(c)).read_timeout);
+}
+inline _result_void net__TcpConn_wait_for_write(net__TcpConn* c) {
+	return net__wait_for_write(c->sock.Socket.handle, c->write_deadline, c->write_timeout);
+}
+_result_void net__TcpConn_set_sock(net__TcpConn* c) {
+	_result_net__TcpSocket _t1 = net__tcp_socket_from_handle(c->handle);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	c->sock = (*(net__TcpSocket*)_t1.data);
+	return (_result_void){0};
+}
+_result_net__Addr net__TcpConn_peer_addr(net__TcpConn* c) {
+	return net__peer_addr_from_socket_handle(c->sock.Socket.handle);
+}
+_result_string net__TcpConn_peer_ip(net__TcpConn* c) {
+	_result_net__Addr _t1 = net__TcpConn_peer_addr(c);
+	if (_t1.is_error) {
+		_result_string _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	string address = net__Addr_str((*(net__Addr*)_t1.data));
+	if (builtin__string_contains(address, _S("]:"))) {
+		string ip = builtin__string_all_after(builtin__string_all_before(address, _S("]:")), _S("["));
+		_result_string _t3;
+		builtin___result_ok(&(string[]) { ip }, (_result*)(&_t3), sizeof(string));
+		 
+		return _t3;
+	}
+	string ip = builtin__string_all_before(address, _S(":"));
+	_result_string _t4;
+	builtin___result_ok(&(string[]) { ip }, (_result*)(&_t4), sizeof(string));
+	 
+	return _t4;
+}
+_result_net__Addr net__TcpConn_addr(net__TcpConn* c) {
+	return net__Socket_address(&c->sock.Socket);
+}
+string net__TcpConn_str(net__TcpConn _v_toheap_c) {
+net__TcpConn* c = HEAP(net__TcpConn, _v_toheap_c);
+	string s = builtin__string_replace(builtin__string_replace(net__TcpSocket_str((*(c)).sock), _S("\n"), _S(" ")), _S("  "), _S(" "));
+	return builtin__str_intp(6, _MOV((StrIntpData[]){{_S("TcpConn{ write_deadline: "), 0xfe10, {.d_s = time__Time_str((*(c)).write_deadline)}}, {_S(", read_deadline: "), 0xfe10, {.d_s = time__Time_str((*(c)).read_deadline)}}, {_S(", read_timeout: "), 0xfe10, {.d_s = time__Duration_str((*(c)).read_timeout)}}, {_S(", write_timeout: "), 0xfe10, {.d_s = time__Duration_str((*(c)).write_timeout)}}, {_S(", sock: "), 0xfe10, {.d_s = s}}, {_S(" }"), 0, { .d_c = 0 }}}));
+}
+_result_net__TcpListener_ptr net__listen_tcp(net__AddrFamily family, string saddr, net__ListenOptions options) {
+	if (!(family == net__AddrFamily__ip || family == net__AddrFamily__ip6)) {
+		return (_result_net__TcpListener_ptr){ .is_error=true, .err=builtin___v_error(_S("listen_tcp only supports ip and ip6")), .data={E_STRUCT} };
+	}
+	_result_net__TcpSocket _t2 = net__new_tcp_socket(family);
+	if (_t2.is_error) {
+		IError err = _t2.err;
+		return (_result_net__TcpListener_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not create new socket"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	net__TcpSocket s = (*(net__TcpSocket*)_t2.data);
+	_result_void _t4 = net__TcpSocket_set_dualstack(&s, options.dualstack);
+	(void)_t4;
+ ;
+	_result_Array_net__Addr _t5 = net__resolve_addrs(saddr, family, net__SocketType__tcp);
+	if (_t5.is_error) {
+		IError err = _t5.err;
+		return (_result_net__TcpListener_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not resolve address "), 0xfe10, {.d_s = saddr}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t5.data);
+	net__Addr addr = (*(net__Addr*)builtin__array_get(addrs, 0));
+	u32 alen = net__Addr_len(addr);
+	_result_int _t7 = net__socket_error_message(bind(s.Socket.handle, ((voidptr)(&addr)), alen), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("binding to "), 0xfe10, {.d_s = saddr}}, {_S(" failed"), 0, { .d_c = 0 }}})));
+	if (_t7.is_error) {
+		_result_net__TcpListener_ptr _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	i32 res = listen(s.Socket.handle, options.backlog);
+	if (res == 0) {
+		net__TcpListener* listener = ((net__TcpListener*)builtin__memdup(&(net__TcpListener){.sock = s,.accept_timeout = _const_net__infinite_timeout,.accept_deadline = _const_net__no_deadline,.is_blocking = true,}, sizeof(net__TcpListener)));
+		_result_net__TcpListener_ptr _t9;
+		builtin___result_ok(&(net__TcpListener*[]) { listener }, (_result*)(&_t9), sizeof(net__TcpListener*));
+		 
+		return _t9;
+	}
+	#if !defined(CUSTOM_DEFINE_net_nonblocking_sockets)
+	{
+		_result_int _t11 = net__socket_error_message(res, builtin__str_intp(3, _MOV((StrIntpData[]){{_S("listening on "), 0xfe10, {.d_s = saddr}}, {_S(" with maximum backlog pending queue of "), 0xfe07, {.d_i32 = options.backlog}}, {_S(", failed"), 0, { .d_c = 0 }}})));
+		if (_t11.is_error) {
+			_result_net__TcpListener_ptr _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ ;
+		_result_net__TcpListener_ptr _t13;
+		builtin___result_ok(&(net__TcpListener*[]) { ((net__TcpListener*)(((void*)0))) }, (_result*)(&_t13), sizeof(net__TcpListener*));
+		 
+		return _t13;
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_net__TcpListener_ptr){0};
+}
+_result_net__TcpConn_ptr net__TcpListener_accept(net__TcpListener* l) {
+	_result_net__TcpConn_ptr _t1 = net__TcpListener_accept_only(l);
+	if (_t1.is_error) {
+		_result_net__TcpConn_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__TcpConn* res = (*(net__TcpConn**)_t1.data);
+	_result_void _t3 = net__TcpConn_set_sock(res);
+	if (_t3.is_error) {
+		_result_net__TcpConn_ptr _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	_result_net__TcpConn_ptr _t5;
+	builtin___result_ok(&(net__TcpConn*[]) { res }, (_result*)(&_t5), sizeof(net__TcpConn*));
+	 
+	return _t5;
+}
+_result_net__TcpConn_ptr net__TcpListener_accept_only(net__TcpListener* l) {
+	#if !defined(CUSTOM_DEFINE_is_coroutine)
+	{
+		if (l->is_blocking) {
+			_result_void _t2 = net__TcpListener_wait_for_accept(l);
+			if (_t2.is_error) {
+				_result_net__TcpConn_ptr _t3 = {0};
+				_t3.is_error = true;
+				_t3.err = _t2.err;
+				return _t3;
+			}
+			
+ ;
+		}
+	}
+	#endif
+	i32 _t4;
+	#if defined(CUSTOM_DEFINE_is_coroutine)
+	#else
+		_t4 = accept(l->sock.Socket.handle, 0, 0);
+		;
+	#endif
+		i32 new_handle = _t4;
+	int code = net__error_code();
+	if (!l->is_blocking && new_handle <= 0) {
+		if (code == ((int)(_const_net__error_einprogress)) || code == ((int)(_const_net__error_ewouldblock)) || code == ((int)(_const_net__error_eagain)) || code == EINTR) {
+			_result_void _t5 = net__TcpListener_wait_for_accept(l);
+			if (_t5.is_error) {
+				_result_net__TcpConn_ptr _t6 = {0};
+				_t6.is_error = true;
+				_t6.err = _t5.err;
+				return _t6;
+			}
+			
+ ;
+			i32 _t7;
+			#if defined(CUSTOM_DEFINE_is_coroutine)
+			#else
+				_t7 = accept(l->sock.Socket.handle, 0, 0);
+				;
+			#endif
+						new_handle = _t7;
+		}
+	}
+	if (new_handle <= 0) {
+		return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(_S("accept failed")), .data={E_STRUCT} };
+	}
+	_result_net__TcpConn_ptr _t9;
+	builtin___result_ok(&(net__TcpConn*[]) { ((net__TcpConn*)builtin__memdup(&(net__TcpConn){.sock = ((net__TcpSocket){.Socket = ((net__Socket){.handle = 0,}),}),.handle = new_handle,.write_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_timeout = _const_net__tcp_default_read_timeout,.write_timeout = _const_net__tcp_default_write_timeout,.is_blocking = l->is_blocking,}, sizeof(net__TcpConn))) }, (_result*)(&_t9), sizeof(net__TcpConn*));
+	 
+	return _t9;
+}
+_result_time__Time net__TcpListener_accept_deadline(net__TcpListener* c) {
+	if (time__Time_unix(c->accept_deadline) != 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->accept_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("invalid deadline")), .data={E_STRUCT} };
+}
+void net__TcpListener_set_accept_deadline(net__TcpListener* c, time__Time deadline) {
+	c->accept_deadline = deadline;
+}
+time__Duration net__TcpListener_accept_timeout(net__TcpListener* c) {
+	return c->accept_timeout;
+}
+void net__TcpListener_set_accept_timeout(net__TcpListener* c, time__Duration t) {
+	c->accept_timeout = t;
+}
+_result_void net__TcpListener_wait_for_accept(net__TcpListener* c) {
+	return net__wait_for_read(c->sock.Socket.handle, c->accept_deadline, c->accept_timeout);
+}
+_result_void net__TcpListener_close(net__TcpListener* c) {
+	_result_void _t1 = net__TcpSocket_close(&c->sock);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_net__Addr net__TcpListener_addr(net__TcpListener* c) {
+	return net__Socket_address(&c->sock.Socket);
+}
+__NOINLINE _result_net__TcpSocket net__new_tcp_socket(net__AddrFamily family) {
+	int _t1;
+	#if defined(CUSTOM_DEFINE_is_coroutine)
+	#else
+_result_int _t2 = net__socket_error(socket(family, net__SocketType__tcp, 0));
+		if (_t2.is_error) {
+			_result_net__TcpSocket _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		_t1 = (*(int*)_t2.data);
+		;
+	#endif
+		int handle = _t1;
+	net__TcpSocket s = ((net__TcpSocket){.Socket = ((net__Socket){.handle = handle,}),});
+	_result_void _t4 = net__TcpSocket_set_default_options(&s);
+	if (_t4.is_error) {
+		_result_net__TcpSocket _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	_result_net__TcpSocket _t6;
+	builtin___result_ok(&(net__TcpSocket[]) { s }, (_result*)(&_t6), sizeof(net__TcpSocket));
+	 
+	return _t6;
+}
+VV_LOC _result_net__TcpSocket net__tcp_socket_from_handle(int sockfd) {
+	net__TcpSocket s = ((net__TcpSocket){.Socket = ((net__Socket){.handle = sockfd,}),});
+	_result_void _t1 = net__TcpSocket_set_dualstack(&s, true);
+	(void)_t1;
+ ;
+	_result_void _t2 = net__TcpSocket_set_default_options(&s);
+	if (_t2.is_error) {
+		_result_net__TcpSocket _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ ;
+	_result_net__TcpSocket _t4;
+	builtin___result_ok(&(net__TcpSocket[]) { s }, (_result*)(&_t4), sizeof(net__TcpSocket));
+	 
+	return _t4;
+}
+net__TcpSocket net__tcp_socket_from_handle_raw(int sockfd) {
+	net__TcpSocket s = ((net__TcpSocket){.Socket = ((net__Socket){.handle = sockfd,}),});
+	return s;
+}
+VV_LOC _result_void net__TcpSocket_set_option(net__TcpSocket* s, int level, int opt, int value) {
+	_result_int _t1 = net__socket_error(setsockopt(s->Socket.handle, level, opt, &value, sizeof(int)));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__TcpSocket_set_option_bool(net__TcpSocket* s, net__SocketOption opt, bool value) {
+	int x = (int[]){(value)?1:0}[0];
+	_result_void _t1 = net__TcpSocket_set_option(s, SOL_SOCKET, ((int)(opt)), x);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__TcpSocket_set_option_int(net__TcpSocket* s, net__SocketOption opt, int value) {
+	_result_void _t1 = net__TcpSocket_set_option(s, SOL_SOCKET, ((int)(opt)), value);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__TcpSocket_set_dualstack(net__TcpSocket* s, bool on) {
+	int x = (int[]){(!on)?1:0}[0];
+	_result_void _t1 = net__TcpSocket_set_option(s, IPPROTO_IPV6, ((int)(net__SocketOption__ipv6_only)), x);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void net__TcpSocket_set_default_options(net__TcpSocket* s) {
+	_result_void _t1 = net__TcpSocket_set_option_int(s, net__SocketOption__reuse_addr, 1);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	{
+		_result_void _t3 = net__TcpSocket_set_option(s, SOL_SOCKET, SO_NOSIGPIPE, 1);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	}
+	_result_void _t5 = net__TcpSocket_set_option(s, IPPROTO_TCP, TCP_NODELAY, 1);
+	if (_t5.is_error) {
+		_result_void _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__TcpSocket_bind(net__TcpSocket* s, string addr) {
+	_result_Array_net__Addr _t1 = net__resolve_addrs(addr, net__AddrFamily__ip, net__SocketType__tcp);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = IError_name_table[err._typ]._method_msg(err._object)}}, {_S("; could not resolve address "), 0xfe10, {.d_s = addr}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t1.data);
+	net__Addr a = (*(net__Addr*)builtin__array_get(addrs, 0));
+	u32 alen = net__Addr_len(a);
+	_result_int _t3 = net__socket_error_message(bind(s->Socket.handle, ((voidptr)(&a)), alen), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("binding to "), 0xfe10, {.d_s = addr}}, {_S(" failed"), 0, { .d_c = 0 }}})));
+	if (_t3.is_error) {
+		IError err = _t3.err;
+		return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void net__TcpSocket_close(net__TcpSocket* s) {
+	net__shutdown(s->Socket.handle, ((net__ShutdownConfig){.how = net__ShutdownDirection__read_and_write,}));
+	return net__close(s->Socket.handle);
+}
+VV_LOC _result_void net__TcpSocket_connect(net__TcpSocket* s, net__Addr a) {
+	#if defined(CUSTOM_DEFINE_net_nonblocking_sockets)
+	{
+	}
+	#else
+	{
+		i32 _t2;
+		#if defined(CUSTOM_DEFINE_is_coroutine)
+		#else
+			_t2 = connect(s->Socket.handle, ((voidptr)(&a)), net__Addr_len(a));
+			;
+		#endif
+				i32 x = _t2;
+		_result_int _t3 = net__socket_error(x);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	}
+	#endif
+	return (_result_void){0};
+}
+bool net__TcpConn_get_blocking(net__TcpConn* con) {
+	return con->is_blocking;
+}
+_result_void net__TcpConn_set_blocking(net__TcpConn* con, bool state) {
+	if (con->is_blocking == state) {
+		return (_result_void){0};
+	}
+	con->is_blocking = state;
+	_result_void _t1 = net__set_blocking(con->sock.Socket.handle, state);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+string net__TcpConn_read_line(net__TcpConn* con) {
+	return net__TcpConn_read_line_max(con, _const_net__max_read_line_len);
+}
+string net__TcpConn_read_line_max(net__TcpConn* con, int max_line_len) {
+	if (!con->is_blocking) {
+		_result_void _t1 = net__TcpConn_set_blocking(con, true);
+		(void)_t1;
+ ;
+	}
+	Array_fixed_u8_400 buf = {0};
+	strings__Builder res = strings__new_builder(_const_net__max_read);
+	u8* bstart = &buf[0];
+	for (;;) {
+		i32 n = recv(con->sock.Socket.handle, bstart, (int_literal)(400 - 1), (0x02 | 0x4000));
+		if (n <= 0) {
+			string _t2 = strings__Builder_str(&res);
+				{ // defer begin
+					strings__Builder_free(&res);
+				} // defer end
+			return _t2;
+		}
+		buf[builtin__v_fixed_index(n, 400)] = '\0';
+		int eol_idx = -1;
+		i32 lend = n;
+		for (i32 i = 0; i < n; ++i) {
+			if (buf[builtin__v_fixed_index(i, 400)] == '\n') {
+				eol_idx = i;
+				lend = (i32)(i + 1);
+				buf[builtin__v_fixed_index(lend, 400)] = '\0';
+				break;
+			}
+		}
+		if (eol_idx > 0) {
+			recv(con->sock.Socket.handle, bstart, lend, _const_net__msg_nosignal);
+			strings__Builder_write_ptr(&res, bstart, lend);
+			break;
+		}
+		recv(con->sock.Socket.handle, bstart, n, _const_net__msg_nosignal);
+		strings__Builder_write_ptr(&res, bstart, lend);
+		if (res.len > max_line_len) {
+			break;
+		}
+	}
+	string _t3 = strings__Builder_str(&res);
+		{ // defer begin
+			strings__Builder_free(&res);
+		} // defer end
+	return _t3;
+}
+_result_net__UdpConn_ptr net__dial_udp(string raddr) {
+	_result_Array_net__Addr _t1 = net__resolve_addrs_fuzzy(raddr, net__SocketType__udp);
+	if (_t1.is_error) {
+		_result_net__UdpConn_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t1.data);
+	for (int _t3 = 0; _t3 < addrs.len; ++_t3) {
+		net__Addr addr = ((net__Addr*)addrs.data)[_t3];
+		_result_net__UdpSocket_ptr _t4;
+		if (_t4 = net__new_udp_socket_for_remote(addr), !_t4.is_error) {
+			net__UdpSocket* sock = *(net__UdpSocket**)_t4.data;
+			_result_net__UdpConn_ptr _t5;
+			builtin___result_ok(&(net__UdpConn*[]) { ((net__UdpConn*)builtin__memdup(&(net__UdpConn){.sock = *sock,.write_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_timeout = _const_net__udp_default_read_timeout,.write_timeout = _const_net__udp_default_write_timeout,}, sizeof(net__UdpConn))) }, (_result*)(&_t5), sizeof(net__UdpConn*));
+			 
+			return _t5;
+		}
+	}
+	return (_result_net__UdpConn_ptr){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+_result_int net__UdpConn_write_ptr(net__UdpConn* c, u8* b, int len) {
+	_option_net__Addr _t1 = net__UdpSocket_remote(&c->sock);
+	if (_t1.state != 0) {
+		return (_result_int){ .is_error=true, .err=_const_net__err_no_udp_remote, .data={E_STRUCT} };
+	}
+	
+ 	net__Addr remote = (*(net__Addr*)_t1.data);
+	return net__UdpConn_write_to_ptr(c, remote, b, len);
+}
+_result_int net__UdpConn_write(net__UdpConn* c, Array_u8 buf) {
+	return net__UdpConn_write_ptr(c, buf.data, buf.len);
+}
+_result_int net__UdpConn_write_string(net__UdpConn* c, string s) {
+	return net__UdpConn_write_ptr(c, s.str, s.len);
+}
+_result_int net__UdpConn_write_to_ptr(net__UdpConn* c, net__Addr addr, u8* b, int len) {
+	i32 res = sendto(c->sock.Socket.handle, b, len, 0, ((voidptr)(&addr)), net__Addr_len(addr));
+	if (res >= 0) {
+		_result_int _t1;
+		builtin___result_ok(&(int[]) { res }, (_result*)(&_t1), sizeof(int));
+		 
+		return _t1;
+	}
+	int code = net__error_code();
+	if (code == ((int)(_const_net__error_ewouldblock))) {
+		_result_void _t2 = net__UdpConn_wait_for_write(c);
+		if (_t2.is_error) {
+			_result_int _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+		_result_int _t4 = net__socket_error(sendto(c->sock.Socket.handle, b, len, 0, ((voidptr)(&addr)), net__Addr_len(addr)));
+		if (_t4.is_error) {
+			_result_int _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	} else {
+		_result_void _t6 = net__wrap_error(code);
+		if (_t6.is_error) {
+			_result_int _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ ;
+	}
+	return (_result_int){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+_result_int net__UdpConn_write_to(net__UdpConn* c, net__Addr addr, Array_u8 buf) {
+	return net__UdpConn_write_to_ptr(c, addr, buf.data, buf.len);
+}
+_result_int net__UdpConn_write_to_string(net__UdpConn* c, net__Addr addr, string s) {
+	return net__UdpConn_write_to_ptr(c, addr, s.str, s.len);
+}
+_result_multi_return_int_net__Addr net__UdpConn_read_ptr(net__UdpConn* c, u8* buf_ptr, int len) {
+	net__Addr addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+	u32 addr_len = sizeof(net__Addr);
+	_result_int _t1 = net__wrap_read_result(recvfrom(c->sock.Socket.handle, ((voidptr)(buf_ptr)), len, 0, ((voidptr)(&addr)), &addr_len));
+	if (_t1.is_error) {
+		_result_multi_return_int_net__Addr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	int res = (*(int*)_t1.data);
+	if (res > 0) {
+		_result_multi_return_int_net__Addr _t3;
+		builtin___result_ok(&(multi_return_int_net__Addr[]) { (multi_return_int_net__Addr){.arg0=res, .arg1=addr} }, (_result*)(&_t3), sizeof(multi_return_int_net__Addr));
+		return _t3;
+	}
+	int code = net__error_code();
+	if (code == ((int)(_const_net__error_ewouldblock))) {
+		_result_void _t4 = net__UdpConn_wait_for_read(c);
+		if (_t4.is_error) {
+			_result_multi_return_int_net__Addr _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+		_result_int _t6 = net__wrap_read_result(recvfrom(c->sock.Socket.handle, ((voidptr)(buf_ptr)), len, 0, ((voidptr)(&addr)), &addr_len));
+		if (_t6.is_error) {
+			_result_multi_return_int_net__Addr _t7 = {0};
+			_t7.is_error = true;
+			_t7.err = _t6.err;
+			return _t7;
+		}
+		
+ 		res = (*(int*)_t6.data);
+		_result_int _t8 = net__socket_error(res);
+		if (_t8.is_error) {
+			_result_multi_return_int_net__Addr _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ 		int res2 = (*(int*)_t8.data);
+		_result_multi_return_int_net__Addr _t10;
+		builtin___result_ok(&(multi_return_int_net__Addr[]) { (multi_return_int_net__Addr){.arg0=res2, .arg1=addr} }, (_result*)(&_t10), sizeof(multi_return_int_net__Addr));
+		return _t10;
+	} else {
+		_result_void _t11 = net__wrap_error(code);
+		if (_t11.is_error) {
+			_result_multi_return_int_net__Addr _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ ;
+	}
+	return (_result_multi_return_int_net__Addr){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+_result_multi_return_int_net__Addr net__UdpConn_read(net__UdpConn* c, Array_u8* buf) {
+	_result_multi_return_int_net__Addr _t2 = net__UdpConn_read_ptr(c, buf->data, buf->len);
+	if (_t2.is_error) {
+		_result_multi_return_int_net__Addr _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_multi_return_int_net__Addr _t1;
+	builtin___result_ok(&(multi_return_int_net__Addr[]) { (*(multi_return_int_net__Addr*)_t2.data) }, (_result*)(&_t1), sizeof(multi_return_int_net__Addr));
+	 
+	return _t1;
+}
+_result_time__Time net__UdpConn_read_deadline(net__UdpConn* c) {
+	if (time__Time_unix(c->read_deadline) == 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->read_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+void net__UdpConn_set_read_deadline(net__UdpConn* c, time__Time deadline) {
+	c->read_deadline = deadline;
+}
+_result_time__Time net__UdpConn_write_deadline(net__UdpConn* c) {
+	if (time__Time_unix(c->write_deadline) == 0) {
+		_result_time__Time _t1;
+		builtin___result_ok(&(time__Time[]) { c->write_deadline }, (_result*)(&_t1), sizeof(time__Time));
+		 
+		return _t1;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+void net__UdpConn_set_write_deadline(net__UdpConn* c, time__Time deadline) {
+	c->write_deadline = deadline;
+}
+time__Duration net__UdpConn_read_timeout(net__UdpConn* c) {
+	return c->read_timeout;
+}
+void net__UdpConn_set_read_timeout(net__UdpConn* c, time__Duration t) {
+	c->read_timeout = t;
+}
+time__Duration net__UdpConn_write_timeout(net__UdpConn* c) {
+	return c->write_timeout;
+}
+void net__UdpConn_set_write_timeout(net__UdpConn* c, time__Duration t) {
+	c->write_timeout = t;
+}
+inline _result_void net__UdpConn_wait_for_read(net__UdpConn* c) {
+	return net__wait_for_read(c->sock.Socket.handle, c->read_deadline, c->read_timeout);
+}
+inline _result_void net__UdpConn_wait_for_write(net__UdpConn* c) {
+	return net__wait_for_write(c->sock.Socket.handle, c->write_deadline, c->write_timeout);
+}
+string net__UdpConn_str(net__UdpConn* c) {
+	return _S("UdpConn");
+}
+_result_void net__UdpConn_close(net__UdpConn* c) {
+	return net__UdpSocket_close(&c->sock);
+}
+_result_net__UdpConn_ptr net__listen_udp(string laddr) {
+	_result_Array_net__Addr _t1 = net__resolve_addrs_fuzzy(laddr, net__SocketType__udp);
+	if (_t1.is_error) {
+		_result_net__UdpConn_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	Array_net__Addr addrs = (*(Array_net__Addr*)_t1.data);
+	net__Addr addr = (*(net__Addr*)builtin__array_get(addrs, 0));
+	_result_net__UdpSocket_ptr _t4 = net__new_udp_socket(addr);
+	if (_t4.is_error) {
+		_result_net__UdpConn_ptr _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	_result_net__UdpConn_ptr _t3;
+	builtin___result_ok(&(net__UdpConn*[]) { ((net__UdpConn*)builtin__memdup(&(net__UdpConn){.sock = *(*(net__UdpSocket**)_t4.data),.write_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_deadline = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.read_timeout = _const_net__udp_default_read_timeout,.write_timeout = _const_net__udp_default_write_timeout,}, sizeof(net__UdpConn))) }, (_result*)(&_t3), sizeof(net__UdpConn*));
+	 
+	return _t3;
+}
+VV_LOC _result_net__UdpSocket_ptr net__new_udp_socket(net__Addr local_addr) {
+	net__AddrFamily family = net__Addr_family(local_addr);
+	_result_int _t1 = net__socket_error(socket(family, net__SocketType__udp, 0));
+	if (_t1.is_error) {
+		_result_net__UdpSocket_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	int sockfd = (*(int*)_t1.data);
+	net__UdpSocket* s = ((net__UdpSocket*)builtin__memdup(&(net__UdpSocket){.Socket = ((net__Socket){.handle = sockfd,}),.l = local_addr,.has_r = 0,.r = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),}),}, sizeof(net__UdpSocket)));
+	_result_void _t3 = net__UdpSocket_set_option_bool(s, net__SocketOption__reuse_addr, true);
+	if (_t3.is_error) {
+		_result_net__UdpSocket_ptr _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	if (family == net__AddrFamily__ip6) {
+		_result_void _t5 = net__UdpSocket_set_dualstack(s, true);
+		if (_t5.is_error) {
+			_result_net__UdpSocket_ptr _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+	}
+	_result_int _t7 = net__socket_error(bind(s->Socket.handle, ((voidptr)(&local_addr)), net__Addr_len(local_addr)));
+	if (_t7.is_error) {
+		_result_net__UdpSocket_ptr _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	_result_net__UdpSocket_ptr _t9;
+	builtin___result_ok(&(net__UdpSocket*[]) { s }, (_result*)(&_t9), sizeof(net__UdpSocket*));
+	 
+	return _t9;
+}
+VV_LOC _result_net__UdpSocket_ptr net__new_udp_socket_for_remote(net__Addr raddr) {
+	net__Addr addr = ((net__Addr){.len = 0,.f = 0,.addr = ((net__AddrData){.Ip6 = ((net__Ip6){.port = 0,.flow_info = 0,.addr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.scope_id = 0,}),}),});
+	net__AddrFamily _t1 = net__Addr_family(raddr);
+	
+	if (_t1 == (net__AddrFamily__ip)) {
+		addr = net__new_ip(0, _const_net__addr_ip_any);
+	}
+	else if (_t1 == (net__AddrFamily__ip6)) {
+		addr = net__new_ip6(0, _const_net__addr_ip6_any);
+	}
+	else if (_t1 == (net__AddrFamily__unix)) {
+		_result_net__Addr _t2 = net__temp_unix();
+		if (_t2.is_error) {
+			_result_net__UdpSocket_ptr _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		addr = (*(net__Addr*)_t2.data);
+	}
+	else {
+		builtin___v_panic(_S("Invalid family"));
+		VUNREACHABLE();
+	}
+	_result_net__UdpSocket_ptr _t4 = net__new_udp_socket(addr);
+	if (_t4.is_error) {
+		_result_net__UdpSocket_ptr _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	net__UdpSocket* sock = (*(net__UdpSocket**)_t4.data);
+	sock->has_r = true;
+	sock->r = raddr;
+	_result_net__UdpSocket_ptr _t6;
+	builtin___result_ok(&(net__UdpSocket*[]) { sock }, (_result*)(&_t6), sizeof(net__UdpSocket*));
+	 
+	return _t6;
+}
+_result_void net__UdpSocket_set_option_bool(net__UdpSocket* s, net__SocketOption opt, bool value) {
+	int x = (int[]){(value)?1:0}[0];
+	_result_int _t1 = net__socket_error(setsockopt(s->Socket.handle, SOL_SOCKET, ((int)(opt)), &x, sizeof(int)));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__UdpSocket_set_dualstack(net__UdpSocket* s, bool on) {
+	int x = (int[]){(!on)?1:0}[0];
+	_result_int _t1 = net__socket_error(setsockopt(s->Socket.handle, IPPROTO_IPV6, ((int)(net__SocketOption__ipv6_only)), &x, sizeof(int)));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__UdpSocket_close(net__UdpSocket* s) {
+	net__shutdown(s->Socket.handle, ((net__ShutdownConfig){.how = net__ShutdownDirection__read_and_write,}));
+	return net__close(s->Socket.handle);
+}
+_result_bool net__UdpSocket_select(net__UdpSocket* s, net__Select test, time__Duration timeout) {
+	return net__select(s->Socket.handle, test, timeout);
+}
+_option_net__Addr net__UdpSocket_remote(net__UdpSocket* s) {
+	if (s->has_r) {
+		_option_net__Addr _t1;
+		builtin___option_ok(&(net__Addr[]) { s->r }, (_option*)(&_t1), sizeof(net__Addr));
+		 
+		return _t1;
+	}
+	return (_option_net__Addr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+}
+_result_u16 net__validate_port(int port) {
+	if (port >= 0 && port <= 0xFFFF) {
+		_result_u16 _t1;
+		builtin___result_ok(&(u16[]) { ((u16)(port)) }, (_result*)(&_t1), sizeof(u16));
+		 
+		return _t1;
+	} else {
+		return (_result_u16){ .is_error=true, .err=_const_net__err_port_out_of_range, .data={E_STRUCT} };
+	}
+	return (_result_u16){0};
+}
+_result_multi_return_string_u16 net__split_address(string addr) {
+	_option_int _t1;
+	_option_int _t2;
+	_option_int _t3;
+	if (_t1 = builtin__string_index(addr, _S("]")), _t1.state == 0) {
+		string address = builtin__string_all_before_last(builtin__string_all_after(addr, _S("[")), _S("]"));
+		int port = builtin__string_int(builtin__string_all_after_last(addr, _S("]:")));
+		_result_u16 _t4 = net__validate_port(port);
+		if (_t4.is_error) {
+			_result_multi_return_string_u16 _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		u16 p = (*(u16*)_t4.data);
+		_result_multi_return_string_u16 _t6;
+		builtin___result_ok(&(multi_return_string_u16[]) { (multi_return_string_u16){.arg0=address, .arg1=p} }, (_result*)(&_t6), sizeof(multi_return_string_u16));
+		return _t6;
+	} else if (_t2 = builtin__string_index(addr, _S("::")), _t2.state == 0) {
+		if (builtin__string_count(addr, _S(":")) == 2 && (builtin__string_all_before_last(addr, _S("::"))).len == 0) {
+			_result_multi_return_string_u16 _t7;
+			builtin___result_ok(&(multi_return_string_u16[]) { (multi_return_string_u16){.arg0=addr, .arg1=0} }, (_result*)(&_t7), sizeof(multi_return_string_u16));
+			return _t7;
+		} else {
+			string address = builtin__string_all_before_last(addr, _S(":"));
+			int port = builtin__string_int(builtin__string_all_after_last(addr, _S(":")));
+			_result_u16 _t8 = net__validate_port(port);
+			if (_t8.is_error) {
+				_result_multi_return_string_u16 _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			u16 p = (*(u16*)_t8.data);
+			_result_multi_return_string_u16 _t10;
+			builtin___result_ok(&(multi_return_string_u16[]) { (multi_return_string_u16){.arg0=address, .arg1=p} }, (_result*)(&_t10), sizeof(multi_return_string_u16));
+			return _t10;
+		}
+	} else if (_t3 = builtin__string_index(addr, _S(":")), _t3.state == 0) {
+		string address = builtin__string_all_before_last(addr, _S(":"));
+		_result_u16 _t11 = net__validate_port(builtin__string_int(builtin__string_all_after_last(addr, _S(":"))));
+		if (_t11.is_error) {
+			_result_multi_return_string_u16 _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ 		u16 p = (*(u16*)_t11.data);
+		_result_multi_return_string_u16 _t13;
+		builtin___result_ok(&(multi_return_string_u16[]) { (multi_return_string_u16){.arg0=address, .arg1=p} }, (_result*)(&_t13), sizeof(multi_return_string_u16));
+		return _t13;
+	} else {
+		_result_multi_return_string_u16 _t14;
+		builtin___result_ok(&(multi_return_string_u16[]) { (multi_return_string_u16){.arg0=addr, .arg1=0} }, (_result*)(&_t14), sizeof(multi_return_string_u16));
+		return _t14;
+	}
+	return (_result_multi_return_string_u16){0};
+}
+#if true
+#else
+#endif
+VV_LOC string C__SSL_str(SSL* s) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("C.SSL(0x"), 0xfe11, {.d_p = (void*)(((voidptr)(s)))}}, {_S(")"), 0, { .d_c = 0 }}}));
+}
+VV_LOC string C__SSL_CTX_str(SSL_CTX* c) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("C.SSL_CTX(0x"), 0xfe11, {.d_p = (void*)(((voidptr)(c)))}}, {_S(")"), 0, { .d_c = 0 }}}));
+}
+VV_LOC void net__openssl__init(void) {
+	#if defined(CUSTOM_DEFINE_ssl_pre_1_1_version)
+	{
+	}
+	#else
+	{
+		OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, 0);
+	}
+	#endif
+}
+VV_LOC _result_net__openssl__SSLError net__openssl__ssl_error(int ret, voidptr ssl) {
+	i32 res = SSL_get_error(ssl, ret);
+	net__openssl__SSLError _t1 = ((net__openssl__SSLError)(res));
+	
+	if (_t1 == (net__openssl__SSLError__ssl_error_syscall)) {
+		return (_result_net__openssl__SSLError){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl unrecoverable syscall ("), 0xfe07, {.d_i32 = res}}, {_S(")"), 0, { .d_c = 0 }}})), res), .data={E_STRUCT} };
+	}
+	else if (_t1 == (net__openssl__SSLError__ssl_error_ssl)) {
+		return (_result_net__openssl__SSLError){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl unrecoverable ssl protocol error ("), 0xfe07, {.d_i32 = res}}, {_S(")"), 0, { .d_c = 0 }}})), res), .data={E_STRUCT} };
+	}
+	else {
+		_result_net__openssl__SSLError _t4;
+		builtin___result_ok(&(net__openssl__SSLError[]) { ((net__openssl__SSLError)(res)) }, (_result*)(&_t4), sizeof(net__openssl__SSLError));
+		 
+		return _t4;
+	}
+	return (_result_net__openssl__SSLError){0};
+}
+_result_net__openssl__SSLConn_ptr net__openssl__new_ssl_conn(net__openssl__SSLConnectConfig config) {
+	net__openssl__SSLConn* conn = ((net__openssl__SSLConn*)builtin__memdup(&(net__openssl__SSLConn){.config = config,.sslctx = ((void*)0),.ssl = ((void*)0),.handle = 0,.duration = 0,.owns_socket = 0,}, sizeof(net__openssl__SSLConn)));
+	_result_void _t1 = net__openssl__SSLConn_init(conn);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_net__openssl__SSLConn_ptr){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ ;
+	_result_net__openssl__SSLConn_ptr _t3;
+	builtin___result_ok(&(net__openssl__SSLConn*[]) { conn }, (_result*)(&_t3), sizeof(net__openssl__SSLConn*));
+	 
+	return _t3;
+}
+_result_void net__openssl__SSLConn_close(net__openssl__SSLConn* s) {
+	_result_void _t1 = net__openssl__SSLConn_shutdown(s);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__openssl__SSLConn_shutdown(net__openssl__SSLConn* s) {
+	if (s->ssl != 0) {
+		time__Time deadline = time__Time_add(time__now(), s->duration);
+		for (;;) {
+			i32 res = SSL_shutdown(((voidptr)(s->ssl)));
+			if (res == 1) {
+				break;
+			}
+			_result_net__openssl__SSLError _t1 = net__openssl__ssl_error(res, s->ssl);
+			if (_t1.is_error) {
+				break;
+			}
+			
+ 			net__openssl__SSLError err_res = (*(net__openssl__SSLError*)_t1.data);
+			if (err_res == net__openssl__SSLError__ssl_error_want_read) {
+				_result_void _t2 = net__openssl__SSLConn_wait_for_read(s, time__Time__minus(deadline, time__now()));
+				if (_t2.is_error) {
+					_result_void _t3 = {0};
+					_t3.is_error = true;
+					_t3.err = _t2.err;
+					return _t3;
+				}
+				
+ ;
+				continue;
+			} else if (err_res == net__openssl__SSLError__ssl_error_want_write) {
+				_result_void _t4 = net__openssl__SSLConn_wait_for_write(s, time__Time__minus(deadline, time__now()));
+				if (_t4.is_error) {
+					_result_void _t5 = {0};
+					_t5.is_error = true;
+					_t5.err = _t4.err;
+					return _t5;
+				}
+				
+ ;
+				continue;
+			}
+			if (s->ssl != 0) {
+				SSL_free(((voidptr)(s->ssl)));
+			}
+			if (s->sslctx != 0) {
+				SSL_CTX_free(s->sslctx);
+			}
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl Could not connect using SSL. ("), 0xfe10, {.d_s = net__openssl__SSLError_str(err_res)}}, {_S("),err"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		SSL_free(((voidptr)(s->ssl)));
+	}
+	if (s->sslctx != 0) {
+		SSL_CTX_free(s->sslctx);
+	}
+	if (s->owns_socket) {
+		net__shutdown(s->handle, ((net__ShutdownConfig){.how = net__ShutdownDirection__read_and_write,}));
+		_result_void _t7 = net__close(s->handle);
+		if (_t7.is_error) {
+			_result_void _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void net__openssl__SSLConn_init(net__openssl__SSLConn* s) {
+	s->sslctx = SSL_CTX_new(SSLv23_client_method());
+	if (s->sslctx == 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("net.openssl Could not get ssl context")), .data={E_STRUCT} };
+	}
+	if (s->config.validate) {
+		SSL_CTX_set_verify_depth(s->sslctx, 4);
+		SSL_CTX_set_options(s->sslctx, ((SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3) | SSL_OP_NO_COMPRESSION));
+	}
+	s->ssl = ((SSL*)(SSL_new(s->sslctx)));
+	if (s->ssl == 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("net.openssl Could not create OpenSSL instance")), .data={E_STRUCT} };
+	}
+	int res = 0;
+	if (s->config.validate) {
+		string verify = s->config.verify;
+		string cert = s->config.cert;
+		string cert_key = s->config.cert_key;
+		if (s->config.in_memory_verification) {
+			string now = builtin__i64_str(time__Time_unix(time__now()));
+			verify = builtin__string__plus(builtin__string__plus(os__temp_dir(), _S("/v_verify")), now);
+			cert = builtin__string__plus(builtin__string__plus(os__temp_dir(), _S("/v_cert")), now);
+			cert_key = builtin__string__plus(builtin__string__plus(os__temp_dir(), _S("/v_cert_key")), now);
+			if ((s->config.verify).len != 0) {
+				_result_void _t3 = os__write_file(verify, s->config.verify);
+				if (_t3.is_error) {
+					_result_void _t4 = {0};
+					_t4.is_error = true;
+					_t4.err = _t3.err;
+					return _t4;
+				}
+				
+ ;
+			}
+			if ((s->config.cert).len != 0) {
+				_result_void _t5 = os__write_file(cert, s->config.cert);
+				if (_t5.is_error) {
+					_result_void _t6 = {0};
+					_t6.is_error = true;
+					_t6.err = _t5.err;
+					return _t6;
+				}
+				
+ ;
+			}
+			if ((s->config.cert_key).len != 0) {
+				_result_void _t7 = os__write_file(cert_key, s->config.cert_key);
+				if (_t7.is_error) {
+					_result_void _t8 = {0};
+					_t8.is_error = true;
+					_t8.err = _t7.err;
+					return _t8;
+				}
+				
+ ;
+			}
+		}
+		if ((s->config.verify).len != 0) {
+			res = SSL_CTX_load_verify_locations(((voidptr)(s->sslctx)), ((char*)(verify.str)), 0);
+			if (s->config.validate && res != 1) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(_S("net.openssl SSLConn.init, SSL_CTX_load_verify_locations failed")), .data={E_STRUCT} };
+			}
+		}
+		if ((s->config.cert).len != 0) {
+			res = SSL_CTX_use_certificate_file(((voidptr)(s->sslctx)), ((char*)(cert.str)), SSL_FILETYPE_PEM);
+			if (s->config.validate && res != 1) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.init, SSL_CTX_use_certificate_file failed, res: "), 0xfe07, {.d_i32 = res}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+		}
+		if ((s->config.cert_key).len != 0) {
+			res = SSL_CTX_use_PrivateKey_file(((voidptr)(s->sslctx)), ((char*)(cert_key.str)), SSL_FILETYPE_PEM);
+			if (s->config.validate && res != 1) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.init, SSL_CTX_use_PrivateKey_file failed, res: "), 0xfe07, {.d_i32 = res}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+		}
+		string preferred_ciphers = _S("HIGH:!aNULL:!kRSA:!PSK:!SRP:!MD5:!RC4");
+		res = SSL_set_cipher_list(((voidptr)(s->ssl)), ((char*)(preferred_ciphers.str)));
+		if (s->config.validate && res != 1) {
+			builtin__println(_S("net.openssl: set cipher failed"));
+		}
+	}
+	return (_result_void){0};
+}
+_result_void net__openssl__SSLConn_connect(net__openssl__SSLConn* s, net__TcpConn* tcp_conn, string hostname) {
+	s->handle = tcp_conn->sock.Socket.handle;
+	s->duration = net__TcpConn_read_timeout(tcp_conn);
+	i32 res = SSL_set_tlsext_host_name(((voidptr)(s->ssl)), ((voidptr)(hostname.str)));
+	if (res != 1) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("net.openssl SSLConn.connect, could not set host name")), .data={E_STRUCT} };
+	}
+	if (SSL_set_fd(((voidptr)(s->ssl)), tcp_conn->sock.Socket.handle) != 1) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("net.openssl SSLConn.connect, could not assign ssl to socket.")), .data={E_STRUCT} };
+	}
+	_result_void _t3 = net__openssl__SSLConn_complete_connect(s);
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__openssl__SSLConn_dial(net__openssl__SSLConn* s, string hostname, int port) {
+	s->owns_socket = true;
+	_result_net__TcpConn_ptr _t1 = net__dial_tcp(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = hostname}}, {_S(":"), 0xfe07, {.d_i32 = port}}, {_SLIT0, 0, { .d_c = 0 }}})));
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ 	net__TcpConn* tcp_conn = (*(net__TcpConn**)_t1.data);
+	_result_void _t3 = net__openssl__SSLConn_connect(s, tcp_conn, hostname);
+	if (_t3.is_error) {
+		IError err = _t3.err;
+		return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void net__openssl__SSLConn_complete_connect(net__openssl__SSLConn* s) {
+	time__Time deadline = time__Time_add(time__now(), s->duration);
+	for (;;) {
+		i32 res = SSL_connect(((voidptr)(s->ssl)));
+		if (res == 1) {
+			break;
+		}
+		_result_net__openssl__SSLError _t1 = net__openssl__ssl_error(res, s->ssl);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		net__openssl__SSLError err_res = (*(net__openssl__SSLError*)_t1.data);
+		if (err_res == net__openssl__SSLError__ssl_error_want_read) {
+			_result_void _t3 = net__openssl__SSLConn_wait_for_read(s, time__Time__minus(deadline, time__now()));
+			if (_t3.is_error) {
+				_result_void _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ ;
+			continue;
+		}
+		if (err_res == net__openssl__SSLError__ssl_error_want_write) {
+			_result_void _t5 = net__openssl__SSLConn_wait_for_write(s, time__Time__minus(deadline, time__now()));
+			if (_t5.is_error) {
+				_result_void _t6 = {0};
+				_t6.is_error = true;
+				_t6.err = _t5.err;
+				return _t6;
+			}
+			
+ ;
+			continue;
+		}
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.complete_connect, could not connect using SSL. ("), 0xfe10, {.d_s = net__openssl__SSLError_str(err_res)}}, {_S("),err"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (s->config.validate) {
+		X509* pcert = ((X509*)(((void*)0)));
+		for (;;) {
+			i32 res = SSL_do_handshake(((voidptr)(s->ssl)));
+			if (res == 1) {
+				break;
+			}
+			_result_net__openssl__SSLError _t8 = net__openssl__ssl_error(res, s->ssl);
+			if (_t8.is_error) {
+				_result_void _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ 			net__openssl__SSLError err_res = (*(net__openssl__SSLError*)_t8.data);
+			if (err_res == net__openssl__SSLError__ssl_error_want_read) {
+				_result_void _t10 = net__openssl__SSLConn_wait_for_read(s, time__Time__minus(deadline, time__now()));
+				if (_t10.is_error) {
+					_result_void _t11 = {0};
+					_t11.is_error = true;
+					_t11.err = _t10.err;
+					return _t11;
+				}
+				
+ ;
+				continue;
+			} else if (err_res == net__openssl__SSLError__ssl_error_want_write) {
+				_result_void _t12 = net__openssl__SSLConn_wait_for_write(s, time__Time__minus(deadline, time__now()));
+				if (_t12.is_error) {
+					_result_void _t13 = {0};
+					_t13.is_error = true;
+					_t13.err = _t12.err;
+					return _t13;
+				}
+				
+ ;
+				continue;
+			}
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.complete_connect, could not validate SSL certificate. ("), 0xfe10, {.d_s = net__openssl__SSLError_str(err_res)}}, {_S("),err"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		#if defined(__OpenBSD__)
+		{
+		}
+		#else
+		{
+			pcert = SSL_get1_peer_certificate(((voidptr)(s->ssl)));
+		}
+		#endif
+		i32 res = SSL_get_verify_result(((voidptr)(s->ssl)));
+		if (res != X509_V_OK) {
+			_result_void _t16 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.complete_connect, failed SSL handshake (OpenSSL SSL_get_verify_result = "), 0xfe07, {.d_i32 = res}}, {_S(")"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+				{ // defer begin
+					if (pcert != 0) {
+						X509_free(pcert);
+					}
+				} // defer end
+			return _t16;
+		}
+		{ // defer begin
+			if (pcert != 0) {
+				X509_free(pcert);
+			}
+		} // defer end
+	}
+	return (_result_void){0};
+}
+_result_net__Addr net__openssl__SSLConn_addr(net__openssl__SSLConn* s) {
+	_result_net__Addr _t1;
+	builtin___result_ok(&(net__Addr[]) { net__addr_from_socket_handle(s->handle) }, (_result*)(&_t1), sizeof(net__Addr));
+	 
+	return _t1;
+}
+_result_net__Addr net__openssl__SSLConn_peer_addr(net__openssl__SSLConn* s) {
+	return net__peer_addr_from_socket_handle(s->handle);
+}
+_result_int net__openssl__SSLConn_socket_read_into_ptr(net__openssl__SSLConn* s, u8* buf_ptr, int len) {
+	int res = 0;
+	time__Time deadline = time__Time_add(time__now(), s->duration);
+	for (;;) {
+		res = SSL_read(((voidptr)(s->ssl)), buf_ptr, len);
+		if (res > 0) {
+			_result_int _t1;
+			builtin___result_ok(&(int[]) { res }, (_result*)(&_t1), sizeof(int));
+			 
+			return _t1;
+		} else if (res == 0) {
+			return (_result_int){ .is_error=true, .err=I_io__Eof_to_Interface_IError(((io__Eof*)builtin__memdup(&(io__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(io__Eof)))), .data={E_STRUCT} };
+		} else {
+			_result_net__openssl__SSLError _t3 = net__openssl__ssl_error(res, s->ssl);
+			if (_t3.is_error) {
+				_result_int _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ 			net__openssl__SSLError err_res = (*(net__openssl__SSLError*)_t3.data);
+
+			if (err_res == (net__openssl__SSLError__ssl_error_want_read)) {
+				_result_void _t5 = net__openssl__SSLConn_wait_for_read(s, time__Time__minus(deadline, time__now()));
+				if (_t5.is_error) {
+					IError err = _t5.err;
+					return (_result_int){ .is_error=true, .err=err, .data={E_STRUCT} };
+				}
+				
+ ;
+			}
+			else if (err_res == (net__openssl__SSLError__ssl_error_want_write)) {
+				_result_void _t7 = net__openssl__SSLConn_wait_for_write(s, time__Time__minus(deadline, time__now()));
+				if (_t7.is_error) {
+					IError err = _t7.err;
+					return (_result_int){ .is_error=true, .err=err, .data={E_STRUCT} };
+				}
+				
+ ;
+			}
+			else if (err_res == (net__openssl__SSLError__ssl_error_zero_return)) {
+				_result_int _t9;
+				builtin___result_ok(&(int[]) { 0 }, (_result*)(&_t9), sizeof(int));
+				 
+				return _t9;
+			}
+			else {
+				return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.socket_read_into_ptr, could not read. ("), 0xfe10, {.d_s = net__openssl__SSLError_str(err_res)}}, {_S(")"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+		}
+	}
+	return (_result_int){ .is_error=true, .err=builtin___v_error(_S("net.openssl SSLConn.socket_read_into_ptr, unknown error")), .data={E_STRUCT} };
+}
+_result_int net__openssl__SSLConn_read(net__openssl__SSLConn* s, Array_u8* buffer) {
+	return net__openssl__SSLConn_socket_read_into_ptr(s, ((u8*)(buffer->data)), buffer->len);
+}
+_result_int net__openssl__SSLConn_write_ptr(net__openssl__SSLConn* s, u8* bytes, int len) {
+	int total_sent = 0;
+	time__Time deadline = time__Time_add(time__now(), s->duration);
+	{ // Unsafe block
+		u8* ptr_base = bytes;
+		for (;;) {
+			if (!(total_sent < len)) break;
+			u8* ptr = ptr_base + total_sent;
+			int remaining = (int)(len - total_sent);
+			i32 sent = SSL_write(((voidptr)(s->ssl)), ptr, remaining);
+			if (sent <= 0) {
+				_result_net__openssl__SSLError _t1 = net__openssl__ssl_error(sent, s->ssl);
+				if (_t1.is_error) {
+					_result_int _t2 = {0};
+					_t2.is_error = true;
+					_t2.err = _t1.err;
+					return _t2;
+				}
+				
+ 				net__openssl__SSLError err_res = (*(net__openssl__SSLError*)_t1.data);
+				if (err_res == net__openssl__SSLError__ssl_error_want_read) {
+					_result_void _t3 = net__openssl__SSLConn_wait_for_read(s, time__Time__minus(deadline, time__now()));
+					if (_t3.is_error) {
+						_result_int _t4 = {0};
+						_t4.is_error = true;
+						_t4.err = _t3.err;
+						return _t4;
+					}
+					
+ ;
+					continue;
+				} else if (err_res == net__openssl__SSLError__ssl_error_want_write) {
+					_result_void _t5 = net__openssl__SSLConn_wait_for_write(s, time__Time__minus(deadline, time__now()));
+					if (_t5.is_error) {
+						_result_int _t6 = {0};
+						_t6.is_error = true;
+						_t6.err = _t5.err;
+						return _t6;
+					}
+					
+ ;
+					continue;
+				} else if (err_res == net__openssl__SSLError__ssl_error_zero_return) {
+					return (_result_int){ .is_error=true, .err=builtin___v_error(_S("net.openssl SSLConn.write_ptr, ssl write on closed connection")), .data={E_STRUCT} };
+				}
+				return (_result_int){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl SSLConn.write_ptr, could not write. ("), 0xfe10, {.d_s = net__openssl__SSLError_str(err_res)}}, {_S("),err"), 0, { .d_c = 0 }}})), ((int)(err_res))), .data={E_STRUCT} };
+			}
+			total_sent += sent;
+		}
+	}
+	_result_int _t9;
+	builtin___result_ok(&(int[]) { total_sent }, (_result*)(&_t9), sizeof(int));
+	 
+	return _t9;
+}
+_result_int net__openssl__SSLConn_write(net__openssl__SSLConn* s, Array_u8 bytes) {
+	_result_int _t2 = net__openssl__SSLConn_write_ptr(s, ((u8*)(bytes.data)), bytes.len);
+	if (_t2.is_error) {
+		_result_int _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_int _t1;
+	builtin___result_ok(&(int[]) { (*(int*)_t2.data) }, (_result*)(&_t1), sizeof(int));
+	 
+	return _t1;
+}
+_result_int net__openssl__SSLConn_write_string(net__openssl__SSLConn* s, string str) {
+	return net__openssl__SSLConn_write_ptr(s, str.str, str.len);
+}
+VV_LOC _result_bool net__openssl__select(int handle, net__openssl__Select test, time__Duration timeout) {
+	fd_set set = ((fd_set){E_STRUCT});
+	FD_ZERO(&set);
+	FD_SET(handle, &set);
+	time__Time deadline = time__Time_add(time__now(), timeout);
+	i64 remaining_time = time__Duration_milliseconds(timeout);
+	for (;;) {
+		if (!(remaining_time > 0)) break;
+		i64 seconds = (i64)(remaining_time / 1000);
+		i64 microseconds = (i64)(((i64)(remaining_time % 1000)) * 1000);
+		struct timeval *tt = HEAP(struct timeval, (((struct timeval){.tv_sec = ((u64)(seconds)),.tv_usec = ((u64)(microseconds)),})));
+		struct timeval* timeval_timeout = (timeout < 0 ? (((struct timeval*)(((void*)0)))) : (&(*(tt))));
+		int res = -1;
+
+		if (test == (net__openssl__Select__read)) {
+			_result_int _t1 = net__socket_error(select((int)(handle + 1), &set, NULL, NULL, timeval_timeout));
+			if (_t1.is_error) {
+				_result_bool _t2 = {0};
+				_t2.is_error = true;
+				_t2.err = _t1.err;
+				return _t2;
+			}
+			
+ 			res = (*(int*)_t1.data);
+		}
+		else if (test == (net__openssl__Select__write)) {
+			_result_int _t3 = net__socket_error(select((int)(handle + 1), NULL, &set, NULL, timeval_timeout));
+			if (_t3.is_error) {
+				_result_bool _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ 			res = (*(int*)_t3.data);
+		}
+		else if (test == (net__openssl__Select__except)) {
+			_result_int _t5 = net__socket_error(select((int)(handle + 1), NULL, NULL, &set, timeval_timeout));
+			if (_t5.is_error) {
+				_result_bool _t6 = {0};
+				_t6.is_error = true;
+				_t6.err = _t5.err;
+				return _t6;
+			}
+			
+ 			res = (*(int*)_t5.data);
+		}
+		if (res < 0) {
+			if (errno == EINTR) {
+				remaining_time = time__Duration_milliseconds((time__Time__minus(deadline, time__now())));
+				continue;
+			}
+			int cerr = errno;
+			return (_result_bool){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.openssl select, failed: "), 0xfe07, {.d_i32 = res}}, {_SLIT0, 0, { .d_c = 0 }}})), cerr), .data={E_STRUCT} };
+		} else if (res == 0) {
+			return (_result_bool){ .is_error=true, .err=_const_net__err_timed_out, .data={E_STRUCT} };
+		}
+		res = FD_ISSET(handle, &set);
+		_result_bool _t9;
+		builtin___result_ok(&(bool[]) { res != 0 }, (_result*)(&_t9), sizeof(bool));
+		 
+		return _t9;
+	}
+	return (_result_bool){ .is_error=true, .err=_const_net__err_timed_out, .data={E_STRUCT} };
+}
+VV_LOC _result_void net__openssl__wait_for(int handle, net__openssl__Select what, time__Duration timeout) {
+	_result_bool _t1 = net__openssl__select(handle, what, timeout);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	bool ready = (*(bool*)_t1.data);
+	if (ready) {
+		return (_result_void){0};
+	}
+	return (_result_void){ .is_error=true, .err=_const_net__err_timed_out, .data={E_STRUCT} };
+}
+VV_LOC _result_void net__openssl__SSLConn_wait_for_write(net__openssl__SSLConn* s, time__Duration timeout) {
+	return net__openssl__wait_for(s->handle, net__openssl__Select__write, timeout);
+}
+VV_LOC _result_void net__openssl__SSLConn_wait_for_read(net__openssl__SSLConn* s, time__Duration timeout) {
+	return net__openssl__wait_for(s->handle, net__openssl__Select__read, timeout);
+}
+net__Dialer net__ssl__new_ssl_dialer(net__ssl__SSLConnectConfig config) {
+	return I_net__ssl__SSLDialer_to_Interface_net__Dialer(((net__ssl__SSLDialer*)builtin__memdup(&(net__ssl__SSLDialer){.config = config,}, sizeof(net__ssl__SSLDialer))));
+}
+_result_net__Connection net__ssl__SSLDialer_dial(net__ssl__SSLDialer d, string address) {
+	_result_net__ssl__SSLConn_ptr _t2 = net__ssl__new_ssl_conn(d.config);
+	if (_t2.is_error) {
+		_result_net__Connection _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	_result_net__Connection _t1;
+	builtin___result_ok(&(net__Connection[]) { I_net__ssl__SSLConn_to_Interface_net__Connection((*(net__ssl__SSLConn**)_t2.data)) }, (_result*)(&_t1), sizeof(net__Connection));
+	 
+	return _t1;
+}
+_result_net__ssl__SSLConn_ptr net__ssl__new_ssl_conn(net__ssl__SSLConnectConfig config) {
+	_result_net__openssl__SSLConn_ptr _t1 = net__openssl__new_ssl_conn(config.SSLConnectConfig);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_net__ssl__SSLConn_ptr){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ 	net__openssl__SSLConn* c = (*(net__openssl__SSLConn**)_t1.data);
+	_result_net__ssl__SSLConn_ptr _t3;
+	builtin___result_ok(&(net__ssl__SSLConn*[]) { ((net__ssl__SSLConn*)builtin__memdup(&(net__ssl__SSLConn){.SSLConn = *c,}, sizeof(net__ssl__SSLConn))) }, (_result*)(&_t3), sizeof(net__ssl__SSLConn*));
+	 
+	return _t3;
+}
+_result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, string username, string password) {
+	_result_net__TcpConn_ptr _t1 = net__dial_tcp(proxy_url);
+	if (_t1.is_error) {
+		_result_net__TcpConn_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__TcpConn* con = (*(net__TcpConn**)_t1.data);
+	_result_net__Connection _t3 = net__socks__handshake(HEAP(net__Connection, I_net__TcpConn_to_Interface_net__Connection(con)), host, username, password);
+	if (_t3.is_error) {
+		_result_net__TcpConn_ptr _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	net__Connection socks_conn_as_interface = (*(net__Connection*)_t3.data);
+	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 331)));
+	_result_net__TcpConn_ptr _t5;
+	builtin___result_ok(&(net__TcpConn*[]) { &(*(socks_conn)) }, (_result*)(&_t5), sizeof(net__TcpConn*));
+	 
+	return _t5;
+}
+_result_net__ssl__SSLConn_ptr net__socks__socks5_ssl_dial(string proxy_url, string host, string username, string password) {
+	_result_net__ssl__SSLConn_ptr _t1 = net__ssl__new_ssl_conn(((net__ssl__SSLConnectConfig){.SSLConnectConfig = ((net__openssl__SSLConnectConfig){.verify = _S(""),.cert = _S(""),.cert_key = _S(""),.validate = false,.in_memory_verification = false,}),}));
+	if (_t1.is_error) {
+		_result_net__ssl__SSLConn_ptr _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__ssl__SSLConn* ssl_conn = (*(net__ssl__SSLConn**)_t1.data);
+	_result_net__TcpConn_ptr _t3 = net__socks__socks5_dial(proxy_url, host, username, password);
+	if (_t3.is_error) {
+		_result_net__ssl__SSLConn_ptr _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	net__TcpConn* con = (*(net__TcpConn**)_t3.data);
+	_result_void _t5 = net__openssl__SSLConn_connect(&ssl_conn->SSLConn, con, builtin__string_all_before_last(host, _S(":")));
+	if (_t5.is_error) {
+		IError err = _t5.err;
+		builtin___v_panic(builtin__IError_str(err));
+		VUNREACHABLE();
+	;
+	}
+	
+ ;
+	_result_net__ssl__SSLConn_ptr _t6;
+	builtin___result_ok(&(net__ssl__SSLConn*[]) { ssl_conn }, (_result*)(&_t6), sizeof(net__ssl__SSLConn*));
+	 
+	return _t6;
+}
+net__Dialer net__socks__new_socks5_dialer(net__Dialer base, string proxy_address, string username, string password) {
+	return I_net__socks__SOCKS5Dialer_to_Interface_net__Dialer(((net__socks__SOCKS5Dialer*)builtin__memdup(&(net__socks__SOCKS5Dialer){.dialer = base,.proxy_address = proxy_address,.username = username,.password = password,}, sizeof(net__socks__SOCKS5Dialer))));
+}
+_result_net__Connection net__socks__SOCKS5Dialer_dial(net__socks__SOCKS5Dialer sd, string address) {
+	_result_net__Connection _t1 = net__Dialer_name_table[sd.dialer._typ]._method_dial(sd.dialer._object, sd.proxy_address);
+	if (_t1.is_error) {
+		_result_net__Connection _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__Connection conn = (*(net__Connection*)_t1.data);
+	_result_net__Connection _t4 = net__socks__handshake(&conn, address, sd.username, sd.password);
+	if (_t4.is_error) {
+		_result_net__Connection _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	_result_net__Connection _t3;
+	builtin___result_ok(&(net__Connection[]) { (*(net__Connection*)_t4.data) }, (_result*)(&_t3), sizeof(net__Connection));
+	 
+	return _t3;
+}
+VV_LOC _result_net__Connection net__socks__handshake(net__Connection* con, string host, string username, string password) {
+	Array_u8 v = builtin__new_array_from_c_array(2, 2, sizeof(u8), _MOV((u8[2]){_const_net__socks__socks_version5, 1}));
+	if (username.len > 0) {
+		builtin__array_push((array*)&v, _MOV((u8[]){ _const_net__socks__auth_user_password }));
+	} else {
+		builtin__array_push((array*)&v, _MOV((u8[]){ _const_net__socks__no_auth }));
+	}
+	_result_int _t3 = net__Connection_name_table[con->_typ]._method_write(con->_object, v);
+	if (_t3.is_error) {
+		_result_net__Connection _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	Array_u8 bf = builtin____new_array_with_default(2, 0, sizeof(u8), 0);
+	_result_int _t5 = net__Connection_name_table[con->_typ]._method_read(con->_object, &bf);
+	if (_t5.is_error) {
+		_result_net__Connection _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	if ((*(u8*)builtin__array_get(bf, 0)) != _const_net__socks__socks_version5) {
+		_result_void _t7 = net__Connection_name_table[con->_typ]._method_close(con->_object);
+		if (_t7.is_error) {
+			_result_net__Connection _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+		return (_result_net__Connection){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("unexpected protocol version "), 0xfe02, {.d_u8 = (*(u8*)builtin__array_get(bf, 0))}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (username.len == 0) {
+		if ((*(u8*)builtin__array_get(bf, 1)) != 0) {
+			_result_void _t10 = net__Connection_name_table[con->_typ]._method_close(con->_object);
+			if (_t10.is_error) {
+				_result_net__Connection _t11 = {0};
+				_t11.is_error = true;
+				_t11.err = _t10.err;
+				return _t11;
+			}
+			
+ ;
+			return (_result_net__Connection){ .is_error=true, .err=builtin___v_error(net__socks__reply((*(u8*)builtin__array_get(bf, 1)))), .data={E_STRUCT} };
+		}
+	}
+	if (username.len > 0) {
+		builtin__array_clear(&v);
+		builtin__array_push((array*)&v, _MOV((u8[]){ ((u8)(1)) }));
+		builtin__array_push((array*)&v, _MOV((u8[]){ ((u8)(username.len)) }));
+		_PUSH_MANY(&v, (builtin__string_bytes(username)), _t15, Array_u8);
+		builtin__array_push((array*)&v, _MOV((u8[]){ ((u8)(password.len)) }));
+		_PUSH_MANY(&v, (builtin__string_bytes(password)), _t17, Array_u8);
+		_result_int _t18 = net__Connection_name_table[con->_typ]._method_write(con->_object, v);
+		if (_t18.is_error) {
+			_result_net__Connection _t19 = {0};
+			_t19.is_error = true;
+			_t19.err = _t18.err;
+			return _t19;
+		}
+		
+ ;
+		Array_u8 resp = builtin____new_array_with_default(2, 0, sizeof(u8), 0);
+		_result_int _t20 = net__Connection_name_table[con->_typ]._method_read(con->_object, &resp);
+		if (_t20.is_error) {
+			_result_net__Connection _t21 = {0};
+			_t21.is_error = true;
+			_t21.err = _t20.err;
+			return _t21;
+		}
+		
+ ;
+		if ((*(u8*)builtin__array_get(resp, 0)) != 1) {
+			_result_void _t22 = net__Connection_name_table[con->_typ]._method_close(con->_object);
+			if (_t22.is_error) {
+				_result_net__Connection _t23 = {0};
+				_t23.is_error = true;
+				_t23.err = _t22.err;
+				return _t23;
+			}
+			
+ ;
+			return (_result_net__Connection){ .is_error=true, .err=builtin___v_error(_S("server does not support user/password version 1")), .data={E_STRUCT} };
+		} else if ((*(u8*)builtin__array_get(resp, 1)) != 0) {
+			_result_void _t25 = net__Connection_name_table[con->_typ]._method_close(con->_object);
+			if (_t25.is_error) {
+				_result_net__Connection _t26 = {0};
+				_t26.is_error = true;
+				_t26.err = _t25.err;
+				return _t26;
+			}
+			
+ ;
+			return (_result_net__Connection){ .is_error=true, .err=builtin___v_error(_S("user/password login failed")), .data={E_STRUCT} };
+		}
+	}
+	builtin__array_clear(&v);
+	v = builtin__new_array_from_c_array(3, 3, sizeof(u8), _MOV((u8[3]){_const_net__socks__socks_version5, 1, 0}));
+	u64 port = builtin__string_u64(builtin__string_all_after_last(host, _S(":")));
+	if (port == 0) {
+		port = ((u64)(80));
+	}
+	string address = builtin__string_all_before_last(host, _S(":"));
+	if (builtin__string_contains_only(address, _S(".1234567890"))) {
+		builtin__array_push((array*)&v, _MOV((u8[]){ _const_net__socks__addr_type_ipv4 }));
+		_result_Array_u8 _t30 = net__socks__parse_ipv4(address);
+		if (_t30.is_error) {
+			_result_net__Connection _t31 = {0};
+			_t31.is_error = true;
+			_t31.err = _t30.err;
+			return _t31;
+		}
+		
+ 		_PUSH_MANY(&v, ((*(Array_u8*)_t30.data)), _t29, Array_u8);
+	} else if (builtin__string_contains_only(address, _S(":1234567890abcdf"))) {
+	} else {
+		if (address.len > 255) {
+			return (_result_net__Connection){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = address}}, {_S(" is too long"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		} else {
+			builtin__array_push((array*)&v, _MOV((u8[]){ _const_net__socks__addr_type_fqdn }));
+			builtin__array_push((array*)&v, _MOV((u8[]){ ((u8)(address.len)) }));
+			_PUSH_MANY(&v, (builtin__string_bytes(address)), _t35, Array_u8);
+		}
+	}
+	builtin__array_push((array*)&v, _MOV((u8[]){ ((u8)((port >> 8))) }));
+	builtin__array_push((array*)&v, _MOV((u8[]){ ((u8)(port)) }));
+	_result_int _t38 = net__Connection_name_table[con->_typ]._method_write(con->_object, v);
+	if (_t38.is_error) {
+		_result_net__Connection _t39 = {0};
+		_t39.is_error = true;
+		_t39.err = _t38.err;
+		return _t39;
+	}
+	
+ ;
+	Array_u8 bff = builtin____new_array_with_default(v.len, 0, sizeof(u8), 0);
+	_result_int _t40 = net__Connection_name_table[con->_typ]._method_read(con->_object, &bff);
+	if (_t40.is_error) {
+		_result_net__Connection _t41 = {0};
+		_t41.is_error = true;
+		_t41.err = _t40.err;
+		return _t41;
+	}
+	
+ ;
+	if ((*(u8*)builtin__array_get(bff, 1)) != 0) {
+		_result_void _t42 = net__Connection_name_table[con->_typ]._method_close(con->_object);
+		if (_t42.is_error) {
+			_result_net__Connection _t43 = {0};
+			_t43.is_error = true;
+			_t43.err = _t42.err;
+			return _t43;
+		}
+		
+ ;
+		return (_result_net__Connection){ .is_error=true, .err=builtin___v_error(net__socks__reply((*(u8*)builtin__array_get(bff, 1)))), .data={E_STRUCT} };
+	}
+	_result_net__Connection _t45;
+	builtin___result_ok(&(net__Connection[]) { *con }, (_result*)(&_t45), sizeof(net__Connection));
+	 
+	return _t45;
+}
+VV_LOC string net__socks__reply(u8 code) {
+	switch (code) {
+		case 0: {
+			return _S("succeeded");
+		}
+		case 1: {
+			return _S("general SOCKS server failure");
+		}
+		case 2: {
+			return _S("connection not allowed by ruleset");
+		}
+		case 3: {
+			return _S("network unreachable");
+		}
+		case 4: {
+			return _S("host unreachable");
+		}
+		case 5: {
+			return _S("connection refused");
+		}
+		case 6: {
+			return _S("TTL expired");
+		}
+		case 7: {
+			return _S("command not supported");
+		}
+		case 8: {
+			return _S("address type not supported");
+		}
+		default: {
+			{
+				return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("unknown code: "), 0xfe02, {.d_u8 = code}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			}
+		}
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC _result_Array_u8 net__socks__parse_ipv4(string addr) {
+	Array_u8 ip = builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+	Array_string _t1 = builtin__string_split(addr, _S("."));
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string part = ((string*)_t1.data)[_t2];
+		builtin__array_push((array*)&ip, _MOV((u8[]){ builtin__string_u8(part) }));
+	}
+	_result_Array_u8 _t4;
+	builtin___result_ok(&(Array_u8[]) { ip }, (_result*)(&_t4), sizeof(Array_u8));
+	 
+	return _t4;
+}
+VV_LOC _result_net__http__Response net__http__Request_ssl_do(net__http__Request* req, int port, net__http__Method method, string host_name, string path) {
+	return net__http__net_ssl_do(req, port, method, host_name, path);
+}
+VV_LOC _result_net__http__Response net__http__net_ssl_do(net__http__Request* req, int port, net__http__Method method, string host_name, string path) {
+	_result_net__ssl__SSLConn_ptr _t1 = net__ssl__new_ssl_conn(((net__ssl__SSLConnectConfig){.SSLConnectConfig = ((net__openssl__SSLConnectConfig){.verify = req->verify,.cert = req->cert,.cert_key = req->cert_key,.validate = req->validate,.in_memory_verification = req->in_memory_verification,}),}));
+	if (_t1.is_error) {
+		_result_net__http__Response _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__ssl__SSLConn* ssl_conn = (*(net__ssl__SSLConn**)_t1.data);
+	int retries = 0;
+	for (;;) {
+		_result_void _t3 = net__openssl__SSLConn_dial(&ssl_conn->SSLConn, host_name, port);
+		if (_t3.is_error) {
+			IError err = _t3.err;
+			retries++;
+			if (net__http__is_no_need_retry_error(IError_name_table[err._typ]._method_code(err._object)) || retries >= req->max_retries) {
+				return (_result_net__http__Response){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			continue;
+		}
+		
+ ;
+		break;
+	}
+	string req_headers = net__http__Request_build_request_headers(req, method, host_name, port, path);
+	_result_net__http__Response _t6 = net__http__Request_do_request(req, req_headers, ssl_conn);
+	if (_t6.is_error) {
+		_result_net__http__Response _t7 = {0};
+		_t7.is_error = true;
+		_t7.err = _t6.err;
+		return _t7;
+	}
+	
+ 	_result_net__http__Response _t5;
+	builtin___result_ok(&(net__http__Response[]) { (*(net__http__Response*)_t6.data) }, (_result*)(&_t5), sizeof(net__http__Response));
+	 
+	return _t5;
+}
+VV_LOC _result_int net__http__read_from_ssl_connection_cb(voidptr con, u8* buf, int bufsize) {
+	net__ssl__SSLConn* ssl_conn = ((net__ssl__SSLConn*)(con));
+	return net__openssl__SSLConn_socket_read_into_ptr(&ssl_conn->SSLConn, buf, bufsize);
+}
+VV_LOC _result_net__http__Response net__http__Request_do_request(net__http__Request* req, string req_headers, net__ssl__SSLConn* ssl_conn) {
+	_result_int _t1 = net__openssl__SSLConn_write_string(&ssl_conn->SSLConn, req_headers);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_net__http__Response){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ ;
+	strings__Builder content = strings__new_builder(4096);
+	_result_void _t3 = net__http__Request_receive_all_data_from_cb_in_builder(req, (voidptr)&content, ((voidptr)(ssl_conn)), (voidptr)net__http__read_from_ssl_connection_cb);
+	if (_t3.is_error) {
+		_result_net__http__Response _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	_result_void _t5 = net__openssl__SSLConn_shutdown(&ssl_conn->SSLConn);
+	if (_t5.is_error) {
+		_result_net__http__Response _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	string response_text = strings__Builder_str(&content);
+	if (req->on_finish != (voidptr)((void*)0)) {
+		_result_void _t7 = req->on_finish(req, ((u64)(response_text.len)));
+		if (_t7.is_error) {
+			_result_net__http__Response _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+	}
+	return net__http__parse_response(response_text);
+}
+Array_net__http__Cookie_ptr net__http__read_cookies(net__http__Header h, string filter) {
+	Array_string lines = net__http__Header_values(h, net__http__CommonHeader__cookie);
+	if (lines.len == 0) {
+		return builtin____new_array_with_default(0, 0, sizeof(net__http__Cookie*), 0);
+	}
+	Array_net__http__Cookie_ptr cookies = builtin____new_array_with_default(0, 0, sizeof(net__http__Cookie*), 0);
+	for (int _t2 = 0; _t2 < lines.len; ++_t2) {
+		string line_ = ((string*)lines.data)[_t2];
+		string line = builtin__string_trim_space(line_);
+		string part = _S("");
+		for (;;) {
+			if (!(line.len > 0)) break;
+			int semicolon_position = builtin__string_index_any(line, _S(";"));
+			if (semicolon_position > 0) {
+				Array_string line_parts = builtin__string_split(builtin__string_substr(line, 0, semicolon_position), _S(";"));
+				line = builtin__string_substr(line, ((int)(semicolon_position + 1)), 2147483647);
+				part = (*(string*)builtin__array_get(line_parts, 0));
+			} else {
+				part = line;
+				line = _S("");
+			}
+			part = builtin__string_trim_space(part);
+			if (part.len == 0) {
+				continue;
+			}
+			_option_multi_return_string_string _t3 = builtin__string_split_once(part, _S("="));
+			if (_t3.state != 0) {
+				*(multi_return_string_string*) _t3.data = (multi_return_string_string){.arg0=part,.arg1=_S("")};
+			}
+			
+ 			multi_return_string_string mr_2293 = (*(multi_return_string_string*)_t3.data);
+			string name = mr_2293.arg0;
+			string val = mr_2293.arg1;
+			if (!net__http__is_cookie_name_valid(name)) {
+				continue;
+			}
+			if ((filter).len != 0 && !builtin__string__eq(filter, name)) {
+				continue;
+			}
+			_result_string _t4 = net__http__parse_cookie_value(val, true);
+			if (_t4.is_error) {
+				continue;
+			}
+			
+ 			val = (*(string*)_t4.data);
+			builtin__array_push((array*)&cookies, _MOV((net__http__Cookie*[]){ ((net__http__Cookie*)builtin__memdup(&(net__http__Cookie){.name = name,.value = val,.path = (string){.str=(byteptr)"", .is_lit=1},.domain = (string){.str=(byteptr)"", .is_lit=1},.expires = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.raw_expires = (string){.str=(byteptr)"", .is_lit=1},.max_age = 0,.secure = 0,.http_only = 0,.same_site = 0,.raw = (string){.str=(byteptr)"", .is_lit=1},.unparsed = builtin____new_array(0, 0, sizeof(string)),}, sizeof(net__http__Cookie))) }));
+		}
+	}
+	return cookies;
+}
+string net__http__Cookie_str(net__http__Cookie* c) {
+	if (!net__http__is_cookie_name_valid(c->name)) {
+		return _S("");
+	}
+	int extra_cookie_length = 110;
+	strings__Builder b = strings__new_builder((int)((int)((int)((int)(c->name.len + c->value.len) + c->domain.len) + c->path.len) + extra_cookie_length));
+	strings__Builder_write_string(&b, c->name);
+	strings__Builder_write_string(&b, _S("="));
+	strings__Builder_write_string(&b, net__http__sanitize_cookie_value(c->value));
+	if (c->path.len > 0) {
+		strings__Builder_write_string(&b, _S("; path="));
+		strings__Builder_write_string(&b, net__http__sanitize_cookie_path(c->path));
+	}
+	if (c->domain.len > 0) {
+		if (net__http__valid_cookie_domain(c->domain)) {
+			string d = c->domain;
+			if (builtin__string_at(d, 0) == '.') {
+				d = builtin__string_substr(d, 1, d.len);
+			}
+			strings__Builder_write_string(&b, _S("; domain="));
+			strings__Builder_write_string(&b, d);
+		} else {
+		}
+	}
+	if (c->expires.year > 1600) {
+		string time_str = time__Time_http_header_string(c->expires);
+		strings__Builder_write_string(&b, _S("; expires="));
+		strings__Builder_write_string(&b, time_str);
+	}
+	if (c->max_age > 0) {
+		strings__Builder_write_string(&b, _S("; Max-Age="));
+		strings__Builder_write_string(&b, builtin__int_str(c->max_age));
+	} else if (c->max_age < 0) {
+		strings__Builder_write_string(&b, _S("; Max-Age=0"));
+	}
+	if (c->http_only) {
+		strings__Builder_write_string(&b, _S("; HttpOnly"));
+	}
+	if (c->secure) {
+		strings__Builder_write_string(&b, _S("; Secure"));
+	}
+
+	if (c->same_site == (net__http__SameSite__same_site_not_set)) {
+	}
+	else if (c->same_site == (net__http__SameSite__same_site_default_mode)) {
+		strings__Builder_write_string(&b, _S("; SameSite"));
+	}
+	else if (c->same_site == (net__http__SameSite__same_site_none_mode)) {
+		strings__Builder_write_string(&b, _S("; SameSite=None"));
+	}
+	else if (c->same_site == (net__http__SameSite__same_site_lax_mode)) {
+		strings__Builder_write_string(&b, _S("; SameSite=Lax"));
+	}
+	else if (c->same_site == (net__http__SameSite__same_site_strict_mode)) {
+		strings__Builder_write_string(&b, _S("; SameSite=Strict"));
+	}
+	return strings__Builder_str(&b);
+}
+VV_LOC string net__http__sanitize(bool (*valid)(u8 ), string v) {
+	bool ok = true;
+	for (int i = 0; i < v.len; ++i) {
+		if (valid(builtin__string_at(v, i))) {
+			continue;
+		}
+		ok = false;
+		break;
+	}
+	if (ok) {
+		return builtin__string_clone(v);
+	}
+	Array_u8 _t3 = {0};
+	Array_u8 _t3_orig = builtin__string_bytes(v);
+	int _t3_len = _t3_orig.len;
+	_t3 = builtin____new_array(0, _t3_len, sizeof(u8));
+
+	for (int _t4 = 0; _t4 < _t3_len; ++_t4) {
+		u8 it = ((u8*) _t3_orig.data)[_t4];
+		if (valid(it)) {
+			builtin__array_push((array*)&_t3, &it);
+		}
+	}
+	return Array_u8_bytestr( _t3);
+}
+string net__http__sanitize_cookie_value(string v) {
+	string val = net__http__sanitize((voidptr)net__http__valid_cookie_value_byte, v);
+	if (v.len == 0) {
+		return v;
+	}
+	if (builtin__string_starts_with(val, _S(" ")) || builtin__string_contains(v, _S(";")) || builtin__string_ends_with(val, _S(" ")) || builtin__string_starts_with(val, _S(",")) || builtin__string_ends_with(val, _S(","))) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("\""), 0xfe10, {.d_s = v}}, {_S("\""), 0, { .d_c = 0 }}}));
+	}
+	return v;
+}
+VV_LOC string net__http__sanitize_cookie_path(string v) {
+	return net__http__sanitize((voidptr)net__http__valid_cookie_path_byte, v);
+}
+VV_LOC bool net__http__valid_cookie_value_byte(u8 b) {
+	return 0x20 <= b && b < 0x7f && b != '"' && b != ';' && b != '\\';
+}
+VV_LOC bool net__http__valid_cookie_path_byte(u8 b) {
+	return 0x20 <= b && b < 0x7f && b != '!';
+}
+VV_LOC bool net__http__valid_cookie_domain(string v) {
+	if (net__http__is_cookie_domain_name(v)) {
+		return true;
+	}
+	return false;
+}
+bool net__http__is_cookie_domain_name(string _s) {
+	string s = _s;
+	if (s.len == 0) {
+		return false;
+	}
+	if (s.len > 255) {
+		return false;
+	}
+	if (builtin__string_at(s, 0) == '.') {
+		s = builtin__string_substr(s, 1, s.len);
+	}
+	rune last = '.';
+	bool ok = false;
+	int part_len = 0;
+	for (int i = 0; i < s.len; ++i) {
+		u8 c = builtin__string_at(s, i);
+		if (builtin__u8_is_letter(c)) {
+			ok = true;
+			part_len++;
+		} else if ('0' <= c && c <= '9') {
+			part_len++;
+		} else if (c == '-') {
+			if (last == '.') {
+				return false;
+			}
+			part_len++;
+		} else if (c == '.') {
+			if (last == '.' || last == '-') {
+				return false;
+			}
+			if (part_len > 63 || part_len == 0) {
+				return false;
+			}
+			part_len = 0;
+		} else {
+			return false;
+		}
+		last = c;
+	}
+	if (last == '-' || part_len > 63) {
+		return false;
+	}
+	return ok;
+}
+VV_LOC _result_string net__http__parse_cookie_value(string _raw, bool allow_double_quote) {
+	string raw = _raw;
+	if (allow_double_quote && raw.len > 1 && builtin__string_at(raw, 0) == '"' && builtin__string_at(raw, (int)(raw.len - 1)) == '"') {
+		raw = builtin__string_substr(raw, 1, (int)(raw.len - 1));
+	}
+	for (int i = 0; i < raw.len; ++i) {
+		if (!net__http__valid_cookie_value_byte(builtin__string_at(raw, i))) {
+			return (_result_string){ .is_error=true, .err=builtin___v_error(_S("http.cookie: invalid cookie value")), .data={E_STRUCT} };
+		}
+	}
+	_result_string _t2;
+	builtin___result_ok(&(string[]) { raw }, (_result*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+VV_LOC bool net__http__is_cookie_name_valid(string name) {
+	if ((name).len == 0) {
+		return false;
+	}
+	for (int _t2 = 0; _t2 < name.len; ++_t2) {
+		u8 b = name.str[_t2];
+		if (b < 33 || b > 126) {
+			return false;
+		}
+	}
+	return true;
+}
+VV_LOC _result_net__http__Cookie net__http__parse_cookie(string line) {
+	Array_string parts = builtin__string_split(builtin__string_trim_space(line), _S(";"));
+	if (parts.len == 1 && ((*(string*)builtin__array_get(parts, 0))).len == 0) {
+		return (_result_net__http__Cookie){ .is_error=true, .err=builtin___v_error(_S("malformed cookie")), .data={E_STRUCT} };
+	}
+	builtin__array_set(&parts, 0, &(string[]) { builtin__string_trim_space((*(string*)builtin__array_get(parts, 0))) });
+	_option_int _t2 = builtin__string_index((*(string*)builtin__array_get(parts, 0)), _S("="));
+	if (_t2.state != 0) {
+		return (_result_net__http__Cookie){ .is_error=true, .err=builtin___v_error(_S("malformed cookie")), .data={E_STRUCT} };
+	}
+	
+ 	int index = (*(int*)_t2.data);
+	string name = builtin__string_substr((*(string*)builtin__array_get(parts, 0)), 0, index);
+	string raw_value = builtin__string_substr((*(string*)builtin__array_get(parts, 0)), (int)(index + 1), 2147483647);
+	if (!net__http__is_cookie_name_valid(name)) {
+		return (_result_net__http__Cookie){ .is_error=true, .err=builtin___v_error(_S("malformed cookie")), .data={E_STRUCT} };
+	}
+	_result_string _t5 = net__http__parse_cookie_value(raw_value, true);
+	if (_t5.is_error) {
+		return (_result_net__http__Cookie){ .is_error=true, .err=builtin___v_error(_S("malformed cookie")), .data={E_STRUCT} };
+	}
+	
+ 	string value = (*(string*)_t5.data);
+	net__http__Cookie c = ((net__http__Cookie){.name = name,.value = value,.path = (string){.str=(byteptr)"", .is_lit=1},.domain = (string){.str=(byteptr)"", .is_lit=1},.expires = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.raw_expires = (string){.str=(byteptr)"", .is_lit=1},.max_age = 0,.secure = 0,.http_only = 0,.same_site = 0,.raw = line,.unparsed = builtin____new_array(0, 0, sizeof(string)),});
+	for (int i = 0; i < parts.len; ++i) {
+		builtin__array_set(&parts, i, &(string[]) { builtin__string_trim_space((*(string*)builtin__array_get(parts, i))) });
+		if ((*(string*)builtin__array_get(parts, i)).len == 0) {
+			continue;
+		}
+		string attr = (*(string*)builtin__array_get(parts, i));
+		string raw_val = _S("");
+		_option_int _t7;
+		if (_t7 = builtin__string_index((*(string*)builtin__array_get(parts, i)), _S("=")), _t7.state == 0) {
+			int ind = *(int*)_t7.data;
+			attr = builtin__string_substr((*(string*)builtin__array_get(parts, i)), 0, ind);
+			raw_val = builtin__string_substr((*(string*)builtin__array_get(parts, i)), (int)(ind + 1), 2147483647);
+		}
+		string lower_attr = builtin__string_to_lower(attr);
+		_result_string _t8 = net__http__parse_cookie_value(raw_val, false);
+		if (_t8.is_error) {
+			builtin__array_push((array*)&c.unparsed, _MOV((string[]){ (*(string*)builtin__array_get(parts, i)) }));
+			continue;
+		}
+		
+ 		string val = (*(string*)_t8.data);
+
+		if (_SLIT_EQ(lower_attr.str, lower_attr.len, "samesite")) {
+			string lower_val = builtin__string_to_lower(val);
+
+			if (_SLIT_EQ(lower_val.str, lower_val.len, "lax")) {
+				c.same_site = net__http__SameSite__same_site_lax_mode;
+			}
+			else if (_SLIT_EQ(lower_val.str, lower_val.len, "strict")) {
+				c.same_site = net__http__SameSite__same_site_strict_mode;
+			}
+			else if (_SLIT_EQ(lower_val.str, lower_val.len, "none")) {
+				c.same_site = net__http__SameSite__same_site_none_mode;
+			}
+			else {
+				c.same_site = net__http__SameSite__same_site_default_mode;
+			}
+		}
+		else if (_SLIT_EQ(lower_attr.str, lower_attr.len, "secure")) {
+			c.secure = true;
+			continue;
+		}
+		else if (_SLIT_EQ(lower_attr.str, lower_attr.len, "httponly")) {
+			c.http_only = true;
+			continue;
+		}
+		else if (_SLIT_EQ(lower_attr.str, lower_attr.len, "domain")) {
+			c.domain = val;
+			continue;
+		}
+		else if (_SLIT_EQ(lower_attr.str, lower_attr.len, "max-age")) {
+			int secs = builtin__string_int(val);
+			if (secs != 0 && builtin__string_at(val, 0) != '0') {
+				break;
+			}
+			if (secs <= 0) {
+				secs = -1;
+			}
+			c.max_age = secs;
+			continue;
+		}
+		else if (_SLIT_EQ(lower_attr.str, lower_attr.len, "path")) {
+			c.path = val;
+			continue;
+		}
+		else {
+			builtin__array_push((array*)&c.unparsed, _MOV((string[]){ (*(string*)builtin__array_get(parts, i)) }));
+		}
+	}
+	_result_net__http__Cookie _t11;
+	builtin___result_ok(&(net__http__Cookie[]) { c }, (_result*)(&_t11), sizeof(net__http__Cookie));
+	 
+	return _t11;
+}
+_result_void net__http__download_file(string url, string out_file_path) {
+	_result_net__http__Response _t1 = net__http__get(url);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ 	net__http__Response s = (*(net__http__Response*)_t1.data);
+	if (net__http__Response_status(s) != net__http__Status__ok) {
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(s.body, s.status_code), .data={E_STRUCT} };
+	}
+	_result_void _t4 = os__write_file(out_file_path, s.body);
+	if (_t4.is_error) {
+		_result_void _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__http__download_file_with_cookies(string url, string out_file_path, Map_string_string cookies) {
+	_result_net__http__Response _t1 = net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__get,.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.data = (string){.str=(byteptr)"", .is_lit=1},.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = cookies,.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	
+ 	net__http__Response s = (*(net__http__Response*)_t1.data);
+	if (net__http__Response_status(s) != net__http__Status__ok) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("received http code "), 0xfe07, {.d_i32 = s.status_code}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_result_void _t4 = os__write_file(out_file_path, s.body);
+	if (_t4.is_error) {
+		_result_void _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_net__http__Response net__http__download_file_with_progress(string url, string path, net__http__DownloaderParams params) {
+	net__http__Downloader* d = params.downloader;
+	net__http__FetchConfig config = params.FetchConfig;
+	config.url = url;
+	config.user_ptr = ((voidptr)(d));
+	config.on_progress_body = (voidptr)net__http__download_progres_cb;
+	if (config.stop_copying_limit == -1) {
+		config.stop_copying_limit = 65536;
+	}
+	_result_net__http__Request _t1 = net__http__prepare(config);
+	if (_t1.is_error) {
+		_result_net__http__Response _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__http__Request req = (*(net__http__Request*)_t1.data);
+	_result_void _t3 = net__http__Downloader_name_table[d->_typ]._method_on_start(d->_object, (voidptr)&req, path);
+	if (_t3.is_error) {
+		_result_net__http__Response _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	_result_net__http__Response _t5 = net__http__Request_do(&req);
+	if (_t5.is_error) {
+		_result_net__http__Response _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ 	net__http__Response response = (*(net__http__Response*)_t5.data);
+	_result_void _t7 = net__http__Downloader_name_table[d->_typ]._method_on_finish(d->_object, (voidptr)&req, (voidptr)&response);
+	if (_t7.is_error) {
+		_result_net__http__Response _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	_result_net__http__Response _t9;
+	builtin___result_ok(&(net__http__Response[]) { response }, (_result*)(&_t9), sizeof(net__http__Response));
+	 
+	return _t9;
+}
+VV_LOC _result_void net__http__download_progres_cb(net__http__Request* request, Array_u8 chunk, u64 body_so_far, u64 expected_size, int status_code) {
+	net__http__Downloader* d = _const_net__http__zz;
+	voidptr* pd = ((voidptr*)(&d));
+	{ // Unsafe block
+		*pd = request->user_ptr;
+	}
+	if (status_code == 200) {
+		_result_void _t1 = net__http__Downloader_name_table[d->_typ]._method_on_chunk(d->_object, request, chunk, body_so_far, expected_size);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+_result_void net__http__SilentStreamingDownloader_on_start(net__http__SilentStreamingDownloader* d, net__http__Request* request, string path) {
+	d->path = path;
+	_result_os__File _t1 = os__create(path);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	d->f = (*(os__File*)_t1.data);
+	return (_result_void){0};
+}
+_result_void net__http__SilentStreamingDownloader_on_chunk(net__http__SilentStreamingDownloader* d, net__http__Request* request, Array_u8 chunk, u64 already_received, u64 expected) {
+	_result_int _t1 = os__File_write(&d->f, chunk);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void net__http__SilentStreamingDownloader_on_finish(net__http__SilentStreamingDownloader* d, net__http__Request* request, net__http__Response* response) {
+	os__File_close(&d->f);
+	return (_result_void){0};
+}
+_result_void net__http__TerminalStreamingDownloader_on_start(net__http__TerminalStreamingDownloader* d, net__http__Request* request, string path) {
+	_result_void _t1 = net__http__SilentStreamingDownloader_on_start(&d->SilentStreamingDownloader, request, path);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	d->start_time = time__now();
+	d->past_time = time__now();
+	return (_result_void){0};
+}
+_result_void net__http__TerminalStreamingDownloader_on_chunk(net__http__TerminalStreamingDownloader* d, net__http__Request* request, Array_u8 chunk, u64 already_received, u64 expected) {
+	time__Time now = time__now();
+	time__Duration elapsed = time__Time__minus(now, d->start_time);
+	d->past_time = now;
+	d->past_received = already_received;
+	f64 ratio = (f64)(((f64)(already_received)) / ((f64)(expected)));
+	f64 res = (f64)(((f64)(elapsed)) / ratio);
+	time__Duration estimated = ((_const_max_i64));
+	if (((f64)(_const_min_i64)) < res && res < ((f64)(_const_max_i64))) {
+		estimated = ((i64)(res));
+	}
+	f64 speed = (f64)((f64)(((f64)(_const_time__millisecond)) * ((f64)(already_received))) / ((f64)(elapsed)));
+	f64 elapsed_s = time__Duration_seconds(elapsed);
+	f64 estimated_s = time__Duration_seconds(estimated);
+	f64 eta_s = builtin__f64_max((f64)(estimated_s - elapsed_s), 0.0);
+	_result_void _t1 = net__http__SilentStreamingDownloader_on_chunk(&d->SilentStreamingDownloader, request, chunk, already_received, expected);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	builtin__print(builtin__str_intp(8, _MOV((StrIntpData[]){{_S("\rDownloading to `"), 0xfe10, {.d_s = d->SilentStreamingDownloader.path}}, {_S("` "), 0xc042d, {.d_f64 = (f64)(((f64)(100.0)) * ratio)}}, {_S("%, "), 0xe062d, {.d_f64 = (f64)(((f64)(already_received)) / ((int_literal)(1024 * 1024)))}}, {_S("/"), 0xe060d, {.d_f64 = (f64)(((f64)(expected)) / ((int_literal)(1024 * 1024)))}}, {_S("MB, "), 0xc002d, {.d_f64 = speed}}, {_S("KB/s, elapsed: "), 0xc002d, {.d_f64 = elapsed_s}}, {_S("s, eta: "), 0xc002d, {.d_f64 = eta_s}}, {_S("s"), 0, { .d_c = 0 }}})));
+	builtin__flush_stdout();
+	return (_result_void){0};
+}
+_result_void net__http__TerminalStreamingDownloader_on_finish(net__http__TerminalStreamingDownloader* d, net__http__Request* request, net__http__Response* response) {
+	_result_void _t1 = net__http__SilentStreamingDownloader_on_finish(&d->SilentStreamingDownloader, request, response);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	builtin__println(_S(""));
+	builtin__flush_stdout();
+	return (_result_void){0};
+}
+string net__http__CommonHeader_str(net__http__CommonHeader h) {
+	string _t2 = (string){.str=(byteptr)"", .is_lit=1};
+	switch (h) {
+		case net__http__CommonHeader__accept: {
+			_t2 = _S("Accept");
+			break;
+		}
+		case net__http__CommonHeader__accept_ch: {
+			_t2 = _S("Accept-CH");
+			break;
+		}
+		case net__http__CommonHeader__accept_charset: {
+			_t2 = _S("Accept-Charset");
+			break;
+		}
+		case net__http__CommonHeader__accept_ch_lifetime: {
+			_t2 = _S("Accept-CH-Lifetime");
+			break;
+		}
+		case net__http__CommonHeader__accept_encoding: {
+			_t2 = _S("Accept-Encoding");
+			break;
+		}
+		case net__http__CommonHeader__accept_language: {
+			_t2 = _S("Accept-Language");
+			break;
+		}
+		case net__http__CommonHeader__accept_patch: {
+			_t2 = _S("Accept-Patch");
+			break;
+		}
+		case net__http__CommonHeader__accept_post: {
+			_t2 = _S("Accept-Post");
+			break;
+		}
+		case net__http__CommonHeader__accept_ranges: {
+			_t2 = _S("Accept-Ranges");
+			break;
+		}
+		case net__http__CommonHeader__access_control_allow_credentials: {
+			_t2 = _S("Access-Control-Allow-Credentials");
+			break;
+		}
+		case net__http__CommonHeader__access_control_allow_headers: {
+			_t2 = _S("Access-Control-Allow-Headers");
+			break;
+		}
+		case net__http__CommonHeader__access_control_allow_methods: {
+			_t2 = _S("Access-Control-Allow-Methods");
+			break;
+		}
+		case net__http__CommonHeader__access_control_allow_origin: {
+			_t2 = _S("Access-Control-Allow-Origin");
+			break;
+		}
+		case net__http__CommonHeader__access_control_expose_headers: {
+			_t2 = _S("Access-Control-Expose-Headers");
+			break;
+		}
+		case net__http__CommonHeader__access_control_max_age: {
+			_t2 = _S("Access-Control-Max-Age");
+			break;
+		}
+		case net__http__CommonHeader__access_control_request_headers: {
+			_t2 = _S("Access-Control-Request-Headers");
+			break;
+		}
+		case net__http__CommonHeader__access_control_request_method: {
+			_t2 = _S("Access-Control-Request-Method");
+			break;
+		}
+		case net__http__CommonHeader__age: {
+			_t2 = _S("Age");
+			break;
+		}
+		case net__http__CommonHeader__allow: {
+			_t2 = _S("Allow");
+			break;
+		}
+		case net__http__CommonHeader__alt_svc: {
+			_t2 = _S("Alt-Svc");
+			break;
+		}
+		case net__http__CommonHeader__authorization: {
+			_t2 = _S("Authorization");
+			break;
+		}
+		case net__http__CommonHeader__authority: {
+			_t2 = _S("Authority");
+			break;
+		}
+		case net__http__CommonHeader__cache_control: {
+			_t2 = _S("Cache-Control");
+			break;
+		}
+		case net__http__CommonHeader__clear_site_data: {
+			_t2 = _S("Clear-Site-Data");
+			break;
+		}
+		case net__http__CommonHeader__connection: {
+			_t2 = _S("Connection");
+			break;
+		}
+		case net__http__CommonHeader__content_disposition: {
+			_t2 = _S("Content-Disposition");
+			break;
+		}
+		case net__http__CommonHeader__content_encoding: {
+			_t2 = _S("Content-Encoding");
+			break;
+		}
+		case net__http__CommonHeader__content_language: {
+			_t2 = _S("Content-Language");
+			break;
+		}
+		case net__http__CommonHeader__content_length: {
+			_t2 = _S("Content-Length");
+			break;
+		}
+		case net__http__CommonHeader__content_location: {
+			_t2 = _S("Content-Location");
+			break;
+		}
+		case net__http__CommonHeader__content_range: {
+			_t2 = _S("Content-Range");
+			break;
+		}
+		case net__http__CommonHeader__content_security_policy: {
+			_t2 = _S("Content-Security-Policy");
+			break;
+		}
+		case net__http__CommonHeader__content_security_policy_report_only: {
+			_t2 = _S("Content-Security-Policy-Report-Only");
+			break;
+		}
+		case net__http__CommonHeader__content_type: {
+			_t2 = _S("Content-Type");
+			break;
+		}
+		case net__http__CommonHeader__cookie: {
+			_t2 = _S("Cookie");
+			break;
+		}
+		case net__http__CommonHeader__cross_origin_embedder_policy: {
+			_t2 = _S("Cross-Origin-Embedder-Policy");
+			break;
+		}
+		case net__http__CommonHeader__cross_origin_opener_policy: {
+			_t2 = _S("Cross-Origin-Opener-Policy");
+			break;
+		}
+		case net__http__CommonHeader__cross_origin_resource_policy: {
+			_t2 = _S("Cross-Origin-Resource-Policy");
+			break;
+		}
+		case net__http__CommonHeader__date: {
+			_t2 = _S("Date");
+			break;
+		}
+		case net__http__CommonHeader__device_memory: {
+			_t2 = _S("Device-Memory");
+			break;
+		}
+		case net__http__CommonHeader__digest: {
+			_t2 = _S("Digest");
+			break;
+		}
+		case net__http__CommonHeader__dnt: {
+			_t2 = _S("DNT");
+			break;
+		}
+		case net__http__CommonHeader__early_data: {
+			_t2 = _S("Early-Data");
+			break;
+		}
+		case net__http__CommonHeader__etag: {
+			_t2 = _S("ETag");
+			break;
+		}
+		case net__http__CommonHeader__expect: {
+			_t2 = _S("Expect");
+			break;
+		}
+		case net__http__CommonHeader__expect_ct: {
+			_t2 = _S("Expect-CT");
+			break;
+		}
+		case net__http__CommonHeader__expires: {
+			_t2 = _S("Expires");
+			break;
+		}
+		case net__http__CommonHeader__feature_policy: {
+			_t2 = _S("Feature-Policy");
+			break;
+		}
+		case net__http__CommonHeader__forwarded: {
+			_t2 = _S("Forwarded");
+			break;
+		}
+		case net__http__CommonHeader__from: {
+			_t2 = _S("From");
+			break;
+		}
+		case net__http__CommonHeader__host: {
+			_t2 = _S("Host");
+			break;
+		}
+		case net__http__CommonHeader__if_match: {
+			_t2 = _S("If-Match");
+			break;
+		}
+		case net__http__CommonHeader__if_modified_since: {
+			_t2 = _S("If-Modified-Since");
+			break;
+		}
+		case net__http__CommonHeader__if_none_match: {
+			_t2 = _S("If-None-Match");
+			break;
+		}
+		case net__http__CommonHeader__if_range: {
+			_t2 = _S("If-Range");
+			break;
+		}
+		case net__http__CommonHeader__if_unmodified_since: {
+			_t2 = _S("If-Unmodified-Since");
+			break;
+		}
+		case net__http__CommonHeader__index: {
+			_t2 = _S("Index");
+			break;
+		}
+		case net__http__CommonHeader__keep_alive: {
+			_t2 = _S("Keep-Alive");
+			break;
+		}
+		case net__http__CommonHeader__large_allocation: {
+			_t2 = _S("Large-Allocation");
+			break;
+		}
+		case net__http__CommonHeader__last_modified: {
+			_t2 = _S("Last-Modified");
+			break;
+		}
+		case net__http__CommonHeader__link: {
+			_t2 = _S("Link");
+			break;
+		}
+		case net__http__CommonHeader__location: {
+			_t2 = _S("Location");
+			break;
+		}
+		case net__http__CommonHeader__nel: {
+			_t2 = _S("NEL");
+			break;
+		}
+		case net__http__CommonHeader__origin: {
+			_t2 = _S("Origin");
+			break;
+		}
+		case net__http__CommonHeader__pragma: {
+			_t2 = _S("Pragma");
+			break;
+		}
+		case net__http__CommonHeader__proxy_authenticate: {
+			_t2 = _S("Proxy-Authenticate");
+			break;
+		}
+		case net__http__CommonHeader__proxy_authorization: {
+			_t2 = _S("Proxy-Authorization");
+			break;
+		}
+		case net__http__CommonHeader__range: {
+			_t2 = _S("Range");
+			break;
+		}
+		case net__http__CommonHeader__referer: {
+			_t2 = _S("Referer");
+			break;
+		}
+		case net__http__CommonHeader__referrer_policy: {
+			_t2 = _S("Referrer-Policy");
+			break;
+		}
+		case net__http__CommonHeader__retry_after: {
+			_t2 = _S("Retry-After");
+			break;
+		}
+		case net__http__CommonHeader__save_data: {
+			_t2 = _S("Save-Data");
+			break;
+		}
+		case net__http__CommonHeader__sec_fetch_dest: {
+			_t2 = _S("Sec-Fetch-Dest");
+			break;
+		}
+		case net__http__CommonHeader__sec_fetch_mode: {
+			_t2 = _S("Sec-Fetch-Mode");
+			break;
+		}
+		case net__http__CommonHeader__sec_fetch_site: {
+			_t2 = _S("Sec-Fetch-Site");
+			break;
+		}
+		case net__http__CommonHeader__sec_fetch_user: {
+			_t2 = _S("Sec-Fetch-User");
+			break;
+		}
+		case net__http__CommonHeader__sec_websocket_accept: {
+			_t2 = _S("Sec-WebSocket-Accept");
+			break;
+		}
+		case net__http__CommonHeader__sec_websocket_key: {
+			_t2 = _S("Sec-WebSocket-Key");
+			break;
+		}
+		case net__http__CommonHeader__server: {
+			_t2 = _S("Server");
+			break;
+		}
+		case net__http__CommonHeader__server_timing: {
+			_t2 = _S("Server-Timing");
+			break;
+		}
+		case net__http__CommonHeader__set_cookie: {
+			_t2 = _S("Set-Cookie");
+			break;
+		}
+		case net__http__CommonHeader__sourcemap: {
+			_t2 = _S("SourceMap");
+			break;
+		}
+		case net__http__CommonHeader__strict_transport_security: {
+			_t2 = _S("Strict-Transport-Security");
+			break;
+		}
+		case net__http__CommonHeader__te: {
+			_t2 = _S("TE");
+			break;
+		}
+		case net__http__CommonHeader__timing_allow_origin: {
+			_t2 = _S("Timing-Allow-Origin");
+			break;
+		}
+		case net__http__CommonHeader__tk: {
+			_t2 = _S("Tk");
+			break;
+		}
+		case net__http__CommonHeader__trailer: {
+			_t2 = _S("Trailer");
+			break;
+		}
+		case net__http__CommonHeader__transfer_encoding: {
+			_t2 = _S("Transfer-Encoding");
+			break;
+		}
+		case net__http__CommonHeader__upgrade: {
+			_t2 = _S("Upgrade");
+			break;
+		}
+		case net__http__CommonHeader__upgrade_insecure_requests: {
+			_t2 = _S("Upgrade-Insecure-Requests");
+			break;
+		}
+		case net__http__CommonHeader__user_agent: {
+			_t2 = _S("User-Agent");
+			break;
+		}
+		case net__http__CommonHeader__vary: {
+			_t2 = _S("Vary");
+			break;
+		}
+		case net__http__CommonHeader__via: {
+			_t2 = _S("Via");
+			break;
+		}
+		case net__http__CommonHeader__want_digest: {
+			_t2 = _S("Want-Digest");
+			break;
+		}
+		case net__http__CommonHeader__warning: {
+			_t2 = _S("Warning");
+			break;
+		}
+		case net__http__CommonHeader__www_authenticate: {
+			_t2 = _S("WWW-Authenticate");
+			break;
+		}
+		case net__http__CommonHeader__x_content_type_options: {
+			_t2 = _S("X-Content-Type-Options");
+			break;
+		}
+		case net__http__CommonHeader__x_dns_prefetch_control: {
+			_t2 = _S("X-DNS-Prefetch-Control");
+			break;
+		}
+		case net__http__CommonHeader__x_forwarded_for: {
+			_t2 = _S("X-Forwarded-For");
+			break;
+		}
+		case net__http__CommonHeader__x_forwarded_host: {
+			_t2 = _S("X-Forwarded-Host");
+			break;
+		}
+		case net__http__CommonHeader__x_forwarded_proto: {
+			_t2 = _S("X-Forwarded-Proto");
+			break;
+		}
+		case net__http__CommonHeader__x_frame_options: {
+			_t2 = _S("X-Frame-Options");
+			break;
+		}
+		case net__http__CommonHeader__x_xss_protection: {
+			_t2 = _S("X-XSS-Protection");
+			break;
+		}
+	}
+	return _t2;
+}
+void net__http__Header_free(net__http__Header* h) {
+	{ // Unsafe block
+	}
+}
+net__http__Header net__http__new_header(Array_net__http__HeaderConfig kvs) {
+	net__http__Header h = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,});
+	for (int i = 0; i < kvs.len; ++i) {
+		net__http__HeaderConfig kv = ((net__http__HeaderConfig*)kvs.data)[i];
+		h.data[builtin__v_fixed_index(i, 50)] = ((net__http__HeaderKV){.key = net__http__CommonHeader_str(kv.key),.value = kv.value,});
+	}
+	h.cur_pos = kvs.len;
+	return h;
+}
+net__http__Header net__http__new_header_from_map(Map_net__http__CommonHeader_string kvs) {
+	net__http__Header h = net__http__new_header(builtin____new_array(0, 0, sizeof(net__http__HeaderConfig)));
+	net__http__Header_add_map(&h, kvs);
+	return h;
+}
+_result_net__http__Header net__http__new_custom_header_from_map(Map_string_string kvs) {
+	net__http__Header h = net__http__new_header(builtin____new_array(0, 0, sizeof(net__http__HeaderConfig)));
+	_result_void _t1 = net__http__Header_add_custom_map(&h, kvs);
+	if (_t1.is_error) {
+		_result_net__http__Header _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_net__http__Header _t3;
+	builtin___result_ok(&(net__http__Header[]) { h }, (_result*)(&_t3), sizeof(net__http__Header));
+	 
+	return _t3;
+}
+void net__http__Header_add(net__http__Header* h, net__http__CommonHeader key, string value) {
+	string k = net__http__CommonHeader_str(key);
+	h->data[builtin__v_fixed_index(h->cur_pos, 50)] = ((net__http__HeaderKV){.key = k,.value = value,});
+	h->cur_pos++;
+}
+_result_void net__http__Header_add_custom(net__http__Header* h, string key, string value) {
+	_result_void _t1 = net__http__is_valid(key);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	h->data[builtin__v_fixed_index(h->cur_pos, 50)] = ((net__http__HeaderKV){.key = key,.value = value,});
+	h->cur_pos++;
+	return (_result_void){0};
+}
+void net__http__Header_add_map(net__http__Header* h, Map_net__http__CommonHeader_string kvs) {
+	int _t2 = kvs.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = kvs.key_values.len - _t2;
+		_t2 = kvs.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&kvs.key_values, _t1)) {continue;}
+		net__http__CommonHeader k = *(net__http__CommonHeader*)builtin__DenseArray_key(&kvs.key_values, _t1);
+		string v = (*(string*)builtin__DenseArray_value(&kvs.key_values, _t1));
+		net__http__Header_add(h, k, v);
+	}
+}
+_result_void net__http__Header_add_custom_map(net__http__Header* h, Map_string_string kvs) {
+	int _t2 = kvs.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = kvs.key_values.len - _t2;
+		_t2 = kvs.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&kvs.key_values, _t1)) {continue;}
+		string k = *(string*)builtin__DenseArray_key(&kvs.key_values, _t1);
+		k = builtin__string_clone(k);
+		string v = (*(string*)builtin__DenseArray_value(&kvs.key_values, _t1));
+		_result_void _t4 = net__http__Header_add_custom(h, k, v);
+		if (_t4.is_error) {
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+void net__http__Header_set(net__http__Header* h, net__http__CommonHeader key, string value) {
+	string key_str = net__http__CommonHeader_str(key);
+	for (int i = 0; i < h->cur_pos; i++) {
+		if (builtin__string__eq(h->data[builtin__v_fixed_index(i, 50)].key, key_str)) {
+			h->data[builtin__v_fixed_index(i, 50)] = ((net__http__HeaderKV){.key = key_str,.value = value,});
+			return;
+		}
+	}
+	h->data[builtin__v_fixed_index(h->cur_pos, 50)] = ((net__http__HeaderKV){.key = key_str,.value = value,});
+	h->cur_pos++;
+}
+_result_void net__http__Header_set_custom(net__http__Header* h, string key, string value) {
+	_result_void _t1 = net__http__is_valid(key);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	bool set = false;
+for (int i = 0; i != 50; ++i) {
+		net__http__HeaderKV kv = h->data[i];
+		if (builtin__string__eq(kv.key, key)) {
+			if (!set) {
+				h->data[builtin__v_fixed_index(i, 50)] = ((net__http__HeaderKV){.key = key,.value = value,});
+				set = true;
+			} else {
+				h->data[builtin__v_fixed_index(i, 50)] = ((net__http__HeaderKV){.key = key,.value = _S(""),});
+			}
+		}
+	}
+	if (set) {
+		return (_result_void){0};
+	}
+	h->data[builtin__v_fixed_index(h->cur_pos, 50)] = ((net__http__HeaderKV){.key = key,.value = value,});
+	h->cur_pos++;
+	return (_result_void){0};
+}
+void net__http__Header_delete(net__http__Header* h, net__http__CommonHeader key) {
+	net__http__Header_delete_custom(h, net__http__CommonHeader_str(key));
+}
+void net__http__Header_delete_custom(net__http__Header* h, string key) {
+	for (int i = 0; i < h->cur_pos; i++) {
+		if (builtin__string__eq(h->data[builtin__v_fixed_index(i, 50)].key, key)) {
+			h->data[builtin__v_fixed_index(i, 50)] = ((net__http__HeaderKV){.key = key,.value = _S(""),});
+		}
+	}
+}
+bool net__http__Header_contains(net__http__Header h, net__http__CommonHeader key) {
+	if (h.cur_pos == 0) {
+		return false;
+	}
+	string key_str = net__http__CommonHeader_str(key);
+	for (int i = 0; i < h.cur_pos; i++) {
+		if (builtin__string__eq(h.data[builtin__v_fixed_index(i, 50)].key, key_str)) {
+			return true;
+		}
+	}
+	return false;
+}
+bool net__http__Header_contains_custom(net__http__Header h, string key, net__http__HeaderQueryConfig flags) {
+	if (flags.exact) {
+		for (int i = 0; i < h.cur_pos; i++) {
+			net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+			if (builtin__string__eq(kv.key, key)) {
+				return true;
+			}
+		}
+		return false;
+	} else {
+		string lower_key = builtin__string_to_lower(key);
+		for (int i = 0; i < h.cur_pos; i++) {
+			net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+			if (builtin__string__eq(builtin__string_to_lower(kv.key), lower_key)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	return 0;
+}
+_result_string net__http__Header_get(net__http__Header h, net__http__CommonHeader key) {
+	return net__http__Header_get_custom(h, net__http__CommonHeader_str(key), ((net__http__HeaderQueryConfig){.exact = 0,}));
+}
+_result_string net__http__Header_get_custom(net__http__Header h, string key, net__http__HeaderQueryConfig flags) {
+	if (flags.exact) {
+		for (int i = 0; i < h.cur_pos; i++) {
+			net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+			if (builtin__string__eq(kv.key, key)) {
+				_result_string _t1;
+				builtin___result_ok(&(string[]) { kv.value }, (_result*)(&_t1), sizeof(string));
+				 
+				return _t1;
+			}
+		}
+	} else {
+		string lower_key = builtin__string_to_lower(key);
+		for (int i = 0; i < h.cur_pos; i++) {
+			net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+			if (builtin__string__eq(builtin__string_to_lower(kv.key), lower_key)) {
+				_result_string _t2;
+				builtin___result_ok(&(string[]) { kv.value }, (_result*)(&_t2), sizeof(string));
+				 
+				return _t2;
+			}
+		}
+	}
+	return (_result_string){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+_result_string net__http__Header_starting_with(net__http__Header h, string key) {
+for (int _t1 = 0; _t1 != 50; ++_t1) {
+		net__http__HeaderKV kv = h.data[_t1];
+		if (builtin__string_starts_with(kv.key, key)) {
+			_result_string _t2;
+			builtin___result_ok(&(string[]) { kv.key }, (_result*)(&_t2), sizeof(string));
+			 
+			return _t2;
+		}
+	}
+	return (_result_string){ .is_error=true, .err=builtin___v_error(_S("none")), .data={E_STRUCT} };
+}
+Array_string net__http__Header_values(net__http__Header h, net__http__CommonHeader key) {
+	return net__http__Header_custom_values(h, net__http__CommonHeader_str(key), ((net__http__HeaderQueryConfig){.exact = 0,}));
+}
+Array_string net__http__Header_custom_values(net__http__Header h, string key, net__http__HeaderQueryConfig flags) {
+	if (h.cur_pos == 0) {
+		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	}
+	Array_string res = builtin____new_array_with_default(0, 2, sizeof(string), 0);
+	if (flags.exact) {
+		for (int i = 0; i < h.cur_pos; i++) {
+			net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+			if (builtin__string__eq(kv.key, key) && (kv.value).len != 0) {
+				builtin__array_push((array*)&res, _MOV((string[]){ builtin__string_clone(kv.value) }));
+			}
+		}
+		return res;
+	} else {
+		string lower_key = builtin__string_to_lower(key);
+		for (int i = 0; i < h.cur_pos; i++) {
+			net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+			if (builtin__string__eq(builtin__string_to_lower(kv.key), lower_key) && (kv.value).len != 0) {
+				builtin__array_push((array*)&res, _MOV((string[]){ builtin__string_clone(kv.value) }));
+			}
+		}
+		return res;
+	}
+	return builtin____new_array(0, 0, sizeof(string));
+}
+Array_string net__http__Header_keys(net__http__Header h) {
+	Array_string res = builtin____new_array_with_default(0, h.cur_pos, sizeof(string), 0);
+	for (int i = 0; i < h.cur_pos; i++) {
+		if ((h.data[builtin__v_fixed_index(i, 50)].value).len == 0) {
+			continue;
+		}
+		builtin__array_push((array*)&res, _MOV((string[]){ builtin__string_clone(h.data[builtin__v_fixed_index(i, 50)].key) }));
+	}
+	return arrays__uniq_T_string(res);
+}
+string net__http__Header_render(net__http__Header h, net__http__HeaderRenderConfig flags) {
+	strings__Builder sb = strings__new_builder((int)(50 * 48));
+	net__http__Header_render_into_sb(h, (voidptr)&sb, flags);
+	string res = strings__Builder_str(&sb);
+	strings__Builder_free(&sb);
+	return res;
+}
+void net__http__Header_render_into_sb(net__http__Header h, strings__Builder* sb, net__http__HeaderRenderConfig flags) {
+	for (int i = 0; i < h.cur_pos; i++) {
+		net__http__HeaderKV kv = h.data[builtin__v_fixed_index(i, 50)];
+		string key = (flags.version == net__http__Version__v2_0 ? (builtin__string_to_lower(kv.key)) : flags.canonicalize ? (net__http__canonicalize(builtin__string_to_lower(kv.key))) : (kv.key));
+		strings__Builder_write_string(sb, key);
+		strings__Builder_write_string(sb, _S(": "));
+		strings__Builder_write_string(sb, kv.value);
+		strings__Builder_write_string(sb, _S("\r\n"));
+	}
+}
+net__http__Header net__http__Header_join(net__http__Header h, net__http__Header other) {
+	net__http__Header combined = ((net__http__Header){.data = {h.data[0], h.data[1], h.data[2], h.data[3], h.data[4], h.data[5], h.data[6], h.data[7], h.data[8], h.data[9], h.data[10], h.data[11], h.data[12], h.data[13], h.data[14], h.data[15], 
+	h.data[16], h.data[17], h.data[18], h.data[19], h.data[20], h.data[21], h.data[22], h.data[23], h.data[24], h.data[25], h.data[26], h.data[27], h.data[28], h.data[29], h.data[30], h.data[31], 
+	h.data[32], h.data[33], h.data[34], h.data[35], h.data[36], h.data[37], h.data[38], h.data[39], h.data[40], h.data[41], h.data[42], h.data[43], h.data[44], h.data[45], h.data[46], h.data[47], h.data[48], h.data[49]},.cur_pos = h.cur_pos,});
+	Array_string _t1 = net__http__Header_keys(other);
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string k = ((string*)_t1.data)[_t2];
+		Array_string _t3 = net__http__Header_custom_values(other, k, ((net__http__HeaderQueryConfig){.exact = true,}));
+		for (int _t4 = 0; _t4 < _t3.len; ++_t4) {
+			string v = ((string*)_t3.data)[_t4];
+			_result_void _t5 = net__http__Header_add_custom(&combined, k, v);
+			if (_t5.is_error) {
+				IError err = _t5.err;
+				builtin___v_panic(builtin__string__plus(_S("unexpected error: "), builtin__IError_str(err)));
+				VUNREACHABLE();
+			;
+			}
+			
+ ;
+		}
+	}
+	return combined;
+}
+VV_LOC string net__http__canonicalize(string name) {
+	if (_IN_MAP(ADDR(string, name), ADDR(map, _const_net__http__common_header_map))) {
+		return net__http__CommonHeader_str((*(net__http__CommonHeader*)builtin__map_get(ADDR(map, _const_net__http__common_header_map), &(string[]){name}, &(net__http__CommonHeader[]){ 0 })));
+	}
+	Array_string _t3 = {0};
+	Array_string _t3_orig = builtin__string_split(name, _S("-"));
+	int _t3_len = _t3_orig.len;
+	_t3 = builtin____new_array(0, _t3_len, sizeof(string));
+
+	for (int _t5 = 0; _t5 < _t3_len; ++_t5) {
+		string it = ((string*) _t3_orig.data)[_t5];
+		string _t4 = builtin__string_capitalize(it);
+		builtin__array_push((array*)&_t3, &_t4);
+	}
+	return Array_string_join( _t3, _S("-"));
+}
+string net__http__HeaderKeyError_msg(net__http__HeaderKeyError err) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Invalid header key: '"), 0xfe10, {.d_s = err.header}}, {_S("'"), 0, { .d_c = 0 }}}));
+}
+int net__http__HeaderKeyError_code(net__http__HeaderKeyError err) {
+	return err.code;
+}
+VV_LOC _result_void net__http__is_valid(string header) {
+	for (int _t1 = 0; _t1 < header.len; ++_t1) {
+		u8 c = header.str[_t1];
+		if (((int)(c)) >= 128 || !net__http__is_token(c)) {
+			return (_result_void){ .is_error=true, .err=I_net__http__HeaderKeyError_to_Interface_IError(((net__http__HeaderKeyError*)builtin__memdup(&(net__http__HeaderKeyError){.Error = ((Error){E_STRUCT}),.code = 1,.header = header,.invalid_char = c,}, sizeof(net__http__HeaderKeyError)))), .data={E_STRUCT} };
+		}
+	}
+	if (header.len == 0) {
+		return (_result_void){ .is_error=true, .err=I_net__http__HeaderKeyError_to_Interface_IError(((net__http__HeaderKeyError*)builtin__memdup(&(net__http__HeaderKeyError){.Error = ((Error){E_STRUCT}),.code = 2,.header = header,.invalid_char = 0,}, sizeof(net__http__HeaderKeyError)))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC bool net__http__is_token(u8 b) {
+	return ((b == (33) || (b >= 35 && b <= 39) || b == (42) || b == (43) || b == (45) || b == (46) || (b >= 48 && b <= 57) || (b >= 65 && b <= 90) || (b >= 94 && b <= 122) || b == (124) || b == (126))? (true) : (false));
+}
+string net__http__Header_str(net__http__Header h) {
+	return net__http__Header_render(h, ((net__http__HeaderRenderConfig){.version = net__http__Version__v1_1,.coerce = 0,.canonicalize = 0,}));
+}
+VV_LOC _result_net__http__Header net__http__parse_headers(string s) {
+	net__http__Header h = net__http__new_header(builtin____new_array(0, 0, sizeof(net__http__HeaderConfig)));
+	string last_key = _S("");
+	string last_value = _S("");
+	Array_string _t1 = builtin__string_split_into_lines(s);
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string line = ((string*)_t1.data)[_t2];
+		if (line.len == 0) {
+			break;
+		}
+		if (builtin__string_at(line, 0) == ' ' || builtin__string_at(line, 0) == '\t') {
+			last_value = builtin__string__plus(last_value, builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" "), 0xfe10, {.d_s = builtin__string_trim(line, _S(" \t"))}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			continue;
+		} else if ((last_key).len != 0) {
+			_result_void _t3 = net__http__Header_add_custom(&h, last_key, last_value);
+			if (_t3.is_error) {
+				_result_net__http__Header _t4 = {0};
+				_t4.is_error = true;
+				_t4.err = _t3.err;
+				return _t4;
+			}
+			
+ ;
+		}
+		_result_multi_return_string_string _t5 = net__http__parse_header(line);
+		if (_t5.is_error) {
+			_result_net__http__Header _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ 		multi_return_string_string mr_22212 = (*(multi_return_string_string*)_t5.data);
+		last_key = mr_22212.arg0;
+		last_value = mr_22212.arg1;
+	}
+	_result_void _t7 = net__http__Header_add_custom(&h, last_key, last_value);
+	if (_t7.is_error) {
+		_result_net__http__Header _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ ;
+	_result_net__http__Header _t9;
+	builtin___result_ok(&(net__http__Header[]) { h }, (_result*)(&_t9), sizeof(net__http__Header));
+	 
+	return _t9;
+}
+VV_LOC _result_multi_return_string_string net__http__parse_header(string s) {
+	if (!builtin__string_contains(s, _S(":"))) {
+		return (_result_multi_return_string_string){ .is_error=true, .err=builtin___v_error(_S("missing colon in header")), .data={E_STRUCT} };
+	}
+	Array_string words = builtin__string_split_nth(s, _S(":"), 2);
+	_result_multi_return_string_string _t2;
+	builtin___result_ok(&(multi_return_string_string[]) { (multi_return_string_string){.arg0=(*(string*)builtin__array_get(words, 0)), .arg1=builtin__string_trim((*(string*)builtin__array_get(words, 1)), _S(" \t"))} }, (_result*)(&_t2), sizeof(multi_return_string_string));
+	return _t2;
+}
+VV_LOC _result_int net__http__parse_header_fast(string s) {
+	_option_int _t1 = builtin__string_index(s, _S(":"));
+	if (_t1.state != 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("missing colon in header")), .data={E_STRUCT} };
+	}
+	
+ 	int pos = (*(int*)_t1.data);
+	_result_int _t3;
+	builtin___result_ok(&(int[]) { pos }, (_result*)(&_t3), sizeof(int));
+	 
+	return _t3;
+}
+net__http__Request net__http__new_request(net__http__Method method, string url_, string data) {
+	string url = (method == net__http__Method__get && !builtin__string_contains(url_, _S("?")) ? (builtin__string__plus(builtin__string__plus(url_, _S("?")), data)) : (url_));
+	return ((net__http__Request){.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.version = net__http__Version__v1_1,.method = method,.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.host = (string){.str=(byteptr)"", .is_lit=1},.data = data,.url = url,.user_agent = _S("v.http"),.verbose = 0,.user_ptr = 0,.proxy = ((void*)0),.read_timeout = 30 * _const_time__second,.write_timeout = 30 * _const_time__second,.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,});
+}
+_result_net__http__Response net__http__get(string url) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__get,.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.data = (string){.str=(byteptr)"", .is_lit=1},.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__post(string url, string data) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__post,.header = net__http__new_header(builtin__new_array_from_c_array(1, 1, sizeof(net__http__HeaderConfig), _MOV((net__http__HeaderConfig[1]){((net__http__HeaderConfig){.key = net__http__CommonHeader__content_type,.value = _const_net__http__content_type_default,})}))),.data = data,.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__post_json(string url, string data) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__post,.header = net__http__new_header(builtin__new_array_from_c_array(1, 1, sizeof(net__http__HeaderConfig), _MOV((net__http__HeaderConfig[1]){((net__http__HeaderConfig){.key = net__http__CommonHeader__content_type,.value = _S("application/json"),})}))),.data = data,.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__post_form(string url, Map_string_string data) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__post,.header = net__http__new_header(builtin__new_array_from_c_array(1, 1, sizeof(net__http__HeaderConfig), _MOV((net__http__HeaderConfig[1]){((net__http__HeaderConfig){.key = net__http__CommonHeader__content_type,.value = _S("application/x-www-form-urlencoded"),})}))),.data = net__http__url_encode_form_data(data),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__post_form_with_cookies(string url, Map_string_string data, Map_string_string cookies) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__post,.header = net__http__new_header(builtin__new_array_from_c_array(1, 1, sizeof(net__http__HeaderConfig), _MOV((net__http__HeaderConfig[1]){((net__http__HeaderConfig){.key = net__http__CommonHeader__content_type,.value = _S("application/x-www-form-urlencoded"),})}))),.data = net__http__url_encode_form_data(data),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = cookies,.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__post_multipart_form(string url, net__http__PostMultipartFormConfig conf) {
+	multi_return_string_string mr_4431 = net__http__multipart_form_body(conf.form, conf.files);
+	string body = mr_4431.arg0;
+	string boundary = mr_4431.arg1;
+	net__http__Header header = conf.header;
+	net__http__Header_set(&header, net__http__CommonHeader__content_type, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("multipart/form-data; boundary=\""), 0xfe10, {.d_s = boundary}}, {_S("\""), 0, { .d_c = 0 }}})));
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__post,.header = header,.data = body,.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__put(string url, string data) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__put,.header = net__http__new_header(builtin__new_array_from_c_array(1, 1, sizeof(net__http__HeaderConfig), _MOV((net__http__HeaderConfig[1]){((net__http__HeaderConfig){.key = net__http__CommonHeader__content_type,.value = _const_net__http__content_type_default,})}))),.data = data,.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__patch(string url, string data) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__patch,.header = net__http__new_header(builtin__new_array_from_c_array(1, 1, sizeof(net__http__HeaderConfig), _MOV((net__http__HeaderConfig[1]){((net__http__HeaderConfig){.key = net__http__CommonHeader__content_type,.value = _const_net__http__content_type_default,})}))),.data = data,.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__head(string url) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__head,.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.data = (string){.str=(byteptr)"", .is_lit=1},.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Response net__http__delete(string url) {
+	return net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__delete,.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.data = (string){.str=(byteptr)"", .is_lit=1},.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+}
+_result_net__http__Request net__http__prepare(net__http__FetchConfig config) {
+	if ((config.url).len == 0) {
+		return (_result_net__http__Request){ .is_error=true, .err=builtin___v_error(_S("http.fetch: empty url")), .data={E_STRUCT} };
+	}
+	_result_string _t2 = net__http__build_url_from_fetch(config);
+	if (_t2.is_error) {
+		return (_result_net__http__Request){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("http.fetch: invalid url "), 0xfe10, {.d_s = config.url}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	string url = (*(string*)_t2.data);
+	net__http__Request req = ((net__http__Request){
+		.cookies = config.cookies,
+		.version = net__http__Version__v1_1,
+		.method = config.method,
+		.header = config.header,
+		.host = (string){.str=(byteptr)"", .is_lit=1},
+		.data = config.data,
+		.url = url,
+		.user_agent = config.user_agent,
+		.verbose = config.verbose,
+		.user_ptr = config.user_ptr,
+		.proxy = config.proxy,
+		.read_timeout = 30 * _const_time__second,
+		.write_timeout = 30 * _const_time__second,
+		.validate = config.validate,
+		.verify = config.verify,
+		.cert = config.cert,
+		.cert_key = config.cert_key,
+		.in_memory_verification = config.in_memory_verification,
+		.allow_redirect = config.allow_redirect,
+		.max_retries = config.max_retries,
+		.on_redirect = (voidptr)config.on_redirect,
+		.on_progress = (voidptr)config.on_progress,
+		.on_progress_body = (voidptr)config.on_progress_body,
+		.on_finish = (voidptr)config.on_finish,
+		.stop_copying_limit = config.stop_copying_limit,
+		.stop_receiving_limit = config.stop_receiving_limit,
+	});
+	_result_net__http__Request _t4;
+	builtin___result_ok(&(net__http__Request[]) { req }, (_result*)(&_t4), sizeof(net__http__Request));
+	 
+	return _t4;
+}
+__NOINLINE _result_net__http__Response net__http__fetch(net__http__FetchConfig config) {
+	_result_net__http__Request _t1 = net__http__prepare(config);
+	if (_t1.is_error) {
+		_result_net__http__Response _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__http__Request req = (*(net__http__Request*)_t1.data);
+	_result_net__http__Response _t4 = net__http__Request_do(&req);
+	if (_t4.is_error) {
+		_result_net__http__Response _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	_result_net__http__Response _t3;
+	builtin___result_ok(&(net__http__Response[]) { (*(net__http__Response*)_t4.data) }, (_result*)(&_t3), sizeof(net__http__Response));
+	 
+	return _t3;
+}
+string net__http__get_text(string url) {
+	_result_net__http__Response _t1 = net__http__fetch(((net__http__FetchConfig){.url = url,.method = net__http__Method__get,.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.data = (string){.str=(byteptr)"", .is_lit=1},.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.user_agent = _S("v.http"),.user_ptr = ((void*)0),.verbose = 0,.proxy = ((void*)0),.validate = 0,.verify = (string){.str=(byteptr)"", .is_lit=1},.cert = (string){.str=(byteptr)"", .is_lit=1},.cert_key = (string){.str=(byteptr)"", .is_lit=1},.in_memory_verification = 0,.allow_redirect = true,.max_retries = 5,.on_redirect = ((void*)0),.on_progress = ((void*)0),.on_progress_body = ((void*)0),.on_finish = ((void*)0),.stop_copying_limit = -1,.stop_receiving_limit = -1,}));
+	if (_t1.is_error) {
+		return _S("");
+	}
+	
+ 	net__http__Response resp = (*(net__http__Response*)_t1.data);
+	return resp.body;
+}
+string net__http__url_encode_form_data(Map_string_string data) {
+	Array_string pieces = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	int _t2 = data.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = data.key_values.len - _t2;
+		_t2 = data.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&data.key_values, _t1)) {continue;}
+		string key_ = *(string*)builtin__DenseArray_key(&data.key_values, _t1);
+		key_ = builtin__string_clone(key_);
+		string value_ = (*(string*)builtin__DenseArray_value(&data.key_values, _t1));
+		string key = net__urllib__query_escape(key_);
+		string value = net__urllib__query_escape(value_);
+		builtin__array_push((array*)&pieces, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = key}}, {_S("="), 0xfe10, {.d_s = value}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	}
+	return Array_string_join(pieces, _S("&"));
+}
+VV_LOC _result_string net__http__build_url_from_fetch(net__http__FetchConfig config) {
+	_result_net__urllib__URL _t1 = net__urllib__parse(config.url);
+	if (_t1.is_error) {
+		_result_string _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__urllib__URL url = (*(net__urllib__URL*)_t1.data);
+	if (config.params.len == 0) {
+		_result_string _t3;
+		builtin___result_ok(&(string[]) { net__urllib__URL_str(url) }, (_result*)(&_t3), sizeof(string));
+		 
+		return _t3;
+	}
+	Array_string pieces = builtin____new_array_with_default(0, config.params.len, sizeof(string), 0);
+	Map_string_string _t4 = config.params;
+	int _t6 = _t4.key_values.len;
+	for (int _t5 = 0; _t5 < _t6; ++_t5 ) {
+		int _t7 = _t4.key_values.len - _t6;
+		_t6 = _t4.key_values.len;
+		if (_t7 < 0) {
+			_t5 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&_t4.key_values, _t5)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&_t4.key_values, _t5);
+		key = builtin__string_clone(key);
+		string val = (*(string*)builtin__DenseArray_value(&_t4.key_values, _t5));
+		builtin__array_push((array*)&pieces, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = key}}, {_S("="), 0xfe10, {.d_s = val}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	}
+	string query = Array_string_join(pieces, _S("&"));
+	if (url.raw_query.len > 1) {
+		query = builtin__string__plus(builtin__string__plus(url.raw_query, _S("&")), query);
+	}
+	url.raw_query = query;
+	_result_string _t9;
+	builtin___result_ok(&(string[]) { net__urllib__URL_str(url) }, (_result*)(&_t9), sizeof(string));
+	 
+	return _t9;
+}
+_result_net__http__HttpProxy_ptr net__http__new_http_proxy(string raw_url) {
+	_result_net__urllib__URL _t1 = net__urllib__parse(raw_url);
+	if (_t1.is_error) {
+		return (_result_net__http__HttpProxy_ptr){ .is_error=true, .err=builtin___v_error(_S("malformed proxy url")), .data={E_STRUCT} };
+	}
+	
+ 	net__urllib__URL url = (*(net__urllib__URL*)_t1.data);
+	string scheme = url.scheme;
+	if (!(_SLIT_EQ(scheme.str, scheme.len, "http") || _SLIT_EQ(scheme.str, scheme.len, "https") || _SLIT_EQ(scheme.str, scheme.len, "socks5"))) {
+		return (_result_net__http__HttpProxy_ptr){ .is_error=true, .err=builtin___v_error(_S("invalid scheme")), .data={E_STRUCT} };
+	}
+	url.path = _S("");
+	url.raw_path = _S("");
+	url.raw_query = _S("");
+	url.fragment = _S("");
+	string username = _S("");
+	string password = _S("");
+	string str_url = net__urllib__URL_str(url);
+	string host = url.host;
+	int port = builtin__string_int(net__urllib__URL_port(&url));
+	if (port == 0) {
+		if (_SLIT_EQ(scheme.str, scheme.len, "https")) {
+			port = 443;
+			host = builtin__string__plus(host, builtin__string__plus(_S(":"), builtin__int_str(port)));
+		} else if (_SLIT_EQ(scheme.str, scheme.len, "http")) {
+			port = 80;
+			host = builtin__string__plus(host, builtin__string__plus(_S(":"), builtin__int_str(port)));
+		}
+	}
+	if (port == 0) {
+		return (_result_net__http__HttpProxy_ptr){ .is_error=true, .err=builtin___v_error(_S("Unknown port")), .data={E_STRUCT} };
+	}
+	_option_net__urllib__Userinfo _t5;
+	if (_t5 = url.user, _t5.state == 0) {
+		net__urllib__Userinfo u = *(net__urllib__Userinfo*)_t5.data;
+		username = u.username;
+		password = u.password;
+	}
+	_result_net__http__HttpProxy_ptr _t6;
+	builtin___result_ok(&(net__http__HttpProxy*[]) { ((net__http__HttpProxy*)builtin__memdup(&(net__http__HttpProxy){.scheme = scheme,
+		.username = username,
+		.password = password,
+		.host = host,
+		.hostname = net__urllib__URL_hostname(&url),
+		.port = port,
+		.url = str_url,
+	}, sizeof(net__http__HttpProxy))) }, (_result*)(&_t6), sizeof(net__http__HttpProxy*));
+	 
+	return _t6;
+}
+VV_LOC string net__http__HttpProxy_build_proxy_headers(net__http__HttpProxy* pr, string host) {
+	Array_string uheaders = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	string address = builtin__string_all_before_last(host, _S(":"));
+	builtin__array_push((array*)&uheaders, _MOV((string[]){ _S("Proxy-Connection: Keep-Alive\r\n") }));
+	if ((pr->username).len != 0) {
+		string authinfo = _S("");
+		authinfo = builtin__string__plus(authinfo, pr->username);
+		if ((pr->password).len != 0) {
+			authinfo = builtin__string__plus(authinfo, builtin__str_intp(2, _MOV((StrIntpData[]){{_S(":"), 0xfe10, {.d_s = pr->password}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		string encoded_authinfo = encoding__base64__encode(builtin__string_bytes(authinfo));
+		builtin__array_push((array*)&uheaders, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Proxy-Authorization: Basic "), 0xfe10, {.d_s = encoded_authinfo}}, {_S("\r\n"), 0, { .d_c = 0 }}})) }));
+	}
+	net__http__Version version = net__http__Version__v1_1;
+	return builtin__string__plus(builtin__string__plus(builtin__str_intp(4, _MOV((StrIntpData[]){{_S("CONNECT "), 0xfe10, {.d_s = host}}, {_S(" "), 0xfe10, {.d_s = net__http__Version_str(version)}}, {_S("\r\nHost: "), 0xfe10, {.d_s = address}}, {_S("\r\n"), 0, { .d_c = 0 }}})), Array_string_join(uheaders, _S(""))), _S("\r\n"));
+}
+VV_LOC _result_net__http__Response net__http__HttpProxy_http_do(net__http__HttpProxy* pr, net__urllib__URL host, net__http__Method _method, string path, net__http__Request* req) {
+	_result_multi_return_string_u16 _t1 = net__split_address(net__urllib__URL_hostname(&host));
+	if (_t1.is_error) {
+		_result_net__http__Response _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_string_u16 mr_1917 = (*(multi_return_string_u16*)_t1.data);
+	string host_name = mr_1917.arg0;
+	u16 port = mr_1917.arg1;
+	string port_part = (port == 80 || port == 0 ? (_S("")) : (builtin__str_intp(2, _MOV((StrIntpData[]){{_S(":"), 0xfe04, {.d_u16 = port}}, {_SLIT0, 0, { .d_c = 0 }}}))));
+	string s = net__http__Request_build_request_headers(req, req->method, host_name, port, builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = host.scheme}}, {_S("://"), 0xfe10, {.d_s = host_name}}, {_SLIT0, 0xfe10, {.d_s = port_part}}, {_SLIT0, 0xfe10, {.d_s = path}}, {_SLIT0, 0, { .d_c = 0 }}})));
+	if (builtin__fast_string_eq(host.scheme, _S("https"))) {
+		_result_net__ssl__SSLConn_ptr _t3 = net__http__HttpProxy_ssl_dial(pr, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = host.host}}, {_S(":443"), 0, { .d_c = 0 }}})));
+		if (_t3.is_error) {
+			_result_net__http__Response _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ 		net__ssl__SSLConn* client = (*(net__ssl__SSLConn**)_t3.data);
+		#if defined(_WIN32)
+		{
+		}
+		#else
+		{
+			_result_net__http__Response _t6 = net__http__Request_do_request(req, net__http__Request_build_request_headers(req, req->method, host_name, port, path), client);
+			if (_t6.is_error) {
+				_result_net__http__Response _t7 = {0};
+				_t7.is_error = true;
+				_t7.err = _t6.err;
+				return _t7;
+			}
+			
+ 			net__http__Response response_text = (*(net__http__Response*)_t6.data);
+			_result_void _t8 = net__openssl__SSLConn_shutdown(&client->SSLConn);
+			if (_t8.is_error) {
+				_result_net__http__Response _t9 = {0};
+				_t9.is_error = true;
+				_t9.err = _t8.err;
+				return _t9;
+			}
+			
+ ;
+			_result_net__http__Response _t10;
+			builtin___result_ok(&(net__http__Response[]) { response_text }, (_result*)(&_t10), sizeof(net__http__Response));
+			 
+			return _t10;
+		}
+		#endif
+	} else if (builtin__fast_string_eq(host.scheme, _S("http"))) {
+		_result_net__TcpConn_ptr _t11 = net__http__HttpProxy_dial(pr, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = host.host}}, {_S(":80"), 0, { .d_c = 0 }}})));
+		if (_t11.is_error) {
+			_result_net__http__Response _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ 		net__TcpConn* client = (*(net__TcpConn**)_t11.data);
+		net__TcpConn_set_read_timeout(client, req->read_timeout);
+		net__TcpConn_set_write_timeout(client, req->write_timeout);
+		_result_int _t13 = net__TcpConn_write_string(client, s);
+		if (_t13.is_error) {
+			_result_net__http__Response _t14 = {0};
+			_t14.is_error = true;
+			_t14.err = _t13.err;
+			return _t14;
+		}
+		
+ ;
+		_result_Array_u8 _t15 = net__http__Request_read_all_from_client_connection(req, client);
+		if (_t15.is_error) {
+			_result_net__http__Response _t16 = {0};
+			_t16.is_error = true;
+			_t16.err = _t15.err;
+			return _t16;
+		}
+		
+ 		Array_u8 bytes = (*(Array_u8*)_t15.data);
+		_result_void _t17 = net__TcpConn_close(client);
+		if (_t17.is_error) {
+			_result_net__http__Response _t18 = {0};
+			_t18.is_error = true;
+			_t18.err = _t17.err;
+			return _t18;
+		}
+		
+ ;
+		string response_text = Array_u8_bytestr(bytes);
+		if (req->on_finish != (voidptr)((void*)0)) {
+			_result_void _t19 = req->on_finish(req, ((u64)(response_text.len)));
+			if (_t19.is_error) {
+				_result_net__http__Response _t20 = {0};
+				_t20.is_error = true;
+				_t20.err = _t19.err;
+				return _t20;
+			}
+			
+ ;
+		}
+		return net__http__parse_response(response_text);
+	}
+	return (_result_net__http__Response){ .is_error=true, .err=builtin___v_error(_S("Invalid Scheme")), .data={E_STRUCT} };
+}
+VV_LOC _result_net__TcpConn_ptr net__http__HttpProxy_dial(net__http__HttpProxy* pr, string host) {
+	if (builtin__fast_string_eq(pr->scheme, _S("http")) || builtin__fast_string_eq(pr->scheme, _S("https"))) {
+		_result_net__TcpConn_ptr _t1 = net__dial_tcp(pr->host);
+		if (_t1.is_error) {
+			_result_net__TcpConn_ptr _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		net__TcpConn* tcp = (*(net__TcpConn**)_t1.data);
+		_result_int _t3 = net__TcpConn_write(tcp, builtin__string_bytes(net__http__HttpProxy_build_proxy_headers(pr, host)));
+		if (_t3.is_error) {
+			_result_net__TcpConn_ptr _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		Array_u8 bf = builtin____new_array_with_default(4096, 0, sizeof(u8), 0);
+		_result_int _t5 = net__TcpConn_read(*tcp, &bf);
+		if (_t5.is_error) {
+			_result_net__TcpConn_ptr _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+		_result_net__TcpConn_ptr _t7;
+		builtin___result_ok(&(net__TcpConn*[]) { tcp }, (_result*)(&_t7), sizeof(net__TcpConn*));
+		 
+		return _t7;
+	} else if (builtin__fast_string_eq(pr->scheme, _S("socks5"))) {
+		_result_net__TcpConn_ptr _t9 = net__socks__socks5_dial(pr->host, host, pr->username, pr->password);
+		if (_t9.is_error) {
+			_result_net__TcpConn_ptr _t10 = {0};
+			_t10.is_error = true;
+			_t10.err = _t9.err;
+			return _t10;
+		}
+		
+ 		_result_net__TcpConn_ptr _t8;
+		builtin___result_ok(&(net__TcpConn*[]) { (*(net__TcpConn**)_t9.data) }, (_result*)(&_t8), sizeof(net__TcpConn*));
+		 
+		return _t8;
+	} else {
+		return (_result_net__TcpConn_ptr){ .is_error=true, .err=builtin___v_error(_S("http_proxy dial: invalid proxy scheme")), .data={E_STRUCT} };
+	}
+	return (_result_net__TcpConn_ptr){0};
+}
+VV_LOC _result_net__ssl__SSLConn_ptr net__http__HttpProxy_ssl_dial(net__http__HttpProxy* pr, string host) {
+	if (builtin__fast_string_eq(pr->scheme, _S("http")) || builtin__fast_string_eq(pr->scheme, _S("https"))) {
+		_result_net__TcpConn_ptr _t1 = net__dial_tcp(pr->host);
+		if (_t1.is_error) {
+			_result_net__ssl__SSLConn_ptr _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		net__TcpConn* tcp = (*(net__TcpConn**)_t1.data);
+		_result_int _t3 = net__TcpConn_write(tcp, builtin__string_bytes(net__http__HttpProxy_build_proxy_headers(pr, host)));
+		if (_t3.is_error) {
+			_result_net__ssl__SSLConn_ptr _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		Array_u8 bf = builtin____new_array_with_default(4096, 0, sizeof(u8), 0);
+		_result_int _t5 = net__TcpConn_read(*tcp, &bf);
+		if (_t5.is_error) {
+			_result_net__ssl__SSLConn_ptr _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+		if (!builtin__string_contains(Array_u8_bytestr(bf), _S("HTTP/1.1 200"))) {
+			return (_result_net__ssl__SSLConn_ptr){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("ssl dial error: "), 0xfe10, {.d_s = Array_u8_bytestr(bf)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		_result_net__ssl__SSLConn_ptr _t8 = net__ssl__new_ssl_conn(((net__ssl__SSLConnectConfig){.SSLConnectConfig = ((net__openssl__SSLConnectConfig){.verify = _S(""),.cert = _S(""),.cert_key = _S(""),.validate = false,.in_memory_verification = false,}),}));
+		if (_t8.is_error) {
+			_result_net__ssl__SSLConn_ptr _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ 		net__ssl__SSLConn* ssl_conn = (*(net__ssl__SSLConn**)_t8.data);
+		_result_void _t10 = net__openssl__SSLConn_connect(&ssl_conn->SSLConn, tcp, builtin__string_all_before_last(host, _S(":")));
+		if (_t10.is_error) {
+			_result_net__ssl__SSLConn_ptr _t11 = {0};
+			_t11.is_error = true;
+			_t11.err = _t10.err;
+			return _t11;
+		}
+		
+ ;
+		_result_net__ssl__SSLConn_ptr _t12;
+		builtin___result_ok(&(net__ssl__SSLConn*[]) { ssl_conn }, (_result*)(&_t12), sizeof(net__ssl__SSLConn*));
+		 
+		return _t12;
+	} else if (builtin__fast_string_eq(pr->scheme, _S("socks5"))) {
+		_result_net__ssl__SSLConn_ptr _t14 = net__socks__socks5_ssl_dial(pr->host, host, pr->username, pr->password);
+		if (_t14.is_error) {
+			_result_net__ssl__SSLConn_ptr _t15 = {0};
+			_t15.is_error = true;
+			_t15.err = _t14.err;
+			return _t15;
+		}
+		
+ 		_result_net__ssl__SSLConn_ptr _t13;
+		builtin___result_ok(&(net__ssl__SSLConn*[]) { (*(net__ssl__SSLConn**)_t14.data) }, (_result*)(&_t13), sizeof(net__ssl__SSLConn*));
+		 
+		return _t13;
+	} else {
+		return (_result_net__ssl__SSLConn_ptr){ .is_error=true, .err=builtin___v_error(_S("http_proxy ssl_dial: invalid proxy scheme")), .data={E_STRUCT} };
+	}
+	return (_result_net__ssl__SSLConn_ptr){0};
+}
+string net__http__Method_str(net__http__Method m) {
+	string _t2 = (string){.str=(byteptr)"", .is_lit=1};
+	switch (m) {
+		case net__http__Method__get: {
+			_t2 = _S("GET");
+			break;
+		}
+		case net__http__Method__head: {
+			_t2 = _S("HEAD");
+			break;
+		}
+		case net__http__Method__post: {
+			_t2 = _S("POST");
+			break;
+		}
+		case net__http__Method__put: {
+			_t2 = _S("PUT");
+			break;
+		}
+		case net__http__Method__acl: {
+			_t2 = _S("ACL");
+			break;
+		}
+		case net__http__Method__baseline_control: {
+			_t2 = _S("BASELINE-CONTROL");
+			break;
+		}
+		case net__http__Method__bind: {
+			_t2 = _S("BIND");
+			break;
+		}
+		case net__http__Method__checkin: {
+			_t2 = _S("CHECKIN");
+			break;
+		}
+		case net__http__Method__checkout: {
+			_t2 = _S("CHECKOUT");
+			break;
+		}
+		case net__http__Method__connect: {
+			_t2 = _S("CONNECT");
+			break;
+		}
+		case net__http__Method__copy: {
+			_t2 = _S("COPY");
+			break;
+		}
+		case net__http__Method__delete: {
+			_t2 = _S("DELETE");
+			break;
+		}
+		case net__http__Method__label: {
+			_t2 = _S("LABEL");
+			break;
+		}
+		case net__http__Method__link: {
+			_t2 = _S("LINK");
+			break;
+		}
+		case net__http__Method__lock: {
+			_t2 = _S("LOCK");
+			break;
+		}
+		case net__http__Method__merge: {
+			_t2 = _S("MERGE");
+			break;
+		}
+		case net__http__Method__mkactivity: {
+			_t2 = _S("MKACTIVITY");
+			break;
+		}
+		case net__http__Method__mkcalendar: {
+			_t2 = _S("MKCALENDAR");
+			break;
+		}
+		case net__http__Method__mkcol: {
+			_t2 = _S("MKCOL");
+			break;
+		}
+		case net__http__Method__mkredirectref: {
+			_t2 = _S("MKREDIRECTREF");
+			break;
+		}
+		case net__http__Method__mkworkspace: {
+			_t2 = _S("MKWORKSPACE");
+			break;
+		}
+		case net__http__Method__move: {
+			_t2 = _S("MOVE");
+			break;
+		}
+		case net__http__Method__options: {
+			_t2 = _S("OPTIONS");
+			break;
+		}
+		case net__http__Method__orderpatch: {
+			_t2 = _S("ORDERPATCH");
+			break;
+		}
+		case net__http__Method__patch: {
+			_t2 = _S("PATCH");
+			break;
+		}
+		case net__http__Method__pri: {
+			_t2 = _S("PRI");
+			break;
+		}
+		case net__http__Method__propfind: {
+			_t2 = _S("PROPFIND");
+			break;
+		}
+		case net__http__Method__proppatch: {
+			_t2 = _S("PROPPATCH");
+			break;
+		}
+		case net__http__Method__rebind: {
+			_t2 = _S("REBIND");
+			break;
+		}
+		case net__http__Method__report: {
+			_t2 = _S("REPORT");
+			break;
+		}
+		case net__http__Method__search: {
+			_t2 = _S("SEARCH");
+			break;
+		}
+		case net__http__Method__trace: {
+			_t2 = _S("TRACE");
+			break;
+		}
+		case net__http__Method__unbind: {
+			_t2 = _S("UNBIND");
+			break;
+		}
+		case net__http__Method__uncheckout: {
+			_t2 = _S("UNCHECKOUT");
+			break;
+		}
+		case net__http__Method__unlink: {
+			_t2 = _S("UNLINK");
+			break;
+		}
+		case net__http__Method__unlock: {
+			_t2 = _S("UNLOCK");
+			break;
+		}
+		case net__http__Method__update: {
+			_t2 = _S("UPDATE");
+			break;
+		}
+		case net__http__Method__updateredirectref: {
+			_t2 = _S("UPDATEREDIRECTREF");
+			break;
+		}
+		case net__http__Method__version_control: {
+			_t2 = _S("VERSION-CONTROL");
+			break;
+		}
+	}
+	return _t2;
+}
+net__http__Method net__http__method_from_str(string m) {
+	return ((_SLIT_EQ(m.str, m.len, "GET"))? (net__http__Method__get) : (_SLIT_EQ(m.str, m.len, "HEAD"))? (net__http__Method__head) : (_SLIT_EQ(m.str, m.len, "POST"))? (net__http__Method__post) : (_SLIT_EQ(m.str, m.len, "PUT"))? (net__http__Method__put) : (_SLIT_EQ(m.str, m.len, "ACL"))? (net__http__Method__acl) : (_SLIT_EQ(m.str, m.len, "BASELINE-CONTROL"))? (net__http__Method__baseline_control) : (_SLIT_EQ(m.str, m.len, "BIND"))? (net__http__Method__bind) : (_SLIT_EQ(m.str, m.len, "CHECKIN"))? (net__http__Method__checkin) : (_SLIT_EQ(m.str, m.len, "CHECKOUT"))? (net__http__Method__checkout) : (_SLIT_EQ(m.str, m.len, "CONNECT"))? (net__http__Method__connect) : (_SLIT_EQ(m.str, m.len, "COPY"))? (net__http__Method__copy) : (_SLIT_EQ(m.str, m.len, "DELETE"))? (net__http__Method__delete) : (_SLIT_EQ(m.str, m.len, "LABEL"))? (net__http__Method__label) : (_SLIT_EQ(m.str, m.len, "LINK"))? (net__http__Method__link) : (_SLIT_EQ(m.str, m.len, "LOCK"))? (net__http__Method__lock) : (_SLIT_EQ(m.str, m.len, "MERGE"))? (net__http__Method__merge) : (_SLIT_EQ(m.str, m.len, "MKACTIVITY"))? (net__http__Method__mkactivity) : (_SLIT_EQ(m.str, m.len, "MKCALENDAR"))? (net__http__Method__mkcalendar) : (_SLIT_EQ(m.str, m.len, "MKCOL"))? (net__http__Method__mkcol) : (_SLIT_EQ(m.str, m.len, "MKREDIRECTREF"))? (net__http__Method__mkredirectref) : (_SLIT_EQ(m.str, m.len, "MKWORKSPACE"))? (net__http__Method__mkworkspace) : (_SLIT_EQ(m.str, m.len, "MOVE"))? (net__http__Method__move) : (_SLIT_EQ(m.str, m.len, "OPTIONS"))? (net__http__Method__options) : (_SLIT_EQ(m.str, m.len, "ORDERPATCH"))? (net__http__Method__orderpatch) : (_SLIT_EQ(m.str, m.len, "PATCH"))? (net__http__Method__patch) : (_SLIT_EQ(m.str, m.len, "PRI"))? (net__http__Method__pri) : (_SLIT_EQ(m.str, m.len, "PROPFIND"))? (net__http__Method__propfind) : (_SLIT_EQ(m.str, m.len, "PROPPATCH"))? (net__http__Method__proppatch) : (_SLIT_EQ(m.str, m.len, "REBIND"))? (net__http__Method__rebind) : (_SLIT_EQ(m.str, m.len, "REPORT"))? (net__http__Method__report) : (_SLIT_EQ(m.str, m.len, "SEARCH"))? (net__http__Method__search) : (_SLIT_EQ(m.str, m.len, "TRACE"))? (net__http__Method__trace) : (_SLIT_EQ(m.str, m.len, "UNBIND"))? (net__http__Method__unbind) : (_SLIT_EQ(m.str, m.len, "UNCHECKOUT"))? (net__http__Method__uncheckout) : (_SLIT_EQ(m.str, m.len, "UNLINK"))? (net__http__Method__unlink) : (_SLIT_EQ(m.str, m.len, "UNLOCK"))? (net__http__Method__unlock) : (_SLIT_EQ(m.str, m.len, "UPDATE"))? (net__http__Method__update) : (_SLIT_EQ(m.str, m.len, "UPDATEREDIRECTREF"))? (net__http__Method__updateredirectref) : (_SLIT_EQ(m.str, m.len, "VERSION-CONTROL"))? (net__http__Method__version_control) : (net__http__Method__get));
+}
+VV_LOC void net__http__Request_free(net__http__Request* req) {
+	net__http__Header_free(&req->header);
+}
+void net__http__Request_add_header(net__http__Request* req, net__http__CommonHeader key, string val) {
+	net__http__Header_add(&req->header, key, val);
+}
+_result_void net__http__Request_add_custom_header(net__http__Request* req, string key, string val) {
+	return net__http__Header_add_custom(&req->header, key, val);
+}
+void net__http__Request_add_cookie(net__http__Request* req, net__http__Cookie c) {
+	builtin__map_set(&req->cookies, &(string[]){c.name}, &(string[]) { c.value });
+}
+_option_net__http__Cookie net__http__Request_cookie(net__http__Request* req, string name) {
+	string* _t2 = (string*)(builtin__map_get_check(ADDR(map, req->cookies), &(string[]){name}));
+	_option_string _t1 = {0};
+	if (_t2) {
+		*((string*)&_t1.data) = *((string*)_t2);
+	} else {
+		_t1.state = 2; _t1.err = builtin___v_error(_S("map key does not exist"));
+	}
+	
+	if (_t1.state == 0) {
+		string value = (*(string*)_t1.data);
+		_option_net__http__Cookie _t3;
+		builtin___option_ok(&(net__http__Cookie[]) { ((net__http__Cookie){.name = name,.value = value,.path = (string){.str=(byteptr)"", .is_lit=1},.domain = (string){.str=(byteptr)"", .is_lit=1},.expires = ((time__Time){.__v_unix = 0,.year = 0,.month = 0,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}),.raw_expires = (string){.str=(byteptr)"", .is_lit=1},.max_age = 0,.secure = 0,.http_only = 0,.same_site = 0,.raw = (string){.str=(byteptr)"", .is_lit=1},.unparsed = builtin____new_array(0, 0, sizeof(string)),}) }, (_option*)(&_t3), sizeof(net__http__Cookie));
+		 
+		return _t3;
+	}
+	return (_option_net__http__Cookie){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+}
+_result_net__http__Response net__http__Request_do(net__http__Request* req) {
+	_result_net__urllib__URL _t1 = net__urllib__parse(req->url);
+	if (_t1.is_error) {
+		return (_result_net__http__Response){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("http.Request.do: invalid url "), 0xfe10, {.d_s = req->url}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	net__urllib__URL url = (*(net__urllib__URL*)_t1.data);
+	net__urllib__URL rurl = url;
+	net__http__Response resp = ((net__http__Response){.body = (string){.str=(byteptr)"", .is_lit=1},.header = ((net__http__Header){.data = {(net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}, (net__http__HeaderKV){.key = (string){.str=(byteptr)"", .is_lit=1},.value = (string){.str=(byteptr)"", .is_lit=1},}},.cur_pos = 0,}),.status_code = 0,.status_msg = (string){.str=(byteptr)"", .is_lit=1},.http_version = (string){.str=(byteptr)"", .is_lit=1},});
+	int nredirects = 0;
+	for (;;) {
+		if (nredirects == 16) {
+			return (_result_net__http__Response){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("http.request.do: maximum number of redirects reached ("), 0xfe07, {.d_i32 = _const_net__http__max_redirects}}, {_S(")"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		_result_net__http__Response _t4 = net__http__Request_method_and_url_to_response(req, req->method, rurl);
+		if (_t4.is_error) {
+			_result_net__http__Response _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		net__http__Response qresp = (*(net__http__Response*)_t4.data);
+		resp = qresp;
+		if (!req->allow_redirect) {
+			break;
+		}
+		if (!(Array_net__http__Status_contains(builtin__new_array_from_c_array(5, 5, sizeof(net__http__Status), _MOV((net__http__Status[5]){net__http__Status__moved_permanently, net__http__Status__found, net__http__Status__see_other, net__http__Status__temporary_redirect, net__http__Status__permanent_redirect})), net__http__Response_status(resp)))) {
+			break;
+		}
+		_result_string _t6 = net__http__Header_get(resp.header, net__http__CommonHeader__location);
+		if (_t6.is_error) {
+			*(string*) _t6.data = _S("");
+		}
+		
+ 		string redirect_url = (*(string*)_t6.data);
+		if (redirect_url.len > 0 && builtin__string_at(redirect_url, 0) == '/') {
+			_result_bool _t7 = net__urllib__URL_set_path(&url, redirect_url);
+			if (_t7.is_error) {
+				return (_result_net__http__Response){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("http.request.do: invalid path in redirect: \""), 0xfe10, {.d_s = redirect_url}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+			
+ ;
+			redirect_url = net__urllib__URL_str(url);
+		}
+		if (req->on_redirect != (voidptr)((void*)0)) {
+			_result_void _t9 = req->on_redirect(req, nredirects, redirect_url);
+			if (_t9.is_error) {
+				_result_net__http__Response _t10 = {0};
+				_t10.is_error = true;
+				_t10.err = _t9.err;
+				return _t10;
+			}
+			
+ ;
+		}
+		_result_net__urllib__URL _t11 = net__urllib__parse(redirect_url);
+		if (_t11.is_error) {
+			return (_result_net__http__Response){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("http.request.do: invalid URL in redirect \""), 0xfe10, {.d_s = redirect_url}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		
+ 		net__urllib__URL qrurl = (*(net__urllib__URL*)_t11.data);
+		rurl = qrurl;
+		nredirects++;
+	}
+	_result_net__http__Response _t13;
+	builtin___result_ok(&(net__http__Response[]) { resp }, (_result*)(&_t13), sizeof(net__http__Response));
+	 
+	return _t13;
+}
+VV_LOC _result_net__http__Response net__http__Request_method_and_url_to_response(net__http__Request* req, net__http__Method method, net__urllib__URL url) {
+	string host_name = net__urllib__URL_hostname(&url);
+	string scheme = url.scheme;
+	string p = builtin__string_trim_left(net__urllib__URL_escaped_path(&url), _S("/"));
+	string path = (net__urllib__URL_query(&url).len > 0 ? (builtin__str_intp(3, _MOV((StrIntpData[]){{_S("/"), 0xfe10, {.d_s = p}}, {_S("?"), 0xfe10, {.d_s = net__urllib__Values_encode(net__urllib__URL_query(&url))}}, {_SLIT0, 0, { .d_c = 0 }}}))) : (builtin__str_intp(2, _MOV((StrIntpData[]){{_S("/"), 0xfe10, {.d_s = p}}, {_SLIT0, 0, { .d_c = 0 }}}))));
+	int nport = builtin__string_int(net__urllib__URL_port(&url));
+	if (nport == 0) {
+		if (_SLIT_EQ(scheme.str, scheme.len, "http")) {
+			nport = 80;
+		}
+		if (_SLIT_EQ(scheme.str, scheme.len, "https")) {
+			nport = 443;
+		}
+	}
+	if (_SLIT_EQ(scheme.str, scheme.len, "https") && req->proxy == ((void*)0)) {
+		for (int i = 0; i < req->max_retries; ++i) {
+			_result_net__http__Response _t1 = net__http__Request_ssl_do(req, nport, method, host_name, path);
+			if (_t1.is_error) {
+				IError err = _t1.err;
+				if (i == (int)(req->max_retries - 1) || net__http__is_no_need_retry_error(IError_name_table[err._typ]._method_code(err._object))) {
+					return (_result_net__http__Response){ .is_error=true, .err=err, .data={E_STRUCT} };
+				}
+				continue;
+			}
+			
+ 			net__http__Response res = (*(net__http__Response*)_t1.data);
+			_result_net__http__Response _t3;
+			builtin___result_ok(&(net__http__Response[]) { res }, (_result*)(&_t3), sizeof(net__http__Response));
+			 
+			return _t3;
+		}
+	} else if (_SLIT_EQ(scheme.str, scheme.len, "http") && req->proxy == ((void*)0)) {
+		for (int i = 0; i < req->max_retries; ++i) {
+			_result_net__http__Response _t4 = net__http__Request_http_do(req, builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = host_name}}, {_S(":"), 0xfe07, {.d_i32 = nport}}, {_SLIT0, 0, { .d_c = 0 }}})), method, path);
+			if (_t4.is_error) {
+				IError err = _t4.err;
+				if (i == (int)(req->max_retries - 1) || net__http__is_no_need_retry_error(IError_name_table[err._typ]._method_code(err._object))) {
+					return (_result_net__http__Response){ .is_error=true, .err=err, .data={E_STRUCT} };
+				}
+				continue;
+			}
+			
+ 			net__http__Response res = (*(net__http__Response*)_t4.data);
+			_result_net__http__Response _t6;
+			builtin___result_ok(&(net__http__Response[]) { res }, (_result*)(&_t6), sizeof(net__http__Response));
+			 
+			return _t6;
+		}
+	} else if (req->proxy != ((void*)0)) {
+		for (int i = 0; i < req->max_retries; ++i) {
+			_result_net__http__Response _t7 = net__http__HttpProxy_http_do(req->proxy, url, method, path, req);
+			if (_t7.is_error) {
+				IError err = _t7.err;
+				if (i == (int)(req->max_retries - 1) || net__http__is_no_need_retry_error(IError_name_table[err._typ]._method_code(err._object))) {
+					return (_result_net__http__Response){ .is_error=true, .err=err, .data={E_STRUCT} };
+				}
+				continue;
+			}
+			
+ 			net__http__Response res = (*(net__http__Response*)_t7.data);
+			_result_net__http__Response _t9;
+			builtin___result_ok(&(net__http__Response[]) { res }, (_result*)(&_t9), sizeof(net__http__Response));
+			 
+			return _t9;
+		}
+	}
+	return (_result_net__http__Response){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("http.request.method_and_url_to_response: unsupported scheme: \""), 0xfe10, {.d_s = scheme}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC string net__http__Request_build_request_headers(net__http__Request* req, net__http__Method method, string host_name, int port, string path) {
+	strings__Builder sb = strings__new_builder(4096);
+	net__http__Version version = (req->version == net__http__Version__unknown ? (net__http__Version__v1_1) : (req->version));
+	strings__Builder_write_string(&sb, net__http__Method_str(method));
+	strings__Builder_write_string(&sb, _S(" "));
+	strings__Builder_write_string(&sb, path);
+	strings__Builder_write_string(&sb, _S(" "));
+	strings__Builder_write_string(&sb, net__http__Version_str(version));
+	strings__Builder_write_string(&sb, _S("\r\n"));
+	if (!net__http__Header_contains(req->header, net__http__CommonHeader__host)) {
+		strings__Builder_write_string(&sb, _S("Host: "));
+		if (port != 80 && port != 443 && port != 0) {
+			{
+				strings__Builder_write_string(&sb, host_name);
+				strings__Builder_write_string(&sb, _S(":"));
+				strings__Builder_write_decimal(&sb, port);
+			}
+		} else {
+			strings__Builder_write_string(&sb, host_name);
+		}
+		strings__Builder_write_string(&sb, _S("\r\n"));
+	}
+	if (!net__http__Header_contains(req->header, net__http__CommonHeader__user_agent)) {
+		string ua = req->user_agent;
+		strings__Builder_write_string(&sb, _S("User-Agent: "));
+		strings__Builder_write_string(&sb, ua);
+		strings__Builder_write_string(&sb, _S("\r\n"));
+	}
+	if (!net__http__Header_contains(req->header, net__http__CommonHeader__content_length)) {
+		strings__Builder_write_string(&sb, _S("Content-Length: "));
+		strings__Builder_write_string(&sb, builtin__int_str(req->data.len));
+		strings__Builder_write_string(&sb, _S("\r\n"));
+	}
+	string chkey = net__http__CommonHeader_str(net__http__CommonHeader__cookie);
+	Array_string _t1 = net__http__Header_keys(req->header);
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string key = ((string*)_t1.data)[_t2];
+		if (builtin__string__eq(key, chkey)) {
+			continue;
+		}
+		string val = Array_string_join(net__http__Header_custom_values(req->header, key, ((net__http__HeaderQueryConfig){.exact = 0,})), _S("; "));
+		strings__Builder_write_string(&sb, key);
+		strings__Builder_write_string(&sb, _S(": "));
+		strings__Builder_write_string(&sb, val);
+		strings__Builder_write_string(&sb, _S("\r\n"));
+	}
+	strings__Builder_write_string(&sb, net__http__Request_build_request_cookies_header(req));
+	strings__Builder_write_string(&sb, _S("Connection: close\r\n"));
+	strings__Builder_write_string(&sb, _S("\r\n"));
+	strings__Builder_write_string(&sb, req->data);
+	return strings__Builder_str(&sb);
+}
+VV_LOC string net__http__Request_build_request_cookies_header(net__http__Request* req) {
+	if (req->cookies.len < 1) {
+		return _S("");
+	}
+	strings__Builder sb_cookie = strings__new_builder(1024);
+	Array_string hvcookies = net__http__Header_values(req->header, net__http__CommonHeader__cookie);
+	int total_cookies = (int)(req->cookies.len + hvcookies.len);
+	strings__Builder_write_string(&sb_cookie, _S("Cookie: "));
+	int idx = 0;
+	Map_string_string _t2 = req->cookies;
+	int _t4 = _t2.key_values.len;
+	for (int _t3 = 0; _t3 < _t4; ++_t3 ) {
+		int _t5 = _t2.key_values.len - _t4;
+		_t4 = _t2.key_values.len;
+		if (_t5 < 0) {
+			_t3 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&_t2.key_values, _t3)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&_t2.key_values, _t3);
+		key = builtin__string_clone(key);
+		string val = (*(string*)builtin__DenseArray_value(&_t2.key_values, _t3));
+		strings__Builder_write_string(&sb_cookie, key);
+		strings__Builder_write_string(&sb_cookie, _S("="));
+		strings__Builder_write_string(&sb_cookie, val);
+		if (idx < (int)(total_cookies - 1)) {
+			strings__Builder_write_string(&sb_cookie, _S("; "));
+		}
+		idx++;
+	}
+	for (int _t6 = 0; _t6 < hvcookies.len; ++_t6) {
+		string c = ((string*)hvcookies.data)[_t6];
+		strings__Builder_write_string(&sb_cookie, c);
+		if (idx < (int)(total_cookies - 1)) {
+			strings__Builder_write_string(&sb_cookie, _S("; "));
+		}
+		idx++;
+	}
+	strings__Builder_write_string(&sb_cookie, _S("\r\n"));
+	return strings__Builder_str(&sb_cookie);
+}
+VV_LOC _result_net__http__Response net__http__Request_http_do(net__http__Request* req, string host, net__http__Method method, string path) {
+	_result_multi_return_string_u16 _t1 = net__split_address(host);
+	if (_t1.is_error) {
+		_result_net__http__Response _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_string_u16 mr_8597 = (*(multi_return_string_u16*)_t1.data);
+	string host_name = mr_8597.arg0;
+	u16 port = mr_8597.arg1;
+	string s = net__http__Request_build_request_headers(req, method, host_name, port, path);
+	_result_net__TcpConn_ptr _t3 = net__dial_tcp(host);
+	if (_t3.is_error) {
+		_result_net__http__Response _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	net__TcpConn* client = (*(net__TcpConn**)_t3.data);
+	net__TcpConn_set_read_timeout(client, req->read_timeout);
+	net__TcpConn_set_write_timeout(client, req->write_timeout);
+	_result_int _t5 = net__TcpConn_write(client, builtin__string_bytes(s));
+	if (_t5.is_error) {
+		_result_net__http__Response _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	_result_Array_u8 _t7 = net__http__Request_read_all_from_client_connection(req, client);
+	if (_t7.is_error) {
+		_result_net__http__Response _t8 = {0};
+		_t8.is_error = true;
+		_t8.err = _t7.err;
+		return _t8;
+	}
+	
+ 	Array_u8 bytes = (*(Array_u8*)_t7.data);
+	_result_void _t9 = net__TcpConn_close(client);
+	if (_t9.is_error) {
+		_result_net__http__Response _t10 = {0};
+		_t10.is_error = true;
+		_t10.err = _t9.err;
+		return _t10;
+	}
+	
+ ;
+	string response_text = Array_u8_bytestr(bytes);
+	if (req->on_finish != (voidptr)((void*)0)) {
+		_result_void _t11 = req->on_finish(req, ((u64)(response_text.len)));
+		if (_t11.is_error) {
+			_result_net__http__Response _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ ;
+	}
+	return net__http__parse_response(response_text);
+}
+VV_LOC _result_void net__http__Request_receive_all_data_from_cb_in_builder(net__http__Request* req, strings__Builder* content, voidptr con, _result_int (*receive_chunk_cb)(voidptr con, u8* buf, int bufsize)) {
+	Array_fixed_u8_65536 buff = {0};
+	u8* bp = &buff[0];
+	int readcounter = 0;
+	u64 body_pos = ((u64)(0));
+	int headers_end = -1;
+	u64 expected_size = ((u64)(0));
+	bool has_content_length = false;
+	strings__Builder header_buf = strings__new_builder(1024);
+	u64 old_len = ((u64)(0));
+	u64 new_len = ((u64)(0));
+	int status_code = -1;
+	for (;;) {
+		readcounter++;
+		_result_int _t1 = receive_chunk_cb(con, bp, _const_net__http__bufsize);
+		if (_t1.is_error) {
+			break;
+		}
+		
+ 		int len = (*(int*)_t1.data);
+		if (len <= 0) {
+			break;
+		}
+		new_len = (u64)(old_len + ((u64)(len)));
+		string schunk = builtin__u8_vstring_literal_with_len(bp, len);
+		Array_u8 bchunk = builtin__u8_vbytes(bp, len);
+		if (readcounter == 1) {
+			string http_line = builtin__string_all_before(schunk, _S("\r\n"));
+			status_code = builtin__string_int(builtin__string_all_before(builtin__string_all_after(http_line, _S(" ")), _S(" ")));
+		}
+		if (req->on_progress != (voidptr)((void*)0)) {
+			_result_void _t2 = req->on_progress(req, bchunk, ((u64)(new_len)));
+			if (_t2.is_error) {
+				_result_void _t3 = {0};
+				_t3.is_error = true;
+				_t3.err = _t2.err;
+				return _t3;
+			}
+			
+ ;
+		}
+		if (headers_end < 0) {
+			strings__Builder_write_ptr(&header_buf, bp, len);
+			if (header_buf.len >= _const_net__http__headers_body_boundary.len) {
+				string header_str = Array_u8_bytestr(header_buf);
+				int hidx = builtin__string_index_(header_str, _const_net__http__headers_body_boundary);
+				if (hidx >= 0) {
+					headers_end = (int)(hidx + _const_net__http__headers_body_boundary.len);
+					body_pos = ((u64)(headers_end));
+					Array_string _t4 = builtin__string_split(builtin__string_substr(header_str, 0, hidx), _S("\r\n"));
+					for (int _t5 = 0; _t5 < _t4.len; ++_t5) {
+						string line = ((string*)_t4.data)[_t5];
+						if (line.len == 0) {
+							continue;
+						}
+						string low = builtin__string_to_lower(line);
+						if (builtin__string_starts_with(low, _S("content-length:"))) {
+							string raw_cl = builtin__string_trim_space(builtin__string_all_after(line, _S(":")));
+							bool valid_cl = raw_cl.len > 0;
+							for (int _t6 = 0; _t6 < raw_cl.len; ++_t6) {
+								u8 ch = raw_cl.str[_t6];
+								if (!builtin__u8_is_digit(ch)) {
+									valid_cl = false;
+									break;
+								}
+							}
+							if (valid_cl) {
+								expected_size = builtin__string_u64(raw_cl);
+								has_content_length = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		if (headers_end >= 0 && old_len < ((u64)(headers_end))) {
+			int header_bytes_in_chunk = ((int)((u64)(((u64)(headers_end)) - old_len)));
+			if (header_bytes_in_chunk >= len) {
+				bchunk = builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+			} else {
+				bchunk = builtin__u8_vbytes((((u8*)(bchunk.data)) + header_bytes_in_chunk), (int)(len - header_bytes_in_chunk));
+			}
+		}
+		u64 body_so_far = ((u64)(0));
+		if (headers_end >= 0 && new_len > body_pos) {
+			body_so_far = (u64)(((u64)(new_len)) - body_pos);
+		}
+		if (req->on_progress_body != (voidptr)((void*)0)) {
+			_result_void _t7 = req->on_progress_body(req, bchunk, body_so_far, expected_size, status_code);
+			if (_t7.is_error) {
+				_result_void _t8 = {0};
+				_t8.is_error = true;
+				_t8.err = _t7.err;
+				return _t8;
+			}
+			
+ ;
+		}
+		if (!(req->stop_copying_limit > 0 && _us64_gt(new_len,req->stop_copying_limit))) {
+			strings__Builder_write_ptr(content, bp, len);
+		}
+		if (has_content_length) {
+			if (expected_size > 0 && body_so_far >= expected_size) {
+				break;
+			}
+			if (expected_size == 0 && (req->method == net__http__Method__head || (status_code == 101 || status_code == 102 || status_code == 103 || status_code == 204 || status_code == 304))) {
+				break;
+			}
+		}
+		if (req->stop_receiving_limit > 0 && _us64_gt(new_len,req->stop_receiving_limit)) {
+			break;
+		}
+		old_len = new_len;
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_int net__http__read_from_tcp_connection_cb(voidptr con, u8* buf, int bufsize) {
+	net__TcpConn* r = ((net__TcpConn*)(con));
+	return net__TcpConn_read_ptr(*r, buf, bufsize);
+}
+VV_LOC _result_Array_u8 net__http__Request_read_all_from_client_connection(net__http__Request* req, net__TcpConn* r) {
+	strings__Builder content = strings__new_builder(4096);
+	_result_void _t1 = net__http__Request_receive_all_data_from_cb_in_builder(req, (voidptr)&content, ((voidptr)(r)), (voidptr)net__http__read_from_tcp_connection_cb);
+	if (_t1.is_error) {
+		_result_Array_u8 _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_Array_u8 _t3;
+	builtin___result_ok(&(Array_u8[]) { content }, (_result*)(&_t3), sizeof(Array_u8));
+	 
+	return _t3;
+}
+string net__http__Request_referer(net__http__Request* req) {
+	_result_string _t2 = net__http__Header_get(req->header, net__http__CommonHeader__referer);
+	if (_t2.is_error) {
+		*(string*) _t2.data = _S("");
+	}
+	
+ 	return (*(string*)_t2.data);
+}
+_result_net__http__Request net__http__parse_request(io__BufferedReader* reader) {
+	_result_net__http__Request _t1 = net__http__parse_request_head(reader);
+	if (_t1.is_error) {
+		_result_net__http__Request _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__http__Request request = (*(net__http__Request*)_t1.data);
+	Array_u8 body = builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+	_result_string _t3;
+	if (_t3 = net__http__Header_get(request.header, net__http__CommonHeader__content_length), !_t3.is_error) {
+		string length = *(string*)_t3.data;
+		int n = builtin__string_int(length);
+		if (n > 0) {
+			body = builtin____new_array_with_default(n, 0, sizeof(u8), 0);
+			int count = 0;
+			for (;;) {
+				if (!(count < body.len)) break;
+				_result_int _t4 = io__BufferedReader_read(reader, &(array[]){builtin__array_slice(body, count, 2147483647)}[0]);
+				if (_t4.is_error) {
+					break;
+				}
+				
+ 				count += (*(int*)_t4.data);
+			}
+		}
+	}
+	request.data = Array_u8_bytestr(body);
+	_result_net__http__Request _t5;
+	builtin___result_ok(&(net__http__Request[]) { request }, (_result*)(&_t5), sizeof(net__http__Request));
+	 
+	return _t5;
+}
+_result_net__http__Request net__http__parse_request_head(io__BufferedReader* reader) {
+	_result_string _t1 = io__BufferedReader_read_line(reader, ((io__BufferedReadLineConfig){.delim = '\n',}));
+	if (_t1.is_error) {
+		_result_net__http__Request _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	string line = (*(string*)_t1.data);
+	_result_multi_return_net__http__Method_net__urllib__URL_net__http__Version _t3 = net__http__parse_request_line(line);
+	if (_t3.is_error) {
+		_result_net__http__Request _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	multi_return_net__http__Method_net__urllib__URL_net__http__Version mr_13921 = (*(multi_return_net__http__Method_net__urllib__URL_net__http__Version*)_t3.data);
+	net__http__Method method = mr_13921.arg0;
+	net__urllib__URL target = mr_13921.arg1;
+	net__http__Version version = mr_13921.arg2;
+	net__http__Header header = net__http__new_header(builtin____new_array(0, 0, sizeof(net__http__HeaderConfig)));
+	_result_string _t5 = io__BufferedReader_read_line(reader, ((io__BufferedReadLineConfig){.delim = '\n',}));
+	if (_t5.is_error) {
+		_result_net__http__Request _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ 	line = (*(string*)_t5.data);
+	for (;;) {
+		if (!((line).len != 0)) break;
+		_result_int _t7 = net__http__parse_header_fast(line);
+		if (_t7.is_error) {
+			_result_net__http__Request _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ 		int pos = (*(int*)_t7.data);
+		string key = builtin__string_substr_unsafe(line, 0, pos);
+		for (;;) {
+			if (!(pos < (int)(line.len - 1) && builtin__u8_is_space(builtin__string_at(line, (int)(pos + 1))))) break;
+			pos++;
+		}
+		if ((int)(pos + 1) < line.len) {
+			string value = builtin__string_substr_unsafe(line, (int)(pos + 1), line.len);
+			{string _ = key;}
+			;
+			{string _ = value;}
+			;
+			_result_void _t9 = net__http__Header_add_custom(&header, key, value);
+			if (_t9.is_error) {
+				_result_net__http__Request _t10 = {0};
+				_t10.is_error = true;
+				_t10.err = _t9.err;
+				return _t10;
+			}
+			
+ ;
+		}
+		_result_string _t11 = io__BufferedReader_read_line(reader, ((io__BufferedReadLineConfig){.delim = '\n',}));
+		if (_t11.is_error) {
+			_result_net__http__Request _t12 = {0};
+			_t12.is_error = true;
+			_t12.err = _t11.err;
+			return _t12;
+		}
+		
+ 		line = (*(string*)_t11.data);
+	}
+	Map_string_string request_cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	Array_net__http__Cookie_ptr _t13 = net__http__read_cookies(header, _S(""));
+	for (int _t14 = 0; _t14 < _t13.len; ++_t14) {
+		net__http__Cookie* cookie = ((net__http__Cookie**)_t13.data)[_t14];
+		builtin__map_set(&request_cookies, &(string[]){cookie->name}, &(string[]) { cookie->value });
+	}
+		_result_string _t16 = net__http__Header_get(header, net__http__CommonHeader__host);
+		if (_t16.is_error) {
+			*(string*) _t16.data = _S("");
+		}
+		
+ 	_result_net__http__Request _t15;
+	builtin___result_ok(&(net__http__Request[]) { ((net__http__Request){
+		.cookies = request_cookies,
+		.version = version,
+		.method = method,
+		.header = header,
+		.host = (*(string*)_t16.data),
+		.data = (string){.str=(byteptr)"", .is_lit=1},
+		.url = net__urllib__URL_str(target),
+		.user_agent = _S("v.http"),
+		.verbose = 0,
+		.user_ptr = 0,
+		.proxy = ((void*)0),
+		.read_timeout = 30 * _const_time__second,
+		.write_timeout = 30 * _const_time__second,
+		.validate = 0,
+		.verify = (string){.str=(byteptr)"", .is_lit=1},
+		.cert = (string){.str=(byteptr)"", .is_lit=1},
+		.cert_key = (string){.str=(byteptr)"", .is_lit=1},
+		.in_memory_verification = 0,
+		.allow_redirect = true,
+		.max_retries = 5,
+		.on_redirect = ((void*)0),
+		.on_progress = ((void*)0),
+		.on_progress_body = ((void*)0),
+		.on_finish = ((void*)0),
+		.stop_copying_limit = -1,
+		.stop_receiving_limit = -1,
+	}) }, (_result*)(&_t15), sizeof(net__http__Request));
+	 
+	return _t15;
+}
+_result_net__http__Request net__http__parse_request_head_str(string s) {
+	int pos0 = builtin__string_index_(s, _S("\n"));
+	if (pos0 == -1) {
+		return (_result_net__http__Request){ .is_error=true, .err=builtin___v_error(_S("malformed request: no request line found")), .data={E_STRUCT} };
+	}
+	string line0 = builtin__string_trim_space(builtin__string_substr(s, 0, pos0));
+	_result_multi_return_net__http__Method_net__urllib__URL_net__http__Version _t2 = net__http__parse_request_line(line0);
+	if (_t2.is_error) {
+		_result_net__http__Request _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	multi_return_net__http__Method_net__urllib__URL_net__http__Version mr_15115 = (*(multi_return_net__http__Method_net__urllib__URL_net__http__Version*)_t2.data);
+	net__http__Method method = mr_15115.arg0;
+	net__urllib__URL target = mr_15115.arg1;
+	net__http__Version version = mr_15115.arg2;
+	net__http__Header header = net__http__new_header(builtin____new_array(0, 0, sizeof(net__http__HeaderConfig)));
+	Array_string lines = builtin__string_split(builtin__string_substr(s, (int)(pos0 + 1), 2147483647), _S("\n"));
+	for (int _t4 = 0; _t4 < lines.len; ++_t4) {
+		string line_raw = ((string*)lines.data)[_t4];
+		string line = builtin__string_trim_right(line_raw, _S("\r"));
+		if ((line).len == 0) {
+			break;
+		}
+		if (!builtin__string_contains(line, _S(":"))) {
+			continue;
+		}
+		_result_int _t5 = net__http__parse_header_fast(line);
+		if (_t5.is_error) {
+			_result_net__http__Request _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ 		int pos = (*(int*)_t5.data);
+		string key = builtin__string_substr_unsafe(line, 0, pos);
+		int val_start = (int)(pos + 1);
+		for (;;) {
+			if (!(val_start < line.len && builtin__u8_is_space(builtin__string_at(line, val_start)))) break;
+			val_start++;
+		}
+		if (val_start < line.len) {
+			string value = builtin__string_substr_unsafe(line, val_start, line.len);
+			_result_void _t7 = net__http__Header_add_custom(&header, key, value);
+			if (_t7.is_error) {
+				_result_net__http__Request _t8 = {0};
+				_t8.is_error = true;
+				_t8.err = _t7.err;
+				return _t8;
+			}
+			
+ ;
+		}
+	}
+	Map_string_string request_cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	Array_net__http__Cookie_ptr _t9 = net__http__read_cookies(header, _S(""));
+	for (int _t10 = 0; _t10 < _t9.len; ++_t10) {
+		net__http__Cookie* cookie = ((net__http__Cookie**)_t9.data)[_t10];
+		builtin__map_set(&request_cookies, &(string[]){cookie->name}, &(string[]) { cookie->value });
+	}
+		_result_string _t12 = net__http__Header_get(header, net__http__CommonHeader__host);
+		if (_t12.is_error) {
+			*(string*) _t12.data = _S("");
+		}
+		
+ 	_result_net__http__Request _t11;
+	builtin___result_ok(&(net__http__Request[]) { ((net__http__Request){
+		.cookies = request_cookies,
+		.version = version,
+		.method = method,
+		.header = header,
+		.host = (*(string*)_t12.data),
+		.data = (string){.str=(byteptr)"", .is_lit=1},
+		.url = net__urllib__URL_str(target),
+		.user_agent = _S("v.http"),
+		.verbose = 0,
+		.user_ptr = 0,
+		.proxy = ((void*)0),
+		.read_timeout = 30 * _const_time__second,
+		.write_timeout = 30 * _const_time__second,
+		.validate = 0,
+		.verify = (string){.str=(byteptr)"", .is_lit=1},
+		.cert = (string){.str=(byteptr)"", .is_lit=1},
+		.cert_key = (string){.str=(byteptr)"", .is_lit=1},
+		.in_memory_verification = 0,
+		.allow_redirect = true,
+		.max_retries = 5,
+		.on_redirect = ((void*)0),
+		.on_progress = ((void*)0),
+		.on_progress_body = ((void*)0),
+		.on_finish = ((void*)0),
+		.stop_copying_limit = -1,
+		.stop_receiving_limit = -1,
+	}) }, (_result*)(&_t11), sizeof(net__http__Request));
+	 
+	return _t11;
+}
+_result_net__http__Request net__http__parse_request_str(string s) {
+	_result_net__http__Request _t1 = net__http__parse_request_head_str(s);
+	if (_t1.is_error) {
+		_result_net__http__Request _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	net__http__Request request = (*(net__http__Request*)_t1.data);
+	int body_pos = builtin__string_index_(s, _const_net__http__headers_body_boundary);
+	if (body_pos != -1) {
+		request.data = builtin__string_substr(s, (int)(body_pos + _const_net__http__headers_body_boundary.len), 2147483647);
+	}
+	_result_net__http__Request _t3;
+	builtin___result_ok(&(net__http__Request[]) { request }, (_result*)(&_t3), sizeof(net__http__Request));
+	 
+	return _t3;
+}
+VV_LOC _result_multi_return_net__http__Method_net__urllib__URL_net__http__Version net__http__parse_request_line(string line) {
+	Array_string words = builtin__string_split(line, _S(" "));
+	if (words.len != 3) {
+		return (_result_multi_return_net__http__Method_net__urllib__URL_net__http__Version){ .is_error=true, .err=builtin___v_error(_S("bad request header")), .data={E_STRUCT} };
+	}
+	string method_str = (*(string*)builtin__array_get(words, 0));
+	string target_str = (*(string*)builtin__array_get(words, 1));
+	string version_str = (*(string*)builtin__array_get(words, 2));
+	net__http__Method method = net__http__method_from_str(method_str);
+	_result_net__urllib__URL _t2 = net__urllib__parse(target_str);
+	if (_t2.is_error) {
+		_result_multi_return_net__http__Method_net__urllib__URL_net__http__Version _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	net__urllib__URL target = (*(net__urllib__URL*)_t2.data);
+	net__http__Version version = net__http__version_from_str(version_str);
+	if (version == net__http__Version__unknown) {
+		return (_result_multi_return_net__http__Method_net__urllib__URL_net__http__Version){ .is_error=true, .err=builtin___v_error(_S("unsupported version")), .data={E_STRUCT} };
+	}
+	_result_multi_return_net__http__Method_net__urllib__URL_net__http__Version _t5;
+	builtin___result_ok(&(multi_return_net__http__Method_net__urllib__URL_net__http__Version[]) { (multi_return_net__http__Method_net__urllib__URL_net__http__Version){.arg0=method, .arg1=target, .arg2=version} }, (_result*)(&_t5), sizeof(multi_return_net__http__Method_net__urllib__URL_net__http__Version));
+	return _t5;
+}
+Map_string_string net__http__parse_form(string body) {
+	Map_string_string form = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	if (builtin__string_match_glob(body, _S("{*}"))) {
+		builtin__map_set(&form, &(string[]){_S("json")}, &(string[]) { body });
+	} else {
+		Array_string words = builtin__string_split(body, _S("&"));
+		for (int _t1 = 0; _t1 < words.len; ++_t1) {
+			string word = ((string*)words.data)[_t1];
+			Array_string kv = builtin__string_split_nth(word, _S("="), 2);
+			if (kv.len != 2) {
+				continue;
+			}
+			_result_string _t2 = net__urllib__query_unescape((*(string*)builtin__array_get(kv, 0)));
+			if (_t2.is_error) {
+				continue;
+			}
+			
+ 			string key = (*(string*)_t2.data);
+			_result_string _t3 = net__urllib__query_unescape((*(string*)builtin__array_get(kv, 1)));
+			if (_t3.is_error) {
+				continue;
+			}
+			
+ 			string val = (*(string*)_t3.data);
+			builtin__map_set(&form, &(string[]){key}, &(string[]) { val });
+		}
+	}
+	return form;
+}
+string net__http__UnexpectedExtraAttributeError_msg(net__http__UnexpectedExtraAttributeError err) {
+	return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Encountered unexpected extra attributes: "), 0xfe10, {.d_s = Array_string_str(err.attributes)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+string net__http__MultiplePathAttributesError_msg(net__http__MultiplePathAttributesError err) {
+	return _S("Expected at most one path attribute");
+}
+VV_LOC multi_return_string_string net__http__multipart_form_body(Map_string_string form, Map_string_Array_net__http__FileData files) {
+	string rboundary = rand__ulid();
+	strings__Builder sb = strings__new_builder(1024);
+	int _t2 = form.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = form.key_values.len - _t2;
+		_t2 = form.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&form.key_values, _t1)) {continue;}
+		string name = *(string*)builtin__DenseArray_key(&form.key_values, _t1);
+		name = builtin__string_clone(name);
+		string value = (*(string*)builtin__DenseArray_value(&form.key_values, _t1));
+		strings__Builder_write_string(&sb, _S("\r\n--"));
+		strings__Builder_write_string(&sb, rboundary);
+		strings__Builder_write_string(&sb, _S("\r\nContent-Disposition: form-data; name=\""));
+		strings__Builder_write_string(&sb, name);
+		strings__Builder_write_string(&sb, _S("\"\r\n\r\n"));
+		strings__Builder_write_string(&sb, value);
+	}
+	int _t5 = files.key_values.len;
+	for (int _t4 = 0; _t4 < _t5; ++_t4 ) {
+		int _t6 = files.key_values.len - _t5;
+		_t5 = files.key_values.len;
+		if (_t6 < 0) {
+			_t4 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&files.key_values, _t4)) {continue;}
+		string name = *(string*)builtin__DenseArray_key(&files.key_values, _t4);
+		name = builtin__string_clone(name);
+		Array_net__http__FileData fs = (*(Array_net__http__FileData*)builtin__DenseArray_value(&files.key_values, _t4));
+		for (int _t7 = 0; _t7 < fs.len; ++_t7) {
+			net__http__FileData f = ((net__http__FileData*)fs.data)[_t7];
+			strings__Builder_write_string(&sb, _S("\r\n--"));
+			strings__Builder_write_string(&sb, rboundary);
+			strings__Builder_write_string(&sb, _S("\r\nContent-Disposition: form-data; name=\""));
+			strings__Builder_write_string(&sb, name);
+			strings__Builder_write_string(&sb, _S("\"; filename=\""));
+			strings__Builder_write_string(&sb, f.filename);
+			strings__Builder_write_string(&sb, _S("\"\r\nContent-Type: "));
+			strings__Builder_write_string(&sb, f.content_type);
+			strings__Builder_write_string(&sb, _S("\r\n\r\n"));
+			strings__Builder_write_string(&sb, f.data);
+		}
+	}
+	strings__Builder_write_string(&sb, _S("\r\n--"));
+	strings__Builder_write_string(&sb, rboundary);
+	strings__Builder_write_string(&sb, _S("--"));
+	return (multi_return_string_string){.arg0=strings__Builder_str(&sb), .arg1=rboundary};
+}
+multi_return_Map_string_string_Map_string_Array_net__http__FileData net__http__parse_multipart_form(string body, string boundary) {
+	Map_string_string form = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	Map_string_Array_net__http__FileData files = builtin__new_map(sizeof(string), sizeof(Array_net__http__FileData), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	Array_string sections = builtin__string_split(body, boundary);
+	Array_string fields = builtin__array_slice_ni(sections, 1, (int)(sections.len - 1));
+	Array_net__http__LineSegmentIndexes line_segments = builtin____new_array_with_default(0, 100, sizeof(net__http__LineSegmentIndexes), 0);
+	for (int _t1 = 0; _t1 < fields.len; ++_t1) {
+		string field = ((string*)fields.data)[_t1];
+		builtin__array_clear(&line_segments);
+		int line_idx = 0;
+		int line_start = 0;
+		for (int cidx = 0; cidx < field.len; ++cidx) {
+			u8 c = field.str[cidx];
+			if (line_idx >= 6) {
+				break;
+			}
+			if (c == '\n') {
+				builtin__array_push((array*)&line_segments, _MOV((net__http__LineSegmentIndexes[]){ ((net__http__LineSegmentIndexes){.start = line_start,.end = cidx,}) }));
+				line_start = (int)(cidx + 1);
+				line_idx++;
+			}
+		}
+		builtin__array_push((array*)&line_segments, _MOV((net__http__LineSegmentIndexes[]){ ((net__http__LineSegmentIndexes){.start = line_start,.end = field.len,}) }));
+		if (line_segments.len < 2) {
+			continue;
+		}
+		string line1 = builtin__string_substr_ni(field, (*(net__http__LineSegmentIndexes*)builtin__array_get(line_segments, 1)).start, (*(net__http__LineSegmentIndexes*)builtin__array_get(line_segments, 1)).end);
+		string line2 = (line_segments.len == 2 ? (_S("")) : (builtin__string_substr_ni(field, (*(net__http__LineSegmentIndexes*)builtin__array_get(line_segments, 2)).start, (*(net__http__LineSegmentIndexes*)builtin__array_get(line_segments, 2)).end)));
+		Map_string_string disposition = net__http__parse_disposition(builtin__string_trim_space(line1));
+		string* _t5 = (string*)(builtin__map_get_check(ADDR(map, disposition), &(string[]){_S("name")}));
+		_option_string _t4 = {0};
+		if (_t5) {
+			*((string*)&_t4.data) = *((string*)_t5);
+		} else {
+			_t4.state = 2; _t4.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t4.state != 0) {
+			continue;
+		}
+		
+		string name = (*(string*)_t4.data);
+		string* _t7 = (string*)(builtin__map_get_check(ADDR(map, disposition), &(string[]){_S("filename")}));
+		_option_string _t6 = {0};
+		if (_t7) {
+			*((string*)&_t6.data) = *((string*)_t7);
+		} else {
+			_t6.state = 2; _t6.err = builtin___v_error(_S("map key does not exist"));
+		}
+		
+		if (_t6.state == 0) {
+			string filename = (*(string*)_t6.data);
+			if (line_segments.len < 5) {
+				continue;
+			}
+			if (!builtin__string_starts_with(builtin__string_to_lower(line2), _S("content-type:"))) {
+				continue;
+			}
+			string content_type = builtin__string_trim_space((*(string*)builtin__array_get(builtin__string_split_nth(line2, _S(":"), 2), 1)));
+			string data = builtin__string_substr(field, (*(net__http__LineSegmentIndexes*)builtin__array_get(line_segments, 4)).start, (int)(field.len - 4));
+			builtin__array_push((array*)&(*(Array_net__http__FileData*)builtin__map_get_and_set((map*)&files, &(string[]){name}, &(Array_net__http__FileData[]){ builtin____new_array(0, 0, sizeof(net__http__FileData)) })), _MOV((net__http__FileData[]){ ((net__http__FileData){.filename = filename,.content_type = content_type,.data = data,}) }));
+			continue;
+		}
+		if (line_segments.len < 4) {
+			continue;
+		}
+		builtin__map_set(&form, &(string[]){name}, &(string[]) { builtin__string_substr(field, (*(net__http__LineSegmentIndexes*)builtin__array_get(line_segments, 3)).start, (int)(field.len - 4)) });
+	}
+	return (multi_return_Map_string_string_Map_string_Array_net__http__FileData){.arg0=form, .arg1=files};
+}
+VV_LOC Map_string_string net__http__parse_disposition(string line) {
+	Map_string_string data = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	Array_string _t1 = builtin__string_split(line, _S(";"));
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string word = ((string*)_t1.data)[_t2];
+		Array_string kv = builtin__string_split_nth(word, _S("="), 2);
+		if (kv.len != 2) {
+			continue;
+		}
+		string key = builtin__string_trim_left(builtin__string_to_lower((*(string*)builtin__array_get(kv, 0))), _S(" \t"));
+		string value = (*(string*)builtin__array_get(kv, 1));
+		if (builtin__string_starts_with(value, _S("\"")) && builtin__string_ends_with(value, _S("\""))) {
+			builtin__map_set(&data, &(string[]){key}, &(string[]) { builtin__string_substr(value, 1, (int)(value.len - 1)) });
+		} else {
+			builtin__map_set(&data, &(string[]){key}, &(string[]) { value });
+		}
+	}
+	return data;
+}
+VV_LOC bool net__http__is_no_need_retry_error(int err_code) {
+	return (err_code == IError_name_table[_const_net__err_port_out_of_range._typ]._method_code(_const_net__err_port_out_of_range._object) || err_code == IError_name_table[_const_net__err_no_udp_remote._typ]._method_code(_const_net__err_no_udp_remote._object) || err_code == IError_name_table[_const_net__err_connect_timed_out._typ]._method_code(_const_net__err_connect_timed_out._object) || err_code == _const_net__err_timed_out_code);
+}
+VV_LOC void net__http__Response_free(net__http__Response* resp) {
+	net__http__Header_free(&resp->header);
+}
+Array_u8 net__http__Response_bytes(net__http__Response resp) {
+	return builtin__string_bytes(net__http__Response_bytestr(resp));
+}
+string net__http__Response_bytestr(net__http__Response resp) {
+	return builtin__string__plus(builtin__string__plus(builtin__str_intp(4, _MOV((StrIntpData[]){{_S("HTTP/"), 0xfe10, {.d_s = resp.http_version}}, {_S(" "), 0xfe07, {.d_i32 = resp.status_code}}, {_S(" "), 0xfe10, {.d_s = resp.status_msg}}, {_S("\r\n"), 0, { .d_c = 0 }}})), builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = net__http__Header_render(resp.header, ((net__http__HeaderRenderConfig){.version = net__http__Response_version(resp),.coerce = 0,.canonicalize = 0,}))}}, {_S("\r\n"), 0, { .d_c = 0 }}}))), resp.body);
+}
+_result_net__http__Response net__http__parse_response(string resp) {
+	_result_multi_return_string_int_string _t1 = net__http__parse_status_line(builtin__string_all_before(resp, _S("\r\n")));
+	if (_t1.is_error) {
+		_result_net__http__Response _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	multi_return_string_int_string mr_1065 = (*(multi_return_string_int_string*)_t1.data);
+	string version = mr_1065.arg0;
+	int status_code = mr_1065.arg1;
+	string status_msg = mr_1065.arg2;
+	_result_multi_return_int_int _t3 = net__http__find_headers_range(resp);
+	if (_t3.is_error) {
+		_result_net__http__Response _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	multi_return_int_int mr_1180 = (*(multi_return_int_int*)_t3.data);
+	int start_idx = mr_1180.arg0;
+	int end_idx = mr_1180.arg1;
+	_result_net__http__Header _t5 = net__http__parse_headers(builtin__string_substr(resp, start_idx, end_idx));
+	if (_t5.is_error) {
+		_result_net__http__Response _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ 	net__http__Header header = (*(net__http__Header*)_t5.data);
+	string body = builtin__string_substr(resp, end_idx, resp.len);
+	_result_string _t7 = net__http__Header_get(header, net__http__CommonHeader__transfer_encoding);
+	if (_t7.is_error) {
+		*(string*) _t7.data = _S("");
+	}
+	
+ 	if (builtin__string__eq((*(string*)_t7.data), _S("chunked"))) {
+		_result_string _t8 = net__http__chunked__decode(body);
+		if (_t8.is_error) {
+			_result_net__http__Response _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ 		body = (*(string*)_t8.data);
+	}
+	_result_net__http__Response _t10;
+	builtin___result_ok(&(net__http__Response[]) { ((net__http__Response){.body = body,.header = header,.status_code = status_code,.status_msg = status_msg,.http_version = version,}) }, (_result*)(&_t10), sizeof(net__http__Response));
+	 
+	return _t10;
+}
+VV_LOC _result_multi_return_string_int_string net__http__parse_status_line(string line) {
+	if (line.len < 5 || !builtin__string__eq(builtin__string_to_lower(builtin__string_substr(line, 0, 5)), _S("http/"))) {
+		return (_result_multi_return_string_int_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("response does not start with HTTP/, line: `"), 0xfe10, {.d_s = line}}, {_S("`"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	Array_string data = builtin__string_split_nth(line, _S(" "), 3);
+	if (data.len != 3) {
+		return (_result_multi_return_string_int_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("expected at least 3 tokens, but found: "), 0xfe07, {.d_i32 = data.len}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	string version = builtin__string_substr((*(string*)builtin__array_get(data, 0)), 5, (*(string*)builtin__array_get(data, 0)).len);
+	Array_string digits = builtin__string_split_nth(version, _S("."), 3);
+	if (digits.len != 2) {
+		return (_result_multi_return_string_int_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("HTTP version malformed, found: `"), 0xfe10, {.d_s = Array_string_str(digits)}}, {_S("`"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	for (int _t4 = 0; _t4 < digits.len; ++_t4) {
+		string digit = ((string*)digits.data)[_t4];
+		_result_int _t5 = strconv__atoi(digit);
+		if (_t5.is_error) {
+			return (_result_multi_return_string_int_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("HTTP version must contain only integers, found: `"), 0xfe10, {.d_s = digit}}, {_S("`"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		
+ ;
+	}
+	_result_int _t8 = strconv__atoi((*(string*)builtin__array_get(data, 1)));
+	if (_t8.is_error) {
+		_result_multi_return_string_int_string _t9 = {0};
+		_t9.is_error = true;
+		_t9.err = _t8.err;
+		return _t9;
+	}
+	
+ 	_result_multi_return_string_int_string _t7;
+	builtin___result_ok(&(multi_return_string_int_string[]) { (multi_return_string_int_string){.arg0=version, .arg1=(*(int*)_t8.data), .arg2=(*(string*)builtin__array_get(data, 2))} }, (_result*)(&_t7), sizeof(multi_return_string_int_string));
+	return _t7;
+}
+Array_net__http__Cookie net__http__Response_cookies(net__http__Response r) {
+	Array_net__http__Cookie cookies = builtin____new_array_with_default(0, 0, sizeof(net__http__Cookie), 0);
+	Array_string _t1 = net__http__Header_values(r.header, net__http__CommonHeader__set_cookie);
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string cookie = ((string*)_t1.data)[_t2];
+		_result_net__http__Cookie _t4 = net__http__parse_cookie(cookie);
+		if (_t4.is_error) {
+			continue;
+		}
+		
+ 		builtin__array_push((array*)&cookies, _MOV((net__http__Cookie[]){ (*(net__http__Cookie*)_t4.data) }));
+	}
+	return cookies;
+}
+net__http__Status net__http__Response_status(net__http__Response r) {
+	return net__http__status_from_int(r.status_code);
+}
+void net__http__Response_set_status(net__http__Response* r, net__http__Status s) {
+	r->status_code = net__http__Status_int(s);
+	r->status_msg = net__http__Status_str(s);
+}
+net__http__Version net__http__Response_version(net__http__Response r) {
+	return ((_SLIT_EQ(r.http_version.str, r.http_version.len, "1.0"))? (net__http__Version__v1_0) : (_SLIT_EQ(r.http_version.str, r.http_version.len, "1.1"))? (net__http__Version__v1_1) : (_SLIT_EQ(r.http_version.str, r.http_version.len, "2.0"))? (net__http__Version__v2_0) : (net__http__Version__unknown));
+}
+void net__http__Response_set_version(net__http__Response* r, net__http__Version v) {
+	if (v == net__http__Version__unknown) {
+		r->http_version = _S("");
+		return;
+	}
+	multi_return_int_int mr_3302 = net__http__Version_protos(v);
+	int maj = mr_3302.arg0;
+	int min = mr_3302.arg1;
+	r->http_version = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = maj}}, {_S("."), 0xfe07, {.d_i32 = min}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+net__http__Response net__http__new_response(net__http__ResponseConfig conf) {
+	net__http__Response resp = ((net__http__Response){.body = conf.body,.header = conf.header,.status_code = 0,.status_msg = (string){.str=(byteptr)"", .is_lit=1},.http_version = (string){.str=(byteptr)"", .is_lit=1},});
+	if ((resp.body).len != 0 && !net__http__Header_contains(resp.header, net__http__CommonHeader__content_length)) {
+		net__http__Header_add(&resp.header, net__http__CommonHeader__content_length, builtin__int_str(resp.body.len));
+	}
+	net__http__Response_set_status(&resp, conf.status);
+	net__http__Response_set_version(&resp, conf.version);
+	return resp;
+}
+VV_LOC _result_multi_return_int_int net__http__find_headers_range(string data) {
+	_option_int _t1 = builtin__string_index(data, _S("\n"));
+	if (_t1.state != 0) {
+		return (_result_multi_return_int_int){ .is_error=true, .err=builtin___v_error(_S("no start index found")), .data={E_STRUCT} };
+	}
+	
+ 	int start_idx = (int)((*(int*)_t1.data) + 1);
+	int count = 0;
+	for (int i = start_idx; i < data.len; i++) {
+		if (builtin__string_at(data, i) == '\n') {
+			count++;
+		} else if (builtin__string_at(data, i) != '\r') {
+			count = 0;
+		}
+		if (count == 2) {
+			_result_multi_return_int_int _t3;
+			builtin___result_ok(&(multi_return_int_int[]) { (multi_return_int_int){.arg0=start_idx, .arg1=(int)(i + 1)} }, (_result*)(&_t3), sizeof(multi_return_int_int));
+			return _t3;
+		}
+	}
+	return (_result_multi_return_int_int){ .is_error=true, .err=builtin___v_error(_S("no end index found")), .data={E_STRUCT} };
+}
+void net__http__Server_listen_and_serve(net__http__Server* s) {
+	if ((s->handler)._typ == _net__http__Handler_net__http__DebugHandler_index) {
+		builtin__eprintln(_S("Server handler not set, using debug handler"));
+	}
+	_result_net__Addr _t1 = net__TcpListener_addr(&s->listener);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Failed getting listener address, err: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		return;
+	}
+	
+ 	net__Addr l = (*(net__Addr*)_t1.data);
+	if (net__Addr_family(l) == net__AddrFamily__unspec) {
+		string listening_address = ((s->addr).len == 0 || builtin__fast_string_eq(s->addr, _S(":0")) ? (_S("localhost:0")) : (s->addr));
+		net__AddrFamily listen_family = net__AddrFamily__ip;
+		_result_net__TcpListener_ptr _t2 = net__listen_tcp(listen_family, listening_address, ((net__ListenOptions){.dualstack = true,.backlog = 128,}));
+		if (_t2.is_error) {
+			IError err = _t2.err;
+			builtin__eprintln(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("Listening on "), 0xfe10, {.d_s = s->addr}}, {_S(" failed, err: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			return;
+		}
+		
+ 		s->listener = *(*(net__TcpListener**)_t2.data);
+		_result_net__Addr _t3 = net__TcpListener_addr(&s->listener);
+		if (_t3.is_error) {
+			IError err = _t3.err;
+			builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Failed getting listener address 2, err: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+			return;
+		}
+		
+ 		l = (*(net__Addr*)_t3.data);
+	}
+	s->addr = net__Addr_str(l);
+	net__TcpListener_set_accept_timeout(&s->listener, s->accept_timeout);
+	chan_net__TcpConn_ptr ch = sync__new_channel_st(s->pool_channel_slots, sizeof(net__TcpConn*)>0 ? sizeof(net__TcpConn*) : 1);
+	Array___v_thread ws = builtin____new_array_with_default(0, s->worker_num, sizeof(__v_thread), 0);
+	for (int wid = 0; wid < s->worker_num; ++wid) {
+		builtin__array_push((array*)&ws, _MOV((__v_thread[]){ net__http__new_handler_worker(wid, ch, s->handler, s->max_keep_alive_requests) }));
+	}
+	if (s->show_startup_message) {
+		builtin__println(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Listening on http://"), 0xfe10, {.d_s = s->addr}}, {_S("/"), 0, { .d_c = 0 }}})));
+		builtin__flush_stdout();
+	}
+	time__sleep(20 * _const_time__millisecond);
+	s->state = net__http__ServerStatus__running;
+	if (s->on_running != (voidptr)((void*)0)) {
+		s->on_running(s);
+	}
+	for (;;) {
+		if (!(s->state == net__http__ServerStatus__running)) break;
+		_result_net__TcpConn_ptr _t5 = net__TcpListener_accept(&s->listener);
+		if (_t5.is_error) {
+			IError err = _t5.err;
+			if (IError_name_table[err._typ]._method_code(err._object) == 9) {
+				continue;
+			}
+			builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("accept() failed, reason: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_S("; skipping"), 0, { .d_c = 0 }}})));
+			continue;
+		}
+		
+ 		net__TcpConn* conn = (*(net__TcpConn**)_t5.data);
+		net__TcpConn_set_read_timeout(conn, s->read_timeout);
+		net__TcpConn_set_write_timeout(conn, s->write_timeout);
+		__chan_net__TcpConn_ptr_pushval(ch, conn);
+	}
+	if (s->state == net__http__ServerStatus__stopped) {
+		net__http__Server_close(s);
+	}
+}
+inline void net__http__Server_stop(net__http__Server* s) {
+	s->state = net__http__ServerStatus__stopped;
+	if (s->on_stopped != (voidptr)((void*)0)) {
+		s->on_stopped(s);
+	}
+}
+inline void net__http__Server_close(net__http__Server* s) {
+	s->state = net__http__ServerStatus__closed;
+	_result_void _t1 = net__TcpListener_close(&s->listener);
+	if (_t1.is_error) {
+		return;
+	}
+	
+ ;
+	if (s->on_closed != (voidptr)((void*)0)) {
+		s->on_closed(s);
+	}
+}
+inline net__http__ServerStatus net__http__Server_status(net__http__Server* s) {
+	return s->state;
+}
+_result_int net__http__Server_wait_till_running(net__http__Server* s, net__http__WaitTillRunningParams params) {
+	int i = 0;
+	for (;;) {
+		if (!(net__http__Server_status(s) != net__http__ServerStatus__running && i < params.max_retries)) break;
+		time__sleep(params.retry_period_ms * _const_time__millisecond);
+		i++;
+	}
+	if (i >= params.max_retries) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("maximum retries reached")), .data={E_STRUCT} };
+	}
+	time__sleep(params.retry_period_ms);
+	_result_int _t2;
+	builtin___result_ok(&(int[]) { i }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+VV_LOC __v_thread net__http__new_handler_worker(int wid, chan_net__TcpConn_ptr ch, net__http__Handler handler, int max_keep_alive_requests) {
+	net__http__HandlerWorker* w = ((net__http__HandlerWorker*)builtin__memdup(&(net__http__HandlerWorker){.id = wid,.ch = ch,.max_keep_alive_requests = max_keep_alive_requests,.handler = handler,}, sizeof(net__http__HandlerWorker)));
+	// start go
+	thread_arg_net__http__HandlerWorker_process_requests *arg__t2 = (thread_arg_net__http__HandlerWorker_process_requests *) builtin___v_malloc(sizeof(thread_arg_net__http__HandlerWorker_process_requests));
+	arg__t2->fn = net__http__HandlerWorker_process_requests;
+	arg__t2->arg0 = w;
+	pthread_t thread__t2;
+	pthread_attr_t thread__t2_attributes;
+	pthread_attr_init(&thread__t2_attributes);
+	pthread_attr_setstacksize(&thread__t2_attributes, 8388608); // fn: process_requests
+	int _t2_thr_res = pthread_create(&thread__t2, &thread__t2_attributes, (void*)net__http__HandlerWorker_process_requests_thread_wrapper, arg__t2);
+	if (_t2_thr_res) builtin__panic_error_number(builtin__tos3("`go net__http__HandlerWorker_process_requests()`: "), _t2_thr_res);
+	// end go
+	return /*spawn (thread) */
+thread__t2;
+}
+VV_LOC void net__http__HandlerWorker_process_requests(net__http__HandlerWorker* w) {
+	for (;;) {
+		_option_net__TcpConn_ptr _t1 = __Option_chan_net__TcpConn_ptr_popval(w->ch);
+		if (_t1.state != 0) {
+			break;
+		}
+		;
+		net__TcpConn* conn = *(net__TcpConn**)_t1.data;
+		net__http__HandlerWorker_handle_conn(w, conn);
+	}
+}
+VV_LOC void net__http__HandlerWorker_handle_conn(net__http__HandlerWorker* w, net__TcpConn* conn) {
+	io__BufferedReader* reader = io__new_buffered_reader(((io__BufferedReaderConfig){.reader = I_net__TcpConn_to_Interface_io__Reader(conn),.cap = (int_literal)(128 * 1024),.retries = 2,}));
+	int request_count = 0;
+	for (;;) {
+		_result_net__http__Request _t1 = net__http__parse_request(reader);
+		if (_t1.is_error) {
+			IError err = _t1.err;
+				{ // defer begin
+					io__BufferedReader_free(reader);
+				} // defer end
+				{ // defer begin
+					_result_void _t2 = net__TcpConn_close(conn);
+					if (_t2.is_error) {
+						IError err = _t2.err;
+						builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("close() failed: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+					;
+					}
+					
+ ;
+				} // defer end
+			return;
+		}
+		
+ 		net__http__Request req = (*(net__http__Request*)_t1.data);
+		request_count++;
+		_result_string _t3 = net__TcpConn_peer_ip(conn);
+		if (_t3.is_error) {
+			*(string*) _t3.data = _S("0.0.0.0");
+		}
+		
+ 		string remote_ip = (*(string*)_t3.data);
+		_result_void _t4 = net__http__Header_add_custom(&req.header, _S("Remote-Addr"), remote_ip);
+		(void)_t4;
+ ;
+		net__http__Response resp = net__http__Handler_name_table[w->handler._typ]._method_handle(w->handler._object, req);
+		if (net__http__Response_version(resp) == net__http__Version__unknown) {
+			net__http__Response_set_version(&resp, req.version);
+		}
+		if (!net__http__Header_contains(resp.header, net__http__CommonHeader__content_length)) {
+			net__http__Header_set(&resp.header, net__http__CommonHeader__content_length, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = resp.body.len}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		bool max_reached = w->max_keep_alive_requests > 0 && request_count >= w->max_keep_alive_requests;
+		_result_string _t5 = net__http__Header_get(req.header, net__http__CommonHeader__connection);
+		if (_t5.is_error) {
+			*(string*) _t5.data = _S("");
+		}
+		
+ 		string req_conn = builtin__string_to_lower(((*(string*)_t5.data)));
+		_result_string _t6 = net__http__Header_get(resp.header, net__http__CommonHeader__connection);
+		if (_t6.is_error) {
+			*(string*) _t6.data = _S("");
+		}
+		
+ 		string resp_conn = builtin__string_to_lower(((*(string*)_t6.data)));
+		bool keep_alive = (max_reached ? (false) : _SLIT_EQ(resp_conn.str, resp_conn.len, "close") ? (false) : _SLIT_EQ(resp_conn.str, resp_conn.len, "keep-alive") ? (true) : _SLIT_EQ(req_conn.str, req_conn.len, "close") ? (false) : _SLIT_EQ(req_conn.str, req_conn.len, "keep-alive") ? (true) : (req.version == net__http__Version__v1_1));
+		if (max_reached || !net__http__Header_contains(resp.header, net__http__CommonHeader__connection)) {
+			if (keep_alive) {
+				net__http__Header_set(&resp.header, net__http__CommonHeader__connection, _S("keep-alive"));
+			} else {
+				net__http__Header_set(&resp.header, net__http__CommonHeader__connection, _S("close"));
+			}
+		}
+		_result_int _t7 = net__TcpConn_write(conn, net__http__Response_bytes(resp));
+		if (_t7.is_error) {
+			IError err = _t7.err;
+			builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("error sending response: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+				{ // defer begin
+					io__BufferedReader_free(reader);
+				} // defer end
+				{ // defer begin
+					_result_void _t8 = net__TcpConn_close(conn);
+					if (_t8.is_error) {
+						IError err = _t8.err;
+						builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("close() failed: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+					;
+					}
+					
+ ;
+				} // defer end
+			return;
+		}
+		
+ ;
+		if (!keep_alive) {
+				{ // defer begin
+					io__BufferedReader_free(reader);
+				} // defer end
+				{ // defer begin
+					_result_void _t9 = net__TcpConn_close(conn);
+					if (_t9.is_error) {
+						IError err = _t9.err;
+						builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("close() failed: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+					;
+					}
+					
+ ;
+				} // defer end
+			return;
+		}
+	}
+	{ // defer begin
+		io__BufferedReader_free(reader);
+	} // defer end
+	{ // defer begin
+		_result_void _t10 = net__TcpConn_close(conn);
+		if (_t10.is_error) {
+			IError err = _t10.err;
+			builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("close() failed: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		;
+		}
+		
+ ;
+	} // defer end
+}
+VV_LOC net__http__Response net__http__DebugHandler_handle(net__http__DebugHandler d, net__http__Request req) {
+	#if defined(_VDEBUG)
+	{
+	}
+	#else
+	{
+		builtin__eprintln(builtin__str_intp(4, _MOV((StrIntpData[]){{_S("["), 0xfe10, {.d_s = time__Time_str(time__now())}}, {_S("] "), 0xfe10, {.d_s = net__http__Method_str(req.method)}}, {_S(" "), 0xfe10, {.d_s = req.url}}, {_S(" - 200"), 0, { .d_c = 0 }}})));
+	}
+	#endif
+	net__http__Response r = ((net__http__Response){.body = req.data,.header = req.header,.status_code = 0,.status_msg = (string){.str=(byteptr)"", .is_lit=1},.http_version = (string){.str=(byteptr)"", .is_lit=1},});
+	net__http__Response_set_status(&r, net__http__Status__ok);
+	net__http__Response_set_version(&r, req.version);
+	return r;
+}
+net__http__Status net__http__status_from_int(int code) {
+	return ((code == (100))? (net__http__Status__cont) : (code == (101))? (net__http__Status__switching_protocols) : (code == (102))? (net__http__Status__processing) : (code == (103))? (net__http__Status__checkpoint_draft) : ((code >= 104 && code <= 199))? (net__http__Status__unassigned) : (code == (200))? (net__http__Status__ok) : (code == (201))? (net__http__Status__created) : (code == (202))? (net__http__Status__accepted) : (code == (203))? (net__http__Status__non_authoritative_information) : (code == (204))? (net__http__Status__no_content) : (code == (205))? (net__http__Status__reset_content) : (code == (206))? (net__http__Status__partial_content) : (code == (207))? (net__http__Status__multi_status) : (code == (208))? (net__http__Status__already_reported) : ((code >= 209 && code <= 225))? (net__http__Status__unassigned) : (code == (226))? (net__http__Status__im_used) : ((code >= 227 && code <= 299))? (net__http__Status__unassigned) : (code == (300))? (net__http__Status__multiple_choices) : (code == (301))? (net__http__Status__moved_permanently) : (code == (302))? (net__http__Status__found) : (code == (303))? (net__http__Status__see_other) : (code == (304))? (net__http__Status__not_modified) : (code == (305))? (net__http__Status__use_proxy) : (code == (306))? (net__http__Status__switch_proxy) : (code == (307))? (net__http__Status__temporary_redirect) : (code == (308))? (net__http__Status__permanent_redirect) : ((code >= 309 && code <= 399))? (net__http__Status__unassigned) : (code == (400))? (net__http__Status__bad_request) : (code == (401))? (net__http__Status__unauthorized) : (code == (402))? (net__http__Status__payment_required) : (code == (403))? (net__http__Status__forbidden) : (code == (404))? (net__http__Status__not_found) : (code == (405))? (net__http__Status__method_not_allowed) : (code == (406))? (net__http__Status__not_acceptable) : (code == (407))? (net__http__Status__proxy_authentication_required) : (code == (408))? (net__http__Status__request_timeout) : (code == (409))? (net__http__Status__conflict) : (code == (410))? (net__http__Status__gone) : (code == (411))? (net__http__Status__length_required) : (code == (412))? (net__http__Status__precondition_failed) : (code == (413))? (net__http__Status__request_entity_too_large) : (code == (414))? (net__http__Status__request_uri_too_long) : (code == (415))? (net__http__Status__unsupported_media_type) : (code == (416))? (net__http__Status__requested_range_not_satisfiable) : (code == (417))? (net__http__Status__expectation_failed) : (code == (418))? (net__http__Status__im_a_teapot) : ((code >= 419 && code <= 420))? (net__http__Status__unassigned) : (code == (421))? (net__http__Status__misdirected_request) : (code == (422))? (net__http__Status__unprocessable_entity) : (code == (423))? (net__http__Status__locked) : (code == (424))? (net__http__Status__failed_dependency) : (code == (425))? (net__http__Status__unordered_collection) : (code == (426))? (net__http__Status__upgrade_required) : (code == (428))? (net__http__Status__precondition_required) : (code == (429))? (net__http__Status__too_many_requests) : (code == (431))? (net__http__Status__request_header_fields_too_large) : ((code >= 432 && code <= 450))? (net__http__Status__unassigned) : (code == (451))? (net__http__Status__unavailable_for_legal_reasons) : ((code >= 452 && code <= 499))? (net__http__Status__unassigned) : (code == (500))? (net__http__Status__internal_server_error) : (code == (501))? (net__http__Status__not_implemented) : (code == (502))? (net__http__Status__bad_gateway) : (code == (503))? (net__http__Status__service_unavailable) : (code == (504))? (net__http__Status__gateway_timeout) : (code == (505))? (net__http__Status__http_version_not_supported) : (code == (506))? (net__http__Status__variant_also_negotiates) : (code == (507))? (net__http__Status__insufficient_storage) : (code == (508))? (net__http__Status__loop_detected) : (code == (509))? (net__http__Status__bandwidth_limit_exceeded) : (code == (510))? (net__http__Status__not_extended) : (code == (511))? (net__http__Status__network_authentication_required) : ((code >= 512 && code <= 599))? (net__http__Status__unassigned) : (net__http__Status__unknown));
+}
+string net__http__Status_str(net__http__Status code) {
+	string _t2 = (string){.str=(byteptr)"", .is_lit=1};
+	switch (code) {
+		case net__http__Status__cont: {
+			_t2 = _S("Continue");
+			break;
+		}
+		case net__http__Status__switching_protocols: {
+			_t2 = _S("Switching Protocols");
+			break;
+		}
+		case net__http__Status__processing: {
+			_t2 = _S("Processing");
+			break;
+		}
+		case net__http__Status__checkpoint_draft: {
+			_t2 = _S("Checkpoint Draft");
+			break;
+		}
+		case net__http__Status__ok: {
+			_t2 = _S("OK");
+			break;
+		}
+		case net__http__Status__created: {
+			_t2 = _S("Created");
+			break;
+		}
+		case net__http__Status__accepted: {
+			_t2 = _S("Accepted");
+			break;
+		}
+		case net__http__Status__non_authoritative_information: {
+			_t2 = _S("Non Authoritative Information");
+			break;
+		}
+		case net__http__Status__no_content: {
+			_t2 = _S("No Content");
+			break;
+		}
+		case net__http__Status__reset_content: {
+			_t2 = _S("Reset Content");
+			break;
+		}
+		case net__http__Status__partial_content: {
+			_t2 = _S("Partial Content");
+			break;
+		}
+		case net__http__Status__multi_status: {
+			_t2 = _S("Multi Status");
+			break;
+		}
+		case net__http__Status__already_reported: {
+			_t2 = _S("Already Reported");
+			break;
+		}
+		case net__http__Status__im_used: {
+			_t2 = _S("IM Used");
+			break;
+		}
+		case net__http__Status__multiple_choices: {
+			_t2 = _S("Multiple Choices");
+			break;
+		}
+		case net__http__Status__moved_permanently: {
+			_t2 = _S("Moved Permanently");
+			break;
+		}
+		case net__http__Status__found: {
+			_t2 = _S("Found");
+			break;
+		}
+		case net__http__Status__see_other: {
+			_t2 = _S("See Other");
+			break;
+		}
+		case net__http__Status__not_modified: {
+			_t2 = _S("Not Modified");
+			break;
+		}
+		case net__http__Status__use_proxy: {
+			_t2 = _S("Use Proxy");
+			break;
+		}
+		case net__http__Status__switch_proxy: {
+			_t2 = _S("Switch Proxy");
+			break;
+		}
+		case net__http__Status__temporary_redirect: {
+			_t2 = _S("Temporary Redirect");
+			break;
+		}
+		case net__http__Status__permanent_redirect: {
+			_t2 = _S("Permanent Redirect");
+			break;
+		}
+		case net__http__Status__bad_request: {
+			_t2 = _S("Bad Request");
+			break;
+		}
+		case net__http__Status__unauthorized: {
+			_t2 = _S("Unauthorized");
+			break;
+		}
+		case net__http__Status__payment_required: {
+			_t2 = _S("Payment Required");
+			break;
+		}
+		case net__http__Status__forbidden: {
+			_t2 = _S("Forbidden");
+			break;
+		}
+		case net__http__Status__not_found: {
+			_t2 = _S("Not Found");
+			break;
+		}
+		case net__http__Status__method_not_allowed: {
+			_t2 = _S("Method Not Allowed");
+			break;
+		}
+		case net__http__Status__not_acceptable: {
+			_t2 = _S("Not Acceptable");
+			break;
+		}
+		case net__http__Status__proxy_authentication_required: {
+			_t2 = _S("Proxy Authentication Required");
+			break;
+		}
+		case net__http__Status__request_timeout: {
+			_t2 = _S("Request Timeout");
+			break;
+		}
+		case net__http__Status__conflict: {
+			_t2 = _S("Conflict");
+			break;
+		}
+		case net__http__Status__gone: {
+			_t2 = _S("Gone");
+			break;
+		}
+		case net__http__Status__length_required: {
+			_t2 = _S("Length Required");
+			break;
+		}
+		case net__http__Status__precondition_failed: {
+			_t2 = _S("Precondition Failed");
+			break;
+		}
+		case net__http__Status__request_entity_too_large: {
+			_t2 = _S("Request Entity Too Large");
+			break;
+		}
+		case net__http__Status__request_uri_too_long: {
+			_t2 = _S("Request URI Too Long");
+			break;
+		}
+		case net__http__Status__unsupported_media_type: {
+			_t2 = _S("Unsupported Media Type");
+			break;
+		}
+		case net__http__Status__requested_range_not_satisfiable: {
+			_t2 = _S("Requested Range Not Satisfiable");
+			break;
+		}
+		case net__http__Status__expectation_failed: {
+			_t2 = _S("Expectation Failed");
+			break;
+		}
+		case net__http__Status__im_a_teapot: {
+			_t2 = _S("Im a teapot");
+			break;
+		}
+		case net__http__Status__misdirected_request: {
+			_t2 = _S("Misdirected Request");
+			break;
+		}
+		case net__http__Status__unprocessable_entity: {
+			_t2 = _S("Unprocessable Entity");
+			break;
+		}
+		case net__http__Status__locked: {
+			_t2 = _S("Locked");
+			break;
+		}
+		case net__http__Status__failed_dependency: {
+			_t2 = _S("Failed Dependency");
+			break;
+		}
+		case net__http__Status__unordered_collection: {
+			_t2 = _S("Unordered Collection");
+			break;
+		}
+		case net__http__Status__upgrade_required: {
+			_t2 = _S("Upgrade Required");
+			break;
+		}
+		case net__http__Status__precondition_required: {
+			_t2 = _S("Precondition Required");
+			break;
+		}
+		case net__http__Status__too_many_requests: {
+			_t2 = _S("Too Many Requests");
+			break;
+		}
+		case net__http__Status__request_header_fields_too_large: {
+			_t2 = _S("Request Header Fields Too Large");
+			break;
+		}
+		case net__http__Status__unavailable_for_legal_reasons: {
+			_t2 = _S("Unavailable For Legal Reasons");
+			break;
+		}
+		case net__http__Status__internal_server_error: {
+			_t2 = _S("Internal Server Error");
+			break;
+		}
+		case net__http__Status__not_implemented: {
+			_t2 = _S("Not Implemented");
+			break;
+		}
+		case net__http__Status__bad_gateway: {
+			_t2 = _S("Bad Gateway");
+			break;
+		}
+		case net__http__Status__service_unavailable: {
+			_t2 = _S("Service Unavailable");
+			break;
+		}
+		case net__http__Status__gateway_timeout: {
+			_t2 = _S("Gateway Timeout");
+			break;
+		}
+		case net__http__Status__http_version_not_supported: {
+			_t2 = _S("HTTP Version Not Supported");
+			break;
+		}
+		case net__http__Status__variant_also_negotiates: {
+			_t2 = _S("Variant Also Negotiates");
+			break;
+		}
+		case net__http__Status__insufficient_storage: {
+			_t2 = _S("Insufficient Storage");
+			break;
+		}
+		case net__http__Status__loop_detected: {
+			_t2 = _S("Loop Detected");
+			break;
+		}
+		case net__http__Status__bandwidth_limit_exceeded: {
+			_t2 = _S("Bandwidth Limit Exceeded");
+			break;
+		}
+		case net__http__Status__not_extended: {
+			_t2 = _S("Not Extended");
+			break;
+		}
+		case net__http__Status__network_authentication_required: {
+			_t2 = _S("Network Authentication Required");
+			break;
+		}
+		case net__http__Status__unassigned: {
+			_t2 = _S("Unassigned");
+			break;
+		}
+		case net__http__Status__unknown:
+		case net__http__Status__client_closed_request:
+		default: {
+			{
+				_t2 = _S("Unknown");
+				break;
+			}
+		}
+	}
+	return _t2;
+}
+int net__http__Status_int(net__http__Status code) {
+	if (code == net__http__Status__unknown || code == net__http__Status__unassigned) {
+		return 0;
+	}
+	return ((int)(code));
+}
+bool net__http__Status_is_valid(net__http__Status code) {
+	int number = net__http__Status_int(code);
+	return number >= 100 && number < 600;
+}
+bool net__http__Status_is_error(net__http__Status code) {
+	int number = net__http__Status_int(code);
+	return number >= 400 && number < 600;
+}
+bool net__http__Status_is_success(net__http__Status code) {
+	int number = net__http__Status_int(code);
+	return number >= 100 && number < 400;
+}
+string net__http__Version_str(net__http__Version v) {
+	return ((v == (net__http__Version__v1_1))? (_S("HTTP/1.1")) : (v == (net__http__Version__v2_0))? (_S("HTTP/2.0")) : (v == (net__http__Version__v1_0))? (_S("HTTP/1.0")) : (_S("unknown")));
+}
+net__http__Version net__http__version_from_str(string v) {
+	string _t2 = builtin__string_to_lower(v);
+	return ((_SLIT_EQ(_t2.str, _t2.len, "http/1.1"))? (net__http__Version__v1_1) : (_SLIT_EQ(_t2.str, _t2.len, "http/2.0"))? (net__http__Version__v2_0) : (_SLIT_EQ(_t2.str, _t2.len, "http/1.0"))? (net__http__Version__v1_0) : (net__http__Version__unknown));
+}
+multi_return_int_int net__http__Version_protos(net__http__Version v) {
+
+	if (v == (net__http__Version__v1_1)) {
+		return (multi_return_int_int){.arg0=1, .arg1=1};
+	}
+	else if (v == (net__http__Version__v2_0)) {
+		return (multi_return_int_int){.arg0=2, .arg1=0};
+	}
+	else if (v == (net__http__Version__v1_0)) {
+		return (multi_return_int_int){.arg0=1, .arg1=0};
+	}
+	else if (v == (net__http__Version__unknown)) {
+		return (multi_return_int_int){.arg0=0, .arg1=0};
+	}
+	return (multi_return_int_int){0};
+}
 voidptr main__routegroup_new_raw(void) {
 	return vphp__generic_new_raw_T_main__RouteGroup();
 }
@@ -28512,6 +42171,110 @@ void main__vphp_wrap_vslimrequest_parsed_body(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_VSlimRequest_parsed_body -> main__vphp_wrap_vslimrequest_parsed_body
 void vphp_wrap_VSlimRequest_parsed_body(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_parsed_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_body_format(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string res = main__VSlimRequest_body_format(recv);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_body_format -> main__vphp_wrap_vslimrequest_body_format
+void vphp_wrap_VSlimRequest_body_format(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_body_format(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_is_json_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	bool res = main__VSlimRequest_is_json_body(recv);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_is_json_body -> main__vphp_wrap_vslimrequest_is_json_body
+void vphp_wrap_VSlimRequest_is_json_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_is_json_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_is_form_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	bool res = main__VSlimRequest_is_form_body(recv);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_is_form_body -> main__vphp_wrap_vslimrequest_is_form_body
+void vphp_wrap_VSlimRequest_is_form_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_is_form_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_is_multipart_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	bool res = main__VSlimRequest_is_multipart_body(recv);
+	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_is_multipart_body -> main__vphp_wrap_vslimrequest_is_multipart_body
+void vphp_wrap_VSlimRequest_is_multipart_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_is_multipart_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_json_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Map_string_string res = main__VSlimRequest_json_body(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_json_body -> main__vphp_wrap_vslimrequest_json_body
+void vphp_wrap_VSlimRequest_json_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_json_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_form_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Map_string_string res = main__VSlimRequest_form_body(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_form_body -> main__vphp_wrap_vslimrequest_form_body
+void vphp_wrap_VSlimRequest_form_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_form_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_multipart_body(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Map_string_string res = main__VSlimRequest_multipart_body(recv);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_multipart_body -> main__vphp_wrap_vslimrequest_multipart_body
+void vphp_wrap_VSlimRequest_multipart_body(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_multipart_body(ptr, ctx);
+}
+void main__vphp_wrap_vslimrequest_parse_error(voidptr ptr, vphp__Context ctx) {
+	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string res = main__VSlimRequest_parse_error(recv);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimRequest_parse_error -> main__vphp_wrap_vslimrequest_parse_error
+void vphp_wrap_VSlimRequest_parse_error(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimrequest_parse_error(ptr, ctx);
 }
 void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
@@ -31166,6 +44929,11 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 			main__vslim_trace_mem_log(req, _S("route.matched"), trace_base);
 		}
 		vphp__ZVal payload = main__build_php_request_object(&(*(dispatch_req)), params);
+		_option_main__VSlimResponse _t2;
+		if (_t2 = main__validate_request_payload(app, &(*(dispatch_req)), vphp__BorrowedZVal__static__from_zval(payload)), _t2.state == 0) {
+			main__VSlimResponse validation = *(main__VSlimResponse*)_t2.data;
+			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), validation), .arg1=params, .arg2=true};
+		}
 		if (trace_on) {
 			main__vslim_trace_mem_log(req, _S("route.after_build_payload"), trace_base);
 		}
@@ -31179,20 +44947,20 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=params, .arg2=true};
 		}
 		Array_vphp__PersistentOwnedZVal route_middle = main__matching_group_middle_hooks(app, path);
-		_result_vphp__ZVal _t3 = main__dispatch_php_middleware_chain(app, path, vphp__BorrowedZVal__static__from_zval(payload), route_middle, route.php_handler);
-		if (_t3.is_error) {
-			IError err = _t3.err;
+		_result_vphp__ZVal _t5 = main__dispatch_php_middleware_chain(app, path, vphp__BorrowedZVal__static__from_zval(payload), route_middle, route.php_handler);
+		if (_t5.is_error) {
+			IError err = _t5.err;
 			string msg = ((IError_name_table[err._typ]._method_msg(err._object)).len == 0 ? (_S("Route handler is not callable")) : (IError_name_table[err._typ]._method_msg(err._object)));
-			_option_main__VSlimResponse _t4 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 500, msg);
-			if (_t4.state != 0) {
-				*(main__VSlimResponse*) _t4.data = main__text_response(500, msg);
+			_option_main__VSlimResponse _t6 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 500, msg);
+			if (_t6.state != 0) {
+				*(main__VSlimResponse*) _t6.data = main__text_response(500, msg);
 			}
 			
- 			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t4.data)));
+ 			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t6.data)));
 			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=params, .arg2=true};
 		}
 		
- 		vphp__ZVal raw_res = (*(vphp__ZVal*)_t3.data);
+ 		vphp__ZVal raw_res = (*(vphp__ZVal*)_t5.data);
 		if (trace_on) {
 			main__vslim_trace_mem_log(req, _S("route.after_middleware_chain"), trace_base);
 		}
@@ -31227,12 +44995,12 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 	if (method_not_allowed) {
 		vphp__ZVal payload = main__build_php_request_object(&(*(dispatch_req)), builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		);
-		_option_main__VSlimResponse _t9 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 405, _S("Method not allowed"));
-		if (_t9.state != 0) {
-			*(main__VSlimResponse*) _t9.data = main__method_not_allowed_response();
+		_option_main__VSlimResponse _t11 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 405, _S("Method not allowed"));
+		if (_t11.state != 0) {
+			*(main__VSlimResponse*) _t11.data = main__method_not_allowed_response();
 		}
 		
- 		main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t9.data)));
+ 		main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t11.data)));
 		if (allowed_methods.len > 0 && !_IN_MAP(ADDR(string, _S("allow")), ADDR(map, (*(res)).headers))) {
 			builtin__map_set(&(*(res)).headers, &(string[]){_S("allow")}, &(string[]) { Array_string_join(allowed_methods, _S(", ")) });
 		}
@@ -31250,27 +45018,65 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 	Array_vphp__PersistentOwnedZVal route_middle = main__matching_group_middle_hooks(app, path);
 	if (app->php_middlewares.len > 0 || route_middle.len > 0) {
 		main__VSlimResponse *terminal = HEAP(main__VSlimResponse, (main__run_not_found_core(app, vphp__BorrowedZVal__static__from_zval(payload))));
-		_result_vphp__ZVal _t12 = main__dispatch_php_middleware_chain_terminal(app, path, vphp__BorrowedZVal__static__from_zval(payload), route_middle, (*(terminal)));
-		if (_t12.is_error) {
-			IError err = _t12.err;
+		_result_vphp__ZVal _t14 = main__dispatch_php_middleware_chain_terminal(app, path, vphp__BorrowedZVal__static__from_zval(payload), route_middle, (*(terminal)));
+		if (_t14.is_error) {
+			IError err = _t14.err;
 			string msg = ((IError_name_table[err._typ]._method_msg(err._object)).len == 0 ? (_S("Route handler is not callable")) : (IError_name_table[err._typ]._method_msg(err._object)));
-			_option_main__VSlimResponse _t13 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 500, msg);
-			if (_t13.state != 0) {
-				*(main__VSlimResponse*) _t13.data = main__text_response(500, msg);
+			_option_main__VSlimResponse _t15 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 500, msg);
+			if (_t15.state != 0) {
+				*(main__VSlimResponse*) _t15.data = main__text_response(500, msg);
 			}
 			
- 			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t13.data)));
+ 			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t15.data)));
 			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 			, .arg2=true};
 		}
 		
- 		vphp__ZVal raw_res = (*(vphp__ZVal*)_t12.data);
+ 		vphp__ZVal raw_res = (*(vphp__ZVal*)_t14.data);
 		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, vphp__BorrowedZVal__static__from_zval(payload), vphp__BorrowedZVal__static__from_zval(raw_res), 500, _S("Invalid route response"))));
 		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		, .arg2=true};
 	}
 	return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=((main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	, .arg2=false};
+}
+VV_LOC int main__vslim_max_body_bytes(void) {
+	string raw = builtin__string_trim_space(os__getenv(_S("VSLIM_MAX_BODY_BYTES")));
+	if ((raw).len == 0) {
+		return 0;
+	}
+	int max_bytes = builtin__string_int(raw);
+	if (max_bytes <= 0) {
+		return 0;
+	}
+	return max_bytes;
+}
+VV_LOC _option_main__VSlimResponse main__validate_request_payload(main__VSlimApp* app, main__VSlimRequest* req, vphp__BorrowedZVal request_payload) {
+	int max_bytes = main__vslim_max_body_bytes();
+	if (max_bytes > 0 && req->body.len > max_bytes) {
+		_option_main__VSlimResponse _t2 = main__run_error_handler(app, request_payload, 413, _S("Payload too large"));
+		if (_t2.state != 0) {
+			*(main__VSlimResponse*) _t2.data = main__text_response(413, _S("Payload Too Large"));
+		}
+		
+ 		_option_main__VSlimResponse _t1;
+		builtin___option_ok(&(main__VSlimResponse[]) { (*(main__VSlimResponse*)_t2.data) }, (_option*)(&_t1), sizeof(main__VSlimResponse));
+		 
+		return _t1;
+	}
+	string parse_msg = main__VSlimRequest_parse_error(req);
+	if ((parse_msg).len != 0) {
+		_option_main__VSlimResponse _t4 = main__run_error_handler(app, request_payload, 400, _S("Bad Request: invalid JSON body"));
+		if (_t4.state != 0) {
+			*(main__VSlimResponse*) _t4.data = main__text_response(400, _S("Bad Request: invalid JSON body"));
+		}
+		
+ 		_option_main__VSlimResponse _t3;
+		builtin___option_ok(&(main__VSlimResponse[]) { (*(main__VSlimResponse*)_t4.data) }, (_option*)(&_t3), sizeof(main__VSlimResponse));
+		 
+		return _t3;
+	}
+	return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 }
 VV_LOC vphp__ZVal main__dispatch_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload, int index) {
 	int total = (int)(app->php_before_hooks.len + route_before.len);
@@ -31417,9 +45223,9 @@ VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* 
 	}
 	vphp__RequestOwnedZVal mw = (*(vphp__RequestOwnedZVal*)builtin__array_get(chain->middlewares, chain->index));
 	chain->index++;
-	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181, (struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx){.payload = payload,
+	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148, (struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx){.payload = payload,
 		.mw = mw,
-	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx))));
+	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx))));
 	if (!vphp__ZVal_is_valid(raw) || vphp__ZVal_is_null(raw) || vphp__ZVal_is_undef(raw)) {
 		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(_S("Middleware must return a response")), .data={E_STRUCT} };
 	}
@@ -31491,9 +45297,9 @@ main__VSlimResponse* initial = HEAP(main__VSlimResponse, _v_toheap_initial);
 	return (*(current));
 }
 VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__BorrowedZVal request_payload, vphp__BorrowedZVal result, int fallback_status, string fallback_message) {
-	multi_return_main__VSlimResponse_bool mr_32511 = main__normalize_php_route_response_borrowed(result);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_32511.arg0);
-	bool ok = mr_32511.arg1;
+	multi_return_main__VSlimResponse_bool mr_33478 = main__normalize_php_route_response_borrowed(result);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_33478.arg0);
+	bool ok = mr_33478.arg1;
 	if (ok) {
 		return (*(res));
 	}
@@ -31527,9 +45333,9 @@ VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, 
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
 	vphp__ZVal raw = vphp__PersistentOwnedZVal_call_owned_request(eh, builtin__new_array_from_c_array(3, 3, sizeof(vphp__ZVal), _MOV((vphp__ZVal[3]){vphp__BorrowedZVal_to_zval(request_payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(message)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int(status))})));
-	multi_return_main__VSlimResponse_bool mr_33797 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_33797.arg0);
-	bool ok = mr_33797.arg1;
+	multi_return_main__VSlimResponse_bool mr_34764 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_34764.arg0);
+	bool ok = mr_34764.arg1;
 	if (!ok) {
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
@@ -31782,7 +45588,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40008);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40975);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
@@ -31982,9 +45788,9 @@ main__VSlimRequest* main__VSlimRequest_set_method(main__VSlimRequest* r, string 
 }
 main__VSlimRequest* main__VSlimRequest_set_target(main__VSlimRequest* r, string raw_path) {
 	r->raw_path = raw_path;
-	multi_return_string_string mr_720 = main__VSlimRequest__static__normalize_target(raw_path);
-	r->path = mr_720.arg0;
-	r->query_string = mr_720.arg1;
+	multi_return_string_string mr_736 = main__VSlimRequest__static__normalize_target(raw_path);
+	r->path = mr_736.arg0;
+	r->query_string = mr_736.arg1;
 	return r;
 }
 main__VSlimRequest* main__VSlimRequest_set_body(main__VSlimRequest* r, string body) {
@@ -32097,6 +45903,76 @@ Map_string_string main__VSlimRequest_all_inputs(main__VSlimRequest* r) {
 }
 Map_string_string main__VSlimRequest_parsed_body(main__VSlimRequest* r) {
 	return main__VSlimRequest_parsed_body_values(r);
+}
+string main__VSlimRequest_body_format(main__VSlimRequest* r) {
+	string raw_content_type = main__VSlimRequest_content_type(r);
+	string content_type = builtin__string_to_lower(raw_content_type);
+	string body = builtin__string_trim_space(r->body);
+	if (builtin__string_contains(content_type, _S("multipart/form-data"))) {
+		return _S("multipart");
+	}
+	if (builtin__string_contains(content_type, _S("application/x-www-form-urlencoded"))) {
+		return _S("form");
+	}
+	if (builtin__string_contains(content_type, _S("application/json"))) {
+		return _S("json");
+	}
+	if (builtin__string_starts_with(body, _S("{")) || builtin__string_starts_with(body, _S("["))) {
+		return _S("json");
+	}
+	if (builtin__string_contains(body, _S("="))) {
+		return _S("form");
+	}
+	return _S("none");
+}
+bool main__VSlimRequest_is_json_body(main__VSlimRequest* r) {
+	return builtin__string__eq(main__VSlimRequest_body_format(r), _S("json"));
+}
+bool main__VSlimRequest_is_form_body(main__VSlimRequest* r) {
+	return builtin__string__eq(main__VSlimRequest_body_format(r), _S("form"));
+}
+bool main__VSlimRequest_is_multipart_body(main__VSlimRequest* r) {
+	return builtin__string__eq(main__VSlimRequest_body_format(r), _S("multipart"));
+}
+Map_string_string main__VSlimRequest_json_body(main__VSlimRequest* r) {
+	if (!main__VSlimRequest_is_json_body(r)) {
+		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	return main__VSlimRequest_parsed_body_values(r);
+}
+Map_string_string main__VSlimRequest_form_body(main__VSlimRequest* r) {
+	if (!main__VSlimRequest_is_form_body(r)) {
+		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	return main__VSlimRequest_parsed_body_values(r);
+}
+Map_string_string main__VSlimRequest_multipart_body(main__VSlimRequest* r) {
+	if (!main__VSlimRequest_is_multipart_body(r)) {
+		return builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		;
+	}
+	return main__VSlimRequest_parsed_body_values(r);
+}
+string main__VSlimRequest_parse_error(main__VSlimRequest* r) {
+	if (!main__VSlimRequest_is_json_body(r)) {
+		return _S("");
+	}
+	string body = builtin__string_trim_space(r->body);
+	if ((body).len == 0) {
+		return _S("");
+	}
+	vphp__call_php(_S("json_decode"), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(body)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_bool(true))})));
+	vphp__ZVal err_code = vphp__call_php(_S("json_last_error"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0));
+	if (!vphp__ZVal_is_valid(err_code) || vphp__ZVal_to_i64(err_code) == 0) {
+		return _S("");
+	}
+	vphp__ZVal err_msg = vphp__call_php(_S("json_last_error_msg"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0));
+	if (!vphp__ZVal_is_valid(err_msg)) {
+		return _S("invalid JSON body");
+	}
+	return vphp__ZVal_to_string(err_msg);
 }
 Map_string_string main__VSlimRequest_query_all(main__VSlimRequest* r) {
 	return main__VSlimRequest_query_params(r);
@@ -32284,7 +46160,8 @@ VV_LOC Map_string_string main__VSlimRequest_parsed_body_values(main__VSlimReques
 	if ((body).len == 0) {
 		return out;
 	}
-	string content_type = builtin__string_to_lower(main__VSlimRequest_content_type(r));
+	string raw_content_type = main__VSlimRequest_content_type(r);
+	string content_type = builtin__string_to_lower(raw_content_type);
 	bool is_json = builtin__string_contains(content_type, _S("application/json")) || builtin__string_starts_with(body, _S("{")) || builtin__string_starts_with(body, _S("["));
 	if (is_json) {
 		vphp__ZVal decoded = vphp__ZVal_call_owned_request(vphp__php_fn(_S("json_decode")), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(body)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_bool(true))})));
@@ -32293,9 +46170,20 @@ VV_LOC Map_string_string main__VSlimRequest_parsed_body_values(main__VSlimReques
 		}
 		return out;
 	}
-	bool is_form = builtin__string_contains(content_type, _S("application/x-www-form-urlencoded")) || builtin__string_contains(body, _S("="));
-	if (is_form) {
-		return main__VSlimRequest__static__parse_query(body);
+	if (builtin__string_contains(content_type, _S("multipart/form-data"))) {
+		string boundary = main__multipart_boundary_from_content_type(raw_content_type);
+		if ((boundary).len != 0) {
+			multi_return_Map_string_string_Map_string_Array_net__http__FileData mr_9550 = net__http__parse_multipart_form(r->body, boundary);
+			Map_string_string form = mr_9550.arg0;
+			return form;
+		}
+		return out;
+	}
+	if (builtin__string_contains(content_type, _S("application/x-www-form-urlencoded"))) {
+		return net__http__parse_form(r->body);
+	}
+	if (builtin__string_contains(body, _S("="))) {
+		return net__http__parse_form(r->body);
 	}
 	return out;
 }
@@ -32312,7 +46200,39 @@ VV_LOC Map_string_string main__VSlimRequest_server_param_values(main__VSlimReque
 	return builtin__map_clone(&r->server);
 }
 VV_LOC Array_string main__VSlimRequest_uploaded_file_values(main__VSlimRequest* r) {
-	return builtin__array_clone_to_depth(&r->uploaded_files, 1);
+	Array_string out = builtin__array_clone_to_depth(&r->uploaded_files, 1);
+	string raw_content_type = main__VSlimRequest_content_type(r);
+	string content_type = builtin__string_to_lower(raw_content_type);
+	if (!builtin__string_contains(content_type, _S("multipart/form-data"))) {
+		return out;
+	}
+	string boundary = main__multipart_boundary_from_content_type(raw_content_type);
+	if ((boundary).len == 0) {
+		return out;
+	}
+	multi_return_Map_string_string_Map_string_Array_net__http__FileData mr_10599 = net__http__parse_multipart_form(r->body, boundary);
+	Map_string_Array_net__http__FileData files = mr_10599.arg1;
+	int _t4 = files.key_values.len;
+	for (int _t3 = 0; _t3 < _t4; ++_t3 ) {
+		int _t5 = files.key_values.len - _t4;
+		_t4 = files.key_values.len;
+		if (_t5 < 0) {
+			_t3 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&files.key_values, _t3)) {continue;}
+		Array_net__http__FileData items = (*(Array_net__http__FileData*)builtin__DenseArray_value(&files.key_values, _t3));
+		for (int _t6 = 0; _t6 < items.len; ++_t6) {
+			net__http__FileData item = ((net__http__FileData*)items.data)[_t6];
+			if ((item.filename).len == 0) {
+				continue;
+			}
+			if (!(Array_string_contains(out, item.filename))) {
+				builtin__array_push((array*)&out, _MOV((string[]){ builtin__string_clone(item.filename) }));
+			}
+		}
+	}
+	return out;
 }
 main__VSlimRequest main__VSlimRequest_to_vslim_request(main__VSlimRequest* r) {
 	return ((main__VSlimRequest){
@@ -32336,9 +46256,9 @@ main__VSlimRequest main__VSlimRequest_to_vslim_request(main__VSlimRequest* r) {
 	});
 }
 main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body) {
-	multi_return_string_string mr_8669 = main__VSlimRequest__static__normalize_target(raw_path);
-	string path = mr_8669.arg0;
-	string query_string = mr_8669.arg1;
+	multi_return_string_string mr_11427 = main__VSlimRequest__static__normalize_target(raw_path);
+	string path = mr_11427.arg0;
+	string query_string = mr_11427.arg1;
 	main__VSlimRequest* req = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,.raw_path = raw_path,.path = path,.body = body,.query_string = query_string,.scheme = (string){.str=(byteptr)"", .is_lit=1},.host = (string){.str=(byteptr)"", .is_lit=1},.port = (string){.str=(byteptr)"", .is_lit=1},.protocol_version = (string){.str=(byteptr)"", .is_lit=1},.remote_addr = (string){.str=(byteptr)"", .is_lit=1},.query = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.attributes = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.server = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.uploaded_files = builtin____new_array(0, 0, sizeof(string)),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimRequest)));
 	main__apply_request_defaults(req);
 	return req;
@@ -32380,9 +46300,9 @@ main__VSlimRequest* main__new_vslim_request_from_zval(vphp__ZVal envelope) {
 	}
 	_t8: {};
 		string body = _t7;
-	multi_return_string_string mr_9208 = main__VSlimRequest__static__normalize_target(raw_path);
-	string path = mr_9208.arg0;
-	string query_string = mr_9208.arg1;
+	multi_return_string_string mr_11966 = main__VSlimRequest__static__normalize_target(raw_path);
+	string path = mr_11966.arg0;
+	string query_string = mr_11966.arg1;
 	main__VSlimRequest* req = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,.raw_path = raw_path,.path = path,.body = body,.query_string = query_string,.scheme = (string){.str=(byteptr)"", .is_lit=1},.host = (string){.str=(byteptr)"", .is_lit=1},.port = (string){.str=(byteptr)"", .is_lit=1},.protocol_version = (string){.str=(byteptr)"", .is_lit=1},.remote_addr = (string){.str=(byteptr)"", .is_lit=1},.query = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.attributes = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.server = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.uploaded_files = builtin____new_array(0, 0, sizeof(string)),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimRequest)));
 	main__apply_request_defaults(req);
 	string _t10; /* if prepend */
@@ -32578,6 +46498,22 @@ VV_LOC Map_string_string main__normalize_header_map(Map_string_string headers) {
 		builtin__map_set(&out, &(string[]){main__VSlimRequest__static__normalize_header_name(key)}, &(string[]) { value });
 	}
 	return out;
+}
+VV_LOC string main__multipart_boundary_from_content_type(string content_type) {
+	Array_string _t1 = builtin__string_split(content_type, _S(";"));
+	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
+		string part = ((string*)_t1.data)[_t2];
+		string trimmed = builtin__string_trim_space(part);
+		if (!builtin__string_starts_with(trimmed, _S("boundary="))) {
+			continue;
+		}
+		string boundary = builtin__string_trim_space(builtin__string_all_after(trimmed, _S("boundary=")));
+		if (boundary.len >= 2 && builtin__string_starts_with(boundary, _S("\"")) && builtin__string_ends_with(boundary, _S("\""))) {
+			boundary = builtin__string_substr(boundary, 1, (int)(boundary.len - 1));
+		}
+		return boundary;
+	}
+	return _S("");
 }
 main__VSlimResponse* main__VSlimResponse_construct(main__VSlimResponse* r, int status, string body, string content_type) {
 	r->status = status;
@@ -33245,6 +47181,15 @@ VV_LOC void main__VSlimResponse_free(main__VSlimResponse* res) {
 	}
 }
 void _vinit(int ___argc, voidptr ___argv) {
+	as_cast_type_indexes = builtin__new_array_from_c_array(5, 5, sizeof(VCastTypeIndexName), _MOV((VCastTypeIndexName[5]){
+		  (VCastTypeIndexName){.tindex = 0, .tname = _S("unknown")}
+		, (VCastTypeIndexName){.tindex = 65867, .tname = _S("net.TcpConn")}
+		, (VCastTypeIndexName){.tindex = 2, .tname = _S("voidptr")}
+		, (VCastTypeIndexName){.tindex = 65835, .tname = _S("net.ssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 387, .tname = _S("net.openssl.SSLConn")}
+	}));
+
+
 	// Initializations of consts for module builtin.closure
 	g_closure = ((builtin__closure__Closure){.ClosureMutex = ((builtin__closure__ClosureMutex){E_STRUCT}),.closure_ptr = 0,.closure_get_data = ((void*)0),.closure_cap = 0,.v_page_size = ((int)(0x4000)),}); // global 3
 {
@@ -33339,6 +47284,8 @@ Array_fixed_u8_8 _t3;
 	_const_time__hour = ((60 * _const_time__minute));
 	// Initializations of consts for module net.urllib
 	_const_net__urllib__err_msg_escape = _S("unescape: invalid URL escape");
+	// Initializations of consts for module encoding.base64
+	_const_encoding__base64__enc_table = _S("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 	// Initializations of consts for module vphp
 	g_registry = *(vphp__TaskRegistry**)&((vphp__TaskRegistry*[]){0}[0]); // global 5
 	// Initializations of consts for module os
@@ -33420,6 +47367,284 @@ int _t2;
 }
 	g_main_thread_id = ((u64)(pthread_self())); // global 3
 	_const_os__args = builtin__arguments();
+	// Initializations of consts for module rand
+	_const_rand__ulid_encoding = _S("0123456789ABCDEFGHJKMNPQRSTVWXYZ");
+	_const_rand__english_letters = _S("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	_const_rand__hex_chars = _S("0123456789abcdef");
+	_const_rand__ascii_chars = _S("!\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\^_`abcdefghijklmnopqrstuvwxyz{|}~");
+	default_rng = *(rand__PRNG**)&((rand__PRNG*[]){0}[0]); // global 5
+	_const_rand__reciprocal_2_23rd = (f64)(((f64)(1.0)) / ((f64)((((u32)(1)) << 23))));
+	_const_rand__reciprocal_2_52nd = (f64)(((f64)(1.0)) / ((f64)((((u64)(1)) << 52))));
+	_const_rand__ieee754_mantissa_f32_mask = (u32)(((((u32)(1)) << 23)) - 1);
+	// Calling fn init() for module rand
+	rand__init();
+	// Initializations of consts for module net
+{
+{
+	_const_net__aoffset = /*OffsetOf*/ (u32)(__offsetof(net__Addr, addr));
+}
+}
+	_const_net__no_deadline = time__unix(0);
+	_const_net__no_timeout = ((time__Duration)(0));
+	_const_net__err_new_socket_failed = builtin__error_with_code(_S("net: new_socket failed to create socket"), (int_literal)(0 + 1));
+	_const_net__err_option_not_settable = builtin__error_with_code(_S("net: set_option_xxx option not settable"), (int_literal)(0 + 2));
+	_const_net__err_option_wrong_type = builtin__error_with_code(_S("net: set_option_xxx option wrong type"), (int_literal)(0 + 3));
+	_const_net__err_port_out_of_range = builtin__error_with_code(_S("net: port out of range"), (int_literal)(0 + 5));
+	_const_net__err_no_udp_remote = builtin__error_with_code(_S("net: no udp remote"), (int_literal)(0 + 6));
+	_const_net__err_connect_failed = builtin__error_with_code(_S("net: connect failed"), (int_literal)(0 + 7));
+	_const_net__err_connect_timed_out = builtin__error_with_code(_S("net: connect timed out"), (int_literal)(0 + 8));
+	_const_net__err_timed_out = builtin__error_with_code(_S("net: op timed out"), (int_literal)(0 + 9));
+	_const_net__err_connection_refused = builtin__error_with_code(_S("net: connection refused"), (int_literal)(0 + 10));
+{
+{
+	_const_net__msg_dontwait = MSG_DONTWAIT;
+}
+}
+	_const_net__error_ewouldblock = ((int)(EWOULDBLOCK));
+	_const_net__error_einprogress = ((int)(EINPROGRESS));
+	_const_net__error_eagain = ((int)(EAGAIN));
+	_const_net__error_eintr = ((int)(EINTR));
+	_const_net__opts_bool = builtin__new_array_from_c_array(6, 6, sizeof(net__SocketOption), _MOV((net__SocketOption[6]){net__SocketOption__broadcast, net__SocketOption__debug, net__SocketOption__dont_route, net__SocketOption__error, net__SocketOption__keep_alive, net__SocketOption__oob_inline}));
+	_const_net__opts_int = builtin__new_array_from_c_array(6, 6, sizeof(net__SocketOption), _MOV((net__SocketOption[6]){net__SocketOption__receive_buf_size, net__SocketOption__receive_low_size, net__SocketOption__receive_timeout, net__SocketOption__send_buf_size, net__SocketOption__send_low_size, net__SocketOption__send_timeout}));
+{
+	_const_net__opts_can_set = builtin__new_array_from_c_array(13, 13, sizeof(net__SocketOption), _MOV((net__SocketOption[13]){
+		net__SocketOption__broadcast, net__SocketOption__debug, net__SocketOption__dont_route, net__SocketOption__keep_alive, net__SocketOption__linger, net__SocketOption__oob_inline, net__SocketOption__receive_buf_size, net__SocketOption__receive_low_size, net__SocketOption__receive_timeout,
+		net__SocketOption__send_buf_size, net__SocketOption__send_low_size, net__SocketOption__send_timeout, net__SocketOption__ipv6_only}));
+}
+{
+{
+	_const_net__infinite_timeout = _const_time__infinite;
+}
+}
+	_const_net__raw_default_read_timeout = _const_time__second / 10;
+	_const_net__raw_default_write_timeout = _const_time__second / 10;
+	_const_net__tcp_default_read_timeout = 30 * _const_time__second;
+	_const_net__tcp_default_write_timeout = 30 * _const_time__second;
+	_const_net__udp_default_read_timeout = _const_time__second / 10;
+	_const_net__udp_default_write_timeout = _const_time__second / 10;
+	// Calling fn init() for module net
+	net__init();
+	// Calling fn init() for module net.openssl
+	net__openssl__init();
+	// Initializations of consts for module net.http
+	_const_net__http__content_type_default = _S("text/plain");
+	_const_net__http__headers_body_boundary = _S("\r\n\r\n");
+	_const_net__http__zz = (void*)0;
+{
+{
+	_const_net__http__common_header_map = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 102, sizeof(string), sizeof(net__http__CommonHeader),
+	_MOV((string[102]){
+		_S("accept"),
+		_S("accept-ch"),
+		_S("accept-charset"),
+		_S("accept-ch-lifetime"),
+		_S("accept-encoding"),
+		_S("accept-language"),
+		_S("accept-patch"),
+		_S("accept-post"),
+		_S("accept-ranges"),
+		_S("access-control-allow-credentials"),
+		_S("access-control-allow-headers"),
+		_S("access-control-allow-methods"),
+		_S("access-control-allow-origin"),
+		_S("access-control-expose-headers"),
+		_S("access-control-max-age"),
+		_S("access-control-request-headers"),
+		_S("access-control-request-method"),
+		_S("age"),
+		_S("allow"),
+		_S("alt-svc"),
+		_S("authorization"),
+		_S("cache-control"),
+		_S("clear-site-data"),
+		_S("connection"),
+		_S("content-disposition"),
+		_S("content-encoding"),
+		_S("content-language"),
+		_S("content-length"),
+		_S("content-location"),
+		_S("content-range"),
+		_S("content-security-policy"),
+		_S("content-security-policy-report-only"),
+		_S("content-type"),
+		_S("cookie"),
+		_S("cross-origin-embedder-policy"),
+		_S("cross-origin-opener-policy"),
+		_S("cross-origin-resource-policy"),
+		_S("date"),
+		_S("device-memory"),
+		_S("digest"),
+		_S("dnt"),
+		_S("early-data"),
+		_S("etag"),
+		_S("expect"),
+		_S("expect-ct"),
+		_S("expires"),
+		_S("feature-policy"),
+		_S("forwarded"),
+		_S("from"),
+		_S("host"),
+		_S("if-match"),
+		_S("if-modified-since"),
+		_S("if-none-match"),
+		_S("if-range"),
+		_S("if-unmodified-since"),
+		_S("index"),
+		_S("keep-alive"),
+		_S("large-allocation"),
+		_S("last-modified"),
+		_S("link"),
+		_S("location"),
+		_S("nel"),
+		_S("origin"),
+		_S("pragma"),
+		_S("proxy-authenticate"),
+		_S("proxy-authorization"),
+		_S("range"),
+		_S("referer"),
+		_S("referrer-policy"),
+		_S("retry-after"),
+		_S("save-data"),
+		_S("sec-fetch-dest"),
+		_S("sec-fetch-mode"),
+		_S("sec-fetch-site"),
+		_S("sec-fetch-user"),
+		_S("sec-websocket-accept"),
+		_S("sec_websocket_key"),
+		_S("server"),
+		_S("server-timing"),
+		_S("set-cookie"),
+		_S("sourcemap"),
+		_S("strict-transport-security"),
+		_S("te"),
+		_S("timing-allow-origin"),
+		_S("tk"),
+		_S("trailer"),
+		_S("transfer-encoding"),
+		_S("upgrade"),
+		_S("upgrade-insecure-requests"),
+		_S("user-agent"),
+		_S("vary"),
+		_S("via"),
+		_S("want-digest"),
+		_S("warning"),
+		_S("www-authenticate"),
+		_S("x-content-type-options"),
+		_S("x-dns-prefetch-control"),
+		_S("x-forwarded-for"),
+		_S("x-forwarded-host"),
+		_S("x-forwarded-proto"),
+		_S("x-frame-options"),
+		_S("x-xss-protection"),
+	}),
+	_MOV((net__http__CommonHeader[102]){
+		net__http__CommonHeader__accept, 
+		net__http__CommonHeader__accept_ch, 
+		net__http__CommonHeader__accept_charset, 
+		net__http__CommonHeader__accept_ch_lifetime, 
+		net__http__CommonHeader__accept_encoding, 
+		net__http__CommonHeader__accept_language, 
+		net__http__CommonHeader__accept_patch, 
+		net__http__CommonHeader__accept_post, 
+		net__http__CommonHeader__accept_ranges, 
+		net__http__CommonHeader__access_control_allow_credentials, 
+		net__http__CommonHeader__access_control_allow_headers, 
+		net__http__CommonHeader__access_control_allow_methods, 
+		net__http__CommonHeader__access_control_allow_origin, 
+		net__http__CommonHeader__access_control_expose_headers, 
+		net__http__CommonHeader__access_control_max_age, 
+		net__http__CommonHeader__access_control_request_headers, 
+		net__http__CommonHeader__access_control_request_method, 
+		net__http__CommonHeader__age, 
+		net__http__CommonHeader__allow, 
+		net__http__CommonHeader__alt_svc, 
+		net__http__CommonHeader__authorization, 
+		net__http__CommonHeader__cache_control, 
+		net__http__CommonHeader__clear_site_data, 
+		net__http__CommonHeader__connection, 
+		net__http__CommonHeader__content_disposition, 
+		net__http__CommonHeader__content_encoding, 
+		net__http__CommonHeader__content_language, 
+		net__http__CommonHeader__content_length, 
+		net__http__CommonHeader__content_location, 
+		net__http__CommonHeader__content_range, 
+		net__http__CommonHeader__content_security_policy, 
+		net__http__CommonHeader__content_security_policy_report_only, 
+		net__http__CommonHeader__content_type, 
+		net__http__CommonHeader__cookie, 
+		net__http__CommonHeader__cross_origin_embedder_policy, 
+		net__http__CommonHeader__cross_origin_opener_policy, 
+		net__http__CommonHeader__cross_origin_resource_policy, 
+		net__http__CommonHeader__date, 
+		net__http__CommonHeader__device_memory, 
+		net__http__CommonHeader__digest, 
+		net__http__CommonHeader__dnt, 
+		net__http__CommonHeader__early_data, 
+		net__http__CommonHeader__etag, 
+		net__http__CommonHeader__expect, 
+		net__http__CommonHeader__expect_ct, 
+		net__http__CommonHeader__expires, 
+		net__http__CommonHeader__feature_policy, 
+		net__http__CommonHeader__forwarded, 
+		net__http__CommonHeader__from, 
+		net__http__CommonHeader__host, 
+		net__http__CommonHeader__if_match, 
+		net__http__CommonHeader__if_modified_since, 
+		net__http__CommonHeader__if_none_match, 
+		net__http__CommonHeader__if_range, 
+		net__http__CommonHeader__if_unmodified_since, 
+		net__http__CommonHeader__index, 
+		net__http__CommonHeader__keep_alive, 
+		net__http__CommonHeader__large_allocation, 
+		net__http__CommonHeader__last_modified, 
+		net__http__CommonHeader__link, 
+		net__http__CommonHeader__location, 
+		net__http__CommonHeader__nel, 
+		net__http__CommonHeader__origin, 
+		net__http__CommonHeader__pragma, 
+		net__http__CommonHeader__proxy_authenticate, 
+		net__http__CommonHeader__proxy_authorization, 
+		net__http__CommonHeader__range, 
+		net__http__CommonHeader__referer, 
+		net__http__CommonHeader__referrer_policy, 
+		net__http__CommonHeader__retry_after, 
+		net__http__CommonHeader__save_data, 
+		net__http__CommonHeader__sec_fetch_dest, 
+		net__http__CommonHeader__sec_fetch_mode, 
+		net__http__CommonHeader__sec_fetch_site, 
+		net__http__CommonHeader__sec_fetch_user, 
+		net__http__CommonHeader__sec_websocket_accept, 
+		net__http__CommonHeader__sec_websocket_key, 
+		net__http__CommonHeader__server, 
+		net__http__CommonHeader__server_timing, 
+		net__http__CommonHeader__set_cookie, 
+		net__http__CommonHeader__sourcemap, 
+		net__http__CommonHeader__strict_transport_security, 
+		net__http__CommonHeader__te, 
+		net__http__CommonHeader__timing_allow_origin, 
+		net__http__CommonHeader__tk, 
+		net__http__CommonHeader__trailer, 
+		net__http__CommonHeader__transfer_encoding, 
+		net__http__CommonHeader__upgrade, 
+		net__http__CommonHeader__upgrade_insecure_requests, 
+		net__http__CommonHeader__user_agent, 
+		net__http__CommonHeader__vary, 
+		net__http__CommonHeader__via, 
+		net__http__CommonHeader__want_digest, 
+		net__http__CommonHeader__warning, 
+		net__http__CommonHeader__www_authenticate, 
+		net__http__CommonHeader__x_content_type_options, 
+		net__http__CommonHeader__x_dns_prefetch_control, 
+		net__http__CommonHeader__x_forwarded_for, 
+		net__http__CommonHeader__x_forwarded_host, 
+		net__http__CommonHeader__x_forwarded_proto, 
+		net__http__CommonHeader__x_frame_options, 
+		net__http__CommonHeader__x_xss_protection, 
+	})
+)
+;
+}
+}
 	// Initializations of consts for module main
 	active_middleware_chains = *(Array_main__MiddlewareChain_ptr*)&((Array_main__MiddlewareChain_ptr[]){builtin____new_array(0, 0, sizeof(main__MiddlewareChain*))}[0]); // global 5
 	vslim_trace_mem_cache_inited = *(bool*)&((bool[]){0}[0]); // global 5

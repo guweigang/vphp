@@ -545,6 +545,9 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - transport facade：
   - `query(...)`
   - `query_params()`
+  - `input(...)`
+  - `input_or(...)`
+  - `all_inputs()`
   - `header(...)`
   - `headers()`
   - `cookie(...)`
@@ -558,9 +561,24 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `route_params()`
 - environment：
   - `content_type()`
+  - `body_format()` (`json|form|multipart|none`)
+  - `is_json_body()`
+  - `is_form_body()`
+  - `is_multipart_body()`
+  - `parsed_body()`
+  - `json_body()`
+  - `form_body()`
+  - `multipart_body()`
   - `uploaded_files()`
   - `uploaded_file_count()`
   - `is_secure()`
+
+请求体校验（dispatch 阶段）：
+
+- JSON body 语法错误会返回 `400 Bad Request`
+- 可通过环境变量 `VSLIM_MAX_BODY_BYTES` 限制请求体大小（字节）
+  - `0` 或未设置：不限制
+  - 超限返回 `413 Payload Too Large`
 - setters：
   - `set_method(...)`
   - `set_target(...)`
@@ -630,7 +648,6 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - 不直接兼容原版 Slim 内核
 - 不把 `vslim` 改造成完整 PSR-7 immutable core
 - 不让 `vphp` 承担 HTTP helper
-- 不引入会把 TLS/network 栈拖进扩展构建链的重量级 `net.http` 依赖
 
 更细的范围说明见：
 

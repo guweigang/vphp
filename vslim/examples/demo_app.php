@@ -149,9 +149,11 @@ function build_demo_app(): VSlim\App
             'content_type' => 'application/json; charset=utf-8',
             'body' => json_encode([
                 'ok' => true,
+                'body_format' => $req->body_format(),
                 'query' => $req->query_params(),
                 'parsed_body' => $req->parsed_body(),
                 'inputs' => $req->all_inputs(),
+                'uploaded_files' => $req->uploaded_files(),
                 'content_type' => $req->content_type(),
             ], JSON_UNESCAPED_UNICODE),
         ];

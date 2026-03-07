@@ -747,6 +747,9 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest, trace_on bo
 			vslim_trace_mem_log(req, 'route.matched', trace_base)
 		}
 		payload := build_php_request_object(&dispatch_req, params)
+		if validation := validate_request_payload(app, &dispatch_req, vphp.BorrowedZVal.from_zval(payload)) {
+			return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), validation), params, true
+		}
 		if trace_on {
 			vslim_trace_mem_log(req, 'route.after_build_payload', trace_base)
 		}
@@ -824,6 +827,34 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest, trace_on bo
 		return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), res), map[string]string{}, true
 	}
 	return VSlimResponse{}, map[string]string{}, false
+}
+
+fn vslim_max_body_bytes() int {
+	raw := os.getenv('VSLIM_MAX_BODY_BYTES').trim_space()
+	if raw == '' {
+		return 0
+	}
+	max_bytes := raw.int()
+	if max_bytes <= 0 {
+		return 0
+	}
+	return max_bytes
+}
+
+fn validate_request_payload(app &VSlimApp, req &VSlimRequest, request_payload vphp.BorrowedZVal) ?VSlimResponse {
+	max_bytes := vslim_max_body_bytes()
+	if max_bytes > 0 && req.body.len > max_bytes {
+		return run_error_handler(app, request_payload, 413, 'Payload too large') or {
+			text_response(413, 'Payload Too Large')
+		}
+	}
+	parse_msg := req.parse_error()
+	if parse_msg != '' {
+		return run_error_handler(app, request_payload, 400, 'Bad Request: invalid JSON body') or {
+			text_response(400, 'Bad Request: invalid JSON body')
+		}
+	}
+	return none
 }
 
 fn dispatch_php_before_hooks(app &VSlimApp, route_before []vphp.PersistentOwnedZVal, payload vphp.BorrowedZVal, index int) vphp.ZVal {

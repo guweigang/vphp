@@ -639,6 +639,70 @@ pub fn vphp_wrap_vslimrequest_parsed_body(ptr voidptr, ctx vphp.Context)  {
     res := recv.parsed_body()
     ctx.return_val[map[string]string](res)
 }
+@[export: 'vphp_wrap_VSlimRequest_body_format']
+pub fn vphp_wrap_vslimrequest_body_format(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.body_format()
+    ctx.return_val[string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_is_json_body']
+pub fn vphp_wrap_vslimrequest_is_json_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.is_json_body()
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_is_form_body']
+pub fn vphp_wrap_vslimrequest_is_form_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.is_form_body()
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_is_multipart_body']
+pub fn vphp_wrap_vslimrequest_is_multipart_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.is_multipart_body()
+    ctx.return_val[bool](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_json_body']
+pub fn vphp_wrap_vslimrequest_json_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.json_body()
+    ctx.return_val[map[string]string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_form_body']
+pub fn vphp_wrap_vslimrequest_form_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.form_body()
+    ctx.return_val[map[string]string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_multipart_body']
+pub fn vphp_wrap_vslimrequest_multipart_body(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.multipart_body()
+    ctx.return_val[map[string]string](res)
+}
+@[export: 'vphp_wrap_VSlimRequest_parse_error']
+pub fn vphp_wrap_vslimrequest_parse_error(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimRequest(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.parse_error()
+    ctx.return_val[string](res)
+}
 @[export: 'vphp_wrap_VSlimRequest_query_all']
 pub fn vphp_wrap_vslimrequest_query_all(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimRequest(ptr) }

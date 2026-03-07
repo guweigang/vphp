@@ -1,5 +1,6 @@
 module main
 
+import net.http
 import vphp
 
 @[php_method]
@@ -148,6 +149,92 @@ pub fn (r &VSlimRequest) all_inputs() map[string]string {
 @[php_method]
 pub fn (r &VSlimRequest) parsed_body() map[string]string {
 	return r.parsed_body_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) body_format() string {
+	raw_content_type := r.content_type()
+	content_type := raw_content_type.to_lower()
+	body := r.body.trim_space()
+	if content_type.contains('multipart/form-data') {
+		return 'multipart'
+	}
+	if content_type.contains('application/x-www-form-urlencoded') {
+		return 'form'
+	}
+	if content_type.contains('application/json') {
+		return 'json'
+	}
+	if body.starts_with('{') || body.starts_with('[') {
+		return 'json'
+	}
+	if body.contains('=') {
+		return 'form'
+	}
+	return 'none'
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) is_json_body() bool {
+	return r.body_format() == 'json'
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) is_form_body() bool {
+	return r.body_format() == 'form'
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) is_multipart_body() bool {
+	return r.body_format() == 'multipart'
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) json_body() map[string]string {
+	if !r.is_json_body() {
+		return map[string]string{}
+	}
+	return r.parsed_body_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) form_body() map[string]string {
+	if !r.is_form_body() {
+		return map[string]string{}
+	}
+	return r.parsed_body_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) multipart_body() map[string]string {
+	if !r.is_multipart_body() {
+		return map[string]string{}
+	}
+	return r.parsed_body_values()
+}
+
+@[php_method]
+pub fn (r &VSlimRequest) parse_error() string {
+	if !r.is_json_body() {
+		return ''
+	}
+	body := r.body.trim_space()
+	if body == '' {
+		return ''
+	}
+	_ = vphp.call_php('json_decode', [
+		vphp.RequestOwnedZVal.new_string(body).to_zval(),
+		vphp.RequestOwnedZVal.new_bool(true).to_zval(),
+	])
+	err_code := vphp.call_php('json_last_error', [])
+	if !err_code.is_valid() || err_code.to_i64() == 0 {
+		return ''
+	}
+	err_msg := vphp.call_php('json_last_error_msg', [])
+	if !err_msg.is_valid() {
+		return 'invalid JSON body'
+	}
+	return err_msg.to_string()
 }
 
 @[php_method]
@@ -321,7 +408,8 @@ fn (r &VSlimRequest) parsed_body_values() map[string]string {
 	if body == '' {
 		return out
 	}
-	content_type := r.content_type().to_lower()
+	raw_content_type := r.content_type()
+	content_type := raw_content_type.to_lower()
 	is_json := content_type.contains('application/json') || body.starts_with('{') || body.starts_with('[')
 	if is_json {
 		decoded := vphp.php_fn('json_decode').call_owned_request([
@@ -333,9 +421,20 @@ fn (r &VSlimRequest) parsed_body_values() map[string]string {
 		}
 		return out
 	}
-	is_form := content_type.contains('application/x-www-form-urlencoded') || body.contains('=')
-	if is_form {
-		return VSlimRequest.parse_query(body)
+	if content_type.contains('multipart/form-data') {
+		boundary := multipart_boundary_from_content_type(raw_content_type)
+		if boundary != '' {
+			form, _ := http.parse_multipart_form(r.body, boundary)
+			return form
+		}
+		return out
+	}
+	if content_type.contains('application/x-www-form-urlencoded') {
+		return http.parse_form(r.body)
+	}
+	// Backward-compatible fallback for missing Content-Type in demo/tests.
+	if body.contains('=') {
+		return http.parse_form(r.body)
 	}
 	return out
 }
@@ -357,7 +456,28 @@ fn (r &VSlimRequest) server_param_values() map[string]string {
 }
 
 fn (r &VSlimRequest) uploaded_file_values() []string {
-	return r.uploaded_files.clone()
+	mut out := r.uploaded_files.clone()
+	raw_content_type := r.content_type()
+	content_type := raw_content_type.to_lower()
+	if !content_type.contains('multipart/form-data') {
+		return out
+	}
+	boundary := multipart_boundary_from_content_type(raw_content_type)
+	if boundary == '' {
+		return out
+	}
+	_, files := http.parse_multipart_form(r.body, boundary)
+	for _, items in files {
+		for item in items {
+			if item.filename == '' {
+				continue
+			}
+			if item.filename !in out {
+				out << item.filename
+			}
+		}
+	}
+	return out
 }
 
 pub fn (r &VSlimRequest) to_vslim_request() VSlimRequest {
@@ -453,4 +573,19 @@ fn normalize_header_map(headers map[string]string) map[string]string {
 		out[VSlimRequest.normalize_header_name(key)] = value
 	}
 	return out
+}
+
+fn multipart_boundary_from_content_type(content_type string) string {
+	for part in content_type.split(';') {
+		trimmed := part.trim_space()
+		if !trimmed.starts_with('boundary=') {
+			continue
+		}
+		mut boundary := trimmed.all_after('boundary=').trim_space()
+		if boundary.len >= 2 && boundary.starts_with('"') && boundary.ends_with('"') {
+			boundary = boundary[1..boundary.len - 1]
+		}
+		return boundary
+	}
+	return ''
 }

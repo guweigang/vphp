@@ -68,7 +68,7 @@ fn main() {
 	println('🛠️  2. 转译 V 逻辑为 C -> ${transpiled_c}')
 	os.rm(output_so) or {}
 
-	v_res := os.execute('v -nocache -enable-globals -gc none -path ".:..:@vlib" -shared -o ${transpiled_c} ${source_dir}')
+	v_res := os.execute('v -nocache -enable-globals -gc none -d use_openssl -path ".:..:@vlib" -shared -o ${transpiled_c} ${source_dir}')
 	if v_res.exit_code != 0 {
 		println('❌ V 编译失败: ${v_res.output}')
 		return

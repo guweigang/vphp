@@ -603,6 +603,22 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_all_inputs, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_parsed_body, 0, 0, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_body_format, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_is_json_body, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_is_form_body, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_is_multipart_body, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_json_body, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_form_body, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_multipart_body, 0, 0, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_parse_error, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_query_all, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__request_header, 0, 0, 1)
@@ -992,6 +1008,70 @@ PHP_METHOD(VSlim__Request, parsed_body) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimRequest_parsed_body(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(VSlim__Request, body_format) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_body_format(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_body_format(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, is_json_body) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_is_json_body(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_is_json_body(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, is_form_body) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_is_form_body(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_is_form_body(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, is_multipart_body) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_is_multipart_body(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_is_multipart_body(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, json_body) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_json_body(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_json_body(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, form_body) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_form_body(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_form_body(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, multipart_body) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_multipart_body(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_multipart_body(wrapper->v_ptr, ctx);
+}
+PHP_METHOD(VSlim__Request, parse_error) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimRequest_parse_error(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimRequest_parse_error(wrapper->v_ptr, ctx);
+}
 PHP_METHOD(VSlim__Request, query_all) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -1234,6 +1314,14 @@ static const zend_function_entry vslim__request_methods[] = {
     PHP_ME(VSlim__Request, has_input, arginfo_vslim__request_has_input, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, all_inputs, arginfo_vslim__request_all_inputs, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, parsed_body, arginfo_vslim__request_parsed_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, body_format, arginfo_vslim__request_body_format, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, is_json_body, arginfo_vslim__request_is_json_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, is_form_body, arginfo_vslim__request_is_form_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, is_multipart_body, arginfo_vslim__request_is_multipart_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, json_body, arginfo_vslim__request_json_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, form_body, arginfo_vslim__request_form_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, multipart_body, arginfo_vslim__request_multipart_body, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Request, parse_error, arginfo_vslim__request_parse_error, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, query_all, arginfo_vslim__request_query_all, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, header, arginfo_vslim__request_header, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Request, headers, arginfo_vslim__request_headers, ZEND_ACC_PUBLIC)
