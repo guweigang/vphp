@@ -675,3 +675,4 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 更细的范围说明见：
 
 - [/Users/guweigang/Source/vphpext/vslim/docs/release_v1.md](/Users/guweigang/Source/vphpext/vslim/docs/release_v1.md)
+- [/Users/guweigang/Source/vphpext/vslim/docs/protocol.md](/Users/guweigang/Source/vphpext/vslim/docs/protocol.md)
