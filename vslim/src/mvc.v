@@ -306,7 +306,7 @@ fn eval_template_function(fn_name string, payload string, scalars map[string]str
 			items := template_list_values(path, scalars, lists)
 			value, err_msg := reduce_template_values(items, reducer, seed)
 			if err_msg != '' && is_view_debug_enabled() {
-				return '[vslim.reduce.error reducer="${reducer}" seed="${seed}" reason="${err_msg}"]'
+				return '[vslim.reduce.error reducer=${reducer} seed=${seed} reason=${err_msg}]'
 			}
 			return value
 		}

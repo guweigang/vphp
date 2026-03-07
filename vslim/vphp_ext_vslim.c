@@ -8230,8 +8230,8 @@ VV_LOC Array_Map_string_string main__collect_object_loop_locals_from_block(strin
 VV_LOC Array_string main__extract_item_field_tokens(string block);
 VV_LOC multi_return_Map_string_string_Map_string_Array_string main__extract_template_data(vphp__ZVal data);
 VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_string_string* scalars, Map_string_Array_string* lists, int depth);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22297(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22783(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc);
 VV_LOC string main__alias_template_key(string path);
 VV_LOC bool main__is_numeric_path_segment(string part);
 VV_LOC bool main__is_template_list(vphp__ZVal value);
@@ -10464,7 +10464,7 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_83_vphp__zval_vphp__zval_mut_map_string_str
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22297(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
 	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
 	if ((key_name).len == 0) {
 		return;
@@ -10472,7 +10472,7 @@ VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__ZVal*)builtin__map_get_and_set((map*)acc, &(string[]){key_name}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,.owned = 0,} })) = val;
 }
 
-VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22783(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
+VV_LOC void anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__ZVal* acc) {
 	string key_name = builtin__string_trim_space(vphp__ZVal_to_string(key));
 	if ((key_name).len == 0) {
 		return;
@@ -48663,7 +48663,7 @@ VV_LOC string main__eval_template_function(string fn_name, string payload, Map_s
 		string value = mr_9046.arg0;
 		string err_msg = mr_9046.arg1;
 		if ((err_msg).len != 0 && main__is_view_debug_enabled()) {
-			return builtin__str_intp(4, _MOV((StrIntpData[]){{_S("[vslim.reduce.error reducer=\""), 0xfe10, {.d_s = reducer}}, {_S("\" seed=\""), 0xfe10, {.d_s = seed}}, {_S("\" reason=\""), 0xfe10, {.d_s = err_msg}}, {_S("\"]"), 0, { .d_c = 0 }}}));
+			return builtin__str_intp(4, _MOV((StrIntpData[]){{_S("[vslim.reduce.error reducer="), 0xfe10, {.d_s = reducer}}, {_S(" seed="), 0xfe10, {.d_s = seed}}, {_S(" reason="), 0xfe10, {.d_s = err_msg}}, {_S("]"), 0, { .d_c = 0 }}}));
 		}
 		return value;
 	}
@@ -49465,7 +49465,7 @@ VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_s
 			return;
 		}
 		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22297);
+		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22291);
 		int _t3 = children.key_values.len;
 		for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
 			int _t4 = children.key_values.len - _t3;
@@ -49485,7 +49485,7 @@ VV_LOC void main__collect_template_values(string prefix, vphp__ZVal value, Map_s
 	}
 	if (vphp__ZVal_is_object(value)) {
 		Map_string_vphp__ZVal children = vphp__ZVal_fold_T_Map_string_vphp__ZVal(value, builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22783);
+		, (voidptr)		anon_fn_8e93695b6bd488a3_43_vphp__zval_vphp__zval_mut_map_string_vphp__zval_22777);
 		int _t6 = children.key_values.len;
 		for (int _t5 = 0; _t5 < _t6; ++_t5 ) {
 			int _t7 = children.key_values.len - _t6;
