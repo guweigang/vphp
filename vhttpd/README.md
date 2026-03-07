@@ -17,6 +17,7 @@ Core design rule:
 - PSR-7/15 support matrix: [psr_support.md](/Users/guweigang/Source/vphpext/vhttpd/docs/psr_support.md)
 - Failure/timeout model: [failure_model.md](/Users/guweigang/Source/vphpext/vhttpd/docs/failure_model.md)
 - Worker transport contract: [transport_contract.md](/Users/guweigang/Source/vphpext/vhttpd/docs/transport_contract.md)
+- VSlim envelope/map contract: [/Users/guweigang/Source/vphpext/vslim/docs/protocol.md](/Users/guweigang/Source/vphpext/vslim/docs/protocol.md)
 - MVP 1.0 operations runbook (TOML-first): [MVP_1_0_RUNBOOK.md](/Users/guweigang/Source/vphpext/vhttpd/docs/MVP_1_0_RUNBOOK.md)
 - MVP 1.0 PR-ready checklist: [MVP_1_0_PR_READY.md](/Users/guweigang/Source/vphpext/vhttpd/docs/MVP_1_0_PR_READY.md)
 - veb reuse roadmap (1.1): [VEB_REUSE_1_1_PLAN.md](/Users/guweigang/Source/vphpext/vhttpd/docs/VEB_REUSE_1_1_PLAN.md)
@@ -494,6 +495,47 @@ Compatibility note:
 - older `*_json` fields are intentionally removed
 - first release uses the array envelope only
 - if a caller still sends the old shape, it is now considered invalid input
+
+## VSlim map dispatch contract
+
+When a PHP app chooses `VSlim\App::dispatch_envelope_map(...)`, the return shape is:
+
+- `status` (stringified integer)
+- `body` (string)
+- `content_type` (string)
+- `headers_<lowercase-name>` (string; one key per response header)
+
+Common propagated headers:
+
+- `headers_x-request-id`
+- `headers_x-trace-id`
+- `headers_x-vhttpd-trace-id`
+
+Typical worker-side normalization pattern:
+
+```php
+$map = $app->dispatch_envelope_map($envelope);
+$headers = [];
+foreach ($map as $k => $v) {
+    if (str_starts_with((string)$k, 'headers_')) {
+        $headers[substr((string)$k, 8)] = (string)$v;
+    }
+}
+if (!isset($headers['content-type'])) {
+    $headers['content-type'] = (string)($map['content_type'] ?? 'text/plain; charset=utf-8');
+}
+```
+
+Then return normalized worker envelope:
+
+```php
+[
+  'status' => (int)($map['status'] ?? '500'),
+  'content_type' => (string)($map['content_type'] ?? 'text/plain; charset=utf-8'),
+  'headers' => $headers,
+  'body' => (string)($map['body'] ?? ''),
+]
+```
 
 ## Optional PSR-7 bridge
 
