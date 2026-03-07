@@ -274,11 +274,17 @@ function run_self_test(): void
     $r4 = $app->dispatch('GET', '/links');
     echo "GET /links => {$r4->status} {$r4->body}\n";
 
-    $r5 = $app->dispatch('GET', '/missing');
-    echo "GET /missing => {$r5->status} {$r5->body}\n";
+    $r5 = $app->dispatch('GET', '/debug/routes');
+    echo "GET /debug/routes => {$r5->status} {$r5->body}\n";
 
-    $r6 = $app->dispatch('GET', '/broken');
-    echo "GET /broken => {$r6->status} {$r6->body}\n";
+    $r6 = $app->dispatch('GET', '/debug/route-conflicts');
+    echo "GET /debug/route-conflicts => {$r6->status} {$r6->body}\n";
+
+    $r7 = $app->dispatch('GET', '/missing');
+    echo "GET /missing => {$r7->status} {$r7->body}\n";
+
+    $r8 = $app->dispatch('GET', '/broken');
+    echo "GET /broken => {$r8->status} {$r8->body}\n";
 }
 
 function demo_app_handler(): callable
