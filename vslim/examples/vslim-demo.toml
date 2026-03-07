@@ -15,8 +15,6 @@ cmd = "php -d extension=/Users/guweigang/Source/vphpext/vslim/vslim.so /Users/gu
 
 [worker.env]
 VSLIM_HTTPD_APP = "/Users/guweigang/Source/vphpext/vslim/examples/demo_app.php"
-VSLIM_TRACE_MEM=1
-VSLIM_TRACE_MEM_EVERY=200
 
 [admin]
 host = "127.0.0.1"
