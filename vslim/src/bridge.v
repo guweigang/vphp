@@ -1434,6 +1434,17 @@ pub fn vphp_wrap_vslimapp_view(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.view(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_view_with_layout']
+pub fn vphp_wrap_vslimapp_view_with_layout(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.view_with_layout(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_demo']
 pub fn vphp_wrap_vslimapp_demo(ctx vphp.Context) voidptr {
     vphp_ar_mark := vphp.autorelease_mark()
@@ -2134,6 +2145,17 @@ pub fn vphp_wrap_vslimview_render(ptr voidptr, ctx vphp.Context)  {
     res := recv.render(arg_0, arg_1)
     ctx.return_val[string](res)
 }
+@[export: 'vphp_wrap_VSlimView_render_with_layout']
+pub fn vphp_wrap_vslimview_render_with_layout(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimView(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.render_with_layout(arg_0, arg_1, arg_2)
+    ctx.return_val[string](res)
+}
 @[export: 'vphp_wrap_VSlimView_render_response']
 pub fn vphp_wrap_vslimview_render_response(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimView(ptr) }
@@ -2142,6 +2164,17 @@ pub fn vphp_wrap_vslimview_render_response(ptr voidptr, ctx vphp.Context) voidpt
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.render_response(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimView_render_response_with_layout']
+pub fn vphp_wrap_vslimview_render_response_with_layout(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimView(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.render_response_with_layout(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'VSlimView_handlers']
@@ -2238,6 +2271,17 @@ pub fn vphp_wrap_vslimcontroller_render(ptr voidptr, ctx vphp.Context) voidptr {
     arg_0 := ctx.arg[string](0)
     arg_1 := ctx.arg_val(1)
     res := recv.render(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimController_render_with_layout']
+pub fn vphp_wrap_vslimcontroller_render_with_layout(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimController(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.render_with_layout(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimController_url_for']

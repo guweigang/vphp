@@ -1980,6 +1980,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_view, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
 ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_view_with_layout, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, layout, IS_STRING, 0)
+ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_demo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_set_base_path, 0, 0, 1)
@@ -2280,6 +2285,22 @@ PHP_METHOD(VSlim__App, view) {
     // printf("PHP_METHOD VSlim__App::view called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = vphp_wrap_VSlimApp_view(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__response_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
+    }
+}
+
+
+PHP_METHOD(VSlim__App, view_with_layout) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimApp_view_with_layout(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__App::view_with_layout called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimApp_view_with_layout(wrapper->v_ptr, ctx);
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
@@ -3142,6 +3163,7 @@ static const zend_function_entry vslim__app_methods[] = {
     PHP_ME(VSlim__App, assets_prefix, arginfo_vslim__app_assets_prefix, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, make_view, arginfo_vslim__app_make_view, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, view, arginfo_vslim__app_view, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__App, view_with_layout, arginfo_vslim__app_view_with_layout, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, demo, arginfo_vslim__app_demo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(VSlim__App, set_base_path, arginfo_vslim__app_set_base_path, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, has_container, arginfo_vslim__app_has_container, ZEND_ACC_PUBLIC)
@@ -3227,8 +3249,18 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__view_render, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
 ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__view_render_with_layout, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, layout, IS_STRING, 0)
+ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__view_render_response, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
+ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__view_render_response_with_layout, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, layout, IS_STRING, 0)
 ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
 PHP_METHOD(VSlim__View, __construct) {
@@ -3308,6 +3340,14 @@ PHP_METHOD(VSlim__View, render) {
     if (!wrapper->v_ptr) RETURN_FALSE;
     vphp_wrap_VSlimView_render(wrapper->v_ptr, ctx);
 }
+PHP_METHOD(VSlim__View, render_with_layout) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimView_render_with_layout(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimView_render_with_layout(wrapper->v_ptr, ctx);
+}
 
 PHP_METHOD(VSlim__View, render_response) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -3324,6 +3364,22 @@ PHP_METHOD(VSlim__View, render_response) {
     }
 }
 
+
+PHP_METHOD(VSlim__View, render_response_with_layout) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimView_render_response_with_layout(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__View::render_response_with_layout called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimView_render_response_with_layout(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__response_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
+    }
+}
+
 static const zend_function_entry vslim__view_methods[] = {
     PHP_ME(VSlim__View, __construct, arginfo_vslim__view_construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__View, set_base_path, arginfo_vslim__view_set_base_path, ZEND_ACC_PUBLIC)
@@ -3332,7 +3388,9 @@ static const zend_function_entry vslim__view_methods[] = {
     PHP_ME(VSlim__View, assets_prefix, arginfo_vslim__view_assets_prefix, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__View, asset, arginfo_vslim__view_asset, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__View, render, arginfo_vslim__view_render, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__View, render_with_layout, arginfo_vslim__view_render_with_layout, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__View, render_response, arginfo_vslim__view_render_response, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__View, render_response_with_layout, arginfo_vslim__view_render_response_with_layout, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -3350,6 +3408,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__controller_view, 0, 0, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__controller_render, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
+ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__controller_render_with_layout, 0, 0, 3)
+ZEND_ARG_TYPE_INFO(0, template, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, layout, IS_STRING, 0)
 ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__controller_url_for, 0, 0, 2)
@@ -3461,6 +3524,22 @@ PHP_METHOD(VSlim__Controller, render) {
     }
 }
 
+
+PHP_METHOD(VSlim__Controller, render_with_layout) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimController_render_with_layout(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__Controller::render_with_layout called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimController_render_with_layout(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__response_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
+    }
+}
+
 PHP_METHOD(VSlim__Controller, url_for) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -3563,6 +3642,7 @@ static const zend_function_entry vslim__controller_methods[] = {
     PHP_ME(VSlim__Controller, set_view, arginfo_vslim__controller_set_view, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, view, arginfo_vslim__controller_view, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, render, arginfo_vslim__controller_render, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Controller, render_with_layout, arginfo_vslim__controller_render_with_layout, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, url_for, arginfo_vslim__controller_url_for, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, url_for_query, arginfo_vslim__controller_url_for_query, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, text, arginfo_vslim__controller_text, ZEND_ACC_PUBLIC)

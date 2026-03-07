@@ -7686,6 +7686,8 @@ voidptr main__vphp_wrap_vslimapp_make_view(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_make_view(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_make_view
 voidptr main__vphp_wrap_vslimapp_view(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_view(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_view
+voidptr main__vphp_wrap_vslimapp_view_with_layout(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimApp_view_with_layout(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_view_with_layout
 voidptr main__vphp_wrap_vslimapp_demo(vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_demo(vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_demo
 voidptr main__vphp_wrap_vslimapp_set_base_path(voidptr ptr, vphp__Context ctx);
@@ -7834,8 +7836,12 @@ void main__vphp_wrap_vslimview_asset(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimView_asset(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimview_asset
 void main__vphp_wrap_vslimview_render(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimView_render(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimview_render
+void main__vphp_wrap_vslimview_render_with_layout(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimView_render_with_layout(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimview_render_with_layout
 voidptr main__vphp_wrap_vslimview_render_response(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimView_render_response(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimview_render_response
+voidptr main__vphp_wrap_vslimview_render_response_with_layout(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimView_render_response_with_layout(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimview_render_response_with_layout
 voidptr main__vslimview_handlers(void);
 VV_EXP voidptr VSlimView_handlers(void); // exported fn main.vslimview_handlers
 voidptr main__vslimcontroller_new_raw(void);
@@ -7860,6 +7866,8 @@ voidptr main__vphp_wrap_vslimcontroller_view(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_view(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_view
 voidptr main__vphp_wrap_vslimcontroller_render(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimController_render(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_render
+voidptr main__vphp_wrap_vslimcontroller_render_with_layout(voidptr ptr, vphp__Context ctx);
+VV_EXP voidptr vphp_wrap_VSlimController_render_with_layout(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_render_with_layout
 void main__vphp_wrap_vslimcontroller_url_for(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimController_url_for(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimcontroller_url_for
 void main__vphp_wrap_vslimcontroller_url_for_query(voidptr ptr, vphp__Context ctx);
@@ -7952,6 +7960,7 @@ main__VSlimApp* main__VSlimApp_set_assets_prefix(main__VSlimApp* app, string pre
 string main__VSlimApp_assets_prefix(main__VSlimApp* app);
 main__VSlimView* main__VSlimApp_make_view(main__VSlimApp* app);
 main__VSlimResponse* main__VSlimApp_view(main__VSlimApp* app, string __v_template, vphp__ZVal data);
+main__VSlimResponse* main__VSlimApp_view_with_layout(main__VSlimApp* app, string __v_template, string layout, vphp__ZVal data);
 main__VSlimView* main__VSlimView_construct(main__VSlimView* view, string base_path, string assets_prefix);
 main__VSlimView* main__VSlimView_set_base_path(main__VSlimView* view, string base_path);
 string main__VSlimView_base_path(main__VSlimView* view);
@@ -7960,16 +7969,23 @@ string main__VSlimView_assets_prefix(main__VSlimView* view);
 string main__VSlimView_asset(main__VSlimView* view, string path);
 string main__VSlimView_render(main__VSlimView* view, string __v_template, vphp__ZVal data);
 string main__VSlimView_render_map(main__VSlimView* view, string __v_template, Map_string_string data);
+VV_LOC string main__VSlimView_render_map_with_depth(main__VSlimView* view, string __v_template, Map_string_string data, int depth);
+string main__VSlimView_render_with_layout(main__VSlimView* view, string __v_template, string layout, vphp__ZVal data);
+string main__VSlimView_render_map_with_layout(main__VSlimView* view, string __v_template, string layout, Map_string_string data);
 main__VSlimResponse* main__VSlimView_render_response(main__VSlimView* view, string __v_template, vphp__ZVal data);
-VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source, Map_string_string data);
+main__VSlimResponse* main__VSlimView_render_response_with_layout(main__VSlimView* view, string __v_template, string layout, vphp__ZVal data);
+VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source, Map_string_string data, int depth);
+VV_LOC string main__VSlimView_render_include_tokens(main__VSlimView* view, string source, Map_string_string data, int depth);
 VV_LOC string main__VSlimView_resolve_template_path(main__VSlimView* view, string __v_template);
 VV_LOC string main__render_asset_tokens(string source, string assets_prefix);
+VV_LOC string main__replace_slot_tokens(string source, string slot, string content);
 VV_LOC string main__normalize_assets_prefix(string prefix);
 main__VSlimController* main__VSlimController_construct(main__VSlimController* c, main__VSlimApp* app);
 main__VSlimController* main__VSlimController_set_app(main__VSlimController* c, main__VSlimApp* app);
 main__VSlimController* main__VSlimController_set_view(main__VSlimController* c, main__VSlimView* view);
 main__VSlimView* main__VSlimController_view(main__VSlimController* c);
 main__VSlimResponse* main__VSlimController_render(main__VSlimController* c, string __v_template, vphp__ZVal data);
+main__VSlimResponse* main__VSlimController_render_with_layout(main__VSlimController* c, string __v_template, string layout, vphp__ZVal data);
 string main__VSlimController_url_for(main__VSlimController* c, string name, vphp__ZVal params);
 string main__VSlimController_url_for_query(main__VSlimController* c, string name, vphp__ZVal params, vphp__ZVal query);
 main__VSlimResponse* main__VSlimController_text(main__VSlimController* c, string body, int status);
@@ -43883,6 +43899,23 @@ voidptr main__vphp_wrap_vslimapp_view(voidptr ptr, vphp__Context ctx) {
 voidptr vphp_wrap_VSlimApp_view(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_view(ptr, ctx);
 }
+voidptr main__vphp_wrap_vslimapp_view_with_layout(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimResponse* res = main__VSlimApp_view_with_layout(recv, arg_0, arg_1, arg_2);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimApp_view_with_layout -> main__vphp_wrap_vslimapp_view_with_layout
+voidptr vphp_wrap_VSlimApp_view_with_layout(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_view_with_layout(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimapp_demo(vphp__Context ctx) {
 	int vphp_ar_mark = vphp__autorelease_mark();
 	main__VSlimApp* res = main__VSlimApp__static__demo();
@@ -44986,6 +45019,22 @@ void main__vphp_wrap_vslimview_render(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimView_render(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimview_render(ptr, ctx);
 }
+void main__vphp_wrap_vslimview_render_with_layout(voidptr ptr, vphp__Context ctx) {
+	main__VSlimView* recv = ((main__VSlimView*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	string res = main__VSlimView_render_with_layout(recv, arg_0, arg_1, arg_2);
+	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimView_render_with_layout -> main__vphp_wrap_vslimview_render_with_layout
+void vphp_wrap_VSlimView_render_with_layout(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimview_render_with_layout(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimview_render_response(voidptr ptr, vphp__Context ctx) {
 	main__VSlimView* recv = ((main__VSlimView*)(ptr));
 	int vphp_ar_mark = vphp__autorelease_mark();
@@ -45001,6 +45050,23 @@ voidptr main__vphp_wrap_vslimview_render_response(voidptr ptr, vphp__Context ctx
 // export alias: vphp_wrap_VSlimView_render_response -> main__vphp_wrap_vslimview_render_response
 voidptr vphp_wrap_VSlimView_render_response(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimview_render_response(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimview_render_response_with_layout(voidptr ptr, vphp__Context ctx) {
+	main__VSlimView* recv = ((main__VSlimView*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimResponse* res = main__VSlimView_render_response_with_layout(recv, arg_0, arg_1, arg_2);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimView_render_response_with_layout -> main__vphp_wrap_vslimview_render_response_with_layout
+voidptr vphp_wrap_VSlimView_render_response_with_layout(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimview_render_response_with_layout(ptr, ctx);
 }
 voidptr main__vslimview_handlers(void) {
 	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
@@ -45147,6 +45213,23 @@ voidptr main__vphp_wrap_vslimcontroller_render(voidptr ptr, vphp__Context ctx) {
 // export alias: vphp_wrap_VSlimController_render -> main__vphp_wrap_vslimcontroller_render
 voidptr vphp_wrap_VSlimController_render(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimcontroller_render(ptr, ctx);
+}
+voidptr main__vphp_wrap_vslimcontroller_render_with_layout(voidptr ptr, vphp__Context ctx) {
+	main__VSlimController* recv = ((main__VSlimController*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
+	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
+	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
+	main__VSlimResponse* res = main__VSlimController_render_with_layout(recv, arg_0, arg_1, arg_2);
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
+}
+// export alias: vphp_wrap_VSlimController_render_with_layout -> main__vphp_wrap_vslimcontroller_render_with_layout
+voidptr vphp_wrap_VSlimController_render_with_layout(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimcontroller_render_with_layout(ptr, ctx);
 }
 void main__vphp_wrap_vslimcontroller_url_for(voidptr ptr, vphp__Context ctx) {
 	main__VSlimController* recv = ((main__VSlimController*)(ptr));
@@ -45762,6 +45845,10 @@ main__VSlimResponse* main__VSlimApp_view(main__VSlimApp* app, string __v_templat
 	main__VSlimView* view = main__VSlimApp_make_view(app);
 	return main__VSlimView_render_response(view, __v_template, data);
 }
+main__VSlimResponse* main__VSlimApp_view_with_layout(main__VSlimApp* app, string __v_template, string layout, vphp__ZVal data) {
+	main__VSlimView* view = main__VSlimApp_make_view(app);
+	return main__VSlimView_render_response_with_layout(view, __v_template, layout, data);
+}
 main__VSlimView* main__VSlimView_construct(main__VSlimView* view, string base_path, string assets_prefix) {
 	view->base_path = builtin__string_trim_space(base_path);
 	view->assets_prefix = main__normalize_assets_prefix(assets_prefix);
@@ -45795,14 +45882,38 @@ string main__VSlimView_render(main__VSlimView* view, string __v_template, vphp__
 	return main__VSlimView_render_map(view, __v_template, vphp__ZVal_to_string_map(data));
 }
 string main__VSlimView_render_map(main__VSlimView* view, string __v_template, Map_string_string data) {
+	return main__VSlimView_render_map_with_depth(view, __v_template, data, 0);
+}
+VV_LOC string main__VSlimView_render_map_with_depth(main__VSlimView* view, string __v_template, Map_string_string data, int depth) {
+	if (depth > 8) {
+		return _S("");
+	}
 	string path = main__VSlimView_resolve_template_path(view, __v_template);
-	_result_string _t1 = os__read_file(path);
-	if (_t1.is_error) {
+	_result_string _t2 = os__read_file(path);
+	if (_t2.is_error) {
 		return _S("");
 	}
 	
- 	string source = (*(string*)_t1.data);
-	return main__VSlimView_render_source(view, source, data);
+ 	string source = (*(string*)_t2.data);
+	return main__VSlimView_render_source(view, source, data, depth);
+}
+string main__VSlimView_render_with_layout(main__VSlimView* view, string __v_template, string layout, vphp__ZVal data) {
+	return main__VSlimView_render_map_with_layout(view, __v_template, layout, vphp__ZVal_to_string_map(data));
+}
+string main__VSlimView_render_map_with_layout(main__VSlimView* view, string __v_template, string layout, Map_string_string data) {
+	string content = main__VSlimView_render_map_with_depth(view, __v_template, data, 0);
+	if ((content).len == 0) {
+		return _S("");
+	}
+	string layout_path = main__VSlimView_resolve_template_path(view, layout);
+	_result_string _t2 = os__read_file(layout_path);
+	if (_t2.is_error) {
+		return content;
+	}
+	
+ 	string layout_source = (*(string*)_t2.data);
+	string layout_rendered = main__VSlimView_render_source(view, layout_source, data, 0);
+	return main__replace_slot_tokens(layout_rendered, _S("content"), content);
 }
 main__VSlimResponse* main__VSlimView_render_response(main__VSlimView* view, string __v_template, vphp__ZVal data) {
 	string body = main__VSlimView_render(view, __v_template, data);
@@ -45816,8 +45927,21 @@ main__VSlimResponse* main__VSlimView_render_response(main__VSlimView* view, stri
 	)
 	,}, sizeof(main__VSlimResponse)));
 }
-VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source, Map_string_string data) {
+main__VSlimResponse* main__VSlimView_render_response_with_layout(main__VSlimView* view, string __v_template, string layout, vphp__ZVal data) {
+	string body = main__VSlimView_render_with_layout(view, __v_template, layout, data);
+	return ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = 200,.body = body,.content_type = _S("text/html; charset=utf-8"),.headers = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 1, sizeof(string), sizeof(string),
+		_MOV((string[1]){
+			_S("content-type"),
+		}),
+		_MOV((string[1]){
+			_S("text/html; charset=utf-8"), 
+		})
+	)
+	,}, sizeof(main__VSlimResponse)));
+}
+VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source, Map_string_string data, int depth) {
 	string out = source;
+	out = main__VSlimView_render_include_tokens(view, out, data, depth);
 	int _t2 = data.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
 		int _t3 = data.key_values.len - _t2;
@@ -45834,6 +45958,29 @@ VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source
 		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{ "), 0xfe10, {.d_s = key}}, {_S(" }}"), 0, { .d_c = 0 }}})), value);
 	}
 	return main__render_asset_tokens(out, main__VSlimView_assets_prefix(view));
+}
+VV_LOC string main__VSlimView_render_include_tokens(main__VSlimView* view, string source, Map_string_string data, int depth) {
+	string out = source;
+	for (;;) {
+		_option_int _t1 = builtin__string_index(out, _S("{{include:"));
+		if (_t1.state != 0) {
+			break;
+		}
+		
+ 		int start = (*(int*)_t1.data);
+		_option_int _t2 = builtin__string_index(builtin__string_substr(out, start, 2147483647), _S("}}"));
+		if (_t2.state != 0) {
+			break;
+		}
+		
+ 		int end = (*(int*)_t2.data);
+		int token_end = (int)((int)(start + end) + 2);
+		string token = builtin__string_substr(out, start, token_end);
+		string partial = builtin__string_trim_space(builtin__string_replace(builtin__string_replace(token, _S("{{include:"), _S("")), _S("}}"), _S("")));
+		string replacement = main__VSlimView_render_map_with_depth(view, partial, data, (int)(depth + 1));
+		out = builtin__string_replace(out, token, replacement);
+	}
+	return out;
 }
 VV_LOC string main__VSlimView_resolve_template_path(main__VSlimView* view, string __v_template) {
 	string clean = builtin__string_trim_space(__v_template);
@@ -45868,6 +46015,18 @@ VV_LOC string main__render_asset_tokens(string source, string assets_prefix) {
 		string asset_path = builtin__string_trim_left(builtin__string_trim_space(builtin__string_replace(builtin__string_replace(token, _S("{{asset:"), _S("")), _S("}}"), _S(""))), _S("/"));
 		string replacement = ((asset_path).len == 0 ? (assets_prefix) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = assets_prefix}}, {_S("/"), 0xfe10, {.d_s = asset_path}}, {_SLIT0, 0, { .d_c = 0 }}}))));
 		out = builtin__string_replace(out, token, replacement);
+	}
+	return out;
+}
+VV_LOC string main__replace_slot_tokens(string source, string slot, string content) {
+	string out = source;
+	string slot_token = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{slot:"), 0xfe10, {.d_s = slot}}, {_S("}}"), 0, { .d_c = 0 }}}));
+	string slot_token_spaced = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{ slot:"), 0xfe10, {.d_s = slot}}, {_S(" }}"), 0, { .d_c = 0 }}}));
+	if (builtin__string_contains(out, slot_token)) {
+		out = builtin__string_replace(out, slot_token, content);
+	}
+	if (builtin__string_contains(out, slot_token_spaced)) {
+		out = builtin__string_replace(out, slot_token_spaced, content);
 	}
 	return out;
 }
@@ -45907,6 +46066,10 @@ main__VSlimView* main__VSlimController_view(main__VSlimController* c) {
 main__VSlimResponse* main__VSlimController_render(main__VSlimController* c, string __v_template, vphp__ZVal data) {
 	main__VSlimView* view = main__VSlimController_view(c);
 	return main__VSlimView_render_response(view, __v_template, data);
+}
+main__VSlimResponse* main__VSlimController_render_with_layout(main__VSlimController* c, string __v_template, string layout, vphp__ZVal data) {
+	main__VSlimView* view = main__VSlimController_view(c);
+	return main__VSlimView_render_response_with_layout(view, __v_template, layout, data);
 }
 string main__VSlimController_url_for(main__VSlimController* c, string name, vphp__ZVal params) {
 	if (c->app_ref == ((void*)0)) {

@@ -669,10 +669,13 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `set_assets_prefix(...)`
   - `asset('app.js') -> /assets/app.js`
   - `render(template, data)`（`{{ key }}` 占位符）
+  - `render_with_layout(template, layout, data)`（`{{slot:content}}` 布局槽位）
   - `render_response(template, data)`（返回 `VSlim\Response`，`text/html; charset=utf-8`）
+  - `render_response_with_layout(template, layout, data)`
 - `VSlim\Controller`
   - `__construct(VSlim\App $app)`
   - `render(template, data)`
+  - `render_with_layout(template, layout, data)`
   - `url_for(name, params)`
   - `url_for_query(name, params, query)`
   - `text(body, status)`
@@ -685,11 +688,22 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `set_assets_prefix(...)`
   - `make_view()`
   - `view(template, data)`
+  - `view_with_layout(template, layout, data)`
 
 模板中的资源占位符可写成：
 
 ```html
 <script src="{{asset:app.js}}"></script>
+```
+
+局部模板与布局：
+
+```html
+<!-- layout.html -->
+<body>
+  {{include:partials/header.html}}
+  <main>{{slot:content}}</main>
+</body>
 ```
 
 这和 `vhttpd` 的 `veb.assets` 数据面静态资源前缀约定一致（默认 `/assets`）。

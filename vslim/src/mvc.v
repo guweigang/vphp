@@ -43,6 +43,12 @@ pub fn (app &VSlimApp) view(template string, data vphp.ZVal) &VSlimResponse {
 }
 
 @[php_method]
+pub fn (app &VSlimApp) view_with_layout(template string, layout string, data vphp.ZVal) &VSlimResponse {
+	mut view := app.make_view()
+	return view.render_response_with_layout(template, layout, data)
+}
+
+@[php_method]
 pub fn (mut view VSlimView) construct(base_path string, assets_prefix string) &VSlimView {
 	view.base_path = base_path.trim_space()
 	view.assets_prefix = normalize_assets_prefix(assets_prefix)
@@ -89,9 +95,32 @@ pub fn (view &VSlimView) render(template string, data vphp.ZVal) string {
 }
 
 pub fn (view &VSlimView) render_map(template string, data map[string]string) string {
+	return view.render_map_with_depth(template, data, 0)
+}
+
+fn (view &VSlimView) render_map_with_depth(template string, data map[string]string, depth int) string {
+	if depth > 8 {
+		return ''
+	}
 	path := view.resolve_template_path(template)
 	source := os.read_file(path) or { return '' }
-	return view.render_source(source, data)
+	return view.render_source(source, data, depth)
+}
+
+@[php_method]
+pub fn (view &VSlimView) render_with_layout(template string, layout string, data vphp.ZVal) string {
+	return view.render_map_with_layout(template, layout, data.to_string_map())
+}
+
+pub fn (view &VSlimView) render_map_with_layout(template string, layout string, data map[string]string) string {
+	content := view.render_map_with_depth(template, data, 0)
+	if content == '' {
+		return ''
+	}
+	layout_path := view.resolve_template_path(layout)
+	layout_source := os.read_file(layout_path) or { return content }
+	layout_rendered := view.render_source(layout_source, data, 0)
+	return replace_slot_tokens(layout_rendered, 'content', content)
 }
 
 @[php_method]
@@ -107,13 +136,41 @@ pub fn (view &VSlimView) render_response(template string, data vphp.ZVal) &VSlim
 	}
 }
 
-fn (view &VSlimView) render_source(source string, data map[string]string) string {
+@[php_method]
+pub fn (view &VSlimView) render_response_with_layout(template string, layout string, data vphp.ZVal) &VSlimResponse {
+	body := view.render_with_layout(template, layout, data)
+	return &VSlimResponse{
+		status: 200
+		body: body
+		content_type: 'text/html; charset=utf-8'
+		headers: {
+			'content-type': 'text/html; charset=utf-8'
+		}
+	}
+}
+
+fn (view &VSlimView) render_source(source string, data map[string]string, depth int) string {
 	mut out := source
+	out = view.render_include_tokens(out, data, depth)
 	for key, value in data {
 		out = out.replace('{{${key}}}', value)
 		out = out.replace('{{ ${key} }}', value)
 	}
 	return render_asset_tokens(out, view.assets_prefix())
+}
+
+fn (view &VSlimView) render_include_tokens(source string, data map[string]string, depth int) string {
+	mut out := source
+	for {
+		start := out.index('{{include:') or { break }
+		end := out[start..].index('}}') or { break }
+		token_end := start + end + 2
+		token := out[start..token_end]
+		partial := token.replace('{{include:', '').replace('}}', '').trim_space()
+		replacement := view.render_map_with_depth(partial, data, depth + 1)
+		out = out.replace(token, replacement)
+	}
+	return out
 }
 
 fn (view &VSlimView) resolve_template_path(template string) string {
@@ -144,6 +201,19 @@ fn render_asset_tokens(source string, assets_prefix string) string {
 			'${assets_prefix}/${asset_path}'
 		}
 		out = out.replace(token, replacement)
+	}
+	return out
+}
+
+fn replace_slot_tokens(source string, slot string, content string) string {
+	mut out := source
+	slot_token := '{{slot:${slot}}}'
+	slot_token_spaced := '{{ slot:${slot} }}'
+	if out.contains(slot_token) {
+		out = out.replace(slot_token, content)
+	}
+	if out.contains(slot_token_spaced) {
+		out = out.replace(slot_token_spaced, content)
 	}
 	return out
 }
@@ -197,6 +267,12 @@ pub fn (mut c VSlimController) view() &VSlimView {
 pub fn (mut c VSlimController) render(template string, data vphp.ZVal) &VSlimResponse {
 	mut view := c.view()
 	return view.render_response(template, data)
+}
+
+@[php_method]
+pub fn (mut c VSlimController) render_with_layout(template string, layout string, data vphp.ZVal) &VSlimResponse {
+	mut view := c.view()
+	return view.render_response_with_layout(template, layout, data)
 }
 
 @[php_method]
