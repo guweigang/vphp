@@ -89,10 +89,26 @@ fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
 	return out
 }
 
+fn interface_method_args_to_builder(iface &repr.PhpInterfaceRepr, args []repr.PhpArg) []builder.ClassMethodArg {
+	mut out := []builder.ClassMethodArg{}
+	for i, arg in args {
+		// V interface AST can carry an implicit first arg `x` (self-like placeholder).
+		// Never expose it to PHP interface signatures.
+		if i == 0 && arg.name == 'x' {
+			continue
+		}
+		out << builder.ClassMethodArg{
+			name: arg.name
+			type_: arg.v_type
+		}
+	}
+	return out
+}
+
 fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_interface_builder(r.php_name, r.c_name())
 	for m in r.methods {
-		class_builder.add_abstract_method(php_method_name(m.name), '${r.c_name().to_lower()}_${m.name}', visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args))
+		class_builder.add_abstract_method(php_method_name(m.name), '${r.c_name().to_lower()}_${m.name}', visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT', interface_method_args_to_builder(r, m.args))
 	}
 	return class_builder
 }

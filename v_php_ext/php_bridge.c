@@ -320,11 +320,9 @@ PHP_FUNCTION(v_get_alerts) {
     vphp_wrap_v_get_alerts(ctx);
 }
 zend_class_entry *contentcontract_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 1)
-ZEND_ARG_INFO(0, x)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_save, 0, 0, 0)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 1)
-ZEND_ARG_INFO(0, x)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_contentcontract_get_formatted_title, 0, 0, 0)
 ZEND_END_ARG_INFO()
 static const zend_function_entry contentcontract_methods[] = {
     ZEND_RAW_FENTRY("save", NULL, arginfo_contentcontract_save, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)
@@ -333,8 +331,7 @@ static const zend_function_entry contentcontract_methods[] = {
 };
 
 zend_class_entry *demo__contracts__aliascontract_ce = NULL;
-ZEND_BEGIN_ARG_INFO_EX(arginfo_demo__contracts__aliascontract_ping, 0, 0, 1)
-ZEND_ARG_INFO(0, x)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_demo__contracts__aliascontract_ping, 0, 0, 0)
 ZEND_END_ARG_INFO()
 static const zend_function_entry demo__contracts__aliascontract_methods[] = {
     ZEND_RAW_FENTRY("ping", NULL, arginfo_demo__contracts__aliascontract_ping, ZEND_ACC_PUBLIC | ZEND_ACC_ABSTRACT, NULL, NULL)

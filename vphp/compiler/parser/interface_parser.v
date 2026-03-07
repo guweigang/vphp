@@ -22,10 +22,16 @@ pub fn parse_interface_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpInterface
 
 	for method in interface_decl.methods {
 		mut args := []repr.PhpArg{}
-		for param in method.params {
+		for i, param in method.params {
+			param_type := strip_module(table.get_type_name(param.typ))
+			// V interface AST includes an implicit receiver-like first param (`x`).
+			// It must not leak into PHP interface arginfo, otherwise signatures become save($x).
+			if i == 0 && param.name == 'x' && (param_type == '' || param_type == iface.name) {
+				continue
+			}
 			args << repr.PhpArg{
 				name: param.name
-				v_type: strip_module(table.get_type_name(param.typ))
+				v_type: param_type
 			}
 		}
 		iface.methods << repr.PhpMethodRepr{
