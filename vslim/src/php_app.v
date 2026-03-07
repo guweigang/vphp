@@ -204,14 +204,22 @@ pub fn (app &VSlimApp) dispatch_envelope_map(envelope vphp.ZVal) map[string]stri
 	if trace_on {
 		vslim_trace_mem_log(req, 'dispatch_map.after_core', trace_base)
 	}
+	propagate_request_trace_headers(req, mut res)
 	if resolve_effective_method(req) == 'HEAD' {
 		res.body = ''
 	}
-	return {
+	mut out := {
 		'status': '${res.status}'
 		'body': res.body
 		'content_type': res.content_type
 	}
+	for name, value in res.headers {
+		if name == '' {
+			continue
+		}
+		out['headers_${name.to_lower()}'] = value
+	}
+	return out
 }
 
 @[php_method]

@@ -306,7 +306,22 @@ function demo_app_handler(): callable
         return is_string($token) ? $token : '';
     };
 
-    return static function (mixed $request, array $envelope = []) use ($unauthorized, $tokenFromPath): array {
+    $headersFromEnvelopeMap = static function (array $map): array {
+        $headers = [];
+        foreach ($map as $k => $v) {
+            if (!is_string($k) || !str_starts_with($k, 'headers_')) {
+                continue;
+            }
+            $name = substr($k, 8);
+            if ($name === '') {
+                continue;
+            }
+            $headers[strtolower($name)] = (string) $v;
+        }
+        return $headers;
+    };
+
+    return static function (mixed $request, array $envelope = []) use ($unauthorized, $tokenFromPath, $headersFromEnvelopeMap): array {
         static $app = null;
         if (!$app instanceof VSlim\App) {
             $app = build_demo_app();
@@ -320,12 +335,14 @@ function demo_app_handler(): callable
             if (method_exists($app, 'dispatch_envelope_map')) {
                 /** @var array{status:string,body:string,content_type:string} $map */
                 $map = $app->dispatch_envelope_map($envelope);
+                $headers = $headersFromEnvelopeMap($map);
+                if (!isset($headers['content-type'])) {
+                    $headers['content-type'] = (string) ($map['content_type'] ?? 'text/plain; charset=utf-8');
+                }
                 return [
                     'status' => (int) ($map['status'] ?? '500'),
                     'content_type' => (string) ($map['content_type'] ?? 'text/plain; charset=utf-8'),
-                    'headers' => [
-                        'content-type' => (string) ($map['content_type'] ?? 'text/plain; charset=utf-8'),
-                    ],
+                    'headers' => $headers,
                     'body' => (string) ($map['body'] ?? ''),
                 ];
             }
@@ -344,12 +361,14 @@ function demo_app_handler(): callable
             if (method_exists($app, 'dispatch_envelope_map')) {
                 /** @var array{status:string,body:string,content_type:string} $map */
                 $map = $app->dispatch_envelope_map($request);
+                $headers = $headersFromEnvelopeMap($map);
+                if (!isset($headers['content-type'])) {
+                    $headers['content-type'] = (string) ($map['content_type'] ?? 'text/plain; charset=utf-8');
+                }
                 return [
                     'status' => (int) ($map['status'] ?? '500'),
                     'content_type' => (string) ($map['content_type'] ?? 'text/plain; charset=utf-8'),
-                    'headers' => [
-                        'content-type' => (string) ($map['content_type'] ?? 'text/plain; charset=utf-8'),
-                    ],
+                    'headers' => $headers,
                     'body' => (string) ($map['body'] ?? ''),
                 ];
             }
