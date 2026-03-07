@@ -753,6 +753,7 @@ $app->resource_opts('/photos/:photo_id/comments', CommentController::class, [
 - `resource(...)`：`index/create/store/show/edit/update/destroy`
 - `api_resource(...)`：`index/store/show/update/destroy`
 - `update` 同时注册 `PUT` 和 `PATCH`
+- 若 controller 未实现某个 action，对应 action 路由不会注册（不会触发 `500`；通常表现为 `404/405`，取决于是否被其它已注册路由命中）
 
 第一版我们明确承诺这些：
 

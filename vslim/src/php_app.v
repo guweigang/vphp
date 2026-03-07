@@ -1431,38 +1431,47 @@ fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path str
 	handler_destroy := make_resource_handler(clean_controller, 'destroy')
 	handler_create := make_resource_handler(clean_controller, 'create')
 	handler_edit := make_resource_handler(clean_controller, 'edit')
-	if !handler_index.is_valid() || !handler_show.is_valid() || !handler_store.is_valid() || !handler_update.is_valid() || !handler_destroy.is_valid() {
-		return
-	}
 	id_param := normalize_resource_param_name(opts.param_name)
 	member_base_path := if opts.shallow { shallow_member_base_path(path) } else { path }
 	id_path := '${member_base_path}/:${id_param}'
-	if should_include_resource_action(opts, 'index', actions) {
+	if handler_index.is_valid() && should_include_resource_action(opts, 'index', actions) {
 		app.add_php_route('GET', resource_route_name(opts, base_name, 'index'), path, handler_index)
 	}
 	if include_page_routes && handler_create.is_valid() && should_include_resource_action(opts, 'create', actions) {
 		app.add_php_route('GET', resource_route_name(opts, base_name, 'create'), '${path}/create', handler_create)
 	}
-	if should_include_resource_action(opts, 'store', actions) {
+	if handler_store.is_valid() && should_include_resource_action(opts, 'store', actions) {
 		app.add_php_route('POST', resource_route_name(opts, base_name, 'store'), path, handler_store)
 	}
-	if should_include_resource_action(opts, 'show', actions) {
+	if handler_show.is_valid() && should_include_resource_action(opts, 'show', actions) {
 		app.add_php_route('GET', resource_route_name(opts, base_name, 'show'), id_path, handler_show)
 	}
 	if include_page_routes && handler_edit.is_valid() && should_include_resource_action(opts, 'edit', actions) {
 		app.add_php_route('GET', resource_route_name(opts, base_name, 'edit'), '${id_path}/edit', handler_edit)
 	}
-	if should_include_resource_action(opts, 'update', actions) {
+	if handler_update.is_valid() && should_include_resource_action(opts, 'update', actions) {
 		name := resource_route_name(opts, base_name, 'update')
 		app.add_php_route('PUT', name, id_path, handler_update)
 		app.add_php_route('PATCH', name, id_path, handler_update)
 	}
-	if should_include_resource_action(opts, 'destroy', actions) {
+	if handler_destroy.is_valid() && should_include_resource_action(opts, 'destroy', actions) {
 		app.add_php_route('DELETE', resource_route_name(opts, base_name, 'destroy'), id_path, handler_destroy)
 	}
 }
 
 fn make_resource_handler(controller string, action string) vphp.ZVal {
+	if controller.trim_space() == '' || action.trim_space() == '' {
+		return vphp.ZVal.new_null()
+	}
+	if vphp.class_exists(controller) {
+		exists := vphp.call_php('method_exists', [
+			vphp.RequestOwnedZVal.new_string(controller).to_zval(),
+			vphp.RequestOwnedZVal.new_string(action).to_zval(),
+		])
+		if !exists.is_valid() || !exists.to_bool() {
+			return vphp.ZVal.new_null()
+		}
+	}
 	handler := vphp.new_zval_from[[]string]([controller, action]) or { return vphp.ZVal.new_null() }
 	return handler
 }

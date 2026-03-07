@@ -8103,7 +8103,7 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_53928(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_54291(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
@@ -9979,7 +9979,7 @@ VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_44___vphp__ZVal_36081(void) {
 	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_53928(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_54291(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -47193,43 +47193,49 @@ VV_LOC void main__register_resource_routes_with_options(main__VSlimApp* app, str
 	vphp__ZVal handler_destroy = main__make_resource_handler(clean_controller, _S("destroy"));
 	vphp__ZVal handler_create = main__make_resource_handler(clean_controller, _S("create"));
 	vphp__ZVal handler_edit = main__make_resource_handler(clean_controller, _S("edit"));
-	if (!vphp__ZVal_is_valid(handler_index) || !vphp__ZVal_is_valid(handler_show) || !vphp__ZVal_is_valid(handler_store) || !vphp__ZVal_is_valid(handler_update) || !vphp__ZVal_is_valid(handler_destroy)) {
-		return;
-	}
 	string id_param = main__normalize_resource_param_name(opts.param_name);
 	string member_base_path = (opts.shallow ? (main__shallow_member_base_path(path)) : (path));
 	string id_path = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = member_base_path}}, {_S("/:"), 0xfe10, {.d_s = id_param}}, {_SLIT0, 0, { .d_c = 0 }}}));
-	if (main__should_include_resource_action(opts, _S("index"), actions)) {
+	if (vphp__ZVal_is_valid(handler_index) && main__should_include_resource_action(opts, _S("index"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("GET"), main__resource_route_name(opts, base_name, _S("index")), path, handler_index);
 	}
 	if (include_page_routes && vphp__ZVal_is_valid(handler_create) && main__should_include_resource_action(opts, _S("create"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("GET"), main__resource_route_name(opts, base_name, _S("create")), builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = path}}, {_S("/create"), 0, { .d_c = 0 }}})), handler_create);
 	}
-	if (main__should_include_resource_action(opts, _S("store"), actions)) {
+	if (vphp__ZVal_is_valid(handler_store) && main__should_include_resource_action(opts, _S("store"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("POST"), main__resource_route_name(opts, base_name, _S("store")), path, handler_store);
 	}
-	if (main__should_include_resource_action(opts, _S("show"), actions)) {
+	if (vphp__ZVal_is_valid(handler_show) && main__should_include_resource_action(opts, _S("show"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("GET"), main__resource_route_name(opts, base_name, _S("show")), id_path, handler_show);
 	}
 	if (include_page_routes && vphp__ZVal_is_valid(handler_edit) && main__should_include_resource_action(opts, _S("edit"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("GET"), main__resource_route_name(opts, base_name, _S("edit")), builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = id_path}}, {_S("/edit"), 0, { .d_c = 0 }}})), handler_edit);
 	}
-	if (main__should_include_resource_action(opts, _S("update"), actions)) {
+	if (vphp__ZVal_is_valid(handler_update) && main__should_include_resource_action(opts, _S("update"), actions)) {
 		string name = main__resource_route_name(opts, base_name, _S("update"));
 		main__VSlimApp_add_php_route(app, _S("PUT"), name, id_path, handler_update);
 		main__VSlimApp_add_php_route(app, _S("PATCH"), name, id_path, handler_update);
 	}
-	if (main__should_include_resource_action(opts, _S("destroy"), actions)) {
+	if (vphp__ZVal_is_valid(handler_destroy) && main__should_include_resource_action(opts, _S("destroy"), actions)) {
 		main__VSlimApp_add_php_route(app, _S("DELETE"), main__resource_route_name(opts, base_name, _S("destroy")), id_path, handler_destroy);
 	}
 }
 VV_LOC vphp__ZVal main__make_resource_handler(string controller, string action) {
-	_result_vphp__ZVal _t1 = vphp__new_zval_from_T_Array_string(builtin__new_array_from_c_array(2, 2, sizeof(string), _MOV((string[2]){builtin__string_clone(controller), builtin__string_clone(action)})));
-	if (_t1.is_error) {
+	if ((builtin__string_trim_space(controller)).len == 0 || (builtin__string_trim_space(action)).len == 0) {
+		return vphp__ZVal__static__new_null();
+	}
+	if (vphp__class_exists(controller)) {
+		vphp__ZVal exists = vphp__call_php(_S("method_exists"), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(controller)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(action))})));
+		if (!vphp__ZVal_is_valid(exists) || !vphp__ZVal_to_bool(exists)) {
+			return vphp__ZVal__static__new_null();
+		}
+	}
+	_result_vphp__ZVal _t3 = vphp__new_zval_from_T_Array_string(builtin__new_array_from_c_array(2, 2, sizeof(string), _MOV((string[2]){builtin__string_clone(controller), builtin__string_clone(action)})));
+	if (_t3.is_error) {
 		return vphp__ZVal__static__new_null();
 	}
 	
- 	vphp__ZVal handler = (*(vphp__ZVal*)_t1.data);
+ 	vphp__ZVal handler = (*(vphp__ZVal*)_t3.data);
 	return handler;
 }
 VV_LOC string main__normalize_resource_path(string path) {
@@ -47563,7 +47569,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_53928);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_44_vphp__zval_vphp__zval_mut_map_string_string_54291);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
