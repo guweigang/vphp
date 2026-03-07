@@ -381,6 +381,17 @@ pub fn (mut app VSlimApp) error(handler vphp.ZVal) &VSlimApp {
 }
 
 @[php_method]
+pub fn (mut app VSlimApp) set_error_response_json(enabled bool) &VSlimApp {
+	app.error_response_json = enabled
+	return app
+}
+
+@[php_method]
+pub fn (app &VSlimApp) error_response_json_enabled() bool {
+	return app.error_response_json
+}
+
+@[php_method]
 pub fn (group &RouteGroup) group(prefix string) &RouteGroup {
 	return &RouteGroup{
 		app: group.app
@@ -858,7 +869,7 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest, trace_on bo
 		raw_res := dispatch_php_middleware_chain(app, path, vphp.BorrowedZVal.from_zval(payload), route_middle, route.php_handler) or {
 			msg := if err.msg() == '' { 'Route handler is not callable' } else { err.msg() }
 			res := run_error_handler(app, vphp.BorrowedZVal.from_zval(payload), 500, msg) or {
-				text_response(500, msg)
+				default_error_response(app, 500, msg, 'handler_not_callable')
 			}
 			return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), res), params, true
 		}
@@ -911,7 +922,7 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest, trace_on bo
 		raw_res := dispatch_php_middleware_chain_terminal(app, path, vphp.BorrowedZVal.from_zval(payload), route_middle, terminal) or {
 			msg := if err.msg() == '' { 'Route handler is not callable' } else { err.msg() }
 			res := run_error_handler(app, vphp.BorrowedZVal.from_zval(payload), 500, msg) or {
-				text_response(500, msg)
+				default_error_response(app, 500, msg, 'handler_not_callable')
 			}
 			return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), res), map[string]string{}, true
 		}
@@ -937,13 +948,13 @@ fn validate_request_payload(app &VSlimApp, req &VSlimRequest, request_payload vp
 	max_bytes := vslim_max_body_bytes()
 	if max_bytes > 0 && req.body.len > max_bytes {
 		return run_error_handler(app, request_payload, 413, 'Payload too large') or {
-			text_response(413, 'Payload Too Large')
+			default_error_response(app, 413, 'Payload Too Large', 'payload_too_large')
 		}
 	}
 	parse_msg := req.parse_error()
 	if parse_msg != '' {
 		return run_error_handler(app, request_payload, 400, 'Bad Request: invalid JSON body') or {
-			text_response(400, 'Bad Request: invalid JSON body')
+			default_error_response(app, 400, 'Bad Request: invalid JSON body', 'bad_json_body')
 		}
 	}
 	return none
@@ -1132,7 +1143,7 @@ fn invoke_active_middleware_next(_request_payload vphp.ZVal) vphp.ZVal {
 		raw := chain.dispatch(payload) or {
 			msg := if err.msg() == '' { 'Route handler is not callable' } else { err.msg() }
 			res := run_error_handler(chain.app, payload, 500, msg) or {
-				text_response(500, msg)
+				default_error_response(chain.app, 500, msg, 'handler_not_callable')
 			}
 			return build_php_response_object(res)
 		}
@@ -1169,7 +1180,7 @@ fn normalize_or_handle_error(app &VSlimApp, request_payload vphp.BorrowedZVal, r
 		return res
 	}
 	handled := run_error_handler(app, request_payload, fallback_status, fallback_message) or {
-		return text_response(fallback_status, fallback_message)
+		return default_error_response(app, fallback_status, fallback_message, 'invalid_response')
 	}
 	return handled
 }
@@ -1188,7 +1199,7 @@ fn run_not_found_core(app &VSlimApp, payload vphp.BorrowedZVal) VSlimResponse {
 		raw := nf.call_owned_request([payload.to_zval()])
 		return normalize_or_handle_error(app, payload, vphp.BorrowedZVal.from_zval(raw), 404, 'Not Found')
 	}
-	return not_found_response()
+	return default_error_response(app, 404, 'Not Found', 'not_found')
 }
 
 fn run_error_handler(app &VSlimApp, request_payload vphp.BorrowedZVal, status int, message string) ?VSlimResponse {
@@ -1206,6 +1217,17 @@ fn run_error_handler(app &VSlimApp, request_payload vphp.BorrowedZVal, status in
 		return none
 	}
 	return res
+}
+
+fn default_error_response(app &VSlimApp, status int, message string, error_code string) VSlimResponse {
+	if app.error_response_json {
+		return json_response(status, '{"ok":false,"error":"${json_escape(error_code)}","status":${status},"message":"${json_escape(message)}"}')
+	}
+	return text_response(status, message)
+}
+
+fn json_escape(input string) string {
+	return input.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
 }
 
 fn is_supported_route_handler(handler vphp.BorrowedZVal) bool {

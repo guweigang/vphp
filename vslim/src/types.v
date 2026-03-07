@@ -104,6 +104,7 @@ mut:
 	container_ref     &VSlimContainer = unsafe { nil }
 	base_path         string
 	use_demo          bool
+	error_response_json bool
 }
 
 fn (mut req VSlimRequest) free() {

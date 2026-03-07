@@ -1929,6 +1929,11 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_error, 0, 0, 1)
 ZEND_ARG_INFO(0, handler)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_set_error_response_json, 0, 0, 1)
+ZEND_ARG_TYPE_INFO(0, enabled, _IS_BOOL, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_error_response_json_enabled, 0, 0, 0)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_url_for, 0, 0, 2)
 ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_ARG_INFO(0, params)
@@ -2533,6 +2538,30 @@ PHP_METHOD(VSlim__App, error) {
     }
 }
 
+
+PHP_METHOD(VSlim__App, set_error_response_json) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimApp_set_error_response_json(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__App::set_error_response_json called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimApp_set_error_response_json(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__app_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimApp_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
+    }
+}
+
+PHP_METHOD(VSlim__App, error_response_json_enabled) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimApp_error_response_json_enabled(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimApp_error_response_json_enabled(wrapper->v_ptr, ctx);
+}
 PHP_METHOD(VSlim__App, url_for) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -2711,6 +2740,8 @@ static const zend_function_entry vslim__app_methods[] = {
     PHP_ME(VSlim__App, not_found, arginfo_vslim__app_not_found, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, set_error_handler, arginfo_vslim__app_set_error_handler, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, error, arginfo_vslim__app_error, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__App, set_error_response_json, arginfo_vslim__app_set_error_response_json, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__App, error_response_json_enabled, arginfo_vslim__app_error_response_json_enabled, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, url_for, arginfo_vslim__app_url_for, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, url_for_query, arginfo_vslim__app_url_for_query, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, url_for_abs, arginfo_vslim__app_url_for_abs, ZEND_ACC_PUBLIC)
@@ -2929,6 +2960,7 @@ PHP_MINIT_FUNCTION(vslim) {
         zend_declare_property_null(vslim__app_ce, "container_ref", sizeof("container_ref")-1, ZEND_ACC_PROTECTED);
         zend_declare_property_string(vslim__app_ce, "base_path", sizeof("base_path")-1, "", ZEND_ACC_PROTECTED);
         zend_declare_property_bool(vslim__app_ce, "use_demo", sizeof("use_demo")-1, 0, ZEND_ACC_PROTECTED);
+        zend_declare_property_bool(vslim__app_ce, "error_response_json", sizeof("error_response_json")-1, 0, ZEND_ACC_PROTECTED);
     }
     {   zend_class_entry ce;
         INIT_CLASS_ENTRY(ce, "VSlim\\Container\\ContainerException", vslim__container__containerexception_methods);

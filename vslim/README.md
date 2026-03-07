@@ -519,6 +519,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `middleware(...)` (独立 middleware 链，支持 `$next`)
   - `set_not_found_handler(...)` / `not_found(...)`
   - `set_error_handler(...)` / `error(...)`
+  - `set_error_response_json(...)` / `error_response_json_enabled()`
 - container：
   - `has_container()`
   - `container()` (lazy create `VSlim\Container`)

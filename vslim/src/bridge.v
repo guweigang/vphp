@@ -1650,6 +1650,23 @@ pub fn vphp_wrap_vslimapp_error(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.error(arg_0)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_set_error_response_json']
+pub fn vphp_wrap_vslimapp_set_error_response_json(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[bool](0)
+    res := recv.set_error_response_json(arg_0)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_error_response_json_enabled']
+pub fn vphp_wrap_vslimapp_error_response_json_enabled(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.error_response_json_enabled()
+    ctx.return_val[bool](res)
+}
 @[export: 'vphp_wrap_VSlimApp_url_for']
 pub fn vphp_wrap_vslimapp_url_for(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimApp(ptr) }
