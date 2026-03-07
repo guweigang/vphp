@@ -720,6 +720,9 @@ $app->resource_opts('/books', BookController::class, [
     'only' => ['index', 'show'],
     'name_prefix' => 'library.books',
     'param' => 'book_id',
+    'missing' => function (VSlim\Request $req, string $action, array $params) {
+        return new VSlim\Response(404, 'missing:' . $action, 'text/plain; charset=utf-8');
+    },
 ]);
 
 $app->api_resource_opts('/api/books', BookController::class, [

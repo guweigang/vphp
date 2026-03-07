@@ -864,12 +864,21 @@ fn (mut app VSlimApp) add_php_route(method string, name string, pattern string, 
 	if !is_supported_route_handler(vphp.BorrowedZVal.from_zval(handler)) {
 		return
 	}
+	app.add_php_route_with_resource_meta(method, name, pattern, handler, '', vphp.PersistentOwnedZVal.new_null())
+}
+
+fn (mut app VSlimApp) add_php_route_with_resource_meta(method string, name string, pattern string, handler vphp.ZVal, resource_action string, resource_missing_handler vphp.PersistentOwnedZVal) {
+	if !is_supported_route_handler(vphp.BorrowedZVal.from_zval(handler)) {
+		return
+	}
 	app.routes << VSlimRoute{
 		method: method.to_upper()
 		name: name
 		pattern: pattern
 		handler_type: .php_callable
 		php_handler: vphp.PersistentOwnedZVal.from_zval(handler)
+		resource_action: resource_action
+		resource_missing_handler: resource_missing_handler
 	}
 }
 
@@ -945,10 +954,20 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest, trace_on bo
 			}
 			return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), res), params, true
 		}
+		mut handled_raw := raw_res
+		if !handled_raw.is_valid() || handled_raw.is_null() || handled_raw.is_undef() {
+			missing_raw := dispatch_resource_missing(route, vphp.BorrowedZVal.from_zval(payload), params)
+			if missing_raw.is_valid() && !missing_raw.is_null() && !missing_raw.is_undef() {
+				handled_raw = missing_raw
+			} else {
+				res := run_not_found_core(app, vphp.BorrowedZVal.from_zval(payload))
+				return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), res), params, true
+			}
+		}
 		if trace_on {
 			vslim_trace_mem_log(req, 'route.after_middleware_chain', trace_base)
 		}
-		res := normalize_or_handle_error(app, vphp.BorrowedZVal.from_zval(payload), vphp.BorrowedZVal.from_zval(raw_res), 500, 'Invalid route response')
+		res := normalize_or_handle_error(app, vphp.BorrowedZVal.from_zval(payload), vphp.BorrowedZVal.from_zval(handled_raw), 500, 'Invalid route response')
 		if trace_on {
 			vslim_trace_mem_log(req, 'route.after_normalize', trace_base)
 		}
@@ -1002,6 +1021,19 @@ fn dispatch_php_routes_with_params(app &VSlimApp, req &VSlimRequest, trace_on bo
 		return apply_php_after_hooks(app, path, vphp.BorrowedZVal.from_zval(payload), res), map[string]string{}, true
 	}
 	return VSlimResponse{}, map[string]string{}, false
+}
+
+fn dispatch_resource_missing(route VSlimRoute, request_payload vphp.BorrowedZVal, params map[string]string) vphp.ZVal {
+	if !route.resource_missing_handler.is_valid() {
+		return vphp.RequestOwnedZVal.new_null().to_zval()
+	}
+	missing := route.resource_missing_handler.borrowed()
+	if !missing.is_valid() || !missing.is_callable() {
+		return vphp.RequestOwnedZVal.new_null().to_zval()
+	}
+	params_z := vphp.new_zval_from[map[string]string](params) or { vphp.RequestOwnedZVal.new_null().to_zval() }
+	action_z := vphp.RequestOwnedZVal.new_string(route.resource_action).to_zval()
+	return missing.call_owned_request([request_payload.to_zval(), action_z, params_z])
 }
 
 fn vslim_max_body_bytes() int {
@@ -1411,8 +1443,9 @@ mut:
 	except      map[string]bool
 	names       map[string]string
 	name_prefix string
-	param_name  string
-	shallow     bool
+	param_name  string = 'id'
+	shallow     bool = false
+	missing_handler vphp.PersistentOwnedZVal = vphp.PersistentOwnedZVal.new_null()
 }
 
 fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool, options ResourceRouteOptions) {
@@ -1435,27 +1468,27 @@ fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path str
 	member_base_path := if opts.shallow { shallow_member_base_path(path) } else { path }
 	id_path := '${member_base_path}/:${id_param}'
 	if handler_index.is_valid() && should_include_resource_action(opts, 'index', actions) {
-		app.add_php_route('GET', resource_route_name(opts, base_name, 'index'), path, handler_index)
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'index'), path, handler_index, 'index', opts.missing_handler)
 	}
 	if include_page_routes && handler_create.is_valid() && should_include_resource_action(opts, 'create', actions) {
-		app.add_php_route('GET', resource_route_name(opts, base_name, 'create'), '${path}/create', handler_create)
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'create'), '${path}/create', handler_create, 'create', opts.missing_handler)
 	}
 	if handler_store.is_valid() && should_include_resource_action(opts, 'store', actions) {
-		app.add_php_route('POST', resource_route_name(opts, base_name, 'store'), path, handler_store)
+		app.add_php_route_with_resource_meta('POST', resource_route_name(opts, base_name, 'store'), path, handler_store, 'store', opts.missing_handler)
 	}
 	if handler_show.is_valid() && should_include_resource_action(opts, 'show', actions) {
-		app.add_php_route('GET', resource_route_name(opts, base_name, 'show'), id_path, handler_show)
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'show'), id_path, handler_show, 'show', opts.missing_handler)
 	}
 	if include_page_routes && handler_edit.is_valid() && should_include_resource_action(opts, 'edit', actions) {
-		app.add_php_route('GET', resource_route_name(opts, base_name, 'edit'), '${id_path}/edit', handler_edit)
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'edit'), '${id_path}/edit', handler_edit, 'edit', opts.missing_handler)
 	}
 	if handler_update.is_valid() && should_include_resource_action(opts, 'update', actions) {
 		name := resource_route_name(opts, base_name, 'update')
-		app.add_php_route('PUT', name, id_path, handler_update)
-		app.add_php_route('PATCH', name, id_path, handler_update)
+		app.add_php_route_with_resource_meta('PUT', name, id_path, handler_update, 'update', opts.missing_handler)
+		app.add_php_route_with_resource_meta('PATCH', name, id_path, handler_update, 'update', opts.missing_handler)
 	}
 	if handler_destroy.is_valid() && should_include_resource_action(opts, 'destroy', actions) {
-		app.add_php_route('DELETE', resource_route_name(opts, base_name, 'destroy'), id_path, handler_destroy)
+		app.add_php_route_with_resource_meta('DELETE', resource_route_name(opts, base_name, 'destroy'), id_path, handler_destroy, 'destroy', opts.missing_handler)
 	}
 }
 
@@ -1510,6 +1543,7 @@ fn parse_resource_options(options vphp.BorrowedZVal) ResourceRouteOptions {
 		name_prefix: ''
 		param_name: 'id'
 		shallow: false
+		missing_handler: vphp.PersistentOwnedZVal.new_null()
 	}
 	if !options.is_valid() || !options.is_array() {
 		return out
@@ -1527,6 +1561,10 @@ fn parse_resource_options(options vphp.BorrowedZVal) ResourceRouteOptions {
 	shallow_raw := options.to_zval().get('shallow') or { vphp.ZVal.new_null() }
 	if shallow_raw.is_valid() && !shallow_raw.is_null() && !shallow_raw.is_undef() {
 		out.shallow = parse_resource_bool_option(shallow_raw)
+	}
+	missing_raw := options.to_zval().get('missing') or { vphp.ZVal.new_null() }
+	if missing_raw.is_valid() && missing_raw.is_callable() {
+		out.missing_handler = vphp.PersistentOwnedZVal.from_zval(missing_raw)
 	}
 	for action in parse_action_list(only_raw) {
 		out.only[action] = true

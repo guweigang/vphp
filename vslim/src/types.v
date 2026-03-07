@@ -18,7 +18,9 @@ pub mut:
 	pattern      string
 	handler_type VSlimRouteHandlerType
 	v_handler    VSlimHandler = unsafe { nil }
-	php_handler  vphp.PersistentOwnedZVal
+	php_handler  vphp.PersistentOwnedZVal = vphp.PersistentOwnedZVal.new_null()
+	resource_action string
+	resource_missing_handler vphp.PersistentOwnedZVal = vphp.PersistentOwnedZVal.new_null()
 }
 
 pub struct RoutePath {}
