@@ -197,7 +197,7 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 
 - `vslim`
   - 负责路由匹配、middleware、请求分发、响应封装
-  - 输出稳定的 `{status, body, content_type}` 结构
+  - 输出稳定的 `{status, body, content_type, headers}` 结构
 
 当前推荐的 worker 协议是一个 request envelope：
 
@@ -224,6 +224,15 @@ Client -> vhttpd -> PHP worker -> vslim -> PHP worker -> vhttpd -> Client
 
 ```php
 $response = vslim_handle_request($requestEnvelope);
+```
+
+如果你在 PHP worker 中想走更轻量的 map 返回，可用：
+
+```php
+$map = $app->dispatch_envelope_map($requestEnvelope);
+// 最低保证字段：
+// status, body, content_type
+// 以及响应头：headers_<lowercase-name>（如 headers_x-request-id）
 ```
 
 这里的关键原则是：
@@ -528,6 +537,8 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `dispatch(...)`
   - `dispatch_body(...)`
   - `dispatch_request(...)`
+  - `dispatch_envelope(...)`
+  - `dispatch_envelope_map(...)` (`map<string,string>`)
 - reverse routing：
   - `url_for(...)`
   - `url_for_query(...)`
@@ -651,6 +662,9 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 - `vphp` 只做 bridge/compiler/runtime
 - request transport 统一使用结构化数组 envelope
 - PHP userland 通过 `VSlim\App` runtime builder 注册 routes / groups / hooks
+- `dispatch_envelope_map(...)` 在 map 协议下返回：
+  - `status` / `body` / `content_type`
+  - `headers_<lowercase-name>`（例如 `headers_x-request-id` / `headers_x-trace-id`）
 
 第一版明确不做这些：
 
