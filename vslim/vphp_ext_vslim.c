@@ -15,6 +15,9 @@
 
 // V typedefs:
 typedef struct IError IError;
+typedef struct vphp__ZValView vphp__ZValView;
+typedef struct vphp__ZValInvoke vphp__ZValInvoke;
+typedef struct vphp__ZValOwnership vphp__ZValOwnership;
 typedef struct vphp__ITask vphp__ITask;
 typedef struct none none;
 typedef struct vphp__TaskResult vphp__TaskResult;
@@ -37,6 +40,13 @@ typedef struct multi_return_u64_int multi_return_u64_int;
 typedef struct multi_return_i64_int multi_return_i64_int;
 typedef struct multi_return_strconv__Dec32_bool multi_return_strconv__Dec32_bool;
 typedef struct multi_return_strconv__Dec64_bool multi_return_strconv__Dec64_bool;
+typedef struct multi_return_string_int multi_return_string_int;
+typedef struct multi_return_int_bool multi_return_int_bool;
+typedef struct multi_return_string_string_string multi_return_string_string_string;
+typedef struct multi_return_Array_string_Array_string multi_return_Array_string_Array_string;
+typedef struct multi_return_int_int_int_int multi_return_int_int_int_int;
+typedef struct multi_return_int_int_int multi_return_int_int_int;
+typedef struct multi_return_int_int_int_int_int_i64_bool multi_return_int_int_int_int_int_i64_bool;
 typedef struct multi_return_u64_u64 multi_return_u64_u64;
 typedef struct multi_return_f64_int multi_return_f64_int;
 // END_multi_return_typedefs
@@ -75,19 +85,56 @@ typedef struct RunesIterator RunesIterator;
 typedef union StrIntpMem StrIntpMem;
 typedef struct StrIntpData StrIntpData;
 typedef struct ToWideConfig ToWideConfig;
+typedef struct time__DateTimeParser time__DateTimeParser;
+typedef struct time__TimeParseError time__TimeParseError;
+typedef struct time__StopWatchOptions time__StopWatchOptions;
+typedef struct time__StopWatch time__StopWatch;
+typedef struct time__Time time__Time;
 typedef struct net__urllib__URL net__urllib__URL;
 typedef struct net__urllib__Userinfo net__urllib__Userinfo;
 typedef struct net__urllib__ParseAuthorityRes net__urllib__ParseAuthorityRes;
 typedef struct net__urllib__QueryValue net__urllib__QueryValue;
 typedef struct net__urllib__Values net__urllib__Values;
+typedef struct strings__textscanner__TextScanner strings__textscanner__TextScanner;
+typedef struct term__termios__Termios term__termios__Termios;
 typedef struct vphp__Context vphp__Context;
+typedef struct vphp__BorrowedZVal vphp__BorrowedZVal;
+typedef struct vphp__RequestOwnedZVal vphp__RequestOwnedZVal;
+typedef struct vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal;
+typedef struct vphp__OwnedValue vphp__OwnedValue;
+typedef struct vphp__BorrowedValue vphp__BorrowedValue;
+typedef struct vphp__RequestScope vphp__RequestScope;
 typedef struct vphp__AsyncResult vphp__AsyncResult;
 typedef struct vphp__TaskRegistry vphp__TaskRegistry;
 typedef struct vphp__Val vphp__Val;
 typedef union vphp__DynValData vphp__DynValData;
 typedef struct vphp__DynVal vphp__DynVal;
 typedef struct vphp__ZVal vphp__ZVal;
+typedef struct vphp__RuntimeCounters vphp__RuntimeCounters;
 typedef struct vphp__ForeachPack vphp__ForeachPack;
+typedef struct os__Command os__Command;
+typedef struct os__Eof os__Eof;
+typedef struct os__NotExpected os__NotExpected;
+typedef struct os__File os__File;
+typedef struct os__FileNotOpenedError os__FileNotOpenedError;
+typedef struct os__SizeOfTypeIs0Error os__SizeOfTypeIs0Error;
+typedef struct os__FileMode os__FileMode;
+typedef struct os__FileInfo os__FileInfo;
+typedef struct os__FilePermission os__FilePermission;
+typedef struct os__CopyParams os__CopyParams;
+typedef struct os__PathKind os__PathKind;
+typedef struct os__SystemError os__SystemError;
+typedef struct os__DiskUsage os__DiskUsage;
+typedef struct os__Result os__Result;
+typedef struct os__MvParams os__MvParams;
+typedef struct os__ExecutableNotFoundError os__ExecutableNotFoundError;
+typedef struct os__WalkParams os__WalkParams;
+typedef struct os__MkdirParams os__MkdirParams;
+typedef struct os__Uname os__Uname;
+typedef struct os__Stat os__Stat;
+typedef struct os__Pipe os__Pipe;
+typedef struct os__IOCapture os__IOCapture;
+typedef struct os__Process os__Process;
 typedef struct main__VSlimContainerException main__VSlimContainerException;
 typedef struct main__VSlimContainerNotFoundException main__VSlimContainerNotFoundException;
 typedef struct main__VSlimContainer main__VSlimContainer;
@@ -114,6 +161,10 @@ typedef struct _result_void _result_void;
 typedef struct _result_rune _result_rune;
 typedef struct _result_string _result_string;
 typedef struct _result_Array_string _result_Array_string;
+typedef struct _result_time__Time _result_time__Time;
+typedef struct _result_multi_return_int_int_int_int _result_multi_return_int_int_int_int;
+typedef struct _result_multi_return_int_int_int _result_multi_return_int_int_int;
+typedef struct _result_multi_return_int_int_int_int_int_i64_bool _result_multi_return_int_int_int_int_int_i64_bool;
 typedef struct _result_net__urllib__URL _result_net__urllib__URL;
 typedef struct _result_net__urllib__ParseAuthorityRes _result_net__urllib__ParseAuthorityRes;
 typedef struct _result_bool _result_bool;
@@ -121,12 +172,22 @@ typedef struct _result_net__urllib__Values _result_net__urllib__Values;
 typedef struct _result_vphp__DynVal _result_vphp__DynVal;
 typedef struct _result_vphp__ZVal _result_vphp__ZVal;
 typedef struct _result_Map_string_string _result_Map_string_string;
+typedef struct _result_os__Command _result_os__Command;
+typedef struct _result_os__File _result_os__File;
+typedef struct _result_FILE_ptr _result_FILE_ptr;
+typedef struct _result_os__Stat _result_os__Stat;
+typedef struct _result_Array_u8 _result_Array_u8;
+typedef struct _result_strings__Builder _result_strings__Builder;
+typedef struct _result_os__Result _result_os__Result;
+typedef struct _result_os__DiskUsage _result_os__DiskUsage;
+typedef struct _result_os__Pipe _result_os__Pipe;
+typedef struct _result_os__IOCapture _result_os__IOCapture;
+typedef struct _result_anon_fn_os__signal _result_anon_fn_os__signal;
 typedef struct _option_rune _option_rune;
 typedef struct _option_multi_return_string_string _option_multi_return_string_string;
 typedef struct _option_int _option_int;
 typedef struct _option_string _option_string;
 typedef struct _option_anon_fn_vphp__context__vphp__ITask _option_anon_fn_vphp__context__vphp__ITask;
-typedef struct _option_main__VSlimRequest_ptr _option_main__VSlimRequest_ptr;
 typedef struct _option_main__VSlimResponse_ptr _option_main__VSlimResponse_ptr;
 typedef struct _option_main__VSlimResponse _option_main__VSlimResponse;
 
@@ -740,6 +801,48 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 
 #endif
 
+// added by module `time`, file: time.c.v:6:
+
+#if defined(__has_include)
+#if __has_include(<time.h>)
+#include <time.h>
+#else
+#error VERROR_MESSAGE Header file <time.h>, needed for module `time` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <time.h>
+#endif
+
+
+// added by module `time`, file: time_darwin.c.v:3:
+
+#if defined(__has_include)
+#if __has_include(<mach/mach_time.h>)
+#include <mach/mach_time.h>
+#else
+#error VERROR_MESSAGE Header file <mach/mach_time.h>, needed for module `time` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <mach/mach_time.h>
+#endif
+
+
+// added by module `time`, file: time_nix.c.v:7:
+
+#if defined(__has_include)
+#if __has_include(<time.h>)
+#include <time.h>
+#else
+#error VERROR_MESSAGE Header file <time.h>, needed for module `time` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <time.h>
+#endif
+
+
+// added by module `time`, file: time_nix.c.v:8:
+#include <errno.h>
+
 // added by module `vphp.zend`, file: mod.v:3:
 
 #if defined(__has_include)
@@ -779,6 +882,32 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 
 
+// added by module `term.termios`, file: termios_darwin.c.v:10:
+
+#if defined(__has_include)
+#if __has_include(<termios.h>)
+#include <termios.h>
+#else
+#error VERROR_MESSAGE Header file <termios.h>, needed for module `term.termios` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <termios.h>
+#endif
+
+
+// added by module `term.termios`, file: termios_darwin.c.v:11:
+
+#if defined(__has_include)
+#if __has_include(<sys/ioctl.h>)
+#include <sys/ioctl.h>
+#else
+#error VERROR_MESSAGE Header file <sys/ioctl.h>, needed for module `term.termios` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/ioctl.h>
+#endif
+
+
 // added by module `vphp`, file: mod.v:5:
 
 #if defined(__has_include)
@@ -805,6 +934,194 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 
 
+// added by module `os`, file: debugger_darwin.c.v:3:
+
+#if defined(__has_include)
+#if __has_include(<sys/types.h>)
+#include <sys/types.h>
+#else
+#error VERROR_MESSAGE Header file <sys/types.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/types.h>
+#endif
+
+
+// added by module `os`, file: debugger_darwin.c.v:4:
+
+#if defined(__has_include)
+#if __has_include(<sys/ptrace.h>)
+#include <sys/ptrace.h>
+#else
+#error VERROR_MESSAGE Header file <sys/ptrace.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/ptrace.h>
+#endif
+
+
+#if !defined(_WIN32)
+
+// added by module `os`, file: fd.c.v:6:
+
+#if defined(__has_include)
+#if __has_include(<sys/select.h>)
+#include <sys/select.h>
+#else
+#error VERROR_MESSAGE Header file <sys/select.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/select.h>
+#endif
+
+#endif
+
+// added by module `os`, file: os.c.v:5:
+
+#if defined(__has_include)
+#if __has_include(<sys/stat.h>)
+#include <sys/stat.h>
+#else
+#error VERROR_MESSAGE Header file <sys/stat.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/stat.h>
+#endif
+
+
+// added by module `os`, file: os.c.v:6:
+#include <errno.h>
+
+// added by module `os`, file: os.c.v:9:
+
+#if defined(__has_include)
+#if __has_include(<mach-o/dyld.h>)
+#include <mach-o/dyld.h>
+#else
+#error VERROR_MESSAGE Header file <mach-o/dyld.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <mach-o/dyld.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:5:
+
+#if defined(__has_include)
+#if __has_include(<dirent.h>)
+#include <dirent.h>
+#else
+#error VERROR_MESSAGE Header file <dirent.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <dirent.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:6:
+
+#if defined(__has_include)
+#if __has_include(<unistd.h>)
+#include <unistd.h>
+#else
+#error VERROR_MESSAGE Header file <unistd.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <unistd.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:7:
+
+#if defined(__has_include)
+#if __has_include(<fcntl.h>)
+#include <fcntl.h>
+#else
+#error VERROR_MESSAGE Header file <fcntl.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <fcntl.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:8:
+
+#if defined(__has_include)
+#if __has_include(<sys/utsname.h>)
+#include <sys/utsname.h>
+#else
+#error VERROR_MESSAGE Header file <sys/utsname.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/utsname.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:9:
+
+#if defined(__has_include)
+#if __has_include(<sys/types.h>)
+#include <sys/types.h>
+#else
+#error VERROR_MESSAGE Header file <sys/types.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/types.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:10:
+
+#if defined(__has_include)
+#if __has_include(<sys/statvfs.h>)
+#include <sys/statvfs.h>
+#else
+#error VERROR_MESSAGE Header file <sys/statvfs.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <sys/statvfs.h>
+#endif
+
+
+// added by module `os`, file: os_nix.c.v:11:
+
+#if defined(__has_include)
+#if __has_include(<utime.h>)
+#include <utime.h>
+#else
+#error VERROR_MESSAGE Header file <utime.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <utime.h>
+#endif
+
+
+// added by module `os`, file: signal.c.v:3:
+
+#if defined(__has_include)
+#if __has_include(<signal.h>)
+#include <signal.h>
+#else
+#error VERROR_MESSAGE Header file <signal.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <signal.h>
+#endif
+
+
+// added by module `os`, file: signal_darwin.c.v:5:
+
+#if defined(__has_include)
+#if __has_include(<signal.h>)
+#include <signal.h>
+#else
+#error VERROR_MESSAGE Header file <signal.h>, needed for module `os` was not found. Please install the corresponding development headers.
+#endif
+#else
+#include <signal.h>
+#endif
+
+
 // added by module `main`, file: bridge.v:5:
 
 #if defined(__has_include)
@@ -818,7 +1135,7 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #endif
 
 
-// added by module `main`, file: php_app.v:5:
+// added by module `main`, file: php_app.v:7:
 
 #if defined(__has_include)
 #if __has_include("php_bridge.h")
@@ -856,6 +1173,14 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #define _const_mid_index 5
 #define _const_replace_stack_buffer_size 10
 #define _const_kmp_stack_buffer_size 20
+#define _const_time__seconds_per_minute 60
+#define _const_time__seconds_per_hour 3600
+#define _const_time__seconds_per_day 86400
+#define _const_time__seconds_per_week 604800
+#define _const_time__days_per_400_years 146097
+#define _const_time__days_per_100_years 36524
+#define _const_time__days_per_4_years 1461
+#define _const_time__days_in_year 365
 #define _const_vphp__zend__is_undef 0
 #define _const_vphp__zend__is_null 1
 #define _const_vphp__zend__is_false 2
@@ -872,6 +1197,40 @@ static inline uint64_t wy2u0k(uint64_t r, uint64_t k){ _wymum(&r,&k); return k; 
 #define _const_vphp__zend__e_notice 8
 #define _const_vphp__e_error 1
 #define _const_vphp__e_warning 2
+#define _const_os__max_path_buffer_size 4096
+#define _const_os__o_binary 0
+#define _const_os__fslash '/'
+#define _const_os__dot '.'
+#define _const_os__buf_size 4096
+#define _const_os__error_code_not_set -1
+#define _const_os__max_path_len 4096
+#define _const_os__f_ok 0
+#define _const_os__x_ok 1
+#define _const_os__w_ok 2
+#define _const_os__r_ok 4
+#define _const_os__sys_write 4
+#define _const_os__sys_open 5
+#define _const_os__sys_close 6
+#define _const_os__sys_mkdir 136
+#define _const_os__sys_creat 8
+#define _const_os__sys_open_nocancel 398
+#define _const_os__sys_stat64 338
+#define _const_os__s_ifmt 61440
+#define _const_os__s_ifdir 16384
+#define _const_os__s_ifreg 32768
+#define _const_os__s_iflnk 40960
+#define _const_os__s_isuid 2048
+#define _const_os__s_isgid 1024
+#define _const_os__s_isvtx 512
+#define _const_os__s_irusr 256
+#define _const_os__s_iwusr 128
+#define _const_os__s_ixusr 64
+#define _const_os__s_irgrp 32
+#define _const_os__s_iwgrp 16
+#define _const_os__s_ixgrp 8
+#define _const_os__s_iroth 4
+#define _const_os__s_iwoth 2
+#define _const_os__s_ixoth 1
 
 // Enum definitions:
 
@@ -971,6 +1330,39 @@ typedef enum {
 }  StrIntpType;
 
 typedef enum {
+	time__FormatTime__hhmm12, // 
+	time__FormatTime__hhmm24, // +1
+	time__FormatTime__hhmmss12, // +2
+	time__FormatTime__hhmmss24, // +3
+	time__FormatTime__hhmmss24_milli, // +4
+	time__FormatTime__hhmmss24_micro, // +5
+	time__FormatTime__hhmmss24_nano, // +6
+	time__FormatTime__no_time, // +7
+}  time__FormatTime;
+
+typedef enum {
+	time__FormatDate__ddmmyy, // 
+	time__FormatDate__ddmmyyyy, // +1
+	time__FormatDate__mmddyy, // +2
+	time__FormatDate__mmddyyyy, // +3
+	time__FormatDate__mmmd, // +4
+	time__FormatDate__mmmdd, // +5
+	time__FormatDate__mmmddyy, // +6
+	time__FormatDate__mmmddyyyy, // +7
+	time__FormatDate__no_date, // +8
+	time__FormatDate__yyyymmdd, // +9
+	time__FormatDate__yymmdd, // +10
+}  time__FormatDate;
+
+typedef enum {
+	time__FormatDelimiter__dot, // 
+	time__FormatDelimiter__hyphen, // +1
+	time__FormatDelimiter__slash, // +2
+	time__FormatDelimiter__space, // +3
+	time__FormatDelimiter__no_delimiter, // +4
+}  time__FormatDelimiter;
+
+typedef enum {
 	net__urllib__EncodingMode__encode_path, // 
 	net__urllib__EncodingMode__encode_path_segment, // +1
 	net__urllib__EncodingMode__encode_host, // +2
@@ -989,6 +1381,12 @@ typedef enum {
 	vphp__InteropErrorClass__include_error, // +5
 	vphp__InteropErrorClass__symbol_not_found, // +6
 }  vphp__InteropErrorClass;
+
+typedef enum {
+	vphp__OwnershipKind__borrowed, // 
+	vphp__OwnershipKind__owned_request, // +1
+	vphp__OwnershipKind__owned_persistent, // +2
+}  vphp__OwnershipKind;
 
 typedef enum {
 	vphp__PHPType__unknown = -1, // -1
@@ -1018,6 +1416,87 @@ typedef enum {
 }  vphp__ValType;
 
 typedef enum {
+	os__SeekMode__start, // 
+	os__SeekMode__current, // +1
+	os__SeekMode__end, // +2
+}  os__SeekMode;
+
+typedef enum {
+	os__FileBufferMode__fully_buffered = _IOFBF, // _IOFBF
+	os__FileBufferMode__line_buffered = _IOLBF, // _IOLBF
+	os__FileBufferMode__not_buffered = _IONBF, // _IONBF
+}  os__FileBufferMode;
+
+typedef enum {
+	os__FileType__unknown, // 
+	os__FileType__regular, // +1
+	os__FileType__directory, // +2
+	os__FileType__character_device, // +3
+	os__FileType__block_device, // +4
+	os__FileType__fifo, // +5
+	os__FileType__symbolic_link, // +6
+	os__FileType__socket, // +7
+}  os__FileType;
+
+typedef enum {
+	os__GlobMatch__exact, // 
+	os__GlobMatch__ends_with, // +1
+	os__GlobMatch__starts_with, // +2
+	os__GlobMatch__start_and_ends_with, // +3
+	os__GlobMatch__contains, // +4
+	os__GlobMatch__any, // +5
+}  os__GlobMatch;
+
+typedef enum {
+	os__ChildProcessPipeKind__stdin, // 
+	os__ChildProcessPipeKind__stdout, // +1
+	os__ChildProcessPipeKind__stderr, // +2
+}  os__ChildProcessPipeKind;
+
+typedef enum {
+	os__ProcessState__not_started, // 
+	os__ProcessState__running, // +1
+	os__ProcessState__stopped, // +2
+	os__ProcessState__exited, // +3
+	os__ProcessState__aborted, // +4
+	os__ProcessState__closed, // +5
+}  os__ProcessState;
+
+typedef enum {
+	os__Signal__hup = 1, // 1
+	os__Signal__int = 2, // 2
+	os__Signal__quit = 3, // 3
+	os__Signal__ill = 4, // 4
+	os__Signal__trap = 5, // 5
+	os__Signal__abrt = 6, // 6
+	os__Signal__bus = 7, // 7
+	os__Signal__fpe = 8, // 8
+	os__Signal__kill = 9, // 9
+	os__Signal__usr1 = 10, // 10
+	os__Signal__segv = 11, // 11
+	os__Signal__usr2 = 12, // 12
+	os__Signal__pipe = 13, // 13
+	os__Signal__alrm = 14, // 14
+	os__Signal__term = 15, // 15
+	os__Signal__stkflt = 16, // 16
+	os__Signal__chld = 17, // 17
+	os__Signal__cont = 18, // 18
+	os__Signal__stop = 19, // 19
+	os__Signal__tstp = 20, // 20
+	os__Signal__ttin = 21, // 21
+	os__Signal__ttou = 22, // 22
+	os__Signal__urg = 23, // 23
+	os__Signal__xcpu = 24, // 24
+	os__Signal__xfsz = 25, // 25
+	os__Signal__vtalrm = 26, // 26
+	os__Signal__prof = 27, // 27
+	os__Signal__winch = 28, // 28
+	os__Signal__poll = 29, // 29
+	os__Signal__pwr = 30, // 30
+	os__Signal__sys = 31, // 31
+}  os__Signal;
+
+typedef enum {
 	main__VSlimRouteHandlerType__v_native, // 
 	main__VSlimRouteHandlerType__php_callable, // +1
 }  main__VSlimRouteHandlerType;
@@ -1033,6 +1512,12 @@ struct IError {
 		voidptr* _voidptr;
 		Error* _Error;
 		MessageError* _MessageError;
+		time__TimeParseError* _time__TimeParseError;
+		os__Eof* _os__Eof;
+		os__NotExpected* _os__NotExpected;
+		os__FileNotOpenedError* _os__FileNotOpenedError;
+		os__SizeOfTypeIs0Error* _os__SizeOfTypeIs0Error;
+		os__ExecutableNotFoundError* _os__ExecutableNotFoundError;
 	};
 	u32 _typ;
 };
@@ -1102,13 +1587,16 @@ typedef string Array_fixed_string_11 [11];
 typedef voidptr Array_fixed_voidptr_11 [11];
 typedef array Array_RepIndex;
 typedef map Map_string_string;
-typedef map Map_string_vphp__ZVal;
-typedef array Array_vphp__ZVal;
+typedef map Map_string_vphp__PersistentOwnedZVal;
+typedef array Array_main__MiddlewareChain_ptr;
+typedef array Array_vphp__PersistentOwnedZVal;
+typedef array Array_vphp__RequestOwnedZVal;
 typedef array Array_main__VSlimRoute;
 typedef array Array_main__VSlimMiddleware;
 typedef array Array_main__RouteHook;
 typedef map Map_string_int;
 typedef array Array_bool;
+typedef array Array_vphp__ZVal;
 typedef map Map_string_T;
 typedef array Array_i64;
 typedef array Array_f64;
@@ -1118,6 +1606,11 @@ typedef map Map_string_vphp__DynVal;
 typedef map Map_string_i64;
 typedef map Map_string_f64;
 typedef map Map_string_bool;
+typedef array Array_C__zval_ptr;
+typedef array Array_char_ptr;
+typedef int Array_fixed_int_3 [3];
+typedef array Array_os__Signal;
+typedef char Array_fixed_char_256 [256];
 typedef array Array_net__urllib__QueryValue;
 typedef map Map_string_Array_string;
 typedef u8 Array_fixed_u8_5 [5];
@@ -1144,7 +1637,23 @@ typedef i32 Array_fixed_i32_1264 [1264];
 typedef int Array_fixed_int_10 [10];
 typedef int Array_fixed_int_20 [20];
 typedef array Array_StrIntpType;
+typedef string Array_fixed_string_7 [7];
+typedef u8 Array_fixed_u8_29 [29];
+typedef u8 Array_fixed_u8_10 [10];
+typedef char Array_fixed_char_1024 [1024];
+typedef int Array_fixed_int_12 [12];
+typedef int Array_fixed_int_13 [13];
+typedef u8 Array_fixed_u8_4096 [4096];
+typedef u8 Array_fixed_u8_1024 [1024];
+typedef int Array_fixed_int_2 [2];
+typedef array Array_os__ProcessState;
+typedef int Array_fixed_int_6 [6];
 typedef Array_u8 strings__Builder;
+typedef i64 time__Duration;
+#define C__time_t time_t
+typedef usize term__termios__TcFlag;
+typedef usize term__termios__Speed;
+typedef u8 term__termios__Cc;
 typedef int (*anon_fn_voidptr_voidptr__int)(voidptr,voidptr);
 typedef void (*FnExitCb)();
 typedef void (*FnGC_WarnCB)(char*,usize);
@@ -1155,6 +1664,9 @@ typedef main__VSlimResponse (*main__VSlimNext)(main__VSlimRequest);
 typedef voidptr (*anon_fn___voidptr)();
 typedef vphp__ITask (*vphp__TaskCreator)(vphp__Context);
 typedef void (*vphp__ForeachCb)(vphp__ZVal,vphp__ZVal);
+typedef void (*anon_fn_string)(string);
+typedef void (*os__FnWalkContextCB)(voidptr,string);
+typedef void (*os__SignalHandler)(os__Signal);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__dynval)(vphp__ZVal,vphp__ZVal,Map_string_vphp__DynVal*);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_array_string)(vphp__ZVal,vphp__ZVal,Array_string*);
 typedef void (*anon_fn_vphp__zval_vphp__zval_mut_map_string_string)(vphp__ZVal,vphp__ZVal,Map_string_string*);
@@ -1184,10 +1696,6 @@ struct main__RouteGroup {
 	string prefix;
 };
 
-struct vphp__ZVal {
-	zval* raw;
-};
-
 struct vphp__Context {
 	zend_execute_data* ex;
 	zval* ret;
@@ -1209,8 +1717,8 @@ struct main__VSlimContainerNotFoundException {
 //          |   19 = bool
 //          |   37 = Array_string
 //          |   47 = Array_int
-//          |  179 = Array_i64
-//          |  180 = Array_f64
+//          |  193 = Array_i64
+//          |  194 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -1224,6 +1732,30 @@ struct vphp__TaskResult {
 		Array_f64* _Array_f64;
 	};
 	u32 _typ;
+};
+
+struct os__Eof {
+	Error Error;
+};
+
+struct os__FileNotOpenedError {
+	Error Error;
+};
+
+struct os__SizeOfTypeIs0Error {
+	Error Error;
+};
+
+struct os__ExecutableNotFoundError {
+	Error Error;
+};
+
+struct os__Uname {
+	string sysname;
+	string nodename;
+	string release;
+	string version;
+	string machine;
 };
 
 struct net__urllib__QueryValue {
@@ -1341,6 +1873,11 @@ struct ToWideConfig {
 	bool from_ansi;
 };
 
+struct vphp__ZVal {
+	zval* raw;
+	bool owned;
+};
+
 struct main__VSlimRequest {
 	string method;
 	string raw_path;
@@ -1368,39 +1905,10 @@ struct main__VSlimResponse {
 	Map_string_string headers;
 };
 
-struct main__VSlimApp {
-	Array_main__VSlimRoute routes;
-	Array_vphp__ZVal php_before_hooks;
-	Array_vphp__ZVal php_after_hooks;
-	Array_vphp__ZVal php_middlewares;
-	Array_main__RouteHook php_group_before;
-	Array_main__RouteHook php_group_after;
-	Array_main__RouteHook php_group_middle;
-	vphp__ZVal not_found_handler;
-	vphp__ZVal error_handler;
-	main__VSlimContainer* container_ref;
-	string base_path;
-	bool use_demo;
-};
-
 struct main__VSlimContainer {
-	Map_string_vphp__ZVal entries;
-	Map_string_vphp__ZVal factories;
-	Map_string_vphp__ZVal resolved;
-};
-
-struct main__RouteHook {
-	string prefix;
-	vphp__ZVal handler;
-};
-
-struct main__VSlimRoute {
-	string method;
-	string name;
-	string pattern;
-	main__VSlimRouteHandlerType handler_type;
-	main__VSlimHandler v_handler;
-	vphp__ZVal php_handler;
+	Map_string_vphp__PersistentOwnedZVal entries;
+	Map_string_vphp__PersistentOwnedZVal factories;
+	Map_string_vphp__PersistentOwnedZVal resolved;
 };
 
 struct main__VSlimRuntime {
@@ -1455,6 +1963,11 @@ union strconv__Uf64 {
 	u64 u;
 };
 
+struct vphp__RequestScope {
+	int mark;
+	bool active;
+};
+
 struct vphp__AsyncResult {
 	__v_thread_vphp__TaskResult handle;
 };
@@ -1471,6 +1984,129 @@ union vphp__DynValData {
 	voidptr ptr;
 };
 
+struct vphp__RuntimeCounters {
+	int autorelease_len;
+	int owned_len;
+	u32 obj_registry_len;
+	u32 rev_registry_len;
+};
+
+struct os__Command {
+	voidptr f;
+	bool eof;
+	int exit_code;
+	string path;
+	bool redirect_stdout;
+};
+
+struct os__NotExpected {
+	string cause;
+	int code;
+};
+
+struct os__File {
+	voidptr cfile;
+	int fd;
+	bool is_opened;
+};
+
+struct os__FilePermission {
+	bool read;
+	bool write;
+	bool execute;
+};
+
+struct os__Stat {
+	u64 dev;
+	u64 inode;
+	u32 mode;
+	u64 nlink;
+	u32 uid;
+	u32 gid;
+	u64 rdev;
+	u64 size;
+	i64 atime;
+	i64 mtime;
+	i64 ctime;
+};
+
+struct os__CopyParams {
+	bool fail_if_exists;
+};
+
+struct os__PathKind {
+	bool is_file;
+	bool is_dir;
+	bool is_link;
+};
+
+struct os__SystemError {
+	string msg;
+	int code;
+};
+
+struct os__DiskUsage {
+	u64 total;
+	u64 available;
+	u64 used;
+};
+
+struct os__Result {
+	int exit_code;
+	string output;
+};
+
+struct os__MvParams {
+	bool overwrite;
+};
+
+struct os__WalkParams {
+	bool hidden;
+};
+
+struct os__MkdirParams {
+	u32 mode;
+};
+
+struct os__Pipe {
+	int read_fd;
+	int write_fd;
+};
+
+struct time__Time {
+	i64 __v_unix;
+	int year;
+	int month;
+	int day;
+	int hour;
+	int minute;
+	int second;
+	int nanosecond;
+	bool is_local;
+};
+
+struct time__DateTimeParser {
+	string datetime;
+	string format;
+	int current_pos_datetime;
+};
+
+struct time__TimeParseError {
+	Error Error;
+	int code;
+	string message;
+};
+
+struct time__StopWatchOptions {
+	bool auto_start;
+};
+
+struct time__StopWatch {
+	u64 elapsed;
+	u64 start;
+	u64 end;
+};
+
 struct net__urllib__Userinfo {
 	string username;
 	string password;
@@ -1481,6 +2117,13 @@ struct net__urllib__Values {
 	Array_net__urllib__QueryValue data;
 	int len;
 };
+
+struct strings__textscanner__TextScanner {
+	string input;
+	int ilen;
+	int pos;
+};
+typedef term__termios__Cc Array_fixed_term__termios__Cc_20 [20];
 
 struct vphp__ForeachPack_T_Map_string_vphp__DynVal {
 	anon_fn_vphp__zval_vphp__zval_mut_map_string_vphp__dynval cb;
@@ -1510,14 +2153,16 @@ struct StrIntpData {
 	StrIntpMem d;
 };
 
-struct main__MiddlewareChain {
-	main__VSlimApp* app;
-	string path;
-	Array_vphp__ZVal middlewares;
-	vphp__ZVal route_handler;
-	int index;
-	bool has_terminal;
-	main__VSlimResponse terminal_response;
+struct vphp__PersistentOwnedZVal {
+	vphp__ZVal z;
+};
+
+struct vphp__BorrowedZVal {
+	vphp__ZVal z;
+};
+
+struct vphp__RequestOwnedZVal {
+	vphp__ZVal z;
 };
 
 struct builtin__closure__Closure {
@@ -1528,11 +2173,61 @@ struct builtin__closure__Closure {
 	int v_page_size;
 };
 
+struct vphp__BorrowedValue {
+	vphp__ZVal z;
+};
+
+struct vphp__OwnedValue {
+	vphp__ZVal z;
+	vphp__OwnershipKind lifetime;
+};
+
 struct vphp__DynVal {
 	vphp__ValType type;
 	vphp__DynValData data;
 	Array_vphp__DynVal list;
 	Map_string_vphp__DynVal map;
+};
+
+struct os__FileMode {
+	os__FileType typ;
+	os__FilePermission owner;
+	os__FilePermission group;
+	os__FilePermission others;
+};
+
+struct term__termios__Termios {
+	term__termios__TcFlag c_iflag;
+	term__termios__TcFlag c_oflag;
+	term__termios__TcFlag c_cflag;
+	term__termios__TcFlag c_lflag;
+	Array_fixed_term__termios__Cc_20 c_cc;
+	term__termios__Speed c_ispeed;
+	term__termios__Speed c_ospeed;
+};
+
+struct os__IOCapture {
+	os__Pipe __v_stdout;
+	os__Pipe __v_stderr;
+	int original_stdout_fd;
+	int original_stderr_fd;
+};
+
+struct os__Process {
+	string filename;
+	int pid;
+	int code;
+	os__ProcessState status;
+	string err;
+	Array_string args;
+	string work_folder;
+	bool env_is_custom;
+	Array_string env;
+	bool use_stdio_ctl;
+	bool use_pgroup;
+	Array_fixed_int_3 stdio_fd;
+	voidptr wdata;
+	bool create_no_window;
 };
 struct _option_net__urllib__Userinfo {
 	byte state;
@@ -1555,6 +2250,51 @@ struct net__urllib__URL {
 struct net__urllib__ParseAuthorityRes {
 	_option_net__urllib__Userinfo user;
 	string host;
+};
+
+struct main__VSlimApp {
+	Array_main__VSlimRoute routes;
+	Array_vphp__PersistentOwnedZVal php_before_hooks;
+	Array_vphp__PersistentOwnedZVal php_after_hooks;
+	Array_vphp__PersistentOwnedZVal php_middlewares;
+	Array_main__RouteHook php_group_before;
+	Array_main__RouteHook php_group_after;
+	Array_main__RouteHook php_group_middle;
+	vphp__PersistentOwnedZVal not_found_handler;
+	vphp__PersistentOwnedZVal error_handler;
+	main__VSlimContainer* container_ref;
+	string base_path;
+	bool use_demo;
+};
+
+struct main__MiddlewareChain {
+	main__VSlimApp* app;
+	string path;
+	Array_vphp__RequestOwnedZVal middlewares;
+	vphp__RequestOwnedZVal route_handler;
+	int index;
+	bool has_terminal;
+	main__VSlimResponse terminal_response;
+};
+
+struct main__RouteHook {
+	string prefix;
+	vphp__PersistentOwnedZVal handler;
+};
+
+struct main__VSlimRoute {
+	string method;
+	string name;
+	string pattern;
+	main__VSlimRouteHandlerType handler_type;
+	main__VSlimHandler v_handler;
+	vphp__PersistentOwnedZVal php_handler;
+};
+
+struct os__FileInfo {
+	os__FileMode FileMode;
+	u64 size;
+	i64 mtime;
 };
 // #end sorted_symbols
 
@@ -1626,6 +2366,50 @@ struct multi_return_strconv__Dec64_bool {
 	bool arg1;
 };
 
+struct multi_return_string_int {
+	string arg0;
+	int arg1;
+};
+
+struct multi_return_int_bool {
+	int arg0;
+	bool arg1;
+};
+
+struct multi_return_string_string_string {
+	string arg0;
+	string arg1;
+	string arg2;
+};
+
+struct multi_return_Array_string_Array_string {
+	Array_string arg0;
+	Array_string arg1;
+};
+
+struct multi_return_int_int_int_int {
+	int arg0;
+	int arg1;
+	int arg2;
+	int arg3;
+};
+
+struct multi_return_int_int_int {
+	int arg0;
+	int arg1;
+	int arg2;
+};
+
+struct multi_return_int_int_int_int_int_i64_bool {
+	int arg0;
+	int arg1;
+	int arg2;
+	int arg3;
+	int arg4;
+	i64 arg5;
+	bool arg6;
+};
+
 struct multi_return_u64_u64 {
 	u64 arg0;
 	u64 arg1;
@@ -1645,6 +2429,7 @@ typedef struct thread_arg_vphp__ITask_run {
 } thread_arg_vphp__ITask_run;
 static bool Array_u8_contains(Array_u8 a, u8 v);
 static bool Array_string_contains(Array_string a, string v);
+static int Array_string_index(Array_string a, string v);
 
 // V Option_xxx definitions:
 struct _option_rune {
@@ -1675,12 +2460,6 @@ struct _option_anon_fn_vphp__context__vphp__ITask {
 	byte state;
 	IError err;
 	byte data[sizeof(void*) > 1 ? sizeof(void*) : 1];
-};
-
-struct _option_main__VSlimRequest_ptr {
-	byte state;
-	IError err;
-	byte data[sizeof(main__VSlimRequest*) > 1 ? sizeof(main__VSlimRequest*) : 1];
 };
 
 struct _option_main__VSlimResponse_ptr {
@@ -1787,6 +2566,30 @@ struct _result_Array_string {
 	byte data[sizeof(Array_string) > 1 ? sizeof(Array_string) : 1];
 };
 
+struct _result_time__Time {
+	bool is_error;
+	IError err;
+	byte data[sizeof(time__Time) > 1 ? sizeof(time__Time) : 1];
+};
+
+struct _result_multi_return_int_int_int_int {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_int_int_int_int) > 1 ? sizeof(multi_return_int_int_int_int) : 1];
+};
+
+struct _result_multi_return_int_int_int {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_int_int_int) > 1 ? sizeof(multi_return_int_int_int) : 1];
+};
+
+struct _result_multi_return_int_int_int_int_int_i64_bool {
+	bool is_error;
+	IError err;
+	byte data[sizeof(multi_return_int_int_int_int_int_i64_bool) > 1 ? sizeof(multi_return_int_int_int_int_int_i64_bool) : 1];
+};
+
 struct _result_net__urllib__URL {
 	bool is_error;
 	IError err;
@@ -1827,6 +2630,72 @@ struct _result_Map_string_string {
 	bool is_error;
 	IError err;
 	byte data[sizeof(Map_string_string) > 1 ? sizeof(Map_string_string) : 1];
+};
+
+struct _result_os__Command {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__Command) > 1 ? sizeof(os__Command) : 1];
+};
+
+struct _result_os__File {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__File) > 1 ? sizeof(os__File) : 1];
+};
+
+struct _result_FILE_ptr {
+	bool is_error;
+	IError err;
+	byte data[sizeof(FILE*) > 1 ? sizeof(FILE*) : 1];
+};
+
+struct _result_os__Stat {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__Stat) > 1 ? sizeof(os__Stat) : 1];
+};
+
+struct _result_Array_u8 {
+	bool is_error;
+	IError err;
+	byte data[sizeof(Array_u8) > 1 ? sizeof(Array_u8) : 1];
+};
+
+struct _result_strings__Builder {
+	bool is_error;
+	IError err;
+	byte data[sizeof(strings__Builder) > 1 ? sizeof(strings__Builder) : 1];
+};
+
+struct _result_os__Result {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__Result) > 1 ? sizeof(os__Result) : 1];
+};
+
+struct _result_os__DiskUsage {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__DiskUsage) > 1 ? sizeof(os__DiskUsage) : 1];
+};
+
+struct _result_os__Pipe {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__Pipe) > 1 ? sizeof(os__Pipe) : 1];
+};
+
+struct _result_os__IOCapture {
+	bool is_error;
+	IError err;
+	byte data[sizeof(os__IOCapture) > 1 ? sizeof(os__IOCapture) : 1];
+};
+
+struct _result_anon_fn_os__signal {
+	bool is_error;
+	IError err;
+	byte data[sizeof(void*) > 1 ? sizeof(void*) : 1];
 };
 
 
@@ -2076,7 +2945,9 @@ void builtin__array_ensure_cap(array* a, int required);
 array builtin__array_repeat(array a, int count);
 array builtin__array_repeat_to_depth(array a, int count, int depth);
 void builtin__array_insert(array* a, int i, voidptr val);
+VV_LOC void builtin__array_insert_many(array* a, int i, voidptr val, int size);
 void builtin__array_prepend(array* a, voidptr val);
+VV_LOC void builtin__array_prepend_many(array* a, voidptr val, int size);
 void builtin__array_delete(array* a, int i);
 void builtin__array_delete_many(array* a, int i, int size);
 void builtin__array_clear(array* a);
@@ -2131,6 +3002,7 @@ VV_LOC array builtin____new_array_noscan(int mylen, int cap, int elm_size);
 VV_LOC array builtin____new_array_with_default_noscan(int mylen, int cap, int elm_size, voidptr val);
 VV_LOC array builtin____new_array_with_multi_default_noscan(int mylen, int cap, int elm_size, voidptr val);
 VV_LOC array builtin____new_array_with_array_default_noscan(int mylen, int cap, int elm_size, array val, int depth);
+VV_LOC void builtin__array_prepend_noscan(array* a, voidptr val);
 VV_LOC void builtin__array_push_noscan(array* a, voidptr val);
 VV_LOC void builtin__array_push_many_noscan(array* a, voidptr val, int size);
 void builtin__print_backtrace(void);
@@ -2542,6 +3414,144 @@ void builtin__ArrayFlags_clear(ArrayFlags* e, ArrayFlags flag_);
 void builtin__ArrayFlags_clear_all(ArrayFlags* e);
 void builtin__ArrayFlags_toggle(ArrayFlags* e, ArrayFlags flag_);
 ArrayFlags builtin__ArrayFlags__static__zero(void);
+i64 time__portable_timegm(struct tm* t);
+int time__days_from_unix_epoch(int year, int month, int day);
+int time__Time_days_from_unix_epoch(time__Time t);
+time__Time time__date_from_days_after_unix_epoch(int days);
+VV_LOC time__DateTimeParser time__new_date_time_parser(string datetime, string format);
+VV_LOC _result_string time__DateTimeParser_next(time__DateTimeParser* p, int length);
+VV_LOC _result_string time__DateTimeParser_peek(time__DateTimeParser* p, int length);
+VV_LOC _result_int time__DateTimeParser_must_be_int(time__DateTimeParser* p, int length);
+VV_LOC _result_int time__DateTimeParser_must_be_int_with_minimum_length(time__DateTimeParser* p, int min, int max, bool allow_leading_zero);
+VV_LOC _result_void time__DateTimeParser_must_be_string(time__DateTimeParser* p, string must);
+VV_LOC _result_int time__DateTimeParser_must_be_valid_month(time__DateTimeParser* p);
+VV_LOC _result_int time__DateTimeParser_must_be_valid_three_letter_month(time__DateTimeParser* p);
+VV_LOC _result_string time__DateTimeParser_must_be_valid_week_day(time__DateTimeParser* p);
+VV_LOC _result_int time__DateTimeParser_must_be_valid_two_letter_week_day(time__DateTimeParser* p);
+VV_LOC _result_int time__DateTimeParser_must_be_valid_three_letter_week_day(time__DateTimeParser* p);
+VV_LOC _result_Array_string time__extract_tokens(string s);
+VV_LOC _result_time__Time time__DateTimeParser_parse(time__DateTimeParser* p);
+i64 time__Duration_nanoseconds(time__Duration d);
+i64 time__Duration_microseconds(time__Duration d);
+i64 time__Duration_milliseconds(time__Duration d);
+f64 time__Duration_seconds(time__Duration d);
+f64 time__Duration_minutes(time__Duration d);
+f64 time__Duration_hours(time__Duration d);
+f64 time__Duration_days(time__Duration d);
+string time__Duration_str(time__Duration d);
+string time__Duration_debug(time__Duration d);
+time__Duration time__Duration_times(time__Duration d, f64 x);
+VV_LOC int time__iclamp(int x, int a, int b);
+VV_LOC void time__int_to_byte_array_no_pad(int value, Array_u8* arr, int size);
+VV_LOC void time__int_to_ptr_byte_array_no_pad(int value, u8* arr_prt, int arr_len);
+string time__Time_format(time__Time t);
+string time__Time_format_ss(time__Time t);
+string time__Time_format_ss_milli(time__Time t);
+string time__Time_format_ss_micro(time__Time t);
+string time__Time_format_ss_nano(time__Time t);
+string time__Time_format_rfc3339(time__Time t);
+string time__Time_format_rfc3339_micro(time__Time t);
+string time__Time_format_rfc3339_nano(time__Time t);
+string time__Time_hhmm(time__Time t);
+string time__Time_hhmmss(time__Time t);
+string time__Time_hhmm12(time__Time t);
+string time__Time_ymmdd(time__Time t);
+string time__Time_ddmmy(time__Time t);
+string time__Time_md(time__Time t);
+VV_LOC string time__ordinal_suffix(int n);
+string time__Time_custom_format(time__Time t, string s);
+string time__Time_clean(time__Time t);
+string time__Time_clean12(time__Time t);
+string time__Time_get_fmt_time_str(time__Time t, time__FormatTime fmt_time);
+string time__Time_get_fmt_date_str(time__Time t, time__FormatDelimiter fmt_dlmtr, time__FormatDate fmt_date);
+string time__Time_get_fmt_str(time__Time t, time__FormatDelimiter fmt_dlmtr, time__FormatTime fmt_time, time__FormatDate fmt_date);
+string time__Time_utc_string(time__Time t);
+string time__Time_http_header_string(time__Time t);
+void time__Time_push_to_http_header(time__Time t, Array_u8* buffer);
+_result_void time__Time_from_json_number(time__Time* t, string raw_number);
+_result_void time__Time_from_json_string(time__Time* t, string raw_string);
+string time__Time_to_json(time__Time t);
+bool time__Time__eq(time__Time t1, time__Time t2);
+bool time__Time__lt(time__Time t1, time__Time t2);
+time__Duration time__Time__minus(time__Time lhs, time__Time rhs);
+VV_LOC _result_void time__validate_time_bounds(int hour, int minute, int second, int nanosecond);
+VV_LOC _result_multi_return_int_int_int_int time__check_and_extract_time(string s);
+VV_LOC _result_multi_return_int_int_int time__check_and_extract_date(string s);
+_result_time__Time time__parse_http_header_string(string s);
+_result_time__Time time__parse_rfc2616(string s);
+VV_LOC string time__remove_consecutive_spaces(string s);
+_result_time__Time time__parse_rfc3339(string s);
+_result_time__Time time__parse(string s);
+_result_time__Time time__parse_format(string s, string format);
+_result_time__Time time__parse_iso8601(string s);
+_result_time__Time time__parse_rfc2822(string s);
+VV_LOC _result_multi_return_int_int_int time__parse_iso8601_date(string s);
+VV_LOC _result_multi_return_int_int_int_int_int_i64_bool time__parse_iso8601_time(string s);
+string time__TimeParseError_msg(time__TimeParseError err);
+VV_LOC IError time__error_invalid_time(int code, string message);
+time__StopWatch time__new_stopwatch(time__StopWatchOptions opts);
+void time__StopWatch_start(time__StopWatch* t);
+void time__StopWatch_restart(time__StopWatch* t);
+void time__StopWatch_stop(time__StopWatch* t);
+void time__StopWatch_pause(time__StopWatch* t);
+time__Duration time__StopWatch_elapsed(time__StopWatch t);
+time__Time time__now(void);
+time__Time time__utc(void);
+VV_LOC time__Time time__time_with_unix(time__Time t);
+i64 time__ticks(void);
+string time__Time_str(time__Time t);
+VV_LOC time__Time time__convert_ctime(struct tm t, int nanosecond);
+string time__Time_strftime(time__Time t, string fmt);
+int time__Duration_sys_milliseconds(time__Duration d);
+time__Time time__Time__static__new(time__Time t);
+time__Time time__new(time__Time t);
+string time__Time_smonth(time__Time t);
+i64 time__Time_unix(time__Time t);
+i64 time__Time_local_unix(time__Time t);
+i64 time__Time_unix_milli(time__Time t);
+i64 time__Time_unix_micro(time__Time t);
+i64 time__Time_unix_nano(time__Time t);
+time__Time time__Time_add(time__Time t, time__Duration duration_in_nanosecond);
+time__Time time__Time_add_seconds(time__Time t, int seconds);
+time__Time time__Time_add_days(time__Time t, int days);
+time__Duration time__since(time__Time t);
+string time__Time_relative(time__Time t);
+string time__Time_relative_short(time__Time t);
+int time__day_of_week(int y, int m, int d);
+int time__Time_day_of_week(time__Time t);
+int time__Time_week_of_year(time__Time t);
+int time__Time_year_day(time__Time t);
+string time__Time_weekday_str(time__Time t);
+string time__Time_long_weekday_str(time__Time t);
+bool time__is_leap_year(int year);
+_result_int time__days_in_month(int month, int year);
+string time__Time_debug(time__Time t);
+int time__offset(void);
+time__Time time__Time_local_to_utc(time__Time t);
+time__Time time__Time_utc_to_local(time__Time u);
+time__Time time__Time_as_local(time__Time t);
+time__Time time__Time_as_utc(time__Time t);
+bool time__Time_is_utc(time__Time t);
+VV_LOC mach_timebase_info_data_t time__init_time_base(void);
+VV_LOC u64 time__sys_mono_now_darwin(void);
+VV_LOC time__Time time__darwin_now(void);
+VV_LOC time__Time time__darwin_utc(void);
+VV_LOC i64 time__make_unix_time(struct tm t);
+time__Time time__Time_local(time__Time t);
+u64 time__sys_mono_now(void);
+VV_LOC time__Time time__linux_now(void);
+VV_LOC time__Time time__linux_utc(void);
+struct timespec time__Duration_timespec(time__Duration d);
+void time__sleep(time__Duration duration);
+time__Time time__unix(i64 epoch);
+time__Time time__unix_milli(i64 ms);
+time__Time time__unix_micro(i64 us);
+time__Time time__unix_nano(i64 ns);
+VV_LOC time__Time time__ts_to_time_impl(i64 value, i64 down, i64 up);
+time__Time time__unix_microsecond(i64 epoch, int microsecond);
+time__Time time__unix_nanosecond(i64 abs_unix_timestamp, int nanosecond);
+VV_LOC multi_return_int_int_int time__calculate_date_from_day_offset(i64 day_offset_);
+VV_LOC multi_return_int_int_int time__calculate_time_from_second_offset(i64 second_offset_);
 VV_LOC string net__urllib__error_msg(string message, string val);
 VV_LOC bool net__urllib__should_escape(u8 c, net__urllib__EncodingMode mode);
 _result_string net__urllib__query_unescape(string s);
@@ -2591,6 +3601,31 @@ void net__urllib__Values_add(net__urllib__Values* v, string key, string value);
 void net__urllib__Values_del(net__urllib__Values* v, string key);
 Array_string net__urllib__Values_values(net__urllib__Values v);
 Map_string_Array_string net__urllib__Values_to_map(net__urllib__Values v);
+strings__textscanner__TextScanner strings__textscanner__new(string input);
+void strings__textscanner__TextScanner_free(strings__textscanner__TextScanner* ss);
+int strings__textscanner__TextScanner_remaining(strings__textscanner__TextScanner* ss);
+int strings__textscanner__TextScanner_next(strings__textscanner__TextScanner* ss);
+void strings__textscanner__TextScanner_skip(strings__textscanner__TextScanner* ss);
+void strings__textscanner__TextScanner_skip_n(strings__textscanner__TextScanner* ss, int n);
+int strings__textscanner__TextScanner_peek(strings__textscanner__TextScanner* ss);
+u8 strings__textscanner__TextScanner_peek_u8(strings__textscanner__TextScanner* ss);
+int strings__textscanner__TextScanner_peek_n(strings__textscanner__TextScanner* ss, int n);
+u8 strings__textscanner__TextScanner_peek_n_u8(strings__textscanner__TextScanner* ss, int n);
+void strings__textscanner__TextScanner_back(strings__textscanner__TextScanner* ss);
+void strings__textscanner__TextScanner_back_n(strings__textscanner__TextScanner* ss, int n);
+int strings__textscanner__TextScanner_peek_back(strings__textscanner__TextScanner* ss);
+int strings__textscanner__TextScanner_peek_back_n(strings__textscanner__TextScanner* ss, int n);
+int strings__textscanner__TextScanner_current(strings__textscanner__TextScanner* ss);
+void strings__textscanner__TextScanner_reset(strings__textscanner__TextScanner* ss);
+void strings__textscanner__TextScanner_goto_end(strings__textscanner__TextScanner* ss);
+void strings__textscanner__TextScanner_skip_whitespace(strings__textscanner__TextScanner* ss);
+term__termios__TcFlag term__termios__flag(int value);
+term__termios__TcFlag term__termios__invert(term__termios__TcFlag value);
+int term__termios__tcgetattr(int fd, term__termios__Termios* termios_p);
+int term__termios__tcsetattr(int fd, int optional_actions, term__termios__Termios* termios_p);
+int term__termios__ioctl(int fd, u64 request, voidptr arg);
+int term__termios__set_state(int fd, term__termios__Termios new_state);
+void term__termios__Termios_disable_echo(term__termios__Termios* t);
 vphp__Context vphp__Context__static__new(zend_execute_data* ex, zval* ret);
 vphp__Context vphp__new_context(zend_execute_data* ex, zval* ret);
 int vphp__Context_num_args(vphp__Context ctx);
@@ -2598,6 +3633,12 @@ bool vphp__Context_has_exception(vphp__Context ctx);
 voidptr vphp__Context_get_ce(vphp__Context ctx);
 Array_vphp__ZVal vphp__Context_get_args(vphp__Context ctx);
 vphp__ZVal vphp__Context_arg_raw(vphp__Context ctx, int index);
+vphp__BorrowedValue vphp__Context_arg_borrowed(vphp__Context ctx, int index);
+vphp__BorrowedZVal vphp__Context_arg_borrowed_zval(vphp__Context ctx, int index);
+vphp__OwnedValue vphp__Context_arg_owned_request(vphp__Context ctx, int index);
+vphp__RequestOwnedZVal vphp__Context_arg_owned_request_zval(vphp__Context ctx, int index);
+vphp__OwnedValue vphp__Context_arg_owned_persistent(vphp__Context ctx, int index);
+vphp__PersistentOwnedZVal vphp__Context_arg_owned_persistent_zval(vphp__Context ctx, int index);
 string vphp__Context_arg_T_string(vphp__Context ctx, int index);
 int vphp__Context_arg_T_int(vphp__Context ctx, int index);
 bool vphp__Context_arg_T_bool(vphp__Context ctx, int index);
@@ -2643,9 +3684,108 @@ bool vphp__global_const_exists(string name);
 vphp__ZVal vphp__include(string path);
 vphp__ZVal vphp__include_once(string path);
 vphp__ZVal vphp__call_php(string name, Array_vphp__ZVal args);
+vphp__BorrowedZVal vphp__borrow_zval(vphp__ZVal z);
+vphp__BorrowedZVal vphp__BorrowedZVal__static__from_zval(vphp__ZVal z);
+vphp__BorrowedZVal vphp__BorrowedZVal__static__null(void);
+vphp__RequestOwnedZVal vphp__own_request_zval(vphp__ZVal z);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__from_zval(vphp__ZVal z);
+vphp__PersistentOwnedZVal vphp__own_persistent_zval(vphp__ZVal z);
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__from_zval(vphp__ZVal z);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_null(void);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_int(i64 n);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_float(f64 f);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_bool(bool b);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_string(string s);
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_null(void);
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_int(i64 n);
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_float(f64 f);
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_bool(bool b);
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_string(string s);
+vphp__ZVal vphp__BorrowedZVal_to_zval(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_valid(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_null(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_undef(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_callable(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_object(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_string(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_is_array(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_method_exists(vphp__BorrowedZVal v, string name);
+string vphp__BorrowedZVal_to_string(vphp__BorrowedZVal v);
+Array_string vphp__BorrowedZVal_to_string_list(vphp__BorrowedZVal v);
+Map_string_string vphp__BorrowedZVal_to_string_map(vphp__BorrowedZVal v);
+bool vphp__BorrowedZVal_to_bool(vphp__BorrowedZVal v);
+int vphp__BorrowedZVal_to_int(vphp__BorrowedZVal v);
+i64 vphp__BorrowedZVal_to_i64(vphp__BorrowedZVal v);
+f64 vphp__BorrowedZVal_to_f64(vphp__BorrowedZVal v);
+vphp__ZVal vphp__BorrowedZVal_call_owned_request(vphp__BorrowedZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__BorrowedZVal_method_owned_request(vphp__BorrowedZVal v, string method, Array_vphp__ZVal args);
+vphp__RequestOwnedZVal vphp__BorrowedZVal_clone_request_owned(vphp__BorrowedZVal v);
+vphp__PersistentOwnedZVal vphp__BorrowedZVal_clone_persistent_owned(vphp__BorrowedZVal v);
+vphp__ZVal vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_valid(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_null(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_undef(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_callable(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_object(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_string(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_is_array(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_method_exists(vphp__RequestOwnedZVal v, string name);
+string vphp__RequestOwnedZVal_to_string(vphp__RequestOwnedZVal v);
+Array_string vphp__RequestOwnedZVal_to_string_list(vphp__RequestOwnedZVal v);
+Map_string_string vphp__RequestOwnedZVal_to_string_map(vphp__RequestOwnedZVal v);
+bool vphp__RequestOwnedZVal_to_bool(vphp__RequestOwnedZVal v);
+int vphp__RequestOwnedZVal_to_int(vphp__RequestOwnedZVal v);
+i64 vphp__RequestOwnedZVal_to_i64(vphp__RequestOwnedZVal v);
+f64 vphp__RequestOwnedZVal_to_f64(vphp__RequestOwnedZVal v);
+vphp__ZVal vphp__RequestOwnedZVal_call_owned_request(vphp__RequestOwnedZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__RequestOwnedZVal_method_owned_request(vphp__RequestOwnedZVal v, string method, Array_vphp__ZVal args);
+vphp__BorrowedZVal vphp__RequestOwnedZVal_borrowed(vphp__RequestOwnedZVal v);
+vphp__PersistentOwnedZVal vphp__RequestOwnedZVal_clone_persistent_owned(vphp__RequestOwnedZVal v);
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal_clone_request_owned(vphp__RequestOwnedZVal v);
+void vphp__RequestOwnedZVal_release(vphp__RequestOwnedZVal* v);
+vphp__ZVal vphp__PersistentOwnedZVal_to_zval(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_valid(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_null(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_undef(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_callable(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_object(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_string(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_is_array(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_method_exists(vphp__PersistentOwnedZVal v, string name);
+string vphp__PersistentOwnedZVal_to_string(vphp__PersistentOwnedZVal v);
+Array_string vphp__PersistentOwnedZVal_to_string_list(vphp__PersistentOwnedZVal v);
+Map_string_string vphp__PersistentOwnedZVal_to_string_map(vphp__PersistentOwnedZVal v);
+bool vphp__PersistentOwnedZVal_to_bool(vphp__PersistentOwnedZVal v);
+int vphp__PersistentOwnedZVal_to_int(vphp__PersistentOwnedZVal v);
+i64 vphp__PersistentOwnedZVal_to_i64(vphp__PersistentOwnedZVal v);
+f64 vphp__PersistentOwnedZVal_to_f64(vphp__PersistentOwnedZVal v);
+vphp__ZVal vphp__PersistentOwnedZVal_call_owned_request(vphp__PersistentOwnedZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__PersistentOwnedZVal_method_owned_request(vphp__PersistentOwnedZVal v, string method, Array_vphp__ZVal args);
+vphp__BorrowedZVal vphp__PersistentOwnedZVal_borrowed(vphp__PersistentOwnedZVal v);
+vphp__RequestOwnedZVal vphp__PersistentOwnedZVal_clone_request_owned(vphp__PersistentOwnedZVal v);
+void vphp__PersistentOwnedZVal_release(vphp__PersistentOwnedZVal* v);
+vphp__BorrowedZVal vphp__borrowed_zval_from_raw(zval* raw);
+vphp__BorrowedValue vphp__borrow(vphp__ZVal z);
+vphp__OwnedValue vphp__own(vphp__ZVal z);
+vphp__OwnedValue vphp__own_request(vphp__ZVal z);
+vphp__OwnedValue vphp__own_persistent(vphp__ZVal z);
+vphp__OwnedValue vphp__BorrowedValue_clone_owned(vphp__BorrowedValue v);
+vphp__OwnedValue vphp__BorrowedValue_clone_owned_request(vphp__BorrowedValue v);
+vphp__OwnedValue vphp__BorrowedValue_clone_owned_persistent(vphp__BorrowedValue v);
+void vphp__OwnedValue_release(vphp__OwnedValue* v);
+vphp__OwnershipKind vphp__OwnedValue_ownership(vphp__OwnedValue v);
+vphp__BorrowedValue vphp__borrowed_from_raw(zval* raw);
+vphp__RequestScope vphp__request_scope(void);
+void vphp__RequestScope_close(vphp__RequestScope* s);
 void vphp__vphp_framework_init(int module_number);
 VV_EXP void vphp_framework_init(int module_number); // exported fn vphp.vphp_framework_init
 void vphp__init_framework(int module_number);
+void vphp__vphp_framework_shutdown(void);
+VV_EXP void vphp_framework_shutdown(void); // exported fn vphp.vphp_framework_shutdown
+void vphp__vphp_framework_request_startup(void);
+VV_EXP void vphp_framework_request_startup(void); // exported fn vphp.vphp_framework_request_startup
+void vphp__vphp_framework_request_shutdown(void);
+VV_EXP void vphp_framework_request_shutdown(void); // exported fn vphp.vphp_framework_request_shutdown
 voidptr vphp__generic_new_raw_T_main__RouteGroup(void);
 voidptr vphp__generic_new_raw_T_main__VSlimRequest(void);
 voidptr vphp__generic_new_raw_T_main__VSlimResponse(void);
@@ -2653,6 +3793,13 @@ voidptr vphp__generic_new_raw_T_main__VSlimApp(void);
 voidptr vphp__generic_new_raw_T_main__VSlimContainerException(void);
 voidptr vphp__generic_new_raw_T_main__VSlimContainerNotFoundException(void);
 voidptr vphp__generic_new_raw_T_main__VSlimContainer(void);
+void vphp__generic_free_raw_T_main__RouteGroup(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimRequest(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimResponse(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimApp(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimContainerException(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimContainerNotFoundException(voidptr ptr);
+void vphp__generic_free_raw_T_main__VSlimContainer(voidptr ptr);
 vphp__PHPType vphp__PHPType__static__from_id(int id);
 string vphp__PHPType_name(vphp__PHPType t);
 bool vphp__PHPType_is_bool(vphp__PHPType t);
@@ -2673,9 +3820,20 @@ vphp__DynVal vphp__dyn_map(Map_string_vphp__DynVal v);
 vphp__DynVal vphp__dyn_object_ref(voidptr ptr);
 vphp__DynVal vphp__dyn_resource_ref(voidptr ptr);
 _result_vphp__DynVal vphp__decode_val(vphp__ZVal z);
-VV_LOC void anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m);
+VV_LOC void anon_fn_3035ace31b993c50_81_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m);
 _result_void vphp__encode_val(vphp__DynVal v, vphp__ZVal* out);
 _result_vphp__ZVal vphp__new_zval_from_val(vphp__DynVal v);
+VV_LOC vphp__ZVal vphp__invalid_zval(void);
+VV_LOC vphp__ZVal vphp__adopt_raw_with_ownership(zval* raw, vphp__OwnershipKind ownership);
+VV_LOC vphp__ZVal vphp__clone_raw_with_ownership(zval* src, vphp__OwnershipKind ownership);
+VV_LOC vphp__ZVal vphp__adopt_read_result(zval* rv, zval* res, vphp__OwnershipKind ownership);
+int vphp__autorelease_mark(void);
+VV_LOC void vphp__autorelease_add(zval* z);
+VV_LOC void vphp__autorelease_forget(zval* z);
+void vphp__autorelease_drain(int mark);
+int vphp__request_scope_enter(void);
+void vphp__request_scope_leave(int mark);
+vphp__RuntimeCounters vphp__runtime_counters(void);
 bool vphp__ZVal_is_valid(vphp__ZVal v);
 int vphp__ZVal_type_raw(vphp__ZVal v);
 vphp__PHPType vphp__ZVal_type_id(vphp__ZVal v);
@@ -2727,6 +3885,9 @@ void vphp__ZVal_add_property_long(vphp__ZVal v, string key, i64 val);
 void vphp__ZVal_add_property_double(vphp__ZVal v, string key, f64 val);
 void vphp__ZVal_add_property_bool(vphp__ZVal v, string key, bool val);
 vphp__ZVal vphp__ZVal_get_prop(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_prop_borrowed(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_prop_owned_request(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_prop_owned_persistent(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_prop(vphp__ZVal v, string name);
 void vphp__ZVal_set_prop(vphp__ZVal v, string name, vphp__ZVal value);
 bool vphp__ZVal_has_prop(vphp__ZVal v, string name);
@@ -2744,25 +3905,41 @@ string vphp__ZVal_parent_class_name(vphp__ZVal v);
 bool vphp__ZVal_is_internal_class(vphp__ZVal v);
 bool vphp__ZVal_is_user_class(vphp__ZVal v);
 Array_string vphp__ZVal_interface_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_9435(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_12188(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_is_instance_of(vphp__ZVal v, string name);
 bool vphp__ZVal_is_subclass_of(vphp__ZVal v, string name);
 bool vphp__ZVal_implements_interface(vphp__ZVal v, string name);
 bool vphp__ZVal_method_exists(vphp__ZVal v, string name);
 bool vphp__ZVal_property_exists(vphp__ZVal v, string name);
 Array_string vphp__ZVal_method_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_10832(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_13585(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_property_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11304(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_14057(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 Array_string vphp__ZVal_const_names(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11864(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_14617(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc);
 bool vphp__ZVal_const_exists(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_method_owned_request(vphp__ZVal v, string method, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_method_owned_persistent(vphp__ZVal v, string method, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_method(vphp__ZVal v, string method, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_call_owned_request(vphp__ZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_call_owned_persistent(vphp__ZVal v, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_call(vphp__ZVal v, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_dup(vphp__ZVal v);
+void vphp__ZVal_release(vphp__ZVal* v);
+vphp__ZVal vphp__ZVal_dup_persistent(vphp__ZVal v);
 vphp__ZVal vphp__ZVal_construct(vphp__ZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_construct_owned_request(vphp__ZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_construct_owned_persistent(vphp__ZVal v, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_static_method_owned_request(vphp__ZVal v, string method, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_static_method_owned_persistent(vphp__ZVal v, string method, Array_vphp__ZVal args);
 vphp__ZVal vphp__ZVal_static_method(vphp__ZVal v, string method, Array_vphp__ZVal args);
+vphp__ZVal vphp__ZVal_static_prop_borrowed(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_static_prop_owned_request(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_static_prop_owned_persistent(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_static_prop(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_const_borrowed(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_const_owned_request(vphp__ZVal v, string name);
+vphp__ZVal vphp__ZVal_const_owned_persistent(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_const(vphp__ZVal v, string name);
 vphp__ZVal vphp__ZVal_constant(vphp__ZVal v, string name);
 void vphp__ZVal_set_static_prop(vphp__ZVal v, string name, vphp__ZVal value);
@@ -2781,7 +3958,7 @@ vphp__ZVal vphp__new_val_string(string s);
 Map_string_string vphp__ZVal_to_string_map(vphp__ZVal v);
 Array_string vphp__ZVal_to_string_list(vphp__ZVal v);
 _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v);
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_string_21970(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_map_string_string_33384(vphp__ZVal key, vphp__ZVal val, Map_string_string* m);
 _result_Array_string vphp__ZVal_to_v_T_Array_string(vphp__ZVal v);
 _result_string vphp__ZVal_to_v_T_string(vphp__ZVal v);
 _result_int vphp__ZVal_to_v_T_int(vphp__ZVal v);
@@ -2796,7 +3973,6 @@ _result_void vphp__ZVal_from_v_T_Array_int(vphp__ZVal v, Array_int value);
 _result_void vphp__ZVal_from_v_T_Array_i64(vphp__ZVal v, Array_i64 value);
 _result_void vphp__ZVal_from_v_T_Array_f64(vphp__ZVal v, Array_f64 value);
 _result_void vphp__ZVal_from_v_T_Map_string_string(vphp__ZVal v, Map_string_string value);
-_option_main__VSlimRequest_ptr vphp__ZVal_to_object_T_main__VSlimRequest(vphp__ZVal v);
 _option_main__VSlimResponse_ptr vphp__ZVal_to_object_T_main__VSlimResponse(vphp__ZVal v);
 VV_LOC void vphp__vphp_foreach_wrapper(voidptr ctx, zval* key, zval* val);
 void vphp__ZVal_foreach(vphp__ZVal v, void (*cb)(vphp__ZVal key, vphp__ZVal val));
@@ -2808,8 +3984,286 @@ Map_string_vphp__DynVal vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(vp
 Array_string vphp__ZVal_foreach_with_ctx_T_Array_string(vphp__ZVal v, Array_string ctx, void (*cb)(vphp__ZVal key, vphp__ZVal val, Array_string* ctx));
 Map_string_string vphp__ZVal_foreach_with_ctx_T_Map_string_string(vphp__ZVal v, Map_string_string ctx, void (*cb)(vphp__ZVal key, vphp__ZVal val, Map_string_string* ctx));
 Map_string_string vphp__ZVal_fold_T_Map_string_string(vphp__ZVal v, Map_string_string init, void (*cb)(vphp__ZVal key, vphp__ZVal val, Map_string_string* ctx));
+Array_string os__args_after(string cut_word);
+Array_string os__args_before(string cut_word);
+_result_os__Command os__start_new_command(string cmd);
+_result_void os__Command_start(os__Command* c);
+string os__Command_read_line(os__Command* c);
+_result_void os__Command_close(os__Command* c);
+bool os__debugger_present(void);
+string os__getenv(string key);
+_option_string os__getenv_opt(string key);
+int os__setenv(string name, string value, bool overwrite);
+int os__unsetenv(string name);
+Map_string_string os__environ(void);
+int os__fd_close(int fd);
+void os__fd_write(int fd, string s);
+Array_string os__fd_slurp(int fd);
+multi_return_string_int os__fd_read(int fd, int maxbytes);
+bool os__fd_is_pending(int fd);
+VV_LOC string os__NotExpected_msg(os__NotExpected err);
+VV_LOC int os__NotExpected_code(os__NotExpected err);
+VV_LOC string os__fix_windows_path(string path);
+_result_os__File os__open_file(string path, string mode, Array_int options);
+_result_os__File os__open(string path);
+_result_os__File os__create(string path);
+os__File os__stdin(void);
+os__File os__stdout(void);
+os__File os__stderr(void);
+bool os__File_eof(os__File* f);
+_result_void os__File_reopen(os__File* f, string path, string mode);
+_result_int os__File_read(os__File* f, Array_u8* buf);
+_result_int os__File_write(os__File* f, Array_u8 buf);
+_result_int os__File_writeln(os__File* f, string s);
+_result_int os__File_write_string(os__File* f, string s);
+_result_int os__File_write_to(os__File* f, u64 pos, Array_u8 buf);
+int os__File_write_ptr(os__File* f, voidptr data, int size);
+_result_void os__File_write_full_buffer(os__File* f, voidptr buffer, usize buffer_len);
+int os__File_write_ptr_at(os__File* f, voidptr data, int size, u64 pos);
+VV_LOC _result_int os__fread(voidptr ptr, int item_size, int items, FILE* stream);
+Array_u8 os__File_read_bytes(os__File* f, int size);
+Array_u8 os__File_read_bytes_at(os__File* f, int size, u64 pos);
+_result_int os__File_read_bytes_with_newline(os__File* f, Array_u8* buf);
+_result_int os__File_read_bytes_into(os__File* f, u64 pos, Array_u8* buf);
+_result_int os__File_read_from(os__File* f, u64 pos, Array_u8* buf);
+_result_int os__File_read_into_ptr(os__File* f, u8* ptr, int max_size);
+void os__File_flush(os__File* f);
+string os__FileNotOpenedError_msg(os__FileNotOpenedError err);
+string os__SizeOfTypeIs0Error_msg(os__SizeOfTypeIs0Error err);
+VV_LOC IError os__error_file_not_opened(void);
+_result_void os__File_seek(os__File* f, i64 pos, os__SeekMode mode);
+_result_i64 os__File_tell(os__File* f);
+int os__File_setvbuf(os__File* f, char* buffer, os__FileBufferMode mode, usize size);
+int os__File_set_buffer(os__File* f, Array_u8* buffer, os__FileBufferMode mode);
+void os__File_set_line_buffered(os__File* f);
+void os__File_set_unbuffered(os__File* f);
+_result_void os__File_write_u8(os__File* f, u8 b);
+_result_u8 os__File_read_u8(os__File* f);
+VV_LOC _result_void os__check_cf(usize x, string label);
+VV_LOC _result_void os__check_fwrite(usize x);
+VV_LOC _result_void os__check_fread(usize x);
+bool os__is_abs_path(string path);
+string os__abs_path(string path);
+string os__norm_path(string path);
+_result_string os__existing_path(string path);
+VV_LOC string os__clean_path(string path);
+string os__to_slash(string path);
+string os__from_slash(string path);
+VV_LOC int os__win_volume_len(string path);
+VV_LOC bool os__is_slash(u8 b);
+VV_LOC bool os__has_drive_letter(string path);
+VV_LOC bool os__starts_w_slash_slash(string path);
+VV_LOC bool os__is_curr_dir_ref(int byte_one, int byte_two, int byte_three);
+u32 os__FilePermission_bitmask(os__FilePermission p);
+u32 os__FileMode_bitmask(os__FileMode m);
+os__FileInfo os__inode(string path);
+_result_Array_u8 os__read_bytes(string path);
+_result_void os__write_bytes(string path, Array_u8 bytes);
+VV_LOC _result_int os__find_cfile_size(FILE* fp);
+VV_LOC _result_strings__Builder os__slurp_file_in_builder(FILE* fp);
+_result_string os__read_file(string path);
+_result_void os__truncate(string path, u64 len);
+u64 os__file_size(string path);
+_result_void os__rename_dir(string src, string dst);
+_result_void os__rename(string src, string dst);
+_result_void os__cp(string src, string dst, os__CopyParams config);
+_result_FILE_ptr os__vfopen(string path, string mode);
+int os__fileno(voidptr cfile);
+VV_LOC voidptr os__vpopen(string path);
+VV_LOC multi_return_int_bool os__posix_wait4_to_exit_status(int waitret);
+string os__posix_get_error_msg(int code);
+VV_LOC int os__vpclose(voidptr f);
+int os__system(string cmd);
+bool os__exists(string path);
+bool os__is_executable(string path);
+bool os__is_writable(string path);
+bool os__is_readable(string path);
+_result_void os__rm(string path);
+_result_void os__rmdir(string path);
+VV_LOC void os__print_c_errno(void);
+string os__get_raw_line(void);
+Array_u8 os__get_raw_stdin(void);
+string os__executable(void);
+_result_void os__chdir(string path);
+string os__getwd(void);
+string os__real_path(string fpath);
+VV_LOC void os__normalize_drive_letter(string path);
+int os__fork(void);
+int os__wait(void);
+i64 os__file_last_mod_unix(string path);
+void os__flush(void);
+_result_void os__chmod(string path, int mode);
+_result_void os__chown(string path, int owner, int group);
+_result_os__File os__open_append(string path);
+_result_void os__execvp(string cmdpath, Array_string cmdargs);
+_result_void os__execve(string cmdpath, Array_string cmdargs, Array_string envs);
+int os__is_atty(int fd);
+_result_void os__write_file_array(string path, array buffer);
+_result_Array_string os__glob(Array_string patterns);
+IError os__last_error(void);
+IError os__error_posix(os__SystemError e);
+IError os__error_win32(os__SystemError e);
+void os__Result_free(os__Result* result);
+VV_LOC string os__executable_fallback(void);
+_result_void os__cp_all(string src, string dst, bool overwrite);
+_result_void os__mv_by_cp(string source, string target, os__MvParams opts);
+_result_void os__mv(string source, string target, os__MvParams opts);
+_result_Array_string os__read_lines(string path);
+_result_void os__write_lines(string path, Array_string lines);
+string os__sigint_to_signal_name(int si);
+_result_void os__rmdir_all(string path);
+bool os__is_dir_empty(string path);
+string os__file_ext(string opath);
+string os__dir(string path);
+string os__base(string path);
+string os__file_name(string path);
+multi_return_string_string_string os__split_path(string path);
+_option_string os__input_opt(string prompt);
+string os__input(string prompt);
+string os__get_line(void);
+Array_string os__get_lines(void);
+string os__get_lines_joined(void);
+Array_string os__get_raw_lines(void);
+string os__get_raw_lines_joined(void);
+Array_string os__get_trimmed_lines(void);
+string os__user_os(void);
+_result_Array_string os__user_names(void);
+string os__home_dir(void);
+string os__expand_tilde_to_home(string path);
+_result_void os__write_file(string path, string text);
+string os__ExecutableNotFoundError_msg(os__ExecutableNotFoundError err);
+VV_LOC IError os__error_failed_to_find_executable(void);
+_result_string os__find_abs_path_of_executable(string exe_name);
+bool os__exists_in_system_path(string prog);
+bool os__is_file(string path);
+string os__join_path(string base, Array_string dirs);
+string os__join_path_single(string base, string elem);
+VV_LOC void os__normalize_path_in_builder(strings__Builder* sb);
+Array_string os__walk_ext(string path, string ext, os__WalkParams opts);
+VV_LOC void os__impl_walk_ext(string path, string ext, Array_string* out, os__WalkParams opts);
+void os__walk(string path, void (*f)(string ));
+void os__walk_with_context(string path, voidptr context, void (*fcb)(voidptr , string ));
+void os__log(string s);
+_result_void os__mkdir_all(string opath, os__MkdirParams params);
+VV_LOC void os__create_folder_when_it_does_not_exist(string path);
+VV_LOC string os__xdg_home_folder(string ename, string lpath);
+string os__cache_dir(void);
+string os__data_dir(void);
+string os__state_dir(void);
+string os__local_bin_dir(void);
+string os__temp_dir(void);
+string os__vtmp_dir(void);
+VV_LOC string os__default_vmodules_path(void);
+string os__vmodules_dir(void);
+Array_string os__vmodules_paths(void);
+string os__resource_abs_path(string path);
+os__Result os__execute_or_panic(string cmd);
+os__Result os__execute_or_exit(string cmd);
+_result_os__Result os__execute_opt(string cmd);
+string os__quoted_path(string path);
+_result_string os__config_dir(void);
+VV_LOC Array_string os__glob_match(string dir, string pattern, string next_pattern, Array_string* matches);
+VV_LOC _result_void os__native_glob_pattern(string pattern, Array_string* matches);
+_result_void os__utime(string path, int actime, int modtime);
+os__Uname os__uname(void);
+_result_string os__hostname(void);
+_result_string os__loginname(void);
+_result_Array_string os__ls(string path);
+_result_void os__mkdir(string path, os__MkdirParams params);
+os__Result os__execute(string cmd);
+os__Result os__raw_execute(string cmd);
+_result_void os__symlink(string target, string link_name);
+_result_string os__readlink(string path);
+_result_void os__link(string origin, string target);
+string os__get_error_msg(int code);
+void os__File_close(os__File* f);
+_result_void os__ensure_folder_is_writable(string folder);
+int os__getpid(void);
+int os__getppid(void);
+int os__getuid(void);
+int os__geteuid(void);
+int os__getgid(void);
+int os__getegid(void);
+void os__posix_set_permission_bit(string path_s, u32 mode, bool enable);
+int os__page_size(void);
+_result_os__DiskUsage os__disk_usage(string path);
+_result_string os__input_password(string prompt);
+int os__fd_dup(int fd);
+int os__fd_dup2(int fd1, int fd2);
+_result_os__Pipe os__pipe(void);
+void os__Pipe_close(os__Pipe* p);
+_result_int os__Pipe_read(os__Pipe* p, Array_u8* buffer);
+_result_int os__Pipe_write(os__Pipe* p, Array_u8 buffer);
+_result_int os__Pipe_write_string(os__Pipe* p, string s);
+Array_string os__Pipe_slurp(os__Pipe* p);
+_result_os__IOCapture os__stdio_capture(void);
+void os__IOCapture_stop(os__IOCapture* c);
+void os__IOCapture_close(os__IOCapture* c);
+multi_return_Array_string_Array_string os__IOCapture_finish(os__IOCapture* c);
+void os__Process_signal_kill(os__Process* p);
+void os__Process_signal_term(os__Process* p);
+void os__Process_signal_pgkill(os__Process* p);
+void os__Process_signal_stop(os__Process* p);
+void os__Process_signal_continue(os__Process* p);
+void os__Process_wait(os__Process* p);
+void os__Process_close(os__Process* p);
+void os__Process_free(os__Process* p);
+VV_LOC int os__Process__spawn(os__Process* p);
+bool os__Process_is_alive(os__Process* p);
+void os__Process_set_redirect_stdio(os__Process* p);
+void os__Process_stdin_write(os__Process* p, string s);
+string os__Process_stdout_slurp(os__Process* p);
+string os__Process_stderr_slurp(os__Process* p);
+string os__Process_stdout_read(os__Process* p);
+string os__Process_stderr_read(os__Process* p);
+_option_string os__Process_pipe_read(os__Process* p, os__ChildProcessPipeKind pkind);
+bool os__Process_is_pending(os__Process* p, os__ChildProcessPipeKind pkind);
+VV_LOC string os__Process__read_from(os__Process* p, os__ChildProcessPipeKind pkind);
+VV_LOC string os__Process__slurp_from(os__Process* p, os__ChildProcessPipeKind pkind);
+VV_LOC void os__Process__write_to(os__Process* p, os__ChildProcessPipeKind pkind, string s);
+VV_LOC bool os__Process__is_pending(os__Process* p, os__ChildProcessPipeKind pkind);
+VV_LOC void os__Process__check_redirection_call(os__Process* p, string fn_name);
+VV_LOC void os__Process__signal_stop(os__Process* p);
+VV_LOC void os__Process__signal_continue(os__Process* p);
+VV_LOC void os__Process__signal_kill(os__Process* p);
+VV_LOC void os__Process__signal_term(os__Process* p);
+VV_LOC void os__Process__signal_pgkill(os__Process* p);
+VV_LOC void os__Process__wait(os__Process* p);
+VV_LOC bool os__Process__is_alive(os__Process* p);
+void os__Process_run(os__Process* p);
+os__Process* os__new_process(string filename);
+void os__Process_set_args(os__Process* p, Array_string pargs);
+void os__Process_set_work_folder(os__Process* p, string path);
+void os__Process_set_environment(os__Process* p, Map_string_string envs);
+VV_LOC int os__Process_unix_spawn_process(os__Process* p);
+VV_LOC void os__Process_unix_stop_process(os__Process* p);
+VV_LOC void os__Process_unix_resume_process(os__Process* p);
+VV_LOC void os__Process_unix_term_process(os__Process* p);
+VV_LOC void os__Process_unix_kill_process(os__Process* p);
+VV_LOC void os__Process_unix_kill_pgroup(os__Process* p);
+VV_LOC void os__Process_unix_wait(os__Process* p);
+VV_LOC bool os__Process_unix_is_alive(os__Process* p);
+VV_LOC bool os__Process_impl_check_pid_status(os__Process* p, bool exit_early_on_ret0, int waitpid_options);
+_result_anon_fn_os__signal os__signal_opt(os__Signal signum, void (*handler)(os__Signal ));
+VV_LOC void os__ignore_signal_handler(os__Signal _signal);
+void os__signal_ignore(Array_os__Signal args);
+bool os__is_main_thread(void);
+VV_LOC void os__signal_ignore_internal(Array_os__Signal args);
+VV_LOC void os__sleep_ms(i64 ms);
+_result_void os__open_uri(string uri);
+_result_os__Stat os__stat(string path);
+_result_os__Stat os__lstat(string path);
+os__FileType os__Stat_get_filetype(os__Stat st);
+os__FileMode os__Stat_get_mode(os__Stat st);
+bool os__is_dir(string path);
+bool os__is_link(string path);
+VV_LOC os__PathKind os__kind_of_existing_path(string path);
 voidptr main__routegroup_new_raw(void);
 VV_EXP voidptr RouteGroup_new_raw(void); // exported fn main.routegroup_new_raw
+void main__routegroup_free_raw(voidptr ptr);
+VV_EXP void RouteGroup_free_raw(voidptr ptr); // exported fn main.routegroup_free_raw
+void main__routegroup_cleanup_raw(voidptr ptr);
+VV_EXP void RouteGroup_cleanup_raw(voidptr ptr); // exported fn main.routegroup_cleanup_raw
 void main__routegroup_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void RouteGroup_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.routegroup_get_prop
 void main__routegroup_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -2864,6 +4318,10 @@ voidptr main__routegroup_handlers(void);
 VV_EXP voidptr RouteGroup_handlers(void); // exported fn main.routegroup_handlers
 voidptr main__vslimrequest_new_raw(void);
 VV_EXP voidptr VSlimRequest_new_raw(void); // exported fn main.vslimrequest_new_raw
+void main__vslimrequest_free_raw(voidptr ptr);
+VV_EXP void VSlimRequest_free_raw(voidptr ptr); // exported fn main.vslimrequest_free_raw
+void main__vslimrequest_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimRequest_cleanup_raw(voidptr ptr); // exported fn main.vslimrequest_cleanup_raw
 void main__vslimrequest_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void VSlimRequest_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimrequest_get_prop
 void main__vslimrequest_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -2978,6 +4436,10 @@ voidptr main__vslimrequest_handlers(void);
 VV_EXP voidptr VSlimRequest_handlers(void); // exported fn main.vslimrequest_handlers
 voidptr main__vslimresponse_new_raw(void);
 VV_EXP voidptr VSlimResponse_new_raw(void); // exported fn main.vslimresponse_new_raw
+void main__vslimresponse_free_raw(voidptr ptr);
+VV_EXP void VSlimResponse_free_raw(voidptr ptr); // exported fn main.vslimresponse_free_raw
+void main__vslimresponse_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimResponse_cleanup_raw(voidptr ptr); // exported fn main.vslimresponse_cleanup_raw
 void main__vslimresponse_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void VSlimResponse_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimresponse_get_prop
 void main__vslimresponse_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -3030,6 +4492,10 @@ voidptr main__vslimresponse_handlers(void);
 VV_EXP voidptr VSlimResponse_handlers(void); // exported fn main.vslimresponse_handlers
 voidptr main__vslimapp_new_raw(void);
 VV_EXP voidptr VSlimApp_new_raw(void); // exported fn main.vslimapp_new_raw
+void main__vslimapp_free_raw(voidptr ptr);
+VV_EXP void VSlimApp_free_raw(voidptr ptr); // exported fn main.vslimapp_free_raw
+void main__vslimapp_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimApp_cleanup_raw(voidptr ptr); // exported fn main.vslimapp_cleanup_raw
 void main__vslimapp_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void VSlimApp_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimapp_get_prop
 void main__vslimapp_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -3056,6 +4522,8 @@ voidptr main__vphp_wrap_vslimapp_dispatch_request(voidptr ptr, vphp__Context ctx
 VV_EXP voidptr vphp_wrap_VSlimApp_dispatch_request(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_dispatch_request
 voidptr main__vphp_wrap_vslimapp_dispatch_envelope(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_dispatch_envelope(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_dispatch_envelope
+void main__vphp_wrap_vslimapp_dispatch_envelope_map(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimApp_dispatch_envelope_map(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_dispatch_envelope_map
 voidptr main__vphp_wrap_vslimapp_get(voidptr ptr, vphp__Context ctx);
 VV_EXP voidptr vphp_wrap_VSlimApp_get(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_get
 voidptr main__vphp_wrap_vslimapp_post(voidptr ptr, vphp__Context ctx);
@@ -3130,6 +4598,10 @@ voidptr main__vslimapp_handlers(void);
 VV_EXP voidptr VSlimApp_handlers(void); // exported fn main.vslimapp_handlers
 voidptr main__vslimcontainerexception_new_raw(void);
 VV_EXP voidptr VSlimContainerException_new_raw(void); // exported fn main.vslimcontainerexception_new_raw
+void main__vslimcontainerexception_free_raw(voidptr ptr);
+VV_EXP void VSlimContainerException_free_raw(voidptr ptr); // exported fn main.vslimcontainerexception_free_raw
+void main__vslimcontainerexception_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimContainerException_cleanup_raw(voidptr ptr); // exported fn main.vslimcontainerexception_cleanup_raw
 void main__vslimcontainerexception_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void VSlimContainerException_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimcontainerexception_get_prop
 void main__vslimcontainerexception_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -3140,6 +4612,10 @@ voidptr main__vslimcontainerexception_handlers(void);
 VV_EXP voidptr VSlimContainerException_handlers(void); // exported fn main.vslimcontainerexception_handlers
 voidptr main__vslimcontainernotfoundexception_new_raw(void);
 VV_EXP voidptr VSlimContainerNotFoundException_new_raw(void); // exported fn main.vslimcontainernotfoundexception_new_raw
+void main__vslimcontainernotfoundexception_free_raw(voidptr ptr);
+VV_EXP void VSlimContainerNotFoundException_free_raw(voidptr ptr); // exported fn main.vslimcontainernotfoundexception_free_raw
+void main__vslimcontainernotfoundexception_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimContainerNotFoundException_cleanup_raw(voidptr ptr); // exported fn main.vslimcontainernotfoundexception_cleanup_raw
 void main__vslimcontainernotfoundexception_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void VSlimContainerNotFoundException_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimcontainernotfoundexception_get_prop
 void main__vslimcontainernotfoundexception_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -3150,6 +4626,10 @@ voidptr main__vslimcontainernotfoundexception_handlers(void);
 VV_EXP voidptr VSlimContainerNotFoundException_handlers(void); // exported fn main.vslimcontainernotfoundexception_handlers
 voidptr main__vslimcontainer_new_raw(void);
 VV_EXP voidptr VSlimContainer_new_raw(void); // exported fn main.vslimcontainer_new_raw
+void main__vslimcontainer_free_raw(voidptr ptr);
+VV_EXP void VSlimContainer_free_raw(voidptr ptr); // exported fn main.vslimcontainer_free_raw
+void main__vslimcontainer_cleanup_raw(voidptr ptr);
+VV_EXP void VSlimContainer_cleanup_raw(voidptr ptr); // exported fn main.vslimcontainer_cleanup_raw
 void main__vslimcontainer_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv);
 VV_EXP void VSlimContainer_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv); // exported fn main.vslimcontainer_get_prop
 void main__vslimcontainer_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value);
@@ -3185,6 +4665,12 @@ void main__vslimcontainer_get(voidptr ptr, vphp__Context ctx);
 VV_EXP void VSlimContainer_get(voidptr ptr, vphp__Context ctx); // exported fn main.vslimcontainer_get
 VV_LOC void main__throw_not_found(string id);
 VV_LOC void main__throw_container_exception(string msg);
+VV_LOC void main__VSlimContainer_free(main__VSlimContainer* c);
+VV_LOC bool main__vslim_trace_mem_enabled(void);
+VV_LOC int main__vslim_trace_mem_every(void);
+VV_LOC bool main__vslim_trace_mem_should_log(void);
+VV_LOC i64 main__vslim_mem_usage_bytes(void);
+VV_LOC void main__vslim_trace_mem_log(main__VSlimRequest* req, string stage, i64 base_bytes);
 main__VSlimApp* main__VSlimApp__static__demo(void);
 main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path);
 bool main__VSlimApp_has_container(main__VSlimApp* app);
@@ -3195,6 +4681,7 @@ main__VSlimResponse* main__VSlimApp_dispatch(main__VSlimApp* app, string method,
 main__VSlimResponse* main__VSlimApp_dispatch_body(main__VSlimApp* app, string method, string raw_path, string body);
 main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req);
 main__VSlimResponse* main__VSlimApp_dispatch_envelope(main__VSlimApp* app, vphp__ZVal envelope);
+Map_string_string main__VSlimApp_dispatch_envelope_map(main__VSlimApp* app, vphp__ZVal envelope);
 main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler);
 main__VSlimApp* main__VSlimApp_post(main__VSlimApp* app, string pattern, vphp__ZVal handler);
 main__VSlimApp* main__VSlimApp_put(main__VSlimApp* app, string pattern, vphp__ZVal handler);
@@ -3244,53 +4731,58 @@ main__RouteGroup* main__RouteGroup_any_named(main__RouteGroup* group, string nam
 main__RouteGroup* main__RouteGroup_map_named(main__RouteGroup* group, vphp__ZVal methods, string name, string pattern, vphp__ZVal handler);
 string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params);
 string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
+VV_LOC string main__VSlimApp_url_for_query_borrowed(main__VSlimApp* app, string name, vphp__BorrowedZVal params, vphp__BorrowedZVal query);
 string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host);
 string main__VSlimApp_url_for_query_abs(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query, string scheme, string host);
+VV_LOC string main__VSlimApp_url_for_query_abs_borrowed(main__VSlimApp* app, string name, vphp__BorrowedZVal params, vphp__BorrowedZVal query, string scheme, string host);
 main__VSlimResponse* main__VSlimApp_redirect_to(main__VSlimApp* app, string name, vphp__ZVal params);
 main__VSlimResponse* main__VSlimApp_redirect_to_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query);
+VV_LOC main__VSlimResponse* main__VSlimApp_redirect_to_query_borrowed(main__VSlimApp* app, string name, vphp__BorrowedZVal params, vphp__BorrowedZVal query);
 int main__VSlimApp_route_count(main__VSlimApp* app);
 Array_string main__VSlimApp_route_names(main__VSlimApp* app);
 bool main__VSlimApp_has_route_name(main__VSlimApp* app, string name);
 Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_path);
 VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler);
-VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req);
-VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req);
-VV_LOC vphp__ZVal main__dispatch_php_before_hooks(main__VSlimApp* app, Array_vphp__ZVal route_before, vphp__ZVal payload, int index);
-VV_LOC vphp__ZVal main__run_php_before_hooks(main__VSlimApp* app, Array_vphp__ZVal route_before, vphp__ZVal payload);
-VV_LOC Array_vphp__ZVal main__matching_group_before_hooks(main__VSlimApp* app, string path);
-VV_LOC Array_vphp__ZVal main__matching_group_after_hooks(main__VSlimApp* app, string path);
-VV_LOC Array_vphp__ZVal main__matching_group_middle_hooks(main__VSlimApp* app, string path);
+VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base);
+VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base);
+VV_LOC vphp__ZVal main__dispatch_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload, int index);
+VV_LOC vphp__ZVal main__run_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload);
+VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_before_hooks(main__VSlimApp* app, string path);
+VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_after_hooks(main__VSlimApp* app, string path);
+VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_middle_hooks(main__VSlimApp* app, string path);
 VV_LOC bool main__path_has_prefix(string path, string prefix);
 VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params);
 VV_LOC vphp__ZVal main__build_php_response_object(main__VSlimResponse _v_toheap_res);
-VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* app, string path, vphp__ZVal payload, Array_vphp__ZVal route_middle, vphp__ZVal route_handler);
-VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__ZVal payload, Array_vphp__ZVal route_middle, main__VSlimResponse _v_toheap_terminal);
-VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__ZVal payload, Array_vphp__ZVal route_middle, vphp__ZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal);
-VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__ZVal payload);
-struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559_Ctx {
-	vphp__ZVal payload;
-	vphp__ZVal mw;
+VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler);
+VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, main__VSlimResponse _v_toheap_terminal);
+VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal);
+VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__BorrowedZVal payload);
+struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx {
+	vphp__BorrowedZVal payload;
+	vphp__RequestOwnedZVal mw;
 };
 
-struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559_Ctx;
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559(void);
+struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx;
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181(void);
 VV_LOC vphp__ZVal main__with_active_middleware_chain(main__MiddlewareChain* chain, vphp__ZVal (*invoke)());
-VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal request_payload);
-VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__ZVal request_payload, main__VSlimResponse _v_toheap_initial);
-VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__ZVal request_payload, vphp__ZVal result, int fallback_status, string fallback_message);
+VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal _request_payload);
+VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__BorrowedZVal request_payload, main__VSlimResponse _v_toheap_initial);
+VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__BorrowedZVal request_payload, vphp__BorrowedZVal result, int fallback_status, string fallback_message);
 VV_LOC main__VSlimResponse main__run_not_found(main__VSlimApp* app, main__VSlimRequest* req);
-VV_LOC main__VSlimResponse main__run_not_found_core(main__VSlimApp* app, vphp__ZVal payload);
-VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, vphp__ZVal request_payload, int status, string message);
-VV_LOC bool main__is_supported_route_handler(vphp__ZVal handler);
-VV_LOC _result_vphp__ZVal main__dispatch_route_handler(main__VSlimApp* app, vphp__ZVal handler, vphp__ZVal payload);
+VV_LOC main__VSlimResponse main__run_not_found_core(main__VSlimApp* app, vphp__BorrowedZVal payload);
+VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, vphp__BorrowedZVal request_payload, int status, string message);
+VV_LOC bool main__is_supported_route_handler(vphp__BorrowedZVal handler);
+VV_LOC _result_vphp__ZVal main__dispatch_route_handler(main__VSlimApp* app, vphp__BorrowedZVal handler, vphp__BorrowedZVal payload);
 VV_LOC _result_vphp__ZVal main__resolve_container_service(main__VSlimApp* app, string service_id);
 VV_LOC main__VSlimRequest main__request_with_method(main__VSlimRequest* req, string method);
 VV_LOC string main__resolve_effective_method(main__VSlimRequest* req);
 VV_LOC string main__parse_body_method_override(string body);
 VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string route_method);
-VV_LOC Array_string main__normalize_methods(vphp__ZVal methods);
+VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
+VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_32674(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40008(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
 VV_LOC void main__vslim_response_headers(vphp__Context ctx);
@@ -3418,13 +4910,13 @@ void main__VSlimRuntime_delete(main__VSlimRuntime* app, string pattern, main__VS
 void main__VSlimRuntime_any(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest ));
 main__VSlimResponse main__VSlimRuntime_dispatch(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req);
 VV_LOC main__VSlimResponse main__VSlimRuntime_run_middleware(main__VSlimRuntime app, int index, main__VSlimRequest _v_toheap_req);
-struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877_Ctx {
+struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967_Ctx {
 	main__VSlimRuntime app;
 	int index;
 };
 
-struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877_Ctx;
-VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877(main__VSlimRequest _v_toheap_r);
+struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967_Ctx;
+VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967(main__VSlimRequest _v_toheap_r);
 VV_LOC main__VSlimResponse main__VSlimRuntime_dispatch_route(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req);
 VV_LOC main__VSlimResponse main__with_trace_id(main__VSlimRequest _v_toheap_req, main__VSlimResponse (*next)(main__VSlimRequest ));
 VV_LOC main__VSlimResponse main__auth_guard(main__VSlimRequest _v_toheap_req, main__VSlimResponse (*next)(main__VSlimRequest ));
@@ -3436,6 +4928,10 @@ VV_LOC main__VSlimResponse main__meta_handler(main__VSlimRequest _v_toheap_req);
 VV_LOC main__VSlimRuntime main__new_slim_demo_app(void);
 VV_LOC main__VSlimResponse main__dispatch_demo_request(main__VSlimRequest _v_toheap_req);
 VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_demo_request_with_params(main__VSlimRequest _v_toheap_req);
+VV_LOC void main__VSlimRequest_free(main__VSlimRequest* req);
+VV_LOC void main__VSlimResponse_free(main__VSlimResponse* res);
+static string time__FormatTime_str(time__FormatTime it);
+static string time__FormatDate_str(time__FormatDate it);
 string _option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it);
 string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it, int indent_count);
 bool Array_rune_arr_eq(Array_rune a, Array_rune b);
@@ -3448,7 +4944,16 @@ string _const_digit_pairs; // a string literal, inited later
 string _const_si_s_code; // a string literal, inited later
 string _const_si_g32_code; // a string literal, inited later
 string _const_si_g64_code; // a string literal, inited later
+string _const_time__days_string; // a string literal, inited later
+string _const_time__months_string; // a string literal, inited later
 string _const_net__urllib__err_msg_escape; // a string literal, inited later
+string _const_os__fslash_str; // a string literal, inited later
+string _const_os__dot_dot; // a string literal, inited later
+string _const_os__empty_str; // a string literal, inited later
+string _const_os__dot_str; // a string literal, inited later
+string _const_os__path_separator; // a string literal, inited later
+string _const_os__path_delimiter; // a string literal, inited later
+string _const_os__path_devnull; // a string literal, inited later
 builtin__closure__Closure g_closure; // global 6
 
 Array_fixed_u8_12 _const_builtin__closure__closure_thunk; // inited later
@@ -3781,12 +5286,55 @@ Array_fixed_i32_1264 _const_rune_maps = {((i32)(0xB5)), 0xB5, 743, 0, 0xC0, 0xD6
 0x10597, 0x105A1, -39, 0, 0x105A3, 0x105B1, -39, 0, 0x105B3, 0x105B9, -39, 0, 0x105BB, 0x105BC, -39, 0, 
 0x10C80, 0x10CB2, 0, 64, 0x10CC0, 0x10CF2, -64, 0, 0x118A0, 0x118BF, 0, 32, 0x118C0, 0x118DF, -32, 0, 
 0x16E40, 0x16E5F, 0, 32, 0x16E60, 0x16E7F, -32, 0, 0x1E900, 0x1E921, 0, 34, 0x1E922, 0x1E943, -34, 0}; // fixed array const
+time__Duration _const_time__nanosecond; // inited later
+time__Duration _const_time__infinite; // inited later
+Array_string _const_time__tokens_2; // inited later
+Array_string _const_time__tokens_3; // inited later
+Array_string _const_time__tokens_4; // inited later
+Array_fixed_u8_10 _const_time__date_format_buffer = {((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0', '0'}; // fixed array const
+Array_fixed_u8_8 _const_time__time_format_buffer = {((u8)('0')), '0', ':', '0', '0', ':', '0', '0'}; // fixed array const
+Array_fixed_string_7 _const_time__long_days = {_S("Monday"), _S("Tuesday"), _S("Wednesday"), _S("Thursday"), _S("Friday"), _S("Saturday"), _S("Sunday")}; // fixed array const
+Array_fixed_int_12 _const_time__month_days = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // fixed array const
+Array_string _const_time__long_months; // inited later
+i64 _const_time__absolute_zero_year; // inited later
+Array_fixed_int_13 _const_time__days_before = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}; // fixed array const
+u64 _const_time__start_time; // inited later
+mach_timebase_info_data_t _const_time__time_base; // inited later
 vphp__TaskRegistry* g_registry; // global 6
 
-main__MiddlewareChain* active_middleware_chain; // global 6
+int _const_os__o_rdonly; // inited later
+int _const_os__o_wronly; // inited later
+int _const_os__o_rdwr; // inited later
+int _const_os__o_create; // inited later
+int _const_os__o_noctty; // inited later
+int _const_os__o_trunc; // inited later
+int _const_os__o_append; // inited later
+int _const_os__o_nonblock; // inited later
+int _const_os__o_sync; // inited later
+string _const_os__wd_at_startup; // inited later
+Array_string _const_os__executable_suffixes; // inited later
+int _const_os__fd_stdout; // inited later
+int _const_os__fd_stderr; // inited later
+u64 g_main_thread_id; // global 6
+
+Array_main__MiddlewareChain_ptr active_middleware_chains; // global 6
+
+bool vslim_trace_mem_cache_inited; // global 6
+
+bool vslim_trace_mem_enabled_cache; // global 6
+
+int vslim_trace_mem_every_cache; // global 6
+
+u64 vslim_trace_mem_counter; // global 6
 
 u32 _const_builtin__closure__closure_size_1; // inited later
+time__Duration _const_time__microsecond; // inited later
+Array_string _const_os__args; // inited later
 int _const_builtin__closure__closure_size; // inited later
+time__Duration _const_time__millisecond; // inited later
+time__Duration _const_time__second; // inited later
+time__Duration _const_time__minute; // inited later
+time__Duration _const_time__hour; // inited later
 
 // V interface table:
 static IError I_None___to_Interface_IError(None__* x);
@@ -3797,7 +5345,19 @@ static IError I_Error_to_Interface_IError(Error* x);
 const u32 _IError_Error_index = 2;
 static IError I_MessageError_to_Interface_IError(MessageError* x);
 const u32 _IError_MessageError_index = 3;
-// ^^^ number of types for interface IError: 4
+static IError I_time__TimeParseError_to_Interface_IError(time__TimeParseError* x);
+const u32 _IError_time__TimeParseError_index = 4;
+static IError I_os__Eof_to_Interface_IError(os__Eof* x);
+const u32 _IError_os__Eof_index = 5;
+static IError I_os__NotExpected_to_Interface_IError(os__NotExpected* x);
+const u32 _IError_os__NotExpected_index = 6;
+static IError I_os__FileNotOpenedError_to_Interface_IError(os__FileNotOpenedError* x);
+const u32 _IError_os__FileNotOpenedError_index = 7;
+static IError I_os__SizeOfTypeIs0Error_to_Interface_IError(os__SizeOfTypeIs0Error* x);
+const u32 _IError_os__SizeOfTypeIs0Error_index = 8;
+static IError I_os__ExecutableNotFoundError_to_Interface_IError(os__ExecutableNotFoundError* x);
+const u32 _IError_os__ExecutableNotFoundError_index = 9;
+// ^^^ number of types for interface IError: 10
 
 // Methods wrapper for interface "IError"
 static inline int builtin__None___code_Interface_IError_method_wrapper(None__* err) {
@@ -3818,13 +5378,49 @@ static inline int builtin__MessageError_code_Interface_IError_method_wrapper(Mes
 static inline string builtin__MessageError_msg_Interface_IError_method_wrapper(MessageError* err) {
 	return builtin__MessageError_msg(*err);
 }
+static inline int builtin__time__TimeParseError_code_Interface_IError_method_wrapper(time__TimeParseError* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string time__TimeParseError_msg_Interface_IError_method_wrapper(time__TimeParseError* err) {
+	return time__TimeParseError_msg(*err);
+}
+static inline int builtin__os__Eof_code_Interface_IError_method_wrapper(os__Eof* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string builtin__os__Eof_msg_Interface_IError_method_wrapper(os__Eof* err) {
+	return builtin__Error_msg(err->Error);
+}
+static inline int os__NotExpected_code_Interface_IError_method_wrapper(os__NotExpected* err) {
+	return os__NotExpected_code(*err);
+}
+static inline string os__NotExpected_msg_Interface_IError_method_wrapper(os__NotExpected* err) {
+	return os__NotExpected_msg(*err);
+}
+static inline int builtin__os__FileNotOpenedError_code_Interface_IError_method_wrapper(os__FileNotOpenedError* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string os__FileNotOpenedError_msg_Interface_IError_method_wrapper(os__FileNotOpenedError* err) {
+	return os__FileNotOpenedError_msg(*err);
+}
+static inline int builtin__os__SizeOfTypeIs0Error_code_Interface_IError_method_wrapper(os__SizeOfTypeIs0Error* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string os__SizeOfTypeIs0Error_msg_Interface_IError_method_wrapper(os__SizeOfTypeIs0Error* err) {
+	return os__SizeOfTypeIs0Error_msg(*err);
+}
+static inline int builtin__os__ExecutableNotFoundError_code_Interface_IError_method_wrapper(os__ExecutableNotFoundError* err) {
+	return builtin__Error_code(err->Error);
+}
+static inline string os__ExecutableNotFoundError_msg_Interface_IError_method_wrapper(os__ExecutableNotFoundError* err) {
+	return os__ExecutableNotFoundError_msg(*err);
+}
 
 struct _IError_interface_methods {
 	int (*_method_code)(void* _);
 	string (*_method_msg)(void* _);
 };
 
-struct _IError_interface_methods IError_name_table[4] = {
+struct _IError_interface_methods IError_name_table[10] = {
 	{
 		._method_code = (void*) builtin__None___code_Interface_IError_method_wrapper,
 		._method_msg = (void*) builtin__None___msg_Interface_IError_method_wrapper,
@@ -3840,6 +5436,30 @@ struct _IError_interface_methods IError_name_table[4] = {
 	{
 		._method_code = (void*) builtin__MessageError_code_Interface_IError_method_wrapper,
 		._method_msg = (void*) builtin__MessageError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__time__TimeParseError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) time__TimeParseError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__os__Eof_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) builtin__os__Eof_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) os__NotExpected_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) os__NotExpected_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__os__FileNotOpenedError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) os__FileNotOpenedError_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__os__SizeOfTypeIs0Error_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) os__SizeOfTypeIs0Error_msg_Interface_IError_method_wrapper,
+	},
+	{
+		._method_code = (void*) builtin__os__ExecutableNotFoundError_code_Interface_IError_method_wrapper,
+		._method_msg = (void*) os__ExecutableNotFoundError_msg_Interface_IError_method_wrapper,
 	},
 };
 
@@ -3880,6 +5500,60 @@ return (IError) {
 	};
 }
 
+// Casting functions for converting "time__TimeParseError" to interface "IError"
+
+static inline IError I_time__TimeParseError_to_Interface_IError(time__TimeParseError* x) {
+return (IError) {
+		._time__TimeParseError = x,
+		._typ = _IError_time__TimeParseError_index,
+	};
+}
+
+// Casting functions for converting "os__Eof" to interface "IError"
+
+static inline IError I_os__Eof_to_Interface_IError(os__Eof* x) {
+return (IError) {
+		._os__Eof = x,
+		._typ = _IError_os__Eof_index,
+	};
+}
+
+// Casting functions for converting "os__NotExpected" to interface "IError"
+
+static inline IError I_os__NotExpected_to_Interface_IError(os__NotExpected* x) {
+return (IError) {
+		._os__NotExpected = x,
+		._typ = _IError_os__NotExpected_index,
+	};
+}
+
+// Casting functions for converting "os__FileNotOpenedError" to interface "IError"
+
+static inline IError I_os__FileNotOpenedError_to_Interface_IError(os__FileNotOpenedError* x) {
+return (IError) {
+		._os__FileNotOpenedError = x,
+		._typ = _IError_os__FileNotOpenedError_index,
+	};
+}
+
+// Casting functions for converting "os__SizeOfTypeIs0Error" to interface "IError"
+
+static inline IError I_os__SizeOfTypeIs0Error_to_Interface_IError(os__SizeOfTypeIs0Error* x) {
+return (IError) {
+		._os__SizeOfTypeIs0Error = x,
+		._typ = _IError_os__SizeOfTypeIs0Error_index,
+	};
+}
+
+// Casting functions for converting "os__ExecutableNotFoundError" to interface "IError"
+
+static inline IError I_os__ExecutableNotFoundError_to_Interface_IError(os__ExecutableNotFoundError* x) {
+return (IError) {
+		._os__ExecutableNotFoundError = x,
+		._typ = _IError_os__ExecutableNotFoundError_index,
+	};
+}
+
 // ^^^ number of types for interface vphp__ITask: 0
 
 // Methods wrapper for interface "vphp__ITask"
@@ -3903,6 +5577,11 @@ VV_LOC  int compare_14332915669757940840_string(string* a, string* b) {
 	else return 1;
 }
 
+VV_LOC  int compare_1065768667300548517_string(string* a, string* b) {
+	if (builtin__string__lt(*a, *b)) return -1;
+	else return 1;
+}
+
 VV_LOC  int compare_4304664230910251370_string(string* a, string* b) {
 	if (builtin__string__lt(*a, *b)) return -1;
 	else return 1;
@@ -3916,6 +5595,35 @@ vphp__TaskResult __v_thread_vphp__TaskResult_wait(__v_thread_vphp__TaskResult th
 void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg);
 
 // V auto str functions:
+static string time__FormatTime_str(time__FormatTime it) { /* gen_str_for_enum */
+	switch(it) {
+		case time__FormatTime__hhmm12: return _S("hhmm12");
+		case time__FormatTime__hhmm24: return _S("hhmm24");
+		case time__FormatTime__hhmmss12: return _S("hhmmss12");
+		case time__FormatTime__hhmmss24: return _S("hhmmss24");
+		case time__FormatTime__hhmmss24_milli: return _S("hhmmss24_milli");
+		case time__FormatTime__hhmmss24_micro: return _S("hhmmss24_micro");
+		case time__FormatTime__hhmmss24_nano: return _S("hhmmss24_nano");
+		case time__FormatTime__no_time: return _S("no_time");
+		default: return _S("unknown enum value");
+	}
+}
+static string time__FormatDate_str(time__FormatDate it) { /* gen_str_for_enum */
+	switch(it) {
+		case time__FormatDate__ddmmyy: return _S("ddmmyy");
+		case time__FormatDate__ddmmyyyy: return _S("ddmmyyyy");
+		case time__FormatDate__mmddyy: return _S("mmddyy");
+		case time__FormatDate__mmddyyyy: return _S("mmddyyyy");
+		case time__FormatDate__mmmd: return _S("mmmd");
+		case time__FormatDate__mmmdd: return _S("mmmdd");
+		case time__FormatDate__mmmddyy: return _S("mmmddyy");
+		case time__FormatDate__mmmddyyyy: return _S("mmmddyyyy");
+		case time__FormatDate__no_date: return _S("no_date");
+		case time__FormatDate__yyyymmdd: return _S("yyyymmdd");
+		case time__FormatDate__yymmdd: return _S("yymmdd");
+		default: return _S("unknown enum value");
+	}
+}
 string _option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it) { return indent__option_net__urllib__Userinfo_str(it, 0); }
 string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it, int indent_count) {
 	string res;
@@ -3943,6 +5651,16 @@ static bool Array_string_contains(Array_string a, string v) {
 		}
 	}
 	return false;
+}
+
+static int Array_string_index(Array_string a, string v) {
+	string* pelem = a.data;
+	for (int i = 0; i < a.len; ++i, ++pelem) {
+		if (builtin__fast_string_eq(*pelem, v)) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 inline bool Array_rune_arr_eq(Array_rune a, Array_rune b) {
@@ -3978,7 +5696,7 @@ void* vphp__ITask_run_thread_wrapper(thread_arg_vphp__ITask_run *arg) {
 }
 
 // V anon functions:
-VV_LOC void anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
+VV_LOC void anon_fn_3035ace31b993c50_81_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018(vphp__ZVal key, vphp__ZVal v, Map_string_vphp__DynVal* m) {
 	_result_vphp__DynVal _t1 = vphp__decode_val(v);
 	if (_t1.is_error) {
 		*(vphp__DynVal*) _t1.data = vphp__dyn_null();
@@ -3988,37 +5706,37 @@ VV_LOC void anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vph
 	(*(vphp__DynVal*)builtin__map_get_and_set((map*)m, &(string[]){vphp__ZVal_to_string(key)}, &(vphp__DynVal[]){ (vphp__DynVal){.type = 0,.data = (vphp__DynValData){.b = 0,.i = 0,.f = 0,.s = (string){.str=(byteptr)"", .is_lit=1},.ptr = 0,},.list = builtin____new_array(0, 0, sizeof(vphp__DynVal)),.map = builtin__new_map(sizeof(string), sizeof(vphp__DynVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),} })) = decoded;
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_9435(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_12188(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_10832(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_13585(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11304(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_14057(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(vphp__ZVal_method(val, _S("getName"), builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0))) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11864(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_14617(vphp__ZVal _d1, vphp__ZVal val, Array_string* acc) {
 	builtin__array_push((array*)acc, _MOV((string[]){ vphp__ZVal_to_string(val) }));
 }
 
-VV_LOC void anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_string_21970(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
+VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_map_string_string_33384(vphp__ZVal key, vphp__ZVal val, Map_string_string* m) {
 	builtin__map_set(m, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559(void) {
-	struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559_Ctx* _V_closure_ctx = g_closure.closure_get_data();
-	return vphp__ZVal_call(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){_V_closure_ctx->payload, vphp__ZVal__static__new_string(_S("vslim_middleware_next"))})));
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181(void) {
+	struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_32674(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40008(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
-VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877(main__VSlimRequest _v_toheap_r) {
-	struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC main__VSlimResponse anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967(main__VSlimRequest _v_toheap_r) {
+	struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	main__VSlimRequest* r = HEAP(main__VSlimRequest, _v_toheap_r);
 	return main__VSlimRuntime_run_middleware(_V_closure_ctx->app, (int)(_V_closure_ctx->index + 1), (*(r)));
 }
@@ -4030,6 +5748,12 @@ static char * v_typeof_interface_IError(u32 sidx) {
 	if (sidx == _IError_voidptr_index) return "voidptr";
 	if (sidx == _IError_Error_index) return "Error";
 	if (sidx == _IError_MessageError_index) return "MessageError";
+	if (sidx == _IError_time__TimeParseError_index) return "time.TimeParseError";
+	if (sidx == _IError_os__Eof_index) return "os.Eof";
+	if (sidx == _IError_os__NotExpected_index) return "os.NotExpected";
+	if (sidx == _IError_os__FileNotOpenedError_index) return "os.FileNotOpenedError";
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return "os.SizeOfTypeIs0Error";
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return "os.ExecutableNotFoundError";
 	return "unknown IError";
 }
 
@@ -4038,11 +5762,17 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_voidptr_index) return 2;
 	if (sidx == _IError_Error_index) return 63;
 	if (sidx == _IError_MessageError_index) return 64;
+	if (sidx == _IError_time__TimeParseError_index) return 290;
+	if (sidx == _IError_os__Eof_index) return 233;
+	if (sidx == _IError_os__NotExpected_index) return 234;
+	if (sidx == _IError_os__FileNotOpenedError_index) return 236;
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 237;
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return 255;
 	return 30;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 181: return "vphp.TaskResult";
+		case 195: return "vphp.TaskResult";
 		case 21: return "string";
 		case 8: return "int";
 		case 9: return "i64";
@@ -4050,15 +5780,15 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 19: return "bool";
 		case 37: return "[]string";
 		case 47: return "[]int";
-		case 179: return "[]i64";
-		case 180: return "[]f64";
+		case 193: return "[]i64";
+		case 194: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
 
 u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 181: return 181;
+		case 195: return 195;
 		case 21: return 21;
 		case 8: return 8;
 		case 9: return 9;
@@ -4066,9 +5796,9 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 19: return 19;
 		case 37: return 37;
 		case 47: return 47;
-		case 179: return 179;
-		case 180: return 180;
-		default: return 181;
+		case 193: return 193;
+		case 194: return 194;
+		default: return 195;
 	}
 }
 static char * v_typeof_interface_vphp__ITask(u32 sidx) {
@@ -4076,7 +5806,7 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	return 184;
+	return 198;
 }
 // << typeof() support for sum types
 
@@ -8939,8 +10669,30 @@ void builtin__array_insert(array* a, int i, voidptr val) {
 	}
 	a->len++;
 }
+VV_LOC void builtin__array_insert_many(array* a, int i, voidptr val, int size) {
+	if (i < 0 || i > a->len) {
+		builtin__panic_n2(_S("array.insert_many: index out of range (i,a.len):"), i, a->len);
+		VUNREACHABLE();
+	}
+	i64 new_len = (i64)(((i64)(a->len)) + ((i64)(size)));
+	if (new_len > _const_max_int) {
+		builtin__panic_n(_S("array.insert_many: max_int will be exceeded by a.len:"), new_len);
+		VUNREACHABLE();
+	}
+	builtin__array_ensure_cap(a, ((int)(new_len)));
+	int elem_size = a->element_size;
+	{ // Unsafe block
+		voidptr iptr = builtin__array_get_unsafe(*a, i);
+		builtin__vmemmove(builtin__array_get_unsafe(*a, (int)(i + size)), iptr, (u64)(((u64)((int)(a->len - i))) * ((u64)(elem_size))));
+		builtin__vmemcpy(iptr, val, (u64)(((u64)(size)) * ((u64)(elem_size))));
+	}
+	a->len = ((int)(new_len));
+}
 void builtin__array_prepend(array* a, voidptr val) {
 	builtin__array_insert(a, 0, val);
+}
+VV_LOC void builtin__array_prepend_many(array* a, voidptr val, int size) {
+	builtin__array_insert_many(a, 0, val, size);
 }
 void builtin__array_delete(array* a, int i) {
 	builtin__array_delete_many(a, i, 1);
@@ -9379,6 +11131,9 @@ VV_LOC array builtin____new_array_with_multi_default_noscan(int mylen, int cap, 
 }
 VV_LOC array builtin____new_array_with_array_default_noscan(int mylen, int cap, int elm_size, array val, int depth) {
 	return builtin____new_array_with_array_default(mylen, cap, elm_size, val, depth);
+}
+VV_LOC void builtin__array_prepend_noscan(array* a, voidptr val) {
+	builtin__array_prepend(a, val);
 }
 VV_LOC void builtin__array_push_noscan(array* a, voidptr val) {
 	builtin__array_push(a, val);
@@ -14889,6 +16644,2449 @@ inline void builtin__ArrayFlags_toggle(ArrayFlags* e, ArrayFlags flag_) {
 inline ArrayFlags builtin__ArrayFlags__static__zero(void) {
 	return ((ArrayFlags)(0));
 }
+i64 time__portable_timegm(struct tm* t) {
+	int year = (int)(t->tm_year + 1900);
+	int month = t->tm_mon;
+	if (month > 11) {
+		year += (int)(month / 12);
+		month %= 12;
+	} else if (month < 0) {
+		int years_diff = (int)(((int)(11 - month)) / 12);
+		year -= years_diff;
+		month += (int)(12 * years_diff);
+	}
+	i64 days_since_1970 = ((i64)(time__days_from_unix_epoch(year, (int)(month + 1), t->tm_mday)));
+	return (i64)((i64)(60 * ((i64)((i64)(60 * ((i64)((i64)(24 * days_since_1970) + t->tm_hour))) + t->tm_min))) + t->tm_sec);
+}
+int time__days_from_unix_epoch(int year, int month, int day) {
+	int y = (month <= 2 ? ((int)(year - 1)) : (year));
+	int era = (int)(y / 400);
+	int year_of_the_era = (int)(y - (int)(era * 400));
+	int day_of_year = (int)((int)((int)(((int)((int)(153 * ((int)(month + ((month > 2 ? (-3) : (9)))))) + 2)) / 5) + day) - 1);
+	int day_of_the_era = (int)((int)((int)((int)(year_of_the_era * 365) + (int)(year_of_the_era / 4)) - (int)(year_of_the_era / 100)) + day_of_year);
+	return (int)((int)((int)(era * 146097) + day_of_the_era) - 719468);
+}
+inline int time__Time_days_from_unix_epoch(time__Time t) {
+	return time__days_from_unix_epoch(t.year, t.month, t.day);
+}
+time__Time time__date_from_days_after_unix_epoch(int days) {
+	multi_return_int_int_int mr_1379 = time__calculate_date_from_day_offset(((i64)(days)));
+	int year = mr_1379.arg0;
+	int month = mr_1379.arg1;
+	int day = mr_1379.arg2;
+	return ((time__Time){.__v_unix = 0,.year = year,.month = month,.day = day,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,});
+}
+VV_LOC time__DateTimeParser time__new_date_time_parser(string datetime, string format) {
+	return ((time__DateTimeParser){.datetime = datetime,.format = format,.current_pos_datetime = 0,});
+}
+VV_LOC _result_string time__DateTimeParser_next(time__DateTimeParser* p, int length) {
+	if ((int)(p->current_pos_datetime + length) > p->datetime.len) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(_S("end of string")), .data={E_STRUCT} };
+	}
+	string val = builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + length));
+	p->current_pos_datetime += length;
+	_result_string _t2;
+	builtin___result_ok(&(string[]) { val }, (_result*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+VV_LOC _result_string time__DateTimeParser_peek(time__DateTimeParser* p, int length) {
+	if ((int)(p->current_pos_datetime + length) > p->datetime.len) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(_S("end of string")), .data={E_STRUCT} };
+	}
+	_result_string _t2;
+	builtin___result_ok(&(string[]) { builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + length)) }, (_result*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+VV_LOC _result_int time__DateTimeParser_must_be_int(time__DateTimeParser* p, int length) {
+	_result_string _t1 = time__DateTimeParser_next(p, length);
+	if (_t1.is_error) {
+		_result_int _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	string val = (*(string*)_t1.data);
+	if (!builtin__string_contains_only(val, _S("0123456789"))) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("expected int, found: "), 0xfe10, {.d_s = val}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_result_int _t4;
+	builtin___result_ok(&(int[]) { builtin__string_int(val) }, (_result*)(&_t4), sizeof(int));
+	 
+	return _t4;
+}
+VV_LOC _result_int time__DateTimeParser_must_be_int_with_minimum_length(time__DateTimeParser* p, int min, int max, bool allow_leading_zero) {
+	int length = (int)((int)(max + 1) - min);
+	string val = _S("");
+	for (int _t1 = 0; _t1 < length; ++_t1) {
+		_result_string _t2 = time__DateTimeParser_peek(p, 1);
+		if (_t2.is_error) {
+			break;
+		}
+		
+ 		string tok = (*(string*)_t2.data);
+		if (!builtin__string_contains_only(tok, _S("0123456789"))) {
+			break;
+		}
+		_result_string _t3 = time__DateTimeParser_next(p, 1);
+		if (_t3.is_error) {
+			_result_int _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		val = builtin__string__plus(val, tok);
+	}
+	if (val.len < min) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("expected int with a minimum length of "), 0xfe07, {.d_i32 = min}}, {_S(", found: "), 0xfe07, {.d_i32 = val.len}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (!allow_leading_zero && builtin__string_starts_with(val, _S("0"))) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("0 is not allowed for this format")), .data={E_STRUCT} };
+	}
+	_result_int _t7;
+	builtin___result_ok(&(int[]) { builtin__string_int(val) }, (_result*)(&_t7), sizeof(int));
+	 
+	return _t7;
+}
+VV_LOC _result_void time__DateTimeParser_must_be_string(time__DateTimeParser* p, string must) {
+	_result_string _t1 = time__DateTimeParser_next(p, must.len);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	string val = (*(string*)_t1.data);
+	if (!builtin__string__eq(val, must)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(4, _MOV((StrIntpData[]){{_S("invalid string: \""), 0xfe10, {.d_s = val}}, {_S("\"!=\""), 0xfe10, {.d_s = must}}, {_S("\" at: "), 0xfe07, {.d_i32 = p->current_pos_datetime}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_int time__DateTimeParser_must_be_valid_month(time__DateTimeParser* p) {
+	for (int _t1 = 0; _t1 < _const_time__long_months.len; ++_t1) {
+		string v = ((string*)_const_time__long_months.data)[_t1];
+		if ((int)(p->current_pos_datetime + v.len) < p->datetime.len) {
+			string month_name = builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + v.len));
+			if (builtin__string__eq(v, month_name)) {
+				p->current_pos_datetime += v.len;
+				_result_int _t2;
+				builtin___result_ok(&(int[]) { (int)(Array_string_index(_const_time__long_months, month_name) + 1) }, (_result*)(&_t2), sizeof(int));
+				 
+				return _t2;
+			}
+		}
+	}
+	return (_result_int){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid month name, at: "), 0xfe07, {.d_i32 = p->current_pos_datetime}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC _result_int time__DateTimeParser_must_be_valid_three_letter_month(time__DateTimeParser* p) {
+	if ((int)(p->current_pos_datetime + 3) < p->datetime.len) {
+		string letters = builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + 3));
+		for (int m = 1; m <= _const_time__long_months.len; m++) {
+			if (builtin__string__eq(builtin__string_substr(_const_time__months_string, (int)(((int)(m - 1)) * 3), (int)(m * 3)), letters)) {
+				p->current_pos_datetime += 3;
+				_result_int _t1;
+				builtin___result_ok(&(int[]) { m }, (_result*)(&_t1), sizeof(int));
+				 
+				return _t1;
+			}
+		}
+	}
+	return (_result_int){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid three letter month, at: "), 0xfe07, {.d_i32 = p->current_pos_datetime}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC _result_string time__DateTimeParser_must_be_valid_week_day(time__DateTimeParser* p) {
+for (int _t1 = 0; _t1 != 7; ++_t1) {
+		string v = _const_time__long_days[_t1];
+		if ((int)(p->current_pos_datetime + v.len) < p->datetime.len) {
+			string weekday = builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + v.len));
+			if (builtin__string__eq(v, weekday)) {
+				p->current_pos_datetime += v.len;
+				_result_string _t2;
+				builtin___result_ok(&(string[]) { weekday }, (_result*)(&_t2), sizeof(string));
+				 
+				return _t2;
+			}
+		}
+	}
+	return (_result_string){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid weekday, at: "), 0xfe07, {.d_i32 = p->current_pos_datetime}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC _result_int time__DateTimeParser_must_be_valid_two_letter_week_day(time__DateTimeParser* p) {
+	if ((int)(p->current_pos_datetime + 2) < p->datetime.len) {
+		string letters = builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + 2));
+		for (int d = 1; d <= 7; d++) {
+			if (builtin__string__eq(builtin__string_substr(_const_time__days_string, (int)(((int)(d - 1)) * 3), (int)((int)(d * 3) - 1)), letters)) {
+				p->current_pos_datetime += 2;
+				_result_int _t1;
+				builtin___result_ok(&(int[]) { d }, (_result*)(&_t1), sizeof(int));
+				 
+				return _t1;
+			}
+		}
+	}
+	return (_result_int){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid two letter weekday, at: "), 0xfe07, {.d_i32 = p->current_pos_datetime}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC _result_int time__DateTimeParser_must_be_valid_three_letter_week_day(time__DateTimeParser* p) {
+	if ((int)(p->current_pos_datetime + 3) < p->datetime.len) {
+		string letters = builtin__string_substr(p->datetime, p->current_pos_datetime, (int)(p->current_pos_datetime + 3));
+		for (int d = 1; d <= 7; d++) {
+			if (builtin__string__eq(builtin__string_substr(_const_time__days_string, (int)(((int)(d - 1)) * 3), (int)(d * 3)), letters)) {
+				p->current_pos_datetime += 3;
+				_result_int _t1;
+				builtin___result_ok(&(int[]) { d }, (_result*)(&_t1), sizeof(int));
+				 
+				return _t1;
+			}
+		}
+	}
+	return (_result_int){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid three letter weekday, at: "), 0xfe07, {.d_i32 = p->current_pos_datetime}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC _result_Array_string time__extract_tokens(string s) {
+	Array_string tokens = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	string current = _S("");
+	for (int _t1 = 0; _t1 < s.len; ++_t1) {
+		u8 r = s.str[_t1];
+		if (builtin__string_contains_only(current, builtin__u8_ascii_str(r)) || (current).len == 0) {
+			current = builtin__string__plus(current, builtin__u8_ascii_str(r));
+		} else {
+			builtin__array_push((array*)&tokens, _MOV((string[]){ builtin__string_clone(current) }));
+			current = builtin__u8_ascii_str(r);
+		}
+	}
+	if ((current).len != 0) {
+		builtin__array_push((array*)&tokens, _MOV((string[]){ builtin__string_clone(current) }));
+	}
+	_result_Array_string _t4;
+	builtin___result_ok(&(Array_string[]) { tokens }, (_result*)(&_t4), sizeof(Array_string));
+	 
+	return _t4;
+}
+VV_LOC _result_time__Time time__DateTimeParser_parse(time__DateTimeParser* p) {
+	int year_ = 0;
+	int month_ = 0;
+	int day_in_month = 0;
+	int hour_ = 0;
+	int minute_ = 0;
+	int second_ = 0;
+	_result_Array_string _t1 = time__extract_tokens(p->format);
+	if (_t1.is_error) {
+		IError err = _t1.err;
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("malformed format string: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	Array_string tokens = (*(Array_string*)_t1.data);
+	for (int _t3 = 0; _t3 < tokens.len; ++_t3) {
+		string token = ((string*)tokens.data)[_t3];
+
+		if (_SLIT_EQ(token.str, token.len, "YYYY")) {
+			_result_int _t4 = time__DateTimeParser_must_be_int(p, 4);
+			if (_t4.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before the full year was specified")), .data={E_STRUCT} };
+			}
+			
+ 			year_ = (*(int*)_t4.data);
+		}
+		else if (_SLIT_EQ(token.str, token.len, "YY")) {
+			_result_int _t6 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t6.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before the full year was specified")), .data={E_STRUCT} };
+			}
+			
+ 			year_ = (int)((int)((int)(time__now().year / 100) * 100) + (*(int*)_t6.data));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "M")) {
+			_result_int _t8 = time__DateTimeParser_must_be_int_with_minimum_length(p, 1, 2, false);
+			if (_t8.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before the month was specified")), .data={E_STRUCT} };
+			}
+			
+ 			month_ = (*(int*)_t8.data);
+			if (month_ < 1 || month_ > 12) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("month must be  between 1 and 12")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "MM")) {
+			_result_int _t11 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t11.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before the month was specified")), .data={E_STRUCT} };
+			}
+			
+ 			month_ = (*(int*)_t11.data);
+			if (month_ < 1 || month_ > 12) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("month must be  between 01 and 12")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "MMM")) {
+			_result_int _t14 = time__DateTimeParser_must_be_valid_three_letter_month(p);
+			if (_t14.is_error) {
+				IError err = _t14.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ 			month_ = (*(int*)_t14.data);
+		}
+		else if (_SLIT_EQ(token.str, token.len, "MMMM")) {
+			_result_int _t16 = time__DateTimeParser_must_be_valid_month(p);
+			if (_t16.is_error) {
+				IError err = _t16.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ 			month_ = (*(int*)_t16.data);
+		}
+		else if (_SLIT_EQ(token.str, token.len, "D")) {
+			_result_int _t18 = time__DateTimeParser_must_be_int_with_minimum_length(p, 1, 2, false);
+			if (_t18.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before the day was specified")), .data={E_STRUCT} };
+			}
+			
+ 			day_in_month = (*(int*)_t18.data);
+			if (day_in_month < 1 || day_in_month > 31) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("day must be  between 1 and 31")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "DD")) {
+			_result_int _t21 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t21.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before the month was specified")), .data={E_STRUCT} };
+			}
+			
+ 			day_in_month = (*(int*)_t21.data);
+			if (day_in_month < 1 || day_in_month > 31) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("day must be  between 01 and 31")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "d")) {
+			_result_int _t24 = time__DateTimeParser_must_be_int(p, 1);
+			if (_t24.is_error) {
+				IError err = _t24.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ ;
+		}
+		else if (_SLIT_EQ(token.str, token.len, "c")) {
+			_result_int _t26 = time__DateTimeParser_must_be_int(p, 1);
+			if (_t26.is_error) {
+				IError err = _t26.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ ;
+		}
+		else if (_SLIT_EQ(token.str, token.len, "dd")) {
+			_result_int _t28 = time__DateTimeParser_must_be_valid_two_letter_week_day(p);
+			if (_t28.is_error) {
+				IError err = _t28.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ ;
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ddd")) {
+			_result_int _t30 = time__DateTimeParser_must_be_valid_three_letter_week_day(p);
+			if (_t30.is_error) {
+				IError err = _t30.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ ;
+		}
+		else if (_SLIT_EQ(token.str, token.len, "dddd")) {
+			_result_string _t32 = time__DateTimeParser_must_be_valid_week_day(p);
+			if (_t32.is_error) {
+				IError err = _t32.err;
+				return (_result_time__Time){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ ;
+		}
+		else if (_SLIT_EQ(token.str, token.len, "H")) {
+			_result_int _t34 = time__DateTimeParser_must_be_int_with_minimum_length(p, 1, 2, true);
+			if (_t34.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before hours where specified")), .data={E_STRUCT} };
+			}
+			
+ 			hour_ = (*(int*)_t34.data);
+			if (hour_ < 0 || hour_ > 23) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("hour must be  between 0 and 23")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "HH")) {
+			_result_int _t37 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t37.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before hours where specified")), .data={E_STRUCT} };
+			}
+			
+ 			hour_ = (*(int*)_t37.data);
+			if (hour_ < 0 || hour_ > 23) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("hour must be  between 00 and 23")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "h")) {
+			_result_int _t40 = time__DateTimeParser_must_be_int_with_minimum_length(p, 1, 2, true);
+			if (_t40.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before hours where specified")), .data={E_STRUCT} };
+			}
+			
+ 			hour_ = (*(int*)_t40.data);
+			if (hour_ < 0 || hour_ > 23) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("hour must be  between 0 and 23")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "hh")) {
+			_result_int _t43 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t43.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before hours where specified")), .data={E_STRUCT} };
+			}
+			
+ 			hour_ = (*(int*)_t43.data);
+			if (hour_ < 0 || hour_ > 23) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("hour must be  between 00 and 23")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "k")) {
+			_result_int _t46 = time__DateTimeParser_must_be_int(p, 1);
+			if (_t46.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before hours where specified")), .data={E_STRUCT} };
+			}
+			
+ 			hour_ = (*(int*)_t46.data);
+			if (hour_ < 0 || hour_ > 23) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("hour must be  between 0 and 23")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "kk")) {
+			_result_int _t49 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t49.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before hours where specified")), .data={E_STRUCT} };
+			}
+			
+ 			hour_ = (*(int*)_t49.data);
+			if (hour_ < 0 || hour_ > 23) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("hour must be  between 00 and 23")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "m")) {
+			_result_int _t52 = time__DateTimeParser_must_be_int(p, 1);
+			if (_t52.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before minutes where specified")), .data={E_STRUCT} };
+			}
+			
+ 			minute_ = (*(int*)_t52.data);
+			if (minute_ < 0 || minute_ > 59) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("minute must be between 0 and 59")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "mm")) {
+			_result_int _t55 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t55.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before minutes where specified")), .data={E_STRUCT} };
+			}
+			
+ 			minute_ = (*(int*)_t55.data);
+			if (minute_ < 0 || minute_ > 59) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("minute must be between 00 and 59")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "s")) {
+			_result_int _t58 = time__DateTimeParser_must_be_int(p, 1);
+			if (_t58.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before seconds where specified")), .data={E_STRUCT} };
+			}
+			
+ 			second_ = (*(int*)_t58.data);
+			if (second_ < 0 || second_ > 59) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("second must be between 0 and 59")), .data={E_STRUCT} };
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ss")) {
+			_result_int _t61 = time__DateTimeParser_must_be_int(p, 2);
+			if (_t61.is_error) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("end of string reached before seconds where specified")), .data={E_STRUCT} };
+			}
+			
+ 			second_ = (*(int*)_t61.data);
+			if (second_ < 0 || second_ > 59) {
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("second must be between 00 and 59")), .data={E_STRUCT} };
+			}
+		}
+		else {
+			_result_void _t64 = time__DateTimeParser_must_be_string(p, token);
+			if (_t64.is_error) {
+				IError err = _t64.err;
+				return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+			
+ ;
+		}
+	}
+	if (month_ == 2) {
+		int feb_days_in_year = (time__is_leap_year(year_) ? (29) : (28));
+		if (day_in_month > feb_days_in_year) {
+			return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("February has only 28 days in the given year")), .data={E_STRUCT} };
+		}
+	} else if (day_in_month == 31 && !(month_ == 1 || month_ == 3 || month_ == 5 || month_ == 7 || month_ == 8 || month_ == 10 || month_ == 12)) {
+		string month_name = time__Time_custom_format(((time__Time){.__v_unix = 0,.year = 0,.month = month_,.day = 0,.hour = 0,.minute = 0,.second = 0,.nanosecond = 0,.is_local = 0,}), _S("MMMM"));
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = month_name}}, {_S(" has only 30 days"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_result_time__Time _t68;
+	builtin___result_ok(&(time__Time[]) { time__new(((time__Time){
+		.__v_unix = 0,
+		.year = year_,
+		.month = month_,
+		.day = day_in_month,
+		.hour = hour_,
+		.minute = minute_,
+		.second = second_,
+		.nanosecond = 0,
+		.is_local = 0,
+	})) }, (_result*)(&_t68), sizeof(time__Time));
+	 
+	return _t68;
+}
+i64 time__Duration_nanoseconds(time__Duration d) {
+	return ((i64)(d));
+}
+i64 time__Duration_microseconds(time__Duration d) {
+	return ((i64)(d)) / _const_time__microsecond;
+}
+i64 time__Duration_milliseconds(time__Duration d) {
+	return ((i64)(d)) / _const_time__millisecond;
+}
+f64 time__Duration_seconds(time__Duration d) {
+	return (f64)(((f64)(d)) / ((f64)(_const_time__second)));
+}
+f64 time__Duration_minutes(time__Duration d) {
+	return (f64)(((f64)(d)) / ((f64)(_const_time__minute)));
+}
+f64 time__Duration_hours(time__Duration d) {
+	return (f64)(((f64)(d)) / ((f64)(_const_time__hour)));
+}
+f64 time__Duration_days(time__Duration d) {
+	return (f64)(((f64)(d)) / ((f64)(_const_time__hour * 24)));
+}
+string time__Duration_str(time__Duration d) {
+	if (d == _const_time__infinite) {
+		return _S("inf");
+	}
+	string sign = _S("");
+	i64 t = ((i64)(d));
+	if (t < 0) {
+		sign = _S("-");
+		t = -t;
+	}
+	i64 hr = t / _const_time__hour;
+	t -= hr * _const_time__hour;
+	i64 min = t / _const_time__minute;
+	t -= min * _const_time__minute;
+	i64 sec = t / _const_time__second;
+	t -= sec * _const_time__second;
+	i64 ms = t / _const_time__millisecond;
+	t -= ms * _const_time__millisecond;
+	i64 us = t / _const_time__microsecond;
+	t -= us * _const_time__microsecond;
+	i64 ns = t;
+	bool _t3 = true;
+	return ((_t3 == (hr > 0))? (builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe09, {.d_i64 = hr}}, {_S(":"), 0x8004fe29, {.d_i64 = min}}, {_S(":"), 0x8004fe29, {.d_i64 = sec}}, {_SLIT0, 0, { .d_c = 0 }}}))) : (_t3 == (min > 0))? (builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe09, {.d_i64 = min}}, {_S(":"), 0x8004fe29, {.d_i64 = sec}}, {_S("."), 0x8006fe29, {.d_i64 = ms}}, {_SLIT0, 0, { .d_c = 0 }}}))) : (_t3 == (sec > 0))? (builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe09, {.d_i64 = sec}}, {_S("."), 0x8006fe29, {.d_i64 = ms}}, {_S("s"), 0, { .d_c = 0 }}}))) : (_t3 == (ms > 0))? (builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe09, {.d_i64 = ms}}, {_S("."), 0x8006fe29, {.d_i64 = us}}, {_S("ms"), 0, { .d_c = 0 }}}))) : (_t3 == (us > 0))? (builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe09, {.d_i64 = us}}, {_S("."), 0x8006fe29, {.d_i64 = ns}}, {_S("us"), 0, { .d_c = 0 }}}))) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe09, {.d_i64 = ns}}, {_S("ns"), 0, { .d_c = 0 }}}))));
+}
+string time__Duration_debug(time__Duration d) {
+	Array_string res = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	i64 x = ((i64)(d));
+	string sign = _S("");
+	if (x < 0) {
+		sign = _S("- ");
+		x = -x;
+	}
+	Map_string_i64 _t1 = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 6, sizeof(string), sizeof(i64),
+		_MOV((string[6]){
+			_S("days"),
+			_S("h"),
+			_S("m"),
+			_S("s"),
+			_S("ms"),
+			_S("us"),
+		}),
+		_MOV((i64[6]){
+			24 * _const_time__hour, 
+			_const_time__hour, 
+			_const_time__minute, 
+			_const_time__second, 
+			_const_time__millisecond, 
+			_const_time__microsecond, 
+		})
+	)
+	;
+	int _t3 = _t1.key_values.len;
+	for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
+		int _t4 = _t1.key_values.len - _t3;
+		_t3 = _t1.key_values.len;
+		if (_t4 < 0) {
+			_t2 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&_t1.key_values, _t2)) {continue;}
+		string label = *(string*)builtin__DenseArray_key(&_t1.key_values, _t2);
+		label = builtin__string_clone(label);
+		i64 v = (*(i64*)builtin__DenseArray_value(&_t1.key_values, _t2));
+		if (x > v) {
+			i64 xx = (i64)(x / v);
+			x = (i64)(x % v);
+			builtin__array_push((array*)&res, _MOV((string[]){ builtin__string__plus(builtin__i64_str(xx), label) }));
+		}
+	}
+	if (x > 0) {
+		builtin__array_push((array*)&res, _MOV((string[]){ builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe09, {.d_i64 = x}}, {_S("ns"), 0, { .d_c = 0 }}})) }));
+	}
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_S("Duration: "), 0xfe10, {.d_s = sign}}, {_SLIT0, 0xfe10, {.d_s = Array_string_join(res, _S(", "))}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+time__Duration time__Duration_times(time__Duration d, f64 x) {
+	return (f64)(((f64)(d)) * x);
+}
+VV_LOC int time__iclamp(int x, int a, int b) {
+	if (x < a) {
+		return a;
+	}
+	if (x > b) {
+		return b;
+	}
+	return x;
+}
+VV_LOC void time__int_to_byte_array_no_pad(int value, Array_u8* arr, int size) {
+	int num = value;
+	if (size <= 0 || num < 0) {
+		return;
+	}
+	int i = (int)(size - 1);
+	for (;;) {
+		if (!(num > 0 && i >= 0)) break;
+		((u8*)arr->data)[i] = (rune)(((int)(num % 10)) + '0');
+		num /= 10;
+		i--;
+	}
+}
+VV_LOC void time__int_to_ptr_byte_array_no_pad(int value, u8* arr_prt, int arr_len) {
+	int num = value;
+	if (arr_len <= 0 || num < 0) {
+		return;
+	}
+	int i = (int)(arr_len - 1);
+	for (;;) {
+		if (!(num > 0 && i >= 0)) break;
+		{ // Unsafe block
+			*(arr_prt + i) = (rune)(((int)(num % 10)) + '0');
+		}
+		num /= 10;
+		i--;
+	}
+}
+string time__Time_format(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(16, 16, sizeof(u8), _MOV((u8[16]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', ' ', '0', '0', ':', '0', '0'}));
+	time__int_to_byte_array_no_pad(t.year, &buf, 4);
+	time__int_to_byte_array_no_pad(t.month, &buf, 7);
+	time__int_to_byte_array_no_pad(t.day, &buf, 10);
+	time__int_to_byte_array_no_pad(t.hour, &buf, 13);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 16);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_ss(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(19, 19, sizeof(u8), _MOV((u8[19]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', ' ', '0', '0', ':', '0', '0', ':',
+			'0', '0'}));
+	time__int_to_byte_array_no_pad(t.year, &buf, 4);
+	time__int_to_byte_array_no_pad(t.month, &buf, 7);
+	time__int_to_byte_array_no_pad(t.day, &buf, 10);
+	time__int_to_byte_array_no_pad(t.hour, &buf, 13);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 16);
+	time__int_to_byte_array_no_pad(t.second, &buf, 19);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_ss_milli(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(23, 23, sizeof(u8), _MOV((u8[23]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', ' ', '0', '0', ':', '0', '0', ':',
+			'0', '0', '.', '0', '0', '0'}));
+	time__int_to_byte_array_no_pad(t.year, &buf, 4);
+	time__int_to_byte_array_no_pad(t.month, &buf, 7);
+	time__int_to_byte_array_no_pad(t.day, &buf, 10);
+	time__int_to_byte_array_no_pad(t.hour, &buf, 13);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 16);
+	time__int_to_byte_array_no_pad(t.second, &buf, 19);
+	int millis = (int)(t.nanosecond / 1000000);
+	time__int_to_byte_array_no_pad(millis, &buf, 23);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_ss_micro(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(26, 26, sizeof(u8), _MOV((u8[26]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', ' ', '0', '0', ':', '0', '0', ':',
+			'0', '0', '.', '0', '0', '0', '0', '0',
+			'0'}));
+	time__int_to_byte_array_no_pad(t.year, &buf, 4);
+	time__int_to_byte_array_no_pad(t.month, &buf, 7);
+	time__int_to_byte_array_no_pad(t.day, &buf, 10);
+	time__int_to_byte_array_no_pad(t.hour, &buf, 13);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 16);
+	time__int_to_byte_array_no_pad(t.second, &buf, 19);
+	int micros = (int)(t.nanosecond / 1000);
+	time__int_to_byte_array_no_pad(micros, &buf, 26);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_ss_nano(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(29, 29, sizeof(u8), _MOV((u8[29]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', ' ', '0', '0', ':', '0', '0', ':',
+			'0', '0', '.', '0', '0', '0', '0', '0',
+			'0', '0', '0', '0'}));
+	time__int_to_byte_array_no_pad(t.year, &buf, 4);
+	time__int_to_byte_array_no_pad(t.month, &buf, 7);
+	time__int_to_byte_array_no_pad(t.day, &buf, 10);
+	time__int_to_byte_array_no_pad(t.hour, &buf, 13);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 16);
+	time__int_to_byte_array_no_pad(t.second, &buf, 19);
+	time__int_to_byte_array_no_pad(t.nanosecond, &buf, 29);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_rfc3339(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(24, 24, sizeof(u8), _MOV((u8[24]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', 'T', '0', '0', ':', '0', '0', ':',
+			'0', '0', '.', '0', '0', '0', 'Z'}));
+	time__Time t_ = time__time_with_unix(t);
+	if (t_.is_local) {
+		time__Time utc_time = time__Time_local_to_utc(t_);
+		time__int_to_byte_array_no_pad(utc_time.year, &buf, 4);
+		time__int_to_byte_array_no_pad(utc_time.month, &buf, 7);
+		time__int_to_byte_array_no_pad(utc_time.day, &buf, 10);
+		time__int_to_byte_array_no_pad(utc_time.hour, &buf, 13);
+		time__int_to_byte_array_no_pad(utc_time.minute, &buf, 16);
+		time__int_to_byte_array_no_pad(utc_time.second, &buf, 19);
+		time__int_to_byte_array_no_pad((int)(utc_time.nanosecond / 1000000), &buf, 23);
+	} else {
+		time__int_to_byte_array_no_pad(t_.year, &buf, 4);
+		time__int_to_byte_array_no_pad(t_.month, &buf, 7);
+		time__int_to_byte_array_no_pad(t_.day, &buf, 10);
+		time__int_to_byte_array_no_pad(t_.hour, &buf, 13);
+		time__int_to_byte_array_no_pad(t_.minute, &buf, 16);
+		time__int_to_byte_array_no_pad(t_.second, &buf, 19);
+		time__int_to_byte_array_no_pad((int)(t_.nanosecond / 1000000), &buf, 23);
+	}
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_rfc3339_micro(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(27, 27, sizeof(u8), _MOV((u8[27]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', 'T', '0', '0', ':', '0', '0', ':',
+			'0', '0', '.', '0', '0', '0', '0', '0',
+			'0', 'Z'}));
+	time__Time t_ = time__time_with_unix(t);
+	if (t_.is_local) {
+		time__Time utc_time = time__Time_local_to_utc(t_);
+		time__int_to_byte_array_no_pad(utc_time.year, &buf, 4);
+		time__int_to_byte_array_no_pad(utc_time.month, &buf, 7);
+		time__int_to_byte_array_no_pad(utc_time.day, &buf, 10);
+		time__int_to_byte_array_no_pad(utc_time.hour, &buf, 13);
+		time__int_to_byte_array_no_pad(utc_time.minute, &buf, 16);
+		time__int_to_byte_array_no_pad(utc_time.second, &buf, 19);
+		time__int_to_byte_array_no_pad((int)(utc_time.nanosecond / 1000), &buf, 26);
+	} else {
+		time__int_to_byte_array_no_pad(t_.year, &buf, 4);
+		time__int_to_byte_array_no_pad(t_.month, &buf, 7);
+		time__int_to_byte_array_no_pad(t_.day, &buf, 10);
+		time__int_to_byte_array_no_pad(t_.hour, &buf, 13);
+		time__int_to_byte_array_no_pad(t_.minute, &buf, 16);
+		time__int_to_byte_array_no_pad(t_.second, &buf, 19);
+		time__int_to_byte_array_no_pad((int)(t_.nanosecond / 1000), &buf, 26);
+	}
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_format_rfc3339_nano(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(30, 30, sizeof(u8), _MOV((u8[30]){
+			((u8)('0')), '0', '0', '0', '-', '0', '0', '-', '0',
+			'0', 'T', '0', '0', ':', '0', '0', ':',
+			'0', '0', '.', '0', '0', '0', '0', '0',
+			'0', '0', '0', '0', 'Z'}));
+	time__Time t_ = time__time_with_unix(t);
+	if (t_.is_local) {
+		time__Time utc_time = time__Time_local_to_utc(t_);
+		time__int_to_byte_array_no_pad(utc_time.year, &buf, 4);
+		time__int_to_byte_array_no_pad(utc_time.month, &buf, 7);
+		time__int_to_byte_array_no_pad(utc_time.day, &buf, 10);
+		time__int_to_byte_array_no_pad(utc_time.hour, &buf, 13);
+		time__int_to_byte_array_no_pad(utc_time.minute, &buf, 16);
+		time__int_to_byte_array_no_pad(utc_time.second, &buf, 19);
+		time__int_to_byte_array_no_pad(utc_time.nanosecond, &buf, 29);
+	} else {
+		time__int_to_byte_array_no_pad(t_.year, &buf, 4);
+		time__int_to_byte_array_no_pad(t_.month, &buf, 7);
+		time__int_to_byte_array_no_pad(t_.day, &buf, 10);
+		time__int_to_byte_array_no_pad(t_.hour, &buf, 13);
+		time__int_to_byte_array_no_pad(t_.minute, &buf, 16);
+		time__int_to_byte_array_no_pad(t_.second, &buf, 19);
+		time__int_to_byte_array_no_pad(t_.nanosecond, &buf, 29);
+	}
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_hhmm(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(5, 5, sizeof(u8), _MOV((u8[5]){((u8)('0')), '0', ':', '0', '0'}));
+	time__int_to_byte_array_no_pad(t.hour, &buf, 2);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 5);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_hhmmss(time__Time t) {
+	Array_u8 buf = builtin__new_array_from_c_array(8, 8, sizeof(u8), _MOV((u8[8]){((u8)('0')), '0', ':', '0', '0', ':', '0', '0'}));
+	time__int_to_byte_array_no_pad(t.hour, &buf, 2);
+	time__int_to_byte_array_no_pad(t.minute, &buf, 5);
+	time__int_to_byte_array_no_pad(t.second, &buf, 8);
+	string _t1 = Array_u8_bytestr(buf);
+		{ // defer begin
+			builtin__array_free(&buf);
+		} // defer end
+	return _t1;
+}
+string time__Time_hhmm12(time__Time t) {
+	return time__Time_get_fmt_time_str(t, time__FormatTime__hhmm12);
+}
+string time__Time_ymmdd(time__Time t) {
+	return time__Time_get_fmt_date_str(t, time__FormatDelimiter__hyphen, time__FormatDate__yyyymmdd);
+}
+string time__Time_ddmmy(time__Time t) {
+	return time__Time_get_fmt_date_str(t, time__FormatDelimiter__dot, time__FormatDate__ddmmyyyy);
+}
+string time__Time_md(time__Time t) {
+	return time__Time_get_fmt_date_str(t, time__FormatDelimiter__space, time__FormatDate__mmmd);
+}
+VV_LOC string time__ordinal_suffix(int n) {
+	if (n > 3 && n < 21) {
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = n}}, {_S("th"), 0, { .d_c = 0 }}}));
+	}
+	int _t2 = (int)(n % 10);
+		switch (_t2) {
+		case 1: {
+			return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = n}}, {_S("st"), 0, { .d_c = 0 }}}));
+		}
+		case 2: {
+			return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = n}}, {_S("nd"), 0, { .d_c = 0 }}}));
+		}
+		case 3: {
+			return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = n}}, {_S("rd"), 0, { .d_c = 0 }}}));
+		}
+		default: {
+			{
+				return builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = n}}, {_S("th"), 0, { .d_c = 0 }}}));
+			}
+		}
+	}
+	
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string time__Time_custom_format(time__Time t, string s) {
+	Array_string tokens = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int i = 0; i < s.len; ) {
+		for (int j = 4; j > 0; j--) {
+			if (i > (int)(s.len - j)) {
+				continue;
+			}
+			if (j == 1 || (j == 2 && (Array_string_contains(_const_time__tokens_2, builtin__string_substr(s, i, (int)(i + j))))) || (j == 3 && (Array_string_contains(_const_time__tokens_3, builtin__string_substr(s, i, (int)(i + j))))) || (j == 4 && (Array_string_contains(_const_time__tokens_4, builtin__string_substr(s, i, (int)(i + j)))))) {
+				builtin__array_push((array*)&tokens, _MOV((string[]){ builtin__string_substr(s, i, (int)(i + j)) }));
+				i += ((int)(j - 1));
+				break;
+			}
+		}
+		i++;
+	}
+	strings__Builder sb = strings__new_builder(128);
+	for (int _t2 = 0; _t2 < tokens.len; ++_t2) {
+		string token = ((string*)tokens.data)[_t2];
+
+		if (_SLIT_EQ(token.str, token.len, "M")) {
+			strings__Builder_write_string(&sb, builtin__int_str(t.month));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "MM")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.month}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "Mo")) {
+			strings__Builder_write_string(&sb, time__ordinal_suffix(t.month));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "MMM")) {
+			strings__Builder_write_string(&sb, builtin__string_substr((*(string*)builtin__array_get(_const_time__long_months, time__iclamp(0, (int)(t.month - 1), 11))), 0, 3));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "MMMM")) {
+			strings__Builder_write_string(&sb, (*(string*)builtin__array_get(_const_time__long_months, time__iclamp(0, (int)(t.month - 1), 11))));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "D")) {
+			strings__Builder_write_string(&sb, builtin__int_str(t.day));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "DD")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.day}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "Do")) {
+			strings__Builder_write_string(&sb, time__ordinal_suffix(t.day));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "DDD")) {
+			strings__Builder_write_string(&sb, builtin__int_str((time__Time_year_day(t))));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "DDDD")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8006fe27, {.d_i32 = time__Time_year_day(t)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "DDDo")) {
+			strings__Builder_write_string(&sb, time__ordinal_suffix(time__Time_year_day(t)));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "d")) {
+			{
+				strings__Builder_write_decimal(&sb, (int)(time__Time_day_of_week(t) % 7));
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "dd")) {
+			strings__Builder_write_string(&sb, builtin__string_substr(_const_time__long_days[builtin__v_fixed_index(time__iclamp(0, (int)(time__Time_day_of_week(t) - 1), 6), 7)], 0, 2));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ddd")) {
+			strings__Builder_write_string(&sb, builtin__string_substr(_const_time__long_days[builtin__v_fixed_index(time__iclamp(0, (int)(time__Time_day_of_week(t) - 1), 6), 7)], 0, 3));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "dddd")) {
+			strings__Builder_write_string(&sb, _const_time__long_days[builtin__v_fixed_index(time__iclamp(0, (int)(time__Time_day_of_week(t) - 1), 6), 7)]);
+		}
+		else if (_SLIT_EQ(token.str, token.len, "YY")) {
+			strings__Builder_write_string(&sb, builtin__string_substr_ni(builtin__int_str(t.year), 2, 4));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "YYYY")) {
+			strings__Builder_write_string(&sb, builtin__int_str(t.year));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "H")) {
+			strings__Builder_write_string(&sb, builtin__int_str(t.hour));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "HH")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.hour}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "h")) {
+			int h = (int)((int)(((int)(t.hour + 11)) % 12) + 1);
+			strings__Builder_write_string(&sb, builtin__int_str(h));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "hh")) {
+			int h = (int)((int)(((int)(t.hour + 11)) % 12) + 1);
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = h}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "i")) {
+			int h = (t.hour > 12 ? ((int)(t.hour - 12)) : (t.hour));
+			strings__Builder_write_string(&sb, builtin__int_str(h));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ii")) {
+			int h = (t.hour > 12 ? ((int)(t.hour - 12)) : (t.hour));
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = h}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "m")) {
+			strings__Builder_write_string(&sb, builtin__int_str(t.minute));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "mm")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.minute}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "s")) {
+			strings__Builder_write_string(&sb, builtin__int_str(t.second));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ss")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.second}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "k")) {
+			strings__Builder_write_string(&sb, builtin__int_str(((int)(t.hour + 1))));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "kk")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = ((int)(t.hour + 1))}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "w")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x7, {.d_i32 = time__Time_week_of_year(t)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ww")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x80040027, {.d_i32 = time__Time_week_of_year(t)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "wo")) {
+			strings__Builder_write_string(&sb, time__ordinal_suffix(time__Time_week_of_year(t)));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "Q")) {
+			{
+				strings__Builder_write_decimal(&sb, (int)((int)(((int)(t.month - 1)) / 3) + 1));
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "QQ")) {
+			strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = (int)((int)(((int)(t.month - 1)) / 3) + 1)}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "Qo")) {
+			strings__Builder_write_string(&sb, time__ordinal_suffix((int)((int)(((int)(t.month - 1)) / 3) + 1)));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "c")) {
+			{
+				strings__Builder_write_decimal(&sb, time__Time_day_of_week(t));
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "N")) {
+			strings__Builder_write_string(&sb, _S("AD"));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "NN")) {
+			strings__Builder_write_string(&sb, _S("Anno Domini"));
+		}
+		else if (_SLIT_EQ(token.str, token.len, "Z")) {
+			int hours = (int)(time__offset() / 3600);
+			if (hours >= 0) {
+				{
+					strings__Builder_write_string(&sb, _S("+"));
+					strings__Builder_write_decimal(&sb, hours);
+				}
+			} else {
+				hours = -hours;
+				{
+					strings__Builder_write_string(&sb, _S("-"));
+					strings__Builder_write_decimal(&sb, hours);
+				}
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ZZ")) {
+			int hours = (int)(time__offset() / 3600);
+			if (hours >= 0) {
+				strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("+"), 0x8004fe27, {.d_i32 = hours}}, {_S("00"), 0, { .d_c = 0 }}})));
+			} else {
+				hours = -hours;
+				strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("-"), 0x8004fe27, {.d_i32 = hours}}, {_S("00"), 0, { .d_c = 0 }}})));
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "ZZZ")) {
+			int hours = (int)(time__offset() / 3600);
+			if (hours >= 0) {
+				strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("+"), 0x8004fe27, {.d_i32 = hours}}, {_S(":00"), 0, { .d_c = 0 }}})));
+			} else {
+				hours = -hours;
+				strings__Builder_write_string(&sb, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("-"), 0x8004fe27, {.d_i32 = hours}}, {_S(":00"), 0, { .d_c = 0 }}})));
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "a")) {
+			if (t.hour < 12) {
+				strings__Builder_write_string(&sb, _S("am"));
+			} else {
+				strings__Builder_write_string(&sb, _S("pm"));
+			}
+		}
+		else if (_SLIT_EQ(token.str, token.len, "A")) {
+			if (t.hour < 12) {
+				strings__Builder_write_string(&sb, _S("AM"));
+			} else {
+				strings__Builder_write_string(&sb, _S("PM"));
+			}
+		}
+		else {
+			strings__Builder_write_string(&sb, token);
+		}
+	}
+	return strings__Builder_str(&sb);
+}
+string time__Time_clean(time__Time t) {
+	time__Time znow = time__now();
+	if (t.month == znow.month && t.year == znow.year && t.day == znow.day) {
+		return time__Time_get_fmt_time_str(t, time__FormatTime__hhmm24);
+	}
+	if (t.year == znow.year) {
+		return time__Time_get_fmt_str(t, time__FormatDelimiter__space, time__FormatTime__hhmm24, time__FormatDate__mmmd);
+	}
+	return time__Time_format(t);
+}
+string time__Time_clean12(time__Time t) {
+	time__Time znow = time__now();
+	if (t.month == znow.month && t.year == znow.year && t.day == znow.day) {
+		return time__Time_get_fmt_time_str(t, time__FormatTime__hhmm12);
+	}
+	if (t.year == znow.year) {
+		return time__Time_get_fmt_str(t, time__FormatDelimiter__space, time__FormatTime__hhmm12, time__FormatDate__mmmd);
+	}
+	return time__Time_format(t);
+}
+string time__Time_get_fmt_time_str(time__Time t, time__FormatTime fmt_time) {
+	if (fmt_time == time__FormatTime__no_time) {
+		return _S("");
+	}
+	string tp = (t.hour > 11 ? (_S("p.m.")) : (_S("a.m.")));
+	int hour_ = (t.hour > 12 ? ((int)(t.hour - 12)) : t.hour == 0 ? (12) : (t.hour));
+	string _t3 = (string){.str=(byteptr)"", .is_lit=1};
+	switch (fmt_time) {
+		case time__FormatTime__hhmm12: {
+			_t3 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = hour_}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(" "), 0xfe10, {.d_s = tp}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__hhmm24: {
+			_t3 = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.hour}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__hhmmss12: {
+			_t3 = builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = hour_}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(":"), 0x8004fe27, {.d_i32 = t.second}}, {_S(" "), 0xfe10, {.d_s = tp}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__hhmmss24: {
+			_t3 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.hour}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(":"), 0x8004fe27, {.d_i32 = t.second}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__hhmmss24_milli: {
+			_t3 = builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.hour}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(":"), 0x8004fe27, {.d_i32 = t.second}}, {_S("."), 0x8006fe27, {.d_i32 = ((int)(t.nanosecond / 1000000))}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__hhmmss24_micro: {
+			_t3 = builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.hour}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(":"), 0x8004fe27, {.d_i32 = t.second}}, {_S("."), 0x800cfe27, {.d_i32 = ((int)(t.nanosecond / 1000))}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__hhmmss24_nano: {
+			_t3 = builtin__str_intp(5, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.hour}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(":"), 0x8004fe27, {.d_i32 = t.second}}, {_S("."), 0x800cfe27, {.d_i32 = t.nanosecond}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatTime__no_time:
+		default: {
+			{
+				_t3 = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("unknown enumeration "), 0xfe10, {.d_s = time__FormatTime_str(fmt_time)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+				break;
+			}
+		}
+	}
+	return _t3;
+}
+string time__Time_get_fmt_date_str(time__Time t, time__FormatDelimiter fmt_dlmtr, time__FormatDate fmt_date) {
+	if (fmt_date == time__FormatDate__no_date) {
+		return _S("");
+	}
+	string month = time__Time_smonth(t);
+	string year = builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = ((int)(t.year % 100))}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	string _t2 = (string){.str=(byteptr)"", .is_lit=1};
+	switch (fmt_date) {
+		case time__FormatDate__ddmmyy: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.day}}, {_S("|"), 0x8004fe27, {.d_i32 = t.month}}, {_S("|"), 0xfe10, {.d_s = year}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__ddmmyyyy: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.day}}, {_S("|"), 0x8004fe27, {.d_i32 = t.month}}, {_S("|"), 0x8008fe27, {.d_i32 = t.year}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__mmddyy: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_S("|"), 0xfe10, {.d_s = year}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__mmddyyyy: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0x8004fe27, {.d_i32 = t.month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_S("|"), 0x8008fe27, {.d_i32 = t.year}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__mmmd: {
+			_t2 = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = month}}, {_S("|"), 0xfe07, {.d_i32 = t.day}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__mmmdd: {
+			_t2 = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__mmmddyy: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_S("|"), 0xfe10, {.d_s = year}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__mmmddyyyy: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_S("|"), 0x8008fe27, {.d_i32 = t.year}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__yyyymmdd: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0x8008fe27, {.d_i32 = t.year}}, {_S("|"), 0x8004fe27, {.d_i32 = t.month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__yymmdd: {
+			_t2 = builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = year}}, {_S("|"), 0x8004fe27, {.d_i32 = t.month}}, {_S("|"), 0x8004fe27, {.d_i32 = t.day}}, {_SLIT0, 0, { .d_c = 0 }}}));
+			break;
+		}
+		case time__FormatDate__no_date:
+		default: {
+			{
+				_t2 = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("unknown enumeration "), 0xfe10, {.d_s = time__FormatDate_str(fmt_date)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+				break;
+			}
+		}
+	}
+	string res = _t2;
+	string del = ((fmt_dlmtr == (time__FormatDelimiter__dot))? (_S(".")) : (fmt_dlmtr == (time__FormatDelimiter__hyphen))? (_S("-")) : (fmt_dlmtr == (time__FormatDelimiter__slash))? (_S("/")) : (fmt_dlmtr == (time__FormatDelimiter__space))? (_S(" ")) : (_S("")));
+	res = builtin__string_replace(res, _S("|"), del);
+	return res;
+}
+string time__Time_get_fmt_str(time__Time t, time__FormatDelimiter fmt_dlmtr, time__FormatTime fmt_time, time__FormatDate fmt_date) {
+	if (fmt_date == time__FormatDate__no_date) {
+		if (fmt_time == time__FormatTime__no_time) {
+			return _S("");
+		} else {
+			return time__Time_get_fmt_time_str(t, fmt_time);
+		}
+	} else {
+		if (fmt_time != time__FormatTime__no_time) {
+			string dstr = time__Time_get_fmt_date_str(t, fmt_dlmtr, fmt_date);
+			string tstr = time__Time_get_fmt_time_str(t, fmt_time);
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = dstr}}, {_S(" "), 0xfe10, {.d_s = tstr}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		} else {
+			return time__Time_get_fmt_date_str(t, fmt_dlmtr, fmt_date);
+		}
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string time__Time_utc_string(time__Time t) {
+	string day_str = time__Time_weekday_str(t);
+	string month_str = time__Time_smonth(t);
+	string utc_string = builtin__str_intp(8, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = day_str}}, {_S(", "), 0xfe07, {.d_i32 = t.day}}, {_S(" "), 0xfe10, {.d_s = month_str}}, {_S(" "), 0xfe07, {.d_i32 = t.year}}, {_S(" "), 0x8004fe27, {.d_i32 = t.hour}}, {_S(":"), 0x8004fe27, {.d_i32 = t.minute}}, {_S(":"), 0x8004fe27, {.d_i32 = t.second}}, {_S(" UTC"), 0, { .d_c = 0 }}}));
+	return utc_string;
+}
+string time__Time_http_header_string(time__Time t) {
+	Array_u8 buf = builtin____new_array_with_default(0, 29, sizeof(u8), 0);
+	time__Time_push_to_http_header(t, &buf);
+	return Array_u8_bytestr(buf);
+}
+void time__Time_push_to_http_header(time__Time t, Array_u8* buffer) {
+	string day_str = time__Time_weekday_str(t);
+	string month_str = time__Time_smonth(t);
+	Array_fixed_u8_29 buf = {builtin__string_at(day_str, 0), builtin__string_at(day_str, 1), builtin__string_at(day_str, 2), ',', ' ', '0', '0', ' ', builtin__string_at(month_str, 0), builtin__string_at(month_str, 1), builtin__string_at(month_str, 2), ' ', '0', '0', '0', '0', ' ', '0', '0', ':', '0', '0', ':', '0', '0', ' ', 'G', 'M', 'T'};
+	{ // Unsafe block
+		time__int_to_ptr_byte_array_no_pad(t.day, &buf[5], 2);
+		time__int_to_ptr_byte_array_no_pad(t.year, &buf[12], 4);
+		time__int_to_ptr_byte_array_no_pad(t.hour, &buf[17], 2);
+		time__int_to_ptr_byte_array_no_pad(t.minute, &buf[20], 2);
+		time__int_to_ptr_byte_array_no_pad(t.second, &buf[23], 2);
+	}
+	builtin__array_push_many(buffer, &buf[0], 29);
+}
+_result_void time__Time_from_json_number(time__Time* t, string raw_number) {
+	*t = time__unix(builtin__string_i64(raw_number));
+	return (_result_void){0};
+}
+_result_void time__Time_from_json_string(time__Time* t, string raw_string) {
+	bool is_iso8601 = builtin__string_at(raw_string, 4) == '-' && builtin__string_at(raw_string, 7) == '-';
+	if (is_iso8601) {
+		_result_time__Time _t1 = time__parse_iso8601(raw_string);
+		if (_t1.is_error) {
+			_result_void _t2 = {0};
+			_t2.is_error = true;
+			_t2.err = _t1.err;
+			return _t2;
+		}
+		
+ 		*t = (*(time__Time*)_t1.data);
+		return (_result_void){0};
+	}
+	bool is_rfc3339 = raw_string.len == 24 && builtin__string_at(raw_string, 23) == 'Z' && builtin__string_at(raw_string, 10) == 'T';
+	if (is_rfc3339) {
+		_result_time__Time _t3 = time__parse_rfc3339(raw_string);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ 		*t = (*(time__Time*)_t3.data);
+		return (_result_void){0};
+	}
+	bool is_unix_timestamp = true;
+	for (int _t5 = 0; _t5 < raw_string.len; ++_t5) {
+		u8 c = raw_string.str[_t5];
+		if (c == '-' || (c >= '0' && c <= '9')) {
+			continue;
+		}
+		is_unix_timestamp = false;
+		break;
+	}
+	if (is_unix_timestamp) {
+		*t = time__unix(builtin__string_i64(raw_string));
+		return (_result_void){0};
+	}
+	return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Expected iso8601/rfc3339/unix time but got: "), 0xfe10, {.d_s = raw_string}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+string time__Time_to_json(time__Time t) {
+	return builtin__string__plus(builtin__string__plus(_S("\""), time__Time_format_rfc3339(t)), _S("\""));
+}
+inline bool time__Time__eq(time__Time t1, time__Time t2) {
+	return t1.nanosecond == t2.nanosecond && t1.is_local == t2.is_local && time__Time_local_unix(t1) == time__Time_local_unix(t2);
+}
+inline bool time__Time__lt(time__Time t1, time__Time t2) {
+	i64 t1u = time__Time_unix(t1);
+	i64 t2u = time__Time_unix(t2);
+	return t1u < t2u || (t1u == t2u && t1.nanosecond < t2.nanosecond);
+}
+inline time__Duration time__Time__minus(time__Time lhs, time__Time rhs) {
+	i64 unixs = ((i64)((i64)(time__Time_unix(lhs) - time__Time_unix(rhs)))) * _const_time__second;
+	int nanos = (int)(lhs.nanosecond - rhs.nanosecond);
+	return (i64)(unixs + nanos);
+}
+VV_LOC _result_void time__validate_time_bounds(int hour, int minute, int second, int nanosecond) {
+	if (hour < 0 || hour > 23) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid hour: "), 0xfe07, {.d_i32 = hour}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (minute < 0 || minute > 59) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid minute: "), 0xfe07, {.d_i32 = minute}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (second < 0 || second > 59) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid second: "), 0xfe07, {.d_i32 = second}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (nanosecond < 0 || nanosecond > 1000000000) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid nanosecond: "), 0xfe07, {.d_i32 = nanosecond}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_multi_return_int_int_int_int time__check_and_extract_time(string s) {
+	int hour_ = 0;
+	int minute_ = 0;
+	int second_ = 0;
+	int nanosecond_ = 0;
+	for (int i = 0; i < 8; i++) {
+		if (_const_time__time_format_buffer[builtin__v_fixed_index(i, 8)] == ((u8)('0'))) {
+			if (builtin__string_at(s, i) < ((u8)('0')) || builtin__string_at(s, i) > ((u8)('9'))) {
+				return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("`HH:MM:SS` match error: expected digit, not `"), 0xfe02, {.d_u8 = builtin__string_at(s, i)}}, {_S("` in position "), 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			} else {
+				if (i < 2) {
+					hour_ = (int)((int)(hour_ * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				} else if (i < 5) {
+					minute_ = (int)((int)(minute_ * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				} else {
+					second_ = (int)((int)(second_ * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				}
+			}
+		} else if (_const_time__time_format_buffer[builtin__v_fixed_index(i, 8)] != builtin__string_at(s, i)) {
+			return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("time separator error: expected `:`, not `"), 0xfe10, {.d_s = Array_u8_bytestr(builtin__new_array_from_c_array(1, 1, sizeof(u8), _MOV((u8[1]){builtin__string_at(s, i)})))}}, {_S("` in position "), 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+	}
+	if (s.len == (int)(8 + 1)) {
+		if (!(builtin__string_at(s, 8) == ((u8)('Z')) || builtin__string_at(s, 8) == 'z')) {
+			return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(_S("timezone error: expected \"Z\" or \"z\" at the end of the string")), .data={E_STRUCT} };
+		}
+		_result_void _t4 = time__validate_time_bounds(hour_, minute_, second_, nanosecond_);
+		if (_t4.is_error) {
+			_result_multi_return_int_int_int_int _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+		_result_multi_return_int_int_int_int _t6;
+		builtin___result_ok(&(multi_return_int_int_int_int[]) { (multi_return_int_int_int_int){.arg0=hour_, .arg1=minute_, .arg2=second_, .arg3=nanosecond_} }, (_result*)(&_t6), sizeof(multi_return_int_int_int_int));
+		return _t6;
+	}
+	if (s.len < (int)(8 + 1)) {
+		return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(_S("datetime string is too short")), .data={E_STRUCT} };
+	}
+	if (builtin__string_at(s, 8) == ((u8)('.'))) {
+		if (s.len < (int)(8 + 1)) {
+			return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(_S("datetime string is too short")), .data={E_STRUCT} };
+		}
+		int nanosecond_digits = 0;
+		for (int i = (int)(8 + 1); i < s.len; i++) {
+			if (builtin__string_at(s, i) < ((u8)('0')) || builtin__string_at(s, i) > ((u8)('9'))) {
+				if (builtin__string_at(s, i) == ((u8)('Z')) || builtin__string_at(s, i) == 'z') {
+					if (i != (int)(s.len - 1)) {
+						return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(_S("timezone error: \"Z\" or \"z\" can only be at the end of the string")), .data={E_STRUCT} };
+					}
+					break;
+				} else if (builtin__string_at(s, i) == ((u8)('+')) || builtin__string_at(s, i) == '-') {
+					break;
+				}
+				return (_result_multi_return_int_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("nanoseconds error: expected digit, not `"), 0xfe02, {.d_u8 = builtin__string_at(s, i)}}, {_S("` in position "), 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+			if (!(i >= (int)((int)(8 + 1) + 9))) {
+				nanosecond_ = (int)((int)(nanosecond_ * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				nanosecond_digits++;
+			}
+		}
+		if (nanosecond_digits < 9) {
+			for (int i = 0; i < (int)(9 - nanosecond_digits); i++) {
+				nanosecond_ *= 10;
+			}
+		}
+	}
+	_result_void _t11 = time__validate_time_bounds(hour_, minute_, second_, nanosecond_);
+	if (_t11.is_error) {
+		_result_multi_return_int_int_int_int _t12 = {0};
+		_t12.is_error = true;
+		_t12.err = _t11.err;
+		return _t12;
+	}
+	
+ ;
+	_result_multi_return_int_int_int_int _t13;
+	builtin___result_ok(&(multi_return_int_int_int_int[]) { (multi_return_int_int_int_int){.arg0=hour_, .arg1=minute_, .arg2=second_, .arg3=nanosecond_} }, (_result*)(&_t13), sizeof(multi_return_int_int_int_int));
+	return _t13;
+}
+VV_LOC _result_multi_return_int_int_int time__check_and_extract_date(string s) {
+	int year = 0;
+	int month = 0;
+	int day = 0;
+	for (int i = 0; i < 10; i++) {
+		if (_const_time__date_format_buffer[builtin__v_fixed_index(i, 10)] == ((u8)('0'))) {
+			if (builtin__string_at(s, i) < ((u8)('0')) || builtin__string_at(s, i) > ((u8)('9'))) {
+				return (_result_multi_return_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("`YYYY-MM-DD` match error: expected digit, not `"), 0xfe02, {.d_u8 = builtin__string_at(s, i)}}, {_S("` in position "), 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			} else {
+				if (i < 4) {
+					year = (int)((int)(year * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				} else if (i < 7) {
+					month = (int)((int)(month * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				} else {
+					day = (int)((int)(day * 10) + ((u8)(builtin__string_at(s, i) - ((u8)('0')))));
+				}
+			}
+		} else if (_const_time__date_format_buffer[builtin__v_fixed_index(i, 10)] != builtin__string_at(s, i)) {
+			return (_result_multi_return_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(4, _MOV((StrIntpData[]){{_S("date separator error:expected \""), 0xfe02, {.d_u8 = _const_time__date_format_buffer[builtin__v_fixed_index(i, 10)]}}, {_S("\", not `"), 0xfe02, {.d_u8 = builtin__string_at(s, i)}}, {_S("` in position "), 0xfe07, {.d_i32 = i}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+	}
+	if (month < 1 || month > 12) {
+		return (_result_multi_return_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("date error: invalid month "), 0xfe07, {.d_i32 = month}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (day < 1 || day > 31) {
+		return (_result_multi_return_int_int_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("date error: invalid day "), 0xfe07, {.d_i32 = day}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_result_multi_return_int_int_int _t5;
+	builtin___result_ok(&(multi_return_int_int_int[]) { (multi_return_int_int_int){.arg0=year, .arg1=month, .arg2=day} }, (_result*)(&_t5), sizeof(multi_return_int_int_int));
+	return _t5;
+}
+_result_time__Time time__parse_http_header_string(string s) {
+	return time__parse_rfc2616(s);
+}
+_result_time__Time time__parse_rfc2616(string s) {
+	if ((s).len == 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("datetime string is empty")), .data={E_STRUCT} };
+	}
+	Array_string rmv = builtin__new_array_from_c_array(34, 34, sizeof(string), _MOV((string[34]){
+			_S("GMT"), _S(""), _S("Monday"), _S(""), _S("Tuesday"), _S(""), _S("Wednesday"), _S(""), _S("Thursday"),
+			_S(""), _S("Friday"), _S(""), _S("Saturday"), _S(""), _S("Sunday"), _S(""), _S("Mon"),
+			_S(""), _S("Tue"), _S(""), _S("Wed"), _S(""), _S("Thu"), _S(""), _S("Fri"),
+			_S(""), _S("Sat"), _S(""), _S("Sun"), _S(""), _S("-"), _S(" "), _S(","),
+			_S("")}));
+	string f = builtin__string_replace_each(s, rmv);
+	f = time__remove_consecutive_spaces(f);
+	_result_time__Time _t2;
+	if (_t2 = time__parse_format(f, _S("DD MMM YYYY HH:mm:ss")), !_t2.is_error) {
+		time__Time r = *(time__Time*)_t2.data;
+		_result_time__Time _t3;
+		builtin___result_ok(&(time__Time[]) { r }, (_result*)(&_t3), sizeof(time__Time));
+		 
+		return _t3;
+	}
+	_result_time__Time _t4;
+	if (_t4 = time__parse_format(f, _S("DD MMM YY HH:mm:ss")), !_t4.is_error) {
+		time__Time r = *(time__Time*)_t4.data;
+		_result_time__Time _t6; /* if prepend */
+		if (r.year > time__now().year) {
+			builtin___result_ok(&(time__Time[]) { time__Time_add_days(r, -36525) }, (_result*)(&_t6), sizeof(time__Time));
+			goto _t7;
+		};
+		{
+			builtin___result_ok(&(time__Time[]) { r }, (_result*)(&_t6), sizeof(time__Time));
+		}
+	_t7: {};
+				return _t6;
+	}
+	_result_time__Time _t8;
+	if (_t8 = time__parse_format(f, _S("MMM D HH:mm:ss YYYY")), !_t8.is_error) {
+		time__Time r = *(time__Time*)_t8.data;
+		_result_time__Time _t9;
+		builtin___result_ok(&(time__Time[]) { r }, (_result*)(&_t9), sizeof(time__Time));
+		 
+		return _t9;
+	}
+	return (_result_time__Time){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("unable to parse date: \""), 0xfe10, {.d_s = f}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+VV_LOC string time__remove_consecutive_spaces(string s) {
+	string t = builtin__string_trim_space(s);
+	string r = _S("");
+	bool sp = false;
+	for (int _t1 = 0; _t1 < t.len; ++_t1) {
+		u8 c = t.str[_t1];
+		if (c == ((u8)(' '))) {
+			if (!sp) {
+				r = builtin__string__plus(r, _S(" "));
+				sp = true;
+			}
+		} else {
+			r = builtin__string__plus(r, builtin__u8_ascii_str(c));
+			sp = false;
+		}
+	}
+	return r;
+}
+_result_time__Time time__parse_rfc3339(string s) {
+	if ((s).len == 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("datetime string is empty")), .data={E_STRUCT} };
+	}
+	if (s.len < 8) {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("string is too short to parse")), .data={E_STRUCT} };
+	}
+	int year = 0;
+	int month = 0;
+	int day = 0;
+	int hour_ = 0;
+	int minute_ = 0;
+	int second_ = 0;
+	int nanosecond_ = 0;
+	bool is_time = (s.len >= 8 ? (builtin__string_at(s, 2) == ((u8)(':')) && builtin__string_at(s, 5) == ((u8)(':'))) : (false));
+	if (is_time) {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("missing date part of RFC 3339")), .data={E_STRUCT} };
+	}
+	bool is_date = (s.len >= 10 ? (builtin__string_at(s, 4) == ((u8)('-')) && builtin__string_at(s, 7) == ((u8)('-'))) : (false));
+	if (is_date) {
+		_result_multi_return_int_int_int _t4 = time__check_and_extract_date(s);
+		if (_t4.is_error) {
+			_result_time__Time _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ 		multi_return_int_int_int mr_6407 = (*(multi_return_int_int_int*)_t4.data);
+		year = mr_6407.arg0;
+		month = mr_6407.arg1;
+		day = mr_6407.arg2;
+	}
+	if (s.len <= 10) {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("date-time too short to parse")), .data={E_STRUCT} };
+	}
+	if (!(builtin__string_at(s, 10) == ((u8)('T')) || builtin__string_at(s, 10) == 't' || builtin__string_at(s, 10) == ' ')) {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid date-time separator:"), 0xfe10, {.d_s = builtin__u8_ascii_str(builtin__string_at(s, 10))}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	bool is_datetime = (s.len >= (int)((int)((int)(10 + 1) + 8) + 1) ? (is_date) : (false));
+	if (is_datetime) {
+		_result_multi_return_int_int_int_int _t8 = time__check_and_extract_time(builtin__string_substr(s, (int)(10 + 1), 2147483647));
+		if (_t8.is_error) {
+			_result_time__Time _t9 = {0};
+			_t9.is_error = true;
+			_t9.err = _t8.err;
+			return _t9;
+		}
+		
+ 		multi_return_int_int_int_int mr_6860 = (*(multi_return_int_int_int_int*)_t8.data);
+		hour_ = mr_6860.arg0;
+		minute_ = mr_6860.arg1;
+		second_ = mr_6860.arg2;
+		nanosecond_ = mr_6860.arg3;
+	}
+	int timezone_start_position = 0;
+	if (is_datetime || is_time) {
+		timezone_start_position = (int)((int)(10 + 1) + 8);
+		if (builtin__string_at(s, timezone_start_position) == ((u8)('.'))) {
+			timezone_start_position++;
+			for (;;) {
+				if (!(!(builtin__string_at(s, timezone_start_position) == ((u8)('Z')) || builtin__string_at(s, timezone_start_position) == 'z' || builtin__string_at(s, timezone_start_position) == '+' || builtin__string_at(s, timezone_start_position) == '-'))) break;
+				timezone_start_position++;
+				if (timezone_start_position == s.len) {
+					return (_result_time__Time){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("timezone error: expected \"Z\" or \"z\" or \"+\" or \"-\" in position "), 0xfe07, {.d_i32 = timezone_start_position}}, {_S(", not \""), 0xfe10, {.d_s = Array_u8_bytestr(builtin__new_array_from_c_array(1, 1, sizeof(u8), _MOV((u8[1]){builtin__string_at(s, (int)(s.len - 1))})))}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+				}
+			}
+		}
+	}
+	int pos = (int)((int)(10 + 8) + 1);
+	if (pos >= s.len) {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("timezone error: datetime string is too short")), .data={E_STRUCT} };
+	}
+	if (!(builtin__string_at(s, (int)((int)(10 + 8) + 1)) == ((u8)('Z')) || builtin__string_at(s, (int)((int)(10 + 8) + 1)) == 'z' || builtin__string_at(s, (int)((int)(10 + 8) + 1)) == '+' || builtin__string_at(s, (int)((int)(10 + 8) + 1)) == '-' || builtin__string_at(s, (int)((int)(10 + 8) + 1)) == '.')) {
+		return (_result_time__Time){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("timezone error: expected \"Z\" or \"z\" or \"+\" or \"-\" in position "), 0xfe07, {.d_i32 = (int)((int)(10 + 8) + 1)}}, {_S(", not \""), 0xfe10, {.d_s = Array_u8_bytestr(builtin__new_array_from_c_array(1, 1, sizeof(u8), _MOV((u8[1]){builtin__string_at(s, (int)((int)(10 + 8) + 1))})))}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	} else {
+		if (builtin__string_at(s, (int)(s.len - 1)) == ((u8)('Z')) || builtin__string_at(s, (int)(s.len - 1)) == 'z') {
+			_result_time__Time _t13;
+			builtin___result_ok(&(time__Time[]) { time__new(((time__Time){
+				.__v_unix = 0,
+				.year = year,
+				.month = month,
+				.day = day,
+				.hour = hour_,
+				.minute = minute_,
+				.second = second_,
+				.nanosecond = nanosecond_,
+				.is_local = false,
+			})) }, (_result*)(&_t13), sizeof(time__Time));
+			 
+			return _t13;
+		} else {
+			if (s.len < (int)((int)((int)(10 + 1) + 8) + 6)) {
+				return (_result_time__Time){ .is_error=true, .err=builtin___v_error(_S("datetime string is too short")), .data={E_STRUCT} };
+			}
+			if (builtin__string_at(s, (int)(s.len - 3)) != ((u8)(':'))) {
+				return (_result_time__Time){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("timezone separator error: expected \":\", not `"), 0xfe10, {.d_s = Array_u8_bytestr(builtin__new_array_from_c_array(1, 1, sizeof(u8), _MOV((u8[1]){builtin__string_at(s, (int)((int)(10 + 8) + 3))})))}}, {_S("` in position "), 0xfe07, {.d_i32 = (int)((int)(10 + 8) + 3)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			}
+			if (builtin__vmemcmp(s.str + s.len - 5, "00:00", 5) == 0) {
+				_result_time__Time _t16;
+				builtin___result_ok(&(time__Time[]) { time__new(((time__Time){
+					.__v_unix = 0,
+					.year = year,
+					.month = month,
+					.day = day,
+					.hour = hour_,
+					.minute = minute_,
+					.second = second_,
+					.nanosecond = nanosecond_,
+					.is_local = false,
+				})) }, (_result*)(&_t16), sizeof(time__Time));
+				 
+				return _t16;
+			}
+			bool is_negative = builtin__string_at(s, (int)(s.len - 6)) == ((u8)('-'));
+			int offset_in_minutes = 0;
+			int offset_in_hours = 0;
+			for (int i = 0; i < 2; i++) {
+				offset_in_hours = (int)((int)(offset_in_hours * 10) + ((u8)(builtin__string_at(s, (int)((int)(s.len - 5) + i)) - ((u8)('0')))));
+			}
+			for (int i = 0; i < 2; i++) {
+				offset_in_minutes = (int)((int)(offset_in_minutes * 10) + ((u8)(builtin__string_at(s, (int)((int)(s.len - 2) + i)) - ((u8)('0')))));
+			}
+			offset_in_minutes += (int)(offset_in_hours * 60);
+			if (!is_negative) {
+				offset_in_minutes *= -1;
+			}
+			time__Time time_to_be_returned = time__new(((time__Time){
+				.__v_unix = 0,
+				.year = year,
+				.month = month,
+				.day = day,
+				.hour = hour_,
+				.minute = minute_,
+				.second = second_,
+				.nanosecond = nanosecond_,
+				.is_local = false,
+			}));
+			time_to_be_returned = time__Time_add_seconds(time_to_be_returned, (int)(offset_in_minutes * 60));
+			_result_time__Time _t17;
+			builtin___result_ok(&(time__Time[]) { time_to_be_returned }, (_result*)(&_t17), sizeof(time__Time));
+			 
+			return _t17;
+		}
+	}
+	return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(9, _S("malformed date")), .data={E_STRUCT} };
+}
+_result_time__Time time__parse(string s) {
+	if ((s).len == 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("datetime string is empty")), .data={E_STRUCT} };
+	}
+	_option_int _t2 = builtin__string_index(s, _S(" "));
+	if (_t2.state != 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(1, _S("string has no space between date and time")), .data={E_STRUCT} };
+	}
+	
+ 	int pos = (*(int*)_t2.data);
+	string symd = builtin__string_substr(s, 0, pos);
+	Array_string ymd = builtin__string_split(symd, _S("-"));
+	if (ymd.len != 3) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(2, _S("date must be in the form of y-m-d")), .data={E_STRUCT} };
+	}
+	string shms = builtin__string_substr(s, pos, 2147483647);
+	Array_string hms = builtin__string_split(shms, _S(":"));
+	if (hms.len != 3) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(9, _S("time must be in the form of H:i:s")), .data={E_STRUCT} };
+	}
+	string hour_ = builtin__string_substr((*(string*)builtin__array_get(hms, 0)), 1, 2147483647);
+	string minute_ = (*(string*)builtin__array_get(hms, 1));
+	string second_ = (*(string*)builtin__array_get(hms, 2));
+	_result_int _t6 = strconv__atoi((*(string*)builtin__array_get(ymd, 0)));
+	if (_t6.is_error) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid year format: "), 0xfe10, {.d_s = (*(string*)builtin__array_get(ymd, 0))}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	int iyear = (*(int*)_t6.data);
+	_result_int _t8 = strconv__atoi((*(string*)builtin__array_get(ymd, 1)));
+	if (_t8.is_error) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid month format: "), 0xfe10, {.d_s = (*(string*)builtin__array_get(ymd, 1))}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	int imonth = (*(int*)_t8.data);
+	_result_int _t10 = strconv__atoi((*(string*)builtin__array_get(ymd, 2)));
+	if (_t10.is_error) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid day format: "), 0xfe10, {.d_s = (*(string*)builtin__array_get(ymd, 2))}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	int iday = (*(int*)_t10.data);
+	_result_int _t12 = strconv__atoi(hour_);
+	if (_t12.is_error) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid hour format: "), 0xfe10, {.d_s = hour_}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	int ihour = (*(int*)_t12.data);
+	_result_int _t14 = strconv__atoi(minute_);
+	if (_t14.is_error) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid minute format: "), 0xfe10, {.d_s = minute_}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	int iminute = (*(int*)_t14.data);
+	_result_int _t16 = strconv__atoi(second_);
+	if (_t16.is_error) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("invalid second format: "), 0xfe10, {.d_s = second_}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	
+ 	int isecond = (*(int*)_t16.data);
+	if (iyear > 9999 || iyear < -9999) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(3, _S("year must be between -10000 and 10000")), .data={E_STRUCT} };
+	}
+	if (imonth > 12 || imonth < 1) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(4, _S("month must be between 1 and 12")), .data={E_STRUCT} };
+	}
+	if (iday > 31 || iday < 1) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(5, _S("day must be between 1 and 31")), .data={E_STRUCT} };
+	}
+	if (ihour > 23 || ihour < 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(6, _S("hours must be between 0 and 24")), .data={E_STRUCT} };
+	}
+	if (iminute > 59 || iminute < 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(7, _S("minutes must be between 0 and 60")), .data={E_STRUCT} };
+	}
+	if (isecond > 59 || isecond < 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(8, _S("seconds must be between 0 and 60")), .data={E_STRUCT} };
+	}
+	time__Time res = time__new(((time__Time){
+		.__v_unix = 0,
+		.year = iyear,
+		.month = imonth,
+		.day = iday,
+		.hour = ihour,
+		.minute = iminute,
+		.second = isecond,
+		.nanosecond = 0,
+		.is_local = 0,
+	}));
+	_result_time__Time _t24;
+	builtin___result_ok(&(time__Time[]) { res }, (_result*)(&_t24), sizeof(time__Time));
+	 
+	return _t24;
+}
+_result_time__Time time__parse_format(string s, string format) {
+	if ((s).len == 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("datetime string is empty")), .data={E_STRUCT} };
+	}
+	time__DateTimeParser p = time__new_date_time_parser(s, format);
+	return time__DateTimeParser_parse(&p);
+}
+_result_time__Time time__parse_iso8601(string s) {
+	if ((s).len == 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("datetime string is empty")), .data={E_STRUCT} };
+	}
+	int t_i = builtin__string_index_(s, _S("T"));
+	Array_string parts = (t_i != -1 ? (builtin__new_array_from_c_array(2, 2, sizeof(string), _MOV((string[2]){builtin__string_substr(s, 0, t_i), builtin__string_substr(s, (int)(t_i + 1), 2147483647)}))) : (builtin__string_split(s, _S(" "))));
+	if (!(parts.len == 1 || parts.len == 2)) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(12, _S("malformed date")), .data={E_STRUCT} };
+	}
+	_result_multi_return_int_int_int _t3 = time__parse_iso8601_date((*(string*)builtin__array_get(parts, 0)));
+	if (_t3.is_error) {
+		_result_time__Time _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	multi_return_int_int_int mr_14090 = (*(multi_return_int_int_int*)_t3.data);
+	int year = mr_14090.arg0;
+	int month = mr_14090.arg1;
+	int day = mr_14090.arg2;
+	int hour_ = 0;
+	int minute_ = 0;
+	int second_ = 0;
+	int microsecond_ = 0;
+	int nanosecond_ = 0;
+	i64 unix_offset = ((i64)(0));
+	bool is_local_time = true;
+	if (parts.len == 2) {
+		_result_multi_return_int_int_int_int_int_i64_bool _t5 = time__parse_iso8601_time((*(string*)builtin__array_get(parts, 1)));
+		if (_t5.is_error) {
+			_result_time__Time _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ 		multi_return_int_int_int_int_int_i64_bool mr_14364 = (*(multi_return_int_int_int_int_int_i64_bool*)_t5.data);
+		hour_ = mr_14364.arg0;
+		minute_ = mr_14364.arg1;
+		second_ = mr_14364.arg2;
+		microsecond_ = mr_14364.arg3;
+		nanosecond_ = mr_14364.arg4;
+		unix_offset = mr_14364.arg5;
+		is_local_time = mr_14364.arg6;
+	}
+	time__Time t = time__new(((time__Time){
+		.__v_unix = 0,
+		.year = year,
+		.month = month,
+		.day = day,
+		.hour = hour_,
+		.minute = minute_,
+		.second = second_,
+		.nanosecond = nanosecond_,
+		.is_local = 0,
+	}));
+	if (is_local_time) {
+		_result_time__Time _t7;
+		builtin___result_ok(&(time__Time[]) { t }, (_result*)(&_t7), sizeof(time__Time));
+		 
+		return _t7;
+	}
+	i64 unix_time = t.__v_unix;
+	if (unix_offset < 0) {
+		unix_time -= (-unix_offset);
+	} else if (unix_offset > 0) {
+		unix_time += unix_offset;
+	}
+	t = time__unix_nanosecond(((i64)(unix_time)), t.nanosecond);
+	_result_time__Time _t8;
+	builtin___result_ok(&(time__Time[]) { t }, (_result*)(&_t8), sizeof(time__Time));
+	 
+	return _t8;
+}
+_result_time__Time time__parse_rfc2822(string s) {
+	if ((s).len == 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(0, _S("datetime string is empty")), .data={E_STRUCT} };
+	}
+	Array_string fields = builtin__string_split(s, _S(" "));
+	if (fields.len < 5) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(1, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("datetime string must have 5 components, has: "), 0xfe07, {.d_i32 = fields.len}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	_option_int _t3 = builtin__string_index(_const_time__months_string, (*(string*)builtin__array_get(fields, 2)));
+	if (_t3.state != 0) {
+		return (_result_time__Time){ .is_error=true, .err=time__error_invalid_time(2, _S("invalid month format")), .data={E_STRUCT} };
+	}
+	
+ 	int pos = (*(int*)_t3.data);
+	int mm = (int)((int)(pos / 3) + 1);
+	{ // Unsafe block
+		u8* tmstr = builtin__malloc_noscan((int)(s.len * 2));
+		i32 count = snprintf(((char*)(tmstr)), ((int)(s.len * 2)), "%s-%02d-%s %s", (*(string*)builtin__array_get(fields, 3)).str, mm, (*(string*)builtin__array_get(fields, 1)).str, (*(string*)builtin__array_get(fields, 4)).str);
+		return time__parse(builtin__tos(tmstr, count));
+	}
+	return (_result_time__Time){0};
+}
+VV_LOC _result_multi_return_int_int_int time__parse_iso8601_date(string s) {
+	int year = 0;
+	int month = 0;
+	int day = 0;
+	u8 dummy = ((u8)(0));
+	i32 count = sscanf(((char*)(s.str)), "%4d-%2d-%2d%c", &year, &month, &day, &dummy);
+	if (count != 3) {
+		return (_result_multi_return_int_int_int){ .is_error=true, .err=time__error_invalid_time(10, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("datetime string must have 3 components, but has "), 0xfe07, {.d_i32 = count}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	if (year > 9999) {
+		return (_result_multi_return_int_int_int){ .is_error=true, .err=time__error_invalid_time(13, _S("year must be smaller than 10000")), .data={E_STRUCT} };
+	}
+	if (month > 12) {
+		return (_result_multi_return_int_int_int){ .is_error=true, .err=time__error_invalid_time(14, _S("month must be smaller than 12")), .data={E_STRUCT} };
+	}
+	if (day > 31) {
+		return (_result_multi_return_int_int_int){ .is_error=true, .err=time__error_invalid_time(15, _S("day must be smaller than 31")), .data={E_STRUCT} };
+	}
+	_result_multi_return_int_int_int _t5;
+	builtin___result_ok(&(multi_return_int_int_int[]) { (multi_return_int_int_int){.arg0=year, .arg1=month, .arg2=day} }, (_result*)(&_t5), sizeof(multi_return_int_int_int));
+	return _t5;
+}
+VV_LOC _result_multi_return_int_int_int_int_int_i64_bool time__parse_iso8601_time(string s) {
+	int hour_ = 0;
+	int minute_ = 0;
+	int second_ = 0;
+	int microsecond_ = 0;
+	int nanosecond_ = 0;
+	rune plus_min_z = 'a';
+	int offset_hour = 0;
+	int offset_minute = 0;
+	int count = 0;
+	count = sscanf(((char*)(s.str)), "%2d:%2d:%2d.%9d%c", &hour_, &minute_, &second_, &nanosecond_, ((char*)(&plus_min_z)));
+	if (count == 5 && plus_min_z == 'Z') {
+		int ndigits = 0;
+		_option_int _t1;
+		if (_t1 = builtin__string_index(s, _S(".")), _t1.state == 0) {
+			int pos = *(int*)_t1.data;
+			pos++;
+			for (; pos < s.len && builtin__u8_is_digit(builtin__string_at(s, pos)); pos++) {
+				ndigits++;
+			}
+		}
+		for (;;) {
+			if (!(ndigits < 9)) break;
+			nanosecond_ *= 10;
+			ndigits++;
+		}
+		microsecond_ = (int)(nanosecond_ / 1000);
+	} else {
+		count = sscanf(((char*)(s.str)), "%2d:%2d:%2d.%9d%c%2d:%2d", &hour_, &minute_, &second_, &microsecond_, ((char*)(&plus_min_z)), &offset_hour, &offset_minute);
+		if (count < 4) {
+			count = sscanf(((char*)(s.str)), "%2d:%2d:%2d%c%2d:%2d", &hour_, &minute_, &second_, ((char*)(&plus_min_z)), &offset_hour, &offset_minute);
+			count++;
+		}
+		if (count < 4) {
+			return (_result_multi_return_int_int_int_int_int_i64_bool){ .is_error=true, .err=time__error_invalid_time(10, _S("malformed date")), .data={E_STRUCT} };
+		}
+		nanosecond_ = (int)(microsecond_ * 1000);
+	}
+	bool is_local_time = plus_min_z == 'a' && count == 4;
+	bool is_utc = plus_min_z == 'Z' && count == 5;
+	if (!(count == 7 || is_local_time || is_utc)) {
+		return (_result_multi_return_int_int_int_int_int_i64_bool){ .is_error=true, .err=time__error_invalid_time(11, _S("malformed date")), .data={E_STRUCT} };
+	}
+	if (plus_min_z != '+' && plus_min_z != '-' && !is_utc && !is_local_time) {
+		return (_result_multi_return_int_int_int_int_int_i64_bool){ .is_error=true, .err=time__error_invalid_time(12, _S("missing timezone")), .data={E_STRUCT} };
+	}
+	int unix_offset = 0;
+	if (offset_hour > 0) {
+		unix_offset += (int)(3600 * offset_hour);
+	}
+	if (offset_minute > 0) {
+		unix_offset += (int)(60 * offset_minute);
+	}
+	if (plus_min_z == '+') {
+		unix_offset *= -1;
+	}
+	_result_multi_return_int_int_int_int_int_i64_bool _t5;
+	builtin___result_ok(&(multi_return_int_int_int_int_int_i64_bool[]) { (multi_return_int_int_int_int_int_i64_bool){.arg0=hour_, .arg1=minute_, .arg2=second_, .arg3=microsecond_, .arg4=nanosecond_, .arg5=unix_offset, .arg6=is_local_time} }, (_result*)(&_t5), sizeof(multi_return_int_int_int_int_int_i64_bool));
+	return _t5;
+}
+string time__TimeParseError_msg(time__TimeParseError err) {
+	return builtin__str_intp(3, _MOV((StrIntpData[]){{_S("Invalid time format code: "), 0xfe07, {.d_i32 = err.code}}, {_S(", error: "), 0xfe10, {.d_s = err.message}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+VV_LOC IError time__error_invalid_time(int code, string message) {
+	return I_time__TimeParseError_to_Interface_IError(((time__TimeParseError*)builtin__memdup(&(time__TimeParseError){.Error = ((Error){E_STRUCT}),.code = code,.message = message,}, sizeof(time__TimeParseError))));
+}
+time__StopWatch time__new_stopwatch(time__StopWatchOptions opts) {
+	u64 initial = ((u64)(0));
+	if (opts.auto_start) {
+		initial = time__sys_mono_now();
+	}
+	return ((time__StopWatch){.elapsed = 0,.start = initial,.end = 0,});
+}
+void time__StopWatch_start(time__StopWatch* t) {
+	t->start = time__sys_mono_now();
+	t->end = 0;
+}
+void time__StopWatch_restart(time__StopWatch* t) {
+	t->start = time__sys_mono_now();
+	t->end = 0;
+	t->elapsed = 0;
+}
+void time__StopWatch_stop(time__StopWatch* t) {
+	t->end = time__sys_mono_now();
+}
+void time__StopWatch_pause(time__StopWatch* t) {
+	if (t->start > 0) {
+		if (t->end == 0) {
+			t->elapsed += (u64)(time__sys_mono_now() - t->start);
+		} else {
+			t->elapsed += (u64)(t->end - t->start);
+		}
+	}
+	t->start = 0;
+}
+time__Duration time__StopWatch_elapsed(time__StopWatch t) {
+	if (t.start > 0) {
+		if (t.end == 0) {
+			return ((((i64)((u64)((u64)(time__sys_mono_now() - t.start) + t.elapsed)))));
+		} else {
+			return ((((i64)((u64)((u64)(t.end - t.start) + t.elapsed)))));
+		}
+	}
+	return ((((i64)(t.elapsed))));
+}
+time__Time time__now(void) {
+	{
+		return time__darwin_now();
+	}
+	return time__linux_now();
+}
+time__Time time__utc(void) {
+	{
+		return time__darwin_utc();
+	}
+	return time__linux_utc();
+}
+VV_LOC time__Time time__time_with_unix(time__Time t) {
+	if (t.__v_unix != 0) {
+		return t;
+	}
+	struct tm tt = ((struct tm){
+		.tm_sec = t.second,
+		.tm_min = t.minute,
+		.tm_hour = t.hour,
+		.tm_mday = t.day,
+		.tm_mon = (int)(t.month - 1),
+		.tm_year = (int)(t.year - 1900),
+		.tm_wday = 0,
+		.tm_yday = 0,
+		.tm_isdst = 0,
+		.tm_gmtoff = 0,
+	});
+	i64 utime = time__make_unix_time(tt);
+	return ((time__Time){.__v_unix = utime,.year = (t).year,.month = (t).month,.day = (t).day,.hour = (t).hour,.minute = (t).minute,.second = (t).second,.nanosecond = (t).nanosecond,.is_local = (t).is_local,});
+}
+i64 time__ticks(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		struct timeval ts = ((struct timeval){.tv_sec = 0,.tv_usec = 0,});
+		gettimeofday(&ts, 0);
+		return ((i64)((u64)((u64)(ts.tv_sec * ((u64)(1000))) + ((u64)(ts.tv_usec / ((u64)(1000)))))));
+	}
+	#endif
+	return 0;
+}
+string time__Time_str(time__Time t) {
+	return time__Time_format_ss(t);
+}
+VV_LOC time__Time time__convert_ctime(struct tm t, int nanosecond) {
+	return ((time__Time){
+		.__v_unix = time__make_unix_time(t),
+		.year = (int)(t.tm_year + 1900),
+		.month = (int)(t.tm_mon + 1),
+		.day = t.tm_mday,
+		.hour = t.tm_hour,
+		.minute = t.tm_min,
+		.second = t.tm_sec,
+		.nanosecond = nanosecond,
+		.is_local = true,
+	});
+}
+string time__Time_strftime(time__Time t, string fmt) {
+	struct tm* tm = ((struct tm*)builtin__memdup(&(struct tm){.tm_sec = 0,.tm_min = 0,.tm_hour = 0,.tm_mday = 0,.tm_mon = 0,.tm_year = 0,.tm_wday = 0,.tm_yday = 0,.tm_isdst = 0,.tm_gmtoff = 0,}, sizeof(struct tm)));
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		gmtime_r(((voidptr)(&t.__v_unix)), tm);
+	}
+	#endif
+	Array_fixed_char_1024 buf = {0};
+	char* fmt_c = ((char*)(fmt.str));
+	strftime(&buf[0], ((usize)(sizeof(Array_fixed_char_1024))), fmt_c, tm);
+	return builtin__cstring_to_vstring(((char*)(&buf[0])));
+}
+int time__Duration_sys_milliseconds(time__Duration d) {
+	if (d > 2147483647 * _const_time__millisecond) {
+		return -1;
+	} else if (d <= 0) {
+		return 0;
+	} else {
+		return ((int)(d / _const_time__millisecond));
+	}
+	return 0;
+}
+time__Time time__Time__static__new(time__Time t) {
+	return time__time_with_unix(t);
+}
+time__Time time__new(time__Time t) {
+	return time__time_with_unix(t);
+}
+string time__Time_smonth(time__Time t) {
+	if (t.month <= 0 || t.month > 12) {
+		return _S("---");
+	}
+	int i = (int)(t.month - 1);
+	return builtin__string_substr(_const_time__months_string, (int)(i * 3), (int)(((int)(i + 1)) * 3));
+}
+inline i64 time__Time_unix(time__Time t) {
+	return time__time_with_unix(time__Time_local_to_utc(t)).__v_unix;
+}
+inline i64 time__Time_local_unix(time__Time t) {
+	return time__time_with_unix(t).__v_unix;
+}
+inline i64 time__Time_unix_milli(time__Time t) {
+	return (i64)((i64)(time__Time_unix(t) * 1000) + ((i64)(((i64)(t.nanosecond)) / 1000000)));
+}
+inline i64 time__Time_unix_micro(time__Time t) {
+	return (i64)((i64)(time__Time_unix(t) * 1000000) + ((i64)(((i64)(t.nanosecond)) / 1000)));
+}
+inline i64 time__Time_unix_nano(time__Time t) {
+	return (i64)((i64)(time__Time_unix(t) * 1000000000) + ((i64)(t.nanosecond)));
+}
+time__Time time__Time_add(time__Time t, time__Duration duration_in_nanosecond) {
+	i64 increased_time_nanosecond = (i64)(((i64)(t.nanosecond)) + time__Duration_nanoseconds(duration_in_nanosecond));
+	i64 increased_time_second = (i64)(time__Time_local_unix(t) + (increased_time_nanosecond / _const_time__second));
+	increased_time_nanosecond = increased_time_nanosecond % _const_time__second;
+	if (increased_time_nanosecond < 0) {
+		increased_time_second--;
+		increased_time_nanosecond += _const_time__second;
+	}
+	time__Time res = time__unix_nanosecond(increased_time_second, ((int)(increased_time_nanosecond)));
+	if (t.is_local) {
+		return ((time__Time){.__v_unix = 0,.year = (res).year,.month = (res).month,.day = (res).day,.hour = (res).hour,.minute = (res).minute,.second = (res).second,.nanosecond = (res).nanosecond,.is_local = true,});
+	}
+	return res;
+}
+time__Time time__Time_add_seconds(time__Time t, int seconds) {
+	return time__Time_add(time__time_with_unix(t), ((i64)(seconds)) * _const_time__second);
+}
+time__Time time__Time_add_days(time__Time t, int days) {
+	return time__Time_add(time__time_with_unix(t), (i64)(((i64)(days)) * 24) * _const_time__hour);
+}
+time__Duration time__since(time__Time t) {
+	return time__Time__minus(time__now(), t);
+}
+string time__Time_relative(time__Time t) {
+	time__Time znow = time__now();
+	i64 secs = (i64)(time__Time_unix(znow) - time__Time_unix(t));
+	string prefix = _S("");
+	string suffix = _S("");
+	if (secs < 0) {
+		secs *= -1;
+		prefix = _S("in ");
+	} else {
+		suffix = _S(" ago");
+	}
+	if (secs < 30) {
+		return _S("now");
+	}
+	if (secs < 3600) {
+		i64 m = (i64)(secs / 60);
+		if (m == 1) {
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1 minute"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = m}}, {_S(" minutes"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	if (secs < 86400) {
+		i64 h = (i64)(secs / 3600);
+		if (h == 1) {
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1 hour"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = h}}, {_S(" hours"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	if (secs < 604800) {
+		i64 d = (i64)((i64)(secs / 3600) / 24);
+		if (d == 1) {
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1 day"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = d}}, {_S(" days"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	if (secs < 31536000) {
+		if (_SLIT_EQ(prefix.str, prefix.len, "in ")) {
+			return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("on "), 0xfe10, {.d_s = time__Time_md(t)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("last "), 0xfe10, {.d_s = time__Time_md(t)}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	i64 y = (i64)((i64)((i64)(secs / 3600) / 24) / 365);
+	if (y == 1) {
+		return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1 year"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = y}}, {_S(" years"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+string time__Time_relative_short(time__Time t) {
+	time__Time znow = time__now();
+	i64 secs = (i64)(time__Time_unix(znow) - time__Time_unix(t));
+	string prefix = _S("");
+	string suffix = _S("");
+	if (secs < 0) {
+		secs *= -1;
+		prefix = _S("in ");
+	} else {
+		suffix = _S(" ago");
+	}
+	if (secs < 30) {
+		return _S("now");
+	}
+	if (secs < 3600) {
+		i64 m = (i64)(secs / 60);
+		if (m == 1) {
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1m"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = m}}, {_S("m"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	if (secs < 86400) {
+		i64 h = (i64)(secs / 3600);
+		if (h == 1) {
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1h"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = h}}, {_S("h"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	if (secs < 31536000) {
+		i64 d = (i64)((i64)(secs / 3600) / 24);
+		if (d == 1) {
+			return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1d"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		}
+		return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = d}}, {_S("d"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	i64 y = (i64)((i64)((i64)(secs / 3600) / 24) / 365);
+	if (y == 1) {
+		return builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_S("1y"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	}
+	return builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = prefix}}, {_SLIT0, 0xfe09, {.d_i64 = y}}, {_S("y"), 0xfe10, {.d_s = suffix}}, {_SLIT0, 0, { .d_c = 0 }}}));
+}
+int time__day_of_week(int y, int m, int d) {
+	Array_int t = builtin__new_array_from_c_array(12, 12, sizeof(int), _MOV((int[12]){
+			0, 3, 2, 5, 0, 3, 5, 1, 4,
+			6, 2, 4}));
+	int sy = y;
+	if (m < 3) {
+		sy = (int)(sy - 1);
+	}
+	return (int)((int)(((int)((int)((int)((int)((int)((int)(sy + (int)(sy / 4)) - (int)(sy / 100)) + (int)(sy / 400)) + (*(int*)builtin__array_get(t, time__iclamp(0, (int)(m - 1), 11)))) + d) - 1)) % 7) + 1);
+}
+int time__Time_day_of_week(time__Time t) {
+	return time__day_of_week(t.year, t.month, t.day);
+}
+int time__Time_week_of_year(time__Time t) {
+	int day_of_week = time__Time_day_of_week(t);
+	int days_to_thursday = (int)(4 - day_of_week);
+	time__Time thursday_date = time__Time_add_days(t, days_to_thursday);
+	int thursday_day_of_year = time__Time_year_day(thursday_date);
+	int week_number = (int)((int)(((int)(thursday_day_of_year - 1)) / 7) + 1);
+	return week_number;
+}
+int time__Time_year_day(time__Time t) {
+	int yday = (int)(t.day + _const_time__days_before[builtin__v_fixed_index(time__iclamp(0, (int)(t.month - 1), 12), 13)]);
+	if (time__is_leap_year(t.year) && t.month > 2) {
+		return (int)(yday + 1);
+	}
+	return yday;
+}
+string time__Time_weekday_str(time__Time t) {
+	int i = (int)(time__Time_day_of_week(t) - 1);
+	return builtin__string_substr(_const_time__long_days[builtin__v_fixed_index(time__iclamp(0, i, 6), 7)], 0, 3);
+}
+string time__Time_long_weekday_str(time__Time t) {
+	int i = (int)(time__Time_day_of_week(t) - 1);
+	return _const_time__long_days[builtin__v_fixed_index(time__iclamp(0, i, 6), 7)];
+}
+bool time__is_leap_year(int year) {
+	return (int)(year % 4) == 0 && ((int)(year % 100) != 0 || (int)(year % 400) == 0);
+}
+_result_int time__days_in_month(int month, int year) {
+	if (month > 12 || month < 1) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Invalid month: "), 0xfe07, {.d_i32 = month}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	int extra = (month == 2 && time__is_leap_year(year) ? (1) : (0));
+	int res = (int)(_const_time__month_days[builtin__v_fixed_index((int)(month - 1), 12)] + extra);
+	_result_int _t2;
+	builtin___result_ok(&(int[]) { res }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+string time__Time_debug(time__Time t) {
+	return builtin__str_intp(10, _MOV((StrIntpData[]){{_S("Time{ year: "), 0x8008fe27, {.d_i32 = t.year}}, {_S(" month: "), 0x8004fe27, {.d_i32 = t.month}}, {_S(" day: "), 0x8004fe27, {.d_i32 = t.day}}, {_S(" hour: "), 0x8004fe27, {.d_i32 = t.hour}}, {_S(" minute: "), 0x8004fe27, {.d_i32 = t.minute}}, {_S(" second: "), 0x8004fe27, {.d_i32 = t.second}}, {_S(" nanosecond: "), 0x8012fe27, {.d_i32 = t.nanosecond}}, {_S(" unix: "), 0x800efe29, {.d_i64 = t.__v_unix}}, {_S(" is_local: "), 0xfe10, {.d_s = t.is_local ? _S("true") : _S("false")}}, {_S(" }"), 0, { .d_c = 0 }}}));
+}
+int time__offset(void) {
+	time__Time t = time__utc();
+	time__Time local = time__Time_local(t);
+	return ((int)((i64)(local.__v_unix - t.__v_unix)));
+}
+time__Time time__Time_local_to_utc(time__Time t) {
+	if (!t.is_local) {
+		return t;
+	}
+	time__Time _t3 = time__Time_add(t, ((i64)(-time__offset())) * _const_time__second);
+	return ((time__Time){.__v_unix = _t3.__v_unix,.year = _t3.year,.month = _t3.month,.day = _t3.day,.hour = _t3.hour,.minute = _t3.minute,.second = _t3.second,.nanosecond = _t3.nanosecond,.is_local = false,});
+}
+time__Time time__Time_utc_to_local(time__Time u) {
+	if (u.is_local) {
+		return u;
+	}
+	time__Time _t3 = time__Time_add(u, ((i64)(time__offset())) * _const_time__second);
+	return ((time__Time){.__v_unix = _t3.__v_unix,.year = _t3.year,.month = _t3.month,.day = _t3.day,.hour = _t3.hour,.minute = _t3.minute,.second = _t3.second,.nanosecond = _t3.nanosecond,.is_local = true,});
+}
+time__Time time__Time_as_local(time__Time t) {
+	return ((time__Time){.__v_unix = (t).__v_unix,.year = (t).year,.month = (t).month,.day = (t).day,.hour = (t).hour,.minute = (t).minute,.second = (t).second,.nanosecond = (t).nanosecond,.is_local = true,});
+}
+time__Time time__Time_as_utc(time__Time t) {
+	return ((time__Time){.__v_unix = (t).__v_unix,.year = (t).year,.month = (t).month,.day = (t).day,.hour = (t).hour,.minute = (t).minute,.second = (t).second,.nanosecond = (t).nanosecond,.is_local = false,});
+}
+bool time__Time_is_utc(time__Time t) {
+	return !t.is_local;
+}
+VV_LOC mach_timebase_info_data_t time__init_time_base(void) {
+	mach_timebase_info_data_t tb = ((mach_timebase_info_data_t){.numer = 0,.denom = 0,});
+	mach_timebase_info(&tb);
+	return ((mach_timebase_info_data_t){.numer = tb.numer,.denom = tb.denom,});
+}
+VV_LOC u64 time__sys_mono_now_darwin(void) {
+	u64 tm = mach_absolute_time();
+	if (_const_time__time_base.denom == 0) {
+		mach_timebase_info(&_const_time__time_base);
+	}
+	return (u64)((u64)(((u64)(tm - _const_time__start_time)) * _const_time__time_base.numer) / _const_time__time_base.denom);
+}
+VV_LOC time__Time time__darwin_now(void) {
+	i64 epoch_ns = ((i64)(clock_gettime_nsec_np(CLOCK_REALTIME)));
+	i64 sec = (i64)(epoch_ns / ((i64)(_const_time__second)));
+	int nsec = ((int)((i64)(epoch_ns % ((i64)(_const_time__second)))));
+	struct tm loc_tm = ((struct tm){.tm_sec = 0,.tm_min = 0,.tm_hour = 0,.tm_mday = 0,.tm_mon = 0,.tm_year = 0,.tm_wday = 0,.tm_yday = 0,.tm_isdst = 0,.tm_gmtoff = 0,});
+	localtime_r(((voidptr)(&sec)), &loc_tm);
+	return time__convert_ctime(loc_tm, nsec);
+}
+VV_LOC time__Time time__darwin_utc(void) {
+	i64 epoch_ns = ((i64)(clock_gettime_nsec_np(CLOCK_REALTIME)));
+	i64 sec = (i64)(epoch_ns / ((i64)(_const_time__second)));
+	int nsec = ((int)((i64)(epoch_ns % ((i64)(_const_time__second)))));
+	return time__unix_nanosecond(sec, nsec);
+}
+VV_LOC i64 time__make_unix_time(struct tm t) {
+	return ((i64)(timegm(&t)));
+}
+time__Time time__Time_local(time__Time t) {
+	if (t.is_local) {
+		return t;
+	}
+	struct tm loc_tm = ((struct tm){.tm_sec = 0,.tm_min = 0,.tm_hour = 0,.tm_mday = 0,.tm_mon = 0,.tm_year = 0,.tm_wday = 0,.tm_yday = 0,.tm_isdst = 0,.tm_gmtoff = 0,});
+	i64 t_ = time__Time_unix(t);
+	localtime_r(((voidptr)(&t_)), &loc_tm);
+	return time__convert_ctime(loc_tm, t.nanosecond);
+}
+u64 time__sys_mono_now(void) {
+	#if defined(__APPLE__)
+	{
+		return time__sys_mono_now_darwin();
+	}
+	#else
+	{
+	}
+	#endif
+	return 0;
+}
+VV_LOC time__Time time__linux_now(void) {
+	struct timespec ts = ((struct timespec){.tv_sec = 0,.tv_nsec = 0,});
+	clock_gettime(CLOCK_REALTIME, &ts);
+	struct tm loc_tm = ((struct tm){.tm_sec = 0,.tm_min = 0,.tm_hour = 0,.tm_mday = 0,.tm_mon = 0,.tm_year = 0,.tm_wday = 0,.tm_yday = 0,.tm_isdst = 0,.tm_gmtoff = 0,});
+	localtime_r(((voidptr)(&ts.tv_sec)), &loc_tm);
+	return time__convert_ctime(loc_tm, ((int)(ts.tv_nsec)));
+}
+VV_LOC time__Time time__linux_utc(void) {
+	struct timespec ts = ((struct timespec){.tv_sec = 0,.tv_nsec = 0,});
+	clock_gettime(CLOCK_REALTIME, &ts);
+	return time__unix_nanosecond(((i64)(ts.tv_sec)), ((int)(ts.tv_nsec)));
+}
+struct timespec time__Duration_timespec(time__Duration d) {
+	struct timespec ts = ((struct timespec){.tv_sec = 0,.tv_nsec = 0,});
+	clock_gettime(CLOCK_REALTIME, &ts);
+	time__Duration d_sec = d / _const_time__second;
+	time__Duration d_nsec = d % _const_time__second;
+	ts.tv_sec += d_sec;
+	ts.tv_nsec += d_nsec;
+	if (ts.tv_nsec > ((i64)(_const_time__second))) {
+		ts.tv_nsec -= ((i64)(_const_time__second));
+		ts.tv_sec++;
+	}
+	return ts;
+}
+void time__sleep(time__Duration duration) {
+	struct timespec req = ((struct timespec){.tv_sec = duration / _const_time__second,.tv_nsec = duration % _const_time__second,});
+	struct timespec rem = ((struct timespec){.tv_sec = 0,.tv_nsec = 0,});
+	for (;;) {
+		if (!(nanosleep(&req, &rem) < 0)) break;
+		if (errno == EINTR) {
+			req = rem;
+		} else {
+			break;
+		}
+	}
+}
+time__Time time__unix(i64 epoch) {
+	return time__unix_nanosecond(epoch, 0);
+}
+time__Time time__unix_milli(i64 ms) {
+	return time__ts_to_time_impl(ms, 1000, 1000000);
+}
+time__Time time__unix_micro(i64 us) {
+	return time__ts_to_time_impl(us, 1000000, 1000);
+}
+time__Time time__unix_nano(i64 ns) {
+	return time__ts_to_time_impl(ns, 1000000000, 1);
+}
+VV_LOC time__Time time__ts_to_time_impl(i64 value, i64 down, i64 up) {
+	i64 epoch = (i64)(value / down);
+	i64 remainder = (i64)(((i64)(value % down)) * up);
+	return time__unix_nanosecond(epoch, ((int)(remainder)));
+}
+time__Time time__unix_microsecond(i64 epoch, int microsecond) {
+	return time__unix_nanosecond(epoch, (int)(microsecond * 1000));
+}
+time__Time time__unix_nanosecond(i64 abs_unix_timestamp, int nanosecond) {
+	i64 day_offset = (i64)(abs_unix_timestamp / 86400);
+	if ((i64)(abs_unix_timestamp % 86400) < 0) {
+		day_offset--;
+	}
+	multi_return_int_int_int mr_1698 = time__calculate_date_from_day_offset(day_offset);
+	int year = mr_1698.arg0;
+	int month = mr_1698.arg1;
+	int day = mr_1698.arg2;
+	multi_return_int_int_int mr_1769 = time__calculate_time_from_second_offset((i64)(abs_unix_timestamp % 86400));
+	int hour_ = mr_1769.arg0;
+	int minute_ = mr_1769.arg1;
+	int second_ = mr_1769.arg2;
+	return ((time__Time){
+		.__v_unix = abs_unix_timestamp,
+		.year = year,
+		.month = month,
+		.day = day,
+		.hour = hour_,
+		.minute = minute_,
+		.second = second_,
+		.nanosecond = nanosecond,
+		.is_local = 0,
+	});
+}
+VV_LOC multi_return_int_int_int time__calculate_date_from_day_offset(i64 day_offset_) {
+	i64 day_offset = day_offset_;
+	day_offset += 719468;
+	int era = 0;
+	if (day_offset >= 0) {
+		era = ((int)((i64)(day_offset / 146097)));
+	} else {
+		era = ((int)((i64)(((i64)((i64)(day_offset - 146097) - 1)) / 146097)));
+	}
+	i64 day_of_era = (i64)(day_offset - (int)(era * 146097));
+	i64 year_of_era = (i64)(((i64)((i64)((i64)(day_of_era - (i64)(day_of_era / 1460)) + (i64)(day_of_era / 36524)) - (i64)(day_of_era / 146096))) / 365);
+	int year = ((int)((i64)(year_of_era + (int)(era * 400))));
+	i64 day_of_year = (i64)(day_of_era - ((i64)((i64)((i64)(365 * year_of_era) + (i64)(year_of_era / 4)) - (i64)(year_of_era / 100))));
+	i64 month_position = (i64)(((i64)((i64)(5 * day_of_year) + 2)) / 153);
+	int day = ((int)((i64)((i64)(day_of_year - (i64)(((i64)((i64)(153 * month_position) + 2)) / 5)) + 1)));
+	int month = ((int)(month_position));
+	if (month_position < 10) {
+		month += 3;
+	} else {
+		month -= 9;
+	}
+	if (month <= 2) {
+		year += 1;
+	}
+	return (multi_return_int_int_int){.arg0=year, .arg1=month, .arg2=day};
+}
+VV_LOC multi_return_int_int_int time__calculate_time_from_second_offset(i64 second_offset_) {
+	i64 second_offset = second_offset_;
+	if (second_offset < 0) {
+		second_offset += _const_time__seconds_per_day;
+	}
+	i64 hour_ = (i64)(second_offset / 3600);
+	second_offset %= _const_time__seconds_per_hour;
+	i64 minute_ = (i64)(second_offset / 60);
+	second_offset %= _const_time__seconds_per_minute;
+	return (multi_return_int_int_int){.arg0=((int)(hour_)), .arg1=((int)(minute_)), .arg2=((int)(second_offset))};
+}
 VV_LOC string net__urllib__error_msg(string message, string val) {
 	string msg = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("net.urllib."), 0xfe10, {.d_s = message}}, {_SLIT0, 0, { .d_c = 0 }}}));
 	if ((val).len != 0) {
@@ -15922,6 +20120,131 @@ Map_string_Array_string net__urllib__Values_to_map(net__urllib__Values v) {
 }
 #if !defined(_WIN32) && !defined(__ANDROID__)
 #endif
+strings__textscanner__TextScanner strings__textscanner__new(string input) {
+	return ((strings__textscanner__TextScanner){.input = input,.ilen = input.len,.pos = 0,});
+}
+void strings__textscanner__TextScanner_free(strings__textscanner__TextScanner* ss) {
+	builtin__string_free(&ss->input);
+}
+inline int strings__textscanner__TextScanner_remaining(strings__textscanner__TextScanner* ss) {
+	return (int)(ss->ilen - ss->pos);
+}
+inline int strings__textscanner__TextScanner_next(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		int opos = ss->pos;
+		ss->pos++;
+		return ss->input.str[ opos];
+	}
+	return -1;
+}
+inline void strings__textscanner__TextScanner_skip(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		ss->pos++;
+	}
+}
+inline void strings__textscanner__TextScanner_skip_n(strings__textscanner__TextScanner* ss, int n) {
+	ss->pos += n;
+	if (ss->pos > ss->ilen) {
+		ss->pos = ss->ilen;
+	}
+}
+inline int strings__textscanner__TextScanner_peek(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		return ss->input.str[ ss->pos];
+	}
+	return -1;
+}
+inline u8 strings__textscanner__TextScanner_peek_u8(strings__textscanner__TextScanner* ss) {
+	if (ss->pos < ss->ilen) {
+		return ss->input.str[ ss->pos];
+	}
+	return 0;
+}
+inline int strings__textscanner__TextScanner_peek_n(strings__textscanner__TextScanner* ss, int n) {
+	if ((int)(ss->pos + n) < ss->ilen) {
+		return ss->input.str[ (int)(ss->pos + n)];
+	}
+	return -1;
+}
+inline u8 strings__textscanner__TextScanner_peek_n_u8(strings__textscanner__TextScanner* ss, int n) {
+	if ((int)(ss->pos + n) < ss->ilen) {
+		return ss->input.str[ (int)(ss->pos + n)];
+	}
+	return 0;
+}
+inline void strings__textscanner__TextScanner_back(strings__textscanner__TextScanner* ss) {
+	if (ss->pos > 0) {
+		ss->pos--;
+	}
+}
+void strings__textscanner__TextScanner_back_n(strings__textscanner__TextScanner* ss, int n) {
+	ss->pos -= n;
+	if (ss->pos < 0) {
+		ss->pos = 0;
+	}
+	if (ss->pos > ss->ilen) {
+		ss->pos = ss->ilen;
+	}
+}
+inline int strings__textscanner__TextScanner_peek_back(strings__textscanner__TextScanner* ss) {
+	return strings__textscanner__TextScanner_peek_back_n(ss, 1);
+}
+inline int strings__textscanner__TextScanner_peek_back_n(strings__textscanner__TextScanner* ss, int n) {
+	int offset = (int)(n + 1);
+	if (ss->pos >= offset) {
+		return ss->input.str[ (int)(ss->pos - offset)];
+	}
+	return -1;
+}
+inline int strings__textscanner__TextScanner_current(strings__textscanner__TextScanner* ss) {
+	if (ss->pos > 0) {
+		return ss->input.str[ (int)(ss->pos - 1)];
+	}
+	return -1;
+}
+void strings__textscanner__TextScanner_reset(strings__textscanner__TextScanner* ss) {
+	ss->pos = 0;
+}
+void strings__textscanner__TextScanner_goto_end(strings__textscanner__TextScanner* ss) {
+	ss->pos = ss->ilen;
+}
+void strings__textscanner__TextScanner_skip_whitespace(strings__textscanner__TextScanner* ss) {
+	for (;;) {
+		if (!((int)(ss->ilen - ss->pos) > 0 && builtin__u8_is_space(strings__textscanner__TextScanner_peek_u8(ss)))) break;
+		strings__textscanner__TextScanner_next(ss);
+	}
+}
+inline term__termios__TcFlag term__termios__flag(int value) {
+	return ((usize)(value));
+}
+inline term__termios__TcFlag term__termios__invert(term__termios__TcFlag value) {
+	return ~((usize)(value));
+}
+inline int term__termios__tcgetattr(int fd, term__termios__Termios* termios_p) {
+	{ // Unsafe block
+		return tcgetattr(fd, ((struct termios*)(termios_p)));
+	}
+	return 0;
+}
+inline int term__termios__tcsetattr(int fd, int optional_actions, term__termios__Termios* termios_p) {
+	{ // Unsafe block
+		return tcsetattr(fd, optional_actions, ((struct termios*)(termios_p)));
+	}
+	return 0;
+}
+inline int term__termios__ioctl(int fd, u64 request, voidptr arg) {
+	{ // Unsafe block
+		return ioctl(fd, request, arg);
+	}
+	return 0;
+}
+int term__termios__set_state(int fd, term__termios__Termios new_state) {
+	term__termios__Termios x = new_state;
+	return term__termios__tcsetattr(0, TCSANOW, (voidptr)&x);
+}
+void term__termios__Termios_disable_echo(term__termios__Termios* t) {
+	t->c_lflag &= term__termios__invert(((usize)(ECHO)));
+}
 vphp__Context vphp__Context__static__new(zend_execute_data* ex, zval* ret) {
 	return ((vphp__Context){.ex = ex,.ret = ret,});
 }
@@ -15941,19 +20264,37 @@ Array_vphp__ZVal vphp__Context_get_args(vphp__Context ctx) {
 	int num = vphp__Context_num_args(ctx);
 	Array_vphp__ZVal res = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
 	for (int i = 1; i < ((int)(num + 1)); ++i) {
-		builtin__array_push((array*)&res, _MOV((vphp__ZVal[]){ ((vphp__ZVal){.raw = vphp_get_arg_ptr(ctx.ex, ((u32)(i))),}) }));
+		builtin__array_push((array*)&res, _MOV((vphp__ZVal[]){ ((vphp__ZVal){.raw = vphp_get_arg_ptr(ctx.ex, ((u32)(i))),.owned = 0,}) }));
 	}
 	return res;
 }
 vphp__ZVal vphp__Context_arg_raw(vphp__Context ctx, int index) {
 	if (index < 0 || index >= vphp__Context_num_args(ctx)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return ((vphp__ZVal){.raw = 0,.owned = 0,});
 	}
 	zval* raw = vphp_get_arg_ptr(ctx.ex, ((u32)((int)(index + 1))));
 	if (raw == 0) {
-		return ((vphp__ZVal){.raw = 0,});
+		return ((vphp__ZVal){.raw = 0,.owned = 0,});
 	}
-	return ((vphp__ZVal){.raw = raw,});
+	return ((vphp__ZVal){.raw = raw,.owned = 0,});
+}
+vphp__BorrowedValue vphp__Context_arg_borrowed(vphp__Context ctx, int index) {
+	return vphp__borrow(vphp__Context_arg_raw(ctx, index));
+}
+vphp__BorrowedZVal vphp__Context_arg_borrowed_zval(vphp__Context ctx, int index) {
+	return vphp__borrow_zval(vphp__Context_arg_raw(ctx, index));
+}
+vphp__OwnedValue vphp__Context_arg_owned_request(vphp__Context ctx, int index) {
+	return vphp__own_request(vphp__Context_arg_raw(ctx, index));
+}
+vphp__RequestOwnedZVal vphp__Context_arg_owned_request_zval(vphp__Context ctx, int index) {
+	return vphp__own_request_zval(vphp__Context_arg_raw(ctx, index));
+}
+vphp__OwnedValue vphp__Context_arg_owned_persistent(vphp__Context ctx, int index) {
+	return vphp__own_persistent(vphp__Context_arg_raw(ctx, index));
+}
+vphp__PersistentOwnedZVal vphp__Context_arg_owned_persistent_zval(vphp__Context ctx, int index) {
+	return vphp__own_persistent_zval(vphp__Context_arg_raw(ctx, index));
 }
 string vphp__Context_arg_T_string(vphp__Context ctx, int index) {
 	vphp__ZVal val = vphp__Context_arg_raw(ctx, index);
@@ -16026,13 +20367,13 @@ void vphp__Context_return_bool(vphp__Context ctx, bool val) {
 	vphp_set_bool(ctx.ret, val);
 }
 void vphp__Context_return_int(vphp__Context ctx, i64 val) {
-	vphp__ZVal_set_int(((vphp__ZVal){.raw = ctx.ret,}), val);
+	vphp__ZVal_set_int(((vphp__ZVal){.raw = ctx.ret,.owned = 0,}), val);
 }
 void vphp__Context_return_double(vphp__Context ctx, f64 val) {
 	vphp_set_double(ctx.ret, val);
 }
 void vphp__Context_return_string(vphp__Context ctx, string val) {
-	vphp__ZVal_set_string(((vphp__ZVal){.raw = ctx.ret,}), val);
+	vphp__ZVal_set_string(((vphp__ZVal){.raw = ctx.ret,.owned = 0,}), val);
 }
 void vphp__Context_return_res(vphp__Context ctx, voidptr ptr, string label) {
 	vphp_make_res(ctx.ret, ptr, ((char*)(label.str)));
@@ -16048,7 +20389,7 @@ void vphp__Context_return_zval(vphp__Context ctx, vphp__ZVal val) {
 	ZVAL_COPY(ctx.ret, val.raw);
 }
 void vphp__Context_return_val_T_Array_string(vphp__Context ctx, Array_string val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_Array_string(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16065,7 +20406,7 @@ void vphp__Context_return_val_T_Array_string(vphp__Context ctx, Array_string val
  ;
 }
 void vphp__Context_return_val_T_string(vphp__Context ctx, string val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_string(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16082,7 +20423,7 @@ void vphp__Context_return_val_T_string(vphp__Context ctx, string val) {
  ;
 }
 void vphp__Context_return_val_T_int(vphp__Context ctx, int val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_int(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16099,7 +20440,7 @@ void vphp__Context_return_val_T_int(vphp__Context ctx, int val) {
  ;
 }
 void vphp__Context_return_val_T_i64(vphp__Context ctx, i64 val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_i64(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16116,7 +20457,7 @@ void vphp__Context_return_val_T_i64(vphp__Context ctx, i64 val) {
  ;
 }
 void vphp__Context_return_val_T_f64(vphp__Context ctx, f64 val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_f64(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16133,7 +20474,7 @@ void vphp__Context_return_val_T_f64(vphp__Context ctx, f64 val) {
  ;
 }
 void vphp__Context_return_val_T_bool(vphp__Context ctx, bool val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_bool(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16150,7 +20491,7 @@ void vphp__Context_return_val_T_bool(vphp__Context ctx, bool val) {
  ;
 }
 void vphp__Context_return_val_T_Array_int(vphp__Context ctx, Array_int val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_Array_int(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16167,7 +20508,7 @@ void vphp__Context_return_val_T_Array_int(vphp__Context ctx, Array_int val) {
  ;
 }
 void vphp__Context_return_val_T_Array_i64(vphp__Context ctx, Array_i64 val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_Array_i64(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16184,7 +20525,7 @@ void vphp__Context_return_val_T_Array_i64(vphp__Context ctx, Array_i64 val) {
  ;
 }
 void vphp__Context_return_val_T_Array_f64(vphp__Context ctx, Array_f64 val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_Array_f64(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16201,7 +20542,7 @@ void vphp__Context_return_val_T_Array_f64(vphp__Context ctx, Array_f64 val) {
  ;
 }
 void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	_result_void _t1 = vphp__ZVal_from_v_T_Map_string_string(out, val);
 	if (_t1.is_error) {
 		#if false
@@ -16218,7 +20559,7 @@ void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_
  ;
 }
 void vphp__Context_return_map_T_string(vphp__Context ctx, Map_string_string m) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,});
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	vphp__ZVal_array_init(out);
 	int _t2 = m.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
@@ -16269,7 +20610,7 @@ void vphp__Context_return_object(vphp__Context ctx, Map_string_string props) {
 }
 void vphp__return_val_raw_T_string(zval* ret, string val) {
 	{ // Unsafe block
-		vphp__ZVal out = ((vphp__ZVal){.raw = ret,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = ret,.owned = 0,});
 		_result_void _t1 = vphp__ZVal_from_v_T_string(out, val);
 		if (_t1.is_error) {
 			vphp__ZVal_set_null(out);
@@ -16281,7 +20622,7 @@ void vphp__return_val_raw_T_string(zval* ret, string val) {
 }
 void vphp__return_val_raw_T_i64(zval* ret, i64 val) {
 	{ // Unsafe block
-		vphp__ZVal out = ((vphp__ZVal){.raw = ret,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = ret,.owned = 0,});
 		_result_void _t1 = vphp__ZVal_from_v_T_i64(out, val);
 		if (_t1.is_error) {
 			vphp__ZVal_set_null(out);
@@ -16378,28 +20719,319 @@ bool vphp__global_const_exists(string name) {
 }
 vphp__ZVal vphp__include(string path) {
 	{ // Unsafe block
-		zval* retval = ((zval*)(malloc(sizeof(zval))));
+		zval* retval = vphp_new_zval();
 		int res = vphp_include_file(((char*)(path.str)), path.len, retval, 0);
 		if (res == -1) {
-			return ((vphp__ZVal){.raw = 0,});
+			vphp_release_zval(retval);
+			return ((vphp__ZVal){.raw = 0,.owned = 0,});
 		}
-		return ((vphp__ZVal){.raw = retval,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = retval,.owned = true,});
+		vphp__autorelease_add(out.raw);
+		return out;
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__include_once(string path) {
 	{ // Unsafe block
-		zval* retval = ((zval*)(malloc(sizeof(zval))));
+		zval* retval = vphp_new_zval();
 		int res = vphp_include_file(((char*)(path.str)), path.len, retval, 1);
 		if (res == -1) {
-			return ((vphp__ZVal){.raw = 0,});
+			vphp_release_zval(retval);
+			return ((vphp__ZVal){.raw = 0,.owned = 0,});
 		}
-		return ((vphp__ZVal){.raw = retval,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = retval,.owned = true,});
+		vphp__autorelease_add(out.raw);
+		return out;
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__call_php(string name, Array_vphp__ZVal args) {
 	return vphp__ZVal_call(vphp__php_fn(name), args);
+}
+vphp__BorrowedZVal vphp__borrow_zval(vphp__ZVal z) {
+	return ((vphp__BorrowedZVal){.z = z,});
+}
+vphp__BorrowedZVal vphp__BorrowedZVal__static__from_zval(vphp__ZVal z) {
+	return vphp__borrow_zval(z);
+}
+vphp__BorrowedZVal vphp__BorrowedZVal__static__null(void) {
+	return vphp__RequestOwnedZVal_borrowed(vphp__RequestOwnedZVal__static__new_null());
+}
+vphp__RequestOwnedZVal vphp__own_request_zval(vphp__ZVal z) {
+	return ((vphp__RequestOwnedZVal){.z = vphp__ZVal_dup(z),});
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__from_zval(vphp__ZVal z) {
+	return vphp__own_request_zval(z);
+}
+vphp__PersistentOwnedZVal vphp__own_persistent_zval(vphp__ZVal z) {
+	return ((vphp__PersistentOwnedZVal){.z = vphp__ZVal_dup_persistent(z),});
+}
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__from_zval(vphp__ZVal z) {
+	return vphp__own_persistent_zval(z);
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_null(void) {
+	return vphp__own_request_zval(vphp__ZVal__static__new_null());
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_int(i64 n) {
+	return vphp__own_request_zval(vphp__ZVal__static__new_int(n));
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_float(f64 f) {
+	return vphp__own_request_zval(vphp__ZVal__static__new_float(f));
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_bool(bool b) {
+	return vphp__own_request_zval(vphp__ZVal__static__new_bool(b));
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal__static__new_string(string s) {
+	return vphp__own_request_zval(vphp__ZVal__static__new_string(s));
+}
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_null(void) {
+	return vphp__own_persistent_zval(vphp__ZVal__static__new_null());
+}
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_int(i64 n) {
+	return vphp__own_persistent_zval(vphp__ZVal__static__new_int(n));
+}
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_float(f64 f) {
+	return vphp__own_persistent_zval(vphp__ZVal__static__new_float(f));
+}
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_bool(bool b) {
+	return vphp__own_persistent_zval(vphp__ZVal__static__new_bool(b));
+}
+vphp__PersistentOwnedZVal vphp__PersistentOwnedZVal__static__new_string(string s) {
+	return vphp__own_persistent_zval(vphp__ZVal__static__new_string(s));
+}
+vphp__ZVal vphp__BorrowedZVal_to_zval(vphp__BorrowedZVal v) {
+	return v.z;
+}
+bool vphp__BorrowedZVal_is_valid(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_valid(v.z);
+}
+bool vphp__BorrowedZVal_is_null(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_null(v.z);
+}
+bool vphp__BorrowedZVal_is_undef(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_undef(v.z);
+}
+bool vphp__BorrowedZVal_is_callable(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_callable(v.z);
+}
+bool vphp__BorrowedZVal_is_object(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_object(v.z);
+}
+bool vphp__BorrowedZVal_is_string(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_string(v.z);
+}
+bool vphp__BorrowedZVal_is_array(vphp__BorrowedZVal v) {
+	return vphp__ZVal_is_array(v.z);
+}
+bool vphp__BorrowedZVal_method_exists(vphp__BorrowedZVal v, string name) {
+	return vphp__ZVal_method_exists(v.z, name);
+}
+string vphp__BorrowedZVal_to_string(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_string(v.z);
+}
+Array_string vphp__BorrowedZVal_to_string_list(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_string_list(v.z);
+}
+Map_string_string vphp__BorrowedZVal_to_string_map(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_string_map(v.z);
+}
+bool vphp__BorrowedZVal_to_bool(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_bool(v.z);
+}
+int vphp__BorrowedZVal_to_int(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_int(v.z);
+}
+i64 vphp__BorrowedZVal_to_i64(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_i64(v.z);
+}
+f64 vphp__BorrowedZVal_to_f64(vphp__BorrowedZVal v) {
+	return vphp__ZVal_to_f64(v.z);
+}
+vphp__ZVal vphp__BorrowedZVal_call_owned_request(vphp__BorrowedZVal v, Array_vphp__ZVal args) {
+	return vphp__ZVal_call_owned_request(v.z, args);
+}
+vphp__ZVal vphp__BorrowedZVal_method_owned_request(vphp__BorrowedZVal v, string method, Array_vphp__ZVal args) {
+	return vphp__ZVal_method_owned_request(v.z, method, args);
+}
+vphp__RequestOwnedZVal vphp__BorrowedZVal_clone_request_owned(vphp__BorrowedZVal v) {
+	return vphp__own_request_zval(v.z);
+}
+vphp__PersistentOwnedZVal vphp__BorrowedZVal_clone_persistent_owned(vphp__BorrowedZVal v) {
+	return vphp__own_persistent_zval(v.z);
+}
+vphp__ZVal vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal v) {
+	return v.z;
+}
+bool vphp__RequestOwnedZVal_is_valid(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_valid(v.z);
+}
+bool vphp__RequestOwnedZVal_is_null(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_null(v.z);
+}
+bool vphp__RequestOwnedZVal_is_undef(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_undef(v.z);
+}
+bool vphp__RequestOwnedZVal_is_callable(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_callable(v.z);
+}
+bool vphp__RequestOwnedZVal_is_object(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_object(v.z);
+}
+bool vphp__RequestOwnedZVal_is_string(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_string(v.z);
+}
+bool vphp__RequestOwnedZVal_is_array(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_is_array(v.z);
+}
+bool vphp__RequestOwnedZVal_method_exists(vphp__RequestOwnedZVal v, string name) {
+	return vphp__ZVal_method_exists(v.z, name);
+}
+string vphp__RequestOwnedZVal_to_string(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_string(v.z);
+}
+Array_string vphp__RequestOwnedZVal_to_string_list(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_string_list(v.z);
+}
+Map_string_string vphp__RequestOwnedZVal_to_string_map(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_string_map(v.z);
+}
+bool vphp__RequestOwnedZVal_to_bool(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_bool(v.z);
+}
+int vphp__RequestOwnedZVal_to_int(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_int(v.z);
+}
+i64 vphp__RequestOwnedZVal_to_i64(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_i64(v.z);
+}
+f64 vphp__RequestOwnedZVal_to_f64(vphp__RequestOwnedZVal v) {
+	return vphp__ZVal_to_f64(v.z);
+}
+vphp__ZVal vphp__RequestOwnedZVal_call_owned_request(vphp__RequestOwnedZVal v, Array_vphp__ZVal args) {
+	return vphp__ZVal_call_owned_request(v.z, args);
+}
+vphp__ZVal vphp__RequestOwnedZVal_method_owned_request(vphp__RequestOwnedZVal v, string method, Array_vphp__ZVal args) {
+	return vphp__ZVal_method_owned_request(v.z, method, args);
+}
+vphp__BorrowedZVal vphp__RequestOwnedZVal_borrowed(vphp__RequestOwnedZVal v) {
+	return vphp__borrow_zval(v.z);
+}
+vphp__PersistentOwnedZVal vphp__RequestOwnedZVal_clone_persistent_owned(vphp__RequestOwnedZVal v) {
+	return vphp__own_persistent_zval(v.z);
+}
+vphp__RequestOwnedZVal vphp__RequestOwnedZVal_clone_request_owned(vphp__RequestOwnedZVal v) {
+	return vphp__own_request_zval(v.z);
+}
+void vphp__RequestOwnedZVal_release(vphp__RequestOwnedZVal* v) {
+	vphp__ZVal_release(&v->z);
+}
+vphp__ZVal vphp__PersistentOwnedZVal_to_zval(vphp__PersistentOwnedZVal v) {
+	return v.z;
+}
+bool vphp__PersistentOwnedZVal_is_valid(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_valid(v.z);
+}
+bool vphp__PersistentOwnedZVal_is_null(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_null(v.z);
+}
+bool vphp__PersistentOwnedZVal_is_undef(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_undef(v.z);
+}
+bool vphp__PersistentOwnedZVal_is_callable(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_callable(v.z);
+}
+bool vphp__PersistentOwnedZVal_is_object(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_object(v.z);
+}
+bool vphp__PersistentOwnedZVal_is_string(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_string(v.z);
+}
+bool vphp__PersistentOwnedZVal_is_array(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_is_array(v.z);
+}
+bool vphp__PersistentOwnedZVal_method_exists(vphp__PersistentOwnedZVal v, string name) {
+	return vphp__ZVal_method_exists(v.z, name);
+}
+string vphp__PersistentOwnedZVal_to_string(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_string(v.z);
+}
+Array_string vphp__PersistentOwnedZVal_to_string_list(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_string_list(v.z);
+}
+Map_string_string vphp__PersistentOwnedZVal_to_string_map(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_string_map(v.z);
+}
+bool vphp__PersistentOwnedZVal_to_bool(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_bool(v.z);
+}
+int vphp__PersistentOwnedZVal_to_int(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_int(v.z);
+}
+i64 vphp__PersistentOwnedZVal_to_i64(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_i64(v.z);
+}
+f64 vphp__PersistentOwnedZVal_to_f64(vphp__PersistentOwnedZVal v) {
+	return vphp__ZVal_to_f64(v.z);
+}
+vphp__ZVal vphp__PersistentOwnedZVal_call_owned_request(vphp__PersistentOwnedZVal v, Array_vphp__ZVal args) {
+	return vphp__ZVal_call_owned_request(v.z, args);
+}
+vphp__ZVal vphp__PersistentOwnedZVal_method_owned_request(vphp__PersistentOwnedZVal v, string method, Array_vphp__ZVal args) {
+	return vphp__ZVal_method_owned_request(v.z, method, args);
+}
+vphp__BorrowedZVal vphp__PersistentOwnedZVal_borrowed(vphp__PersistentOwnedZVal v) {
+	return vphp__borrow_zval(v.z);
+}
+vphp__RequestOwnedZVal vphp__PersistentOwnedZVal_clone_request_owned(vphp__PersistentOwnedZVal v) {
+	return vphp__own_request_zval(v.z);
+}
+void vphp__PersistentOwnedZVal_release(vphp__PersistentOwnedZVal* v) {
+	vphp__ZVal_release(&v->z);
+}
+vphp__BorrowedZVal vphp__borrowed_zval_from_raw(zval* raw) {
+	return vphp__borrow_zval(((vphp__ZVal){.raw = raw,.owned = false,}));
+}
+vphp__BorrowedValue vphp__borrow(vphp__ZVal z) {
+	return ((vphp__BorrowedValue){.z = z,});
+}
+vphp__OwnedValue vphp__own(vphp__ZVal z) {
+	return vphp__own_request(z);
+}
+vphp__OwnedValue vphp__own_request(vphp__ZVal z) {
+	vphp__RequestOwnedZVal owned = vphp__own_request_zval(z);
+	return ((vphp__OwnedValue){.z = owned.z,.lifetime = vphp__OwnershipKind__owned_request,});
+}
+vphp__OwnedValue vphp__own_persistent(vphp__ZVal z) {
+	vphp__PersistentOwnedZVal persistent = vphp__own_persistent_zval(z);
+	return ((vphp__OwnedValue){.z = persistent.z,.lifetime = vphp__OwnershipKind__owned_persistent,});
+}
+vphp__OwnedValue vphp__BorrowedValue_clone_owned(vphp__BorrowedValue v) {
+	return vphp__own_request(v.z);
+}
+vphp__OwnedValue vphp__BorrowedValue_clone_owned_request(vphp__BorrowedValue v) {
+	return vphp__own_request(v.z);
+}
+vphp__OwnedValue vphp__BorrowedValue_clone_owned_persistent(vphp__BorrowedValue v) {
+	return vphp__own_persistent(v.z);
+}
+void vphp__OwnedValue_release(vphp__OwnedValue* v) {
+	vphp__ZVal_release(&v->z);
+}
+vphp__OwnershipKind vphp__OwnedValue_ownership(vphp__OwnedValue v) {
+	return v.lifetime;
+}
+vphp__BorrowedValue vphp__borrowed_from_raw(zval* raw) {
+	return ((vphp__BorrowedValue){.z = vphp__borrowed_zval_from_raw(raw).z,});
+}
+vphp__RequestScope vphp__request_scope(void) {
+	return ((vphp__RequestScope){.mark = vphp__request_scope_enter(),.active = true,});
+}
+void vphp__RequestScope_close(vphp__RequestScope* s) {
+	if (!s->active) {
+		return;
+	}
+	vphp__request_scope_leave(s->mark);
+	s->active = false;
 }
 void vphp__vphp_framework_init(int module_number) {
 	vphp__init_framework(module_number);
@@ -16414,6 +21046,30 @@ void vphp__init_framework(int module_number) {
 		vphp_init_resource_system(module_number);
 	}
 }
+void vphp__vphp_framework_shutdown(void) {
+	{ // Unsafe block
+		vphp_autorelease_shutdown();
+		vphp_shutdown_registry();
+	}
+}
+// export alias: vphp_framework_shutdown -> vphp__vphp_framework_shutdown
+void vphp_framework_shutdown(void) {
+	return vphp__vphp_framework_shutdown();
+}
+void vphp__vphp_framework_request_startup(void) {
+	vphp_request_startup();
+}
+// export alias: vphp_framework_request_startup -> vphp__vphp_framework_request_startup
+void vphp_framework_request_startup(void) {
+	return vphp__vphp_framework_request_startup();
+}
+void vphp__vphp_framework_request_shutdown(void) {
+	vphp_request_shutdown();
+}
+// export alias: vphp_framework_request_shutdown -> vphp__vphp_framework_request_shutdown
+void vphp_framework_request_shutdown(void) {
+	return vphp__vphp_framework_request_shutdown();
+}
 voidptr vphp__generic_new_raw_T_main__RouteGroup(void) {
 	return ((main__RouteGroup*)builtin__memdup(&(main__RouteGroup){.app = ((void*)0),.prefix = (string){.str=(byteptr)"", .is_lit=1},}, sizeof(main__RouteGroup)));
 }
@@ -16424,7 +21080,7 @@ voidptr vphp__generic_new_raw_T_main__VSlimResponse(void) {
 	return ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimResponse)));
 }
 voidptr vphp__generic_new_raw_T_main__VSlimApp(void) {
-	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = ((vphp__ZVal){.raw = 0,}),.error_handler = ((vphp__ZVal){.raw = 0,}),.container_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = 0,}, sizeof(main__VSlimApp)));
+	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = ((vphp__PersistentOwnedZVal){.z = ((vphp__ZVal){.raw = 0,.owned = 0,}),}),.error_handler = ((vphp__PersistentOwnedZVal){.z = ((vphp__ZVal){.raw = 0,.owned = 0,}),}),.container_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = 0,}, sizeof(main__VSlimApp)));
 }
 voidptr vphp__generic_new_raw_T_main__VSlimContainerException(void) {
 	return ((main__VSlimContainerException*)builtin__memdup(&(main__VSlimContainerException){E_STRUCT}, sizeof(main__VSlimContainerException)));
@@ -16433,7 +21089,49 @@ voidptr vphp__generic_new_raw_T_main__VSlimContainerNotFoundException(void) {
 	return ((main__VSlimContainerNotFoundException*)builtin__memdup(&(main__VSlimContainerNotFoundException){E_STRUCT}, sizeof(main__VSlimContainerNotFoundException)));
 }
 voidptr vphp__generic_new_raw_T_main__VSlimContainer(void) {
-	return ((main__VSlimContainer*)builtin__memdup(&(main__VSlimContainer){.entries = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.factories = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.resolved = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimContainer)));
+	return ((main__VSlimContainer*)builtin__memdup(&(main__VSlimContainer){.entries = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.factories = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.resolved = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimContainer)));
+}
+void vphp__generic_free_raw_T_main__RouteGroup(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__RouteGroup*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimRequest(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimRequest*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimResponse(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimResponse*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimApp(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimApp*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimContainerException(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimContainerException*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimContainerNotFoundException(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimContainerNotFoundException*)(ptr)));
+}
+void vphp__generic_free_raw_T_main__VSlimContainer(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	builtin___v_free(((main__VSlimContainer*)(ptr)));
 }
 vphp__PHPType vphp__PHPType__static__from_id(int id) {
 	return ((id == (_const_vphp__zend__is_undef))? (vphp__PHPType__undef) : (id == (_const_vphp__zend__is_null))? (vphp__PHPType__null) : (id == (_const_vphp__zend__is_false))? (vphp__PHPType__false_) : (id == (_const_vphp__zend__is_true))? (vphp__PHPType__true_) : (id == (_const_vphp__zend__is_long))? (vphp__PHPType__long) : (id == (_const_vphp__zend__is_double))? (vphp__PHPType__double) : (id == (_const_vphp__zend__is_string))? (vphp__PHPType__string) : (id == (_const_vphp__zend__is_array))? (vphp__PHPType__array) : (id == (_const_vphp__zend__is_object))? (vphp__PHPType__object) : (id == (_const_vphp__zend__is_resource))? (vphp__PHPType__resource) : (id == (_const_vphp__zend__is_reference))? (vphp__PHPType__reference) : (vphp__PHPType__unknown));
@@ -16560,7 +21258,7 @@ void vphp__task_spawn(vphp__Context ctx) {
 	__v_thread_vphp__TaskResult t = /*spawn (thread) */
 thread__t2;
 	{ // Unsafe block
-		vphp__AsyncResult* res = ((vphp__AsyncResult*)(builtin___v_malloc(((int)(sizeof(vphp__AsyncResult))))));
+		vphp__AsyncResult* res = ((vphp__AsyncResult*)(emalloc(((usize)(sizeof(vphp__AsyncResult))))));
 		res->handle = t;
 		vphp__Context_return_res(ctx, res, _S("v_task"));
 	}
@@ -16595,10 +21293,10 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 47 /* []int */) {
 			vphp__Context_return_val_T_Array_int(ctx, (*results._Array_int));
 		}
-		else if (results._typ == 179 /* []i64 */) {
+		else if (results._typ == 193 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 180 /* []f64 */) {
+		else if (results._typ == 194 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -16665,7 +21363,7 @@ _result_vphp__DynVal vphp__decode_val(vphp__ZVal z) {
 	if (vphp__ZVal_is_array(z)) {
 		Map_string_vphp__DynVal out = builtin__new_map(sizeof(string), sizeof(vphp__DynVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(z, out, (voidptr)		anon_fn_3035ace31b993c50_80_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(z, out, (voidptr)		anon_fn_3035ace31b993c50_81_vphp__zval_vphp__zval_mut_map_string_vphp__dynval_5018);
 		_result_vphp__DynVal _t6;
 		builtin___result_ok(&(vphp__DynVal[]) { vphp__dyn_map(out) }, (_result*)(&_t6), sizeof(vphp__DynVal));
 		 
@@ -16712,7 +21410,8 @@ _result_void vphp__encode_val(vphp__DynVal v, vphp__ZVal* out) {
 			vphp__ZVal_array_init(*out);
 			for (int _t1 = 0; _t1 < v.list.len; ++_t1) {
 				vphp__DynVal item = ((vphp__DynVal*)v.list.data)[_t1];
-				vphp__ZVal sub = ((vphp__ZVal){.raw = vphp_new_zval(),});
+				zval *sub_raw = HEAP(zval, (((zval){.value = 0,.u1 = {0},})));
+				vphp__ZVal sub = ((vphp__ZVal){.raw = &(*(sub_raw)),.owned = 0,});
 				_result_void _t2 = vphp__encode_val(item, (voidptr)&sub);
 				if (_t2.is_error) {
 					_result_void _t3 = {0};
@@ -16741,7 +21440,8 @@ _result_void vphp__encode_val(vphp__DynVal v, vphp__ZVal* out) {
 				string k = *(string*)builtin__DenseArray_key(&_t4.key_values, _t5);
 				k = builtin__string_clone(k);
 				vphp__DynVal item = (*(vphp__DynVal*)builtin__DenseArray_value(&_t4.key_values, _t5));
-				vphp__ZVal sub = ((vphp__ZVal){.raw = vphp_new_zval(),});
+				zval *sub_raw = HEAP(zval, (((zval){.value = 0,.u1 = {0},})));
+				vphp__ZVal sub = ((vphp__ZVal){.raw = &(*(sub_raw)),.owned = 0,});
 				_result_void _t8 = vphp__encode_val(item, (voidptr)&sub);
 				if (_t8.is_error) {
 					_result_void _t9 = {0};
@@ -16766,7 +21466,8 @@ _result_void vphp__encode_val(vphp__DynVal v, vphp__ZVal* out) {
 	return (_result_void){0};
 }
 _result_vphp__ZVal vphp__new_zval_from_val(vphp__DynVal v) {
-	vphp__ZVal out = ((vphp__ZVal){.raw = vphp_new_zval(),});
+	vphp__ZVal out = ((vphp__ZVal){.raw = vphp_new_zval(),.owned = true,});
+	vphp__autorelease_add(out.raw);
 	_result_void _t1 = vphp__encode_val(v, (voidptr)&out);
 	if (_t1.is_error) {
 		_result_vphp__ZVal _t2 = {0};
@@ -16780,6 +21481,79 @@ _result_vphp__ZVal vphp__new_zval_from_val(vphp__DynVal v) {
 	builtin___result_ok(&(vphp__ZVal[]) { out }, (_result*)(&_t3), sizeof(vphp__ZVal));
 	 
 	return _t3;
+}
+VV_LOC vphp__ZVal vphp__invalid_zval(void) {
+	return ((vphp__ZVal){.raw = 0,.owned = 0,});
+}
+VV_LOC vphp__ZVal vphp__adopt_raw_with_ownership(zval* raw, vphp__OwnershipKind ownership) {
+	if (raw == 0) {
+		return vphp__invalid_zval();
+	}
+	vphp__ZVal out = ((vphp__ZVal){.raw = raw,.owned = true,});
+	if (ownership == vphp__OwnershipKind__owned_request) {
+		vphp__autorelease_add(out.raw);
+	}
+	return out;
+}
+VV_LOC vphp__ZVal vphp__clone_raw_with_ownership(zval* src, vphp__OwnershipKind ownership) {
+	if (src == 0) {
+		return vphp__invalid_zval();
+	}
+	vphp__ZVal out = ((vphp__ZVal){.raw = vphp_new_zval(),.owned = true,});
+	ZVAL_COPY(out.raw, src);
+	if (ownership == vphp__OwnershipKind__owned_request) {
+		vphp__autorelease_add(out.raw);
+	}
+	return out;
+}
+VV_LOC vphp__ZVal vphp__adopt_read_result(zval* rv, zval* res, vphp__OwnershipKind ownership) {
+	if (rv == 0) {
+		return vphp__invalid_zval();
+	}
+	if (res == 0) {
+		vphp_release_zval(rv);
+		return vphp__invalid_zval();
+	}
+	if (((usize)(res)) == ((usize)(rv))) {
+		return vphp__adopt_raw_with_ownership(rv, ownership);
+	}
+	vphp_release_zval(rv);
+	if (ownership == vphp__OwnershipKind__borrowed) {
+		return ((vphp__ZVal){.raw = res,.owned = 0,});
+	}
+	return vphp__clone_raw_with_ownership(res, ownership);
+}
+int vphp__autorelease_mark(void) {
+	return vphp_autorelease_mark();
+}
+VV_LOC void vphp__autorelease_add(zval* z) {
+	if (z == 0) {
+		return;
+	}
+	vphp_autorelease_add(z);
+}
+VV_LOC void vphp__autorelease_forget(zval* z) {
+	if (z == 0) {
+		return;
+	}
+	vphp_autorelease_forget(z);
+}
+void vphp__autorelease_drain(int mark) {
+	vphp_autorelease_drain(mark);
+}
+int vphp__request_scope_enter(void) {
+	return vphp__autorelease_mark();
+}
+void vphp__request_scope_leave(int mark) {
+	vphp__autorelease_drain(mark);
+}
+vphp__RuntimeCounters vphp__runtime_counters(void) {
+	int ar = 0;
+	int owned = 0;
+	u32 obj_reg = ((u32)(0));
+	u32 rev_reg = ((u32)(0));
+	vphp_runtime_counters(&ar, &owned, &obj_reg, &rev_reg);
+	return ((vphp__RuntimeCounters){.autorelease_len = ar,.owned_len = owned,.obj_registry_len = obj_reg,.rev_registry_len = rev_reg,});
 }
 bool vphp__ZVal_is_valid(vphp__ZVal v) {
 	return v.raw != 0;
@@ -16934,10 +21708,10 @@ int vphp__ZVal_array_count(vphp__ZVal v) {
 }
 vphp__ZVal vphp__ZVal_array_get(vphp__ZVal v, int index) {
 	if (!vphp__ZVal_is_array(v)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return ((vphp__ZVal){.raw = 0,.owned = 0,});
 	}
 	zval* res = vphp_array_get_index(v.raw, ((u32)(index)));
-	return ((vphp__ZVal){.raw = res,});
+	return ((vphp__ZVal){.raw = res,.owned = 0,});
 }
 _result_vphp__ZVal vphp__ZVal_get(vphp__ZVal v, string key) {
 	if (v.raw == 0 || vphp_is_null(v.raw)) {
@@ -16949,7 +21723,7 @@ _result_vphp__ZVal vphp__ZVal_get(vphp__ZVal v, string key) {
 			return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("key \""), 0xfe10, {.d_s = key}}, {_S("\" not found"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
 		}
 		_result_vphp__ZVal _t3;
-		builtin___result_ok(&(vphp__ZVal[]) { ((vphp__ZVal){.raw = res,}) }, (_result*)(&_t3), sizeof(vphp__ZVal));
+		builtin___result_ok(&(vphp__ZVal[]) { ((vphp__ZVal){.raw = res,.owned = 0,}) }, (_result*)(&_t3), sizeof(vphp__ZVal));
 		 
 		return _t3;
 	}
@@ -16977,16 +21751,37 @@ void vphp__ZVal_add_property_bool(vphp__ZVal v, string key, bool val) {
 	add_property_bool(v.raw, ((char*)(key.str)), val);
 }
 vphp__ZVal vphp__ZVal_get_prop(vphp__ZVal v, string name) {
+	return vphp__ZVal_prop_owned_request(v, name);
+}
+vphp__ZVal vphp__ZVal_prop_borrowed(vphp__ZVal v, string name) {
 	if (!vphp__ZVal_is_object(v)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return vphp__invalid_zval();
 	}
 	zend_object* obj = vphp_get_obj_from_zval(v.raw);
-	zval* rv = ((zval*)(malloc(sizeof(zval))));
+	zval* rv = vphp_new_zval();
 	zval* res = vphp_read_property_compat(obj, ((char*)(name.str)), name.len, rv);
-	return ((vphp__ZVal){.raw = res,});
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__borrowed);
+}
+vphp__ZVal vphp__ZVal_prop_owned_request(vphp__ZVal v, string name) {
+	if (!vphp__ZVal_is_object(v)) {
+		return vphp__invalid_zval();
+	}
+	zend_object* obj = vphp_get_obj_from_zval(v.raw);
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_property_compat(obj, ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__owned_request);
+}
+vphp__ZVal vphp__ZVal_prop_owned_persistent(vphp__ZVal v, string name) {
+	if (!vphp__ZVal_is_object(v)) {
+		return vphp__invalid_zval();
+	}
+	zend_object* obj = vphp_get_obj_from_zval(v.raw);
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_property_compat(obj, ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__owned_persistent);
 }
 vphp__ZVal vphp__ZVal_prop(vphp__ZVal v, string name) {
-	return vphp__ZVal_get_prop(v, name);
+	return vphp__ZVal_prop_owned_request(v, name);
 }
 void vphp__ZVal_set_prop(vphp__ZVal v, string name, vphp__ZVal value) {
 	if (!vphp__ZVal_is_object(v) || value.raw == 0) {
@@ -17118,7 +21913,7 @@ Array_string vphp__ZVal_interface_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(interfaces, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_9435);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(interfaces, out, (voidptr)	anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_12188);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -17167,7 +21962,7 @@ Array_string vphp__ZVal_method_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_10832);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(methods, out, (voidptr)	anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_13585);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -17182,7 +21977,7 @@ Array_string vphp__ZVal_property_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11304);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(props, out, (voidptr)	anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_14057);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -17201,7 +21996,7 @@ Array_string vphp__ZVal_const_names(vphp__ZVal v) {
 		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	}
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_array_string_11864);
+	out = vphp__ZVal_foreach_with_ctx_T_Array_string(keys, out, (voidptr)	anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_array_string_14617);
 	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14332915669757940840_string); }
 	;
 	return out;
@@ -17215,104 +22010,283 @@ bool vphp__ZVal_const_exists(vphp__ZVal v, string name) {
 	vphp__ZVal res = vphp__ZVal_method(rc, _S("hasConstant"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__ZVal__static__new_string(name)})));
 	return vphp__ZVal_is_valid(res) && vphp__ZVal_to_bool(res);
 }
-vphp__ZVal vphp__ZVal_method(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+vphp__ZVal vphp__ZVal_method_owned_request(vphp__ZVal v, string method, Array_vphp__ZVal args) {
 	if (v.raw == 0 || !vphp__ZVal_is_object(v)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return vphp__invalid_zval();
 	}
 	{ // Unsafe block
-		zval* retval = ((zval*)(builtin___v_malloc(((int)(sizeof(zval))))));
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
 		zval** p_args = ((zval**)(((void*)0)));
-		if (args.len > 0) {
-			p_args = &(*(vphp__ZVal*)builtin__array_get(args, 0)).raw;
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
 		}
 		int res = vphp_call_method(v.raw, ((char*)(method.str)), method.len, retval, args.len, p_args);
 		if (res == -1) {
-			return ((vphp__ZVal){.raw = 0,});
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
 		}
-		return ((vphp__ZVal){.raw = retval,});
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_request);
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
-vphp__ZVal vphp__ZVal_call(vphp__ZVal v, Array_vphp__ZVal args) {
-	if (v.raw == 0) {
-		return ((vphp__ZVal){.raw = 0,});
+vphp__ZVal vphp__ZVal_method_owned_persistent(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+	if (v.raw == 0 || !vphp__ZVal_is_object(v)) {
+		return vphp__invalid_zval();
 	}
 	{ // Unsafe block
-		zval* retval = ((zval*)(builtin___v_malloc(((int)(sizeof(zval))))));
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
 		zval** p_args = ((zval**)(((void*)0)));
-		if (args.len > 0) {
-			p_args = &(*(vphp__ZVal*)builtin__array_get(args, 0)).raw;
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
+		}
+		int res = vphp_call_method(v.raw, ((char*)(method.str)), method.len, retval, args.len, p_args);
+		if (res == -1) {
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
+		}
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_persistent);
+	}
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal vphp__ZVal_method(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+	return vphp__ZVal_method_owned_request(v, method, args);
+}
+vphp__ZVal vphp__ZVal_call_owned_request(vphp__ZVal v, Array_vphp__ZVal args) {
+	if (v.raw == 0) {
+		return vphp__invalid_zval();
+	}
+	{ // Unsafe block
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
+		zval** p_args = ((zval**)(((void*)0)));
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
 		}
 		int res = vphp_call_callable(v.raw, retval, args.len, p_args);
 		if (res == -1) {
-			return ((vphp__ZVal){.raw = 0,});
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
 		}
-		return ((vphp__ZVal){.raw = retval,});
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_request);
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal vphp__ZVal_call_owned_persistent(vphp__ZVal v, Array_vphp__ZVal args) {
+	if (v.raw == 0) {
+		return vphp__invalid_zval();
+	}
+	{ // Unsafe block
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
+		zval** p_args = ((zval**)(((void*)0)));
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
+		}
+		int res = vphp_call_callable(v.raw, retval, args.len, p_args);
+		if (res == -1) {
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
+		}
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_persistent);
+	}
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal vphp__ZVal_call(vphp__ZVal v, Array_vphp__ZVal args) {
+	return vphp__ZVal_call_owned_request(v, args);
 }
 vphp__ZVal vphp__ZVal_dup(vphp__ZVal v) {
 	if (v.raw == 0) {
-		return ((vphp__ZVal){.raw = 0,});
+		return vphp__invalid_zval();
 	}
-	{ // Unsafe block
-		vphp__ZVal out = ((vphp__ZVal){.raw = vphp_new_zval(),});
-		ZVAL_COPY(out.raw, v.raw);
-		return out;
+	return vphp__clone_raw_with_ownership(v.raw, vphp__OwnershipKind__owned_request);
+}
+void vphp__ZVal_release(vphp__ZVal* v) {
+	if (v->raw == 0 || !v->owned) {
+		return;
 	}
-	return (vphp__ZVal){.raw = 0,};
+	vphp__autorelease_forget(v->raw);
+	vphp_release_zval(v->raw);
+	v->raw = ((void*)0);
+	v->owned = false;
+}
+vphp__ZVal vphp__ZVal_dup_persistent(vphp__ZVal v) {
+	vphp__ZVal out = vphp__ZVal_dup(v);
+	vphp__autorelease_forget(out.raw);
+	return out;
 }
 vphp__ZVal vphp__ZVal_construct(vphp__ZVal v, Array_vphp__ZVal args) {
+	return vphp__ZVal_construct_owned_request(v, args);
+}
+vphp__ZVal vphp__ZVal_construct_owned_request(vphp__ZVal v, Array_vphp__ZVal args) {
 	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return vphp__invalid_zval();
 	}
 	{ // Unsafe block
-		zval* retval = ((zval*)(builtin___v_malloc(((int)(sizeof(zval))))));
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
 		zval** p_args = ((zval**)(((void*)0)));
-		if (args.len > 0) {
-			p_args = &(*(vphp__ZVal*)builtin__array_get(args, 0)).raw;
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
 		}
 		int res = vphp_new_instance(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), retval, args.len, p_args);
 		if (res == -1) {
-			return ((vphp__ZVal){.raw = 0,});
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
 		}
-		return ((vphp__ZVal){.raw = retval,});
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_request);
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
-vphp__ZVal vphp__ZVal_static_method(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+vphp__ZVal vphp__ZVal_construct_owned_persistent(vphp__ZVal v, Array_vphp__ZVal args) {
 	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return vphp__invalid_zval();
 	}
 	{ // Unsafe block
-		zval* retval = ((zval*)(builtin___v_malloc(((int)(sizeof(zval))))));
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
 		zval** p_args = ((zval**)(((void*)0)));
-		if (args.len > 0) {
-			p_args = &(*(vphp__ZVal*)builtin__array_get(args, 0)).raw;
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
+		}
+		int res = vphp_new_instance(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), retval, args.len, p_args);
+		if (res == -1) {
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
+		}
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_persistent);
+	}
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal vphp__ZVal_static_method_owned_request(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	{ // Unsafe block
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
+		zval** p_args = ((zval**)(((void*)0)));
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
 		}
 		int res = vphp_call_static_method(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(method.str)), method.len, retval, args.len, p_args);
 		if (res == -1) {
-			return ((vphp__ZVal){.raw = 0,});
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
 		}
-		return ((vphp__ZVal){.raw = retval,});
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_request);
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal vphp__ZVal_static_method_owned_persistent(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	{ // Unsafe block
+		zval* retval = vphp_new_zval();
+		Array_C__zval_ptr argv = builtin____new_array_with_default(0, args.len, sizeof(zval*), 0);
+		for (int _t2 = 0; _t2 < args.len; ++_t2) {
+			vphp__ZVal arg = ((vphp__ZVal*)args.data)[_t2];
+			builtin__array_push((array*)&argv, _MOV((zval*[]){ arg.raw }));
+		}
+		zval** p_args = ((zval**)(((void*)0)));
+		if (argv.len > 0) {
+			p_args = &(*(zval**)builtin__array_get(argv, 0));
+		}
+		int res = vphp_call_static_method(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(method.str)), method.len, retval, args.len, p_args);
+		if (res == -1) {
+			vphp_release_zval(retval);
+			return vphp__invalid_zval();
+		}
+		return vphp__adopt_raw_with_ownership(retval, vphp__OwnershipKind__owned_persistent);
+	}
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
+}
+vphp__ZVal vphp__ZVal_static_method(vphp__ZVal v, string method, Array_vphp__ZVal args) {
+	return vphp__ZVal_static_method_owned_request(v, method, args);
+}
+vphp__ZVal vphp__ZVal_static_prop_borrowed(vphp__ZVal v, string name) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_static_property_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__borrowed);
+}
+vphp__ZVal vphp__ZVal_static_prop_owned_request(vphp__ZVal v, string name) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_static_property_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__owned_request);
+}
+vphp__ZVal vphp__ZVal_static_prop_owned_persistent(vphp__ZVal v, string name) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_static_property_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__owned_persistent);
 }
 vphp__ZVal vphp__ZVal_static_prop(vphp__ZVal v, string name) {
+	return vphp__ZVal_static_prop_owned_request(v, name);
+}
+vphp__ZVal vphp__ZVal_const_borrowed(vphp__ZVal v, string name) {
 	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
-		return ((vphp__ZVal){.raw = 0,});
+		return vphp__invalid_zval();
 	}
-	zval* rv = ((zval*)(malloc(sizeof(zval))));
-	zval* res = vphp_read_static_property_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
-	return ((vphp__ZVal){.raw = res,});
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_class_constant_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__borrowed);
+}
+vphp__ZVal vphp__ZVal_const_owned_request(vphp__ZVal v, string name) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_class_constant_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__owned_request);
+}
+vphp__ZVal vphp__ZVal_const_owned_persistent(vphp__ZVal v, string name) {
+	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
+		return vphp__invalid_zval();
+	}
+	zval* rv = vphp_new_zval();
+	zval* res = vphp_read_class_constant_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
+	return vphp__adopt_read_result(rv, res, vphp__OwnershipKind__owned_persistent);
 }
 vphp__ZVal vphp__ZVal_const(vphp__ZVal v, string name) {
-	if (v.raw == 0 || !vphp__ZVal_is_string(v)) {
-		return ((vphp__ZVal){.raw = 0,});
-	}
-	zval* rv = ((zval*)(malloc(sizeof(zval))));
-	zval* res = vphp_read_class_constant_compat(VPHP_Z_STRVAL(v.raw), VPHP_Z_STRLEN(v.raw), ((char*)(name.str)), name.len, rv);
-	return ((vphp__ZVal){.raw = res,});
+	return vphp__ZVal_const_owned_request(v, name);
 }
 vphp__ZVal vphp__ZVal_constant(vphp__ZVal v, string name) {
 	return vphp__ZVal_const(v, name);
@@ -17333,39 +22307,45 @@ vphp__ZVal vphp__ZVal__static__new_null(void) {
 	{ // Unsafe block
 		zval* z = vphp_new_zval();
 		vphp_set_null(z);
-		return ((vphp__ZVal){.raw = z,});
+		vphp__autorelease_add(z);
+		return ((vphp__ZVal){.raw = z,.owned = true,});
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__ZVal__static__new_int(i64 n) {
 	{ // Unsafe block
 		zval* z = vphp_new_zval();
 		vphp_set_lval(z, n);
-		return ((vphp__ZVal){.raw = z,});
+		vphp__autorelease_add(z);
+		return ((vphp__ZVal){.raw = z,.owned = true,});
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__ZVal__static__new_float(f64 f) {
 	{ // Unsafe block
 		zval* z = vphp_new_zval();
 		vphp_set_double(z, f);
-		return ((vphp__ZVal){.raw = z,});
+		vphp__autorelease_add(z);
+		return ((vphp__ZVal){.raw = z,.owned = true,});
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__ZVal__static__new_bool(bool b) {
 	{ // Unsafe block
 		zval* z = vphp_new_zval();
 		vphp_set_bool(z, b);
-		return ((vphp__ZVal){.raw = z,});
+		vphp__autorelease_add(z);
+		return ((vphp__ZVal){.raw = z,.owned = true,});
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__ZVal__static__new_string(string s) {
 	{ // Unsafe block
-		return ((vphp__ZVal){.raw = vphp_new_str(((char*)(s.str))),});
+		zval* z = vphp_new_str(((char*)(s.str)));
+		vphp__autorelease_add(z);
+		return ((vphp__ZVal){.raw = z,.owned = true,});
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 vphp__ZVal vphp__new_val_null(void) {
 	return vphp__ZVal__static__new_null();
@@ -17458,7 +22438,7 @@ _result_Map_string_string vphp__ZVal_to_v_T_Map_string_string(vphp__ZVal v) {
 		}
 		Map_string_string out = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		;
-		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_81_vphp__zval_vphp__zval_mut_map_string_string_21970);
+		out = vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, out, (voidptr)		anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_map_string_string_33384);
 		_result_Map_string_string _t14;
 		builtin___result_ok(&(Map_string_string[]) { out }, (_result*)(&_t14), sizeof(Map_string_string));
 		 
@@ -18352,19 +23332,6 @@ _result_void vphp__ZVal_from_v_T_Map_string_string(vphp__ZVal v, Map_string_stri
 	#endif
 	return (_result_void){ .is_error=true, .err=builtin___v_error(_S("unsupported from_v conversion for source type")), .data={E_STRUCT} };
 }
-_option_main__VSlimRequest_ptr vphp__ZVal_to_object_T_main__VSlimRequest(vphp__ZVal v) {
-	if (!vphp__ZVal_is_object(v)) {
-		return (_option_main__VSlimRequest_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
-	}
-	voidptr ptr = vphp_get_v_ptr_from_zval(v.raw);
-	if (ptr == 0) {
-		return (_option_main__VSlimRequest_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
-	}
-	_option_main__VSlimRequest_ptr _t3;
-	builtin___option_ok(&(main__VSlimRequest*[]) { ((main__VSlimRequest*)(ptr)) }, (_option*)(&_t3), sizeof(main__VSlimRequest*));
-	 
-	return _t3;
-}
 _option_main__VSlimResponse_ptr vphp__ZVal_to_object_T_main__VSlimResponse(vphp__ZVal v) {
 	if (!vphp__ZVal_is_object(v)) {
 		return (_option_main__VSlimResponse_ptr){ .state=2, .err=_const_none__, .data={E_STRUCT} };
@@ -18381,7 +23348,7 @@ _option_main__VSlimResponse_ptr vphp__ZVal_to_object_T_main__VSlimResponse(vphp_
 VV_LOC void vphp__vphp_foreach_wrapper(voidptr ctx, zval* key, zval* val) {
 	{ // Unsafe block
 		void (*cb) (vphp__ZVal key, vphp__ZVal val) = *(((vphp__ForeachCb*)(ctx)));
-		cb(((vphp__ZVal){.raw = key,}), ((vphp__ZVal){.raw = val,}));
+		cb(((vphp__ZVal){.raw = key,.owned = 0,}), ((vphp__ZVal){.raw = val,.owned = 0,}));
 	}
 }
 void vphp__ZVal_foreach(vphp__ZVal v, void (*cb)(vphp__ZVal key, vphp__ZVal val)) {
@@ -18397,21 +23364,21 @@ VV_LOC void vphp__vphp_foreach_with_ctx_wrapper_T_Map_string_vphp__DynVal(voidpt
 	{ // Unsafe block
 		vphp__ForeachPack_T_Map_string_vphp__DynVal* pack = ((vphp__ForeachPack_T_Map_string_vphp__DynVal*)(ctx));
 		void (*cb) (vphp__ZVal key, vphp__ZVal val, Map_string_vphp__DynVal* ctx) = pack->cb;
-		cb(((vphp__ZVal){.raw = key,}), ((vphp__ZVal){.raw = val,}), (voidptr)&pack->ctx);
+		cb(((vphp__ZVal){.raw = key,.owned = 0,}), ((vphp__ZVal){.raw = val,.owned = 0,}), (voidptr)&pack->ctx);
 	}
 }
 VV_LOC void vphp__vphp_foreach_with_ctx_wrapper_T_Array_string(voidptr ctx, zval* key, zval* val) {
 	{ // Unsafe block
 		vphp__ForeachPack_T_Array_string* pack = ((vphp__ForeachPack_T_Array_string*)(ctx));
 		void (*cb) (vphp__ZVal key, vphp__ZVal val, Array_string* ctx) = pack->cb;
-		cb(((vphp__ZVal){.raw = key,}), ((vphp__ZVal){.raw = val,}), &pack->ctx);
+		cb(((vphp__ZVal){.raw = key,.owned = 0,}), ((vphp__ZVal){.raw = val,.owned = 0,}), &pack->ctx);
 	}
 }
 VV_LOC void vphp__vphp_foreach_with_ctx_wrapper_T_Map_string_string(voidptr ctx, zval* key, zval* val) {
 	{ // Unsafe block
 		vphp__ForeachPack_T_Map_string_string* pack = ((vphp__ForeachPack_T_Map_string_string*)(ctx));
 		void (*cb) (vphp__ZVal key, vphp__ZVal val, Map_string_string* ctx) = pack->cb;
-		cb(((vphp__ZVal){.raw = key,}), ((vphp__ZVal){.raw = val,}), (voidptr)&pack->ctx);
+		cb(((vphp__ZVal){.raw = key,.owned = 0,}), ((vphp__ZVal){.raw = val,.owned = 0,}), (voidptr)&pack->ctx);
 	}
 }
 Map_string_vphp__DynVal vphp__ZVal_foreach_with_ctx_T_Map_string_vphp__DynVal(vphp__ZVal v, Map_string_vphp__DynVal ctx, void (*cb)(vphp__ZVal key, vphp__ZVal val, Map_string_vphp__DynVal* ctx)) {
@@ -18441,12 +23408,4190 @@ Map_string_string vphp__ZVal_foreach_with_ctx_T_Map_string_string(vphp__ZVal v, 
 Map_string_string vphp__ZVal_fold_T_Map_string_string(vphp__ZVal v, Map_string_string init, void (*cb)(vphp__ZVal key, vphp__ZVal val, Map_string_string* ctx)) {
 	return vphp__ZVal_foreach_with_ctx_T_Map_string_string(v, init, (voidptr)cb);
 }
+Array_string os__args_after(string cut_word) {
+	if (_const_os__args.len == 0) {
+		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	}
+	Array_string cargs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	if (!(Array_string_contains(_const_os__args, cut_word))) {
+		cargs = builtin__array_clone_to_depth(&_const_os__args, 1);
+	} else {
+		bool found = false;
+		builtin__array_push((array*)&cargs, _MOV((string[]){ (*(string*)builtin__array_get(_const_os__args, 0)) }));
+		Array_string _t3 = builtin__array_slice(_const_os__args, 1, 2147483647);
+		for (int _t4 = 0; _t4 < _t3.len; ++_t4) {
+			string a = ((string*)_t3.data)[_t4];
+			if (builtin__string__eq(a, cut_word)) {
+				found = true;
+				continue;
+			}
+			if (!found) {
+				continue;
+			}
+			builtin__array_push((array*)&cargs, _MOV((string[]){ builtin__string_clone(a) }));
+		}
+	}
+	return cargs;
+}
+Array_string os__args_before(string cut_word) {
+	if (_const_os__args.len == 0) {
+		return builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	}
+	Array_string cargs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	if (!(Array_string_contains(_const_os__args, cut_word))) {
+		cargs = builtin__array_clone_to_depth(&_const_os__args, 1);
+	} else {
+		builtin__array_push((array*)&cargs, _MOV((string[]){ (*(string*)builtin__array_get(_const_os__args, 0)) }));
+		Array_string _t3 = builtin__array_slice(_const_os__args, 1, 2147483647);
+		for (int _t4 = 0; _t4 < _t3.len; ++_t4) {
+			string a = ((string*)_t3.data)[_t4];
+			if (builtin__string__eq(a, cut_word)) {
+				break;
+			}
+			builtin__array_push((array*)&cargs, _MOV((string[]){ builtin__string_clone(a) }));
+		}
+	}
+	return cargs;
+}
+_result_os__Command os__start_new_command(string cmd) {
+	os__Command res = ((os__Command){.f = 0,.eof = 0,.exit_code = 0,.path = cmd,.redirect_stdout = 0,});
+	_result_void _t1 = os__Command_start(&res);
+	if (_t1.is_error) {
+		_result_os__Command _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_os__Command _t3;
+	builtin___result_ok(&(os__Command[]) { res }, (_result*)(&_t3), sizeof(os__Command));
+	 
+	return _t3;
+}
+_result_void os__Command_start(os__Command* c) {
+	string pcmd = builtin__string__plus(c->path, _S(" 2>&1"));
+	c->f = os__vpopen(pcmd);
+	if (builtin__isnil(c->f)) {
+		_result_void _t1 = (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("exec(\""), 0xfe10, {.d_s = c->path}}, {_S("\") failed"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			{ // defer begin
+				builtin__string_free(&pcmd);
+			} // defer end
+		return _t1;
+	}
+		{ // defer begin
+			builtin__string_free(&pcmd);
+		} // defer end
+	return (_result_void){0};
+}
+string os__Command_read_line(os__Command* c) {
+	Array_fixed_u8_4096 buf = {0};
+	strings__Builder res = strings__new_builder(1024);
+	{ // Unsafe block
+		u8* bufbp = &buf[0];
+		for (;;) {
+			if (!(fgets(((char*)(bufbp)), 4096, c->f) != 0)) break;
+			int len = builtin__vstrlen(bufbp);
+			for (int i = 0; i < len; ++i) {
+				if (bufbp[i] == '\n') {
+					strings__Builder_write_ptr(&res, bufbp, i);
+					string final = strings__Builder_str(&res);
+					string _t1 = final;
+						{ // defer begin
+							strings__Builder_free(&res);
+						} // defer end
+					return _t1;
+				}
+			}
+			strings__Builder_write_ptr(&res, bufbp, len);
+		}
+	}
+	c->eof = true;
+	string final = strings__Builder_str(&res);
+	string _t2 = final;
+		{ // defer begin
+			strings__Builder_free(&res);
+		} // defer end
+	return _t2;
+}
+_result_void os__Command_close(os__Command* c) {
+	c->exit_code = os__vpclose(c->f);
+	c->f = ((void*)0);
+	if (c->exit_code == 127) {
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(_S("error"), 127), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+bool os__debugger_present(void) {
+	{
+		int pid = os__fork();
+		if (pid == 0) {
+			int ppid = os__getppid();
+			if (ptrace(PT_TRACE_ME, ppid, ((void*)0), 0) == 0) {
+				waitpid(ppid, 0, 0);
+				ptrace(PT_DETACH, ppid, 0, 0);
+				builtin___v_exit(0);
+				VUNREACHABLE();
+			} else {
+				builtin___v_exit(1);
+				VUNREACHABLE();
+			}
+		} else {
+			int status = 0;
+			waitpid(pid, &status, 0);
+			if (WEXITSTATUS(status) == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+string os__getenv(string key) {
+	_option_string _t2 = os__getenv_opt(key);
+	if (_t2.state != 0) {
+		*(string*) _t2.data = _S("");
+	}
+	
+ 	return (*(string*)_t2.data);
+}
+_option_string os__getenv_opt(string key) {
+	{ // Unsafe block
+		#if defined(_WIN32)
+		{
+		}
+		#else
+		{
+			char* s = getenv(((char*)(key.str)));
+			if (s == ((void*)0)) {
+				return (_option_string){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+			}
+			_option_string _t3;
+			builtin___option_ok(&(string[]) { builtin__cstring_to_vstring(s) }, (_option*)(&_t3), sizeof(string));
+			 
+			return _t3;
+		}
+		#endif
+	}
+	return (_option_string){.state=2, .err=_const_none__, .data={E_STRUCT}};
+}
+int os__setenv(string name, string value, bool overwrite) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		{ // Unsafe block
+			return setenv(((char*)(name.str)), ((char*)(value.str)), overwrite);
+		}
+	}
+	#endif
+	return 0;
+}
+int os__unsetenv(string name) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return unsetenv(((char*)(name.str)));
+	}
+	#endif
+	return 0;
+}
+Map_string_string os__environ(void) {
+	Map_string_string res = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		char** start = ((char**)(((voidptr)(environ))));
+		int i = 0;
+		for (;;) {
+			char* x = start[i];
+			if (x == 0) {
+				break;
+			}
+			string eline = builtin__cstring_to_vstring(x);
+			int eq_index = builtin__string_index_u8(eline, '=');
+			if (eq_index > 0) {
+				builtin__map_set(&res, &(string[]){builtin__string_substr(eline, 0, eq_index)}, &(string[]) { builtin__string_substr(eline, (int)(eq_index + 1), 2147483647) });
+			}
+			i++;
+		}
+	}
+	#endif
+	return res;
+}
+#if !defined(_WIN32)
+#endif
+int os__fd_close(int fd) {
+	if (fd == -1) {
+		return 0;
+	}
+	return close(fd);
+}
+void os__fd_write(int fd, string s) {
+	if (fd == -1) {
+		return;
+	}
+	u8* sp = s.str;
+	int remaining = s.len;
+	for (;;) {
+		if (!(remaining > 0)) break;
+		int written = ((int)(write(fd, sp, remaining)));
+		if (written < 0) {
+			return;
+		}
+		remaining = (int)(remaining - written);
+		sp = ((voidptr)((usize)(((usize)(sp)) + ((usize)(written)))));
+	}
+}
+Array_string os__fd_slurp(int fd) {
+	Array_string res = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	if (fd == -1) {
+		return res;
+	}
+	for (;;) {
+		multi_return_string_int mr_905 = os__fd_read(fd, 4096);
+		string s = mr_905.arg0;
+		int b = mr_905.arg1;
+		if (b <= 0) {
+			break;
+		}
+		builtin__array_push((array*)&res, _MOV((string[]){ builtin__string_clone(s) }));
+	}
+	return res;
+}
+multi_return_string_int os__fd_read(int fd, int maxbytes) {
+	if (fd == -1) {
+		return (multi_return_string_int){.arg0=_S(""), .arg1=0};
+	}
+	{ // Unsafe block
+		u8* buf = builtin__malloc_noscan((int)(maxbytes + 1));
+		int nbytes = ((int)(read(fd, buf, maxbytes)));
+		if (nbytes < 0) {
+			builtin___v_free(buf);
+			return (multi_return_string_int){.arg0=_S(""), .arg1=nbytes};
+		}
+		buf[nbytes] = 0;
+		return (multi_return_string_int){.arg0=builtin__tos(buf, nbytes), .arg1=nbytes};
+	}
+	return (multi_return_string_int){0};
+}
+bool os__fd_is_pending(int fd) {
+	fd_set read_set = ((fd_set){E_STRUCT});
+	FD_ZERO(&read_set);
+	FD_SET(fd, &read_set);
+	struct timeval ts = ((struct timeval){.tv_sec = 0,.tv_usec = 0,});
+	i32 res = select((int)(fd + 1), &read_set, NULL, NULL, &ts);
+	if (res > 0) {
+		if (FD_ISSET(fd, &read_set) != 0) {
+			return true;
+		}
+	}
+	return false;
+}
+VV_LOC string os__NotExpected_msg(os__NotExpected err) {
+	return err.cause;
+}
+VV_LOC int os__NotExpected_code(os__NotExpected err) {
+	return err.code;
+}
+VV_LOC string os__fix_windows_path(string path) {
+	string p = path;
+	return p;
+}
+__NOINLINE _result_os__File os__open_file(string path, string mode, Array_int options) {
+	int flags = 0;
+	bool seek_to_end = false;
+	for (int _t1 = 0; _t1 < mode.len; ++_t1) {
+		u8 m = mode.str[_t1];
+
+		if (m == ('w')) {
+			flags |= ((_const_os__o_create | _const_os__o_trunc) | _const_os__o_wronly);
+		}
+		else if (m == ('a')) {
+			flags |= ((_const_os__o_create | _const_os__o_append) | _const_os__o_wronly);
+			seek_to_end = true;
+		}
+		else if (m == ('r')) {
+			flags |= _const_os__o_rdonly;
+		}
+		else if (m == ('b')) {
+			flags |= _const_os__o_binary;
+		}
+		else if (m == ('s')) {
+			flags |= _const_os__o_sync;
+		}
+		else if (m == ('n')) {
+			flags |= _const_os__o_nonblock;
+		}
+		else if (m == ('c')) {
+			flags |= _const_os__o_noctty;
+		}
+		else if (m == ('+')) {
+			flags &= ~_const_os__o_wronly;
+			flags |= _const_os__o_rdwr;
+		}
+		else {
+		}
+	}
+	if (_SLIT_EQ(mode.str, mode.len, "r+")) {
+		flags = _const_os__o_rdwr;
+	}
+	int permission = 0666;
+	if (options.len > 0) {
+		permission = (*(int*)builtin__array_get(options, 0));
+	}
+	string p = os__fix_windows_path(path);
+	i32 _t2;
+	#if defined(_WIN32)
+	#else
+		_t2 = open(((char*)(p.str)), flags, permission);
+		;
+	#endif
+		i32 fd = _t2;
+	if (fd == -1) {
+		return (_result_os__File){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+	}
+	FILE* cfile = fdopen(fd, ((char*)(mode.str)));
+	if (builtin__isnil(cfile)) {
+		return (_result_os__File){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Failed to open or create file \""), 0xfe10, {.d_s = path}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	os__File res = ((os__File){.cfile = (voidptr)cfile,.fd = fd,.is_opened = true,});
+	if (seek_to_end) {
+		_result_void _t5 = os__File_seek(&res, 0, os__SeekMode__end);
+		(void)_t5;
+ ;
+	}
+	_result_os__File _t6;
+	builtin___result_ok(&(os__File[]) { res }, (_result*)(&_t6), sizeof(os__File));
+	 
+	return _t6;
+}
+_result_os__File os__open(string path) {
+	_result_FILE_ptr _t1 = os__vfopen(path, _S("rb"));
+	if (_t1.is_error) {
+		_result_os__File _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	FILE* cfile = (*(FILE**)_t1.data);
+	int fd = os__fileno(cfile);
+	_result_os__File _t3;
+	builtin___result_ok(&(os__File[]) { ((os__File){.cfile = (voidptr)cfile,.fd = fd,.is_opened = true,}) }, (_result*)(&_t3), sizeof(os__File));
+	 
+	return _t3;
+}
+__NOINLINE _result_os__File os__create(string path) {
+	_result_FILE_ptr _t1 = os__vfopen(path, _S("wb"));
+	if (_t1.is_error) {
+		_result_os__File _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	FILE* cfile = (*(FILE**)_t1.data);
+	int fd = os__fileno(cfile);
+	_result_os__File _t3;
+	builtin___result_ok(&(os__File[]) { ((os__File){.cfile = (voidptr)cfile,.fd = fd,.is_opened = true,}) }, (_result*)(&_t3), sizeof(os__File));
+	 
+	return _t3;
+}
+os__File os__stdin(void) {
+	return ((os__File){.cfile = ((voidptr)(stdin)),.fd = 0,.is_opened = true,});
+}
+os__File os__stdout(void) {
+	return ((os__File){.cfile = ((voidptr)(stdout)),.fd = 1,.is_opened = true,});
+}
+os__File os__stderr(void) {
+	return ((os__File){.cfile = ((voidptr)(stderr)),.fd = 2,.is_opened = true,});
+}
+bool os__File_eof(os__File* f) {
+	FILE* cfile = ((FILE*)(f->cfile));
+	return feof(cfile) != 0;
+}
+_result_void os__File_reopen(os__File* f, string path, string mode) {
+	string p = os__fix_windows_path(path);
+	FILE* cfile = ((FILE*)(((void*)0)));
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		cfile = freopen(((char*)(p.str)), ((char*)(mode.str)), f->cfile);
+	}
+	#endif
+	if (builtin__isnil(cfile)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Failed to reopen file \""), 0xfe10, {.d_s = path}}, {_S("\""), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	f->cfile = cfile;
+	return (_result_void){0};
+}
+_result_int os__File_read(os__File* f, Array_u8* buf) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	if (buf->len == 0) {
+		return (_result_int){ .is_error=true, .err=I_os__Eof_to_Interface_IError(((os__Eof*)builtin__memdup(&(os__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(os__Eof)))), .data={E_STRUCT} };
+	}
+	int nbytes = ((int)(fread(buf->data, 1, buf->len, ((FILE*)(f->cfile)))));
+	if (nbytes <= 0) {
+		if (feof(((FILE*)(f->cfile))) != 0) {
+			return (_result_int){ .is_error=true, .err=I_os__Eof_to_Interface_IError(((os__Eof*)builtin__memdup(&(os__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(os__Eof)))), .data={E_STRUCT} };
+		}
+		if (ferror(((FILE*)(f->cfile))) != 0) {
+			return (_result_int){ .is_error=true, .err=I_os__NotExpected_to_Interface_IError(((os__NotExpected*)builtin__memdup(&(os__NotExpected){.cause = _S("unexpected error from fread"),.code = -1,}, sizeof(os__NotExpected)))), .data={E_STRUCT} };
+		}
+	}
+	_result_int _t5;
+	builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t5), sizeof(int));
+	 
+	return _t5;
+}
+_result_int os__File_write(os__File* f, Array_u8 buf) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	int written = ((int)(fwrite(buf.data, 1, buf.len, f->cfile)));
+	if (written == 0 && buf.len != 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("0 bytes written")), .data={E_STRUCT} };
+	}
+	_result_int _t3;
+	builtin___result_ok(&(int[]) { written }, (_result*)(&_t3), sizeof(int));
+	 
+	return _t3;
+}
+_result_int os__File_writeln(os__File* f, string s) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	_result_int _t2 = os__File_write_string(f, s);
+	if (_t2.is_error) {
+		_result_int _t3 = {0};
+		_t3.is_error = true;
+		_t3.err = _t2.err;
+		return _t3;
+	}
+	
+ 	int written = (*(int*)_t2.data);
+	i32 x = fputs("\n", f->cfile);
+	if (x < 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("could not add newline")), .data={E_STRUCT} };
+	}
+	_result_int _t5;
+	builtin___result_ok(&(int[]) { (int)(written + 1) }, (_result*)(&_t5), sizeof(int));
+	 
+	return _t5;
+}
+_result_int os__File_write_string(os__File* f, string s) {
+		_result_void _t1 = os__File_write_full_buffer(f, s.str, ((usize)(s.len)));
+	if (_t1.is_error) {
+		_result_int _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_int _t3;
+	builtin___result_ok(&(int[]) { s.len }, (_result*)(&_t3), sizeof(int));
+	 
+	return _t3;
+}
+_result_int os__File_write_to(os__File* f, u64 pos, Array_u8 buf) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	_result_void _t2 = os__File_seek(f, pos, os__SeekMode__start);
+	(void)_t2;
+ ;
+	int res = ((int)(fwrite(buf.data, 1, buf.len, f->cfile)));
+	if (res == 0 && buf.len != 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("0 bytes written")), .data={E_STRUCT} };
+	}
+	_result_void _t4 = os__File_seek(f, 0, os__SeekMode__end);
+	(void)_t4;
+ ;
+	_result_int _t5;
+	builtin___result_ok(&(int[]) { res }, (_result*)(&_t5), sizeof(int));
+	 
+	return _t5;
+}
+int os__File_write_ptr(os__File* f, voidptr data, int size) {
+	return ((int)(fwrite(data, 1, size, f->cfile)));
+}
+_result_void os__File_write_full_buffer(os__File* f, voidptr buffer, usize buffer_len) {
+	if (buffer_len <= ((usize)(0))) {
+		return (_result_void){0};
+	}
+	if (!f->is_opened) {
+		return (_result_void){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	u8* ptr = ((u8*)(buffer));
+	i64 remaining_bytes = ((i64)(buffer_len));
+	for (;;) {
+		if (!(remaining_bytes > 0)) break;
+		{ // Unsafe block
+			errno = 0;
+			i64 x = ((i64)(fwrite(ptr, 1, remaining_bytes, f->cfile)));
+			int cerror = ((int)(errno));
+			ptr += x;
+			remaining_bytes -= x;
+			if (cerror != 0) {
+				if (cerror == EINTR) {
+					continue;
+				}
+				if (((i64)(x)) != ((i64)(buffer_len))) {
+					return (_result_void){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(cerror)), .data={E_STRUCT} };
+				}
+			}
+			if (x <= 0) {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(_S("C.fwrite returned 0")), .data={E_STRUCT} };
+			}
+		}
+	}
+	return (_result_void){0};
+}
+int os__File_write_ptr_at(os__File* f, voidptr data, int size, u64 pos) {
+	_result_void _t1 = os__File_seek(f, pos, os__SeekMode__start);
+	(void)_t1;
+ ;
+	int res = ((int)(fwrite(data, 1, size, f->cfile)));
+	_result_void _t2 = os__File_seek(f, 0, os__SeekMode__end);
+	(void)_t2;
+ ;
+	return res;
+}
+VV_LOC _result_int os__fread(voidptr ptr, int item_size, int items, FILE* stream) {
+	int nbytes = ((int)(fread(ptr, item_size, items, stream)));
+	if (nbytes <= 0) {
+		if (feof(stream) != 0) {
+			return (_result_int){ .is_error=true, .err=I_os__Eof_to_Interface_IError(((os__Eof*)builtin__memdup(&(os__Eof){.Error = ((Error){E_STRUCT}),}, sizeof(os__Eof)))), .data={E_STRUCT} };
+		}
+		if (ferror(stream) != 0) {
+			return (_result_int){ .is_error=true, .err=builtin___v_error(_S("file read error")), .data={E_STRUCT} };
+		}
+	}
+	_result_int _t3;
+	builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t3), sizeof(int));
+	 
+	return _t3;
+}
+Array_u8 os__File_read_bytes(os__File* f, int size) {
+	return os__File_read_bytes_at(f, size, 0);
+}
+Array_u8 os__File_read_bytes_at(os__File* f, int size, u64 pos) {
+	Array_u8 arr = builtin____new_array_with_default(size, 0, sizeof(u8), 0);
+	_result_int _t1 = os__File_read_bytes_into(f, pos, &arr);
+	if (_t1.is_error) {
+		return builtin____new_array_with_default(0, 0, sizeof(u8), 0);
+	}
+	
+ 	int nreadbytes = (*(int*)_t1.data);
+	return builtin__array_slice(arr, 0, nreadbytes);
+}
+_result_int os__File_read_bytes_with_newline(os__File* f, Array_u8* buf) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	if (buf->len == 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("read_bytes_with_newline"), _S(": `buf.len` == 0"))), .data={E_STRUCT} };
+	}
+	int newline = 10;
+	int c = 0;
+	int buf_ptr = 0;
+	int nbytes = 0;
+	FILE* stream = ((FILE*)(f->cfile));
+	for (;;) {
+		if (!((buf_ptr < buf->len))) break;
+		c = getc(stream);
+
+		if (c == (EOF)) {
+			if (feof(stream) != 0) {
+				_result_int _t3;
+				builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t3), sizeof(int));
+				 
+				return _t3;
+			}
+			if (ferror(stream) != 0) {
+				return (_result_int){ .is_error=true, .err=builtin___v_error(_S("file read error")), .data={E_STRUCT} };
+			}
+		}
+		else if (c == (newline)) {
+			builtin__array_set(buf, buf_ptr, &(u8[]) { ((u8)(c)) });
+			nbytes++;
+			_result_int _t5;
+			builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t5), sizeof(int));
+			 
+			return _t5;
+		}
+		else {
+			builtin__array_set(buf, buf_ptr, &(u8[]) { ((u8)(c)) });
+			buf_ptr++;
+			nbytes++;
+		}
+	}
+	_result_int _t6;
+	builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t6), sizeof(int));
+	 
+	return _t6;
+}
+_result_int os__File_read_bytes_into(os__File* f, u64 pos, Array_u8* buf) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	if (buf->len == 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__string__plus(_S("read_bytes_into"), _S(": `buf.len` == 0"))), .data={E_STRUCT} };
+	}
+		_result_void _t3 = os__File_seek(f, pos, os__SeekMode__start);
+	(void)_t3;
+ ;
+	_result_int _t4 = os__fread(buf->data, 1, buf->len, f->cfile);
+	if (_t4.is_error) {
+		_result_int _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	int nbytes = (*(int*)_t4.data);
+	_result_int _t6;
+	builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t6), sizeof(int));
+	 
+	return _t6;
+}
+_result_int os__File_read_from(os__File* f, u64 pos, Array_u8* buf) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	if (buf->len == 0) {
+		_result_int _t2;
+		builtin___result_ok(&(int[]) { 0 }, (_result*)(&_t2), sizeof(int));
+		 
+		return _t2;
+	}
+		_result_void _t3 = os__File_seek(f, pos, os__SeekMode__start);
+	(void)_t3;
+ ;
+	_result_int _t4 = os__fread(buf->data, 1, buf->len, f->cfile);
+	if (_t4.is_error) {
+		_result_int _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ 	int nbytes = (*(int*)_t4.data);
+	_result_int _t6;
+	builtin___result_ok(&(int[]) { nbytes }, (_result*)(&_t6), sizeof(int));
+	 
+	return _t6;
+}
+_result_int os__File_read_into_ptr(os__File* f, u8* ptr, int max_size) {
+	if (!f->is_opened) {
+		return (_result_int){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	return os__fread(ptr, 1, max_size, f->cfile);
+}
+void os__File_flush(os__File* f) {
+	if (!f->is_opened) {
+		return;
+	}
+	fflush(f->cfile);
+}
+string os__FileNotOpenedError_msg(os__FileNotOpenedError err) {
+	return _S("os: file not opened");
+}
+string os__SizeOfTypeIs0Error_msg(os__SizeOfTypeIs0Error err) {
+	return _S("os: size of type is 0");
+}
+VV_LOC IError os__error_file_not_opened(void) {
+	return I_os__FileNotOpenedError_to_Interface_IError(((os__FileNotOpenedError*)builtin__memdup(&(os__FileNotOpenedError){.Error = ((Error){E_STRUCT}),}, sizeof(os__FileNotOpenedError))));
+}
+_result_void os__File_seek(os__File* f, i64 pos, os__SeekMode mode) {
+	if (!f->is_opened) {
+		return (_result_void){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	int whence = ((int)(mode));
+	int res = 0;
+	#if defined(TARGET_IS_64BIT)
+	{
+		#if defined(_WIN32)
+		{
+		}
+		#else
+		{
+			res = fseeko(f->cfile, pos, whence);
+		}
+		#endif
+	}
+	#endif
+	if (res == -1) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+_result_i64 os__File_tell(os__File* f) {
+	if (!f->is_opened) {
+		return (_result_i64){ .is_error=true, .err=os__error_file_not_opened(), .data={E_STRUCT} };
+	}
+	i64 pos = ((i64)(0));
+	int ret = 0;
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		pos = ((i64)(ftell(f->cfile)));
+	}
+	#endif
+	if (ret == -1 || pos == -1) {
+		return (_result_i64){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+	}
+	_result_i64 _t4;
+	builtin___result_ok(&(i64[]) { pos }, (_result*)(&_t4), sizeof(i64));
+	 
+	return _t4;
+}
+int os__File_setvbuf(os__File* f, char* buffer, os__FileBufferMode mode, usize size) {
+	return setvbuf(f->cfile, buffer, ((int)(mode)), size);
+}
+int os__File_set_buffer(os__File* f, Array_u8* buffer, os__FileBufferMode mode) {
+	return os__File_setvbuf(f, ((char*)(buffer->data)), mode, ((usize)(buffer->len)));
+}
+void os__File_set_line_buffered(os__File* f) {
+	os__File_setvbuf(f, ((char*)(((void*)0))), os__FileBufferMode__line_buffered, ((usize)(0)));
+}
+void os__File_set_unbuffered(os__File* f) {
+	os__File_setvbuf(f, ((char*)(((void*)0))), os__FileBufferMode__not_buffered, ((usize)(0)));
+}
+_result_void os__File_write_u8(os__File* f, u8 b) {
+	errno = 0;
+	_result_void _t1 = os__check_fwrite(fwrite(((voidptr)(&b)), 1, 1, f->cfile));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_u8 os__File_read_u8(os__File* f) {
+	u8 res = ((u8)(0));
+	errno = 0;
+	_result_void _t1 = os__check_fread(fread(((voidptr)(&res)), 1, 1, f->cfile));
+	if (_t1.is_error) {
+		_result_u8 _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	_result_u8 _t3;
+	builtin___result_ok(&(u8[]) { res }, (_result*)(&_t3), sizeof(u8));
+	 
+	return _t3;
+}
+VV_LOC _result_void os__check_cf(usize x, string label) {
+	if (errno != 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+	}
+	if (x == 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(label), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+VV_LOC _result_void os__check_fwrite(usize x) {
+	_result_void _t1 = os__check_cf(x, _S("fwrite"));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_void os__check_fread(usize x) {
+	_result_void _t1 = os__check_cf(x, _S("fread"));
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+bool os__is_abs_path(string path) {
+	if ((path).len == 0) {
+		return false;
+	}
+	return builtin__string_at(path, 0) == _const_os__fslash;
+}
+string os__abs_path(string path) {
+	string wd = os__getwd();
+	if ((path).len == 0) {
+		return wd;
+	}
+	string npath = os__norm_path(path);
+	if (_SLIT_EQ(npath.str, npath.len, ".")) {
+		return wd;
+	}
+	if (!os__is_abs_path(npath)) {
+		strings__Builder sb = strings__new_builder(npath.len);
+		strings__Builder_write_string(&sb, wd);
+		strings__Builder_write_string(&sb, _const_os__path_separator);
+		strings__Builder_write_string(&sb, npath);
+		return os__norm_path(strings__Builder_str(&sb));
+	}
+	return npath;
+}
+string os__norm_path(string path) {
+	if ((path).len == 0) {
+		return _const_os__dot_str;
+	}
+	bool rooted = os__is_abs_path(path);
+	int volume_len = os__win_volume_len(path);
+	string volume = builtin__string_substr(path, 0, volume_len);
+	if (volume_len != 0 && builtin__string_contains(volume, _const_os__fslash_str)) {
+		volume = builtin__string_replace(volume, _const_os__fslash_str, _const_os__path_separator);
+	}
+	string cpath = os__clean_path(builtin__string_substr(path, volume_len, 2147483647));
+	if ((cpath).len == 0 && volume_len == 0) {
+		return _const_os__dot_str;
+	}
+	Array_string spath = builtin__string_split(cpath, _const_os__path_separator);
+	if (!(Array_string_contains(spath, _S("..")))) {
+		return (volume_len != 0 ? (builtin__string__plus(volume, cpath)) : (cpath));
+	}
+	int spath_len = spath.len;
+	strings__Builder sb = strings__new_builder(cpath.len);
+	if (rooted) {
+		strings__Builder_write_string(&sb, _const_os__path_separator);
+	}
+	Array_string new_path = builtin____new_array_with_default(0, spath_len, sizeof(string), 0);
+	int backlink_count = 0;
+	for (int i = (int)(spath_len - 1); i >= 0; i--) {
+		string part = ((string*)spath.data)[i];
+		if ((part).len == 0) {
+			continue;
+		}
+		if (_SLIT_EQ(part.str, part.len, "..")) {
+			backlink_count++;
+			continue;
+		}
+		if (backlink_count != 0) {
+			backlink_count--;
+			continue;
+		}
+		builtin__array_prepend(&new_path, &(string[]){part});
+	}
+	if (backlink_count != 0 && !rooted) {
+		for (int i = 0; i < backlink_count; ++i) {
+			strings__Builder_write_string(&sb, _const_os__dot_dot);
+			if (new_path.len == 0 && i == (int)(backlink_count - 1)) {
+				break;
+			}
+			strings__Builder_write_string(&sb, _const_os__path_separator);
+		}
+	}
+	strings__Builder_write_string(&sb, Array_string_join(new_path, _const_os__path_separator));
+	string res = strings__Builder_str(&sb);
+	if (res.len == 0) {
+		if (volume_len != 0) {
+			return volume;
+		}
+		if (!rooted) {
+			return _const_os__dot_str;
+		}
+		return _const_os__path_separator;
+	}
+	if (volume_len != 0) {
+		return builtin__string__plus(volume, res);
+	}
+	return res;
+}
+_result_string os__existing_path(string path) {
+	IError err = builtin___v_error(_S("path does not exist"));
+	if ((path).len == 0) {
+		return (_result_string){ .is_error=true, .err=err, .data={E_STRUCT} };
+	}
+	if (os__exists(path)) {
+		_result_string _t2;
+		builtin___result_ok(&(string[]) { path }, (_result*)(&_t2), sizeof(string));
+		 
+		return _t2;
+	}
+	int volume_len = 0;
+	if (volume_len > 0 && os__is_slash(builtin__string_at(path, (int)(volume_len - 1)))) {
+		volume_len++;
+	}
+	strings__textscanner__TextScanner sc = strings__textscanner__new(builtin__string_substr(path, volume_len, 2147483647));
+	string recent_path = builtin__string_substr(path, 0, volume_len);
+	for (;;) {
+		if (!(strings__textscanner__TextScanner_next(&sc) != -1)) break;
+		u8 curr = ((u8)(strings__textscanner__TextScanner_current(&sc)));
+		int peek = strings__textscanner__TextScanner_peek(&sc);
+		int back = strings__textscanner__TextScanner_peek_back(&sc);
+		if (os__is_curr_dir_ref(back, curr, peek)) {
+			continue;
+		}
+		int range = (int)((int)(sc.ilen - strings__textscanner__TextScanner_remaining(&sc)) + volume_len);
+		if (os__is_slash(curr) && !os__is_slash(((u8)(peek)))) {
+			recent_path = builtin__string_substr(path, 0, range);
+			continue;
+		}
+		if (!os__is_slash(curr) && (peek == -1 || os__is_slash(((u8)(peek))))) {
+			string curr_path = builtin__string_substr(path, 0, range);
+			if (os__exists(curr_path)) {
+				recent_path = curr_path;
+				continue;
+			}
+			if ((recent_path).len == 0) {
+				break;
+			}
+			_result_string _t3;
+			builtin___result_ok(&(string[]) { recent_path }, (_result*)(&_t3), sizeof(string));
+			 
+			return _t3;
+		}
+	}
+	return (_result_string){ .is_error=true, .err=err, .data={E_STRUCT} };
+}
+VV_LOC string os__clean_path(string path) {
+	if ((path).len == 0) {
+		return _const_os__empty_str;
+	}
+	strings__Builder sb = strings__new_builder(path.len);
+	strings__textscanner__TextScanner sc = strings__textscanner__new(path);
+	for (;;) {
+		if (!(strings__textscanner__TextScanner_next(&sc) != -1)) break;
+		u8 curr = ((u8)(strings__textscanner__TextScanner_current(&sc)));
+		int back = strings__textscanner__TextScanner_peek_back(&sc);
+		int peek = strings__textscanner__TextScanner_peek(&sc);
+		if (back != -1 && os__is_slash(((u8)(back))) && os__is_slash(curr)) {
+			continue;
+		}
+		if (os__is_curr_dir_ref(back, curr, peek)) {
+			if (peek != -1 && os__is_slash(((u8)(peek)))) {
+				strings__textscanner__TextScanner_skip_n(&sc, 1);
+			}
+			continue;
+		}
+		strings__Builder_write_u8(&sb, ((u8)(strings__textscanner__TextScanner_current(&sc))));
+	}
+	string res = strings__Builder_str(&sb);
+	if (res.len > 1 && os__is_slash(builtin__string_at(res, (int)(res.len - 1)))) {
+		return builtin__string_substr(res, 0, (int)(res.len - 1));
+	}
+	return res;
+}
+string os__to_slash(string path) {
+	string _t2;
+	#if defined(_WIN32)
+	#else
+		_t2 = path;
+		;
+	#endif
+		return _t2;
+}
+string os__from_slash(string path) {
+	string _t2;
+	#if defined(_WIN32)
+	#else
+		_t2 = path;
+		;
+	#endif
+		return _t2;
+}
+VV_LOC int os__win_volume_len(string path) {
+	#if !defined(_WIN32)
+	{
+		return 0;
+	}
+	#endif
+	int plen = path.len;
+	if (plen < 2) {
+		return 0;
+	}
+	if (os__has_drive_letter(path)) {
+		return 2;
+	}
+	if (plen >= 5 && os__starts_w_slash_slash(path) && !os__is_slash(builtin__string_at(path, 2))) {
+		for (int i = 3; i < plen; i++) {
+			if (os__is_slash(builtin__string_at(path, i))) {
+				if ((int)(i + 1) >= plen || os__is_slash(builtin__string_at(path, (int)(i + 1)))) {
+					break;
+				}
+				i++;
+				for (; i < plen; i++) {
+					if (os__is_slash(builtin__string_at(path, i))) {
+						return i;
+					}
+				}
+				return i;
+			}
+		}
+	}
+	return 0;
+}
+VV_LOC bool os__is_slash(u8 b) {
+	return b == _const_os__fslash;
+}
+VV_LOC bool os__has_drive_letter(string path) {
+	return path.len >= 2 && builtin__u8_is_letter(builtin__string_at(path, 0)) && builtin__string_at(path, 1) == ':';
+}
+VV_LOC bool os__starts_w_slash_slash(string path) {
+	return path.len >= 2 && os__is_slash(builtin__string_at(path, 0)) && os__is_slash(builtin__string_at(path, 1));
+}
+VV_LOC bool os__is_curr_dir_ref(int byte_one, int byte_two, int byte_three) {
+	if (((u8)(byte_two)) != _const_os__dot) {
+		return false;
+	}
+	return (byte_one < 0 || os__is_slash(((u8)(byte_one)))) && (byte_three < 0 || os__is_slash(((u8)(byte_three))));
+}
+u32 os__FilePermission_bitmask(os__FilePermission p) {
+	u32 mask = ((u32)(0));
+	if (p.read) {
+		mask |= 4;
+	}
+	if (p.write) {
+		mask |= 2;
+	}
+	if (p.execute) {
+		mask |= 1;
+	}
+	return mask;
+}
+u32 os__FileMode_bitmask(os__FileMode m) {
+	return (((os__FilePermission_bitmask(m.owner) << 6) | (os__FilePermission_bitmask(m.group) << 3)) | os__FilePermission_bitmask(m.others));
+}
+os__FileInfo os__inode(string path) {
+	_result_os__Stat _t1 = os__lstat(path);
+	if (_t1.is_error) {
+		*(os__Stat*) _t1.data = ((os__Stat){.dev = 0,.inode = 0,.mode = 0,.nlink = 0,.uid = 0,.gid = 0,.rdev = 0,.size = 0,.atime = 0,.mtime = 0,.ctime = 0,});
+	}
+	
+ 	os__Stat attr = (*(os__Stat*)_t1.data);
+	os__FileMode fm = os__Stat_get_mode(attr);
+	return ((os__FileInfo){
+		.FileMode = ((os__FileMode){.typ = fm.typ,.owner = fm.owner,.group = fm.group,.others = fm.others,}),
+		.size = attr.size,
+		.mtime = attr.mtime,
+	});
+}
+_result_Array_u8 os__read_bytes(string path) {
+	_result_FILE_ptr _t1 = os__vfopen(path, _S("rb"));
+	if (_t1.is_error) {
+		_result_Array_u8 _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	FILE* fp = (*(FILE**)_t1.data);
+	_result_int _t3 = os__find_cfile_size(fp);
+	if (_t3.is_error) {
+		{ // defer begin
+			fclose(fp);
+		} // defer end
+		_result_Array_u8 _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	int fsize = (*(int*)_t3.data);
+	if (fsize == 0) {
+		_result_strings__Builder _t5 = os__slurp_file_in_builder(fp);
+		if (_t5.is_error) {
+			{ // defer begin
+				fclose(fp);
+			} // defer end
+			_result_Array_u8 _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ 		strings__Builder sb = (*(strings__Builder*)_t5.data);
+		_result_Array_u8 _t7;
+		builtin___result_ok(&(Array_u8[]) { strings__Builder_reuse_as_plain_u8_array(&sb) }, (_result*)(&_t7), sizeof(Array_u8));
+		 
+			{ // defer begin
+				fclose(fp);
+			} // defer end
+		return _t7;
+	}
+	Array_u8 res = builtin____new_array_with_default(fsize, 0, sizeof(u8), 0);
+	int nr_read_elements = ((int)(fread(res.data, 1, fsize, fp)));
+	if (nr_read_elements == 0 && fsize > 0) {
+		_result_Array_u8 _t8 = (_result_Array_u8){ .is_error=true, .err=builtin___v_error(_S("fread failed")), .data={E_STRUCT} };
+			{ // defer begin
+				fclose(fp);
+			} // defer end
+		return _t8;
+	}
+	builtin__array_trim(&res, nr_read_elements);
+	_result_Array_u8 _t9;
+	builtin___result_ok(&(Array_u8[]) { res }, (_result*)(&_t9), sizeof(Array_u8));
+	 
+		{ // defer begin
+			fclose(fp);
+		} // defer end
+	return _t9;
+}
+_result_void os__write_bytes(string path, Array_u8 bytes) {
+	_result_void _t1 = os__write_file_array(path, bytes);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+VV_LOC _result_int os__find_cfile_size(FILE* fp) {
+	i32 cseek = fseek(fp, 0, SEEK_END);
+	isize raw_fsize = ftell(fp);
+	if (raw_fsize != 0 && cseek != 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("fseek failed")), .data={E_STRUCT} };
+	}
+	if (cseek != 0 && raw_fsize < 0) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("ftell failed")), .data={E_STRUCT} };
+	}
+	int len = ((int)(raw_fsize));
+	if (((i64)(len)) < raw_fsize) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("int("), 0xfe09, {.d_i64 = raw_fsize}}, {_S(") cast results in "), 0xfe07, {.d_i32 = len}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	rewind(fp);
+	_result_int _t4;
+	builtin___result_ok(&(int[]) { len }, (_result*)(&_t4), sizeof(int));
+	 
+	return _t4;
+}
+VV_LOC _result_strings__Builder os__slurp_file_in_builder(FILE* fp) {
+	Array_fixed_u8_4096 buf = {0};
+	strings__Builder sb = strings__new_builder(_const_os__buf_size);
+	for (;;) {
+		_result_int _t1 = os__fread(&buf[0], 1, _const_os__buf_size, fp);
+		if (_t1.is_error) {
+			IError err = _t1.err;
+			if ((err)._typ == _IError_os__Eof_index) {
+				break;
+			}
+			strings__Builder_free(&sb);
+			return (_result_strings__Builder){ .is_error=true, .err=err, .data={E_STRUCT} };
+		}
+		
+ 		int read_bytes = (*(int*)_t1.data);
+		strings__Builder_write_ptr(&sb, &buf[0], read_bytes);
+	}
+	_result_strings__Builder _t3;
+	builtin___result_ok(&(strings__Builder[]) { sb }, (_result*)(&_t3), sizeof(strings__Builder));
+	 
+	return _t3;
+}
+_result_string os__read_file(string path) {
+	string mode = _S("rb");
+	_result_FILE_ptr _t1 = os__vfopen(path, mode);
+	if (_t1.is_error) {
+		_result_string _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	FILE* fp = (*(FILE**)_t1.data);
+	_result_int _t3 = os__find_cfile_size(fp);
+	if (_t3.is_error) {
+		{ // defer begin
+			fclose(fp);
+		} // defer end
+		_result_string _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	int allocate = (*(int*)_t3.data);
+	if (allocate == 0) {
+		_result_strings__Builder _t5 = os__slurp_file_in_builder(fp);
+		if (_t5.is_error) {
+			{ // defer begin
+				fclose(fp);
+			} // defer end
+			_result_string _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ 		strings__Builder sb = (*(strings__Builder*)_t5.data);
+		string res = strings__Builder_str(&sb);
+		strings__Builder_free(&sb);
+		_result_string _t7;
+		builtin___result_ok(&(string[]) { res }, (_result*)(&_t7), sizeof(string));
+		 
+			{ // defer begin
+				fclose(fp);
+			} // defer end
+		return _t7;
+	}
+	{ // Unsafe block
+		u8* str = builtin__malloc_noscan((int)(allocate + 1));
+		int nelements = ((int)(fread(str, 1, allocate, fp)));
+		int is_eof = ((int)(feof(fp)));
+		int is_error = ((int)(ferror(fp)));
+		if (is_eof == 0 && is_error != 0) {
+			builtin___v_free(str);
+			_result_string _t8 = (_result_string){ .is_error=true, .err=builtin___v_error(_S("fread failed")), .data={E_STRUCT} };
+				{ // defer begin
+					fclose(fp);
+				} // defer end
+			return _t8;
+		}
+		str[nelements] = 0;
+		if (nelements == 0) {
+			_result_string _t9;
+			builtin___result_ok(&(string[]) { builtin__u8_vstring(str) }, (_result*)(&_t9), sizeof(string));
+			 
+				{ // defer begin
+					fclose(fp);
+				} // defer end
+			return _t9;
+		}
+		_result_string _t10;
+		builtin___result_ok(&(string[]) { builtin__u8_vstring_with_len(str, nelements) }, (_result*)(&_t10), sizeof(string));
+		 
+			{ // defer begin
+				fclose(fp);
+			} // defer end
+		return _t10;
+	}
+	return (_result_string){0};
+}
+_result_void os__truncate(string path, u64 len) {
+	i32 _t1;
+	#if defined(_WIN32)
+	#else
+		_t1 = open(((char*)(path.str)), (_const_os__o_wronly | _const_os__o_trunc), 0);
+		;
+	#endif
+		i32 fp = _t1;
+	if (fp < 0) {
+		return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		if (ftruncate(fp, len) != 0) {
+			_result_void _t4 = (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+				{ // defer begin
+					close(fp);
+				} // defer end
+			return _t4;
+		}
+	}
+	#endif
+		{ // defer begin
+			close(fp);
+		} // defer end
+	return (_result_void){0};
+}
+u64 os__file_size(string path) {
+	_result_os__Stat _t1 = os__stat(path);
+	if (_t1.is_error) {
+		builtin__eprintln(builtin__string__plus(_S("os.file_size() Cannot determine file-size: "), os__posix_get_error_msg(errno)));
+		return 0;
+	}
+	
+ 	os__Stat attr = (*(os__Stat*)_t1.data);
+	return attr.size;
+}
+_result_void os__rename_dir(string src, string dst) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		i32 ret = rename(((char*)(src.str)), ((char*)(dst.str)));
+		if (ret != 0) {
+			return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("failed to rename "), 0xfe10, {.d_s = src}}, {_S(" to "), 0xfe10, {.d_s = dst}}, {_SLIT0, 0, { .d_c = 0 }}})), ret), .data={E_STRUCT} };
+		}
+	}
+	#endif
+	return (_result_void){0};
+}
+_result_void os__rename(string src, string dst) {
+	string rdst = dst;
+	if (os__is_dir(rdst)) {
+		rdst = os__join_path_single(builtin__string_trim_right(rdst, _const_os__path_separator), os__file_name(builtin__string_trim_right(src, _const_os__path_separator)));
+	}
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		i32 ret = rename(((char*)(src.str)), ((char*)(rdst.str)));
+		if (ret != 0) {
+			return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("failed to rename "), 0xfe10, {.d_s = src}}, {_S(" to "), 0xfe10, {.d_s = dst}}, {_SLIT0, 0, { .d_c = 0 }}})), ret), .data={E_STRUCT} };
+		}
+	}
+	#endif
+	return (_result_void){0};
+}
+_result_void os__cp(string src, string dst, os__CopyParams config) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		string w_dst = dst;
+		if (os__is_dir(dst)) {
+			w_dst = os__join_path_single(w_dst, os__file_name(src));
+		}
+		i32 fp_from = open(((char*)(src.str)), O_RDONLY, 0);
+		if (fp_from < 0) {
+			return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("cp: failed to open "), 0xfe10, {.d_s = src}}, {_S(" for reading"), 0, { .d_c = 0 }}})), ((int)(fp_from))), .data={E_STRUCT} };
+		}
+		int mode_flags = (S_IWUSR | S_IRUSR);
+		int open_flags = ((O_WRONLY | O_CREAT) | O_TRUNC);
+		if (config.fail_if_exists) {
+			open_flags |= O_EXCL;
+		}
+		i32 fp_to = open(((char*)(w_dst.str)), open_flags, mode_flags);
+		if (fp_to < 0) {
+			close(fp_from);
+			return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("cp: failed to open "), 0xfe10, {.d_s = w_dst}}, {_S(" for writing"), 0, { .d_c = 0 }}})), ((int)(fp_to))), .data={E_STRUCT} };
+		}
+		Array_fixed_u8_1024 buf = {0};
+		int count = ((int)(0));
+		for (;;) {
+			count = ((int)(read(fp_from, &buf[0], sizeof(Array_fixed_u8_1024))));
+			if (count == 0) {
+				break;
+			}
+			if (write(fp_to, &buf[0], count) < 0) {
+				close(fp_to);
+				close(fp_from);
+				return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("cp: failed to write to "), 0xfe10, {.d_s = w_dst}}, {_SLIT0, 0, { .d_c = 0 }}})), ((int)(-1))), .data={E_STRUCT} };
+			}
+		}
+		_result_os__Stat _t5 = os__stat(src);
+		if (_t5.is_error) {
+			_result_void _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ 		os__Stat from_attr = (*(os__Stat*)_t5.data);
+		if (chmod(((char*)(w_dst.str)), from_attr.mode) < 0) {
+			close(fp_to);
+			close(fp_from);
+			return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed to set permissions for "), 0xfe10, {.d_s = w_dst}}, {_SLIT0, 0, { .d_c = 0 }}})), ((int)(-1))), .data={E_STRUCT} };
+		}
+		close(fp_to);
+		close(fp_from);
+	}
+	#endif
+	return (_result_void){0};
+}
+_result_FILE_ptr os__vfopen(string path, string mode) {
+	if ((path).len == 0) {
+		return (_result_FILE_ptr){ .is_error=true, .err=builtin___v_error(_S("vfopen called with \"\"")), .data={E_STRUCT} };
+	}
+	voidptr fp = ((void*)0);
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		fp = fopen(((char*)(path.str)), ((char*)(mode.str)));
+	}
+	#endif
+	if (builtin__isnil(((voidptr)(fp)))) {
+		return (_result_FILE_ptr){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed to open file \""), 0xfe10, {.d_s = path}}, {_S("\""), 0, { .d_c = 0 }}})),.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	} else {
+		_result_FILE_ptr _t4;
+		builtin___result_ok(&(FILE*[]) { fp }, (_result*)(&_t4), sizeof(FILE*));
+		 
+		return _t4;
+	}
+	return (_result_FILE_ptr){0};
+}
+int os__fileno(voidptr cfile) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		FILE* cfile_casted = ((FILE*)(((void*)0)));
+		cfile_casted = cfile;
+		return fileno(cfile_casted);
+	}
+	#endif
+	return 0;
+}
+VV_LOC voidptr os__vpopen(string path) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		u8* cpath = path.str;
+		return popen(((char*)(cpath)), "r");
+	}
+	#endif
+	return 0;
+}
+VV_LOC multi_return_int_bool os__posix_wait4_to_exit_status(int waitret) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		int ret = 0;
+		bool is_signaled = true;
+		if (WIFEXITED(waitret)) {
+			ret = WEXITSTATUS(waitret);
+			is_signaled = false;
+		} else if (WIFSIGNALED(waitret)) {
+			ret = WTERMSIG(waitret);
+			is_signaled = true;
+		}
+		return (multi_return_int_bool){.arg0=ret, .arg1=is_signaled};
+	}
+	#endif
+	return (multi_return_int_bool){0};
+}
+string os__posix_get_error_msg(int code) {
+	char* ptr_text = strerror(code);
+	if (ptr_text == 0) {
+		return _S("");
+	}
+	return builtin__tos3(ptr_text);
+}
+VV_LOC int os__vpclose(voidptr f) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		multi_return_int_bool mr_10526 = os__posix_wait4_to_exit_status(pclose(f));
+		int ret = mr_10526.arg0;
+		return ret;
+	}
+	#endif
+	return 0;
+}
+int os__system(string cmd) {
+	int ret = 0;
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		#if defined(__TARGET_IOS__)
+		{
+		}
+		#else
+		{
+			{ // Unsafe block
+				ret = system(((char*)(cmd.str)));
+			}
+		}
+		#endif
+	}
+	#endif
+	if (ret == -1) {
+		os__print_c_errno();
+	}
+	#if !defined(_WIN32)
+	{
+		multi_return_int_bool mr_11570 = os__posix_wait4_to_exit_status(ret);
+		int pret = mr_11570.arg0;
+		bool is_signaled = mr_11570.arg1;
+		ret = pret;
+		if (is_signaled) {
+			builtin__eprintln(builtin__string__plus(builtin__string__plus(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Terminated by signal "), 0x4fe27, {.d_i32 = pret}}, {_S(" ("), 0, { .d_c = 0 }}})), os__sigint_to_signal_name(pret)), _S(")")));
+			ret = (int)(pret + 128);
+		}
+	}
+	#endif
+	return ret;
+}
+bool os__exists(string path) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return access(((char*)(path.str)), _const_os__f_ok) != -1;
+	}
+	#endif
+	return 0;
+}
+bool os__is_executable(string path) {
+	return access(((char*)(path.str)), _const_os__x_ok) != -1;
+}
+bool os__is_writable(string path) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return access(((char*)(path.str)), _const_os__w_ok) != -1;
+	}
+	#endif
+	return 0;
+}
+bool os__is_readable(string path) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return access(((char*)(path.str)), _const_os__r_ok) != -1;
+	}
+	#endif
+	return 0;
+}
+_result_void os__rm(string path) {
+	int rc = 0;
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		rc = remove(((char*)(path.str)));
+	}
+	#endif
+	if (rc == -1) {
+		return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = builtin__string__plus(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Failed to remove \""), 0xfe10, {.d_s = path}}, {_S("\": "), 0, { .d_c = 0 }}})), os__posix_get_error_msg(errno)),.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+_result_void os__rmdir(string path) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		i32 rc = rmdir(((char*)(path.str)));
+		if (rc == -1) {
+			return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+		}
+	}
+	#endif
+	return (_result_void){0};
+}
+VV_LOC void os__print_c_errno(void) {
+	int e = errno;
+	string se = builtin__tos_clone(((u8*)(strerror(e))));
+	builtin__eprintln(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("errno="), 0xfe07, {.d_i32 = e}}, {_S(" err="), 0xfe10, {.d_s = se}}, {_SLIT0, 0, { .d_c = 0 }}})));
+}
+string os__get_raw_line(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		usize max = ((usize)(0));
+		u8* buf = ((u8*)(((void*)0)));
+		string str = _S("");
+		i32 nr_chars = getline(((voidptr)(&buf)), &max, stdin);
+		#if defined(__OpenBSD__)
+		{
+		}
+		#else
+		{
+			str = builtin__tos(buf, (nr_chars < 0 ? (0) : (nr_chars)));
+		}
+		#endif
+		string ret = builtin__string_clone(str);
+		#if !defined(_VAUTOFREE)
+		{
+			{ // Unsafe block
+				if (nr_chars > 0 && buf != 0) {
+					free(buf);
+				}
+			}
+		}
+		#endif
+		return ret;
+	}
+	#endif
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+Array_u8 os__get_raw_stdin(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		usize max = ((usize)(0));
+		u8* buf = ((u8*)(((void*)0)));
+		i32 nr_chars = getline(((voidptr)(&buf)), &max, stdin);
+		return ((array){.data = ((voidptr)(buf)),.offset = 0,.len = (nr_chars < 0 ? (0) : (nr_chars)),.cap = ((int)(max)),.flags = 0,.element_size = 1,});
+	}
+	#endif
+	return builtin____new_array(0, 0, sizeof(u8));
+}
+string os__executable(void) {
+	Array_fixed_u8_4096 result = {0};
+	{
+		char* self_path = ((char*)(_dyld_get_image_name(((u32)(0)))));
+		if (self_path == NULL) {
+			return os__executable_fallback();
+		}
+		return builtin__cstring_to_vstring(self_path);
+	}
+	return os__executable_fallback();
+}
+_result_void os__chdir(string path) {
+	i32 _t1;
+	#if defined(_WIN32)
+	#else
+		_t1 = chdir(((char*)(path.str)));
+		;
+	#endif
+		i32 ret = _t1;
+	if (ret == -1) {
+		return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+string os__getwd(void) {
+	{ // Unsafe block
+		#if defined(_WIN32)
+		{
+		}
+		#else
+		{
+			char* cwd_ptr = getcwd(0, 4096);
+			if (cwd_ptr == 0) {
+				return _S("");
+			}
+			string res = builtin__tos_clone(((byteptr)(cwd_ptr)));
+			free(cwd_ptr);
+			return res;
+		}
+		#endif
+	}
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string os__real_path(string fpath) {
+	Array_fixed_u8_4096 fullpath = {0};
+	string res = _S("");
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		char* ret = ((char*)(realpath(((char*)(fpath.str)), ((char*)(&fullpath[0])))));
+		if (ret == 0) {
+			builtin__string_free(&res);
+			return builtin__string_clone(fpath);
+		}
+		builtin__string_free(&res);
+		res = builtin__tos_clone(&fullpath[0]);
+	}
+	#endif
+	os__normalize_drive_letter(res);
+	return res;
+}
+VV_LOC void os__normalize_drive_letter(string path) {
+	#if !defined(_WIN32)
+	{
+		return;
+	}
+	#endif
+	if (path.len > 2 && path.str[ 0] >= 'a' && path.str[ 0] <= 'z' && path.str[ 1] == ':' && path.str[ 2] == _const_os__path_separator.str[ 0]) {
+		{ // Unsafe block
+			u8* x = &path.str[0];
+			*x = (u8)(*x - 32);
+		}
+	}
+}
+int os__fork(void) {
+	int pid = -1;
+	#if !defined(_WIN32)
+	{
+		pid = fork();
+	}
+	#endif
+	return pid;
+}
+int os__wait(void) {
+	int pid = -1;
+	#if !defined(_WIN32)
+	{
+		#if !defined(CUSTOM_DEFINE_emscripten)
+		{
+			pid = wait(0);
+		}
+		#endif
+	}
+	#endif
+	return pid;
+}
+i64 os__file_last_mod_unix(string path) {
+	_result_os__Stat _t1;
+	if (_t1 = os__stat(path), !_t1.is_error) {
+		os__Stat attr = *(os__Stat*)_t1.data;
+		return attr.mtime;
+	}
+	return 0;
+}
+void os__flush(void) {
+	fflush(stdout);
+}
+_result_void os__chmod(string path, int mode) {
+	if (chmod(((char*)(path.str)), mode) != 0) {
+		return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = builtin__string__plus(_S("chmod failed: "), os__posix_get_error_msg(errno)),.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+_result_void os__chown(string path, int owner, int group) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		if (chown(((char*)(path.str)), owner, group) != 0) {
+			return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+		}
+	}
+	#endif
+	return (_result_void){0};
+}
+_result_os__File os__open_append(string path) {
+	os__File file = ((os__File){.cfile = 0,.fd = 0,.is_opened = 0,});
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		u8* cpath = path.str;
+		file = ((os__File){.cfile = (voidptr)fopen(((char*)(cpath)), "ab"),.fd = 0,.is_opened = 0,});
+	}
+	#endif
+	if (builtin__isnil(file.cfile)) {
+		return (_result_os__File){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed to create(append) file \""), 0xfe10, {.d_s = path}}, {_S("\""), 0, { .d_c = 0 }}})),.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	file.is_opened = true;
+	_result_os__File _t3;
+	builtin___result_ok(&(os__File[]) { file }, (_result*)(&_t3), sizeof(os__File));
+	 
+	return _t3;
+}
+_result_void os__execvp(string cmdpath, Array_string cmdargs) {
+	Array_char_ptr cargs = builtin____new_array_with_default(0, 0, sizeof(char*), 0);
+	builtin__array_push((array*)&cargs, _MOV((char*[]){ ((char*)(cmdpath.str)) }));
+	for (int i = 0; i < cmdargs.len; ++i) {
+		builtin__array_push((array*)&cargs, _MOV((char*[]){ ((char*)((*(string*)builtin__array_get(cmdargs, i)).str)) }));
+	}
+	builtin__array_push((array*)&cargs, _MOV((char*[]){ ((char*)(((void*)0))) }));
+	int res = ((int)(0));
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		res = execvp(((char*)(cmdpath.str)), cargs.data);
+	}
+	#endif
+	if (res == -1) {
+		return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	builtin___v_exit(res);
+	VUNREACHABLE();
+	return (_result_void){0};
+}
+_result_void os__execve(string cmdpath, Array_string cmdargs, Array_string envs) {
+	Array_char_ptr cargv = builtin____new_array_with_default(0, 0, sizeof(char*), 0);
+	Array_char_ptr cenvs = builtin____new_array_with_default(0, 0, sizeof(char*), 0);
+	builtin__array_push((array*)&cargv, _MOV((char*[]){ ((char*)(cmdpath.str)) }));
+	for (int i = 0; i < cmdargs.len; ++i) {
+		builtin__array_push((array*)&cargv, _MOV((char*[]){ ((char*)((*(string*)builtin__array_get(cmdargs, i)).str)) }));
+	}
+	for (int i = 0; i < envs.len; ++i) {
+		builtin__array_push((array*)&cenvs, _MOV((char*[]){ ((char*)((*(string*)builtin__array_get(envs, i)).str)) }));
+	}
+	builtin__array_push((array*)&cargv, _MOV((char*[]){ ((char*)(((void*)0))) }));
+	builtin__array_push((array*)&cenvs, _MOV((char*[]){ ((char*)(((void*)0))) }));
+	int res = ((int)(0));
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		res = execve(((char*)(cmdpath.str)), cargv.data, cenvs.data);
+	}
+	#endif
+	if (res == -1) {
+		return (_result_void){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+int os__is_atty(int fd) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return isatty(fd);
+	}
+	#endif
+	return 0;
+}
+_result_void os__write_file_array(string path, array buffer) {
+	_result_os__File _t1 = os__create(path);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	os__File f = (*(os__File*)_t1.data);
+		_result_void _t3 = os__File_write_full_buffer(&f, buffer.data, ((usize)((int)(buffer.len * buffer.element_size))));
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	os__File_close(&f);
+	return (_result_void){0};
+}
+_result_Array_string os__glob(Array_string patterns) {
+	Array_string matches = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (int _t1 = 0; _t1 < patterns.len; ++_t1) {
+		string pattern = ((string*)patterns.data)[_t1];
+		_result_void _t2 = os__native_glob_pattern(pattern, &matches);
+		if (_t2.is_error) {
+			_result_Array_string _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ ;
+	}
+	if (matches.len > 0) { qsort(matches.data, matches.len, matches.element_size, (voidptr)compare_1065768667300548517_string); }
+	;
+	_result_Array_string _t4;
+	builtin___result_ok(&(Array_string[]) { matches }, (_result*)(&_t4), sizeof(Array_string));
+	 
+	return _t4;
+}
+IError os__last_error(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		int code = errno;
+		string msg = os__posix_get_error_msg(code);
+		return builtin__error_with_code(msg, code);
+	}
+	#endif
+	return (IError){0};
+}
+inline IError os__error_posix(os__SystemError e) {
+	int code = (e.code == _const_os__error_code_not_set ? (errno) : (e.code));
+	string message = ((e.msg).len == 0 ? (os__posix_get_error_msg(code)) : (e.msg));
+	return builtin__error_with_code(message, code);
+}
+inline IError os__error_win32(os__SystemError e) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		builtin___v_panic(_S("Win32 API not available on this platform."));
+		VUNREACHABLE();
+	}
+	#endif
+	return (IError){0};
+}
+void os__Result_free(os__Result* result) {
+	builtin__string_free(&result->output);
+}
+VV_LOC string os__executable_fallback(void) {
+	if (_const_os__args.len == 0) {
+		return _S("");
+	}
+	string exepath = (*(string*)builtin__array_get(_const_os__args, 0));
+	if (!os__is_abs_path(exepath)) {
+		string _t2;
+		#if defined(_WIN32)
+		#else
+			_t2 = _S("\\");
+			;
+		#endif
+				string other_separator = _t2;
+		string rexepath = builtin__string_replace(exepath, other_separator, _const_os__path_separator);
+		if (builtin__string_contains(rexepath, _const_os__path_separator)) {
+			exepath = os__join_path_single(_const_os__wd_at_startup, exepath);
+		} else {
+			_result_string _t3 = os__find_abs_path_of_executable(exepath);
+			if (_t3.is_error) {
+				*(string*) _t3.data = _S("");
+			}
+			
+ 			string foundpath = (*(string*)_t3.data);
+			if ((foundpath).len != 0) {
+				exepath = foundpath;
+			}
+		}
+	}
+	exepath = os__real_path(exepath);
+	return exepath;
+}
+_result_void os__cp_all(string src, string dst, bool overwrite) {
+	string source_path = os__real_path(src);
+	string dest_path = os__real_path(dst);
+	if (!os__exists(source_path)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("Source path doesn't exist")), .data={E_STRUCT} };
+	}
+	if (!os__is_dir(source_path)) {
+		string fname = os__file_name(source_path);
+		string adjusted_path = (os__is_dir(dest_path) ? (os__join_path_single(dest_path, fname)) : (dest_path));
+		if (os__exists(adjusted_path)) {
+			if (overwrite) {
+				_result_void _t2 = os__rm(adjusted_path);
+				if (_t2.is_error) {
+					_result_void _t3 = {0};
+					_t3.is_error = true;
+					_t3.err = _t2.err;
+					return _t3;
+				}
+				
+ ;
+			} else {
+				return (_result_void){ .is_error=true, .err=builtin___v_error(_S("Destination file path already exist")), .data={E_STRUCT} };
+			}
+		}
+		_result_void _t5 = os__cp(source_path, adjusted_path, ((os__CopyParams){.fail_if_exists = 0,}));
+		if (_t5.is_error) {
+			_result_void _t6 = {0};
+			_t6.is_error = true;
+			_t6.err = _t5.err;
+			return _t6;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	if (!os__exists(dest_path)) {
+		_result_void _t7 = os__mkdir(dest_path, ((os__MkdirParams){.mode = 0777,}));
+		if (_t7.is_error) {
+			_result_void _t8 = {0};
+			_t8.is_error = true;
+			_t8.err = _t7.err;
+			return _t8;
+		}
+		
+ ;
+	}
+	if (!os__is_dir(dest_path)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("Destination path is not a valid directory")), .data={E_STRUCT} };
+	}
+	_result_Array_string _t10 = os__ls(source_path);
+	if (_t10.is_error) {
+		_result_void _t11 = {0};
+		_t11.is_error = true;
+		_t11.err = _t10.err;
+		return _t11;
+	}
+	
+ 	Array_string files = (*(Array_string*)_t10.data);
+	for (int _t12 = 0; _t12 < files.len; ++_t12) {
+		string file = ((string*)files.data)[_t12];
+		string sp = os__join_path_single(source_path, file);
+		string dp = os__join_path_single(dest_path, file);
+		if (os__is_dir(sp)) {
+			if (!os__exists(dp)) {
+				_result_void _t13 = os__mkdir(dp, ((os__MkdirParams){.mode = 0777,}));
+				if (_t13.is_error) {
+					_result_void _t14 = {0};
+					_t14.is_error = true;
+					_t14.err = _t13.err;
+					return _t14;
+				}
+				
+ ;
+			}
+		}
+		_result_void _t15 = os__cp_all(sp, dp, overwrite);
+		if (_t15.is_error) {
+			IError err = _t15.err;
+			_result_void _t16 = os__rmdir(dp);
+			if (_t16.is_error) {
+				IError err = _t16.err;
+				return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+			}
+			
+ ;
+			return (_result_void){ .is_error=true, .err=err, .data={E_STRUCT} };
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+_result_void os__mv_by_cp(string source, string target, os__MvParams opts) {
+	_result_void _t1 = os__cp_all(source, target, opts.overwrite);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ ;
+	if (os__is_dir(source)) {
+		_result_void _t3 = os__rmdir_all(source);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+		return (_result_void){0};
+	}
+	_result_void _t5 = os__rm(source);
+	if (_t5.is_error) {
+		_result_void _t6 = {0};
+		_t6.is_error = true;
+		_t6.err = _t5.err;
+		return _t6;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_void os__mv(string source, string target, os__MvParams opts) {
+	if (!opts.overwrite && os__exists(target)) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("target path already exist")), .data={E_STRUCT} };
+	}
+	_result_void _t2 = os__rename(source, target);
+	if (_t2.is_error) {
+		_result_void _t3 = os__mv_by_cp(source, target, opts);
+		if (_t3.is_error) {
+			_result_void _t4 = {0};
+			_t4.is_error = true;
+			_t4.err = _t3.err;
+			return _t4;
+		}
+		
+ ;
+	;
+	}
+	
+ ;
+	return (_result_void){0};
+}
+_result_Array_string os__read_lines(string path) {
+	_result_string _t1 = os__read_file(path);
+	if (_t1.is_error) {
+		_result_Array_string _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	string buf = (*(string*)_t1.data);
+	Array_string res = builtin__string_split_into_lines(buf);
+	builtin__string_free(&buf);
+	_result_Array_string _t3;
+	builtin___result_ok(&(Array_string[]) { res }, (_result*)(&_t3), sizeof(Array_string));
+	 
+	return _t3;
+}
+_result_void os__write_lines(string path, Array_string lines) {
+	_result_os__File _t1 = os__create(path);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	os__File f = (*(os__File*)_t1.data);
+	for (int _t3 = 0; _t3 < lines.len; ++_t3) {
+		string line = ((string*)lines.data)[_t3];
+		_result_int _t4 = os__File_writeln(&f, line);
+		if (_t4.is_error) {
+			{ // defer begin
+				os__File_close(&f);
+			} // defer end
+			_result_void _t5 = {0};
+			_t5.is_error = true;
+			_t5.err = _t4.err;
+			return _t5;
+		}
+		
+ ;
+	}
+		{ // defer begin
+			os__File_close(&f);
+		} // defer end
+	return (_result_void){0};
+}
+string os__sigint_to_signal_name(int si) {
+	switch (si) {
+		case 1: {
+			return _S("SIGHUP");
+		}
+		case 2: {
+			return _S("SIGINT");
+		}
+		case 3: {
+			return _S("SIGQUIT");
+		}
+		case 4: {
+			return _S("SIGILL");
+		}
+		case 6: {
+			return _S("SIGABRT");
+		}
+		case 8: {
+			return _S("SIGFPE");
+		}
+		case 9: {
+			return _S("SIGKILL");
+		}
+		case 11: {
+			return _S("SIGSEGV");
+		}
+		case 13: {
+			return _S("SIGPIPE");
+		}
+		case 14: {
+			return _S("SIGALRM");
+		}
+		case 15: {
+			return _S("SIGTERM");
+		}
+		default: {
+			{
+				break;
+			}
+		}
+	}
+	
+	return _S("unknown");
+}
+_result_void os__rmdir_all(string path) {
+	string err_msg = _S("");
+	int err_code = -1;
+	_result_Array_string _t1 = os__ls(path);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	Array_string items = (*(Array_string*)_t1.data);
+	for (int _t3 = 0; _t3 < items.len; ++_t3) {
+		string item = ((string*)items.data)[_t3];
+		string fullpath = os__join_path_single(path, item);
+		if (os__is_dir(fullpath) && !os__is_link(fullpath)) {
+			_result_void _t4 = os__rmdir_all(fullpath);
+			if (_t4.is_error) {
+				IError err = _t4.err;
+				err_msg = IError_name_table[err._typ]._method_msg(err._object);
+				err_code = IError_name_table[err._typ]._method_code(err._object);
+			}
+			
+ ;
+		} else {
+			_result_void _t5 = os__rm(fullpath);
+			if (_t5.is_error) {
+				IError err = _t5.err;
+				err_msg = IError_name_table[err._typ]._method_msg(err._object);
+				err_code = IError_name_table[err._typ]._method_code(err._object);
+			}
+			
+ ;
+		}
+	}
+	_result_void _t6 = os__rmdir(path);
+	if (_t6.is_error) {
+		IError err = _t6.err;
+		err_msg = IError_name_table[err._typ]._method_msg(err._object);
+		err_code = IError_name_table[err._typ]._method_code(err._object);
+	}
+	
+ ;
+	if ((err_msg).len != 0) {
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(err_msg, err_code), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+bool os__is_dir_empty(string path) {
+	_result_Array_string _t1 = os__ls(path);
+	if (_t1.is_error) {
+		return true;
+	}
+	
+ 	Array_string items = (*(Array_string*)_t1.data);
+	bool res = items.len == 0;
+	Array_string_free(&items);
+	return res;
+}
+string os__file_ext(string opath) {
+	if (opath.len < 3) {
+		return _S("");
+	}
+	string path = os__file_name(opath);
+	int pos = builtin__string_last_index_u8(path, '.');
+	if (pos == -1) {
+		return _S("");
+	}
+	if ((int)(pos + 1) >= path.len || pos == 0) {
+		return _S("");
+	}
+	return builtin__string_substr(path, pos, 2147483647);
+}
+string os__dir(string path) {
+	if ((path).len == 0) {
+		return _S(".");
+	}
+	string detected_path_separator = (builtin__string_contains(path, _S("/")) ? (_S("/")) : (_S("\\")));
+	_option_int _t2 = builtin__string_last_index(path, detected_path_separator);
+	if (_t2.state != 0) {
+		return _S(".");
+	}
+	
+ 	int pos = (*(int*)_t2.data);
+	if (pos == 0) {
+		return detected_path_separator;
+	}
+	return builtin__string_substr(path, 0, pos);
+}
+string os__base(string path) {
+	if ((path).len == 0) {
+		return _S(".");
+	}
+	string detected_path_separator = (builtin__string_contains(path, _S("/")) ? (_S("/")) : (_S("\\")));
+	if (builtin__string__eq(path, detected_path_separator)) {
+		return detected_path_separator;
+	}
+	if (builtin__string_ends_with(path, detected_path_separator)) {
+		string path2 = builtin__string_substr(path, 0, (int)(path.len - 1));
+		_option_int _t3 = builtin__string_last_index(path2, detected_path_separator);
+		if (_t3.state != 0) {
+			return builtin__string_clone(path2);
+		}
+		
+ 		int pos = (*(int*)_t3.data);
+		return builtin__string_substr(path2, (int)(pos + 1), 2147483647);
+	}
+	_option_int _t6 = builtin__string_last_index(path, detected_path_separator);
+	if (_t6.state != 0) {
+		return builtin__string_clone(path);
+	}
+	
+ 	int pos = (*(int*)_t6.data);
+	return builtin__string_substr(path, (int)(pos + 1), 2147483647);
+}
+string os__file_name(string path) {
+	string detected_path_separator = (builtin__string_contains(path, _S("/")) ? (_S("/")) : (_S("\\")));
+	return builtin__string_all_after_last(path, detected_path_separator);
+}
+multi_return_string_string_string os__split_path(string path) {
+	if ((path).len == 0) {
+		return (multi_return_string_string_string){.arg0=_S("."), .arg1=_S(""), .arg2=_S("")};
+	} else if (_SLIT_EQ(path.str, path.len, ".")) {
+		return (multi_return_string_string_string){.arg0=_S("."), .arg1=_S(""), .arg2=_S("")};
+	} else if (_SLIT_EQ(path.str, path.len, "..")) {
+		return (multi_return_string_string_string){.arg0=_S(".."), .arg1=_S(""), .arg2=_S("")};
+	}
+	string detected_path_separator = (builtin__string_contains(path, _S("/")) ? (_S("/")) : (_S("\\")));
+	if (builtin__string__eq(path, detected_path_separator)) {
+		return (multi_return_string_string_string){.arg0=detected_path_separator, .arg1=_S(""), .arg2=_S("")};
+	}
+	if (builtin__string_ends_with(path, detected_path_separator)) {
+		return (multi_return_string_string_string){.arg0=builtin__string_substr(path, 0, (int)(path.len - 1)), .arg1=_S(""), .arg2=_S("")};
+	}
+	string dir = _S(".");
+	_option_int _t6 = builtin__string_last_index(path, detected_path_separator);
+	if (_t6.state != 0) {
+		*(int*) _t6.data = -1;
+	}
+	
+ 	int pos = (*(int*)_t6.data);
+	if (pos == -1) {
+		dir = _S(".");
+	} else if (pos == 0) {
+		dir = detected_path_separator;
+	} else {
+		dir = builtin__string_substr(path, 0, pos);
+	}
+	string file_name = builtin__string_all_after_last(path, detected_path_separator);
+	int pos_ext = builtin__string_last_index_u8(file_name, '.');
+	if (pos_ext == -1 || pos_ext == 0 || (int)(pos_ext + 1) >= file_name.len) {
+		return (multi_return_string_string_string){.arg0=dir, .arg1=file_name, .arg2=_S("")};
+	}
+	return (multi_return_string_string_string){.arg0=dir, .arg1=builtin__string_substr(file_name, 0, pos_ext), .arg2=builtin__string_substr(file_name, pos_ext, 2147483647)};
+}
+_option_string os__input_opt(string prompt) {
+	builtin__print(prompt);
+	os__flush();
+	string res = os__get_raw_line();
+	if (res.len > 0) {
+		_option_string _t1;
+		builtin___option_ok(&(string[]) { builtin__string_trim_right(res, _S("\r\n")) }, (_option*)(&_t1), sizeof(string));
+		 
+		return _t1;
+	}
+	return (_option_string){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+}
+string os__input(string prompt) {
+	_option_string _t1 = os__input_opt(prompt);
+	if (_t1.state != 0) {
+		return _S("<EOF>");
+	}
+	
+ 	string res = (*(string*)_t1.data);
+	return res;
+}
+string os__get_line(void) {
+	string str = os__get_raw_line();
+	return builtin__string_trim_right(str, _S("\n"));
+}
+Array_string os__get_lines(void) {
+	string line = _S("");
+	Array_string inputstr = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (;;) {
+		line = os__get_line();
+		if (line.len <= 0) {
+			break;
+		}
+		line = builtin__string_trim_space(line);
+		builtin__array_push((array*)&inputstr, _MOV((string[]){ builtin__string_clone(line) }));
+	}
+	return inputstr;
+}
+string os__get_lines_joined(void) {
+	return Array_string_join(os__get_lines(), _S(""));
+}
+Array_string os__get_raw_lines(void) {
+	string line = _S("");
+	Array_string lines = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (;;) {
+		line = os__get_raw_line();
+		if (line.len <= 0) {
+			break;
+		}
+		builtin__array_push((array*)&lines, _MOV((string[]){ builtin__string_clone(line) }));
+	}
+	return lines;
+}
+string os__get_raw_lines_joined(void) {
+	return Array_string_join(os__get_raw_lines(), _S(""));
+}
+Array_string os__get_trimmed_lines(void) {
+	Array_string lines = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	for (;;) {
+		string line = os__get_raw_line();
+		if (line.len <= 0) {
+			break;
+		}
+		int end = line.len;
+		if (end > 0 && builtin__string_at(line, (int)(end - 1)) == '\n') {
+			end--;
+		}
+		if (end > 0 && builtin__string_at(line, (int)(end - 1)) == '\r') {
+			end--;
+		}
+		builtin__array_push((array*)&lines, _MOV((string[]){ builtin__string_substr_ni(line, 0, end) }));
+	}
+	return lines;
+}
+string os__user_os(void) {
+	{
+		return _S("macos");
+	}
+	if ((os__getenv(_S("TERMUX_VERSION"))).len != 0) {
+		return _S("termux");
+	}
+	return _S("unknown");
+}
+_result_Array_string os__user_names(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		_result_Array_string _t2 = os__read_lines(_S("/etc/passwd"));
+		if (_t2.is_error) {
+			_result_Array_string _t3 = {0};
+			_t3.is_error = true;
+			_t3.err = _t2.err;
+			return _t3;
+		}
+		
+ 		Array_string lines = (*(Array_string*)_t2.data);
+		Array_string users = builtin____new_array_with_default(0, lines.len, sizeof(string), 0);
+		for (int _t4 = 0; _t4 < lines.len; ++_t4) {
+			string line = ((string*)lines.data)[_t4];
+			_option_int _t5 = builtin__string_index(line, _S(":"));
+			if (_t5.state != 0) {
+				*(int*) _t5.data = line.len;
+			}
+			
+ 			int end_name = (*(int*)_t5.data);
+			builtin__array_push((array*)&users, _MOV((string[]){ builtin__string_substr(line, 0, end_name) }));
+		}
+		_result_Array_string _t7;
+		builtin___result_ok(&(Array_string[]) { users }, (_result*)(&_t7), sizeof(Array_string));
+		 
+		return _t7;
+	}
+	#endif
+	return (_result_Array_string){0};
+}
+string os__home_dir(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return os__getenv(_S("HOME"));
+	}
+	#endif
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+string os__expand_tilde_to_home(string path) {
+	if (_SLIT_EQ(path.str, path.len, "~")) {
+		string hdir = os__home_dir();
+		return builtin__string_trim_right(hdir, _const_os__path_separator);
+	}
+	string source = _S("~/");
+	if (builtin__string_starts_with(path, source)) {
+		string hdir = os__home_dir();
+		string trimmed = builtin__string_trim_right(hdir, _const_os__path_separator);
+		string final = builtin__string__plus(trimmed, _S("/"));
+		string result = builtin__string_replace_once(path, source, final);
+		return result;
+	}
+	return path;
+}
+_result_void os__write_file(string path, string text) {
+	_result_os__File _t1 = os__create(path);
+	if (_t1.is_error) {
+		_result_void _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	os__File f = (*(os__File*)_t1.data);
+		_result_void _t3 = os__File_write_full_buffer(&f, text.str, ((usize)(text.len)));
+	if (_t3.is_error) {
+		_result_void _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ ;
+	os__File_close(&f);
+	return (_result_void){0};
+}
+string os__ExecutableNotFoundError_msg(os__ExecutableNotFoundError err) {
+	return _S("os: failed to find executable");
+}
+VV_LOC IError os__error_failed_to_find_executable(void) {
+	return I_os__ExecutableNotFoundError_to_Interface_IError(((os__ExecutableNotFoundError*)builtin__memdup(&(os__ExecutableNotFoundError){.Error = ((Error){E_STRUCT}),}, sizeof(os__ExecutableNotFoundError))));
+}
+_result_string os__find_abs_path_of_executable(string exe_name) {
+	if ((exe_name).len == 0) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(_S("expected non empty `exe_name`")), .data={E_STRUCT} };
+	}
+	for (int _t2 = 0; _t2 < _const_os__executable_suffixes.len; ++_t2) {
+		string suffix = ((string*)_const_os__executable_suffixes.data)[_t2];
+		string fexepath = builtin__string__plus(exe_name, suffix);
+		if (os__is_abs_path(fexepath)) {
+			_result_string _t3;
+			builtin___result_ok(&(string[]) { fexepath }, (_result*)(&_t3), sizeof(string));
+			 
+			return _t3;
+		}
+		string res = _S("");
+		string path = os__getenv(_S("PATH"));
+		Array_string paths = builtin__string_split(path, _const_os__path_delimiter);
+		for (int _t4 = 0; _t4 < paths.len; ++_t4) {
+			string p = ((string*)paths.data)[_t4];
+			string found_abs_path = os__join_path_single(p, fexepath);
+			if (os__is_file(found_abs_path) && os__is_executable(found_abs_path)) {
+				res = found_abs_path;
+				break;
+			}
+		}
+		if (res.len > 0) {
+			_result_string _t5;
+			builtin___result_ok(&(string[]) { os__abs_path(res) }, (_result*)(&_t5), sizeof(string));
+			 
+			return _t5;
+		}
+	}
+	return (_result_string){ .is_error=true, .err=os__error_failed_to_find_executable(), .data={E_STRUCT} };
+}
+bool os__exists_in_system_path(string prog) {
+	_result_string _t1 = os__find_abs_path_of_executable(prog);
+	if (_t1.is_error) {
+		return false;
+	}
+	
+ ;
+	return true;
+}
+bool os__is_file(string path) {
+	return os__exists(path) && !os__is_dir(path);
+}
+string os__join_path(string base, Array_string dirs) {
+	strings__Builder sb = strings__new_builder((int)(base.len + (int)(dirs.len * 50)));
+	string sbase = builtin__string_trim_right(base, _S("\\/"));
+	strings__Builder_write_string(&sb, sbase);
+	for (int _t1 = 0; _t1 < dirs.len; ++_t1) {
+		string d = ((string*)dirs.data)[_t1];
+		if ((d).len != 0) {
+			strings__Builder_write_string(&sb, _const_os__path_separator);
+			strings__Builder_write_string(&sb, d);
+		}
+	}
+	os__normalize_path_in_builder((voidptr)&sb);
+	string res = strings__Builder_str(&sb);
+	if ((base).len == 0) {
+		res = builtin__string_trim_left(res, _const_os__path_separator);
+	}
+	string _t2 = res;
+		{ // defer begin
+			builtin__string_free(&sbase);
+		} // defer end
+		{ // defer begin
+			strings__Builder_free(&sb);
+		} // defer end
+	return _t2;
+}
+string os__join_path_single(string base, string elem) {
+	strings__Builder sb = strings__new_builder((int)((int)(base.len + elem.len) + 1));
+	string sbase = builtin__string_trim_right(base, _S("\\/"));
+	strings__Builder_write_string(&sb, sbase);
+	if ((elem).len != 0) {
+		strings__Builder_write_string(&sb, _const_os__path_separator);
+		strings__Builder_write_string(&sb, elem);
+	}
+	os__normalize_path_in_builder((voidptr)&sb);
+	string res = strings__Builder_str(&sb);
+	if ((base).len == 0) {
+		res = builtin__string_trim_left(res, _const_os__path_separator);
+	}
+	string _t1 = res;
+		{ // defer begin
+			builtin__string_free(&sbase);
+		} // defer end
+		{ // defer begin
+			strings__Builder_free(&sb);
+		} // defer end
+	return _t1;
+}
+VV_LOC void os__normalize_path_in_builder(strings__Builder* sb) {
+	rune fs = '\\';
+	rune rs = '/';
+	for (int idx = 0; idx < sb->len; ++idx) {
+		{ // Unsafe block
+			if (((u8*)sb->data)[idx] == fs) {
+				((u8*)sb->data)[idx] = rs;
+			}
+		}
+	}
+	for (int idx = 0; idx < (int)(sb->len - 3); ++idx) {
+		if (((u8*)sb->data)[idx] == rs && ((u8*)sb->data)[(int_literal)(idx + 1)] == '.' && ((u8*)sb->data)[(int_literal)(idx + 2)] == rs) {
+			{ // Unsafe block
+				for (int j = (int_literal)(idx + 1); j < (int)(sb->len - 2); j++) {
+					((u8*)sb->data)[j] = ((u8*)sb->data)[(int)(j + 2)];
+				}
+				sb->len -= 2;
+			}
+		}
+		if (((u8*)sb->data)[idx] == rs && ((u8*)sb->data)[(int_literal)(idx + 1)] == rs) {
+			{ // Unsafe block
+				for (int j = (int_literal)(idx + 1); j < (int)(sb->len - 1); j++) {
+					((u8*)sb->data)[j] = ((u8*)sb->data)[(int)(j + 1)];
+				}
+				sb->len -= 1;
+			}
+		}
+	}
+}
+Array_string os__walk_ext(string path, string ext, os__WalkParams opts) {
+	Array_string res = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	os__impl_walk_ext(path, ext, &res, opts);
+	return res;
+}
+VV_LOC void os__impl_walk_ext(string path, string ext, Array_string* out, os__WalkParams opts) {
+	if (!os__is_dir(path)) {
+		return;
+	}
+	_result_Array_string _t1 = os__ls(path);
+	if (_t1.is_error) {
+		return;
+	}
+	
+ 	Array_string files = (*(Array_string*)_t1.data);
+	string separator = (builtin__string_ends_with(path, _const_os__path_separator) ? (_S("")) : (_const_os__path_separator));
+	for (int _t2 = 0; _t2 < files.len; ++_t2) {
+		string file = ((string*)files.data)[_t2];
+		if (!opts.hidden && builtin__string_starts_with(file, _S("."))) {
+			continue;
+		}
+		string p = builtin__string__plus(builtin__string__plus(path, separator), file);
+		if (os__is_dir(p) && !os__is_link(p)) {
+			os__impl_walk_ext(p, ext, out, opts);
+		} else if (builtin__string_ends_with(file, ext)) {
+			builtin__array_push((array*)out, _MOV((string[]){ builtin__string_clone(p) }));
+		}
+	}
+}
+void os__walk(string path, void (*f)(string )) {
+	if ((path).len == 0) {
+		return;
+	}
+	if (!os__is_dir(path)) {
+		return;
+	}
+	Array_string remaining = builtin____new_array_with_default(0, 1000, sizeof(string), 0);
+	string clean_path = builtin__string_trim_right(path, _const_os__path_separator);
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		builtin__array_push((array*)&remaining, _MOV((string[]){ builtin__string_clone(clean_path) }));
+	}
+	#endif
+	for (;;) {
+		if (!(remaining.len > 0)) break;
+		string cpath = (*(string*)builtin__array_pop(&remaining));
+		os__PathKind pkind = os__kind_of_existing_path(cpath);
+		if (pkind.is_link || !pkind.is_dir) {
+			f(cpath);
+			continue;
+		}
+		_result_Array_string _t3 = os__ls(cpath);
+		if (_t3.is_error) {
+			continue;
+		}
+		
+ 		Array_string files = (*(Array_string*)_t3.data);
+		for (int idx = (int)(files.len - 1); idx >= 0; idx--) {
+			builtin__array_push((array*)&remaining, _MOV((string[]){ builtin__string__plus(builtin__string__plus(cpath, _S("/")), (*(string*)builtin__array_get(files, idx))) }));
+		}
+	}
+}
+void os__walk_with_context(string path, voidptr context, void (*fcb)(voidptr , string )) {
+	if ((path).len == 0) {
+		return;
+	}
+	if (!os__is_dir(path)) {
+		return;
+	}
+	Array_string remaining = builtin____new_array_with_default(0, 1000, sizeof(string), 0);
+	string clean_path = builtin__string_trim_right(path, _const_os__path_separator);
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		builtin__array_push((array*)&remaining, _MOV((string[]){ builtin__string_clone(clean_path) }));
+	}
+	#endif
+	int loops = 0;
+	for (;;) {
+		if (!(remaining.len > 0)) break;
+		loops++;
+		string cpath = (*(string*)builtin__array_pop(&remaining));
+		if (loops > 1) {
+			fcb(context, cpath);
+		}
+		os__PathKind pkind = os__kind_of_existing_path(cpath);
+		if (pkind.is_link || !pkind.is_dir) {
+			continue;
+		}
+		_result_Array_string _t3 = os__ls(cpath);
+		if (_t3.is_error) {
+			continue;
+		}
+		
+ 		Array_string files = (*(Array_string*)_t3.data);
+		for (int idx = (int)(files.len - 1); idx >= 0; idx--) {
+			builtin__array_push((array*)&remaining, _MOV((string[]){ builtin__string__plus(builtin__string__plus(cpath, _S("/")), (*(string*)builtin__array_get(files, idx))) }));
+		}
+	}
+}
+void os__log(string s) {
+	builtin__println(builtin__string__plus(_S("os.log: "), s));
+}
+_result_void os__mkdir_all(string opath, os__MkdirParams params) {
+	if (os__exists(opath)) {
+		if (os__is_dir(opath)) {
+			return (_result_void){0};
+		}
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("path `"), 0xfe10, {.d_s = opath}}, {_S("` already exists, and is not a folder"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	string _t2;
+	#if defined(_WIN32)
+	#else
+		_t2 = _S("\\");
+		;
+	#endif
+		string other_separator = _t2;
+	string path = builtin__string_replace(opath, other_separator, _const_os__path_separator);
+	string p = (builtin__string_starts_with(path, _const_os__path_separator) ? (_const_os__path_separator) : (_S("")));
+	Array_string path_parts = builtin__string_split(builtin__string_trim_left(path, _const_os__path_separator), _const_os__path_separator);
+	for (int _t3 = 0; _t3 < path_parts.len; ++_t3) {
+		string subdir = ((string*)path_parts.data)[_t3];
+		p = builtin__string__plus(p, builtin__string__plus(subdir, _S("/")));
+		if (os__exists(p) && os__is_dir(p)) {
+			continue;
+		}
+		_result_void _t4 = os__mkdir(p, params);
+		if (_t4.is_error) {
+			IError err = _t4.err;
+			return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(3, _MOV((StrIntpData[]){{_S("folder: "), 0xfe10, {.d_s = p}}, {_S(", error: "), 0xfe10, {.d_s = builtin__IError_str(err)}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		}
+		
+ ;
+	}
+	return (_result_void){0};
+}
+VV_LOC void os__create_folder_when_it_does_not_exist(string path) {
+	if (os__is_dir(path) || os__is_link(path)) {
+		return;
+	}
+	string error_msg = _S("");
+	for (int _t1 = 0; _t1 < 10; ++_t1) {
+		_result_void _t2 = os__mkdir_all(path, ((os__MkdirParams){.mode = 0700,}));
+		if (_t2.is_error) {
+			IError err = _t2.err;
+			if (os__is_dir(path) || os__is_link(path)) {
+				return;
+			}
+			error_msg = IError_name_table[err._typ]._method_msg(err._object);
+			os__sleep_ms(1);
+			continue;
+		}
+		
+ ;
+		break;
+	}
+	if (os__is_dir(path) || os__is_link(path)) {
+		return;
+	}
+	builtin___v_panic(error_msg);
+	VUNREACHABLE();
+}
+VV_LOC string os__xdg_home_folder(string ename, string lpath) {
+	string xdg_folder = os__getenv(ename);
+	string dir = ((xdg_folder).len != 0 ? (xdg_folder) : (os__join_path_single(os__home_dir(), lpath)));
+	os__create_folder_when_it_does_not_exist(dir);
+	return dir;
+}
+string os__cache_dir(void) {
+	return os__xdg_home_folder(_S("XDG_CACHE_HOME"), _S(".cache"));
+}
+string os__data_dir(void) {
+	return os__xdg_home_folder(_S("XDG_DATA_HOME"), _S(".local/share"));
+}
+string os__state_dir(void) {
+	return os__xdg_home_folder(_S("XDG_STATE_HOME"), _S(".local/state"));
+}
+string os__local_bin_dir(void) {
+	return os__xdg_home_folder(_S("LOCAL_BIN_DIR"), _S(".local/bin"));
+}
+string os__temp_dir(void) {
+	string path = os__getenv(_S("TMPDIR"));
+	{
+		return _S("/tmp");
+	}
+	if ((path).len == 0) {
+		path = _S("/tmp");
+	}
+	return path;
+}
+string os__vtmp_dir(void) {
+	string vtmp = os__getenv(_S("VTMP"));
+	if (vtmp.len > 0) {
+		os__create_folder_when_it_does_not_exist(vtmp);
+		return vtmp;
+	}
+	int uid = os__getuid();
+	vtmp = os__join_path_single(os__temp_dir(), builtin__str_intp(2, _MOV((StrIntpData[]){{_S("v_"), 0xfe07, {.d_i32 = uid}}, {_SLIT0, 0, { .d_c = 0 }}})));
+	os__create_folder_when_it_does_not_exist(vtmp);
+	os__setenv(_S("VTMP"), vtmp, true);
+	return vtmp;
+}
+VV_LOC string os__default_vmodules_path(void) {
+	string hdir = os__home_dir();
+	string res = os__join_path_single(hdir, _S(".vmodules"));
+	return res;
+}
+string os__vmodules_dir(void) {
+	Array_string paths = os__vmodules_paths();
+	if (paths.len > 0) {
+		return (*(string*)builtin__array_get(paths, 0));
+	}
+	return os__default_vmodules_path();
+}
+Array_string os__vmodules_paths(void) {
+	string path = os__getenv(_S("VMODULES"));
+	if ((path).len == 0) {
+		path = os__default_vmodules_path();
+	}
+	Array_string splitted = builtin__string_split(path, _const_os__path_delimiter);
+	Array_string list = builtin____new_array_with_default(0, splitted.len, sizeof(string), 0);
+	for (int i = 0; i < splitted.len; ++i) {
+		string si = (*(string*)builtin__array_get(splitted, i));
+		string trimmed = builtin__string_trim_right(si, _const_os__path_separator);
+		builtin__array_push((array*)&list, _MOV((string[]){ builtin__string_clone(trimmed) }));
+	}
+	Array_string _t2 = list;
+		{ // defer begin
+		} // defer end
+		{ // defer begin
+		} // defer end
+	return _t2;
+}
+string os__resource_abs_path(string path) {
+	string exe = os__executable();
+	string dexe = os__dir(exe);
+	string base_path = os__real_path(dexe);
+	string vresource = os__getenv(_S("V_RESOURCE_PATH"));
+	if (vresource.len != 0) {
+		builtin__string_free(&base_path);
+		base_path = vresource;
+	}
+	string fp = os__join_path_single(base_path, path);
+	string res = os__real_path(fp);
+	{ // Unsafe block
+		builtin__string_free(&fp);
+		builtin__string_free(&vresource);
+		builtin__string_free(&base_path);
+		builtin__string_free(&dexe);
+		builtin__string_free(&exe);
+	}
+	return res;
+}
+os__Result os__execute_or_panic(string cmd) {
+	os__Result res = os__execute(cmd);
+	if (res.exit_code != 0) {
+		builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed    cmd: "), 0xfe10, {.d_s = cmd}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed   code: "), 0xfe07, {.d_i32 = res.exit_code}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		builtin___v_panic(res.output);
+		VUNREACHABLE();
+	}
+	return res;
+}
+os__Result os__execute_or_exit(string cmd) {
+	os__Result res = os__execute(cmd);
+	if (res.exit_code != 0) {
+		builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed    cmd: "), 0xfe10, {.d_s = cmd}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		builtin__eprintln(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("failed   code: "), 0xfe07, {.d_i32 = res.exit_code}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		builtin__eprintln(res.output);
+		builtin___v_exit(1);
+		VUNREACHABLE();
+	}
+	return res;
+}
+_result_os__Result os__execute_opt(string cmd) {
+	os__Result res = os__execute(cmd);
+	if (res.exit_code != 0) {
+		return (_result_os__Result){ .is_error=true, .err=builtin___v_error(res.output), .data={E_STRUCT} };
+	}
+	_result_os__Result _t2;
+	builtin___result_ok(&(os__Result[]) { res }, (_result*)(&_t2), sizeof(os__Result));
+	 
+	return _t2;
+}
+string os__quoted_path(string path) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return builtin__str_intp(2, _MOV((StrIntpData[]){{_S("'"), 0xfe10, {.d_s = path}}, {_S("'"), 0, { .d_c = 0 }}}));
+	}
+	#endif
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+_result_string os__config_dir(void) {
+	#if defined(_WIN32)
+	{
+	}
+	#elif defined(__APPLE__) || defined(__DARWIN__) || defined(__TARGET_IOS__)
+	{
+		string home = os__home_dir();
+		if ((home).len != 0) {
+			_result_string _t2;
+			builtin___result_ok(&(string[]) { builtin__string__plus(home, _S("/Library/Application Support")) }, (_result*)(&_t2), sizeof(string));
+			 
+			return _t2;
+		}
+	}
+	#else
+	{
+	}
+	#endif
+	return (_result_string){ .is_error=true, .err=builtin___v_error(_S("Cannot find config directory")), .data={E_STRUCT} };
+}
+VV_LOC Array_string os__glob_match(string dir, string pattern, string next_pattern, Array_string* matches) {
+	Array_string subdirs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	if (os__is_file(dir)) {
+		return subdirs;
+	}
+	_result_Array_string _t2 = os__ls(dir);
+	if (_t2.is_error) {
+		return subdirs;
+	}
+	
+ 	Array_string files = (*(Array_string*)_t2.data);
+	os__GlobMatch mode = os__GlobMatch__exact;
+	string pat = pattern;
+	if (_SLIT_EQ(pat.str, pat.len, "*")) {
+		mode = os__GlobMatch__any;
+		if (!builtin__string__eq(next_pattern, pattern) && (next_pattern).len != 0) {
+			for (int _t4 = 0; _t4 < files.len; ++_t4) {
+				string file = ((string*)files.data)[_t4];
+				if (os__is_dir(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = dir}}, {_S("/"), 0xfe10, {.d_s = file}}, {_SLIT0, 0, { .d_c = 0 }}})))) {
+					builtin__array_push((array*)&subdirs, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = dir}}, {_S("/"), 0xfe10, {.d_s = file}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+				}
+			}
+			return subdirs;
+		}
+	}
+	if (_SLIT_EQ(pat.str, pat.len, "**")) {
+		files = os__walk_ext(dir, _S(""), ((os__WalkParams){.hidden = 0,}));
+		pat = next_pattern;
+	}
+	if (builtin__string_starts_with(pat, _S("*"))) {
+		mode = os__GlobMatch__ends_with;
+		pat = builtin__string_substr(pat, 1, 2147483647);
+	}
+	if (builtin__string_ends_with(pat, _S("*"))) {
+		mode = (mode == os__GlobMatch__ends_with ? (os__GlobMatch__contains) : (os__GlobMatch__starts_with));
+		pat = builtin__string_substr(pat, 0, (int)(pat.len - 1));
+	}
+	if (builtin__string_contains(pat, _S("*"))) {
+		mode = os__GlobMatch__start_and_ends_with;
+	}
+	for (int _t7 = 0; _t7 < files.len; ++_t7) {
+		string file = ((string*)files.data)[_t7];
+		string fpath = file;
+		string _t8; /* if prepend */
+		if (builtin__string_contains(file, _const_os__path_separator)) {
+			Array_string pathwalk = builtin__string_split(file, _const_os__path_separator);
+			_t8 = (*(string*)builtin__array_get(pathwalk, (int)(pathwalk.len - 1)));
+			goto _t9;
+		};
+		{
+			fpath = (_SLIT_EQ(dir.str, dir.len, ".") ? (file) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = dir}}, {_S("/"), 0xfe10, {.d_s = file}}, {_SLIT0, 0, { .d_c = 0 }}}))));
+			_t8 = file;
+		}
+	_t9: {};
+				string f = _t8;
+		if ((_SLIT_EQ(f.str, f.len, ".") || _SLIT_EQ(f.str, f.len, "..")) || (f).len == 0) {
+			continue;
+		}
+		bool _t10 = 0;
+		
+		if (mode == (os__GlobMatch__any)) {
+			_t10 = true;
+		}
+		else if (mode == (os__GlobMatch__exact)) {
+			_t10 = builtin__string__eq(f, pat);
+		}
+		else if (mode == (os__GlobMatch__starts_with)) {
+			_t10 = builtin__string_starts_with(f, pat);
+		}
+		else if (mode == (os__GlobMatch__ends_with)) {
+			_t10 = builtin__string_ends_with(f, pat);
+		}
+		else if (mode == (os__GlobMatch__start_and_ends_with)) {
+			Array_string p = builtin__string_split(pat, _S("*"));
+			_t10 = builtin__string_starts_with(f, (*(string*)builtin__array_get(p, 0))) && builtin__string_ends_with(f, (*(string*)builtin__array_get(p, 1)));
+		}
+		else if (mode == (os__GlobMatch__contains)) {
+			_t10 = builtin__string_contains(f, pat);
+		}bool hit = _t10;
+		if (hit) {
+			if (os__is_dir(fpath)) {
+				builtin__array_push((array*)&subdirs, _MOV((string[]){ builtin__string_clone(fpath) }));
+				if (builtin__string__eq(next_pattern, pattern) && (next_pattern).len != 0) {
+					builtin__array_push((array*)matches, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = fpath}}, {_SLIT0, 0xfe10, {.d_s = _const_os__path_separator}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+				}
+			} else {
+				builtin__array_push((array*)matches, _MOV((string[]){ builtin__string_clone(fpath) }));
+			}
+		}
+	}
+	return subdirs;
+}
+VV_LOC _result_void os__native_glob_pattern(string pattern, Array_string* matches) {
+	Array_string steps = builtin__string_split(pattern, _const_os__path_separator);
+	string cwd = (builtin__string_starts_with(pattern, _const_os__path_separator) ? (_const_os__path_separator) : (_S(".")));
+	Array_string subdirs = builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){builtin__string_clone(cwd)}));
+	for (int i = 0; i < steps.len; i++) {
+		string step = (*(string*)builtin__array_get(steps, i));
+		string step2 = ((int)(i + 1) == steps.len ? (step) : ((*(string*)builtin__array_get(steps, (int)(i + 1)))));
+		if ((step).len == 0) {
+			continue;
+		}
+		if (os__is_dir(builtin__str_intp(4, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = cwd}}, {_SLIT0, 0xfe10, {.d_s = _const_os__path_separator}}, {_SLIT0, 0xfe10, {.d_s = step}}, {_SLIT0, 0, { .d_c = 0 }}})))) {
+			string dd = (_SLIT_EQ(cwd.str, cwd.len, "/") ? (step) : ((_SLIT_EQ(cwd.str, cwd.len, ".") || (cwd).len == 0 ? (step) : ((_SLIT_EQ(step.str, step.len, ".") || _SLIT_EQ(step.str, step.len, "/") ? (cwd) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = cwd}}, {_S("/"), 0xfe10, {.d_s = step}}, {_SLIT0, 0, { .d_c = 0 }}}))))))));
+			if ((int)(i + 1) != steps.len) {
+				if (!(Array_string_contains(subdirs, dd))) {
+					builtin__array_push((array*)&subdirs, _MOV((string[]){ builtin__string_clone(dd) }));
+				}
+			}
+		}
+		Array_string subs = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+		for (int _t2 = 0; _t2 < subdirs.len; ++_t2) {
+			string sd = ((string*)subdirs.data)[_t2];
+			string d = (_SLIT_EQ(cwd.str, cwd.len, "/") ? (sd) : ((_SLIT_EQ(cwd.str, cwd.len, ".") || (cwd).len == 0 ? (sd) : ((_SLIT_EQ(sd.str, sd.len, ".") || _SLIT_EQ(sd.str, sd.len, "/") ? (cwd) : (builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = cwd}}, {_S("/"), 0xfe10, {.d_s = sd}}, {_SLIT0, 0, { .d_c = 0 }}}))))))));
+			_PUSH_MANY(&subs, (os__glob_match(builtin__string_replace(d, _S("//"), _S("/")), step, step2, matches)), _t3, Array_string);
+		}
+		subdirs = builtin__array_clone_to_depth(&subs, 1);
+	}
+	return (_result_void){0};
+}
+_result_void os__utime(string path, int actime, int modtime) {
+	struct utimbuf u = ((struct utimbuf){.actime = actime,.modtime = modtime,});
+	if (utime(((char*)(path.str)), &u) != 0) {
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(os__posix_get_error_msg(errno), errno), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+os__Uname os__uname(void) {
+	os__Uname u = ((os__Uname){.sysname = (string){.str=(byteptr)"", .is_lit=1},.nodename = (string){.str=(byteptr)"", .is_lit=1},.release = (string){.str=(byteptr)"", .is_lit=1},.version = (string){.str=(byteptr)"", .is_lit=1},.machine = (string){.str=(byteptr)"", .is_lit=1},});
+	{ // Unsafe block
+		struct utsname* d = ((struct utsname*)(builtin__malloc_noscan(((int)(sizeof(struct utsname))))));
+		if (uname(d) == 0) {
+			u.sysname = builtin__cstring_to_vstring(d->sysname);
+			u.nodename = builtin__cstring_to_vstring(d->nodename);
+			u.release = builtin__cstring_to_vstring(d->release);
+			u.version = builtin__cstring_to_vstring(d->version);
+			u.machine = builtin__cstring_to_vstring(d->machine);
+		}
+		builtin___v_free(d);
+	}
+	return u;
+}
+_result_string os__hostname(void) {
+	string hstnme = _S("");
+	int size = 256;
+	char* buf = ((char*)(builtin__malloc_noscan(size)));
+	if (gethostname(buf, size) == 0) {
+		hstnme = builtin__cstring_to_vstring(buf);
+		builtin___v_free(buf);
+		_result_string _t1;
+		builtin___result_ok(&(string[]) { hstnme }, (_result*)(&_t1), sizeof(string));
+		 
+		return _t1;
+	}
+	return (_result_string){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+}
+_result_string os__loginname(void) {
+	char* x = getlogin();
+	if (!builtin__isnil(x)) {
+		_result_string _t1;
+		builtin___result_ok(&(string[]) { builtin__cstring_to_vstring(x) }, (_result*)(&_t1), sizeof(string));
+		 
+		return _t1;
+	}
+	return (_result_string){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+}
+_result_Array_string os__ls(string path) {
+	if ((path).len == 0) {
+		return (_result_Array_string){ .is_error=true, .err=builtin___v_error(_S("ls() expects a folder, not an empty string")), .data={E_STRUCT} };
+	}
+	Array_string res = builtin____new_array_with_default(0, 50, sizeof(string), 0);
+	DIR* dir = opendir(((char*)(path.str)));
+	if (builtin__isnil(dir)) {
+		return (_result_Array_string){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("ls() couldnt open dir \""), 0xfe10, {.d_s = path}}, {_S("\""), 0, { .d_c = 0 }}})),.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+	}
+	struct dirent* ent = ((struct dirent*)(((void*)0)));
+	for (;;) {
+		ent = readdir(dir);
+		if (builtin__isnil(ent)) {
+			break;
+		}
+		{ // Unsafe block
+			u8* bptr = ((u8*)(&ent->d_name[0]));
+			if (bptr[0] == 0 || (bptr[0] == '.' && bptr[1] == 0) || (bptr[0] == '.' && bptr[1] == '.' && bptr[2] == 0)) {
+				continue;
+			}
+			builtin__array_push((array*)&res, _MOV((string[]){ builtin__tos_clone(bptr) }));
+		}
+	}
+	closedir(dir);
+	_result_Array_string _t4;
+	builtin___result_ok(&(Array_string[]) { res }, (_result*)(&_t4), sizeof(Array_string));
+	 
+	return _t4;
+}
+_result_void os__mkdir(string path, os__MkdirParams params) {
+	if (_SLIT_EQ(path.str, path.len, ".")) {
+		return (_result_void){0};
+	}
+	string apath = os__real_path(path);
+	i32 r = mkdir(((char*)(apath.str)), params.mode);
+	if (r == -1) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+os__Result os__execute(string cmd) {
+	string pcmd = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("exec 2>&1;"), 0xfe10, {.d_s = cmd}}, {_SLIT0, 0, { .d_c = 0 }}}));
+	voidptr f = os__vpopen(pcmd);
+	if (builtin__isnil(f)) {
+		os__Result _t1 = ((os__Result){.exit_code = -1,.output = builtin__str_intp(2, _MOV((StrIntpData[]){{_S("exec(\""), 0xfe10, {.d_s = cmd}}, {_S("\") failed"), 0, { .d_c = 0 }}})),});
+			{ // defer begin
+				builtin__string_free(&pcmd);
+			} // defer end
+		return _t1;
+	}
+	int fd = os__fileno(f);
+	strings__Builder res = strings__new_builder(1024);
+	Array_fixed_u8_4096 buf = {0};
+	{ // Unsafe block
+		u8* pbuf = &buf[0];
+		for (;;) {
+			int len = ((int)(read(fd, pbuf, 4096)));
+			if (len == 0) {
+				break;
+			}
+			strings__Builder_write_ptr(&res, pbuf, len);
+		}
+	}
+	string soutput = strings__Builder_str(&res);
+	int exit_code = os__vpclose(f);
+	os__Result _t2 = ((os__Result){.exit_code = exit_code,.output = soutput,});
+		{ // defer begin
+			strings__Builder_free(&res);
+		} // defer end
+		{ // defer begin
+			builtin__string_free(&pcmd);
+		} // defer end
+	return _t2;
+}
+os__Result os__raw_execute(string cmd) {
+	return os__execute(cmd);
+}
+_result_void os__symlink(string target, string link_name) {
+	i32 res = symlink(((char*)(target.str)), ((char*)(link_name.str)));
+	if (res == 0) {
+		return (_result_void){0};
+	}
+	return (_result_void){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+}
+_result_string os__readlink(string path) {
+	Array_fixed_u8_4096 buf = {0};
+	i32 res = readlink(((char*)(path.str)), ((char*)(&buf[0])), _const_os__max_path_buffer_size);
+	if (res < 0) {
+		return (_result_string){ .is_error=true, .err=os__last_error(), .data={E_STRUCT} };
+	}
+	if (res < _const_os__max_path_buffer_size) {
+		_result_string _t2;
+		builtin___result_ok(&(string[]) { builtin__string_clone(builtin__u8_vstring_with_len((&buf[0]), res)) }, (_result*)(&_t2), sizeof(string));
+		 
+		return _t2;
+	}
+	int size = _const_os__max_path_buffer_size;
+	for (;;) {
+		size *= 2;
+		char* buf2 = ((char*)(builtin__malloc_noscan(size)));
+		i32 res2 = readlink(((char*)(path.str)), buf2, size);
+		if (res2 < 0) {
+			return (_result_string){ .is_error=true, .err=os__last_error(), .data={E_STRUCT} };
+		}
+		if (res2 < size) {
+			_result_string _t4;
+			builtin___result_ok(&(string[]) { builtin__tos(((u8*)(&buf2[0])), res2) }, (_result*)(&_t4), sizeof(string));
+			 
+			return _t4;
+		}
+		builtin___v_free(buf2);
+	}
+	return (_result_string){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = _S("readlink")}}, {_S(" unreachable code"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+}
+_result_void os__link(string origin, string target) {
+	i32 res = link(((char*)(origin.str)), ((char*)(target.str)));
+	if (res == 0) {
+		return (_result_void){0};
+	}
+	return (_result_void){ .is_error=true, .err=builtin___v_error(os__posix_get_error_msg(errno)), .data={E_STRUCT} };
+}
+string os__get_error_msg(int code) {
+	return os__posix_get_error_msg(code);
+}
+void os__File_close(os__File* f) {
+	if (!f->is_opened) {
+		return;
+	}
+	f->is_opened = false;
+	fflush(f->cfile);
+	fclose(f->cfile);
+}
+_result_void os__ensure_folder_is_writable(string folder) {
+	if (!os__exists(folder)) {
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("`"), 0xfe10, {.d_s = folder}}, {_S("` does not exist"), 0, { .d_c = 0 }}})), 1), .data={E_STRUCT} };
+	}
+	if (!os__is_dir(folder)) {
+		return (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("`"), 0xfe10, {.d_s = folder}}, {_S("` is not a folder"), 0, { .d_c = 0 }}})), 2), .data={E_STRUCT} };
+	}
+	string tmp_perm_check = os__join_path_single(folder, _S("XXXXXX"));
+	{ // Unsafe block
+		i32 x = mkstemp(((char*)(tmp_perm_check.str)));
+		if (-1 == x) {
+			_result_void _t3 = (_result_void){ .is_error=true, .err=builtin__error_with_code(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("folder `"), 0xfe10, {.d_s = folder}}, {_S("` is not writable"), 0, { .d_c = 0 }}})), 3), .data={E_STRUCT} };
+				{ // defer begin
+					builtin__string_free(&tmp_perm_check);
+				} // defer end
+			return _t3;
+		}
+		close(x);
+	}
+	_result_void _t4 = os__rm(tmp_perm_check);
+	if (_t4.is_error) {
+		{ // defer begin
+			builtin__string_free(&tmp_perm_check);
+		} // defer end
+		_result_void _t5 = {0};
+		_t5.is_error = true;
+		_t5.err = _t4.err;
+		return _t5;
+	}
+	
+ ;
+		{ // defer begin
+			builtin__string_free(&tmp_perm_check);
+		} // defer end
+	return (_result_void){0};
+}
+inline int os__getpid(void) {
+	return getpid();
+}
+inline int os__getppid(void) {
+	return getppid();
+}
+inline int os__getuid(void) {
+	return getuid();
+}
+inline int os__geteuid(void) {
+	return geteuid();
+}
+inline int os__getgid(void) {
+	return getgid();
+}
+inline int os__getegid(void) {
+	return getegid();
+}
+void os__posix_set_permission_bit(string path_s, u32 mode, bool enable) {
+	u32 new_mode = ((u32)(0));
+	_result_os__Stat _t1;
+	if (_t1 = os__stat(path_s), !_t1.is_error) {
+		os__Stat s = *(os__Stat*)_t1.data;
+		new_mode = s.mode;
+	}
+
+	if (enable == (true)) {
+		new_mode |= mode;
+	}
+	else if (enable == (false)) {
+		new_mode &= ((u32)(07777 - mode));
+	}
+	chmod(((char*)(path_s.str)), ((int)(new_mode)));
+}
+int os__page_size(void) {
+	return ((int)(sysconf(_SC_PAGESIZE)));
+}
+_result_os__DiskUsage os__disk_usage(string path) {
+	string mpath = ((path).len == 0 ? (_S(".")) : (path));
+	struct statvfs vfs = ((struct statvfs){.f_bsize = 0,.f_blocks = 0,.f_bfree = 0,.f_bavail = 0,});
+	i32 ret = statvfs(((char*)(mpath.str)), &vfs);
+	if (ret == -1) {
+		_result_os__DiskUsage _t1 = (_result_os__DiskUsage){ .is_error=true, .err=builtin___v_error(_S("cannot get disk usage of path")), .data={E_STRUCT} };
+			{ // defer begin
+				builtin__string_free(&mpath);
+			} // defer end
+		return _t1;
+	}
+	u64 f_bsize = ((u64)(vfs.f_bsize));
+	u64 f_blocks = ((u64)(vfs.f_blocks));
+	u64 f_bavail = ((u64)(vfs.f_bavail));
+	u64 f_bfree = ((u64)(vfs.f_bfree));
+	_result_os__DiskUsage _t2;
+	builtin___result_ok(&(os__DiskUsage[]) { ((os__DiskUsage){.total = (u64)(f_bsize * f_blocks),.available = (u64)(f_bsize * f_bavail),.used = (u64)(f_bsize * ((u64)(f_blocks - f_bfree))),}) }, (_result*)(&_t2), sizeof(os__DiskUsage));
+	 
+		{ // defer begin
+			builtin__string_free(&mpath);
+		} // defer end
+	return _t2;
+}
+_result_string os__input_password(string prompt) {
+	if (os__is_atty(1) <= 0 || builtin__string__eq(os__getenv(_S("TERM")), _S("dumb"))) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(_S("Could not obtain password discretely.")), .data={E_STRUCT} };
+	}
+	term__termios__Termios old_state = ((term__termios__Termios){.c_iflag = 0,.c_oflag = 0,.c_cflag = 0,.c_lflag = 0,.c_cc = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},.c_ispeed = 0,.c_ospeed = 0,});
+	if (term__termios__tcgetattr(0, (voidptr)&old_state) != 0) {
+		return (_result_string){ .is_error=true, .err=os__last_error(), .data={E_STRUCT} };
+	}
+	term__termios__Termios new_state = old_state;
+	term__termios__Termios_disable_echo(&new_state);
+	term__termios__set_state(0, new_state);
+	_option_string _t3 = os__input_opt(prompt);
+	if (_t3.state != 0) {
+		return (_result_string){ .is_error=true, .err=builtin___v_error(_S("Failed to read password")), .data={E_STRUCT} };
+	}
+	
+ 	string password = (*(string*)_t3.data);
+	term__termios__set_state(0, old_state);
+	builtin__println(_S(""));
+	_result_string _t5;
+	builtin___result_ok(&(string[]) { password }, (_result*)(&_t5), sizeof(string));
+	 
+	return _t5;
+}
+int os__fd_dup(int fd) {
+	i32 _t2;
+	#if defined(_WIN32)
+	#else
+		_t2 = dup(fd);
+		;
+	#endif
+		return _t2;
+}
+int os__fd_dup2(int fd1, int fd2) {
+	i32 _t2;
+	#if defined(_WIN32)
+	#else
+		_t2 = dup2(fd1, fd2);
+		;
+	#endif
+		return _t2;
+}
+_result_os__Pipe os__pipe(void) {
+	Array_fixed_int_2 fds = {0};
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		if (pipe(&fds[0]) == -1) {
+			return (_result_os__Pipe){ .is_error=true, .err=builtin___v_error(_S("Failed to create pipe")), .data={E_STRUCT} };
+		}
+	}
+	#endif
+	_result_os__Pipe _t3;
+	builtin___result_ok(&(os__Pipe[]) { ((os__Pipe){.read_fd = fds[0],.write_fd = fds[1],}) }, (_result*)(&_t3), sizeof(os__Pipe));
+	 
+	return _t3;
+}
+void os__Pipe_close(os__Pipe* p) {
+	if (p->read_fd != -1) {
+		os__fd_close(p->read_fd);
+		p->read_fd = -1;
+	}
+	if (p->write_fd != -1) {
+		os__fd_close(p->write_fd);
+		p->write_fd = -1;
+	}
+}
+_result_int os__Pipe_read(os__Pipe* p, Array_u8* buffer) {
+	i32 result = read(p->read_fd, buffer->data, buffer->len);
+	if (result == -1) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("Read failed")), .data={E_STRUCT} };
+	}
+	_result_int _t2;
+	builtin___result_ok(&(int[]) { ((int)(result)) }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+_result_int os__Pipe_write(os__Pipe* p, Array_u8 buffer) {
+	i32 result = write(p->write_fd, buffer.data, buffer.len);
+	if (result == -1) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("Write failed")), .data={E_STRUCT} };
+	}
+	_result_int _t2;
+	builtin___result_ok(&(int[]) { ((int)(result)) }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+_result_int os__Pipe_write_string(os__Pipe* p, string s) {
+	i32 result = write(p->write_fd, ((voidptr)(s.str)), s.len);
+	if (result == -1) {
+		return (_result_int){ .is_error=true, .err=builtin___v_error(_S("Write failed")), .data={E_STRUCT} };
+	}
+	_result_int _t2;
+	builtin___result_ok(&(int[]) { ((int)(result)) }, (_result*)(&_t2), sizeof(int));
+	 
+	return _t2;
+}
+Array_string os__Pipe_slurp(os__Pipe* p) {
+	os__fd_close(p->write_fd);
+	p->write_fd = -1;
+	Array_string result = os__fd_slurp(p->read_fd);
+	os__fd_close(p->read_fd);
+	p->read_fd = -1;
+	return result;
+}
+_result_os__IOCapture os__stdio_capture(void) {
+	os__IOCapture c = ((os__IOCapture){.__v_stdout = ((os__Pipe){.read_fd = -1,.write_fd = -1,}),.__v_stderr = ((os__Pipe){.read_fd = -1,.write_fd = -1,}),.original_stdout_fd = -1,.original_stderr_fd = -1,});
+	_result_os__Pipe _t1 = os__pipe();
+	if (_t1.is_error) {
+		_result_os__IOCapture _t2 = {0};
+		_t2.is_error = true;
+		_t2.err = _t1.err;
+		return _t2;
+	}
+	
+ 	os__Pipe pipe_stdout = (*(os__Pipe*)_t1.data);
+	_result_os__Pipe _t3 = os__pipe();
+	if (_t3.is_error) {
+		_result_os__IOCapture _t4 = {0};
+		_t4.is_error = true;
+		_t4.err = _t3.err;
+		return _t4;
+	}
+	
+ 	os__Pipe pipe_stderr = (*(os__Pipe*)_t3.data);
+	c.original_stdout_fd = os__fd_dup(_const_os__fd_stdout);
+	c.original_stderr_fd = os__fd_dup(_const_os__fd_stderr);
+	if (os__fd_dup2(pipe_stdout.write_fd, _const_os__fd_stdout) == -1) {
+		os__Pipe_close(&pipe_stdout);
+		os__Pipe_close(&pipe_stderr);
+		return (_result_os__IOCapture){ .is_error=true, .err=builtin___v_error(_S("Failed to redirect stdout")), .data={E_STRUCT} };
+	}
+	if (os__fd_dup2(pipe_stderr.write_fd, _const_os__fd_stderr) == -1) {
+		os__fd_dup2(c.original_stdout_fd, _const_os__fd_stdout);
+		os__Pipe_close(&pipe_stdout);
+		os__Pipe_close(&pipe_stderr);
+		return (_result_os__IOCapture){ .is_error=true, .err=builtin___v_error(_S("Failed to redirect stderr")), .data={E_STRUCT} };
+	}
+	os__fd_close(pipe_stdout.write_fd);
+	os__fd_close(pipe_stderr.write_fd);
+	pipe_stdout.write_fd = -1;
+	pipe_stderr.write_fd = -1;
+	c.__v_stdout = pipe_stdout;
+	c.__v_stderr = pipe_stderr;
+	_result_os__IOCapture _t7;
+	builtin___result_ok(&(os__IOCapture[]) { c }, (_result*)(&_t7), sizeof(os__IOCapture));
+	 
+	return _t7;
+}
+void os__IOCapture_stop(os__IOCapture* c) {
+	if (c->original_stdout_fd != -1) {
+		os__fd_dup2(c->original_stdout_fd, _const_os__fd_stdout);
+		os__fd_close(c->original_stdout_fd);
+		c->original_stdout_fd = -1;
+	}
+	if (c->original_stderr_fd != -1) {
+		os__fd_dup2(c->original_stderr_fd, _const_os__fd_stderr);
+		os__fd_close(c->original_stderr_fd);
+		c->original_stderr_fd = -1;
+	}
+}
+void os__IOCapture_close(os__IOCapture* c) {
+	os__Pipe_close(&c->__v_stdout);
+	os__Pipe_close(&c->__v_stderr);
+}
+multi_return_Array_string_Array_string os__IOCapture_finish(os__IOCapture* c) {
+	os__IOCapture_stop(c);
+	Array_string stdout_str = os__Pipe_slurp(&c->__v_stdout);
+	Array_string stderr_str = os__Pipe_slurp(&c->__v_stderr);
+	os__IOCapture_close(c);
+	return (multi_return_Array_string_Array_string){.arg0=stdout_str, .arg1=stderr_str};
+}
+void os__Process_signal_kill(os__Process* p) {
+	if (!(p->status == os__ProcessState__running || p->status == os__ProcessState__stopped)) {
+		return;
+	}
+	os__Process__signal_kill(p);
+	p->status = os__ProcessState__aborted;
+}
+void os__Process_signal_term(os__Process* p) {
+	if (!(p->status == os__ProcessState__running || p->status == os__ProcessState__stopped)) {
+		return;
+	}
+	os__Process__signal_term(p);
+}
+void os__Process_signal_pgkill(os__Process* p) {
+	if (!(p->status == os__ProcessState__running || p->status == os__ProcessState__stopped)) {
+		return;
+	}
+	os__Process__signal_pgkill(p);
+}
+void os__Process_signal_stop(os__Process* p) {
+	if (p->status != os__ProcessState__running) {
+		return;
+	}
+	os__Process__signal_stop(p);
+	p->status = os__ProcessState__stopped;
+}
+void os__Process_signal_continue(os__Process* p) {
+	if (p->status != os__ProcessState__stopped) {
+		return;
+	}
+	os__Process__signal_continue(p);
+	p->status = os__ProcessState__running;
+}
+void os__Process_wait(os__Process* p) {
+	if (p->status == os__ProcessState__not_started) {
+		os__Process__spawn(p);
+	}
+	if (!(p->status == os__ProcessState__running || p->status == os__ProcessState__stopped)) {
+		return;
+	}
+	os__Process__wait(p);
+}
+void os__Process_close(os__Process* p) {
+	if (p->status == os__ProcessState__not_started || p->status == os__ProcessState__closed) {
+		return;
+	}
+	p->status = os__ProcessState__closed;
+	#if !defined(_WIN32)
+	{
+		for (int i = 0; i < 3; ++i) {
+			if (p->stdio_fd[builtin__v_fixed_index(i, 3)] != 0) {
+				os__fd_close(p->stdio_fd[builtin__v_fixed_index(i, 3)]);
+			}
+		}
+	}
+	#endif
+}
+void os__Process_free(os__Process* p) {
+	os__Process_close(p);
+	{ // Unsafe block
+		builtin__string_free(&p->filename);
+		builtin__string_free(&p->err);
+		Array_string_free(&p->args);
+		Array_string_free(&p->env);
+	}
+}
+VV_LOC int os__Process__spawn(os__Process* p) {
+	if (!p->env_is_custom) {
+		p->env = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+		Map_string_string current_environment = os__environ();
+		int _t2 = current_environment.key_values.len;
+		for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+			int _t3 = current_environment.key_values.len - _t2;
+			_t2 = current_environment.key_values.len;
+			if (_t3 < 0) {
+				_t1 = -1;
+				continue;
+			}
+			if (!builtin__DenseArray_has_index(&current_environment.key_values, _t1)) {continue;}
+			string k = *(string*)builtin__DenseArray_key(&current_environment.key_values, _t1);
+			k = builtin__string_clone(k);
+			string v = (*(string*)builtin__DenseArray_value(&current_environment.key_values, _t1));
+			builtin__array_push((array*)&p->env, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = k}}, {_S("="), 0xfe10, {.d_s = v}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+		}
+	}
+	int pid = 0;
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		pid = os__Process_unix_spawn_process(p);
+	}
+	#endif
+	p->pid = pid;
+	p->status = os__ProcessState__running;
+	return 0;
+}
+bool os__Process_is_alive(os__Process* p) {
+	bool res = false;
+	if (p->status == os__ProcessState__running || p->status == os__ProcessState__stopped) {
+		res = os__Process__is_alive(p);
+	}
+	return res;
+}
+void os__Process_set_redirect_stdio(os__Process* p) {
+	p->use_stdio_ctl = true;
+}
+void os__Process_stdin_write(os__Process* p, string s) {
+	os__Process__check_redirection_call(p, _S("Process.stdin_write"));
+	os__Process__write_to(p, os__ChildProcessPipeKind__stdin, s);
+}
+string os__Process_stdout_slurp(os__Process* p) {
+	os__Process__check_redirection_call(p, _S("Process.stdout_slurp"));
+	string res = os__Process__slurp_from(p, os__ChildProcessPipeKind__stdout);
+	return res;
+}
+string os__Process_stderr_slurp(os__Process* p) {
+	os__Process__check_redirection_call(p, _S("Process.stderr_slurp"));
+	string res = os__Process__slurp_from(p, os__ChildProcessPipeKind__stderr);
+	return res;
+}
+string os__Process_stdout_read(os__Process* p) {
+	os__Process__check_redirection_call(p, _S("Process.stdout_read"));
+	string res = os__Process__read_from(p, os__ChildProcessPipeKind__stdout);
+	return res;
+}
+string os__Process_stderr_read(os__Process* p) {
+	os__Process__check_redirection_call(p, _S("Process.stderr_read"));
+	string res = os__Process__read_from(p, os__ChildProcessPipeKind__stderr);
+	return res;
+}
+_option_string os__Process_pipe_read(os__Process* p, os__ChildProcessPipeKind pkind) {
+	os__Process__check_redirection_call(p, _S("Process.pipe_read"));
+	if (!os__Process__is_pending(p, pkind)) {
+		return (_option_string){ .state=2, .err=_const_none__, .data={E_STRUCT} };
+	}
+	string res = os__Process__read_from(p, pkind);
+	_option_string _t2;
+	builtin___option_ok(&(string[]) { res }, (_option*)(&_t2), sizeof(string));
+	 
+	return _t2;
+}
+bool os__Process_is_pending(os__Process* p, os__ChildProcessPipeKind pkind) {
+	os__Process__check_redirection_call(p, _S("Process.is_pending"));
+	bool res = os__Process__is_pending(p, pkind);
+	return res;
+}
+VV_LOC string os__Process__read_from(os__Process* p, os__ChildProcessPipeKind pkind) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		multi_return_string_int mr_6450 = os__fd_read(p->stdio_fd[builtin__v_fixed_index(pkind, 3)], 4096);
+		string s = mr_6450.arg0;
+		return s;
+	}
+	#endif
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC string os__Process__slurp_from(os__Process* p, os__ChildProcessPipeKind pkind) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return Array_string_join(os__fd_slurp(p->stdio_fd[builtin__v_fixed_index(pkind, 3)]), _S(""));
+	}
+	#endif
+	return (string){.str=(byteptr)"", .is_lit=1};
+}
+VV_LOC void os__Process__write_to(os__Process* p, os__ChildProcessPipeKind pkind, string s) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__fd_write(p->stdio_fd[builtin__v_fixed_index(pkind, 3)], s);
+	}
+	#endif
+}
+VV_LOC bool os__Process__is_pending(os__Process* p, os__ChildProcessPipeKind pkind) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return os__fd_is_pending(p->stdio_fd[builtin__v_fixed_index(pkind, 3)]);
+	}
+	#endif
+	return false;
+}
+VV_LOC void os__Process__check_redirection_call(os__Process* p, string fn_name) {
+	if (!p->use_stdio_ctl) {
+		builtin___v_panic(builtin__string__plus(_S("Call p.set_redirect_stdio() before calling p."), fn_name));
+		VUNREACHABLE();
+	}
+	if (p->status == os__ProcessState__not_started) {
+		builtin___v_panic(builtin__string__plus(builtin__string__plus(_S("Call p."), fn_name), _S("() after you have called p.run()")));
+		VUNREACHABLE();
+	}
+}
+VV_LOC void os__Process__signal_stop(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__Process_unix_stop_process(p);
+	}
+	#endif
+}
+VV_LOC void os__Process__signal_continue(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__Process_unix_resume_process(p);
+	}
+	#endif
+}
+VV_LOC void os__Process__signal_kill(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__Process_unix_kill_process(p);
+	}
+	#endif
+}
+VV_LOC void os__Process__signal_term(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__Process_unix_term_process(p);
+	}
+	#endif
+}
+VV_LOC void os__Process__signal_pgkill(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__Process_unix_kill_pgroup(p);
+	}
+	#endif
+}
+VV_LOC void os__Process__wait(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		os__Process_unix_wait(p);
+	}
+	#endif
+}
+VV_LOC bool os__Process__is_alive(os__Process* p) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		return os__Process_unix_is_alive(p);
+	}
+	#endif
+	return 0;
+}
+void os__Process_run(os__Process* p) {
+	if (p->status != os__ProcessState__not_started) {
+		return;
+	}
+	os__Process__spawn(p);
+}
+os__Process* os__new_process(string filename) {
+	return ((os__Process*)builtin__memdup(&(os__Process){.filename = filename,.pid = 0,.code = -1,.status = os__ProcessState__not_started,.err = (string){.str=(byteptr)"", .is_lit=1},.args = builtin____new_array(0, 0, sizeof(string)),.work_folder = (string){.str=(byteptr)"", .is_lit=1},.env_is_custom = 0,.env = builtin____new_array(0, 0, sizeof(string)),.use_stdio_ctl = 0,.use_pgroup = 0,.stdio_fd = {-1, -1, -1},.wdata = 0,.create_no_window = 0,}, sizeof(os__Process)));
+}
+void os__Process_set_args(os__Process* p, Array_string pargs) {
+	if (p->status != os__ProcessState__not_started) {
+		return;
+	}
+	p->args = pargs;
+	return;
+}
+void os__Process_set_work_folder(os__Process* p, string path) {
+	if (p->status != os__ProcessState__not_started) {
+		return;
+	}
+	p->work_folder = os__real_path(path);
+	return;
+}
+void os__Process_set_environment(os__Process* p, Map_string_string envs) {
+	if (p->status != os__ProcessState__not_started) {
+		return;
+	}
+	p->env_is_custom = true;
+	p->env = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	int _t2 = envs.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = envs.key_values.len - _t2;
+		_t2 = envs.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&envs.key_values, _t1)) {continue;}
+		string k = *(string*)builtin__DenseArray_key(&envs.key_values, _t1);
+		k = builtin__string_clone(k);
+		string v = (*(string*)builtin__DenseArray_value(&envs.key_values, _t1));
+		builtin__array_push((array*)&p->env, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = k}}, {_S("="), 0xfe10, {.d_s = v}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+	}
+	return;
+}
+VV_LOC int os__Process_unix_spawn_process(os__Process* p) {
+	Array_fixed_int_6 pipeset = {0};
+	if (p->use_stdio_ctl) {
+		i32 dont_care = pipe(&pipeset[0]);
+		dont_care = pipe(&pipeset[2]);
+		dont_care = pipe(&pipeset[4]);
+		{i32 _ = dont_care;}
+		;
+	}
+	int pid = os__fork();
+	if (pid != 0) {
+		if (p->use_stdio_ctl) {
+			p->stdio_fd[0] = pipeset[1];
+			p->stdio_fd[1] = pipeset[2];
+			p->stdio_fd[2] = pipeset[4];
+			os__fd_close(pipeset[0]);
+			os__fd_close(pipeset[3]);
+			os__fd_close(pipeset[5]);
+		}
+		return pid;
+	}
+	if (p->use_pgroup) {
+		setpgid(0, 0);
+	}
+	if (p->use_stdio_ctl) {
+		os__fd_close(pipeset[1]);
+		os__fd_close(pipeset[2]);
+		os__fd_close(pipeset[4]);
+		dup2(pipeset[0], 0);
+		dup2(pipeset[3], 1);
+		dup2(pipeset[5], 2);
+		os__fd_close(pipeset[0]);
+		os__fd_close(pipeset[3]);
+		os__fd_close(pipeset[5]);
+	}
+	if ((p->work_folder).len != 0) {
+		if (!os__is_abs_path(p->filename)) {
+			p->filename = os__abs_path(p->filename);
+		}
+		_result_void _t2 = os__chdir(p->work_folder);
+		(void)_t2;
+ ;
+	}
+	_result_void _t3 = os__execve(p->filename, p->args, p->env);
+	if (_t3.is_error) {
+		IError err = _t3.err;
+		builtin__eprintln(builtin__IError_str(err));
+		builtin___v_exit(1);
+		VUNREACHABLE();
+	;
+	}
+	
+ ;
+	return 0;
+}
+VV_LOC void os__Process_unix_stop_process(os__Process* p) {
+	kill(p->pid, SIGSTOP);
+}
+VV_LOC void os__Process_unix_resume_process(os__Process* p) {
+	kill(p->pid, SIGCONT);
+}
+VV_LOC void os__Process_unix_term_process(os__Process* p) {
+	kill(p->pid, SIGTERM);
+}
+VV_LOC void os__Process_unix_kill_process(os__Process* p) {
+	kill(p->pid, SIGKILL);
+}
+VV_LOC void os__Process_unix_kill_pgroup(os__Process* p) {
+	kill(-p->pid, SIGKILL);
+}
+VV_LOC void os__Process_unix_wait(os__Process* p) {
+	os__Process_impl_check_pid_status(p, false, 0);
+}
+VV_LOC bool os__Process_unix_is_alive(os__Process* p) {
+	return os__Process_impl_check_pid_status(p, true, WNOHANG);
+}
+VV_LOC bool os__Process_impl_check_pid_status(os__Process* p, bool exit_early_on_ret0, int waitpid_options) {
+	int cstatus = 0;
+	int ret = -1;
+	#if !defined(CUSTOM_DEFINE_emscripten)
+	{
+		ret = waitpid(p->pid, &cstatus, waitpid_options);
+	}
+	#endif
+	p->code = ret;
+	if (ret == -1) {
+		p->err = os__posix_get_error_msg(errno);
+		return false;
+	}
+	if (exit_early_on_ret0 && ret == 0) {
+		return true;
+	}
+	multi_return_int_bool mr_3008 = os__posix_wait4_to_exit_status(cstatus);
+	int pret = mr_3008.arg0;
+	bool is_signaled = mr_3008.arg1;
+	if (is_signaled) {
+		p->status = os__ProcessState__aborted;
+		p->err = builtin__str_intp(3, _MOV((StrIntpData[]){{_S("Terminated by signal "), 0x4fe27, {.d_i32 = pret}}, {_S(" ("), 0xfe10, {.d_s = os__sigint_to_signal_name(pret)}}, {_S(")"), 0, { .d_c = 0 }}}));
+		pret += 128;
+	} else {
+		p->status = os__ProcessState__exited;
+	}
+	p->code = pret;
+	return false;
+}
+_result_anon_fn_os__signal os__signal_opt(os__Signal signum, void (*handler)(os__Signal )) {
+	errno = 0;
+	voidptr prev_handler = signal(((int)(signum)), (voidptr)handler);
+	if (prev_handler == SIG_ERR) {
+		return (_result_anon_fn_os__signal){ .is_error=true, .err=builtin__error_with_code(os__posix_get_error_msg(EINVAL), EINVAL), .data={E_STRUCT} };
+	}
+	_result_anon_fn_os__signal _t2;
+	builtin___result_ok(&(os__SignalHandler[]) { (voidptr)((os__SignalHandler)(prev_handler)) }, (_result*)(&_t2), sizeof(os__SignalHandler));
+	 
+	return _t2;
+}
+VV_LOC void os__ignore_signal_handler(os__Signal _signal) {
+}
+void os__signal_ignore(Array_os__Signal args) {
+	if (os__is_main_thread()) {
+		#if !defined(_WIN32)
+		{
+			for (int _t2 = 0; _t2 < args.len; ++_t2) {
+				os__Signal arg = ((os__Signal*)args.data)[_t2];
+				_result_anon_fn_os__signal _t3 = os__signal_opt(arg, (voidptr)os__ignore_signal_handler);
+				(void)_t3;
+ ;
+			}
+		}
+		#endif
+	} else {
+		os__signal_ignore_internal(args);
+	}
+}
+bool os__is_main_thread(void) {
+	return g_main_thread_id == ((u64)(pthread_self()));
+}
+VV_LOC void os__signal_ignore_internal(Array_os__Signal args) {
+	u32 mask1 = ((u32)(0));
+	sigemptyset(&mask1);
+	for (int _t1 = 0; _t1 < args.len; ++_t1) {
+		os__Signal arg = ((os__Signal*)args.data)[_t1];
+		sigaddset(&mask1, ((int)(arg)));
+	}
+	sigprocmask(SIG_BLOCK, &mask1, ((void*)0));
+}
+VV_LOC void os__sleep_ms(i64 ms) {
+	#if defined(_WIN32)
+	{
+	}
+	#else
+	{
+		struct timespec req = ((struct timespec){.tv_sec = (i64)(ms / 1000),.tv_nsec = (i64)(1000000 * ((i64)(ms % 1000))),});
+		struct timespec rem = ((struct timespec){.tv_sec = 0,.tv_nsec = 0,});
+		for (;;) {
+			if (!(nanosleep(&req, &rem) < 0)) break;
+			if (errno == EINTR) {
+				req = rem;
+			} else {
+				break;
+			}
+		}
+	}
+	#endif
+}
+_result_void os__open_uri(string uri) {
+	string vopen_uri_cmd = os__getenv(_S("VOPEN_URI_CMD"));
+	if ((vopen_uri_cmd).len == 0) {
+		#if defined(__APPLE__)
+		{
+			vopen_uri_cmd = _S("open");
+		}
+		#elif defined(__FreeBSD__) || defined(__OpenBSD__)
+		{
+		}
+		#elif defined(__linux__)
+		{
+		}
+		#endif
+	}
+	if ((vopen_uri_cmd).len == 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(_S("unsupported platform")), .data={E_STRUCT} };
+	}
+	os__Result result = os__execute(builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = vopen_uri_cmd}}, {_S(" \""), 0xfe10, {.d_s = uri}}, {_S("\""), 0, { .d_c = 0 }}})));
+	if (result.exit_code != 0) {
+		return (_result_void){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("unable to open url: "), 0xfe10, {.d_s = result.output}}, {_SLIT0, 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+	}
+	return (_result_void){0};
+}
+_result_os__Stat os__stat(string path) {
+	struct stat s;
+	{ // Unsafe block
+		i32 res = stat(((char*)(path.str)), &s);
+		if (res != 0) {
+			return (_result_os__Stat){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+		}
+		_result_os__Stat _t2;
+		builtin___result_ok(&(os__Stat[]) { ((os__Stat){
+			.dev = s.st_dev,
+			.inode = s.st_ino,
+			.mode = s.st_mode,
+			.nlink = s.st_nlink,
+			.uid = s.st_uid,
+			.gid = s.st_gid,
+			.rdev = s.st_rdev,
+			.size = s.st_size,
+			.atime = s.st_atime,
+			.mtime = s.st_mtime,
+			.ctime = s.st_ctime,
+		}) }, (_result*)(&_t2), sizeof(os__Stat));
+		 
+		return _t2;
+	}
+	return (_result_os__Stat){0};
+}
+_result_os__Stat os__lstat(string path) {
+	struct stat s;
+	{ // Unsafe block
+		i32 res = lstat(((char*)(path.str)), &s);
+		if (res != 0) {
+			return (_result_os__Stat){ .is_error=true, .err=os__error_posix(((os__SystemError){.msg = (string){.str=(byteptr)"", .is_lit=1},.code = _const_os__error_code_not_set,})), .data={E_STRUCT} };
+		}
+		_result_os__Stat _t2;
+		builtin___result_ok(&(os__Stat[]) { ((os__Stat){
+			.dev = s.st_dev,
+			.inode = s.st_ino,
+			.mode = s.st_mode,
+			.nlink = s.st_nlink,
+			.uid = s.st_uid,
+			.gid = s.st_gid,
+			.rdev = s.st_rdev,
+			.size = s.st_size,
+			.atime = s.st_atime,
+			.mtime = s.st_mtime,
+			.ctime = s.st_ctime,
+		}) }, (_result*)(&_t2), sizeof(os__Stat));
+		 
+		return _t2;
+	}
+	return (_result_os__Stat){0};
+}
+os__FileType os__Stat_get_filetype(os__Stat st) {
+	u32 _t1 = (st.mode & ((u32)(S_IFMT)));
+	
+	if (_t1 == (((u32)(S_IFREG)))) {
+		return os__FileType__regular;
+	}
+	else if (_t1 == (((u32)(S_IFDIR)))) {
+		return os__FileType__directory;
+	}
+	else if (_t1 == (((u32)(S_IFCHR)))) {
+		return os__FileType__character_device;
+	}
+	else if (_t1 == (((u32)(S_IFBLK)))) {
+		return os__FileType__block_device;
+	}
+	else if (_t1 == (((u32)(S_IFIFO)))) {
+		return os__FileType__fifo;
+	}
+	else if (_t1 == (((u32)(S_IFLNK)))) {
+		return os__FileType__symbolic_link;
+	}
+	else if (_t1 == (((u32)(S_IFSOCK)))) {
+		return os__FileType__socket;
+	}
+	else {
+		return os__FileType__unknown;
+	}
+	return 0;
+}
+os__FileMode os__Stat_get_mode(os__Stat st) {
+	return ((os__FileMode){.typ = os__Stat_get_filetype(st),.owner = ((os__FilePermission){.read = ((st.mode & ((u32)(S_IRUSR)))) != 0,.write = ((st.mode & ((u32)(S_IWUSR)))) != 0,.execute = ((st.mode & ((u32)(S_IXUSR)))) != 0,}),.group = ((os__FilePermission){.read = ((st.mode & ((u32)(S_IRGRP)))) != 0,.write = ((st.mode & ((u32)(S_IWGRP)))) != 0,.execute = ((st.mode & ((u32)(S_IXGRP)))) != 0,}),.others = ((os__FilePermission){.read = ((st.mode & ((u32)(S_IROTH)))) != 0,.write = ((st.mode & ((u32)(S_IWOTH)))) != 0,.execute = ((st.mode & ((u32)(S_IXOTH)))) != 0,}),});
+}
+bool os__is_dir(string path) {
+	_result_os__Stat _t1 = os__stat(path);
+	if (_t1.is_error) {
+		return false;
+	}
+	
+ 	os__Stat attr = (*(os__Stat*)_t1.data);
+	return os__Stat_get_filetype(attr) == os__FileType__directory;
+}
+bool os__is_link(string path) {
+	_result_os__Stat _t1 = os__lstat(path);
+	if (_t1.is_error) {
+		return false;
+	}
+	
+ 	os__Stat attr = (*(os__Stat*)_t1.data);
+	return os__Stat_get_filetype(attr) == os__FileType__symbolic_link;
+}
+VV_LOC os__PathKind os__kind_of_existing_path(string path) {
+	os__PathKind res = ((os__PathKind){.is_file = 0,.is_dir = 0,.is_link = 0,});
+	_result_os__Stat _t1 = os__lstat(path);
+	if (_t1.is_error) {
+		return res;
+	}
+	
+ 	os__Stat attr = (*(os__Stat*)_t1.data);
+	res.is_file = os__Stat_get_filetype(attr) == os__FileType__regular;
+	res.is_dir = os__Stat_get_filetype(attr) == os__FileType__directory;
+	res.is_link = os__Stat_get_filetype(attr) == os__FileType__symbolic_link;
+	return res;
+}
 voidptr main__routegroup_new_raw(void) {
 	return vphp__generic_new_raw_T_main__RouteGroup();
 }
 // export alias: RouteGroup_new_raw -> main__routegroup_new_raw
 voidptr RouteGroup_new_raw(void) {
 	return main__routegroup_new_raw();
+}
+void main__routegroup_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__RouteGroup(ptr);
+}
+// export alias: RouteGroup_free_raw -> main__routegroup_free_raw
+void RouteGroup_free_raw(voidptr ptr) {
+	return main__routegroup_free_raw(ptr);
+}
+void main__routegroup_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+}
+// export alias: RouteGroup_cleanup_raw -> main__routegroup_cleanup_raw
+void RouteGroup_cleanup_raw(voidptr ptr) {
+	return main__routegroup_cleanup_raw(ptr);
 }
 void main__routegroup_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -18462,7 +27607,7 @@ void main__routegroup_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* 
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__RouteGroup* obj = ((main__RouteGroup*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 	}
 }
 // export alias: RouteGroup_set_prop -> main__routegroup_set_prop
@@ -18472,8 +27617,7 @@ void RouteGroup_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value)
 void main__routegroup_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__RouteGroup* obj = ((main__RouteGroup*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
-		vphp__ZVal_add_property_string(out, _S("prefix"), obj->prefix);
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 	}
 }
 // export alias: RouteGroup_sync_props -> main__routegroup_sync_props
@@ -18482,9 +27626,14 @@ void RouteGroup_sync_props(voidptr ptr, zval* zv) {
 }
 voidptr main__vphp_wrap_routegroup_group(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__RouteGroup* res = main__RouteGroup_group(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_group -> main__vphp_wrap_routegroup_group
 voidptr vphp_wrap_RouteGroup_group(voidptr ptr, vphp__Context ctx) {
@@ -18492,9 +27641,14 @@ voidptr vphp_wrap_RouteGroup_group(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_middleware(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__RouteGroup* res = main__RouteGroup_middleware(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_middleware -> main__vphp_wrap_routegroup_middleware
 voidptr vphp_wrap_RouteGroup_middleware(voidptr ptr, vphp__Context ctx) {
@@ -18502,9 +27656,14 @@ voidptr vphp_wrap_RouteGroup_middleware(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_before(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__RouteGroup* res = main__RouteGroup_before(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_before -> main__vphp_wrap_routegroup_before
 voidptr vphp_wrap_RouteGroup_before(voidptr ptr, vphp__Context ctx) {
@@ -18512,9 +27671,14 @@ voidptr vphp_wrap_RouteGroup_before(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_after(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__RouteGroup* res = main__RouteGroup_after(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_after -> main__vphp_wrap_routegroup_after
 voidptr vphp_wrap_RouteGroup_after(voidptr ptr, vphp__Context ctx) {
@@ -18522,10 +27686,15 @@ voidptr vphp_wrap_RouteGroup_after(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_get(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_get(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_get -> main__vphp_wrap_routegroup_get
 voidptr vphp_wrap_RouteGroup_get(voidptr ptr, vphp__Context ctx) {
@@ -18533,10 +27702,15 @@ voidptr vphp_wrap_RouteGroup_get(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_post(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_post(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_post -> main__vphp_wrap_routegroup_post
 voidptr vphp_wrap_RouteGroup_post(voidptr ptr, vphp__Context ctx) {
@@ -18544,10 +27718,15 @@ voidptr vphp_wrap_RouteGroup_post(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_put(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_put(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_put -> main__vphp_wrap_routegroup_put
 voidptr vphp_wrap_RouteGroup_put(voidptr ptr, vphp__Context ctx) {
@@ -18555,10 +27734,15 @@ voidptr vphp_wrap_RouteGroup_put(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_head(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_head(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_head -> main__vphp_wrap_routegroup_head
 voidptr vphp_wrap_RouteGroup_head(voidptr ptr, vphp__Context ctx) {
@@ -18566,10 +27750,15 @@ voidptr vphp_wrap_RouteGroup_head(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_options(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_options(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_options -> main__vphp_wrap_routegroup_options
 voidptr vphp_wrap_RouteGroup_options(voidptr ptr, vphp__Context ctx) {
@@ -18577,10 +27766,15 @@ voidptr vphp_wrap_RouteGroup_options(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_patch(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_patch(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_patch -> main__vphp_wrap_routegroup_patch
 voidptr vphp_wrap_RouteGroup_patch(voidptr ptr, vphp__Context ctx) {
@@ -18588,10 +27782,15 @@ voidptr vphp_wrap_RouteGroup_patch(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_delete(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_delete(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_delete -> main__vphp_wrap_routegroup_delete
 voidptr vphp_wrap_RouteGroup_delete(voidptr ptr, vphp__Context ctx) {
@@ -18599,10 +27798,15 @@ voidptr vphp_wrap_RouteGroup_delete(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_any(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__RouteGroup* res = main__RouteGroup_any(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_any -> main__vphp_wrap_routegroup_any
 voidptr vphp_wrap_RouteGroup_any(voidptr ptr, vphp__Context ctx) {
@@ -18610,11 +27814,16 @@ voidptr vphp_wrap_RouteGroup_any(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_map(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_map(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_map -> main__vphp_wrap_routegroup_map
 voidptr vphp_wrap_RouteGroup_map(voidptr ptr, vphp__Context ctx) {
@@ -18622,11 +27831,16 @@ voidptr vphp_wrap_RouteGroup_map(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_get_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_get_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_get_named -> main__vphp_wrap_routegroup_get_named
 voidptr vphp_wrap_RouteGroup_get_named(voidptr ptr, vphp__Context ctx) {
@@ -18634,11 +27848,16 @@ voidptr vphp_wrap_RouteGroup_get_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_post_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_post_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_post_named -> main__vphp_wrap_routegroup_post_named
 voidptr vphp_wrap_RouteGroup_post_named(voidptr ptr, vphp__Context ctx) {
@@ -18646,11 +27865,16 @@ voidptr vphp_wrap_RouteGroup_post_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_put_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_put_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_put_named -> main__vphp_wrap_routegroup_put_named
 voidptr vphp_wrap_RouteGroup_put_named(voidptr ptr, vphp__Context ctx) {
@@ -18658,11 +27882,16 @@ voidptr vphp_wrap_RouteGroup_put_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_head_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_head_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_head_named -> main__vphp_wrap_routegroup_head_named
 voidptr vphp_wrap_RouteGroup_head_named(voidptr ptr, vphp__Context ctx) {
@@ -18670,11 +27899,16 @@ voidptr vphp_wrap_RouteGroup_head_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_options_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_options_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_options_named -> main__vphp_wrap_routegroup_options_named
 voidptr vphp_wrap_RouteGroup_options_named(voidptr ptr, vphp__Context ctx) {
@@ -18682,11 +27916,16 @@ voidptr vphp_wrap_RouteGroup_options_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_patch_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_patch_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_patch_named -> main__vphp_wrap_routegroup_patch_named
 voidptr vphp_wrap_RouteGroup_patch_named(voidptr ptr, vphp__Context ctx) {
@@ -18694,11 +27933,16 @@ voidptr vphp_wrap_RouteGroup_patch_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_delete_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_delete_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_delete_named -> main__vphp_wrap_routegroup_delete_named
 voidptr vphp_wrap_RouteGroup_delete_named(voidptr ptr, vphp__Context ctx) {
@@ -18706,11 +27950,16 @@ voidptr vphp_wrap_RouteGroup_delete_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_any_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__RouteGroup* res = main__RouteGroup_any_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_any_named -> main__vphp_wrap_routegroup_any_named
 voidptr vphp_wrap_RouteGroup_any_named(voidptr ptr, vphp__Context ctx) {
@@ -18718,19 +27967,31 @@ voidptr vphp_wrap_RouteGroup_any_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_routegroup_map_named(voidptr ptr, vphp__Context ctx) {
 	main__RouteGroup* recv = ((main__RouteGroup*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	vphp__ZVal arg_3 = vphp__Context_arg_val(ctx, 3);
 	main__RouteGroup* res = main__RouteGroup_map_named(recv, arg_0, arg_1, arg_2, arg_3);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_RouteGroup_map_named -> main__vphp_wrap_routegroup_map_named
 voidptr vphp_wrap_RouteGroup_map_named(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_routegroup_map_named(ptr, ctx);
 }
 voidptr main__routegroup_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__routegroup_get_prop)),.write_handler = ((voidptr)(main__routegroup_set_prop)),.sync_handler = ((voidptr)(main__routegroup_sync_props)),.new_raw = ((voidptr)(main__routegroup_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__routegroup_get_prop)),
+		.write_handler = ((voidptr)(main__routegroup_set_prop)),
+		.sync_handler = ((voidptr)(main__routegroup_sync_props)),
+		.new_raw = ((voidptr)(main__routegroup_new_raw)),
+		.cleanup_raw = ((voidptr)(main__routegroup_cleanup_raw)),
+		.free_raw = ((voidptr)(main__routegroup_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: RouteGroup_handlers -> main__routegroup_handlers
 voidptr RouteGroup_handlers(void) {
@@ -18742,6 +28003,29 @@ voidptr main__vslimrequest_new_raw(void) {
 // export alias: VSlimRequest_new_raw -> main__vslimrequest_new_raw
 voidptr VSlimRequest_new_raw(void) {
 	return main__vslimrequest_new_raw();
+}
+void main__vslimrequest_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimRequest(ptr);
+}
+// export alias: VSlimRequest_free_raw -> main__vslimrequest_free_raw
+void VSlimRequest_free_raw(voidptr ptr) {
+	return main__vslimrequest_free_raw(ptr);
+}
+void main__vslimrequest_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	{ // Unsafe block
+		main__VSlimRequest* obj = ((main__VSlimRequest*)(ptr));
+		main__VSlimRequest_free(obj);
+	}
+}
+// export alias: VSlimRequest_cleanup_raw -> main__vslimrequest_cleanup_raw
+void VSlimRequest_cleanup_raw(voidptr ptr) {
+	return main__vslimrequest_cleanup_raw(ptr);
 }
 void main__vslimrequest_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -18797,7 +28081,7 @@ void main__vslimrequest_set_prop(voidptr ptr, char* name_ptr, int name_len, zval
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__VSlimRequest* obj = ((main__VSlimRequest*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 		if (_SLIT_EQ(name.str, name.len, "method")) {
 			obj->method = vphp__ZVal_get_string(arg);
 			return;
@@ -18847,7 +28131,7 @@ void VSlimRequest_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* valu
 void main__vslimrequest_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__VSlimRequest* obj = ((main__VSlimRequest*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 		vphp__ZVal_add_property_string(out, _S("method"), obj->method);
 		vphp__ZVal_add_property_string(out, _S("raw_path"), obj->raw_path);
 		vphp__ZVal_add_property_string(out, _S("path"), obj->path);
@@ -18866,11 +28150,16 @@ void VSlimRequest_sync_props(voidptr ptr, zval* zv) {
 }
 voidptr main__vphp_wrap_vslimrequest_construct(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	main__VSlimRequest* res = main__VSlimRequest_construct(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_construct -> main__vphp_wrap_vslimrequest_construct
 voidptr vphp_wrap_VSlimRequest_construct(voidptr ptr, vphp__Context ctx) {
@@ -18878,8 +28167,12 @@ voidptr vphp_wrap_VSlimRequest_construct(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_str(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string res = main__VSlimRequest_str(recv);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_str -> main__vphp_wrap_vslimrequest_str
 void vphp_wrap_VSlimRequest_str(voidptr ptr, vphp__Context ctx) {
@@ -18887,9 +28180,14 @@ void vphp_wrap_VSlimRequest_str(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_query(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_query(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_query -> main__vphp_wrap_vslimrequest_set_query
 voidptr vphp_wrap_VSlimRequest_set_query(voidptr ptr, vphp__Context ctx) {
@@ -18897,9 +28195,14 @@ voidptr vphp_wrap_VSlimRequest_set_query(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_method(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_method(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_method -> main__vphp_wrap_vslimrequest_set_method
 voidptr vphp_wrap_VSlimRequest_set_method(voidptr ptr, vphp__Context ctx) {
@@ -18907,9 +28210,14 @@ voidptr vphp_wrap_VSlimRequest_set_method(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_target(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_target(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_target -> main__vphp_wrap_vslimrequest_set_target
 voidptr vphp_wrap_VSlimRequest_set_target(voidptr ptr, vphp__Context ctx) {
@@ -18917,9 +28225,14 @@ voidptr vphp_wrap_VSlimRequest_set_target(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_body(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_body(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_body -> main__vphp_wrap_vslimrequest_set_body
 voidptr vphp_wrap_VSlimRequest_set_body(voidptr ptr, vphp__Context ctx) {
@@ -18927,9 +28240,14 @@ voidptr vphp_wrap_VSlimRequest_set_body(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_scheme(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_scheme(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_scheme -> main__vphp_wrap_vslimrequest_set_scheme
 voidptr vphp_wrap_VSlimRequest_set_scheme(voidptr ptr, vphp__Context ctx) {
@@ -18937,9 +28255,14 @@ voidptr vphp_wrap_VSlimRequest_set_scheme(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_host(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_host(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_host -> main__vphp_wrap_vslimrequest_set_host
 voidptr vphp_wrap_VSlimRequest_set_host(voidptr ptr, vphp__Context ctx) {
@@ -18947,9 +28270,14 @@ voidptr vphp_wrap_VSlimRequest_set_host(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_port(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_port(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_port -> main__vphp_wrap_vslimrequest_set_port
 voidptr vphp_wrap_VSlimRequest_set_port(voidptr ptr, vphp__Context ctx) {
@@ -18957,9 +28285,14 @@ voidptr vphp_wrap_VSlimRequest_set_port(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_protocol_version(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_protocol_version(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_protocol_version -> main__vphp_wrap_vslimrequest_set_protocol_version
 voidptr vphp_wrap_VSlimRequest_set_protocol_version(voidptr ptr, vphp__Context ctx) {
@@ -18967,9 +28300,14 @@ voidptr vphp_wrap_VSlimRequest_set_protocol_version(voidptr ptr, vphp__Context c
 }
 voidptr main__vphp_wrap_vslimrequest_set_remote_addr(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_remote_addr(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_remote_addr -> main__vphp_wrap_vslimrequest_set_remote_addr
 voidptr vphp_wrap_VSlimRequest_set_remote_addr(voidptr ptr, vphp__Context ctx) {
@@ -18977,9 +28315,14 @@ voidptr vphp_wrap_VSlimRequest_set_remote_addr(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_headers(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_headers(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_headers -> main__vphp_wrap_vslimrequest_set_headers
 voidptr vphp_wrap_VSlimRequest_set_headers(voidptr ptr, vphp__Context ctx) {
@@ -18987,9 +28330,14 @@ voidptr vphp_wrap_VSlimRequest_set_headers(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_cookies(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_cookies(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_cookies -> main__vphp_wrap_vslimrequest_set_cookies
 voidptr vphp_wrap_VSlimRequest_set_cookies(voidptr ptr, vphp__Context ctx) {
@@ -18997,9 +28345,14 @@ voidptr vphp_wrap_VSlimRequest_set_cookies(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_attributes(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_attributes(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_attributes -> main__vphp_wrap_vslimrequest_set_attributes
 voidptr vphp_wrap_VSlimRequest_set_attributes(voidptr ptr, vphp__Context ctx) {
@@ -19007,9 +28360,14 @@ voidptr vphp_wrap_VSlimRequest_set_attributes(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_server(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_server(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_server -> main__vphp_wrap_vslimrequest_set_server
 voidptr vphp_wrap_VSlimRequest_set_server(voidptr ptr, vphp__Context ctx) {
@@ -19017,9 +28375,14 @@ voidptr vphp_wrap_VSlimRequest_set_server(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimrequest_set_uploaded_files(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_uploaded_files(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_uploaded_files -> main__vphp_wrap_vslimrequest_set_uploaded_files
 voidptr vphp_wrap_VSlimRequest_set_uploaded_files(voidptr ptr, vphp__Context ctx) {
@@ -19027,9 +28390,14 @@ voidptr vphp_wrap_VSlimRequest_set_uploaded_files(voidptr ptr, vphp__Context ctx
 }
 voidptr main__vphp_wrap_vslimrequest_set_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimRequest* res = main__VSlimRequest_set_params(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimRequest_set_params -> main__vphp_wrap_vslimrequest_set_params
 voidptr vphp_wrap_VSlimRequest_set_params(voidptr ptr, vphp__Context ctx) {
@@ -19037,9 +28405,13 @@ voidptr vphp_wrap_VSlimRequest_set_params(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_query(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_query(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_query -> main__vphp_wrap_vslimrequest_query
 void vphp_wrap_VSlimRequest_query(voidptr ptr, vphp__Context ctx) {
@@ -19047,8 +28419,12 @@ void vphp_wrap_VSlimRequest_query(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_query_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_query_params(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_query_params -> main__vphp_wrap_vslimrequest_query_params
 void vphp_wrap_VSlimRequest_query_params(voidptr ptr, vphp__Context ctx) {
@@ -19056,9 +28432,13 @@ void vphp_wrap_VSlimRequest_query_params(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_query(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_query(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_query -> main__vphp_wrap_vslimrequest_has_query
 void vphp_wrap_VSlimRequest_has_query(voidptr ptr, vphp__Context ctx) {
@@ -19066,9 +28446,13 @@ void vphp_wrap_VSlimRequest_has_query(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_input(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_input(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_input -> main__vphp_wrap_vslimrequest_input
 void vphp_wrap_VSlimRequest_input(voidptr ptr, vphp__Context ctx) {
@@ -19076,10 +28460,14 @@ void vphp_wrap_VSlimRequest_input(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_input_or(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string res = main__VSlimRequest_input_or(recv, arg_0, arg_1);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_input_or -> main__vphp_wrap_vslimrequest_input_or
 void vphp_wrap_VSlimRequest_input_or(voidptr ptr, vphp__Context ctx) {
@@ -19087,9 +28475,13 @@ void vphp_wrap_VSlimRequest_input_or(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_input(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_input(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_input -> main__vphp_wrap_vslimrequest_has_input
 void vphp_wrap_VSlimRequest_has_input(voidptr ptr, vphp__Context ctx) {
@@ -19097,8 +28489,12 @@ void vphp_wrap_VSlimRequest_has_input(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_all_inputs(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_all_inputs(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_all_inputs -> main__vphp_wrap_vslimrequest_all_inputs
 void vphp_wrap_VSlimRequest_all_inputs(voidptr ptr, vphp__Context ctx) {
@@ -19106,8 +28502,12 @@ void vphp_wrap_VSlimRequest_all_inputs(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_parsed_body(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_parsed_body(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_parsed_body -> main__vphp_wrap_vslimrequest_parsed_body
 void vphp_wrap_VSlimRequest_parsed_body(voidptr ptr, vphp__Context ctx) {
@@ -19115,8 +28515,12 @@ void vphp_wrap_VSlimRequest_parsed_body(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_query_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_query_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_query_all -> main__vphp_wrap_vslimrequest_query_all
 void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx) {
@@ -19124,9 +28528,13 @@ void vphp_wrap_VSlimRequest_query_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_header(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_header -> main__vphp_wrap_vslimrequest_header
 void vphp_wrap_VSlimRequest_header(voidptr ptr, vphp__Context ctx) {
@@ -19134,8 +28542,12 @@ void vphp_wrap_VSlimRequest_header(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_headers(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_headers(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_headers -> main__vphp_wrap_vslimrequest_headers
 void vphp_wrap_VSlimRequest_headers(voidptr ptr, vphp__Context ctx) {
@@ -19143,9 +28555,13 @@ void vphp_wrap_VSlimRequest_headers(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_header(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_header -> main__vphp_wrap_vslimrequest_has_header
 void vphp_wrap_VSlimRequest_has_header(voidptr ptr, vphp__Context ctx) {
@@ -19153,8 +28569,12 @@ void vphp_wrap_VSlimRequest_has_header(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_content_type(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string res = main__VSlimRequest_content_type(recv);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_content_type -> main__vphp_wrap_vslimrequest_content_type
 void vphp_wrap_VSlimRequest_content_type(voidptr ptr, vphp__Context ctx) {
@@ -19162,9 +28582,13 @@ void vphp_wrap_VSlimRequest_content_type(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_cookie(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_cookie(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_cookie -> main__vphp_wrap_vslimrequest_cookie
 void vphp_wrap_VSlimRequest_cookie(voidptr ptr, vphp__Context ctx) {
@@ -19172,8 +28596,12 @@ void vphp_wrap_VSlimRequest_cookie(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_cookies(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_cookies(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_cookies -> main__vphp_wrap_vslimrequest_cookies
 void vphp_wrap_VSlimRequest_cookies(voidptr ptr, vphp__Context ctx) {
@@ -19181,9 +28609,13 @@ void vphp_wrap_VSlimRequest_cookies(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_cookie(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_cookie(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_cookie -> main__vphp_wrap_vslimrequest_has_cookie
 void vphp_wrap_VSlimRequest_has_cookie(voidptr ptr, vphp__Context ctx) {
@@ -19191,9 +28623,13 @@ void vphp_wrap_VSlimRequest_has_cookie(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_param(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_param(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_param -> main__vphp_wrap_vslimrequest_param
 void vphp_wrap_VSlimRequest_param(voidptr ptr, vphp__Context ctx) {
@@ -19201,8 +28637,12 @@ void vphp_wrap_VSlimRequest_param(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_route_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_route_params(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_route_params -> main__vphp_wrap_vslimrequest_route_params
 void vphp_wrap_VSlimRequest_route_params(voidptr ptr, vphp__Context ctx) {
@@ -19210,9 +28650,13 @@ void vphp_wrap_VSlimRequest_route_params(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_param(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_param(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_param -> main__vphp_wrap_vslimrequest_has_param
 void vphp_wrap_VSlimRequest_has_param(voidptr ptr, vphp__Context ctx) {
@@ -19220,9 +28664,13 @@ void vphp_wrap_VSlimRequest_has_param(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_attribute(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_attribute(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_attribute -> main__vphp_wrap_vslimrequest_attribute
 void vphp_wrap_VSlimRequest_attribute(voidptr ptr, vphp__Context ctx) {
@@ -19230,8 +28678,12 @@ void vphp_wrap_VSlimRequest_attribute(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_attributes(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_attributes(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_attributes -> main__vphp_wrap_vslimrequest_attributes
 void vphp_wrap_VSlimRequest_attributes(voidptr ptr, vphp__Context ctx) {
@@ -19239,9 +28691,13 @@ void vphp_wrap_VSlimRequest_attributes(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_attribute(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_attribute(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_attribute -> main__vphp_wrap_vslimrequest_has_attribute
 void vphp_wrap_VSlimRequest_has_attribute(voidptr ptr, vphp__Context ctx) {
@@ -19249,9 +28705,13 @@ void vphp_wrap_VSlimRequest_has_attribute(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_server_value(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimRequest_server_value(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_server_value -> main__vphp_wrap_vslimrequest_server_value
 void vphp_wrap_VSlimRequest_server_value(voidptr ptr, vphp__Context ctx) {
@@ -19259,8 +28719,12 @@ void vphp_wrap_VSlimRequest_server_value(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_server_params(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_server_params(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_server_params -> main__vphp_wrap_vslimrequest_server_params
 void vphp_wrap_VSlimRequest_server_params(voidptr ptr, vphp__Context ctx) {
@@ -19268,9 +28732,13 @@ void vphp_wrap_VSlimRequest_server_params(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_server(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimRequest_has_server(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_server -> main__vphp_wrap_vslimrequest_has_server
 void vphp_wrap_VSlimRequest_has_server(voidptr ptr, vphp__Context ctx) {
@@ -19278,8 +28746,12 @@ void vphp_wrap_VSlimRequest_has_server(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_uploaded_file_count(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	int res = main__VSlimRequest_uploaded_file_count(recv);
 	vphp__Context_return_val_T_int(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_uploaded_file_count -> main__vphp_wrap_vslimrequest_uploaded_file_count
 void vphp_wrap_VSlimRequest_uploaded_file_count(voidptr ptr, vphp__Context ctx) {
@@ -19287,8 +28759,12 @@ void vphp_wrap_VSlimRequest_uploaded_file_count(voidptr ptr, vphp__Context ctx) 
 }
 void main__vphp_wrap_vslimrequest_uploaded_files(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Array_string res = main__VSlimRequest_uploaded_files(recv);
 	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_uploaded_files -> main__vphp_wrap_vslimrequest_uploaded_files
 void vphp_wrap_VSlimRequest_uploaded_files(voidptr ptr, vphp__Context ctx) {
@@ -19296,8 +28772,12 @@ void vphp_wrap_VSlimRequest_uploaded_files(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_has_uploaded_files(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	bool res = main__VSlimRequest_has_uploaded_files(recv);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_has_uploaded_files -> main__vphp_wrap_vslimrequest_has_uploaded_files
 void vphp_wrap_VSlimRequest_has_uploaded_files(voidptr ptr, vphp__Context ctx) {
@@ -19305,8 +28785,12 @@ void vphp_wrap_VSlimRequest_has_uploaded_files(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_is_secure(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	bool res = main__VSlimRequest_is_secure(recv);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_is_secure -> main__vphp_wrap_vslimrequest_is_secure
 void vphp_wrap_VSlimRequest_is_secure(voidptr ptr, vphp__Context ctx) {
@@ -19314,8 +28798,12 @@ void vphp_wrap_VSlimRequest_is_secure(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_headers_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_headers_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_headers_all -> main__vphp_wrap_vslimrequest_headers_all
 void vphp_wrap_VSlimRequest_headers_all(voidptr ptr, vphp__Context ctx) {
@@ -19323,8 +28811,12 @@ void vphp_wrap_VSlimRequest_headers_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_cookies_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_cookies_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_cookies_all -> main__vphp_wrap_vslimrequest_cookies_all
 void vphp_wrap_VSlimRequest_cookies_all(voidptr ptr, vphp__Context ctx) {
@@ -19332,8 +28824,12 @@ void vphp_wrap_VSlimRequest_cookies_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_params_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_params_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_params_all -> main__vphp_wrap_vslimrequest_params_all
 void vphp_wrap_VSlimRequest_params_all(voidptr ptr, vphp__Context ctx) {
@@ -19341,8 +28837,12 @@ void vphp_wrap_VSlimRequest_params_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_attributes_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_attributes_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_attributes_all -> main__vphp_wrap_vslimrequest_attributes_all
 void vphp_wrap_VSlimRequest_attributes_all(voidptr ptr, vphp__Context ctx) {
@@ -19350,8 +28850,12 @@ void vphp_wrap_VSlimRequest_attributes_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_server_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimRequest_server_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_server_all -> main__vphp_wrap_vslimrequest_server_all
 void vphp_wrap_VSlimRequest_server_all(voidptr ptr, vphp__Context ctx) {
@@ -19359,15 +28863,26 @@ void vphp_wrap_VSlimRequest_server_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimrequest_uploaded_files_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimRequest* recv = ((main__VSlimRequest*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Array_string res = main__VSlimRequest_uploaded_files_all(recv);
 	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimRequest_uploaded_files_all -> main__vphp_wrap_vslimrequest_uploaded_files_all
 void vphp_wrap_VSlimRequest_uploaded_files_all(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimrequest_uploaded_files_all(ptr, ctx);
 }
 voidptr main__vslimrequest_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimrequest_get_prop)),.write_handler = ((voidptr)(main__vslimrequest_set_prop)),.sync_handler = ((voidptr)(main__vslimrequest_sync_props)),.new_raw = ((voidptr)(main__vslimrequest_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimrequest_get_prop)),
+		.write_handler = ((voidptr)(main__vslimrequest_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimrequest_sync_props)),
+		.new_raw = ((voidptr)(main__vslimrequest_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimrequest_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimrequest_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: VSlimRequest_handlers -> main__vslimrequest_handlers
 voidptr VSlimRequest_handlers(void) {
@@ -19379,6 +28894,29 @@ voidptr main__vslimresponse_new_raw(void) {
 // export alias: VSlimResponse_new_raw -> main__vslimresponse_new_raw
 voidptr VSlimResponse_new_raw(void) {
 	return main__vslimresponse_new_raw();
+}
+void main__vslimresponse_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimResponse(ptr);
+}
+// export alias: VSlimResponse_free_raw -> main__vslimresponse_free_raw
+void VSlimResponse_free_raw(voidptr ptr) {
+	return main__vslimresponse_free_raw(ptr);
+}
+void main__vslimresponse_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	{ // Unsafe block
+		main__VSlimResponse* obj = ((main__VSlimResponse*)(ptr));
+		main__VSlimResponse_free(obj);
+	}
+}
+// export alias: VSlimResponse_cleanup_raw -> main__vslimresponse_cleanup_raw
+void VSlimResponse_cleanup_raw(voidptr ptr) {
+	return main__vslimresponse_cleanup_raw(ptr);
 }
 void main__vslimresponse_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -19406,7 +28944,7 @@ void main__vslimresponse_set_prop(voidptr ptr, char* name_ptr, int name_len, zva
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__VSlimResponse* obj = ((main__VSlimResponse*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 		if (_SLIT_EQ(name.str, name.len, "status")) {
 			obj->status = ((int)(vphp__ZVal_get_int(arg)));
 			return;
@@ -19428,7 +28966,7 @@ void VSlimResponse_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* val
 void main__vslimresponse_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__VSlimResponse* obj = ((main__VSlimResponse*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 		vphp__ZVal_add_property_long(out, _S("status"), ((i64)(obj->status)));
 		vphp__ZVal_add_property_string(out, _S("body"), obj->body);
 		vphp__ZVal_add_property_string(out, _S("content_type"), obj->content_type);
@@ -19440,11 +28978,16 @@ void VSlimResponse_sync_props(voidptr ptr, zval* zv) {
 }
 voidptr main__vphp_wrap_vslimresponse_construct(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	int arg_0 = vphp__Context_arg_T_int(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	main__VSlimResponse* res = main__VSlimResponse_construct(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_construct -> main__vphp_wrap_vslimresponse_construct
 voidptr vphp_wrap_VSlimResponse_construct(voidptr ptr, vphp__Context ctx) {
@@ -19452,9 +28995,13 @@ voidptr vphp_wrap_VSlimResponse_construct(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimresponse_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string res = main__VSlimResponse_header(recv, arg_0);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_header -> main__vphp_wrap_vslimresponse_header
 void vphp_wrap_VSlimResponse_header(voidptr ptr, vphp__Context ctx) {
@@ -19462,8 +29009,12 @@ void vphp_wrap_VSlimResponse_header(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimresponse_headers(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimResponse_headers(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_headers -> main__vphp_wrap_vslimresponse_headers
 void vphp_wrap_VSlimResponse_headers(voidptr ptr, vphp__Context ctx) {
@@ -19471,9 +29022,13 @@ void vphp_wrap_VSlimResponse_headers(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimresponse_has_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimResponse_has_header(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_has_header -> main__vphp_wrap_vslimresponse_has_header
 void vphp_wrap_VSlimResponse_has_header(voidptr ptr, vphp__Context ctx) {
@@ -19481,10 +29036,15 @@ void vphp_wrap_VSlimResponse_has_header(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_set_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	main__VSlimResponse* res = main__VSlimResponse_set_header(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_set_header -> main__vphp_wrap_vslimresponse_set_header
 voidptr vphp_wrap_VSlimResponse_set_header(voidptr ptr, vphp__Context ctx) {
@@ -19492,9 +29052,14 @@ voidptr vphp_wrap_VSlimResponse_set_header(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_set_content_type(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_set_content_type(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_set_content_type -> main__vphp_wrap_vslimresponse_set_content_type
 voidptr vphp_wrap_VSlimResponse_set_content_type(voidptr ptr, vphp__Context ctx) {
@@ -19502,8 +29067,12 @@ voidptr vphp_wrap_VSlimResponse_set_content_type(voidptr ptr, vphp__Context ctx)
 }
 void main__vphp_wrap_vslimresponse_cookie_header(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string res = main__VSlimResponse_cookie_header(recv);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_cookie_header -> main__vphp_wrap_vslimresponse_cookie_header
 void vphp_wrap_VSlimResponse_cookie_header(voidptr ptr, vphp__Context ctx) {
@@ -19511,10 +29080,15 @@ void vphp_wrap_VSlimResponse_cookie_header(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_set_cookie(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	main__VSlimResponse* res = main__VSlimResponse_set_cookie(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_set_cookie -> main__vphp_wrap_vslimresponse_set_cookie
 voidptr vphp_wrap_VSlimResponse_set_cookie(voidptr ptr, vphp__Context ctx) {
@@ -19522,11 +29096,16 @@ voidptr vphp_wrap_VSlimResponse_set_cookie(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_set_cookie_opts(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	main__VSlimResponse* res = main__VSlimResponse_set_cookie_opts(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_set_cookie_opts -> main__vphp_wrap_vslimresponse_set_cookie_opts
 voidptr vphp_wrap_VSlimResponse_set_cookie_opts(voidptr ptr, vphp__Context ctx) {
@@ -19534,6 +29113,7 @@ voidptr vphp_wrap_VSlimResponse_set_cookie_opts(voidptr ptr, vphp__Context ctx) 
 }
 voidptr main__vphp_wrap_vslimresponse_set_cookie_full(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
@@ -19543,7 +29123,11 @@ voidptr main__vphp_wrap_vslimresponse_set_cookie_full(voidptr ptr, vphp__Context
 	bool arg_6 = vphp__Context_arg_T_bool(ctx, 6);
 	string arg_7 = vphp__Context_arg_T_string(ctx, 7);
 	main__VSlimResponse* res = main__VSlimResponse_set_cookie_full(recv, arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_set_cookie_full -> main__vphp_wrap_vslimresponse_set_cookie_full
 voidptr vphp_wrap_VSlimResponse_set_cookie_full(voidptr ptr, vphp__Context ctx) {
@@ -19551,9 +29135,14 @@ voidptr vphp_wrap_VSlimResponse_set_cookie_full(voidptr ptr, vphp__Context ctx) 
 }
 voidptr main__vphp_wrap_vslimresponse_delete_cookie(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_delete_cookie(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_delete_cookie -> main__vphp_wrap_vslimresponse_delete_cookie
 voidptr vphp_wrap_VSlimResponse_delete_cookie(voidptr ptr, vphp__Context ctx) {
@@ -19561,9 +29150,14 @@ voidptr vphp_wrap_VSlimResponse_delete_cookie(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_set_status(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	int arg_0 = vphp__Context_arg_T_int(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_set_status(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_set_status -> main__vphp_wrap_vslimresponse_set_status
 voidptr vphp_wrap_VSlimResponse_set_status(voidptr ptr, vphp__Context ctx) {
@@ -19571,9 +29165,14 @@ voidptr vphp_wrap_VSlimResponse_set_status(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_with_status(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	int arg_0 = vphp__Context_arg_T_int(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_with_status(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_with_status -> main__vphp_wrap_vslimresponse_with_status
 voidptr vphp_wrap_VSlimResponse_with_status(voidptr ptr, vphp__Context ctx) {
@@ -19581,9 +29180,14 @@ voidptr vphp_wrap_VSlimResponse_with_status(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_text(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_text(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_text -> main__vphp_wrap_vslimresponse_text
 voidptr vphp_wrap_VSlimResponse_text(voidptr ptr, vphp__Context ctx) {
@@ -19591,9 +29195,14 @@ voidptr vphp_wrap_VSlimResponse_text(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_json(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_json(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_json -> main__vphp_wrap_vslimresponse_json
 voidptr vphp_wrap_VSlimResponse_json(voidptr ptr, vphp__Context ctx) {
@@ -19601,9 +29210,14 @@ voidptr vphp_wrap_VSlimResponse_json(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_html(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_html(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_html -> main__vphp_wrap_vslimresponse_html
 voidptr vphp_wrap_VSlimResponse_html(voidptr ptr, vphp__Context ctx) {
@@ -19611,9 +29225,14 @@ voidptr vphp_wrap_VSlimResponse_html(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_redirect(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimResponse* res = main__VSlimResponse_redirect(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_redirect -> main__vphp_wrap_vslimresponse_redirect
 voidptr vphp_wrap_VSlimResponse_redirect(voidptr ptr, vphp__Context ctx) {
@@ -19621,10 +29240,15 @@ voidptr vphp_wrap_VSlimResponse_redirect(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimresponse_redirect_with_status(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	int arg_1 = vphp__Context_arg_T_int(ctx, 1);
 	main__VSlimResponse* res = main__VSlimResponse_redirect_with_status(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimResponse_redirect_with_status -> main__vphp_wrap_vslimresponse_redirect_with_status
 voidptr vphp_wrap_VSlimResponse_redirect_with_status(voidptr ptr, vphp__Context ctx) {
@@ -19632,8 +29256,12 @@ voidptr vphp_wrap_VSlimResponse_redirect_with_status(voidptr ptr, vphp__Context 
 }
 void main__vphp_wrap_vslimresponse_headers_all(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Map_string_string res = main__VSlimResponse_headers_all(recv);
 	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_headers_all -> main__vphp_wrap_vslimresponse_headers_all
 void vphp_wrap_VSlimResponse_headers_all(voidptr ptr, vphp__Context ctx) {
@@ -19641,8 +29269,12 @@ void vphp_wrap_VSlimResponse_headers_all(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimresponse_str(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string res = main__VSlimResponse_str(recv);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_str -> main__vphp_wrap_vslimresponse_str
 void vphp_wrap_VSlimResponse_str(voidptr ptr, vphp__Context ctx) {
@@ -19650,15 +29282,26 @@ void vphp_wrap_VSlimResponse_str(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimresponse_content_length(voidptr ptr, vphp__Context ctx) {
 	main__VSlimResponse* recv = ((main__VSlimResponse*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	int res = main__VSlimResponse_content_length(recv);
 	vphp__Context_return_val_T_int(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimResponse_content_length -> main__vphp_wrap_vslimresponse_content_length
 void vphp_wrap_VSlimResponse_content_length(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimresponse_content_length(ptr, ctx);
 }
 voidptr main__vslimresponse_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimresponse_get_prop)),.write_handler = ((voidptr)(main__vslimresponse_set_prop)),.sync_handler = ((voidptr)(main__vslimresponse_sync_props)),.new_raw = ((voidptr)(main__vslimresponse_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimresponse_get_prop)),
+		.write_handler = ((voidptr)(main__vslimresponse_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimresponse_sync_props)),
+		.new_raw = ((voidptr)(main__vslimresponse_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimresponse_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimresponse_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: VSlimResponse_handlers -> main__vslimresponse_handlers
 voidptr VSlimResponse_handlers(void) {
@@ -19670,6 +29313,29 @@ voidptr main__vslimapp_new_raw(void) {
 // export alias: VSlimApp_new_raw -> main__vslimapp_new_raw
 voidptr VSlimApp_new_raw(void) {
 	return main__vslimapp_new_raw();
+}
+void main__vslimapp_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimApp(ptr);
+}
+// export alias: VSlimApp_free_raw -> main__vslimapp_free_raw
+void VSlimApp_free_raw(voidptr ptr) {
+	return main__vslimapp_free_raw(ptr);
+}
+void main__vslimapp_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	{ // Unsafe block
+		main__VSlimApp* obj = ((main__VSlimApp*)(ptr));
+		main__VSlimApp_free(obj);
+	}
+}
+// export alias: VSlimApp_cleanup_raw -> main__vslimapp_cleanup_raw
+void VSlimApp_cleanup_raw(voidptr ptr) {
+	return main__vslimapp_cleanup_raw(ptr);
 }
 void main__vslimapp_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -19685,7 +29351,7 @@ void main__vslimapp_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* va
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__VSlimApp* obj = ((main__VSlimApp*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 	}
 }
 // export alias: VSlimApp_set_prop -> main__vslimapp_set_prop
@@ -19695,9 +29361,7 @@ void VSlimApp_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* value) {
 void main__vslimapp_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__VSlimApp* obj = ((main__VSlimApp*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
-		vphp__ZVal_add_property_string(out, _S("base_path"), obj->base_path);
-		vphp__ZVal_add_property_bool(out, _S("use_demo"), obj->use_demo);
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 	}
 }
 // export alias: VSlimApp_sync_props -> main__vslimapp_sync_props
@@ -19705,8 +29369,13 @@ void VSlimApp_sync_props(voidptr ptr, zval* zv) {
 	return main__vslimapp_sync_props(ptr, zv);
 }
 voidptr main__vphp_wrap_vslimapp_demo(vphp__Context ctx) {
+	int vphp_ar_mark = vphp__autorelease_mark();
 	main__VSlimApp* res = main__VSlimApp__static__demo();
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_demo -> main__vphp_wrap_vslimapp_demo
 voidptr vphp_wrap_VSlimApp_demo(vphp__Context ctx) {
@@ -19714,9 +29383,14 @@ voidptr vphp_wrap_VSlimApp_demo(vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_set_base_path(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_set_base_path(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_set_base_path -> main__vphp_wrap_vslimapp_set_base_path
 voidptr vphp_wrap_VSlimApp_set_base_path(voidptr ptr, vphp__Context ctx) {
@@ -19724,8 +29398,12 @@ voidptr vphp_wrap_VSlimApp_set_base_path(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_has_container(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	bool res = main__VSlimApp_has_container(recv);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_has_container -> main__vphp_wrap_vslimapp_has_container
 void vphp_wrap_VSlimApp_has_container(voidptr ptr, vphp__Context ctx) {
@@ -19733,9 +29411,14 @@ void vphp_wrap_VSlimApp_has_container(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_set_container(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	main__VSlimContainer* arg_0 = ((main__VSlimContainer*)(vphp__Context_arg_raw_obj(ctx, 0)));
 	main__VSlimApp* res = main__VSlimApp_set_container(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_set_container -> main__vphp_wrap_vslimapp_set_container
 voidptr vphp_wrap_VSlimApp_set_container(voidptr ptr, vphp__Context ctx) {
@@ -19743,8 +29426,13 @@ voidptr vphp_wrap_VSlimApp_set_container(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_container(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	main__VSlimContainer* res = main__VSlimApp_container(recv);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_container -> main__vphp_wrap_vslimapp_container
 voidptr vphp_wrap_VSlimApp_container(voidptr ptr, vphp__Context ctx) {
@@ -19752,9 +29440,14 @@ voidptr vphp_wrap_VSlimApp_container(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_group(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	main__RouteGroup* res = main__VSlimApp_group(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_group -> main__vphp_wrap_vslimapp_group
 voidptr vphp_wrap_VSlimApp_group(voidptr ptr, vphp__Context ctx) {
@@ -19762,10 +29455,15 @@ voidptr vphp_wrap_VSlimApp_group(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_dispatch(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	main__VSlimResponse* res = main__VSlimApp_dispatch(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_dispatch -> main__vphp_wrap_vslimapp_dispatch
 voidptr vphp_wrap_VSlimApp_dispatch(voidptr ptr, vphp__Context ctx) {
@@ -19773,11 +29471,16 @@ voidptr vphp_wrap_VSlimApp_dispatch(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_dispatch_body(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	main__VSlimResponse* res = main__VSlimApp_dispatch_body(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_dispatch_body -> main__vphp_wrap_vslimapp_dispatch_body
 voidptr vphp_wrap_VSlimApp_dispatch_body(voidptr ptr, vphp__Context ctx) {
@@ -19785,9 +29488,14 @@ voidptr vphp_wrap_VSlimApp_dispatch_body(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_dispatch_request(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	main__VSlimRequest* arg_0 = ((main__VSlimRequest*)(vphp__Context_arg_raw_obj(ctx, 0)));
 	main__VSlimResponse* res = main__VSlimApp_dispatch_request(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_dispatch_request -> main__vphp_wrap_vslimapp_dispatch_request
 voidptr vphp_wrap_VSlimApp_dispatch_request(voidptr ptr, vphp__Context ctx) {
@@ -19795,20 +29503,44 @@ voidptr vphp_wrap_VSlimApp_dispatch_request(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_dispatch_envelope(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimResponse* res = main__VSlimApp_dispatch_envelope(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_dispatch_envelope -> main__vphp_wrap_vslimapp_dispatch_envelope
 voidptr vphp_wrap_VSlimApp_dispatch_envelope(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_dispatch_envelope(ptr, ctx);
 }
+void main__vphp_wrap_vslimapp_dispatch_envelope_map(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
+	Map_string_string res = main__VSlimApp_dispatch_envelope_map(recv, arg_0);
+	vphp__Context_return_val_T_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimApp_dispatch_envelope_map -> main__vphp_wrap_vslimapp_dispatch_envelope_map
+void vphp_wrap_VSlimApp_dispatch_envelope_map(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_dispatch_envelope_map(ptr, ctx);
+}
 voidptr main__vphp_wrap_vslimapp_get(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_get(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_get -> main__vphp_wrap_vslimapp_get
 voidptr vphp_wrap_VSlimApp_get(voidptr ptr, vphp__Context ctx) {
@@ -19816,10 +29548,15 @@ voidptr vphp_wrap_VSlimApp_get(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_post(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_post(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_post -> main__vphp_wrap_vslimapp_post
 voidptr vphp_wrap_VSlimApp_post(voidptr ptr, vphp__Context ctx) {
@@ -19827,10 +29564,15 @@ voidptr vphp_wrap_VSlimApp_post(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_put(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_put(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_put -> main__vphp_wrap_vslimapp_put
 voidptr vphp_wrap_VSlimApp_put(voidptr ptr, vphp__Context ctx) {
@@ -19838,10 +29580,15 @@ voidptr vphp_wrap_VSlimApp_put(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_head(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_head(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_head -> main__vphp_wrap_vslimapp_head
 voidptr vphp_wrap_VSlimApp_head(voidptr ptr, vphp__Context ctx) {
@@ -19849,10 +29596,15 @@ voidptr vphp_wrap_VSlimApp_head(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_options(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_options(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_options -> main__vphp_wrap_vslimapp_options
 voidptr vphp_wrap_VSlimApp_options(voidptr ptr, vphp__Context ctx) {
@@ -19860,10 +29612,15 @@ voidptr vphp_wrap_VSlimApp_options(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_patch(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_patch(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_patch -> main__vphp_wrap_vslimapp_patch
 voidptr vphp_wrap_VSlimApp_patch(voidptr ptr, vphp__Context ctx) {
@@ -19871,10 +29628,15 @@ voidptr vphp_wrap_VSlimApp_patch(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_delete(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_delete(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_delete -> main__vphp_wrap_vslimapp_delete
 voidptr vphp_wrap_VSlimApp_delete(voidptr ptr, vphp__Context ctx) {
@@ -19882,10 +29644,15 @@ voidptr vphp_wrap_VSlimApp_delete(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_any(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimApp* res = main__VSlimApp_any(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_any -> main__vphp_wrap_vslimapp_any
 voidptr vphp_wrap_VSlimApp_any(voidptr ptr, vphp__Context ctx) {
@@ -19893,11 +29660,16 @@ voidptr vphp_wrap_VSlimApp_any(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_map(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_map(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_map -> main__vphp_wrap_vslimapp_map
 voidptr vphp_wrap_VSlimApp_map(voidptr ptr, vphp__Context ctx) {
@@ -19905,11 +29677,16 @@ voidptr vphp_wrap_VSlimApp_map(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_get_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_get_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_get_named -> main__vphp_wrap_vslimapp_get_named
 voidptr vphp_wrap_VSlimApp_get_named(voidptr ptr, vphp__Context ctx) {
@@ -19917,11 +29694,16 @@ voidptr vphp_wrap_VSlimApp_get_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_post_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_post_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_post_named -> main__vphp_wrap_vslimapp_post_named
 voidptr vphp_wrap_VSlimApp_post_named(voidptr ptr, vphp__Context ctx) {
@@ -19929,11 +29711,16 @@ voidptr vphp_wrap_VSlimApp_post_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_put_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_put_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_put_named -> main__vphp_wrap_vslimapp_put_named
 voidptr vphp_wrap_VSlimApp_put_named(voidptr ptr, vphp__Context ctx) {
@@ -19941,11 +29728,16 @@ voidptr vphp_wrap_VSlimApp_put_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_head_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_head_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_head_named -> main__vphp_wrap_vslimapp_head_named
 voidptr vphp_wrap_VSlimApp_head_named(voidptr ptr, vphp__Context ctx) {
@@ -19953,11 +29745,16 @@ voidptr vphp_wrap_VSlimApp_head_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_options_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_options_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_options_named -> main__vphp_wrap_vslimapp_options_named
 voidptr vphp_wrap_VSlimApp_options_named(voidptr ptr, vphp__Context ctx) {
@@ -19965,11 +29762,16 @@ voidptr vphp_wrap_VSlimApp_options_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_patch_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_patch_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_patch_named -> main__vphp_wrap_vslimapp_patch_named
 voidptr vphp_wrap_VSlimApp_patch_named(voidptr ptr, vphp__Context ctx) {
@@ -19977,11 +29779,16 @@ voidptr vphp_wrap_VSlimApp_patch_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_delete_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_delete_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_delete_named -> main__vphp_wrap_vslimapp_delete_named
 voidptr vphp_wrap_VSlimApp_delete_named(voidptr ptr, vphp__Context ctx) {
@@ -19989,11 +29796,16 @@ voidptr vphp_wrap_VSlimApp_delete_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_any_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimApp* res = main__VSlimApp_any_named(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_any_named -> main__vphp_wrap_vslimapp_any_named
 voidptr vphp_wrap_VSlimApp_any_named(voidptr ptr, vphp__Context ctx) {
@@ -20001,12 +29813,17 @@ voidptr vphp_wrap_VSlimApp_any_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_map_named(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	string arg_1 = vphp__Context_arg_T_string(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	vphp__ZVal arg_3 = vphp__Context_arg_val(ctx, 3);
 	main__VSlimApp* res = main__VSlimApp_map_named(recv, arg_0, arg_1, arg_2, arg_3);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_map_named -> main__vphp_wrap_vslimapp_map_named
 voidptr vphp_wrap_VSlimApp_map_named(voidptr ptr, vphp__Context ctx) {
@@ -20014,9 +29831,14 @@ voidptr vphp_wrap_VSlimApp_map_named(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_middleware(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_middleware(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_middleware -> main__vphp_wrap_vslimapp_middleware
 voidptr vphp_wrap_VSlimApp_middleware(voidptr ptr, vphp__Context ctx) {
@@ -20024,9 +29846,14 @@ voidptr vphp_wrap_VSlimApp_middleware(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_before(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_before(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_before -> main__vphp_wrap_vslimapp_before
 voidptr vphp_wrap_VSlimApp_before(voidptr ptr, vphp__Context ctx) {
@@ -20034,9 +29861,14 @@ voidptr vphp_wrap_VSlimApp_before(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_after(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_after(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_after -> main__vphp_wrap_vslimapp_after
 voidptr vphp_wrap_VSlimApp_after(voidptr ptr, vphp__Context ctx) {
@@ -20044,9 +29876,14 @@ voidptr vphp_wrap_VSlimApp_after(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_set_not_found_handler(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_set_not_found_handler(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_set_not_found_handler -> main__vphp_wrap_vslimapp_set_not_found_handler
 voidptr vphp_wrap_VSlimApp_set_not_found_handler(voidptr ptr, vphp__Context ctx) {
@@ -20054,9 +29891,14 @@ voidptr vphp_wrap_VSlimApp_set_not_found_handler(voidptr ptr, vphp__Context ctx)
 }
 voidptr main__vphp_wrap_vslimapp_not_found(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_not_found(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_not_found -> main__vphp_wrap_vslimapp_not_found
 voidptr vphp_wrap_VSlimApp_not_found(voidptr ptr, vphp__Context ctx) {
@@ -20064,9 +29906,14 @@ voidptr vphp_wrap_VSlimApp_not_found(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_set_error_handler(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_set_error_handler(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_set_error_handler -> main__vphp_wrap_vslimapp_set_error_handler
 voidptr vphp_wrap_VSlimApp_set_error_handler(voidptr ptr, vphp__Context ctx) {
@@ -20074,9 +29921,14 @@ voidptr vphp_wrap_VSlimApp_set_error_handler(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_error(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__ZVal arg_0 = vphp__Context_arg_val(ctx, 0);
 	main__VSlimApp* res = main__VSlimApp_error(recv, arg_0);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_error -> main__vphp_wrap_vslimapp_error
 voidptr vphp_wrap_VSlimApp_error(voidptr ptr, vphp__Context ctx) {
@@ -20084,10 +29936,14 @@ voidptr vphp_wrap_VSlimApp_error(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_url_for(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	string res = main__VSlimApp_url_for(recv, arg_0, arg_1);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_url_for -> main__vphp_wrap_vslimapp_url_for
 void vphp_wrap_VSlimApp_url_for(voidptr ptr, vphp__Context ctx) {
@@ -20095,11 +29951,15 @@ void vphp_wrap_VSlimApp_url_for(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_url_for_query(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	string res = main__VSlimApp_url_for_query(recv, arg_0, arg_1, arg_2);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_url_for_query -> main__vphp_wrap_vslimapp_url_for_query
 void vphp_wrap_VSlimApp_url_for_query(voidptr ptr, vphp__Context ctx) {
@@ -20107,12 +29967,16 @@ void vphp_wrap_VSlimApp_url_for_query(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_url_for_abs(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	string arg_2 = vphp__Context_arg_T_string(ctx, 2);
 	string arg_3 = vphp__Context_arg_T_string(ctx, 3);
 	string res = main__VSlimApp_url_for_abs(recv, arg_0, arg_1, arg_2, arg_3);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_url_for_abs -> main__vphp_wrap_vslimapp_url_for_abs
 void vphp_wrap_VSlimApp_url_for_abs(voidptr ptr, vphp__Context ctx) {
@@ -20120,6 +29984,7 @@ void vphp_wrap_VSlimApp_url_for_abs(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_url_for_query_abs(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
@@ -20127,6 +29992,9 @@ void main__vphp_wrap_vslimapp_url_for_query_abs(voidptr ptr, vphp__Context ctx) 
 	string arg_4 = vphp__Context_arg_T_string(ctx, 4);
 	string res = main__VSlimApp_url_for_query_abs(recv, arg_0, arg_1, arg_2, arg_3, arg_4);
 	vphp__Context_return_val_T_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_url_for_query_abs -> main__vphp_wrap_vslimapp_url_for_query_abs
 void vphp_wrap_VSlimApp_url_for_query_abs(voidptr ptr, vphp__Context ctx) {
@@ -20134,10 +30002,15 @@ void vphp_wrap_VSlimApp_url_for_query_abs(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_redirect_to(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimResponse* res = main__VSlimApp_redirect_to(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_redirect_to -> main__vphp_wrap_vslimapp_redirect_to
 voidptr vphp_wrap_VSlimApp_redirect_to(voidptr ptr, vphp__Context ctx) {
@@ -20145,11 +30018,16 @@ voidptr vphp_wrap_VSlimApp_redirect_to(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimapp_redirect_to_query(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	vphp__ZVal arg_2 = vphp__Context_arg_val(ctx, 2);
 	main__VSlimResponse* res = main__VSlimApp_redirect_to_query(recv, arg_0, arg_1, arg_2);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimApp_redirect_to_query -> main__vphp_wrap_vslimapp_redirect_to_query
 voidptr vphp_wrap_VSlimApp_redirect_to_query(voidptr ptr, vphp__Context ctx) {
@@ -20157,8 +30035,12 @@ voidptr vphp_wrap_VSlimApp_redirect_to_query(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_route_count(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	int res = main__VSlimApp_route_count(recv);
 	vphp__Context_return_val_T_int(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_route_count -> main__vphp_wrap_vslimapp_route_count
 void vphp_wrap_VSlimApp_route_count(voidptr ptr, vphp__Context ctx) {
@@ -20166,8 +30048,12 @@ void vphp_wrap_VSlimApp_route_count(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_route_names(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	Array_string res = main__VSlimApp_route_names(recv);
 	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_route_names -> main__vphp_wrap_vslimapp_route_names
 void vphp_wrap_VSlimApp_route_names(voidptr ptr, vphp__Context ctx) {
@@ -20175,9 +30061,13 @@ void vphp_wrap_VSlimApp_route_names(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_has_route_name(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimApp_has_route_name(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_has_route_name -> main__vphp_wrap_vslimapp_has_route_name
 void vphp_wrap_VSlimApp_has_route_name(voidptr ptr, vphp__Context ctx) {
@@ -20185,16 +30075,27 @@ void vphp_wrap_VSlimApp_has_route_name(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimapp_allowed_methods_for(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	Array_string res = main__VSlimApp_allowed_methods_for(recv, arg_0);
 	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimApp_allowed_methods_for -> main__vphp_wrap_vslimapp_allowed_methods_for
 void vphp_wrap_VSlimApp_allowed_methods_for(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_allowed_methods_for(ptr, ctx);
 }
 voidptr main__vslimapp_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimapp_get_prop)),.write_handler = ((voidptr)(main__vslimapp_set_prop)),.sync_handler = ((voidptr)(main__vslimapp_sync_props)),.new_raw = ((voidptr)(main__vslimapp_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimapp_get_prop)),
+		.write_handler = ((voidptr)(main__vslimapp_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimapp_sync_props)),
+		.new_raw = ((voidptr)(main__vslimapp_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimapp_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimapp_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: VSlimApp_handlers -> main__vslimapp_handlers
 voidptr VSlimApp_handlers(void) {
@@ -20206,6 +30107,25 @@ voidptr main__vslimcontainerexception_new_raw(void) {
 // export alias: VSlimContainerException_new_raw -> main__vslimcontainerexception_new_raw
 voidptr VSlimContainerException_new_raw(void) {
 	return main__vslimcontainerexception_new_raw();
+}
+void main__vslimcontainerexception_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimContainerException(ptr);
+}
+// export alias: VSlimContainerException_free_raw -> main__vslimcontainerexception_free_raw
+void VSlimContainerException_free_raw(voidptr ptr) {
+	return main__vslimcontainerexception_free_raw(ptr);
+}
+void main__vslimcontainerexception_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+}
+// export alias: VSlimContainerException_cleanup_raw -> main__vslimcontainerexception_cleanup_raw
+void VSlimContainerException_cleanup_raw(voidptr ptr) {
+	return main__vslimcontainerexception_cleanup_raw(ptr);
 }
 void main__vslimcontainerexception_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -20221,7 +30141,7 @@ void main__vslimcontainerexception_set_prop(voidptr ptr, char* name_ptr, int nam
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__VSlimContainerException* obj = ((main__VSlimContainerException*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 	}
 }
 // export alias: VSlimContainerException_set_prop -> main__vslimcontainerexception_set_prop
@@ -20231,7 +30151,7 @@ void VSlimContainerException_set_prop(voidptr ptr, char* name_ptr, int name_len,
 void main__vslimcontainerexception_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__VSlimContainerException* obj = ((main__VSlimContainerException*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 	}
 }
 // export alias: VSlimContainerException_sync_props -> main__vslimcontainerexception_sync_props
@@ -20239,7 +30159,14 @@ void VSlimContainerException_sync_props(voidptr ptr, zval* zv) {
 	return main__vslimcontainerexception_sync_props(ptr, zv);
 }
 voidptr main__vslimcontainerexception_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimcontainerexception_get_prop)),.write_handler = ((voidptr)(main__vslimcontainerexception_set_prop)),.sync_handler = ((voidptr)(main__vslimcontainerexception_sync_props)),.new_raw = ((voidptr)(main__vslimcontainerexception_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimcontainerexception_get_prop)),
+		.write_handler = ((voidptr)(main__vslimcontainerexception_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimcontainerexception_sync_props)),
+		.new_raw = ((voidptr)(main__vslimcontainerexception_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimcontainerexception_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimcontainerexception_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: VSlimContainerException_handlers -> main__vslimcontainerexception_handlers
 voidptr VSlimContainerException_handlers(void) {
@@ -20251,6 +30178,25 @@ voidptr main__vslimcontainernotfoundexception_new_raw(void) {
 // export alias: VSlimContainerNotFoundException_new_raw -> main__vslimcontainernotfoundexception_new_raw
 voidptr VSlimContainerNotFoundException_new_raw(void) {
 	return main__vslimcontainernotfoundexception_new_raw();
+}
+void main__vslimcontainernotfoundexception_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimContainerNotFoundException(ptr);
+}
+// export alias: VSlimContainerNotFoundException_free_raw -> main__vslimcontainernotfoundexception_free_raw
+void VSlimContainerNotFoundException_free_raw(voidptr ptr) {
+	return main__vslimcontainernotfoundexception_free_raw(ptr);
+}
+void main__vslimcontainernotfoundexception_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+}
+// export alias: VSlimContainerNotFoundException_cleanup_raw -> main__vslimcontainernotfoundexception_cleanup_raw
+void VSlimContainerNotFoundException_cleanup_raw(voidptr ptr) {
+	return main__vslimcontainernotfoundexception_cleanup_raw(ptr);
 }
 void main__vslimcontainernotfoundexception_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -20266,7 +30212,7 @@ void main__vslimcontainernotfoundexception_set_prop(voidptr ptr, char* name_ptr,
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__VSlimContainerNotFoundException* obj = ((main__VSlimContainerNotFoundException*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 	}
 }
 // export alias: VSlimContainerNotFoundException_set_prop -> main__vslimcontainernotfoundexception_set_prop
@@ -20276,7 +30222,7 @@ void VSlimContainerNotFoundException_set_prop(voidptr ptr, char* name_ptr, int n
 void main__vslimcontainernotfoundexception_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__VSlimContainerNotFoundException* obj = ((main__VSlimContainerNotFoundException*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 	}
 }
 // export alias: VSlimContainerNotFoundException_sync_props -> main__vslimcontainernotfoundexception_sync_props
@@ -20284,7 +30230,14 @@ void VSlimContainerNotFoundException_sync_props(voidptr ptr, zval* zv) {
 	return main__vslimcontainernotfoundexception_sync_props(ptr, zv);
 }
 voidptr main__vslimcontainernotfoundexception_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimcontainernotfoundexception_get_prop)),.write_handler = ((voidptr)(main__vslimcontainernotfoundexception_set_prop)),.sync_handler = ((voidptr)(main__vslimcontainernotfoundexception_sync_props)),.new_raw = ((voidptr)(main__vslimcontainernotfoundexception_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimcontainernotfoundexception_get_prop)),
+		.write_handler = ((voidptr)(main__vslimcontainernotfoundexception_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimcontainernotfoundexception_sync_props)),
+		.new_raw = ((voidptr)(main__vslimcontainernotfoundexception_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimcontainernotfoundexception_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimcontainernotfoundexception_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: VSlimContainerNotFoundException_handlers -> main__vslimcontainernotfoundexception_handlers
 voidptr VSlimContainerNotFoundException_handlers(void) {
@@ -20296,6 +30249,29 @@ voidptr main__vslimcontainer_new_raw(void) {
 // export alias: VSlimContainer_new_raw -> main__vslimcontainer_new_raw
 voidptr VSlimContainer_new_raw(void) {
 	return main__vslimcontainer_new_raw();
+}
+void main__vslimcontainer_free_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	vphp__generic_free_raw_T_main__VSlimContainer(ptr);
+}
+// export alias: VSlimContainer_free_raw -> main__vslimcontainer_free_raw
+void VSlimContainer_free_raw(voidptr ptr) {
+	return main__vslimcontainer_free_raw(ptr);
+}
+void main__vslimcontainer_cleanup_raw(voidptr ptr) {
+	if (ptr == 0) {
+		return;
+	}
+	{ // Unsafe block
+		main__VSlimContainer* obj = ((main__VSlimContainer*)(ptr));
+		main__VSlimContainer_free(obj);
+	}
+}
+// export alias: VSlimContainer_cleanup_raw -> main__vslimcontainer_cleanup_raw
+void VSlimContainer_cleanup_raw(voidptr ptr) {
+	return main__vslimcontainer_cleanup_raw(ptr);
 }
 void main__vslimcontainer_get_prop(voidptr ptr, char* name_ptr, int name_len, zval* rv) {
 	{ // Unsafe block
@@ -20311,7 +30287,7 @@ void main__vslimcontainer_set_prop(voidptr ptr, char* name_ptr, int name_len, zv
 	{ // Unsafe block
 		string name = builtin__string_clone(builtin__char_vstring_with_len(name_ptr, name_len));
 		main__VSlimContainer* obj = ((main__VSlimContainer*)(ptr));
-		vphp__ZVal arg = ((vphp__ZVal){.raw = value,});
+		vphp__ZVal arg = ((vphp__ZVal){.raw = value,.owned = 0,});
 	}
 }
 // export alias: VSlimContainer_set_prop -> main__vslimcontainer_set_prop
@@ -20321,7 +30297,7 @@ void VSlimContainer_set_prop(voidptr ptr, char* name_ptr, int name_len, zval* va
 void main__vslimcontainer_sync_props(voidptr ptr, zval* zv) {
 	{ // Unsafe block
 		main__VSlimContainer* obj = ((main__VSlimContainer*)(ptr));
-		vphp__ZVal out = ((vphp__ZVal){.raw = zv,});
+		vphp__ZVal out = ((vphp__ZVal){.raw = zv,.owned = 0,});
 	}
 }
 // export alias: VSlimContainer_sync_props -> main__vslimcontainer_sync_props
@@ -20330,8 +30306,13 @@ void VSlimContainer_sync_props(voidptr ptr, zval* zv) {
 }
 voidptr main__vphp_wrap_vslimcontainer_construct(voidptr ptr, vphp__Context ctx) {
 	main__VSlimContainer* recv = ((main__VSlimContainer*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	main__VSlimContainer* res = main__VSlimContainer_construct(recv);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimContainer_construct -> main__vphp_wrap_vslimcontainer_construct
 voidptr vphp_wrap_VSlimContainer_construct(voidptr ptr, vphp__Context ctx) {
@@ -20339,10 +30320,15 @@ voidptr vphp_wrap_VSlimContainer_construct(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimcontainer_set(voidptr ptr, vphp__Context ctx) {
 	main__VSlimContainer* recv = ((main__VSlimContainer*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimContainer* res = main__VSlimContainer_set(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimContainer_set -> main__vphp_wrap_vslimcontainer_set
 voidptr vphp_wrap_VSlimContainer_set(voidptr ptr, vphp__Context ctx) {
@@ -20350,10 +30336,15 @@ voidptr vphp_wrap_VSlimContainer_set(voidptr ptr, vphp__Context ctx) {
 }
 voidptr main__vphp_wrap_vslimcontainer_factory(voidptr ptr, vphp__Context ctx) {
 	main__VSlimContainer* recv = ((main__VSlimContainer*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	vphp__ZVal arg_1 = vphp__Context_arg_val(ctx, 1);
 	main__VSlimContainer* res = main__VSlimContainer_factory(recv, arg_0, arg_1);
-	return ((voidptr)(res));
+	voidptr _t1 = ((voidptr)(res));
+		{ // defer begin
+			vphp__autorelease_drain(vphp_ar_mark);
+		} // defer end
+	return _t1;
 }
 // export alias: vphp_wrap_VSlimContainer_factory -> main__vphp_wrap_vslimcontainer_factory
 voidptr vphp_wrap_VSlimContainer_factory(voidptr ptr, vphp__Context ctx) {
@@ -20361,64 +30352,91 @@ voidptr vphp_wrap_VSlimContainer_factory(voidptr ptr, vphp__Context ctx) {
 }
 void main__vphp_wrap_vslimcontainer_has(voidptr ptr, vphp__Context ctx) {
 	main__VSlimContainer* recv = ((main__VSlimContainer*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
 	string arg_0 = vphp__Context_arg_T_string(ctx, 0);
 	bool res = main__VSlimContainer_has(recv, arg_0);
 	vphp__Context_return_val_T_bool(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_VSlimContainer_has -> main__vphp_wrap_vslimcontainer_has
 void vphp_wrap_VSlimContainer_has(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimcontainer_has(ptr, ctx);
 }
 voidptr main__vslimcontainer_handlers(void) {
-	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.prop_handler = ((voidptr)(main__vslimcontainer_get_prop)),.write_handler = ((voidptr)(main__vslimcontainer_set_prop)),.sync_handler = ((voidptr)(main__vslimcontainer_sync_props)),.new_raw = ((voidptr)(main__vslimcontainer_new_raw)),}, sizeof(vphp_class_handlers)));
+	return ((vphp_class_handlers*)builtin__memdup(&(vphp_class_handlers){.v_ptr = 0,
+		.prop_handler = ((voidptr)(main__vslimcontainer_get_prop)),
+		.write_handler = ((voidptr)(main__vslimcontainer_set_prop)),
+		.sync_handler = ((voidptr)(main__vslimcontainer_sync_props)),
+		.new_raw = ((voidptr)(main__vslimcontainer_new_raw)),
+		.cleanup_raw = ((voidptr)(main__vslimcontainer_cleanup_raw)),
+		.free_raw = ((voidptr)(main__vslimcontainer_free_raw)),
+	}, sizeof(vphp_class_handlers)));
 }
 // export alias: VSlimContainer_handlers -> main__vslimcontainer_handlers
 voidptr VSlimContainer_handlers(void) {
 	return main__vslimcontainer_handlers();
 }
 VV_LOC void main__vphp_wrap_vslim_handle_request(vphp__Context ctx) {
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__Context arg_0 = ctx;
 	main__vslim_handle_request(arg_0);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_vslim_handle_request -> main__vphp_wrap_vslim_handle_request
 void vphp_wrap_vslim_handle_request(vphp__Context ctx) {
 	return main__vphp_wrap_vslim_handle_request(ctx);
 }
 VV_LOC void main__vphp_wrap_vslim_demo_dispatch(vphp__Context ctx) {
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__Context arg_0 = ctx;
 	main__vslim_demo_dispatch(arg_0);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_vslim_demo_dispatch -> main__vphp_wrap_vslim_demo_dispatch
 void vphp_wrap_vslim_demo_dispatch(vphp__Context ctx) {
 	return main__vphp_wrap_vslim_demo_dispatch(ctx);
 }
 VV_LOC void main__vphp_wrap_vslim_response_headers(vphp__Context ctx) {
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__Context arg_0 = ctx;
 	main__vslim_response_headers(arg_0);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_vslim_response_headers -> main__vphp_wrap_vslim_response_headers
 void vphp_wrap_vslim_response_headers(vphp__Context ctx) {
 	return main__vphp_wrap_vslim_response_headers(ctx);
 }
 VV_LOC void main__vphp_wrap_vslim_middleware_next(vphp__Context ctx) {
+	int vphp_ar_mark = vphp__autorelease_mark();
 	vphp__Context arg_0 = ctx;
 	main__vslim_middleware_next(arg_0);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
 }
 // export alias: vphp_wrap_vslim_middleware_next -> main__vphp_wrap_vslim_middleware_next
 void vphp_wrap_vslim_middleware_next(vphp__Context ctx) {
 	return main__vphp_wrap_vslim_middleware_next(ctx);
 }
 main__VSlimContainer* main__VSlimContainer_construct(main__VSlimContainer* c) {
-	c->entries = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	c->entries = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	;
-	c->factories = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	c->factories = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	;
-	c->resolved = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	c->resolved = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	;
 	return c;
 }
 main__VSlimContainer* main__VSlimContainer_set(main__VSlimContainer* c, string id, vphp__ZVal value) {
-	(*(vphp__ZVal*)builtin__map_get_and_set((map*)&c->entries, &(string[]){id}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,} })) = vphp__ZVal_dup(value);
+	(*(vphp__PersistentOwnedZVal*)builtin__map_get_and_set((map*)&c->entries, &(string[]){id}, &(vphp__PersistentOwnedZVal[]){ (vphp__PersistentOwnedZVal){.z = (vphp__ZVal){.raw = 0,.owned = 0,},} })) = vphp__PersistentOwnedZVal__static__from_zval(value);
 	builtin__map_delete(&c->factories, &(string[]){id});
 	builtin__map_delete(&c->resolved, &(string[]){id});
 	return c;
@@ -20428,7 +30446,7 @@ main__VSlimContainer* main__VSlimContainer_factory(main__VSlimContainer* c, stri
 		main__throw_container_exception(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("factory for \""), 0xfe10, {.d_s = id}}, {_S("\" must be callable"), 0, { .d_c = 0 }}})));
 		return c;
 	}
-	(*(vphp__ZVal*)builtin__map_get_and_set((map*)&c->factories, &(string[]){id}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,} })) = vphp__ZVal_dup(callable);
+	(*(vphp__PersistentOwnedZVal*)builtin__map_get_and_set((map*)&c->factories, &(string[]){id}, &(vphp__PersistentOwnedZVal[]){ (vphp__PersistentOwnedZVal){.z = (vphp__ZVal){.raw = 0,.owned = 0,},} })) = vphp__PersistentOwnedZVal__static__from_zval(callable);
 	builtin__map_delete(&c->entries, &(string[]){id});
 	builtin__map_delete(&c->resolved, &(string[]){id});
 	return c;
@@ -20445,23 +30463,23 @@ void manual(main__VSlimContainer* c, string id) {
 VV_LOC _result_vphp__ZVal main__VSlimContainer_get_entry(main__VSlimContainer* c, string id) {
 	if (_IN_MAP(ADDR(string, id), ADDR(map, c->resolved))) {
 		_result_vphp__ZVal _t1;
-		builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_dup((*(vphp__ZVal*)builtin__map_get(ADDR(map, c->resolved), &(string[]){id}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,} }))) }, (_result*)(&_t1), sizeof(vphp__ZVal));
+		builtin___result_ok(&(vphp__ZVal[]) { vphp__RequestOwnedZVal_to_zval(vphp__PersistentOwnedZVal_clone_request_owned((*(vphp__PersistentOwnedZVal*)builtin__map_get(ADDR(map, c->resolved), &(string[]){id}, &(vphp__PersistentOwnedZVal[]){ (vphp__PersistentOwnedZVal){.z = (vphp__ZVal){.raw = 0,.owned = 0,},} })))) }, (_result*)(&_t1), sizeof(vphp__ZVal));
 		 
 		return _t1;
 	}
 	if (_IN_MAP(ADDR(string, id), ADDR(map, c->entries))) {
 		_result_vphp__ZVal _t2;
-		builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_dup((*(vphp__ZVal*)builtin__map_get(ADDR(map, c->entries), &(string[]){id}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,} }))) }, (_result*)(&_t2), sizeof(vphp__ZVal));
+		builtin___result_ok(&(vphp__ZVal[]) { vphp__RequestOwnedZVal_to_zval(vphp__PersistentOwnedZVal_clone_request_owned((*(vphp__PersistentOwnedZVal*)builtin__map_get(ADDR(map, c->entries), &(string[]){id}, &(vphp__PersistentOwnedZVal[]){ (vphp__PersistentOwnedZVal){.z = (vphp__ZVal){.raw = 0,.owned = 0,},} })))) }, (_result*)(&_t2), sizeof(vphp__ZVal));
 		 
 		return _t2;
 	}
 	if (_IN_MAP(ADDR(string, id), ADDR(map, c->factories))) {
-		vphp__ZVal factory = (*(vphp__ZVal*)builtin__map_get(ADDR(map, c->factories), &(string[]){id}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,} }));
-		vphp__ZVal res = vphp__ZVal_call(factory, builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0));
+		vphp__ZVal factory = vphp__PersistentOwnedZVal_to_zval((*(vphp__PersistentOwnedZVal*)builtin__map_get(ADDR(map, c->factories), &(string[]){id}, &(vphp__PersistentOwnedZVal[]){ (vphp__PersistentOwnedZVal){.z = (vphp__ZVal){.raw = 0,.owned = 0,},} })));
+		vphp__ZVal res = vphp__ZVal_call_owned_request(factory, builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0));
 		if (!vphp__ZVal_is_valid(res)) {
 			return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("factory \""), 0xfe10, {.d_s = id}}, {_S("\" returned invalid value"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
 		}
-		(*(vphp__ZVal*)builtin__map_get_and_set((map*)&c->resolved, &(string[]){id}, &(vphp__ZVal[]){ (vphp__ZVal){.raw = 0,} })) = vphp__ZVal_dup(res);
+		(*(vphp__PersistentOwnedZVal*)builtin__map_get_and_set((map*)&c->resolved, &(string[]){id}, &(vphp__PersistentOwnedZVal[]){ (vphp__PersistentOwnedZVal){.z = (vphp__ZVal){.raw = 0,.owned = 0,},} })) = vphp__PersistentOwnedZVal__static__from_zval(res);
 		_result_vphp__ZVal _t4;
 		builtin___result_ok(&(vphp__ZVal[]) { res }, (_result*)(&_t4), sizeof(vphp__ZVal));
 		 
@@ -20496,8 +30514,114 @@ VV_LOC void main__throw_not_found(string id) {
 VV_LOC void main__throw_container_exception(string msg) {
 	vphp__throw_exception_class(_S("VSlim\\Container\\ContainerException"), msg, 0);
 }
+VV_LOC void main__VSlimContainer_free(main__VSlimContainer* c) {
+	Map_string_vphp__PersistentOwnedZVal _t1 = c->entries;
+	int _t3 = _t1.key_values.len;
+	for (int _t2 = 0; _t2 < _t3; ++_t2 ) {
+		int _t4 = _t1.key_values.len - _t3;
+		_t3 = _t1.key_values.len;
+		if (_t4 < 0) {
+			_t2 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&_t1.key_values, _t2)) {continue;}
+		vphp__PersistentOwnedZVal entry = (*(vphp__PersistentOwnedZVal*)builtin__DenseArray_value(&_t1.key_values, _t2));
+		vphp__PersistentOwnedZVal z = entry;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	Map_string_vphp__PersistentOwnedZVal _t5 = c->factories;
+	int _t7 = _t5.key_values.len;
+	for (int _t6 = 0; _t6 < _t7; ++_t6 ) {
+		int _t8 = _t5.key_values.len - _t7;
+		_t7 = _t5.key_values.len;
+		if (_t8 < 0) {
+			_t6 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&_t5.key_values, _t6)) {continue;}
+		vphp__PersistentOwnedZVal factory = (*(vphp__PersistentOwnedZVal*)builtin__DenseArray_value(&_t5.key_values, _t6));
+		vphp__PersistentOwnedZVal z = factory;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	Map_string_vphp__PersistentOwnedZVal _t9 = c->resolved;
+	int _t11 = _t9.key_values.len;
+	for (int _t10 = 0; _t10 < _t11; ++_t10 ) {
+		int _t12 = _t9.key_values.len - _t11;
+		_t11 = _t9.key_values.len;
+		if (_t12 < 0) {
+			_t10 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&_t9.key_values, _t10)) {continue;}
+		vphp__PersistentOwnedZVal resolved = (*(vphp__PersistentOwnedZVal*)builtin__DenseArray_value(&_t9.key_values, _t10));
+		vphp__PersistentOwnedZVal z = resolved;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	{ // Unsafe block
+		builtin__map_free(&c->entries);
+		builtin__map_free(&c->factories);
+		builtin__map_free(&c->resolved);
+	}
+}
+VV_LOC bool main__vslim_trace_mem_enabled(void) {
+	{ // Unsafe block
+		if (!vslim_trace_mem_cache_inited) {
+			string raw = builtin__string_to_lower(builtin__string_trim_space(os__getenv(_S("VSLIM_TRACE_MEM"))));
+			if (builtin__string_starts_with(raw, _S("toml.any(")) && builtin__string_ends_with(raw, _S(")")) && raw.len > 10) {
+				raw = builtin__string_to_lower(builtin__string_trim(builtin__string_trim_space(builtin__string_substr(raw, 9, (int)(raw.len - 1))), _S("\"\'")));
+			}
+			vslim_trace_mem_enabled_cache = (_SLIT_EQ(raw.str, raw.len, "1") || _SLIT_EQ(raw.str, raw.len, "true") || _SLIT_EQ(raw.str, raw.len, "yes") || _SLIT_EQ(raw.str, raw.len, "on"));
+			string every_raw = builtin__string_trim_space(os__getenv(_S("VSLIM_TRACE_MEM_EVERY")));
+			if (builtin__string_starts_with(builtin__string_to_lower(every_raw), _S("toml.any(")) && builtin__string_ends_with(every_raw, _S(")")) && every_raw.len > 10) {
+				every_raw = builtin__string_trim(builtin__string_trim_space(builtin__string_substr(every_raw, 9, (int)(every_raw.len - 1))), _S("\"\'"));
+			}
+			int every = builtin__string_int(every_raw);
+			if (every <= 0) {
+				every = 1;
+			}
+			vslim_trace_mem_every_cache = every;
+			vslim_trace_mem_cache_inited = true;
+		}
+		return vslim_trace_mem_enabled_cache;
+	}
+	return 0;
+}
+VV_LOC int main__vslim_trace_mem_every(void) {
+	{ // Unsafe block
+		main__vslim_trace_mem_enabled();
+		return vslim_trace_mem_every_cache;
+	}
+	return 0;
+}
+VV_LOC bool main__vslim_trace_mem_should_log(void) {
+	if (!main__vslim_trace_mem_enabled()) {
+		return false;
+	}
+	{ // Unsafe block
+		vslim_trace_mem_counter++;
+		u64 every = ((u64)(main__vslim_trace_mem_every()));
+		return every > 0 && (u64)(vslim_trace_mem_counter % every) == 0;
+	}
+	return 0;
+}
+VV_LOC i64 main__vslim_mem_usage_bytes(void) {
+	vphp__ZVal val = vphp__call_php(_S("memory_get_usage"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_bool(true))})));
+	if (!vphp__ZVal_is_valid(val) || vphp__ZVal_is_null(val) || vphp__ZVal_is_undef(val)) {
+		return -1;
+	}
+	return vphp__ZVal_to_i64(val);
+}
+VV_LOC void main__vslim_trace_mem_log(main__VSlimRequest* req, string stage, i64 base_bytes) {
+	i64 bytes = main__vslim_mem_usage_bytes();
+	if (bytes < 0) {
+		return;
+	}
+	i64 delta = (i64)(bytes - base_bytes);
+	vphp__RuntimeCounters counters = vphp__runtime_counters();
+	builtin__eprintln(builtin__str_intp(11, _MOV((StrIntpData[]){{_S("[vslim.mem] ts="), 0xfe09, {.d_i64 = time__Time_unix_milli(time__now())}}, {_S(" stage="), 0xfe10, {.d_s = stage}}, {_S(" method="), 0xfe10, {.d_s = req->method}}, {_S(" path="), 0xfe10, {.d_s = req->path}}, {_S(" bytes="), 0xfe09, {.d_i64 = bytes}}, {_S(" delta="), 0xfe09, {.d_i64 = delta}}, {_S(" ar_len="), 0xfe07, {.d_i32 = counters.autorelease_len}}, {_S(" owned_len="), 0xfe07, {.d_i32 = counters.owned_len}}, {_S(" obj_reg="), 0xfe06, {.d_u32 = counters.obj_registry_len}}, {_S(" rev_reg="), 0xfe06, {.d_u32 = counters.rev_registry_len}}, {_SLIT0, 0, { .d_c = 0 }}})));
+}
 main__VSlimApp* main__VSlimApp__static__demo(void) {
-	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__ZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = vphp__ZVal__static__new_null(),.error_handler = vphp__ZVal__static__new_null(),.container_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = true,}, sizeof(main__VSlimApp)));
+	return ((main__VSlimApp*)builtin__memdup(&(main__VSlimApp){.routes = builtin____new_array(0, 0, sizeof(main__VSlimRoute)),.php_before_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_after_hooks = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_middlewares = builtin____new_array(0, 0, sizeof(vphp__PersistentOwnedZVal)),.php_group_before = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_after = builtin____new_array(0, 0, sizeof(main__RouteHook)),.php_group_middle = builtin____new_array(0, 0, sizeof(main__RouteHook)),.not_found_handler = vphp__PersistentOwnedZVal__static__new_null(),.error_handler = vphp__PersistentOwnedZVal__static__new_null(),.container_ref = ((void*)0),.base_path = (string){.str=(byteptr)"", .is_lit=1},.use_demo = true,}, sizeof(main__VSlimApp)));
 }
 main__VSlimApp* main__VSlimApp_set_base_path(main__VSlimApp* app, string base_path) {
 	app->base_path = main__RoutePath__static__normalize_base_path(base_path);
@@ -20512,7 +30636,7 @@ main__VSlimApp* main__VSlimApp_set_container(main__VSlimApp* app, main__VSlimCon
 }
 main__VSlimContainer* main__VSlimApp_container(main__VSlimApp* app) {
 	if (app->container_ref == ((void*)0)) {
-		main__VSlimContainer* created = ((main__VSlimContainer*)builtin__memdup(&(main__VSlimContainer){.entries = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.factories = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.resolved = builtin__new_map(sizeof(string), sizeof(vphp__ZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimContainer)));
+		main__VSlimContainer* created = ((main__VSlimContainer*)builtin__memdup(&(main__VSlimContainer){.entries = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.factories = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.resolved = builtin__new_map(sizeof(string), sizeof(vphp__PersistentOwnedZVal), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimContainer)));
 		main__VSlimContainer_construct(created);
 		app->container_ref = created;
 	}
@@ -20529,9 +30653,19 @@ main__VSlimResponse* main__VSlimApp_dispatch_body(main__VSlimApp* app, string me
 	return main__VSlimApp_dispatch_request(app, req);
 }
 main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__VSlimRequest* req) {
-	multi_return_main__VSlimResponse_Map_string_string mr_1526 = main__dispatch_app_request_with_params(app, req);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_1526.arg0);
-	Map_string_string params = mr_1526.arg1;
+	vphp__RequestScope scope = vphp__request_scope();
+	bool trace_on = main__vslim_trace_mem_should_log();
+	i64 trace_base = ((i64)(0));
+	if (trace_on) {
+		trace_base = main__vslim_mem_usage_bytes();
+		main__vslim_trace_mem_log(req, _S("dispatch.enter"), trace_base);
+	}
+	multi_return_main__VSlimResponse_Map_string_string mr_3836 = main__dispatch_app_request_with_params(app, req, trace_on, trace_base);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_3836.arg0);
+	Map_string_string params = mr_3836.arg1;
+	if (trace_on) {
+		main__vslim_trace_mem_log(req, _S("dispatch.after_core"), trace_base);
+	}
 	if (builtin__string__eq(main__resolve_effective_method(req), _S("HEAD"))) {
 		(*(res)).body = _S("");
 	}
@@ -20542,11 +30676,58 @@ main__VSlimResponse* main__VSlimApp_dispatch_request(main__VSlimApp* app, main__
 			writable->attributes = builtin__map_clone(&params);
 		}
 	}
-	return main__to_vslim_response((*(res)));
+	if (trace_on) {
+		main__vslim_trace_mem_log(req, _S("dispatch.before_return"), trace_base);
+	}
+	main__VSlimResponse* _t1 = main__to_vslim_response((*(res)));
+		{ // defer begin
+			vphp__RequestScope_close(&scope);
+		} // defer end
+	return _t1;
 }
 main__VSlimResponse* main__VSlimApp_dispatch_envelope(main__VSlimApp* app, vphp__ZVal envelope) {
+	vphp__RequestScope scope = vphp__request_scope();
 	main__VSlimRequest* req = main__new_vslim_request_from_zval(envelope);
-	return main__VSlimApp_dispatch_request(app, req);
+	main__VSlimResponse* _t1 = main__VSlimApp_dispatch_request(app, req);
+		{ // defer begin
+			vphp__RequestScope_close(&scope);
+		} // defer end
+	return _t1;
+}
+Map_string_string main__VSlimApp_dispatch_envelope_map(main__VSlimApp* app, vphp__ZVal envelope) {
+	vphp__RequestScope scope = vphp__request_scope();
+	main__VSlimRequest* req = main__new_vslim_request_from_zval(envelope);
+	bool trace_on = main__vslim_trace_mem_should_log();
+	i64 trace_base = ((i64)(0));
+	if (trace_on) {
+		trace_base = main__vslim_mem_usage_bytes();
+		main__vslim_trace_mem_log(req, _S("dispatch_map.enter"), trace_base);
+	}
+	multi_return_main__VSlimResponse_Map_string_string mr_4975 = main__dispatch_app_request_with_params(app, req, trace_on, trace_base);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_4975.arg0);
+	if (trace_on) {
+		main__vslim_trace_mem_log(req, _S("dispatch_map.after_core"), trace_base);
+	}
+	if (builtin__string__eq(main__resolve_effective_method(req), _S("HEAD"))) {
+		(*(res)).body = _S("");
+	}
+	Map_string_string _t1 = builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 3, sizeof(string), sizeof(string),
+		_MOV((string[3]){
+			_S("status"),
+			_S("body"),
+			_S("content_type"),
+		}),
+		_MOV((string[3]){
+			builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = (*(res)).status}}, {_SLIT0, 0, { .d_c = 0 }}})), 
+			(*(res)).body, 
+			(*(res)).content_type, 
+		})
+	)
+	;
+		{ // defer begin
+			vphp__RequestScope_close(&scope);
+		} // defer end
+	return _t1;
 }
 main__VSlimApp* main__VSlimApp_get(main__VSlimApp* app, string pattern, vphp__ZVal handler) {
 	main__VSlimApp_add_php_route(app, _S("GET"), _S(""), pattern, handler);
@@ -20581,7 +30762,7 @@ main__VSlimApp* main__VSlimApp_any(main__VSlimApp* app, string pattern, vphp__ZV
 	return app;
 }
 main__VSlimApp* main__VSlimApp_map(main__VSlimApp* app, vphp__ZVal methods, string pattern, vphp__ZVal handler) {
-	Array_string _t1 = main__normalize_methods(methods);
+	Array_string _t1 = main__normalize_methods(vphp__BorrowedZVal__static__from_zval(methods));
 	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
 		string method = ((string*)_t1.data)[_t2];
 		main__VSlimApp_add_php_route(app, method, _S(""), pattern, handler);
@@ -20621,7 +30802,7 @@ main__VSlimApp* main__VSlimApp_any_named(main__VSlimApp* app, string name, strin
 	return app;
 }
 main__VSlimApp* main__VSlimApp_map_named(main__VSlimApp* app, vphp__ZVal methods, string name, string pattern, vphp__ZVal handler) {
-	Array_string _t1 = main__normalize_methods(methods);
+	Array_string _t1 = main__normalize_methods(vphp__BorrowedZVal__static__from_zval(methods));
 	for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
 		string method = ((string*)_t1.data)[_t2];
 		main__VSlimApp_add_php_route(app, method, name, pattern, handler);
@@ -20630,19 +30811,19 @@ main__VSlimApp* main__VSlimApp_map_named(main__VSlimApp* app, vphp__ZVal methods
 }
 main__VSlimApp* main__VSlimApp_middleware(main__VSlimApp* app, vphp__ZVal handler) {
 	if (vphp__ZVal_is_valid(handler) && vphp__ZVal_is_callable(handler)) {
-		builtin__array_push((array*)&app->php_middlewares, _MOV((vphp__ZVal[]){ vphp__ZVal_dup(handler) }));
+		builtin__array_push((array*)&app->php_middlewares, _MOV((vphp__PersistentOwnedZVal[]){ vphp__PersistentOwnedZVal__static__from_zval(handler) }));
 	}
 	return app;
 }
 main__VSlimApp* main__VSlimApp_before(main__VSlimApp* app, vphp__ZVal handler) {
 	if (vphp__ZVal_is_valid(handler) && vphp__ZVal_is_callable(handler)) {
-		builtin__array_push((array*)&app->php_before_hooks, _MOV((vphp__ZVal[]){ vphp__ZVal_dup(handler) }));
+		builtin__array_push((array*)&app->php_before_hooks, _MOV((vphp__PersistentOwnedZVal[]){ vphp__PersistentOwnedZVal__static__from_zval(handler) }));
 	}
 	return app;
 }
 main__VSlimApp* main__VSlimApp_after(main__VSlimApp* app, vphp__ZVal handler) {
 	if (vphp__ZVal_is_valid(handler) && vphp__ZVal_is_callable(handler)) {
-		builtin__array_push((array*)&app->php_after_hooks, _MOV((vphp__ZVal[]){ vphp__ZVal_dup(handler) }));
+		builtin__array_push((array*)&app->php_after_hooks, _MOV((vphp__PersistentOwnedZVal[]){ vphp__PersistentOwnedZVal__static__from_zval(handler) }));
 	}
 	return app;
 }
@@ -20651,7 +30832,7 @@ main__VSlimApp* main__VSlimApp_set_not_found_handler(main__VSlimApp* app, vphp__
 		vphp__throw_exception_class(_S("InvalidArgumentException"), _S("not_found handler must be callable"), 0);
 		return app;
 	}
-	app->not_found_handler = vphp__ZVal_dup(handler);
+	app->not_found_handler = vphp__PersistentOwnedZVal__static__from_zval(handler);
 	return app;
 }
 main__VSlimApp* main__VSlimApp_not_found(main__VSlimApp* app, vphp__ZVal handler) {
@@ -20662,7 +30843,7 @@ main__VSlimApp* main__VSlimApp_set_error_handler(main__VSlimApp* app, vphp__ZVal
 		vphp__throw_exception_class(_S("InvalidArgumentException"), _S("error handler must be callable"), 0);
 		return app;
 	}
-	app->error_handler = vphp__ZVal_dup(handler);
+	app->error_handler = vphp__PersistentOwnedZVal__static__from_zval(handler);
 	return app;
 }
 main__VSlimApp* main__VSlimApp_error(main__VSlimApp* app, vphp__ZVal handler) {
@@ -20677,7 +30858,7 @@ main__RouteGroup* main__RouteGroup_middleware(main__RouteGroup* group, vphp__ZVa
 	}
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		builtin__array_push((array*)&app->php_group_middle, _MOV((main__RouteHook[]){ ((main__RouteHook){.prefix = main__RouteGroup_normalized_prefix(*group),.handler = vphp__ZVal_dup(handler),}) }));
+		builtin__array_push((array*)&app->php_group_middle, _MOV((main__RouteHook[]){ ((main__RouteHook){.prefix = main__RouteGroup_normalized_prefix(*group),.handler = vphp__PersistentOwnedZVal__static__from_zval(handler),}) }));
 	}
 	return group;
 }
@@ -20687,7 +30868,7 @@ main__RouteGroup* main__RouteGroup_before(main__RouteGroup* group, vphp__ZVal ha
 	}
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		builtin__array_push((array*)&app->php_group_before, _MOV((main__RouteHook[]){ ((main__RouteHook){.prefix = main__RouteGroup_normalized_prefix(*group),.handler = vphp__ZVal_dup(handler),}) }));
+		builtin__array_push((array*)&app->php_group_before, _MOV((main__RouteHook[]){ ((main__RouteHook){.prefix = main__RouteGroup_normalized_prefix(*group),.handler = vphp__PersistentOwnedZVal__static__from_zval(handler),}) }));
 	}
 	return group;
 }
@@ -20697,7 +30878,7 @@ main__RouteGroup* main__RouteGroup_after(main__RouteGroup* group, vphp__ZVal han
 	}
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		builtin__array_push((array*)&app->php_group_after, _MOV((main__RouteHook[]){ ((main__RouteHook){.prefix = main__RouteGroup_normalized_prefix(*group),.handler = vphp__ZVal_dup(handler),}) }));
+		builtin__array_push((array*)&app->php_group_after, _MOV((main__RouteHook[]){ ((main__RouteHook){.prefix = main__RouteGroup_normalized_prefix(*group),.handler = vphp__PersistentOwnedZVal__static__from_zval(handler),}) }));
 	}
 	return group;
 }
@@ -20760,7 +30941,7 @@ main__RouteGroup* main__RouteGroup_any(main__RouteGroup* group, string pattern, 
 main__RouteGroup* main__RouteGroup_map(main__RouteGroup* group, vphp__ZVal methods, string pattern, vphp__ZVal handler) {
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		Array_string _t1 = main__normalize_methods(methods);
+		Array_string _t1 = main__normalize_methods(vphp__BorrowedZVal__static__from_zval(methods));
 		for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
 			string method = ((string*)_t1.data)[_t2];
 			main__VSlimApp_add_php_route(app, method, _S(""), main__RouteGroup_prefixed_pattern(*group, pattern), handler);
@@ -20827,7 +31008,7 @@ main__RouteGroup* main__RouteGroup_any_named(main__RouteGroup* group, string nam
 main__RouteGroup* main__RouteGroup_map_named(main__RouteGroup* group, vphp__ZVal methods, string name, string pattern, vphp__ZVal handler) {
 	{ // Unsafe block
 		main__VSlimApp* app = ((main__VSlimApp*)(group->app));
-		Array_string _t1 = main__normalize_methods(methods);
+		Array_string _t1 = main__normalize_methods(vphp__BorrowedZVal__static__from_zval(methods));
 		for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
 			string method = ((string*)_t1.data)[_t2];
 			main__VSlimApp_add_php_route(app, method, name, main__RouteGroup_prefixed_pattern(*group, pattern), handler);
@@ -20836,11 +31017,14 @@ main__RouteGroup* main__RouteGroup_map_named(main__RouteGroup* group, vphp__ZVal
 	return group;
 }
 string main__VSlimApp_url_for(main__VSlimApp* app, string name, vphp__ZVal params) {
-	return main__VSlimApp_url_for_query(app, name, params, vphp__ZVal__static__new_null());
+	return main__VSlimApp_url_for_query_borrowed(app, name, vphp__BorrowedZVal__static__from_zval(params), vphp__BorrowedZVal__static__null());
 }
 string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query) {
-	Map_string_string params_map = vphp__ZVal_to_string_map(params);
-	Map_string_string query_map = vphp__ZVal_to_string_map(query);
+	return main__VSlimApp_url_for_query_borrowed(app, name, vphp__BorrowedZVal__static__from_zval(params), vphp__BorrowedZVal__static__from_zval(query));
+}
+VV_LOC string main__VSlimApp_url_for_query_borrowed(main__VSlimApp* app, string name, vphp__BorrowedZVal params, vphp__BorrowedZVal query) {
+	Map_string_string params_map = vphp__BorrowedZVal_to_string_map(params);
+	Map_string_string query_map = vphp__BorrowedZVal_to_string_map(query);
 	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
 		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
 		if (builtin__string__eq(route.name, name)) {
@@ -20856,20 +31040,26 @@ string main__VSlimApp_url_for_query(main__VSlimApp* app, string name, vphp__ZVal
 	return _S("");
 }
 string main__VSlimApp_url_for_abs(main__VSlimApp* app, string name, vphp__ZVal params, string scheme, string host) {
-	return main__VSlimApp_url_for_query_abs(app, name, params, vphp__ZVal__static__new_null(), scheme, host);
+	return main__VSlimApp_url_for_query_abs_borrowed(app, name, vphp__BorrowedZVal__static__from_zval(params), vphp__BorrowedZVal__static__null(), scheme, host);
 }
 string main__VSlimApp_url_for_query_abs(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query, string scheme, string host) {
-	string path = main__VSlimApp_url_for_query(app, name, params, query);
+	return main__VSlimApp_url_for_query_abs_borrowed(app, name, vphp__BorrowedZVal__static__from_zval(params), vphp__BorrowedZVal__static__from_zval(query), scheme, host);
+}
+VV_LOC string main__VSlimApp_url_for_query_abs_borrowed(main__VSlimApp* app, string name, vphp__BorrowedZVal params, vphp__BorrowedZVal query, string scheme, string host) {
+	string path = main__VSlimApp_url_for_query_borrowed(app, name, params, query);
 	if ((path).len == 0) {
 		return _S("");
 	}
 	return main__RoutePath__static__absolute_url(scheme, host, path);
 }
 main__VSlimResponse* main__VSlimApp_redirect_to(main__VSlimApp* app, string name, vphp__ZVal params) {
-	return main__VSlimApp_redirect_to_query(app, name, params, vphp__ZVal__static__new_null());
+	return main__VSlimApp_redirect_to_query_borrowed(app, name, vphp__BorrowedZVal__static__from_zval(params), vphp__BorrowedZVal__static__null());
 }
 main__VSlimResponse* main__VSlimApp_redirect_to_query(main__VSlimApp* app, string name, vphp__ZVal params, vphp__ZVal query) {
-	string location = main__VSlimApp_url_for_query(app, name, params, query);
+	return main__VSlimApp_redirect_to_query_borrowed(app, name, vphp__BorrowedZVal__static__from_zval(params), vphp__BorrowedZVal__static__from_zval(query));
+}
+VV_LOC main__VSlimResponse* main__VSlimApp_redirect_to_query_borrowed(main__VSlimApp* app, string name, vphp__BorrowedZVal params, vphp__BorrowedZVal query) {
+	string location = main__VSlimApp_url_for_query_borrowed(app, name, params, query);
 	main__VSlimResponse* res = ((main__VSlimResponse*)builtin__memdup(&(main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimResponse)));
 	main__VSlimResponse_construct(res, 302, _S(""), _S("text/plain; charset=utf-8"));
 	return main__VSlimResponse_redirect(res, location);
@@ -20904,8 +31094,8 @@ Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_
 	Array_string allowed = builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
 		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_14357 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_14357.arg0;
+		multi_return_bool_Map_string_string mr_18898 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_18898.arg0;
 		if (!ok) {
 			continue;
 		}
@@ -20917,28 +31107,40 @@ Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_
 	return allowed;
 }
 VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler) {
-	if (!main__is_supported_route_handler(handler)) {
+	if (!main__is_supported_route_handler(vphp__BorrowedZVal__static__from_zval(handler))) {
 		return;
 	}
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = builtin__string_to_upper(method),.name = name,.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__php_callable,.v_handler = ((void*)0),.php_handler = vphp__ZVal_dup(handler),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = builtin__string_to_upper(method),.name = name,.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__php_callable,.v_handler = ((void*)0),.php_handler = vphp__PersistentOwnedZVal__static__from_zval(handler),}) }));
 }
-VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
+VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base) {
 	if (app->routes.len > 0) {
-		multi_return_main__VSlimResponse_Map_string_string_bool mr_15019 = main__dispatch_php_routes_with_params(app, req);
-		main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_15019.arg0);
-		Map_string_string params = mr_15019.arg1;
-		bool ok = mr_15019.arg2;
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("dispatch.routes.begin"), trace_base);
+		}
+		multi_return_main__VSlimResponse_Map_string_string_bool mr_19735 = main__dispatch_php_routes_with_params(app, req, trace_on, trace_base);
+		main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_19735.arg0);
+		Map_string_string params = mr_19735.arg1;
+		bool ok = mr_19735.arg2;
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("dispatch.routes.end"), trace_base);
+		}
 		if (ok) {
 			return (multi_return_main__VSlimResponse_Map_string_string){.arg0=(*(res)), .arg1=params};
 		}
 	}
 	if (app->use_demo) {
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("dispatch.demo_fallback"), trace_base);
+		}
 		return main__dispatch_demo_request_with_params(main__VSlimRequest_to_vslim_request(req));
+	}
+	if (trace_on) {
+		main__vslim_trace_mem_log(req, _S("dispatch.not_found_fallback"), trace_base);
 	}
 	return (multi_return_main__VSlimResponse_Map_string_string){.arg0=main__run_not_found(app, req), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	};
 }
-VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req) {
+VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_php_routes_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base) {
 	string method = main__resolve_effective_method(req);
 	string path = main__RoutePath__static__normalize(req->path);
 	bool method_not_allowed = false;
@@ -20949,9 +31151,9 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 		if (route.handler_type != main__VSlimRouteHandlerType__php_callable) {
 			continue;
 		}
-		multi_return_bool_Map_string_string mr_15658 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_15658.arg0;
-		Map_string_string params = mr_15658.arg1;
+		multi_return_bool_Map_string_string mr_20684 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_20684.arg0;
+		Map_string_string params = mr_20684.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -20960,30 +31162,45 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 			method_not_allowed = true;
 			continue;
 		}
-		vphp__ZVal payload = main__build_php_request_object(&(*(dispatch_req)), params);
-		Array_vphp__ZVal route_before = main__matching_group_before_hooks(app, path);
-		vphp__ZVal before_res = main__run_php_before_hooks(app, route_before, payload);
-		if (vphp__ZVal_is_valid(before_res) && !vphp__ZVal_is_null(before_res) && !vphp__ZVal_is_undef(before_res)) {
-			main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, payload, before_res, 500, _S("Invalid route response"))));
-			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=params, .arg2=true};
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("route.matched"), trace_base);
 		}
-		Array_vphp__ZVal route_middle = main__matching_group_middle_hooks(app, path);
-		_result_vphp__ZVal _t3 = main__dispatch_php_middleware_chain(app, path, payload, route_middle, route.php_handler);
+		vphp__ZVal payload = main__build_php_request_object(&(*(dispatch_req)), params);
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("route.after_build_payload"), trace_base);
+		}
+		Array_vphp__PersistentOwnedZVal route_before = main__matching_group_before_hooks(app, path);
+		vphp__ZVal before_res = main__run_php_before_hooks(app, route_before, vphp__BorrowedZVal__static__from_zval(payload));
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("route.after_before_hooks"), trace_base);
+		}
+		if (vphp__ZVal_is_valid(before_res) && !vphp__ZVal_is_null(before_res) && !vphp__ZVal_is_undef(before_res)) {
+			main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, vphp__BorrowedZVal__static__from_zval(payload), vphp__BorrowedZVal__static__from_zval(before_res), 500, _S("Invalid route response"))));
+			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=params, .arg2=true};
+		}
+		Array_vphp__PersistentOwnedZVal route_middle = main__matching_group_middle_hooks(app, path);
+		_result_vphp__ZVal _t3 = main__dispatch_php_middleware_chain(app, path, vphp__BorrowedZVal__static__from_zval(payload), route_middle, route.php_handler);
 		if (_t3.is_error) {
 			IError err = _t3.err;
 			string msg = ((IError_name_table[err._typ]._method_msg(err._object)).len == 0 ? (_S("Route handler is not callable")) : (IError_name_table[err._typ]._method_msg(err._object)));
-			_option_main__VSlimResponse _t4 = main__run_error_handler(app, payload, 500, msg);
+			_option_main__VSlimResponse _t4 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 500, msg);
 			if (_t4.state != 0) {
 				*(main__VSlimResponse*) _t4.data = main__text_response(500, msg);
 			}
 			
  			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t4.data)));
-			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=params, .arg2=true};
+			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=params, .arg2=true};
 		}
 		
  		vphp__ZVal raw_res = (*(vphp__ZVal*)_t3.data);
-		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, payload, raw_res, 500, _S("Invalid route response"))));
-		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=params, .arg2=true};
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("route.after_middleware_chain"), trace_base);
+		}
+		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, vphp__BorrowedZVal__static__from_zval(payload), vphp__BorrowedZVal__static__from_zval(raw_res), 500, _S("Invalid route response"))));
+		if (trace_on) {
+			main__vslim_trace_mem_log(req, _S("route.after_normalize"), trace_base);
+		}
+		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=params, .arg2=true};
 	}
 	if (_SLIT_EQ(method.str, method.len, "OPTIONS") && allowed_methods.len > 0) {
 		Array_string allow = builtin__array_clone_to_depth(&allowed_methods, 1);
@@ -21003,14 +31220,14 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 			})
 		)
 		,})));
-		(*(res)) = main__apply_php_after_hooks(app, path, payload, (*(res)));
+		(*(res)) = main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res)));
 		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=(*(res)), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		, .arg2=true};
 	}
 	if (method_not_allowed) {
 		vphp__ZVal payload = main__build_php_request_object(&(*(dispatch_req)), builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		);
-		_option_main__VSlimResponse _t9 = main__run_error_handler(app, payload, 405, _S("Method not allowed"));
+		_option_main__VSlimResponse _t9 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 405, _S("Method not allowed"));
 		if (_t9.state != 0) {
 			*(main__VSlimResponse*) _t9.data = main__method_not_allowed_response();
 		}
@@ -21019,86 +31236,86 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 		if (allowed_methods.len > 0 && !_IN_MAP(ADDR(string, _S("allow")), ADDR(map, (*(res)).headers))) {
 			builtin__map_set(&(*(res)).headers, &(string[]){_S("allow")}, &(string[]) { Array_string_join(allowed_methods, _S(", ")) });
 		}
-		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		, .arg2=true};
 	}
 	vphp__ZVal payload = main__build_php_request_object(&(*(dispatch_req)), builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	);
-	vphp__ZVal before_res = main__run_php_before_hooks(app, main__matching_group_before_hooks(app, path), payload);
+	vphp__ZVal before_res = main__run_php_before_hooks(app, main__matching_group_before_hooks(app, path), vphp__BorrowedZVal__static__from_zval(payload));
 	if (vphp__ZVal_is_valid(before_res) && !vphp__ZVal_is_null(before_res) && !vphp__ZVal_is_undef(before_res)) {
-		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, payload, before_res, 500, _S("Invalid route response"))));
-		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, vphp__BorrowedZVal__static__from_zval(payload), vphp__BorrowedZVal__static__from_zval(before_res), 500, _S("Invalid route response"))));
+		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		, .arg2=true};
 	}
-	Array_vphp__ZVal route_middle = main__matching_group_middle_hooks(app, path);
+	Array_vphp__PersistentOwnedZVal route_middle = main__matching_group_middle_hooks(app, path);
 	if (app->php_middlewares.len > 0 || route_middle.len > 0) {
-		main__VSlimResponse *terminal = HEAP(main__VSlimResponse, (main__run_not_found_core(app, payload)));
-		_result_vphp__ZVal _t12 = main__dispatch_php_middleware_chain_terminal(app, path, payload, route_middle, (*(terminal)));
+		main__VSlimResponse *terminal = HEAP(main__VSlimResponse, (main__run_not_found_core(app, vphp__BorrowedZVal__static__from_zval(payload))));
+		_result_vphp__ZVal _t12 = main__dispatch_php_middleware_chain_terminal(app, path, vphp__BorrowedZVal__static__from_zval(payload), route_middle, (*(terminal)));
 		if (_t12.is_error) {
 			IError err = _t12.err;
 			string msg = ((IError_name_table[err._typ]._method_msg(err._object)).len == 0 ? (_S("Route handler is not callable")) : (IError_name_table[err._typ]._method_msg(err._object)));
-			_option_main__VSlimResponse _t13 = main__run_error_handler(app, payload, 500, msg);
+			_option_main__VSlimResponse _t13 = main__run_error_handler(app, vphp__BorrowedZVal__static__from_zval(payload), 500, msg);
 			if (_t13.state != 0) {
 				*(main__VSlimResponse*) _t13.data = main__text_response(500, msg);
 			}
 			
  			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t13.data)));
-			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+			return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 			, .arg2=true};
 		}
 		
  		vphp__ZVal raw_res = (*(vphp__ZVal*)_t12.data);
-		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, payload, raw_res, 500, _S("Invalid route response"))));
-		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, payload, (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(app, vphp__BorrowedZVal__static__from_zval(payload), vphp__BorrowedZVal__static__from_zval(raw_res), 500, _S("Invalid route response"))));
+		return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=main__apply_php_after_hooks(app, path, vphp__BorrowedZVal__static__from_zval(payload), (*(res))), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 		, .arg2=true};
 	}
 	return (multi_return_main__VSlimResponse_Map_string_string_bool){.arg0=((main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	, .arg2=false};
 }
-VV_LOC vphp__ZVal main__dispatch_php_before_hooks(main__VSlimApp* app, Array_vphp__ZVal route_before, vphp__ZVal payload, int index) {
+VV_LOC vphp__ZVal main__dispatch_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload, int index) {
 	int total = (int)(app->php_before_hooks.len + route_before.len);
 	if (index >= total) {
-		return vphp__ZVal__static__new_null();
+		return ((vphp__ZVal){.raw = 0,.owned = 0,});
 	}
-	vphp__ZVal hook = (index < app->php_before_hooks.len ? ((*(vphp__ZVal*)builtin__array_get(app->php_before_hooks, index))) : ((*(vphp__ZVal*)builtin__array_get(route_before, (int)(index - app->php_before_hooks.len)))));
-	vphp__ZVal res = vphp__ZVal_call(hook, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload})));
+	vphp__PersistentOwnedZVal hook = (index < app->php_before_hooks.len ? ((*(vphp__PersistentOwnedZVal*)builtin__array_get(app->php_before_hooks, index))) : ((*(vphp__PersistentOwnedZVal*)builtin__array_get(route_before, (int)(index - app->php_before_hooks.len)))));
+	vphp__ZVal res = vphp__PersistentOwnedZVal_call_owned_request(hook, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)})));
 	if (!vphp__ZVal_is_valid(res) || vphp__ZVal_is_null(res) || vphp__ZVal_is_undef(res)) {
 		return main__dispatch_php_before_hooks(app, route_before, payload, (int)(index + 1));
 	}
 	return res;
 }
-VV_LOC vphp__ZVal main__run_php_before_hooks(main__VSlimApp* app, Array_vphp__ZVal route_before, vphp__ZVal payload) {
+VV_LOC vphp__ZVal main__run_php_before_hooks(main__VSlimApp* app, Array_vphp__PersistentOwnedZVal route_before, vphp__BorrowedZVal payload) {
 	if (app->php_before_hooks.len == 0 && route_before.len == 0) {
-		return vphp__ZVal__static__new_null();
+		return ((vphp__ZVal){.raw = 0,.owned = 0,});
 	}
 	return main__dispatch_php_before_hooks(app, route_before, payload, 0);
 }
-VV_LOC Array_vphp__ZVal main__matching_group_before_hooks(main__VSlimApp* app, string path) {
-	Array_vphp__ZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
+VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_before_hooks(main__VSlimApp* app, string path) {
+	Array_vphp__PersistentOwnedZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__PersistentOwnedZVal), 0);
 	for (int _t1 = 0; _t1 < app->php_group_before.len; ++_t1) {
 		main__RouteHook item = ((main__RouteHook*)app->php_group_before.data)[_t1];
 		if (main__path_has_prefix(path, item.prefix)) {
-			builtin__array_push((array*)&out, _MOV((vphp__ZVal[]){ item.handler }));
+			builtin__array_push((array*)&out, _MOV((vphp__PersistentOwnedZVal[]){ item.handler }));
 		}
 	}
 	return out;
 }
-VV_LOC Array_vphp__ZVal main__matching_group_after_hooks(main__VSlimApp* app, string path) {
-	Array_vphp__ZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
+VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_after_hooks(main__VSlimApp* app, string path) {
+	Array_vphp__PersistentOwnedZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__PersistentOwnedZVal), 0);
 	for (int _t1 = 0; _t1 < app->php_group_after.len; ++_t1) {
 		main__RouteHook item = ((main__RouteHook*)app->php_group_after.data)[_t1];
 		if (main__path_has_prefix(path, item.prefix)) {
-			builtin__array_push((array*)&out, _MOV((vphp__ZVal[]){ item.handler }));
+			builtin__array_push((array*)&out, _MOV((vphp__PersistentOwnedZVal[]){ item.handler }));
 		}
 	}
 	return out;
 }
-VV_LOC Array_vphp__ZVal main__matching_group_middle_hooks(main__VSlimApp* app, string path) {
-	Array_vphp__ZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
+VV_LOC Array_vphp__PersistentOwnedZVal main__matching_group_middle_hooks(main__VSlimApp* app, string path) {
+	Array_vphp__PersistentOwnedZVal out = builtin____new_array_with_default(0, 0, sizeof(vphp__PersistentOwnedZVal), 0);
 	for (int _t1 = 0; _t1 < app->php_group_middle.len; ++_t1) {
 		main__RouteHook item = ((main__RouteHook*)app->php_group_middle.data)[_t1];
 		if (main__path_has_prefix(path, item.prefix)) {
-			builtin__array_push((array*)&out, _MOV((vphp__ZVal[]){ item.handler }));
+			builtin__array_push((array*)&out, _MOV((vphp__PersistentOwnedZVal[]){ item.handler }));
 		}
 	}
 	return out;
@@ -21114,7 +31331,7 @@ VV_LOC bool main__path_has_prefix(string path, string prefix) {
 }
 VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_string_string params) {
 	{ // Unsafe block
-		vphp__ZVal payload = vphp__ZVal__static__new_null();
+		vphp__ZVal payload = vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
 		main__VSlimRequest* bound = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = req->method,
 			.raw_path = req->raw_path,
 			.path = req->path,
@@ -21137,27 +31354,27 @@ VV_LOC vphp__ZVal main__build_php_request_object(main__VSlimRequest* req, Map_st
 		vphp_bind_handlers(vphp_get_obj_from_zval(payload.raw), ((vphp_class_handlers*)(main__vslimrequest_handlers())));
 		return payload;
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
 VV_LOC vphp__ZVal main__build_php_response_object(main__VSlimResponse _v_toheap_res) {
 main__VSlimResponse* res = HEAP(main__VSlimResponse, _v_toheap_res);
 	{ // Unsafe block
-		vphp__ZVal payload = vphp__ZVal__static__new_null();
+		vphp__ZVal payload = vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
 		main__VSlimResponse* bound = main__to_vslim_response((*(res)));
 		vphp_return_obj(payload.raw, bound, vslim__response_ce);
 		vphp_bind_handlers(vphp_get_obj_from_zval(payload.raw), ((vphp_class_handlers*)(main__vslimresponse_handlers())));
 		return payload;
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
-VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* app, string path, vphp__ZVal payload, Array_vphp__ZVal route_middle, vphp__ZVal route_handler) {
+VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler) {
 	return main__dispatch_php_middleware_chain_with_terminal(app, path, payload, route_middle, route_handler, ((main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}), false);
 }
-VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__ZVal payload, Array_vphp__ZVal route_middle, main__VSlimResponse _v_toheap_terminal) {
+VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, main__VSlimResponse _v_toheap_terminal) {
 main__VSlimResponse* terminal = HEAP(main__VSlimResponse, _v_toheap_terminal);
-	return main__dispatch_php_middleware_chain_with_terminal(app, path, payload, route_middle, vphp__ZVal__static__new_null(), (*(terminal)), true);
+	return main__dispatch_php_middleware_chain_with_terminal(app, path, payload, route_middle, vphp__PersistentOwnedZVal__static__new_null(), (*(terminal)), true);
 }
-VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__ZVal payload, Array_vphp__ZVal route_middle, vphp__ZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal) {
+VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal) {
 main__VSlimResponse* terminal = HEAP(main__VSlimResponse, _v_toheap_terminal);
 	if (app->php_middlewares.len == 0 && route_middle.len == 0) {
 		if (has_terminal) {
@@ -21166,28 +31383,29 @@ main__VSlimResponse* terminal = HEAP(main__VSlimResponse, _v_toheap_terminal);
 			 
 			return _t1;
 		}
-		return main__dispatch_route_handler(app, route_handler, payload);
+		return main__dispatch_route_handler(app, vphp__PersistentOwnedZVal_borrowed(route_handler), payload);
 	}
-	Array_vphp__ZVal middlewares = builtin____new_array_with_default(0, 0, sizeof(vphp__ZVal), 0);
+	Array_vphp__RequestOwnedZVal middlewares = builtin____new_array_with_default(0, 0, sizeof(vphp__RequestOwnedZVal), 0);
 	for (int _t3 = 0; _t3 < app->php_middlewares.len; ++_t3) {
-		vphp__ZVal hook = ((vphp__ZVal*)app->php_middlewares.data)[_t3];
-		builtin__array_push((array*)&middlewares, _MOV((vphp__ZVal[]){ hook }));
+		vphp__PersistentOwnedZVal hook = ((vphp__PersistentOwnedZVal*)app->php_middlewares.data)[_t3];
+		builtin__array_push((array*)&middlewares, _MOV((vphp__RequestOwnedZVal[]){ vphp__PersistentOwnedZVal_clone_request_owned(hook) }));
 	}
 	for (int _t5 = 0; _t5 < route_middle.len; ++_t5) {
-		vphp__ZVal hook = ((vphp__ZVal*)route_middle.data)[_t5];
-		builtin__array_push((array*)&middlewares, _MOV((vphp__ZVal[]){ hook }));
+		vphp__PersistentOwnedZVal hook = ((vphp__PersistentOwnedZVal*)route_middle.data)[_t5];
+		builtin__array_push((array*)&middlewares, _MOV((vphp__RequestOwnedZVal[]){ vphp__PersistentOwnedZVal_clone_request_owned(hook) }));
 	}
-	main__MiddlewareChain* chain = ((main__MiddlewareChain*)builtin__memdup(&(main__MiddlewareChain){.app = app,
+	main__MiddlewareChain chain = ((main__MiddlewareChain){
+		.app = app,
 		.path = path,
 		.middlewares = middlewares,
-		.route_handler = route_handler,
+		.route_handler = vphp__PersistentOwnedZVal_clone_request_owned(route_handler),
 		.index = 0,
 		.has_terminal = has_terminal,
 		.terminal_response = (*(terminal)),
-	}, sizeof(main__MiddlewareChain)));
-	return main__MiddlewareChain_dispatch(chain, payload);
+	});
+	return main__MiddlewareChain_dispatch(&chain, payload);
 }
-VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__ZVal payload) {
+VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__BorrowedZVal payload) {
 	if (chain->index >= chain->middlewares.len) {
 		if (chain->has_terminal) {
 			_result_vphp__ZVal _t1;
@@ -21195,13 +31413,13 @@ VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* 
 			 
 			return _t1;
 		}
-		return main__dispatch_route_handler(chain->app, chain->route_handler, payload);
+		return main__dispatch_route_handler(chain->app, vphp__RequestOwnedZVal_borrowed(chain->route_handler), payload);
 	}
-	vphp__ZVal mw = (*(vphp__ZVal*)builtin__array_get(chain->middlewares, chain->index));
+	vphp__RequestOwnedZVal mw = (*(vphp__RequestOwnedZVal*)builtin__array_get(chain->middlewares, chain->index));
 	chain->index++;
-	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559, (struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559_Ctx){.payload = payload,
+	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181, (struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx){.payload = payload,
 		.mw = mw,
-	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_23559_Ctx))));
+	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_30181_Ctx))));
 	if (!vphp__ZVal_is_valid(raw) || vphp__ZVal_is_null(raw) || vphp__ZVal_is_undef(raw)) {
 		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(_S("Middleware must return a response")), .data={E_STRUCT} };
 	}
@@ -21212,68 +31430,70 @@ VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* 
 }
 VV_LOC vphp__ZVal main__with_active_middleware_chain(main__MiddlewareChain* chain, vphp__ZVal (*invoke)(void)) {
 	{ // Unsafe block
-		main__MiddlewareChain* previous = active_middleware_chain;
-		active_middleware_chain = chain;
-		vphp__ZVal result = invoke();
-		active_middleware_chain = previous;
-		return result;
+		builtin__array_push((array*)&active_middleware_chains, _MOV((main__MiddlewareChain*[]){ chain }));
+		vphp__ZVal _t2 = invoke();
+			{ // defer begin
+				if (active_middleware_chains.len > 0) {
+					active_middleware_chains = builtin__array_slice(active_middleware_chains, 0, (int)(active_middleware_chains.len - 1));
+				}
+			} // defer end
+		return _t2;
+		{ // defer begin
+			if (active_middleware_chains.len > 0) {
+				active_middleware_chains = builtin__array_slice(active_middleware_chains, 0, (int)(active_middleware_chains.len - 1));
+			}
+		} // defer end
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
-VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal request_payload) {
+VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal _request_payload) {
 	{ // Unsafe block
-		main__MiddlewareChain* chain = active_middleware_chain;
-		if (chain == ((void*)0)) {
-			return vphp__ZVal__static__new_null();
+		if (active_middleware_chains.len == 0) {
+			return vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
 		}
-		_option_main__VSlimRequest_ptr _t2 = vphp__ZVal_to_object_T_main__VSlimRequest(request_payload);
-		if (_t2.state != 0) {
-			return vphp__ZVal__static__new_null();
-		}
-		
- 		main__VSlimRequest* req = (*(main__VSlimRequest**)_t2.data);
-		vphp__ZVal payload = main__build_php_request_object(req, builtin__map_clone(&req->params));
-		_result_vphp__ZVal _t4 = main__MiddlewareChain_dispatch(chain, payload);
-		if (_t4.is_error) {
-			IError err = _t4.err;
+		main__MiddlewareChain* chain = (*(main__MiddlewareChain**)builtin__array_get(active_middleware_chains, (int)(active_middleware_chains.len - 1)));
+		vphp__BorrowedZVal payload = vphp__BorrowedZVal__static__from_zval(_request_payload);
+		_result_vphp__ZVal _t2 = main__MiddlewareChain_dispatch(chain, payload);
+		if (_t2.is_error) {
+			IError err = _t2.err;
 			string msg = ((IError_name_table[err._typ]._method_msg(err._object)).len == 0 ? (_S("Route handler is not callable")) : (IError_name_table[err._typ]._method_msg(err._object)));
-			_option_main__VSlimResponse _t5 = main__run_error_handler(chain->app, payload, 500, msg);
-			if (_t5.state != 0) {
-				*(main__VSlimResponse*) _t5.data = main__text_response(500, msg);
+			_option_main__VSlimResponse _t3 = main__run_error_handler(chain->app, payload, 500, msg);
+			if (_t3.state != 0) {
+				*(main__VSlimResponse*) _t3.data = main__text_response(500, msg);
 			}
 			
- 			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t5.data)));
+ 			main__VSlimResponse *res = HEAP(main__VSlimResponse, ((*(main__VSlimResponse*)_t3.data)));
 			return main__build_php_response_object((*(res)));
 		}
 		
- 		vphp__ZVal raw = (*(vphp__ZVal*)_t4.data);
-		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(chain->app, payload, raw, 500, _S("Invalid route response"))));
+ 		vphp__ZVal raw = (*(vphp__ZVal*)_t2.data);
+		main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__normalize_or_handle_error(chain->app, payload, vphp__BorrowedZVal__static__from_zval(raw), 500, _S("Invalid route response"))));
 		return main__build_php_response_object((*(res)));
 	}
-	return (vphp__ZVal){.raw = 0,};
+	return (vphp__ZVal){.raw = 0,.owned = 0,};
 }
-VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__ZVal request_payload, main__VSlimResponse _v_toheap_initial) {
+VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__BorrowedZVal request_payload, main__VSlimResponse _v_toheap_initial) {
 main__VSlimResponse* initial = HEAP(main__VSlimResponse, _v_toheap_initial);
 	if (app->php_after_hooks.len == 0 && app->php_group_after.len == 0) {
 		return (*(initial));
 	}
 	main__VSlimResponse *current = HEAP(main__VSlimResponse, ((*(initial))));
-	Array_vphp__ZVal group_after = main__matching_group_after_hooks(app, path);
+	Array_vphp__PersistentOwnedZVal group_after = main__matching_group_after_hooks(app, path);
 	int total = (int)(app->php_after_hooks.len + group_after.len);
 	for (int i = 0; i < total; ++i) {
-		vphp__ZVal hook = (i < app->php_after_hooks.len ? ((*(vphp__ZVal*)builtin__array_get(app->php_after_hooks, i))) : ((*(vphp__ZVal*)builtin__array_get(group_after, (int)(i - app->php_after_hooks.len)))));
+		vphp__PersistentOwnedZVal hook = (i < app->php_after_hooks.len ? ((*(vphp__PersistentOwnedZVal*)builtin__array_get(app->php_after_hooks, i))) : ((*(vphp__PersistentOwnedZVal*)builtin__array_get(group_after, (int)(i - app->php_after_hooks.len)))));
 		vphp__ZVal response_payload = main__build_php_response_object((*(current)));
-		vphp__ZVal res = vphp__ZVal_call(hook, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){request_payload, response_payload})));
+		vphp__ZVal res = vphp__PersistentOwnedZVal_call_owned_request(hook, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(request_payload), response_payload})));
 		if (vphp__ZVal_is_valid(res) && !vphp__ZVal_is_null(res) && !vphp__ZVal_is_undef(res)) {
-			(*(current)) = main__normalize_or_handle_error(app, request_payload, res, 500, _S("Invalid route response"));
+			(*(current)) = main__normalize_or_handle_error(app, request_payload, vphp__BorrowedZVal__static__from_zval(res), 500, _S("Invalid route response"));
 		}
 	}
 	return (*(current));
 }
-VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__ZVal request_payload, vphp__ZVal result, int fallback_status, string fallback_message) {
-	multi_return_main__VSlimResponse_bool mr_25693 = main__normalize_php_route_response(result);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_25693.arg0);
-	bool ok = mr_25693.arg1;
+VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__BorrowedZVal request_payload, vphp__BorrowedZVal result, int fallback_status, string fallback_message) {
+	multi_return_main__VSlimResponse_bool mr_32511 = main__normalize_php_route_response_borrowed(result);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_32511.arg0);
+	bool ok = mr_32511.arg1;
 	if (ok) {
 		return (*(res));
 	}
@@ -21289,24 +31509,27 @@ VV_LOC main__VSlimResponse main__run_not_found(main__VSlimApp* app, main__VSlimR
 	vphp__ZVal payload = main__build_php_request_object(req, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	);
 	string path = main__RoutePath__static__normalize(req->path);
-	main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__run_not_found_core(app, payload)));
-	return main__apply_php_after_hooks(app, path, payload, (*(res)));
+	vphp__BorrowedZVal b_payload = vphp__BorrowedZVal__static__from_zval(payload);
+	main__VSlimResponse *res = HEAP(main__VSlimResponse, (main__run_not_found_core(app, b_payload)));
+	return main__apply_php_after_hooks(app, path, b_payload, (*(res)));
 }
-VV_LOC main__VSlimResponse main__run_not_found_core(main__VSlimApp* app, vphp__ZVal payload) {
-	if (vphp__ZVal_is_valid(app->not_found_handler) && vphp__ZVal_is_callable(app->not_found_handler)) {
-		vphp__ZVal raw = vphp__ZVal_call(app->not_found_handler, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload})));
-		return main__normalize_or_handle_error(app, payload, raw, 404, _S("Not Found"));
+VV_LOC main__VSlimResponse main__run_not_found_core(main__VSlimApp* app, vphp__BorrowedZVal payload) {
+	vphp__PersistentOwnedZVal nf = app->not_found_handler;
+	if (vphp__PersistentOwnedZVal_is_valid(nf) && vphp__PersistentOwnedZVal_is_callable(nf)) {
+		vphp__ZVal raw = vphp__PersistentOwnedZVal_call_owned_request(nf, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)})));
+		return main__normalize_or_handle_error(app, payload, vphp__BorrowedZVal__static__from_zval(raw), 404, _S("Not Found"));
 	}
 	return main__not_found_response();
 }
-VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, vphp__ZVal request_payload, int status, string message) {
-	if (!vphp__ZVal_is_valid(app->error_handler) || !vphp__ZVal_is_callable(app->error_handler)) {
+VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, vphp__BorrowedZVal request_payload, int status, string message) {
+	vphp__PersistentOwnedZVal eh = app->error_handler;
+	if (!vphp__PersistentOwnedZVal_is_valid(eh) || !vphp__PersistentOwnedZVal_is_callable(eh)) {
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
-	vphp__ZVal raw = vphp__ZVal_call(app->error_handler, builtin__new_array_from_c_array(3, 3, sizeof(vphp__ZVal), _MOV((vphp__ZVal[3]){request_payload, vphp__ZVal__static__new_string(message), vphp__ZVal__static__new_int(status)})));
-	multi_return_main__VSlimResponse_bool mr_26826 = main__normalize_php_route_response(raw);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_26826.arg0);
-	bool ok = mr_26826.arg1;
+	vphp__ZVal raw = vphp__PersistentOwnedZVal_call_owned_request(eh, builtin__new_array_from_c_array(3, 3, sizeof(vphp__ZVal), _MOV((vphp__ZVal[3]){vphp__BorrowedZVal_to_zval(request_payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(message)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int(status))})));
+	multi_return_main__VSlimResponse_bool mr_33797 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_33797.arg0);
+	bool ok = mr_33797.arg1;
 	if (!ok) {
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
@@ -21315,42 +31538,42 @@ VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, 
 	 
 	return _t3;
 }
-VV_LOC bool main__is_supported_route_handler(vphp__ZVal handler) {
-	return vphp__ZVal_is_valid(handler) && (vphp__ZVal_is_callable(handler) || vphp__ZVal_is_string(handler) || vphp__ZVal_is_array(handler));
+VV_LOC bool main__is_supported_route_handler(vphp__BorrowedZVal handler) {
+	return vphp__BorrowedZVal_is_valid(handler) && (vphp__BorrowedZVal_is_callable(handler) || vphp__BorrowedZVal_is_string(handler) || vphp__BorrowedZVal_is_array(handler));
 }
-VV_LOC _result_vphp__ZVal main__dispatch_route_handler(main__VSlimApp* app, vphp__ZVal handler, vphp__ZVal payload) {
-	if (!vphp__ZVal_is_valid(handler)) {
+VV_LOC _result_vphp__ZVal main__dispatch_route_handler(main__VSlimApp* app, vphp__BorrowedZVal handler, vphp__BorrowedZVal payload) {
+	if (!vphp__BorrowedZVal_is_valid(handler)) {
 		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(_S("Invalid route handler")), .data={E_STRUCT} };
 	}
-	if (vphp__ZVal_is_callable(handler)) {
+	if (vphp__BorrowedZVal_is_callable(handler)) {
 		_result_vphp__ZVal _t2;
-		builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_call(handler, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload}))) }, (_result*)(&_t2), sizeof(vphp__ZVal));
+		builtin___result_ok(&(vphp__ZVal[]) { vphp__BorrowedZVal_call_owned_request(handler, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)}))) }, (_result*)(&_t2), sizeof(vphp__ZVal));
 		 
 		return _t2;
 	}
-	if (vphp__ZVal_is_string(handler) && main__VSlimApp_has_container(app)) {
-		_result_vphp__ZVal _t3 = main__resolve_container_service(app, vphp__ZVal_to_string(handler));
+	if (vphp__BorrowedZVal_is_string(handler) && main__VSlimApp_has_container(app)) {
+		_result_vphp__ZVal _t3 = main__resolve_container_service(app, vphp__BorrowedZVal_to_string(handler));
 		if (_t3.is_error) {
-			return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Container service \""), 0xfe10, {.d_s = vphp__ZVal_to_string(handler)}}, {_S("\" not found"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+			return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Container service \""), 0xfe10, {.d_s = vphp__BorrowedZVal_to_string(handler)}}, {_S("\" not found"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
 		}
 		
  		vphp__ZVal resolved = (*(vphp__ZVal*)_t3.data);
 		if (vphp__ZVal_is_callable(resolved)) {
 			_result_vphp__ZVal _t5;
-			builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_call(resolved, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload}))) }, (_result*)(&_t5), sizeof(vphp__ZVal));
+			builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_call_owned_request(resolved, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)}))) }, (_result*)(&_t5), sizeof(vphp__ZVal));
 			 
 			return _t5;
 		}
 		if (vphp__ZVal_is_object(resolved) && vphp__ZVal_method_exists(resolved, _S("__invoke"))) {
 			_result_vphp__ZVal _t6;
-			builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_method(resolved, _S("__invoke"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload}))) }, (_result*)(&_t6), sizeof(vphp__ZVal));
+			builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_method_owned_request(resolved, _S("__invoke"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)}))) }, (_result*)(&_t6), sizeof(vphp__ZVal));
 			 
 			return _t6;
 		}
-		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Container service \""), 0xfe10, {.d_s = vphp__ZVal_to_string(handler)}}, {_S("\" is not callable"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
+		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(builtin__str_intp(2, _MOV((StrIntpData[]){{_S("Container service \""), 0xfe10, {.d_s = vphp__BorrowedZVal_to_string(handler)}}, {_S("\" is not callable"), 0, { .d_c = 0 }}}))), .data={E_STRUCT} };
 	}
-	if (vphp__ZVal_is_array(handler) && main__VSlimApp_has_container(app)) {
-		Array_string parts = vphp__ZVal_to_string_list(handler);
+	if (vphp__BorrowedZVal_is_array(handler) && main__VSlimApp_has_container(app)) {
+		Array_string parts = vphp__BorrowedZVal_to_string_list(handler);
 		if (parts.len == 1 && ((*(string*)builtin__array_get(parts, 0))).len != 0) {
 			_result_vphp__ZVal _t8 = main__resolve_container_service(app, (*(string*)builtin__array_get(parts, 0)));
 			if (_t8.is_error) {
@@ -21360,13 +31583,13 @@ VV_LOC _result_vphp__ZVal main__dispatch_route_handler(main__VSlimApp* app, vphp
  			vphp__ZVal service = (*(vphp__ZVal*)_t8.data);
 			if (vphp__ZVal_is_callable(service)) {
 				_result_vphp__ZVal _t10;
-				builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_call(service, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload}))) }, (_result*)(&_t10), sizeof(vphp__ZVal));
+				builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_call_owned_request(service, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)}))) }, (_result*)(&_t10), sizeof(vphp__ZVal));
 				 
 				return _t10;
 			}
 			if (vphp__ZVal_is_object(service) && vphp__ZVal_method_exists(service, _S("__invoke"))) {
 				_result_vphp__ZVal _t11;
-				builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_method(service, _S("__invoke"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload}))) }, (_result*)(&_t11), sizeof(vphp__ZVal));
+				builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_method_owned_request(service, _S("__invoke"), builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)}))) }, (_result*)(&_t11), sizeof(vphp__ZVal));
 				 
 				return _t11;
 			}
@@ -21382,7 +31605,7 @@ VV_LOC _result_vphp__ZVal main__dispatch_route_handler(main__VSlimApp* app, vphp
 			string method = (((*(string*)builtin__array_get(parts, 1))).len == 0 ? (_S("__invoke")) : ((*(string*)builtin__array_get(parts, 1))));
 			if (vphp__ZVal_is_object(service) && vphp__ZVal_method_exists(service, method)) {
 				_result_vphp__ZVal _t15;
-				builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_method(service, method, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){payload}))) }, (_result*)(&_t15), sizeof(vphp__ZVal));
+				builtin___result_ok(&(vphp__ZVal[]) { vphp__ZVal_method_owned_request(service, method, builtin__new_array_from_c_array(1, 1, sizeof(vphp__ZVal), _MOV((vphp__ZVal[1]){vphp__BorrowedZVal_to_zval(payload)}))) }, (_result*)(&_t15), sizeof(vphp__ZVal));
 				 
 				return _t15;
 			}
@@ -21497,10 +31720,10 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 	}
 	return out;
 }
-VV_LOC Array_string main__normalize_methods(vphp__ZVal methods) {
+VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods) {
 	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
-	if (vphp__ZVal_is_string(methods)) {
-		string raw = builtin__string_replace(vphp__ZVal_to_string(methods), _S("|"), _S(","));
+	if (vphp__BorrowedZVal_is_string(methods)) {
+		string raw = builtin__string_replace(vphp__BorrowedZVal_to_string(methods), _S("|"), _S(","));
 		Array_string _t1 = builtin__string_split(raw, _S(","));
 		for (int _t2 = 0; _t2 < _t1.len; ++_t2) {
 			string part = ((string*)_t1.data)[_t2];
@@ -21517,8 +31740,8 @@ VV_LOC Array_string main__normalize_methods(vphp__ZVal methods) {
 		}
 		return out;
 	}
-	if (vphp__ZVal_is_array(methods)) {
-		Array_string _t6 = vphp__ZVal_to_string_list(methods);
+	if (vphp__BorrowedZVal_is_array(methods)) {
+		Array_string _t6 = vphp__BorrowedZVal_to_string_list(methods);
 		for (int _t7 = 0; _t7 < _t6.len; ++_t7) {
 			string part = ((string*)_t6.data)[_t7];
 			string method = builtin__string_to_upper(builtin__string_trim_space(part));
@@ -21534,6 +31757,9 @@ VV_LOC Array_string main__normalize_methods(vphp__ZVal methods) {
 		}
 	}
 	return out;
+}
+VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result) {
+	return main__normalize_php_route_response(vphp__BorrowedZVal_to_zval(result));
 }
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result) {
 	if (!vphp__ZVal_is_valid(result) || vphp__ZVal_is_null(result) || vphp__ZVal_is_undef(result)) {
@@ -21556,7 +31782,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_32674);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40008);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
@@ -21602,6 +31828,58 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		return (multi_return_main__VSlimResponse_bool){.arg0=((main__VSlimResponse){.status = status,.body = body,.content_type = (*(string*)_t12.data),.headers = headers,}), .arg1=true};
 	}
 	return (multi_return_main__VSlimResponse_bool){.arg0=((main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}), .arg1=false};
+}
+VV_LOC void main__VSlimApp_free(main__VSlimApp* app) {
+	for (int i = 0; i < app->php_middlewares.len; ++i) {
+		vphp__PersistentOwnedZVal z = (*(vphp__PersistentOwnedZVal*)builtin__array_get(app->php_middlewares, i));
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	for (int i = 0; i < app->php_before_hooks.len; ++i) {
+		vphp__PersistentOwnedZVal z = (*(vphp__PersistentOwnedZVal*)builtin__array_get(app->php_before_hooks, i));
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	for (int i = 0; i < app->php_after_hooks.len; ++i) {
+		vphp__PersistentOwnedZVal z = (*(vphp__PersistentOwnedZVal*)builtin__array_get(app->php_after_hooks, i));
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	for (int i = 0; i < app->php_group_before.len; ++i) {
+		builtin__string_free(&(*(main__RouteHook*)builtin__array_get(app->php_group_before, i)).prefix);
+		vphp__PersistentOwnedZVal z = (*(main__RouteHook*)builtin__array_get(app->php_group_before, i)).handler;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	for (int i = 0; i < app->php_group_after.len; ++i) {
+		builtin__string_free(&(*(main__RouteHook*)builtin__array_get(app->php_group_after, i)).prefix);
+		vphp__PersistentOwnedZVal z = (*(main__RouteHook*)builtin__array_get(app->php_group_after, i)).handler;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	for (int i = 0; i < app->php_group_middle.len; ++i) {
+		builtin__string_free(&(*(main__RouteHook*)builtin__array_get(app->php_group_middle, i)).prefix);
+		vphp__PersistentOwnedZVal z = (*(main__RouteHook*)builtin__array_get(app->php_group_middle, i)).handler;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	for (int i = 0; i < app->routes.len; ++i) {
+		{ // Unsafe block
+			builtin__string_free(&(*(main__VSlimRoute*)builtin__array_get(app->routes, i)).method);
+			builtin__string_free(&(*(main__VSlimRoute*)builtin__array_get(app->routes, i)).name);
+			builtin__string_free(&(*(main__VSlimRoute*)builtin__array_get(app->routes, i)).pattern);
+		}
+		vphp__PersistentOwnedZVal z = (*(main__VSlimRoute*)builtin__array_get(app->routes, i)).php_handler;
+		vphp__PersistentOwnedZVal_release(&z);
+	}
+	vphp__PersistentOwnedZVal nf = app->not_found_handler;
+	vphp__PersistentOwnedZVal_release(&nf);
+	vphp__PersistentOwnedZVal eh = app->error_handler;
+	vphp__PersistentOwnedZVal_release(&eh);
+	{ // Unsafe block
+		builtin__string_free(&app->base_path);
+		builtin__array_free(&app->routes);
+		builtin__array_free(&app->php_middlewares);
+		builtin__array_free(&app->php_before_hooks);
+		builtin__array_free(&app->php_after_hooks);
+		builtin__array_free(&app->php_group_before);
+		builtin__array_free(&app->php_group_after);
+		builtin__array_free(&app->php_group_middle);
+	}
 }
 VV_LOC void main__vslim_handle_request(vphp__Context ctx) {
 	main__VSlimResponse *res = HEAP(main__VSlimResponse, (((main__VSlimResponse){.status = 0,.body = (string){.str=(byteptr)"", .is_lit=1},.content_type = (string){.str=(byteptr)"", .is_lit=1},.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),})));
@@ -22009,7 +32287,7 @@ VV_LOC Map_string_string main__VSlimRequest_parsed_body_values(main__VSlimReques
 	string content_type = builtin__string_to_lower(main__VSlimRequest_content_type(r));
 	bool is_json = builtin__string_contains(content_type, _S("application/json")) || builtin__string_starts_with(body, _S("{")) || builtin__string_starts_with(body, _S("["));
 	if (is_json) {
-		vphp__ZVal decoded = vphp__ZVal_call(vphp__php_fn(_S("json_decode")), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__ZVal__static__new_string(body), vphp__ZVal__static__new_bool(true)})));
+		vphp__ZVal decoded = vphp__ZVal_call_owned_request(vphp__php_fn(_S("json_decode")), builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(body)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_bool(true))})));
 		if (vphp__ZVal_is_array(decoded)) {
 			return vphp__ZVal_to_string_map(decoded);
 		}
@@ -22058,9 +32336,9 @@ main__VSlimRequest main__VSlimRequest_to_vslim_request(main__VSlimRequest* r) {
 	});
 }
 main__VSlimRequest* main__new_vslim_request(string method, string raw_path, string body) {
-	multi_return_string_string mr_8611 = main__VSlimRequest__static__normalize_target(raw_path);
-	string path = mr_8611.arg0;
-	string query_string = mr_8611.arg1;
+	multi_return_string_string mr_8669 = main__VSlimRequest__static__normalize_target(raw_path);
+	string path = mr_8669.arg0;
+	string query_string = mr_8669.arg1;
 	main__VSlimRequest* req = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,.raw_path = raw_path,.path = path,.body = body,.query_string = query_string,.scheme = (string){.str=(byteptr)"", .is_lit=1},.host = (string){.str=(byteptr)"", .is_lit=1},.port = (string){.str=(byteptr)"", .is_lit=1},.protocol_version = (string){.str=(byteptr)"", .is_lit=1},.remote_addr = (string){.str=(byteptr)"", .is_lit=1},.query = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.attributes = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.server = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.uploaded_files = builtin____new_array(0, 0, sizeof(string)),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimRequest)));
 	main__apply_request_defaults(req);
 	return req;
@@ -22102,9 +32380,9 @@ main__VSlimRequest* main__new_vslim_request_from_zval(vphp__ZVal envelope) {
 	}
 	_t8: {};
 		string body = _t7;
-	multi_return_string_string mr_9150 = main__VSlimRequest__static__normalize_target(raw_path);
-	string path = mr_9150.arg0;
-	string query_string = mr_9150.arg1;
+	multi_return_string_string mr_9208 = main__VSlimRequest__static__normalize_target(raw_path);
+	string path = mr_9208.arg0;
+	string query_string = mr_9208.arg1;
 	main__VSlimRequest* req = ((main__VSlimRequest*)builtin__memdup(&(main__VSlimRequest){.method = method,.raw_path = raw_path,.path = path,.body = body,.query_string = query_string,.scheme = (string){.str=(byteptr)"", .is_lit=1},.host = (string){.str=(byteptr)"", .is_lit=1},.port = (string){.str=(byteptr)"", .is_lit=1},.protocol_version = (string){.str=(byteptr)"", .is_lit=1},.remote_addr = (string){.str=(byteptr)"", .is_lit=1},.query = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.headers = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.cookies = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.attributes = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.server = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),.uploaded_files = builtin____new_array(0, 0, sizeof(string)),.params = builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string),}, sizeof(main__VSlimRequest)));
 	main__apply_request_defaults(req);
 	string _t10; /* if prepend */
@@ -22740,22 +33018,22 @@ void main__VSlimRuntime_use(main__VSlimRuntime* app, main__VSlimResponse (*mw)(m
 	builtin__array_push((array*)&app->middlewares, _MOV((voidptr[]){ (voidptr)mw }));
 }
 void main__VSlimRuntime_get(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("GET"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__ZVal__static__new_null(),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("GET"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__PersistentOwnedZVal__static__new_null(),}) }));
 }
 void main__VSlimRuntime_post(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("POST"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__ZVal__static__new_null(),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("POST"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__PersistentOwnedZVal__static__new_null(),}) }));
 }
 void main__VSlimRuntime_put(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("PUT"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__ZVal__static__new_null(),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("PUT"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__PersistentOwnedZVal__static__new_null(),}) }));
 }
 void main__VSlimRuntime_patch(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("PATCH"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__ZVal__static__new_null(),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("PATCH"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__PersistentOwnedZVal__static__new_null(),}) }));
 }
 void main__VSlimRuntime_delete(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("DELETE"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__ZVal__static__new_null(),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("DELETE"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__PersistentOwnedZVal__static__new_null(),}) }));
 }
 void main__VSlimRuntime_any(main__VSlimRuntime* app, string pattern, main__VSlimResponse (*handler)(main__VSlimRequest )) {
-	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("*"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__ZVal__static__new_null(),}) }));
+	builtin__array_push((array*)&app->routes, _MOV((main__VSlimRoute[]){ ((main__VSlimRoute){.method = _S("*"),.name = (string){.str=(byteptr)"", .is_lit=1},.pattern = pattern,.handler_type = main__VSlimRouteHandlerType__v_native,.v_handler = (voidptr)handler,.php_handler = vphp__PersistentOwnedZVal__static__new_null(),}) }));
 }
 main__VSlimResponse main__VSlimRuntime_dispatch(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req) {
 main__VSlimRequest* req = HEAP(main__VSlimRequest, _v_toheap_req);
@@ -22767,9 +33045,9 @@ main__VSlimRequest* req = HEAP(main__VSlimRequest, _v_toheap_req);
 		return main__VSlimRuntime_dispatch_route(app, (*(req)));
 	}
 	main__VSlimResponse (*mw) (main__VSlimRequest , main__VSlimResponse (*)(main__VSlimRequest )) = (*(voidptr*)builtin__array_get(app.middlewares, index));
-	main__VSlimResponse (*next) (main__VSlimRequest) = 	builtin__closure__closure_create(anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877, (struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877_Ctx){.app = app,
+	main__VSlimResponse (*next) (main__VSlimRequest) = 	builtin__closure__closure_create(anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967, (struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967_Ctx){.app = app,
 		.index = index,
-	}, sizeof(struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1877_Ctx)));
+	}, sizeof(struct _V_anon_fn_0ad197fd27271f23_48_main__vslimrequest__main__VSlimResponse_1967_Ctx)));
 	return mw((*(req)), (voidptr)next);
 }
 VV_LOC main__VSlimResponse main__VSlimRuntime_dispatch_route(main__VSlimRuntime app, main__VSlimRequest _v_toheap_req) {
@@ -22779,9 +33057,9 @@ main__VSlimRequest* req = HEAP(main__VSlimRequest, _v_toheap_req);
 	bool method_not_allowed = false;
 	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
 		main__VSlimRoute route = ((main__VSlimRoute*)app.routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_2166 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_2166.arg0;
-		Map_string_string params = mr_2166.arg1;
+		multi_return_bool_Map_string_string mr_2256 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_2256.arg0;
+		Map_string_string params = mr_2256.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -22917,9 +33195,9 @@ main__VSlimRequest* req = HEAP(main__VSlimRequest, _v_toheap_req);
 	bool method_not_allowed = false;
 	for (int _t1 = 0; _t1 < app.routes.len; ++_t1) {
 		main__VSlimRoute route = ((main__VSlimRoute*)app.routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_4321 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_4321.arg0;
-		Map_string_string params = mr_4321.arg1;
+		multi_return_bool_Map_string_string mr_4411 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_4411.arg0;
+		Map_string_string params = mr_4411.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -22937,6 +33215,34 @@ main__VSlimRequest* req = HEAP(main__VSlimRequest, _v_toheap_req);
 	}
 	return (multi_return_main__VSlimResponse_Map_string_string){.arg0=main__not_found_response(), .arg1=builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
 	};
+}
+VV_LOC void main__VSlimRequest_free(main__VSlimRequest* req) {
+	{ // Unsafe block
+		builtin__string_free(&req->method);
+		builtin__string_free(&req->raw_path);
+		builtin__string_free(&req->path);
+		builtin__string_free(&req->body);
+		builtin__string_free(&req->query_string);
+		builtin__string_free(&req->scheme);
+		builtin__string_free(&req->host);
+		builtin__string_free(&req->port);
+		builtin__string_free(&req->protocol_version);
+		builtin__string_free(&req->remote_addr);
+		builtin__map_free(&req->query);
+		builtin__map_free(&req->headers);
+		builtin__map_free(&req->cookies);
+		builtin__map_free(&req->attributes);
+		builtin__map_free(&req->server);
+		Array_string_free(&req->uploaded_files);
+		builtin__map_free(&req->params);
+	}
+}
+VV_LOC void main__VSlimResponse_free(main__VSlimResponse* res) {
+	{ // Unsafe block
+		builtin__string_free(&res->body);
+		builtin__string_free(&res->content_type);
+		builtin__map_free(&res->headers);
+	}
 }
 void _vinit(int ___argc, voidptr ___argv) {
 	// Initializations of consts for module builtin.closure
@@ -23005,12 +33311,121 @@ Array_fixed_u8_8 _t3;
 	_const_none__ = I_None___to_Interface_IError(((None__*)builtin__memdup(&(None__){.Error = ((Error){E_STRUCT}),}, sizeof(None__))));
 	_const_min_i64 = ((i64)((int_literal)(-9223372036854775807LL - 1)));
 	_const_max_i64 = ((i64)(9223372036854775807LL));
+	// Initializations of consts for module time
+	_const_time__days_string = _S("MonTueWedThuFriSatSun");
+	_const_time__months_string = _S("JanFebMarAprMayJunJulAugSepOctNovDec");
+	_const_time__nanosecond = ((time__Duration)(1));
+	_const_time__infinite = ((((i64)(9223372036854775807LL))));
+{
+	_const_time__tokens_2 = builtin__new_array_from_c_array(18, 18, sizeof(string), _MOV((string[18]){
+		_S("MM"), _S("Mo"), _S("DD"), _S("Do"), _S("YY"), _S("ss"), _S("kk"), _S("NN"), _S("mm"),
+		_S("hh"), _S("HH"), _S("ii"), _S("ZZ"), _S("dd"), _S("Qo"), _S("QQ"), _S("wo"),
+		_S("ww")}));
+}
+	_const_time__tokens_3 = builtin__new_array_from_c_array(4, 4, sizeof(string), _MOV((string[4]){_S("MMM"), _S("DDD"), _S("ZZZ"), _S("ddd")}));
+	_const_time__tokens_4 = builtin__new_array_from_c_array(5, 5, sizeof(string), _MOV((string[5]){_S("MMMM"), _S("DDDD"), _S("DDDo"), _S("dddd"), _S("YYYY")}));
+{
+	_const_time__long_months = builtin__new_array_from_c_array(12, 12, sizeof(string), _MOV((string[12]){
+		_S("January"), _S("February"), _S("March"), _S("April"), _S("May"), _S("June"), _S("July"), _S("August"), _S("September"),
+		_S("October"), _S("November"), _S("December")}));
+}
+	_const_time__absolute_zero_year = ((i64)(-292277022399LL));
+	_const_time__start_time = mach_absolute_time();
+	_const_time__time_base = time__init_time_base();
+	_const_time__microsecond = ((1000 * _const_time__nanosecond));
+	_const_time__millisecond = ((1000 * _const_time__microsecond));
+	_const_time__second = ((1000 * _const_time__millisecond));
+	_const_time__minute = ((60 * _const_time__second));
+	_const_time__hour = ((60 * _const_time__minute));
 	// Initializations of consts for module net.urllib
 	_const_net__urllib__err_msg_escape = _S("unescape: invalid URL escape");
 	// Initializations of consts for module vphp
 	g_registry = *(vphp__TaskRegistry**)&((vphp__TaskRegistry*[]){0}[0]); // global 5
+	// Initializations of consts for module os
+	_const_os__fslash_str = _S("/");
+	_const_os__dot_dot = _S("..");
+	_const_os__empty_str = _S("");
+	_const_os__dot_str = _S(".");
+	_const_os__path_separator = _S("/");
+	_const_os__path_delimiter = _S(":");
+	_const_os__path_devnull = _S("/dev/null");
+{
+{
+	_const_os__o_rdonly = O_RDONLY;
+}
+}
+{
+{
+	_const_os__o_wronly = O_WRONLY;
+}
+}
+{
+{
+	_const_os__o_rdwr = O_RDWR;
+}
+}
+{
+{
+	_const_os__o_create = O_CREAT;
+}
+}
+{
+{
+	_const_os__o_noctty = O_NOCTTY;
+}
+}
+{
+{
+	_const_os__o_trunc = O_TRUNC;
+}
+}
+{
+{
+	_const_os__o_append = O_APPEND;
+}
+}
+{
+{
+	_const_os__o_nonblock = O_NONBLOCK;
+}
+}
+{
+{
+	_const_os__o_sync = O_SYNC;
+}
+}
+	_const_os__wd_at_startup = os__getwd();
+	_const_os__executable_suffixes = builtin__new_array_from_c_array(1, 1, sizeof(string), _MOV((string[1]){_S("")}));
+{
+{
+int _t1;
+#if defined(_WIN32)
+#else
+	_t1 = STDOUT_FILENO;
+	;
+#endif
+	_const_os__fd_stdout = _t1;
+}
+}
+{
+{
+int _t2;
+#if defined(_WIN32)
+#else
+	_t2 = STDERR_FILENO;
+	;
+#endif
+	_const_os__fd_stderr = _t2;
+}
+}
+	g_main_thread_id = ((u64)(pthread_self())); // global 3
+	_const_os__args = builtin__arguments();
 	// Initializations of consts for module main
-	active_middleware_chain = *(main__MiddlewareChain**)&((main__MiddlewareChain*[]){0}[0]); // global 5
+	active_middleware_chains = *(Array_main__MiddlewareChain_ptr*)&((Array_main__MiddlewareChain_ptr[]){builtin____new_array(0, 0, sizeof(main__MiddlewareChain*))}[0]); // global 5
+	vslim_trace_mem_cache_inited = *(bool*)&((bool[]){0}[0]); // global 5
+	vslim_trace_mem_enabled_cache = *(bool*)&((bool[]){0}[0]); // global 5
+	vslim_trace_mem_every_cache = *(int*)&((int[]){0}[0]); // global 5
+	vslim_trace_mem_counter = *(u64*)&((u64[]){0}[0]); // global 5
 	builtin__closure__closure_init();
 }
 void _vcleanup(void) {

@@ -8,6 +8,9 @@ typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);
+extern void vphp_framework_shutdown(void);
+extern void vphp_framework_request_startup(void);
+extern void vphp_framework_request_shutdown(void);
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim_handle_request, 0, 0, 0)
 ZEND_END_ARG_INFO()
 extern void vphp_wrap_vslim_handle_request(vphp_context_internal ctx);
@@ -146,7 +149,7 @@ PHP_METHOD(VSlim__RouteGroup, group) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -162,7 +165,7 @@ PHP_METHOD(VSlim__RouteGroup, middleware) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -178,7 +181,7 @@ PHP_METHOD(VSlim__RouteGroup, before) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -194,7 +197,7 @@ PHP_METHOD(VSlim__RouteGroup, after) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -210,7 +213,7 @@ PHP_METHOD(VSlim__RouteGroup, get) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -226,7 +229,7 @@ PHP_METHOD(VSlim__RouteGroup, post) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -242,7 +245,7 @@ PHP_METHOD(VSlim__RouteGroup, put) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -258,7 +261,7 @@ PHP_METHOD(VSlim__RouteGroup, head) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -274,7 +277,7 @@ PHP_METHOD(VSlim__RouteGroup, options) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -290,7 +293,7 @@ PHP_METHOD(VSlim__RouteGroup, patch) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -306,7 +309,7 @@ PHP_METHOD(VSlim__RouteGroup, delete) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -322,7 +325,7 @@ PHP_METHOD(VSlim__RouteGroup, any) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -338,7 +341,7 @@ PHP_METHOD(VSlim__RouteGroup, map) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -354,7 +357,7 @@ PHP_METHOD(VSlim__RouteGroup, get_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -370,7 +373,7 @@ PHP_METHOD(VSlim__RouteGroup, post_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -386,7 +389,7 @@ PHP_METHOD(VSlim__RouteGroup, put_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -402,7 +405,7 @@ PHP_METHOD(VSlim__RouteGroup, head_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -418,7 +421,7 @@ PHP_METHOD(VSlim__RouteGroup, options_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -434,7 +437,7 @@ PHP_METHOD(VSlim__RouteGroup, patch_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -450,7 +453,7 @@ PHP_METHOD(VSlim__RouteGroup, delete_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -466,7 +469,7 @@ PHP_METHOD(VSlim__RouteGroup, any_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -482,7 +485,7 @@ PHP_METHOD(VSlim__RouteGroup, map_named) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -495,7 +498,7 @@ PHP_METHOD(VSlim__RouteGroup, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry vslim__routegroup_methods[] = {
@@ -672,7 +675,7 @@ PHP_METHOD(VSlim__Request, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_VSlimRequest_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_VSlimRequest_construct(v_ptr, ctx);
@@ -697,7 +700,7 @@ PHP_METHOD(VSlim__Request, set_query) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -713,7 +716,7 @@ PHP_METHOD(VSlim__Request, set_method) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -729,7 +732,7 @@ PHP_METHOD(VSlim__Request, set_target) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -745,7 +748,7 @@ PHP_METHOD(VSlim__Request, set_body) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -761,7 +764,7 @@ PHP_METHOD(VSlim__Request, set_scheme) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -777,7 +780,7 @@ PHP_METHOD(VSlim__Request, set_host) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -793,7 +796,7 @@ PHP_METHOD(VSlim__Request, set_port) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -809,7 +812,7 @@ PHP_METHOD(VSlim__Request, set_protocol_version) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -825,7 +828,7 @@ PHP_METHOD(VSlim__Request, set_remote_addr) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -841,7 +844,7 @@ PHP_METHOD(VSlim__Request, set_headers) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -857,7 +860,7 @@ PHP_METHOD(VSlim__Request, set_cookies) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -873,7 +876,7 @@ PHP_METHOD(VSlim__Request, set_attributes) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -889,7 +892,7 @@ PHP_METHOD(VSlim__Request, set_server) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -905,7 +908,7 @@ PHP_METHOD(VSlim__Request, set_uploaded_files) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -921,7 +924,7 @@ PHP_METHOD(VSlim__Request, set_params) {
     vphp_return_obj(return_value, v_instance, vslim__request_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimRequest_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimRequest_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimRequest_handlers(), 0);
     }
 }
 
@@ -1342,7 +1345,7 @@ PHP_METHOD(VSlim__Response, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_VSlimResponse_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_VSlimResponse_construct(v_ptr, ctx);
@@ -1383,7 +1386,7 @@ PHP_METHOD(VSlim__Response, set_header) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1399,7 +1402,7 @@ PHP_METHOD(VSlim__Response, set_content_type) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1423,7 +1426,7 @@ PHP_METHOD(VSlim__Response, set_cookie) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1439,7 +1442,7 @@ PHP_METHOD(VSlim__Response, set_cookie_opts) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1455,7 +1458,7 @@ PHP_METHOD(VSlim__Response, set_cookie_full) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1471,7 +1474,7 @@ PHP_METHOD(VSlim__Response, delete_cookie) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1487,7 +1490,7 @@ PHP_METHOD(VSlim__Response, set_status) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1503,7 +1506,7 @@ PHP_METHOD(VSlim__Response, with_status) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1519,7 +1522,7 @@ PHP_METHOD(VSlim__Response, text) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1535,7 +1538,7 @@ PHP_METHOD(VSlim__Response, json) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1551,7 +1554,7 @@ PHP_METHOD(VSlim__Response, html) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1567,7 +1570,7 @@ PHP_METHOD(VSlim__Response, redirect) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1583,7 +1586,7 @@ PHP_METHOD(VSlim__Response, redirect_with_status) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1667,6 +1670,9 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_request, 0, 0, 1)
 ZEND_ARG_INFO(0, req)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_envelope, 0, 0, 1)
+ZEND_ARG_INFO(0, envelope)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_dispatch_envelope_map, 0, 0, 1)
 ZEND_ARG_INFO(0, envelope)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__app_get, 0, 0, 2)
@@ -1822,7 +1828,7 @@ PHP_METHOD(VSlim__App, demo) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 1);
     }
 }
 
@@ -1837,7 +1843,7 @@ PHP_METHOD(VSlim__App, set_base_path) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -1861,7 +1867,7 @@ PHP_METHOD(VSlim__App, set_container) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -1877,7 +1883,7 @@ PHP_METHOD(VSlim__App, container) {
     vphp_return_obj(return_value, v_instance, vslim__container_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimContainer_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimContainer_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimContainer_handlers(), 0);
     }
 }
 
@@ -1893,7 +1899,7 @@ PHP_METHOD(VSlim__App, group) {
     vphp_return_obj(return_value, v_instance, vslim__routegroup_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* RouteGroup_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), RouteGroup_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), RouteGroup_handlers(), 0);
     }
 }
 
@@ -1909,7 +1915,7 @@ PHP_METHOD(VSlim__App, dispatch) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1925,7 +1931,7 @@ PHP_METHOD(VSlim__App, dispatch_body) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1941,7 +1947,7 @@ PHP_METHOD(VSlim__App, dispatch_request) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -1957,10 +1963,18 @@ PHP_METHOD(VSlim__App, dispatch_envelope) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
+PHP_METHOD(VSlim__App, dispatch_envelope_map) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void vphp_wrap_VSlimApp_dispatch_envelope_map(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    if (!wrapper->v_ptr) RETURN_FALSE;
+    vphp_wrap_VSlimApp_dispatch_envelope_map(wrapper->v_ptr, ctx);
+}
 
 PHP_METHOD(VSlim__App, get) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
@@ -1973,7 +1987,7 @@ PHP_METHOD(VSlim__App, get) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -1989,7 +2003,7 @@ PHP_METHOD(VSlim__App, post) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2005,7 +2019,7 @@ PHP_METHOD(VSlim__App, put) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2021,7 +2035,7 @@ PHP_METHOD(VSlim__App, head) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2037,7 +2051,7 @@ PHP_METHOD(VSlim__App, options) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2053,7 +2067,7 @@ PHP_METHOD(VSlim__App, patch) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2069,7 +2083,7 @@ PHP_METHOD(VSlim__App, delete) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2085,7 +2099,7 @@ PHP_METHOD(VSlim__App, any) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2101,7 +2115,7 @@ PHP_METHOD(VSlim__App, map) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2117,7 +2131,7 @@ PHP_METHOD(VSlim__App, get_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2133,7 +2147,7 @@ PHP_METHOD(VSlim__App, post_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2149,7 +2163,7 @@ PHP_METHOD(VSlim__App, put_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2165,7 +2179,7 @@ PHP_METHOD(VSlim__App, head_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2181,7 +2195,7 @@ PHP_METHOD(VSlim__App, options_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2197,7 +2211,7 @@ PHP_METHOD(VSlim__App, patch_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2213,7 +2227,7 @@ PHP_METHOD(VSlim__App, delete_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2229,7 +2243,7 @@ PHP_METHOD(VSlim__App, any_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2245,7 +2259,7 @@ PHP_METHOD(VSlim__App, map_named) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2261,7 +2275,7 @@ PHP_METHOD(VSlim__App, middleware) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2277,7 +2291,7 @@ PHP_METHOD(VSlim__App, before) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2293,7 +2307,7 @@ PHP_METHOD(VSlim__App, after) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2309,7 +2323,7 @@ PHP_METHOD(VSlim__App, set_not_found_handler) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2325,7 +2339,7 @@ PHP_METHOD(VSlim__App, not_found) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2341,7 +2355,7 @@ PHP_METHOD(VSlim__App, set_error_handler) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2357,7 +2371,7 @@ PHP_METHOD(VSlim__App, error) {
     vphp_return_obj(return_value, v_instance, vslim__app_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimApp_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimApp_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimApp_handlers(), 0);
     }
 }
 
@@ -2405,7 +2419,7 @@ PHP_METHOD(VSlim__App, redirect_to) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -2421,7 +2435,7 @@ PHP_METHOD(VSlim__App, redirect_to_query) {
     vphp_return_obj(return_value, v_instance, vslim__response_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimResponse_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimResponse_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
     }
 }
 
@@ -2466,7 +2480,7 @@ PHP_METHOD(VSlim__App, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry vslim__app_methods[] = {
@@ -2481,6 +2495,7 @@ static const zend_function_entry vslim__app_methods[] = {
     PHP_ME(VSlim__App, dispatch_body, arginfo_vslim__app_dispatch_body, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, dispatch_request, arginfo_vslim__app_dispatch_request, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, dispatch_envelope, arginfo_vslim__app_dispatch_envelope, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__App, dispatch_envelope_map, arginfo_vslim__app_dispatch_envelope_map, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, get, arginfo_vslim__app_get, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, post, arginfo_vslim__app_post, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__App, put, arginfo_vslim__app_put, ZEND_ACC_PUBLIC)
@@ -2531,7 +2546,7 @@ PHP_METHOD(VSlim__Container__ContainerException, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry vslim__container__containerexception_methods[] = {
@@ -2551,7 +2566,7 @@ PHP_METHOD(VSlim__Container__NotFoundException, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
 }
 
 static const zend_function_entry vslim__container__notfoundexception_methods[] = {
@@ -2584,7 +2599,7 @@ PHP_METHOD(VSlim__Container, __construct) {
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
     wrapper->v_ptr = h->new_raw();
     vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers(Z_OBJ_P(getThis()), h);
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void vphp_wrap_VSlimContainer_construct(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     vphp_wrap_VSlimContainer_construct(v_ptr, ctx);
@@ -2601,7 +2616,7 @@ PHP_METHOD(VSlim__Container, set) {
     vphp_return_obj(return_value, v_instance, vslim__container_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimContainer_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimContainer_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimContainer_handlers(), 0);
     }
 }
 
@@ -2617,7 +2632,7 @@ PHP_METHOD(VSlim__Container, factory) {
     vphp_return_obj(return_value, v_instance, vslim__container_ce);
     if (Z_TYPE_P(return_value) == IS_OBJECT) {
         extern vphp_class_handlers* VSlimContainer_handlers();
-        vphp_bind_handlers(Z_OBJ_P(return_value), VSlimContainer_handlers());
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimContainer_handlers(), 0);
     }
 }
 
@@ -2769,6 +2784,18 @@ PHP_MINIT_FUNCTION(vslim) {
     }
     return SUCCESS;
 }
+PHP_MSHUTDOWN_FUNCTION(vslim) {
+    vphp_framework_shutdown();
+    return SUCCESS;
+}
+PHP_RINIT_FUNCTION(vslim) {
+    vphp_framework_request_startup();
+    return SUCCESS;
+}
+PHP_RSHUTDOWN_FUNCTION(vslim) {
+    vphp_framework_request_shutdown();
+    return SUCCESS;
+}
 PHP_MINFO_FUNCTION(vslim) {
     php_info_print_table_start();
     php_info_print_table_header(2, "vslim support", "enabled");
@@ -2786,7 +2813,7 @@ void* vphp_get_active_globals() {
 }
 zend_module_entry vslim_module_entry = {
     STANDARD_MODULE_HEADER, "vslim", vslim_functions,
-    PHP_MINIT(vslim), NULL, NULL, NULL, PHP_MINFO(vslim), "0.1.0",
+    PHP_MINIT(vslim), PHP_MSHUTDOWN(vslim), PHP_RINIT(vslim), PHP_RSHUTDOWN(vslim), PHP_MINFO(vslim), "0.1.0",
     PHP_MODULE_GLOBALS(vslim),
     (void (*)(void*)) php_vslim_init_globals,
     NULL,

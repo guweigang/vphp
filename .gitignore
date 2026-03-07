@@ -7,4 +7,5 @@ tests/*.out
 tests/*.php
 tests/*.sh
 **/vendor/
+**/composer.lock
 vhttpd/vhttpd

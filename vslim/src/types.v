@@ -18,7 +18,7 @@ pub mut:
 	pattern      string
 	handler_type VSlimRouteHandlerType
 	v_handler    VSlimHandler = unsafe { nil }
-	php_handler  vphp.ZVal
+	php_handler  vphp.PersistentOwnedZVal
 }
 
 pub struct RoutePath {}
@@ -31,15 +31,15 @@ mut:
 
 struct RouteHook {
 	prefix  string
-	handler vphp.ZVal
+	handler vphp.PersistentOwnedZVal
 }
 
 struct MiddlewareChain {
 mut:
 	app               &VSlimApp = unsafe { nil }
 	path              string
-	middlewares       []vphp.ZVal
-	route_handler     vphp.ZVal
+	middlewares       []vphp.RequestOwnedZVal
+	route_handler     vphp.RequestOwnedZVal
 	index             int
 	has_terminal      bool
 	terminal_response VSlimResponse
@@ -93,15 +93,45 @@ mut:
 struct VSlimApp {
 mut:
 	routes            []VSlimRoute
-	php_before_hooks  []vphp.ZVal
-	php_after_hooks   []vphp.ZVal
-	php_middlewares   []vphp.ZVal
+	php_before_hooks  []vphp.PersistentOwnedZVal
+	php_after_hooks   []vphp.PersistentOwnedZVal
+	php_middlewares   []vphp.PersistentOwnedZVal
 	php_group_before  []RouteHook
 	php_group_after   []RouteHook
 	php_group_middle  []RouteHook
-	not_found_handler vphp.ZVal
-	error_handler     vphp.ZVal
+	not_found_handler vphp.PersistentOwnedZVal
+	error_handler     vphp.PersistentOwnedZVal
 	container_ref     &VSlimContainer = unsafe { nil }
 	base_path         string
 	use_demo          bool
+}
+
+fn (mut req VSlimRequest) free() {
+	unsafe {
+		req.method.free()
+		req.raw_path.free()
+		req.path.free()
+		req.body.free()
+		req.query_string.free()
+		req.scheme.free()
+		req.host.free()
+		req.port.free()
+		req.protocol_version.free()
+		req.remote_addr.free()
+		req.query.free()
+		req.headers.free()
+		req.cookies.free()
+		req.attributes.free()
+		req.server.free()
+		req.uploaded_files.free()
+		req.params.free()
+	}
+}
+
+fn (mut res VSlimResponse) free() {
+	unsafe {
+		res.body.free()
+		res.content_type.free()
+		res.headers.free()
+	}
 }

@@ -22,7 +22,7 @@ all: build
 build:
 	v -path ".:..:@vlib" run build.v
 
-ext:
+vslim:
 	@if [ -z "$(EXT_C)" ]; then \
 		echo "Error: no transpiled extension C file found (expected vphp_ext_*.c)."; \
 		exit 1; \
