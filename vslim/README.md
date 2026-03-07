@@ -669,6 +669,8 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `set_assets_prefix(...)`
   - `asset('app.js') -> /assets/app.js`
   - `render(template, data)`（`{{ key }}` 占位符）
+    - 默认 HTML 转义（XSS-safe）
+    - `{{raw:key}}` 可显式原样输出
   - `render_with_layout(template, layout, data)`（`{{slot:content}}` 布局槽位）
   - `render_response(template, data)`（返回 `VSlim\Response`，`text/html; charset=utf-8`）
   - `render_response_with_layout(template, layout, data)`
@@ -694,6 +696,13 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
 
 ```html
 <script src="{{asset:app.js}}"></script>
+```
+
+默认变量会做 HTML 转义，原样输出可用：
+
+```html
+<div>{{ payload }}</div>
+<div>{{raw:payload}}</div>
 ```
 
 局部模板与布局：

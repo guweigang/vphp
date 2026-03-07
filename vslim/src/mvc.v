@@ -152,9 +152,11 @@ pub fn (view &VSlimView) render_response_with_layout(template string, layout str
 fn (view &VSlimView) render_source(source string, data map[string]string, depth int) string {
 	mut out := source
 	out = view.render_include_tokens(out, data, depth)
+	out = render_raw_value_tokens(out, data)
 	for key, value in data {
-		out = out.replace('{{${key}}}', value)
-		out = out.replace('{{ ${key} }}', value)
+		escaped := escape_html_text(value)
+		out = out.replace('{{${key}}}', escaped)
+		out = out.replace('{{ ${key} }}', escaped)
 	}
 	return render_asset_tokens(out, view.assets_prefix())
 }
@@ -215,6 +217,25 @@ fn replace_slot_tokens(source string, slot string, content string) string {
 	if out.contains(slot_token_spaced) {
 		out = out.replace(slot_token_spaced, content)
 	}
+	return out
+}
+
+fn render_raw_value_tokens(source string, data map[string]string) string {
+	mut out := source
+	for key, value in data {
+		out = out.replace('{{raw:${key}}}', value)
+		out = out.replace('{{ raw:${key} }}', value)
+	}
+	return out
+}
+
+fn escape_html_text(input string) string {
+	mut out := input
+	out = out.replace('&', '&amp;')
+	out = out.replace('<', '&lt;')
+	out = out.replace('>', '&gt;')
+	out = out.replace('"', '&quot;')
+	out = out.replace("'", '&#39;')
 	return out
 }
 

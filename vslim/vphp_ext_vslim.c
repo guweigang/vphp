@@ -7979,6 +7979,8 @@ VV_LOC string main__VSlimView_render_include_tokens(main__VSlimView* view, strin
 VV_LOC string main__VSlimView_resolve_template_path(main__VSlimView* view, string __v_template);
 VV_LOC string main__render_asset_tokens(string source, string assets_prefix);
 VV_LOC string main__replace_slot_tokens(string source, string slot, string content);
+VV_LOC string main__render_raw_value_tokens(string source, Map_string_string data);
+VV_LOC string main__escape_html_text(string input);
 VV_LOC string main__normalize_assets_prefix(string prefix);
 main__VSlimController* main__VSlimController_construct(main__VSlimController* c, main__VSlimApp* app);
 main__VSlimController* main__VSlimController_set_app(main__VSlimController* c, main__VSlimApp* app);
@@ -45942,6 +45944,7 @@ main__VSlimResponse* main__VSlimView_render_response_with_layout(main__VSlimView
 VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source, Map_string_string data, int depth) {
 	string out = source;
 	out = main__VSlimView_render_include_tokens(view, out, data, depth);
+	out = main__render_raw_value_tokens(out, data);
 	int _t2 = data.key_values.len;
 	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
 		int _t3 = data.key_values.len - _t2;
@@ -45954,8 +45957,9 @@ VV_LOC string main__VSlimView_render_source(main__VSlimView* view, string source
 		string key = *(string*)builtin__DenseArray_key(&data.key_values, _t1);
 		key = builtin__string_clone(key);
 		string value = (*(string*)builtin__DenseArray_value(&data.key_values, _t1));
-		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{"), 0xfe10, {.d_s = key}}, {_S("}}"), 0, { .d_c = 0 }}})), value);
-		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{ "), 0xfe10, {.d_s = key}}, {_S(" }}"), 0, { .d_c = 0 }}})), value);
+		string escaped = main__escape_html_text(value);
+		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{"), 0xfe10, {.d_s = key}}, {_S("}}"), 0, { .d_c = 0 }}})), escaped);
+		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{ "), 0xfe10, {.d_s = key}}, {_S(" }}"), 0, { .d_c = 0 }}})), escaped);
 	}
 	return main__render_asset_tokens(out, main__VSlimView_assets_prefix(view));
 }
@@ -46028,6 +46032,34 @@ VV_LOC string main__replace_slot_tokens(string source, string slot, string conte
 	if (builtin__string_contains(out, slot_token_spaced)) {
 		out = builtin__string_replace(out, slot_token_spaced, content);
 	}
+	return out;
+}
+VV_LOC string main__render_raw_value_tokens(string source, Map_string_string data) {
+	string out = source;
+	int _t2 = data.key_values.len;
+	for (int _t1 = 0; _t1 < _t2; ++_t1 ) {
+		int _t3 = data.key_values.len - _t2;
+		_t2 = data.key_values.len;
+		if (_t3 < 0) {
+			_t1 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&data.key_values, _t1)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&data.key_values, _t1);
+		key = builtin__string_clone(key);
+		string value = (*(string*)builtin__DenseArray_value(&data.key_values, _t1));
+		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{raw:"), 0xfe10, {.d_s = key}}, {_S("}}"), 0, { .d_c = 0 }}})), value);
+		out = builtin__string_replace(out, builtin__str_intp(2, _MOV((StrIntpData[]){{_S("{{ raw:"), 0xfe10, {.d_s = key}}, {_S(" }}"), 0, { .d_c = 0 }}})), value);
+	}
+	return out;
+}
+VV_LOC string main__escape_html_text(string input) {
+	string out = input;
+	out = builtin__string_replace(out, _S("&"), _S("&amp;"));
+	out = builtin__string_replace(out, _S("<"), _S("&lt;"));
+	out = builtin__string_replace(out, _S(">"), _S("&gt;"));
+	out = builtin__string_replace(out, _S("\""), _S("&quot;"));
+	out = builtin__string_replace(out, _S("'"), _S("&#39;"));
 	return out;
 }
 VV_LOC string main__normalize_assets_prefix(string prefix) {
