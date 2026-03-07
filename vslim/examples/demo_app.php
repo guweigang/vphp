@@ -132,7 +132,7 @@ function build_demo_app(): VSlim\App
             'content_type' => 'application/json; charset=utf-8',
             'body' => json_encode([
                 'name' => 'vslim-demo',
-                'routes' => 'GET /health, GET /hello/:name, POST /forms/echo, GET /api/users/:id',
+                'routes' => 'GET /health, GET /hello/:name, POST /forms/echo, GET /api/users/:id, GET /debug/routes, GET /debug/route-conflicts',
             ], JSON_UNESCAPED_UNICODE),
         ];
     });
@@ -164,6 +164,30 @@ function build_demo_app(): VSlim\App
     $api = $app->group('/api');
     $api->get_named('api.users.show', '/users/:id', [DemoUserController::class, 'show']);
     $api->map(['PUT', 'PATCH'], '/users/:id', [DemoUserController::class, 'update']);
+
+    $debug = $app->group('/debug');
+    $debug->get('/routes', function () use ($app) {
+        return [
+            'status' => 200,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'count' => $app->route_count(),
+                'names' => $app->route_names(),
+                'manifest' => $app->route_manifest(),
+                'manifest_lines' => $app->route_manifest_lines(),
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    });
+    $debug->get('/route-conflicts', function () use ($app) {
+        return [
+            'status' => 200,
+            'content_type' => 'application/json; charset=utf-8',
+            'body' => json_encode([
+                'conflicts' => $app->route_conflicts(),
+                'conflict_keys' => $app->route_conflict_keys(),
+            ], JSON_UNESCAPED_UNICODE),
+        ];
+    });
 
     $app->get('/links', function () use ($app) {
         return [
