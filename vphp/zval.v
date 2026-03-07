@@ -1511,6 +1511,18 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		}
 		return
 	}
+	$if T is []map[string]string {
+		v.array_init()
+		for item in value {
+			mut sub := RequestOwnedZVal.new_null().to_zval()
+			sub.array_init()
+			for key, val in item {
+				sub.add_assoc_string(key, val)
+			}
+			v.add_next_val(sub)
+		}
+		return
+	}
 	$if T is map[string]string {
 		v.array_init()
 		for key, item in value {

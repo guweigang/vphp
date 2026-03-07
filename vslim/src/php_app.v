@@ -669,6 +669,81 @@ pub fn (app &VSlimApp) has_route_name(name string) bool {
 }
 
 @[php_method]
+pub fn (app &VSlimApp) route_manifest_lines() []string {
+	mut out := []string{cap: app.routes.len}
+	for route in app.routes {
+		mut line := '${route.method} ${route.pattern}'
+		if route.name != '' {
+			line += ' #${route.name}'
+		}
+		out << line
+	}
+	return out
+}
+
+@[php_method]
+pub fn (app &VSlimApp) route_conflict_keys() []string {
+	mut grouped := map[string]int{}
+	for route in app.routes {
+		key := '${route.method} ${route.pattern}'
+		grouped[key] = (grouped[key] or { 0 }) + 1
+	}
+	mut out := []string{}
+	for key, count in grouped {
+		if count > 1 {
+			out << '${key} x${count}'
+		}
+	}
+	out.sort()
+	return out
+}
+
+@[php_method]
+pub fn (app &VSlimApp) route_manifest() []map[string]string {
+	mut out := []map[string]string{cap: app.routes.len}
+	for route in app.routes {
+		out << {
+			'method': route.method
+			'name': route.name
+			'pattern': route.pattern
+			'handler_type': route.handler_type.str()
+		}
+	}
+	return out
+}
+
+@[php_method]
+pub fn (app &VSlimApp) route_conflicts() []map[string]string {
+	mut grouped := map[string][]VSlimRoute{}
+	for route in app.routes {
+		key := '${route.method} ${route.pattern}'
+		mut existing := grouped[key] or { []VSlimRoute{} }
+		existing << route
+		grouped[key] = existing
+	}
+	mut out := []map[string]string{}
+	for key, routes in grouped {
+		if routes.len <= 1 {
+			continue
+		}
+		parts := key.split_nth(' ', 2)
+		mut names := []string{}
+		for route in routes {
+			if route.name != '' {
+				names << route.name
+			}
+		}
+		out << {
+			'method': parts[0]
+			'pattern': if parts.len > 1 { parts[1] } else { '' }
+			'count': '${routes.len}'
+			'names': names.join(',')
+		}
+	}
+	return out
+}
+
+@[php_method]
 pub fn (app &VSlimApp) allowed_methods_for(raw_path string) []string {
 	path := RoutePath.normalize(raw_path)
 	mut allowed := []string{}

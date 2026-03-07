@@ -539,6 +539,10 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `route_names()`
   - `has_route_name(...)`
   - `allowed_methods_for(...)`
+  - `route_manifest()` (`[]map<string,string>`)
+  - `route_conflicts()` (`[]map<string,string>`)
+  - `route_manifest_lines()` (例如：`GET /users/:id #users.show`)
+  - `route_conflict_keys()` (例如：`GET /health x2`)
 
 ### `VSlim\Request`
 

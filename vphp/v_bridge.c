@@ -258,6 +258,15 @@ zval *vphp_array_get_key(zval *array, const char *key, int key_len) {
              : NULL;
 }
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item) {
+  if (main_array == NULL || sub_item == NULL) {
+    return;
+  }
+  /*
+   * Keep caller ownership. add_next_index_zval() uses transfer semantics.
+   * Without an extra ref, request-scope release can dtor the same payload
+   * that was already inserted into the array, causing heap corruption.
+   */
+  Z_TRY_ADDREF_P(sub_item);
   add_next_index_zval(main_array, sub_item);
 }
 void vphp_return_array_start(zval *return_value) { array_init(return_value); }
@@ -349,6 +358,13 @@ void vphp_array_add_assoc_string(zval *z, const char *key, const char *val) {
   add_assoc_string(z, key, val);
 }
 void vphp_array_add_assoc_zval(zval *z, const char *key, zval *val) {
+  if (z == NULL || key == NULL || val == NULL) {
+    return;
+  }
+  /*
+   * Keep caller ownership for parity with vphp_array_add_next_zval().
+   */
+  Z_TRY_ADDREF_P(val);
   add_assoc_zval(z, key, val);
 }
 zval *vphp_new_zval() {
@@ -451,23 +467,6 @@ void vphp_request_shutdown(void) {
   vphp_autorelease_drain(0);
 }
 void vphp_autorelease_shutdown(void) {
-  uint32_t obj_reg = 0;
-  uint32_t rev_reg = 0;
-  if (vphp_registry_initialized) {
-    obj_reg = zend_hash_num_elements(&vphp_object_registry);
-    rev_reg = zend_hash_num_elements(&vphp_reverse_registry);
-  }
-  fprintf(stderr,
-          "[vphp] autorelease_shutdown autorelease_len=%d autorelease_cap=%d owned_len=%d owned_cap=%d obj_registry=%u rev_registry=%u\n",
-          vphp_autorelease_pool.len, vphp_autorelease_pool.cap, vphp_owned_pool.len,
-          vphp_owned_pool.cap, obj_reg, rev_reg);
-  for (int i = 0; i < vphp_owned_pool.len; i++) {
-    zval *z = vphp_owned_pool.items[i];
-    if (z == NULL) {
-      continue;
-    }
-    fprintf(stderr, "[vphp] owned[%d]=%p type=%d\n", i, (void *)z, Z_TYPE_P(z));
-  }
   /*
    * Module shutdown can happen after exception/abort paths where foreign
    * pointers may still be present in the autorelease list. We only drop the

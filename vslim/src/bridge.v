@@ -1708,6 +1708,38 @@ pub fn vphp_wrap_vslimapp_has_route_name(ptr voidptr, ctx vphp.Context)  {
     res := recv.has_route_name(arg_0)
     ctx.return_val[bool](res)
 }
+@[export: 'vphp_wrap_VSlimApp_route_manifest_lines']
+pub fn vphp_wrap_vslimapp_route_manifest_lines(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.route_manifest_lines()
+    ctx.return_val[[]string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_route_conflict_keys']
+pub fn vphp_wrap_vslimapp_route_conflict_keys(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.route_conflict_keys()
+    ctx.return_val[[]string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_route_manifest']
+pub fn vphp_wrap_vslimapp_route_manifest(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.route_manifest()
+    ctx.return_val[[]map[string]string](res)
+}
+@[export: 'vphp_wrap_VSlimApp_route_conflicts']
+pub fn vphp_wrap_vslimapp_route_conflicts(ptr voidptr, ctx vphp.Context)  {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    res := recv.route_conflicts()
+    ctx.return_val[[]map[string]string](res)
+}
 @[export: 'vphp_wrap_VSlimApp_allowed_methods_for']
 pub fn vphp_wrap_vslimapp_allowed_methods_for(ptr voidptr, ctx vphp.Context)  {
     mut recv := unsafe { &VSlimApp(ptr) }

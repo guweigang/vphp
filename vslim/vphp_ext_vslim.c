@@ -329,6 +329,7 @@ typedef struct _option_main__VSlimResponse_ptr _option_main__VSlimResponse_ptr;
 typedef struct _option_net__Addr _option_net__Addr;
 typedef struct _option_net__http__Cookie _option_net__http__Cookie;
 typedef struct _option_net__TcpConn_ptr _option_net__TcpConn_ptr;
+typedef struct _option_Array_main__VSlimRoute _option_Array_main__VSlimRoute;
 typedef struct _option_main__VSlimResponse _option_main__VSlimResponse;
 
  // V preincludes:
@@ -3148,14 +3149,16 @@ typedef string Array_fixed_string_11 [11];
 typedef voidptr Array_fixed_voidptr_11 [11];
 typedef array Array_RepIndex;
 typedef map Map_string_string;
+typedef array Array_Map_string_string;
 typedef map Map_string_vphp__PersistentOwnedZVal;
 typedef array Array_main__MiddlewareChain_ptr;
+typedef map Map_string_int;
+typedef array Array_main__VSlimRoute;
+typedef map Map_string_Array_main__VSlimRoute;
 typedef array Array_vphp__PersistentOwnedZVal;
 typedef array Array_vphp__RequestOwnedZVal;
-typedef array Array_main__VSlimRoute;
 typedef array Array_main__VSlimMiddleware;
 typedef array Array_main__RouteHook;
-typedef map Map_string_int;
 typedef array Array_bool;
 typedef array Array_vphp__ZVal;
 typedef map Map_string_T;
@@ -3398,8 +3401,8 @@ struct main__VSlimContainerNotFoundException {
 //          |   19 = bool
 //          |   37 = Array_string
 //          |   47 = Array_int
-//          |  193 = Array_i64
-//          |  194 = Array_f64
+//          |  195 = Array_i64
+//          |  196 = Array_f64
 struct vphp__TaskResult {
 	union {
 		string* _string;
@@ -4792,6 +4795,12 @@ struct _option_net__TcpConn_ptr {
 	byte data[sizeof(net__TcpConn*) > 1 ? sizeof(net__TcpConn*) : 1];
 };
 
+struct _option_Array_main__VSlimRoute {
+	byte state;
+	IError err;
+	byte data[sizeof(Array_main__VSlimRoute) > 1 ? sizeof(Array_main__VSlimRoute) : 1];
+};
+
 struct _option_main__VSlimResponse {
 	byte state;
 	IError err;
@@ -5452,6 +5461,7 @@ VV_LOC array builtin____new_array(int mylen, int cap, int elm_size);
 VV_LOC array builtin____new_array_with_default(int mylen, int cap, int elm_size, voidptr val);
 VV_LOC array builtin____new_array_with_multi_default(int mylen, int cap, int elm_size, voidptr val);
 VV_LOC array builtin____new_array_with_array_default(int mylen, int cap, int elm_size, array val, int depth);
+VV_LOC array builtin____new_array_with_map_default(int mylen, int cap, int elm_size, map val);
 VV_LOC array builtin__new_array_from_c_array(int len, int cap, int elm_size, voidptr c_array);
 void builtin__array_ensure_cap(array* a, int required);
 array builtin__array_repeat(array a, int count);
@@ -5688,6 +5698,7 @@ array builtin__map_values(map* m);
 VV_LOC DenseArray builtin__DenseArray_clone(DenseArray* d);
 map builtin__map_clone(map* m);
 void builtin__map_free(map* m);
+VV_LOC map builtin__new_map_noscan_key(int key_bytes, int value_bytes, u64 (*hash_fn)(voidptr ), bool (*key_eq_fn)(voidptr , voidptr ), void (*clone_fn)(voidptr , voidptr ), void (*free_fn)(voidptr ));
 void builtin__VAssertMetaInfo_free(VAssertMetaInfo* ami);
 VV_LOC void builtin____print_assert_failure(VAssertMetaInfo* i);
 void builtin__IError_free(IError* ie);
@@ -6243,6 +6254,7 @@ void vphp__Context_return_val_T_Array_int(vphp__Context ctx, Array_int val);
 void vphp__Context_return_val_T_Array_i64(vphp__Context ctx, Array_i64 val);
 void vphp__Context_return_val_T_Array_f64(vphp__Context ctx, Array_f64 val);
 void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_string val);
+void vphp__Context_return_val_T_Array_Map_string_string(vphp__Context ctx, Array_Map_string_string val);
 void vphp__Context_return_map_T_string(vphp__Context ctx, Map_string_string m);
 void vphp__Context_return_object(vphp__Context ctx, Map_string_string props);
 void vphp__return_val_raw_T_string(zval* ret, string val);
@@ -6554,6 +6566,7 @@ _result_void vphp__ZVal_from_v_T_Array_int(vphp__ZVal v, Array_int value);
 _result_void vphp__ZVal_from_v_T_Array_i64(vphp__ZVal v, Array_i64 value);
 _result_void vphp__ZVal_from_v_T_Array_f64(vphp__ZVal v, Array_f64 value);
 _result_void vphp__ZVal_from_v_T_Map_string_string(vphp__ZVal v, Map_string_string value);
+_result_void vphp__ZVal_from_v_T_Array_Map_string_string(vphp__ZVal v, Array_Map_string_string value);
 _option_main__VSlimResponse_ptr vphp__ZVal_to_object_T_main__VSlimResponse(vphp__ZVal v);
 VV_LOC void vphp__vphp_foreach_wrapper(voidptr ctx, zval* key, zval* val);
 void vphp__ZVal_foreach(vphp__ZVal v, void (*cb)(vphp__ZVal key, vphp__ZVal val));
@@ -7693,6 +7706,14 @@ void main__vphp_wrap_vslimapp_route_names(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimApp_route_names(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_route_names
 void main__vphp_wrap_vslimapp_has_route_name(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimApp_has_route_name(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_has_route_name
+void main__vphp_wrap_vslimapp_route_manifest_lines(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimApp_route_manifest_lines(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_route_manifest_lines
+void main__vphp_wrap_vslimapp_route_conflict_keys(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimApp_route_conflict_keys(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_route_conflict_keys
+void main__vphp_wrap_vslimapp_route_manifest(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimApp_route_manifest(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_route_manifest
+void main__vphp_wrap_vslimapp_route_conflicts(voidptr ptr, vphp__Context ctx);
+VV_EXP void vphp_wrap_VSlimApp_route_conflicts(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_route_conflicts
 void main__vphp_wrap_vslimapp_allowed_methods_for(voidptr ptr, vphp__Context ctx);
 VV_EXP void vphp_wrap_VSlimApp_allowed_methods_for(voidptr ptr, vphp__Context ctx); // exported fn main.vphp_wrap_vslimapp_allowed_methods_for
 voidptr main__vslimapp_handlers(void);
@@ -7842,6 +7863,10 @@ VV_LOC main__VSlimResponse* main__VSlimApp_redirect_to_query_borrowed(main__VSli
 int main__VSlimApp_route_count(main__VSlimApp* app);
 Array_string main__VSlimApp_route_names(main__VSlimApp* app);
 bool main__VSlimApp_has_route_name(main__VSlimApp* app, string name);
+Array_string main__VSlimApp_route_manifest_lines(main__VSlimApp* app);
+Array_string main__VSlimApp_route_conflict_keys(main__VSlimApp* app);
+Array_Map_string_string main__VSlimApp_route_manifest(main__VSlimApp* app);
+Array_Map_string_string main__VSlimApp_route_conflicts(main__VSlimApp* app);
 Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_path);
 VV_LOC void main__VSlimApp_add_php_route(main__VSlimApp* app, string method, string name, string pattern, vphp__ZVal handler);
 VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_request_with_params(main__VSlimApp* app, main__VSlimRequest* req, bool trace_on, i64 trace_base);
@@ -7860,13 +7885,13 @@ VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain(main__VSlimApp* ap
 VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, main__VSlimResponse _v_toheap_terminal);
 VV_LOC _result_vphp__ZVal main__dispatch_php_middleware_chain_with_terminal(main__VSlimApp* app, string path, vphp__BorrowedZVal payload, Array_vphp__PersistentOwnedZVal route_middle, vphp__PersistentOwnedZVal route_handler, main__VSlimResponse _v_toheap_terminal, bool has_terminal);
 VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* chain, vphp__BorrowedZVal payload);
-struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx {
+struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792_Ctx {
 	vphp__BorrowedZVal payload;
 	vphp__RequestOwnedZVal mw;
 };
 
-struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx;
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148(void);
+struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792_Ctx;
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792(void);
 VV_LOC vphp__ZVal main__with_active_middleware_chain(main__MiddlewareChain* chain, vphp__ZVal (*invoke)());
 VV_LOC vphp__ZVal main__invoke_active_middleware_next(vphp__ZVal _request_payload);
 VV_LOC main__VSlimResponse main__apply_php_after_hooks(main__VSlimApp* app, string path, vphp__BorrowedZVal request_payload, main__VSlimResponse _v_toheap_initial);
@@ -7884,7 +7909,7 @@ VV_LOC Array_string main__collect_allowed_methods(Array_string existing, string 
 VV_LOC Array_string main__normalize_methods(vphp__BorrowedZVal methods);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response_borrowed(vphp__BorrowedZVal result);
 VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(vphp__ZVal result);
-VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40975(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
+VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_42619(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc);
 VV_LOC void main__VSlimApp_free(main__VSlimApp* app);
 VV_LOC void main__vslim_handle_request(vphp__Context ctx);
 VV_LOC void main__vslim_demo_dispatch(vphp__Context ctx);
@@ -8049,6 +8074,7 @@ string indent__option_net__urllib__Userinfo_str(_option_net__urllib__Userinfo it
 static string net__TcpSocket_str(net__TcpSocket it);
 static string indent_net__TcpSocket_str(net__TcpSocket it, int indent_count);
 static string net__openssl__SSLError_str(net__openssl__SSLError it);
+static string main__VSlimRouteHandlerType_str(main__VSlimRouteHandlerType it);
 static string net__Socket_str(net__Socket it);
 static string indent_net__Socket_str(net__Socket it, int indent_count);
 bool Array_rune_arr_eq(Array_rune a, Array_rune b);
@@ -9491,6 +9517,11 @@ VV_LOC  int compare_1065768667300548517_string(string* a, string* b) {
 	else return 1;
 }
 
+VV_LOC  int compare_14048415054110617411_string(string* a, string* b) {
+	if (builtin__string__lt(*a, *b)) return -1;
+	else return 1;
+}
+
 VV_LOC  int compare_4304664230910251370_string(string* a, string* b) {
 	if (builtin__string__lt(*a, *b)) return -1;
 	else return 1;
@@ -9589,6 +9620,13 @@ static string net__openssl__SSLError_str(net__openssl__SSLError it) { /* gen_str
 		if(it == net__openssl__SSLError__ssl_error_want_async){ return _S("ssl_error_want_async"); }
 		if(it == net__openssl__SSLError__ssl_error_want_async_job){ return _S("ssl_error_want_async_job"); }
 		return _S("unknown enum value");
+}
+static string main__VSlimRouteHandlerType_str(main__VSlimRouteHandlerType it) { /* gen_str_for_enum */
+	switch(it) {
+		case main__VSlimRouteHandlerType__v_native: return _S("v_native");
+		case main__VSlimRouteHandlerType__php_callable: return _S("php_callable");
+		default: return _S("unknown enum value");
+	}
 }
 static string net__Socket_str(net__Socket it) { return indent_net__Socket_str(it, 0);}
 
@@ -9738,12 +9776,12 @@ VV_LOC void anon_fn_c6e8bedcd38d5468_82_vphp__zval_vphp__zval_mut_map_string_str
 	sync__WaitGroup_done(wg);
 }
 
-VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148(void) {
-	struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx* _V_closure_ctx = g_closure.closure_get_data();
+VV_LOC vphp__ZVal anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792(void) {
+	struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792_Ctx* _V_closure_ctx = g_closure.closure_get_data();
 	return vphp__RequestOwnedZVal_call_owned_request(_V_closure_ctx->mw, builtin__new_array_from_c_array(2, 2, sizeof(vphp__ZVal), _MOV((vphp__ZVal[2]){vphp__BorrowedZVal_to_zval(_V_closure_ctx->payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(_S("vslim_middleware_next")))})));
 }
 
-VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40975(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
+VV_LOC void anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_42619(vphp__ZVal key, vphp__ZVal val, Map_string_string* acc) {
 	builtin__map_set(acc, &(string[]){vphp__ZVal_to_string(key)}, &(string[]) { vphp__ZVal_to_string(val) });
 }
 
@@ -9779,22 +9817,22 @@ u32 v_typeof_interface_idx_IError(u32 sidx) {
 	if (sidx == _IError_voidptr_index) return 2;
 	if (sidx == _IError_Error_index) return 63;
 	if (sidx == _IError_MessageError_index) return 64;
-	if (sidx == _IError_time__TimeParseError_index) return 290;
-	if (sidx == _IError_io__Eof_index) return 457;
-	if (sidx == _IError_io__NotExpected_index) return 458;
-	if (sidx == _IError_os__Eof_index) return 233;
-	if (sidx == _IError_os__NotExpected_index) return 234;
-	if (sidx == _IError_os__FileNotOpenedError_index) return 236;
-	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 237;
-	if (sidx == _IError_os__ExecutableNotFoundError_index) return 255;
-	if (sidx == _IError_net__http__HeaderKeyError_index) return 319;
-	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 335;
-	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 336;
+	if (sidx == _IError_time__TimeParseError_index) return 292;
+	if (sidx == _IError_io__Eof_index) return 459;
+	if (sidx == _IError_io__NotExpected_index) return 460;
+	if (sidx == _IError_os__Eof_index) return 235;
+	if (sidx == _IError_os__NotExpected_index) return 236;
+	if (sidx == _IError_os__FileNotOpenedError_index) return 238;
+	if (sidx == _IError_os__SizeOfTypeIs0Error_index) return 239;
+	if (sidx == _IError_os__ExecutableNotFoundError_index) return 257;
+	if (sidx == _IError_net__http__HeaderKeyError_index) return 321;
+	if (sidx == _IError_net__http__UnexpectedExtraAttributeError_index) return 337;
+	if (sidx == _IError_net__http__MultiplePathAttributesError_index) return 338;
 	return 30;
 }
 char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 195: return "vphp.TaskResult";
+		case 197: return "vphp.TaskResult";
 		case 21: return "string";
 		case 8: return "int";
 		case 9: return "i64";
@@ -9802,15 +9840,15 @@ char * v_typeof_sumtype_vphp__TaskResult(u32 sidx) {
 		case 19: return "bool";
 		case 37: return "[]string";
 		case 47: return "[]int";
-		case 193: return "[]i64";
-		case 194: return "[]f64";
+		case 195: return "[]i64";
+		case 196: return "[]f64";
 		default: return "unknown vphp.TaskResult";
 	}
 }
 
 u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 	switch(sidx) {
-		case 195: return 195;
+		case 197: return 197;
 		case 21: return 21;
 		case 8: return 8;
 		case 9: return 9;
@@ -9818,9 +9856,9 @@ u32 v_typeof_sumtype_idx_vphp__TaskResult(u32 sidx) {
 		case 19: return 19;
 		case 37: return 37;
 		case 47: return 47;
-		case 193: return 193;
-		case 194: return 194;
-		default: return 195;
+		case 195: return 195;
+		case 196: return 196;
+		default: return 197;
 	}
 }
 static char * v_typeof_interface_vphp__ITask(u32 sidx) {
@@ -9828,7 +9866,7 @@ static char * v_typeof_interface_vphp__ITask(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_vphp__ITask(u32 sidx) {
-	return 198;
+	return 200;
 }
 static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
 	if (sidx == _net__http__Downloader_voidptr_index) return "voidptr";
@@ -9839,9 +9877,9 @@ static char * v_typeof_interface_net__http__Downloader(u32 sidx) {
 
 u32 v_typeof_interface_idx_net__http__Downloader(u32 sidx) {
 	if (sidx == _net__http__Downloader_voidptr_index) return 2;
-	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 307;
-	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 309;
-	return 305;
+	if (sidx == _net__http__Downloader_net__http__TerminalStreamingDownloader_index) return 309;
+	if (sidx == _net__http__Downloader_net__http__SilentStreamingDownloader_index) return 311;
+	return 307;
 }
 static char * v_typeof_interface_net__http__Handler(u32 sidx) {
 	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return "net.http.DebugHandler";
@@ -9850,9 +9888,9 @@ static char * v_typeof_interface_net__http__Handler(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__http__Handler(u32 sidx) {
-	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 346;
+	if (sidx == _net__http__Handler_net__http__DebugHandler_index) return 348;
 	if (sidx == _net__http__Handler_voidptr_index) return 2;
-	return 345;
+	return 347;
 }
 static char * v_typeof_interface_net__Dialer(u32 sidx) {
 	if (sidx == _net__Dialer_net__TCPDialer_index) return "net.TCPDialer";
@@ -9863,11 +9901,11 @@ static char * v_typeof_interface_net__Dialer(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__Dialer(u32 sidx) {
-	if (sidx == _net__Dialer_net__TCPDialer_index) return 446;
+	if (sidx == _net__Dialer_net__TCPDialer_index) return 448;
 	if (sidx == _net__Dialer_voidptr_index) return 2;
-	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 384;
-	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 453;
-	return 385;
+	if (sidx == _net__Dialer_net__ssl__SSLDialer_index) return 386;
+	if (sidx == _net__Dialer_net__socks__SOCKS5Dialer_index) return 455;
+	return 387;
 }
 static char * v_typeof_interface_net__Connection(u32 sidx) {
 	if (sidx == _net__Connection_net__TcpConn_index) return "net.TcpConn";
@@ -9878,11 +9916,11 @@ static char * v_typeof_interface_net__Connection(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_net__Connection(u32 sidx) {
-	if (sidx == _net__Connection_net__TcpConn_index) return 331;
+	if (sidx == _net__Connection_net__TcpConn_index) return 333;
 	if (sidx == _net__Connection_voidptr_index) return 2;
-	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 299;
-	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 387;
-	return 386;
+	if (sidx == _net__Connection_net__ssl__SSLConn_index) return 301;
+	if (sidx == _net__Connection_net__openssl__SSLConn_index) return 389;
+	return 388;
 }
 static char * v_typeof_interface_io__Reader(u32 sidx) {
 	if (sidx == _io__Reader_net__TcpConn_index) return "net.TcpConn";
@@ -9897,15 +9935,15 @@ static char * v_typeof_interface_io__Reader(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_io__Reader(u32 sidx) {
-	if (sidx == _io__Reader_net__TcpConn_index) return 331;
+	if (sidx == _io__Reader_net__TcpConn_index) return 333;
 	if (sidx == _io__Reader_voidptr_index) return 2;
-	if (sidx == _io__Reader_os__File_index) return 235;
-	if (sidx == _io__Reader_os__Pipe_index) return 265;
-	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 299;
-	if (sidx == _io__Reader_io__BufferedReader_index) return 333;
-	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 387;
-	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 468;
-	return 454;
+	if (sidx == _io__Reader_os__File_index) return 237;
+	if (sidx == _io__Reader_os__Pipe_index) return 267;
+	if (sidx == _io__Reader_net__ssl__SSLConn_index) return 301;
+	if (sidx == _io__Reader_io__BufferedReader_index) return 335;
+	if (sidx == _io__Reader_net__openssl__SSLConn_index) return 389;
+	if (sidx == _io__Reader_io__ReaderWriterImpl_index) return 470;
+	return 456;
 }
 static char * v_typeof_interface_io__Writer(u32 sidx) {
 	if (sidx == _io__Writer_io__MultiWriter_index) return "io.MultiWriter";
@@ -9923,18 +9961,18 @@ static char * v_typeof_interface_io__Writer(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_io__Writer(u32 sidx) {
-	if (sidx == _io__Writer_io__MultiWriter_index) return 464;
+	if (sidx == _io__Writer_io__MultiWriter_index) return 466;
 	if (sidx == _io__Writer_voidptr_index) return 2;
-	if (sidx == _io__Writer_os__File_index) return 235;
-	if (sidx == _io__Writer_os__Pipe_index) return 265;
-	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 299;
-	if (sidx == _io__Writer_net__TcpConn_index) return 331;
-	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 387;
-	if (sidx == _io__Writer_net__RawConn_index) return 442;
-	if (sidx == _io__Writer_net__UdpConn_index) return 451;
-	if (sidx == _io__Writer_io__BufferedWriter_index) return 460;
-	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 468;
-	return 459;
+	if (sidx == _io__Writer_os__File_index) return 237;
+	if (sidx == _io__Writer_os__Pipe_index) return 267;
+	if (sidx == _io__Writer_net__ssl__SSLConn_index) return 301;
+	if (sidx == _io__Writer_net__TcpConn_index) return 333;
+	if (sidx == _io__Writer_net__openssl__SSLConn_index) return 389;
+	if (sidx == _io__Writer_net__RawConn_index) return 444;
+	if (sidx == _io__Writer_net__UdpConn_index) return 453;
+	if (sidx == _io__Writer_io__BufferedWriter_index) return 462;
+	if (sidx == _io__Writer_io__ReaderWriterImpl_index) return 470;
+	return 461;
 }
 static char * v_typeof_interface_rand__PRNG(u32 sidx) {
 	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return "rand.wyrand.WyRandRNG";
@@ -9943,9 +9981,9 @@ static char * v_typeof_interface_rand__PRNG(u32 sidx) {
 }
 
 u32 v_typeof_interface_idx_rand__PRNG(u32 sidx) {
-	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 474;
+	if (sidx == _rand__PRNG_rand__wyrand__WyRandRNG_index) return 476;
 	if (sidx == _rand__PRNG_voidptr_index) return 2;
-	return 471;
+	return 473;
 }
 // << typeof() support for sum types
 
@@ -14716,6 +14754,23 @@ VV_LOC array builtin____new_array_with_array_default(int mylen, int cap, int elm
 	}
 	return arr;
 }
+VV_LOC array builtin____new_array_with_map_default(int mylen, int cap, int elm_size, map val) {
+	builtin__panic_on_negative_len(mylen);
+	builtin__panic_on_negative_cap(cap);
+	int cap_ = (cap < mylen ? (mylen) : (cap));
+	array arr = ((array){.data = (voidptr)builtin___v_malloc(builtin____at_least_one((u64)(((u64)(cap_)) * ((u64)(elm_size))))),.offset = 0,.len = mylen,.cap = cap_,.flags = 0,.element_size = elm_size,});
+	u8* eptr = ((u8*)(arr.data));
+	{ // Unsafe block
+		if (eptr != ((void*)0)) {
+			for (int _t1 = 0; _t1 < arr.len; ++_t1) {
+				map val_clone = builtin__map_clone(&val);
+				builtin__vmemcpy(eptr, &val_clone, arr.element_size);
+				eptr += arr.element_size;
+			}
+		}
+	}
+	return arr;
+}
 VV_LOC array builtin__new_array_from_c_array(int len, int cap, int elm_size, voidptr c_array) {
 	builtin__panic_on_negative_len(len);
 	builtin__panic_on_negative_cap(cap);
@@ -16961,6 +17016,9 @@ void builtin__map_free(map* m) {
 		m->clone_fn = (voidptr)((void*)0);
 		m->free_fn = (voidptr)((void*)0);
 	}
+}
+VV_LOC map builtin__new_map_noscan_key(int key_bytes, int value_bytes, u64 (*hash_fn)(voidptr ), bool (*key_eq_fn)(voidptr , voidptr ), void (*clone_fn)(voidptr , voidptr ), void (*free_fn)(voidptr )) {
+	return builtin__new_map(key_bytes, value_bytes, (voidptr)hash_fn, (voidptr)key_eq_fn, (voidptr)clone_fn, (voidptr)free_fn);
 }
 void builtin__VAssertMetaInfo_free(VAssertMetaInfo* ami) {
 	{ // Unsafe block
@@ -25493,6 +25551,23 @@ void vphp__Context_return_val_T_Map_string_string(vphp__Context ctx, Map_string_
 	
  ;
 }
+void vphp__Context_return_val_T_Array_Map_string_string(vphp__Context ctx, Array_Map_string_string val) {
+	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
+	_result_void _t1 = vphp__ZVal_from_v_T_Array_Map_string_string(out, val);
+	if (_t1.is_error) {
+		#if false
+		{
+		}
+		#else
+		{
+			vphp__Context_return_null(ctx);
+		}
+		#endif
+	;
+	}
+	
+ ;
+}
 void vphp__Context_return_map_T_string(vphp__Context ctx, Map_string_string m) {
 	vphp__ZVal out = ((vphp__ZVal){.raw = ctx.ret,.owned = 0,});
 	vphp__ZVal_array_init(out);
@@ -26228,10 +26303,10 @@ void vphp__task_wait(vphp__Context ctx) {
 		else if (results._typ == 47 /* []int */) {
 			vphp__Context_return_val_T_Array_int(ctx, (*results._Array_int));
 		}
-		else if (results._typ == 193 /* []i64 */) {
+		else if (results._typ == 195 /* []i64 */) {
 			vphp__Context_return_val_T_Array_i64(ctx, (*results._Array_i64));
 		}
-		else if (results._typ == 194 /* []f64 */) {
+		else if (results._typ == 196 /* []f64 */) {
 			vphp__Context_return_val_T_Array_f64(ctx, (*results._Array_f64));
 		}
 		
@@ -27714,6 +27789,10 @@ _result_void vphp__ZVal_from_v_T_Array_string(vphp__ZVal v, Array_string value) 
 	{
 	}
 	#endif
+	#if false
+	{
+	}
+	#endif
 	#if false || false
 	{
 	}
@@ -27756,6 +27835,10 @@ _result_void vphp__ZVal_from_v_T_string(vphp__ZVal v, string value) {
 	}
 	#endif
 	#if false || false
+	{
+	}
+	#endif
+	#if false
 	{
 	}
 	#endif
@@ -27828,6 +27911,10 @@ _result_void vphp__ZVal_from_v_T_int(vphp__ZVal v, int value) {
 	{
 	}
 	#endif
+	#if false
+	{
+	}
+	#endif
 	#if false || false
 	{
 	}
@@ -27870,6 +27957,10 @@ _result_void vphp__ZVal_from_v_T_i64(vphp__ZVal v, i64 value) {
 	}
 	#endif
 	#if false || false
+	{
+	}
+	#endif
+	#if false
 	{
 	}
 	#endif
@@ -27942,6 +28033,10 @@ _result_void vphp__ZVal_from_v_T_f64(vphp__ZVal v, f64 value) {
 	{
 	}
 	#endif
+	#if false
+	{
+	}
+	#endif
 	#if false || false
 	{
 	}
@@ -27984,6 +28079,10 @@ _result_void vphp__ZVal_from_v_T_bool(vphp__ZVal v, bool value) {
 	}
 	#endif
 	#if false || false
+	{
+	}
+	#endif
+	#if false
 	{
 	}
 	#endif
@@ -28060,6 +28159,10 @@ _result_void vphp__ZVal_from_v_T_Array_int(vphp__ZVal v, Array_int value) {
 	{
 	}
 	#endif
+	#if false
+	{
+	}
+	#endif
 	#if false || false
 	{
 	}
@@ -28107,6 +28210,10 @@ _result_void vphp__ZVal_from_v_T_Array_i64(vphp__ZVal v, Array_i64 value) {
 			vphp__ZVal_push_long(v, ((i64)(item)));
 		}
 		return (_result_void){0};
+	}
+	#endif
+	#if false
+	{
 	}
 	#endif
 	#if false
@@ -28182,6 +28289,10 @@ _result_void vphp__ZVal_from_v_T_Array_f64(vphp__ZVal v, Array_f64 value) {
 	{
 	}
 	#endif
+	#if false
+	{
+	}
+	#endif
 	#if false || false
 	{
 	}
@@ -28233,24 +28344,109 @@ _result_void vphp__ZVal_from_v_T_Map_string_string(vphp__ZVal v, Map_string_stri
 	{
 	}
 	#endif
+	#if false
+	{
+	}
+	#endif
 	#if true
 	{
 		vphp__ZVal_array_init(v);
-		int _t12 = value.key_values.len;
-		for (int _t11 = 0; _t11 < _t12; ++_t11 ) {
-			int _t13 = value.key_values.len - _t12;
-			_t12 = value.key_values.len;
-			if (_t13 < 0) {
-				_t11 = -1;
+		int _t13 = value.key_values.len;
+		for (int _t12 = 0; _t12 < _t13; ++_t12 ) {
+			int _t14 = value.key_values.len - _t13;
+			_t13 = value.key_values.len;
+			if (_t14 < 0) {
+				_t12 = -1;
 				continue;
 			}
-			if (!builtin__DenseArray_has_index(&value.key_values, _t11)) {continue;}
-			string key = *(string*)builtin__DenseArray_key(&value.key_values, _t11);
+			if (!builtin__DenseArray_has_index(&value.key_values, _t12)) {continue;}
+			string key = *(string*)builtin__DenseArray_key(&value.key_values, _t12);
 			key = builtin__string_clone(key);
-			string item = (*(string*)builtin__DenseArray_value(&value.key_values, _t11));
+			string item = (*(string*)builtin__DenseArray_value(&value.key_values, _t12));
 			vphp__ZVal_add_assoc_string(v, key, item);
 		}
 		return (_result_void){0};
+	}
+	#endif
+	#if false || false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	return (_result_void){ .is_error=true, .err=builtin___v_error(_S("unsupported from_v conversion for source type")), .data={E_STRUCT} };
+}
+_result_void vphp__ZVal_from_v_T_Array_Map_string_string(vphp__ZVal v, Array_Map_string_string value) {
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false || false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false || false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if false
+	{
+	}
+	#endif
+	#if true
+	{
+		vphp__ZVal_array_init(v);
+		for (int _t11 = 0; _t11 < value.len; ++_t11) {
+			Map_string_string item = ((Map_string_string*)value.data)[_t11];
+			vphp__ZVal sub = vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_null());
+			vphp__ZVal_array_init(sub);
+			int _t13 = item.key_values.len;
+			for (int _t12 = 0; _t12 < _t13; ++_t12 ) {
+				int _t14 = item.key_values.len - _t13;
+				_t13 = item.key_values.len;
+				if (_t14 < 0) {
+					_t12 = -1;
+					continue;
+				}
+				if (!builtin__DenseArray_has_index(&item.key_values, _t12)) {continue;}
+				string key = *(string*)builtin__DenseArray_key(&item.key_values, _t12);
+				key = builtin__string_clone(key);
+				string val = (*(string*)builtin__DenseArray_value(&item.key_values, _t12));
+				vphp__ZVal_add_assoc_string(sub, key, val);
+			}
+			vphp__ZVal_add_next_val(v, sub);
+		}
+		return (_result_void){0};
+	}
+	#endif
+	#if false
+	{
 	}
 	#endif
 	#if false || false
@@ -37173,7 +37369,7 @@ _result_net__TcpConn_ptr net__socks__socks5_dial(string proxy_url, string host, 
 	}
 	
  	net__Connection socks_conn_as_interface = (*(net__Connection*)_t3.data);
-	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 331)));
+	net__TcpConn *socks_conn = HEAP(net__TcpConn, (*(net__TcpConn*)builtin____as_cast((socks_conn_as_interface)._net__TcpConn,v_typeof_interface_idx_net__Connection((socks_conn_as_interface)._typ), 333)));
 	_result_net__TcpConn_ptr _t5;
 	builtin___result_ok(&(net__TcpConn*[]) { &(*(socks_conn)) }, (_result*)(&_t5), sizeof(net__TcpConn*));
 	 
@@ -43836,6 +44032,58 @@ void main__vphp_wrap_vslimapp_has_route_name(voidptr ptr, vphp__Context ctx) {
 void vphp_wrap_VSlimApp_has_route_name(voidptr ptr, vphp__Context ctx) {
 	return main__vphp_wrap_vslimapp_has_route_name(ptr, ctx);
 }
+void main__vphp_wrap_vslimapp_route_manifest_lines(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Array_string res = main__VSlimApp_route_manifest_lines(recv);
+	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimApp_route_manifest_lines -> main__vphp_wrap_vslimapp_route_manifest_lines
+void vphp_wrap_VSlimApp_route_manifest_lines(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_route_manifest_lines(ptr, ctx);
+}
+void main__vphp_wrap_vslimapp_route_conflict_keys(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Array_string res = main__VSlimApp_route_conflict_keys(recv);
+	vphp__Context_return_val_T_Array_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimApp_route_conflict_keys -> main__vphp_wrap_vslimapp_route_conflict_keys
+void vphp_wrap_VSlimApp_route_conflict_keys(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_route_conflict_keys(ptr, ctx);
+}
+void main__vphp_wrap_vslimapp_route_manifest(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Array_Map_string_string res = main__VSlimApp_route_manifest(recv);
+	vphp__Context_return_val_T_Array_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimApp_route_manifest -> main__vphp_wrap_vslimapp_route_manifest
+void vphp_wrap_VSlimApp_route_manifest(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_route_manifest(ptr, ctx);
+}
+void main__vphp_wrap_vslimapp_route_conflicts(voidptr ptr, vphp__Context ctx) {
+	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
+	int vphp_ar_mark = vphp__autorelease_mark();
+	Array_Map_string_string res = main__VSlimApp_route_conflicts(recv);
+	vphp__Context_return_val_T_Array_Map_string_string(ctx, res);
+	{ // defer begin
+		vphp__autorelease_drain(vphp_ar_mark);
+	} // defer end
+}
+// export alias: vphp_wrap_VSlimApp_route_conflicts -> main__vphp_wrap_vslimapp_route_conflicts
+void vphp_wrap_VSlimApp_route_conflicts(voidptr ptr, vphp__Context ctx) {
+	return main__vphp_wrap_vslimapp_route_conflicts(ptr, ctx);
+}
 void main__vphp_wrap_vslimapp_allowed_methods_for(voidptr ptr, vphp__Context ctx) {
 	main__VSlimApp* recv = ((main__VSlimApp*)(ptr));
 	int vphp_ar_mark = vphp__autorelease_mark();
@@ -44852,13 +45100,152 @@ bool main__VSlimApp_has_route_name(main__VSlimApp* app, string name) {
 	}
 	return false;
 }
+Array_string main__VSlimApp_route_manifest_lines(main__VSlimApp* app) {
+	Array_string out = builtin____new_array_with_default(0, app->routes.len, sizeof(string), 0);
+	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
+		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
+		string line = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = route.method}}, {_S(" "), 0xfe10, {.d_s = route.pattern}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		if ((route.name).len != 0) {
+			line = builtin__string__plus(line, builtin__str_intp(2, _MOV((StrIntpData[]){{_S(" #"), 0xfe10, {.d_s = route.name}}, {_SLIT0, 0, { .d_c = 0 }}})));
+		}
+		builtin__array_push((array*)&out, _MOV((string[]){ builtin__string_clone(line) }));
+	}
+	return out;
+}
+Array_string main__VSlimApp_route_conflict_keys(main__VSlimApp* app) {
+	Map_string_int grouped = builtin__new_map(sizeof(string), sizeof(int), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
+		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
+		string key = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = route.method}}, {_S(" "), 0xfe10, {.d_s = route.pattern}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		int* _t3 = (int*)(builtin__map_get_check(ADDR(map, grouped), &(string[]){key}));
+		_option_int _t2 = {0};
+		if (_t3) {
+			*((int*)&_t2.data) = *((int*)_t3);
+		} else {
+			_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t2.state != 0) {
+			*(int*) _t2.data = 0;
+		}
+		
+		builtin__map_set(&grouped, &(string[]){key}, &(int[]) { (int)(((*(int*)_t2.data)) + 1) });
+	}
+	Array_string out = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+	int _t5 = grouped.key_values.len;
+	for (int _t4 = 0; _t4 < _t5; ++_t4 ) {
+		int _t6 = grouped.key_values.len - _t5;
+		_t5 = grouped.key_values.len;
+		if (_t6 < 0) {
+			_t4 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&grouped.key_values, _t4)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&grouped.key_values, _t4);
+		key = builtin__string_clone(key);
+		int count = (*(int*)builtin__DenseArray_value(&grouped.key_values, _t4));
+		if (count > 1) {
+			builtin__array_push((array*)&out, _MOV((string[]){ builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = key}}, {_S(" x"), 0xfe07, {.d_i32 = count}}, {_SLIT0, 0, { .d_c = 0 }}})) }));
+		}
+	}
+	if (out.len > 0) { qsort(out.data, out.len, out.element_size, (voidptr)compare_14048415054110617411_string); }
+	;
+	return out;
+}
+Array_Map_string_string main__VSlimApp_route_manifest(main__VSlimApp* app) {
+	Array_Map_string_string out = builtin____new_array_with_default(0, app->routes.len, sizeof(Map_string_string), 0);
+	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
+		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
+		builtin__array_push((array*)&out, _MOV((Map_string_string[]){ builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 4, sizeof(string), sizeof(string),
+			_MOV((string[4]){
+				_S("method"),
+				_S("name"),
+				_S("pattern"),
+				_S("handler_type"),
+			}),
+			_MOV((string[4]){
+				route.method, 
+				route.name, 
+				route.pattern, 
+				main__VSlimRouteHandlerType_str(route.handler_type), 
+			})
+		)
+		 }));
+	}
+	return out;
+}
+Array_Map_string_string main__VSlimApp_route_conflicts(main__VSlimApp* app) {
+	Map_string_Array_main__VSlimRoute grouped = builtin__new_map(sizeof(string), sizeof(Array_main__VSlimRoute), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
+	;
+	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
+		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
+		string key = builtin__str_intp(3, _MOV((StrIntpData[]){{_SLIT0, 0xfe10, {.d_s = route.method}}, {_S(" "), 0xfe10, {.d_s = route.pattern}}, {_SLIT0, 0, { .d_c = 0 }}}));
+		Array_main__VSlimRoute* _t3 = (Array_main__VSlimRoute*)(builtin__map_get_check(ADDR(map, grouped), &(string[]){key}));
+		_option_Array_main__VSlimRoute _t2 = {0};
+		if (_t3) {
+			*((Array_main__VSlimRoute*)&_t2.data) = *((Array_main__VSlimRoute*)_t3);
+		} else {
+			_t2.state = 2; _t2.err = builtin___v_error(_S("map key does not exist"));
+		}
+		;
+		if (_t2.state != 0) {
+			*(Array_main__VSlimRoute*) _t2.data = builtin____new_array_with_default(0, 0, sizeof(main__VSlimRoute), 0);
+		}
+		
+		Array_main__VSlimRoute existing = (*(Array_main__VSlimRoute*)_t2.data);
+		builtin__array_push((array*)&existing, _MOV((main__VSlimRoute[]){ route }));
+		(*(Array_main__VSlimRoute*)builtin__map_get_and_set((map*)&grouped, &(string[]){key}, &(Array_main__VSlimRoute[]){ builtin____new_array(0, 0, sizeof(main__VSlimRoute)) })) = existing;
+	}
+	Array_Map_string_string out = builtin____new_array_with_default(0, 0, sizeof(Map_string_string), 0);
+	int _t6 = grouped.key_values.len;
+	for (int _t5 = 0; _t5 < _t6; ++_t5 ) {
+		int _t7 = grouped.key_values.len - _t6;
+		_t6 = grouped.key_values.len;
+		if (_t7 < 0) {
+			_t5 = -1;
+			continue;
+		}
+		if (!builtin__DenseArray_has_index(&grouped.key_values, _t5)) {continue;}
+		string key = *(string*)builtin__DenseArray_key(&grouped.key_values, _t5);
+		key = builtin__string_clone(key);
+		Array_main__VSlimRoute routes = (*(Array_main__VSlimRoute*)builtin__DenseArray_value(&grouped.key_values, _t5));
+		if (routes.len <= 1) {
+			continue;
+		}
+		Array_string parts = builtin__string_split_nth(key, _S(" "), 2);
+		Array_string names = builtin____new_array_with_default(0, 0, sizeof(string), 0);
+		for (int _t8 = 0; _t8 < routes.len; ++_t8) {
+			main__VSlimRoute route = ((main__VSlimRoute*)routes.data)[_t8];
+			if ((route.name).len != 0) {
+				builtin__array_push((array*)&names, _MOV((string[]){ builtin__string_clone(route.name) }));
+			}
+		}
+		builtin__array_push((array*)&out, _MOV((Map_string_string[]){ builtin__new_map_init(&builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string, 4, sizeof(string), sizeof(string),
+			_MOV((string[4]){
+				_S("method"),
+				_S("pattern"),
+				_S("count"),
+				_S("names"),
+			}),
+			_MOV((string[4]){
+				(*(string*)builtin__array_get(parts, 0)), 
+				(parts.len > 1 ? ((*(string*)builtin__array_get(parts, 1))) : (_S(""))), 
+				builtin__str_intp(2, _MOV((StrIntpData[]){{_SLIT0, 0xfe07, {.d_i32 = routes.len}}, {_SLIT0, 0, { .d_c = 0 }}})), 
+				Array_string_join(names, _S(",")), 
+			})
+		)
+		 }));
+	}
+	return out;
+}
 Array_string main__VSlimApp_allowed_methods_for(main__VSlimApp* app, string raw_path) {
 	string path = main__RoutePath__static__normalize(raw_path);
 	Array_string allowed = builtin____new_array_with_default(0, 0, sizeof(string), 0);
 	for (int _t1 = 0; _t1 < app->routes.len; ++_t1) {
 		main__VSlimRoute route = ((main__VSlimRoute*)app->routes.data)[_t1];
-		multi_return_bool_Map_string_string mr_18898 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_18898.arg0;
+		multi_return_bool_Map_string_string mr_20542 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_20542.arg0;
 		if (!ok) {
 			continue;
 		}
@@ -44880,10 +45267,10 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string main__dispatch_app_req
 		if (trace_on) {
 			main__vslim_trace_mem_log(req, _S("dispatch.routes.begin"), trace_base);
 		}
-		multi_return_main__VSlimResponse_Map_string_string_bool mr_19735 = main__dispatch_php_routes_with_params(app, req, trace_on, trace_base);
-		main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_19735.arg0);
-		Map_string_string params = mr_19735.arg1;
-		bool ok = mr_19735.arg2;
+		multi_return_main__VSlimResponse_Map_string_string_bool mr_21379 = main__dispatch_php_routes_with_params(app, req, trace_on, trace_base);
+		main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_21379.arg0);
+		Map_string_string params = mr_21379.arg1;
+		bool ok = mr_21379.arg2;
 		if (trace_on) {
 			main__vslim_trace_mem_log(req, _S("dispatch.routes.end"), trace_base);
 		}
@@ -44914,9 +45301,9 @@ VV_LOC multi_return_main__VSlimResponse_Map_string_string_bool main__dispatch_ph
 		if (route.handler_type != main__VSlimRouteHandlerType__php_callable) {
 			continue;
 		}
-		multi_return_bool_Map_string_string mr_20684 = main__VSlimRoute_matches(route, path);
-		bool ok = mr_20684.arg0;
-		Map_string_string params = mr_20684.arg1;
+		multi_return_bool_Map_string_string mr_22328 = main__VSlimRoute_matches(route, path);
+		bool ok = mr_22328.arg0;
+		Map_string_string params = mr_22328.arg1;
 		if (!ok) {
 			continue;
 		}
@@ -45223,9 +45610,9 @@ VV_LOC _result_vphp__ZVal main__MiddlewareChain_dispatch(main__MiddlewareChain* 
 	}
 	vphp__RequestOwnedZVal mw = (*(vphp__RequestOwnedZVal*)builtin__array_get(chain->middlewares, chain->index));
 	chain->index++;
-	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148, (struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx){.payload = payload,
+	vphp__ZVal raw = main__with_active_middleware_chain(chain, (voidptr)	builtin__closure__closure_create(anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792, (struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792_Ctx*) builtin__memdup_uncollectable(&(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792_Ctx){.payload = payload,
 		.mw = mw,
-	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_31148_Ctx))));
+	}, sizeof(struct _V_anon_fn_c2f5ff0f5d836f43_43___vphp__ZVal_32792_Ctx))));
 	if (!vphp__ZVal_is_valid(raw) || vphp__ZVal_is_null(raw) || vphp__ZVal_is_undef(raw)) {
 		return (_result_vphp__ZVal){ .is_error=true, .err=builtin___v_error(_S("Middleware must return a response")), .data={E_STRUCT} };
 	}
@@ -45297,9 +45684,9 @@ main__VSlimResponse* initial = HEAP(main__VSlimResponse, _v_toheap_initial);
 	return (*(current));
 }
 VV_LOC main__VSlimResponse main__normalize_or_handle_error(main__VSlimApp* app, vphp__BorrowedZVal request_payload, vphp__BorrowedZVal result, int fallback_status, string fallback_message) {
-	multi_return_main__VSlimResponse_bool mr_33478 = main__normalize_php_route_response_borrowed(result);
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_33478.arg0);
-	bool ok = mr_33478.arg1;
+	multi_return_main__VSlimResponse_bool mr_35122 = main__normalize_php_route_response_borrowed(result);
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_35122.arg0);
+	bool ok = mr_35122.arg1;
 	if (ok) {
 		return (*(res));
 	}
@@ -45333,9 +45720,9 @@ VV_LOC _option_main__VSlimResponse main__run_error_handler(main__VSlimApp* app, 
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
 	vphp__ZVal raw = vphp__PersistentOwnedZVal_call_owned_request(eh, builtin__new_array_from_c_array(3, 3, sizeof(vphp__ZVal), _MOV((vphp__ZVal[3]){vphp__BorrowedZVal_to_zval(request_payload), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_string(message)), vphp__RequestOwnedZVal_to_zval(vphp__RequestOwnedZVal__static__new_int(status))})));
-	multi_return_main__VSlimResponse_bool mr_34764 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
-	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_34764.arg0);
-	bool ok = mr_34764.arg1;
+	multi_return_main__VSlimResponse_bool mr_36408 = main__normalize_php_route_response_borrowed(vphp__BorrowedZVal__static__from_zval(raw));
+	main__VSlimResponse (*(res)) = HEAP(main__VSlimResponse, mr_36408.arg0);
+	bool ok = mr_36408.arg1;
 	if (!ok) {
 		return (_option_main__VSlimResponse){ .state=2, .err=_const_none__, .data={E_STRUCT} };
 	}
@@ -45588,7 +45975,7 @@ VV_LOC multi_return_main__VSlimResponse_bool main__normalize_php_route_response(
 		if (_t5 = vphp__ZVal_get(result, _S("headers")), !_t5.is_error) {
 			vphp__ZVal h = *(vphp__ZVal*)_t5.data;
 			headers = vphp__ZVal_fold_T_Map_string_string(h, builtin__new_map(sizeof(string), sizeof(string), &builtin__map_hash_string, &builtin__map_eq_string, &builtin__map_clone_string, &builtin__map_free_string)
-			, (voidptr)			anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_40975);
+			, (voidptr)			anon_fn_c2f5ff0f5d836f43_43_vphp__zval_vphp__zval_mut_map_string_string_42619);
 		}
 		int _t6; /* if prepend */
 		_result_vphp__ZVal _t8;
@@ -47183,10 +47570,10 @@ VV_LOC void main__VSlimResponse_free(main__VSlimResponse* res) {
 void _vinit(int ___argc, voidptr ___argv) {
 	as_cast_type_indexes = builtin__new_array_from_c_array(5, 5, sizeof(VCastTypeIndexName), _MOV((VCastTypeIndexName[5]){
 		  (VCastTypeIndexName){.tindex = 0, .tname = _S("unknown")}
-		, (VCastTypeIndexName){.tindex = 65867, .tname = _S("net.TcpConn")}
+		, (VCastTypeIndexName){.tindex = 65869, .tname = _S("net.TcpConn")}
 		, (VCastTypeIndexName){.tindex = 2, .tname = _S("voidptr")}
-		, (VCastTypeIndexName){.tindex = 65835, .tname = _S("net.ssl.SSLConn")}
-		, (VCastTypeIndexName){.tindex = 387, .tname = _S("net.openssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 65837, .tname = _S("net.ssl.SSLConn")}
+		, (VCastTypeIndexName){.tindex = 389, .tname = _S("net.openssl.SSLConn")}
 	}));
 
 
