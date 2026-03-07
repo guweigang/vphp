@@ -3206,6 +3206,12 @@ ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_ARG_INFO(0, params)
 ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
 ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_INFO_EX(arginfo_vslim__controller_redirect_to_query, 0, 0, 4)
+ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_ARG_INFO(0, params)
+ZEND_ARG_INFO(0, query)
+ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
+ZEND_END_ARG_INFO()
 PHP_METHOD(VSlim__Controller, __construct) {
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
@@ -3363,6 +3369,22 @@ PHP_METHOD(VSlim__Controller, redirect_to) {
     }
 }
 
+
+PHP_METHOD(VSlim__Controller, redirect_to_query) {
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* vphp_wrap_VSlimController_redirect_to_query(void* v_ptr, vphp_context_internal ctx);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    // printf("PHP_METHOD VSlim__Controller::redirect_to_query called, wrapper->v_ptr=%p\n", wrapper->v_ptr);
+    if (!wrapper->v_ptr) RETURN_NULL();
+    void* v_instance = vphp_wrap_VSlimController_redirect_to_query(wrapper->v_ptr, ctx);
+    vphp_return_obj(return_value, v_instance, vslim__response_ce);
+    if (Z_TYPE_P(return_value) == IS_OBJECT) {
+        extern vphp_class_handlers* VSlimResponse_handlers();
+        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), VSlimResponse_handlers(), 0);
+    }
+}
+
 static const zend_function_entry vslim__controller_methods[] = {
     PHP_ME(VSlim__Controller, __construct, arginfo_vslim__controller_construct, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, set_app, arginfo_vslim__controller_set_app, ZEND_ACC_PUBLIC)
@@ -3375,6 +3397,7 @@ static const zend_function_entry vslim__controller_methods[] = {
     PHP_ME(VSlim__Controller, json, arginfo_vslim__controller_json, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, redirect, arginfo_vslim__controller_redirect, ZEND_ACC_PUBLIC)
     PHP_ME(VSlim__Controller, redirect_to, arginfo_vslim__controller_redirect_to, ZEND_ACC_PUBLIC)
+    PHP_ME(VSlim__Controller, redirect_to_query, arginfo_vslim__controller_redirect_to_query, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 

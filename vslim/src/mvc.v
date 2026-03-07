@@ -261,3 +261,12 @@ pub fn (c &VSlimController) redirect_to(name string, params vphp.ZVal, status in
 	}
 	return c.redirect(location, status)
 }
+
+@[php_method]
+pub fn (c &VSlimController) redirect_to_query(name string, params vphp.ZVal, query vphp.ZVal, status int) &VSlimResponse {
+	location := c.url_for_query(name, params, query)
+	if location == '' {
+		return c.text('route not found', 404)
+	}
+	return c.redirect(location, status)
+}

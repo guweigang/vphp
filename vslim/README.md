@@ -679,6 +679,7 @@ HTTP -> vhttpd(veb) -> php-worker -> VSlim\App -> VSlim\Response
   - `json(body, status)`
   - `redirect(location, status)`
   - `redirect_to(name, params, status)`
+  - `redirect_to_query(name, params, query, status)`
 - `VSlim\App`
   - `set_view_base_path(...)`
   - `set_assets_prefix(...)`
@@ -718,6 +719,7 @@ $app->api_resource('/api/users', UserController::class);
 $app->resource_opts('/books', BookController::class, [
     'only' => ['index', 'show'],
     'name_prefix' => 'library.books',
+    'param' => 'book_id',
 ]);
 
 $app->api_resource_opts('/api/books', BookController::class, [

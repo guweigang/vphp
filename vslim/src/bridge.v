@@ -2218,6 +2218,18 @@ pub fn vphp_wrap_vslimcontroller_redirect_to(ptr voidptr, ctx vphp.Context) void
     res := recv.redirect_to(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimController_redirect_to_query']
+pub fn vphp_wrap_vslimcontroller_redirect_to_query(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimController(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg_val(1)
+    arg_2 := ctx.arg_val(2)
+    arg_3 := ctx.arg[int](3)
+    res := recv.redirect_to_query(arg_0, arg_1, arg_2, arg_3)
+    return voidptr(res)
+}
 @[export: 'VSlimController_handlers']
 pub fn vslimcontroller_handlers() voidptr {
     return unsafe { &C.vphp_class_handlers{

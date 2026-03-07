@@ -6,10 +6,10 @@ VSlim resource_opts supports only/except and custom route names
 <?php
 final class ResourceOptsController {
     public function index(VSlim\Request $req): string { return 'index'; }
-    public function show(VSlim\Request $req): string { return 'show:' . $req->param('id'); }
+    public function show(VSlim\Request $req): string { return 'show:' . $req->param('book_id'); }
     public function store(VSlim\Request $req): string { return 'store'; }
-    public function update(VSlim\Request $req): string { return 'update:' . $req->param('id'); }
-    public function destroy(VSlim\Request $req): string { return 'destroy:' . $req->param('id'); }
+    public function update(VSlim\Request $req): string { return 'update:' . $req->param('book_id'); }
+    public function destroy(VSlim\Request $req): string { return 'destroy:' . $req->param('book_id'); }
 }
 
 $app = new VSlim\App();
@@ -17,6 +17,7 @@ $app->container()->set(ResourceOptsController::class, new ResourceOptsController
 $app->resource_opts('/books', ResourceOptsController::class, [
     'only' => ['index', 'show'],
     'name_prefix' => 'library.books',
+    'param' => 'book_id',
 ]);
 $app->api_resource_opts('/api/books', ResourceOptsController::class, [
     'except' => 'destroy',
