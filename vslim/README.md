@@ -711,6 +711,8 @@ final class UserController extends VSlim\Controller {
 ```php
 $app->resource('/users', UserController::class);
 $app->api_resource('/api/users', UserController::class);
+$app->singleton('/profile', ProfileController::class);
+$app->api_singleton('/api/profile', ProfileController::class);
 ```
 
 带选项（`only/except/names`）：
@@ -730,6 +732,10 @@ $app->api_resource_opts('/api/books', BookController::class, [
     'name_show' => 'api.books.fetch',
     // 也支持 names 映射：
     // 'names' => ['show' => 'api.books.fetch']
+]);
+$app->singleton_opts('/profile', ProfileController::class, [
+    'only' => ['show', 'update'],
+    'name_prefix' => 'profile',
 ]);
 ```
 
@@ -755,6 +761,8 @@ $app->resource_opts('/photos/:photo_id/comments', CommentController::class, [
 
 - `resource(...)`：`index/create/store/show/edit/update/destroy`
 - `api_resource(...)`：`index/store/show/update/destroy`
+- `singleton(...)`：`show/create/store/edit/update/destroy`
+- `api_singleton(...)`：`show/store/update/destroy`
 - `update` 同时注册 `PUT` 和 `PATCH`
 - 若 controller 未实现某个 action，对应 action 路由不会注册（不会触发 `500`；通常表现为 `404/405`，取决于是否被其它已注册路由命中）
 

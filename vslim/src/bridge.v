@@ -190,6 +190,26 @@ pub fn vphp_wrap_routegroup_api_resource(ptr voidptr, ctx vphp.Context) voidptr 
     res := recv.api_resource(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_RouteGroup_singleton']
+pub fn vphp_wrap_routegroup_singleton(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.singleton(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_api_singleton']
+pub fn vphp_wrap_routegroup_api_singleton(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.api_singleton(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_RouteGroup_resource_opts']
 pub fn vphp_wrap_routegroup_resource_opts(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &RouteGroup(ptr) }
@@ -210,6 +230,28 @@ pub fn vphp_wrap_routegroup_api_resource_opts(ptr voidptr, ctx vphp.Context) voi
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.api_resource_opts(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_singleton_opts']
+pub fn vphp_wrap_routegroup_singleton_opts(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.singleton_opts(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_RouteGroup_api_singleton_opts']
+pub fn vphp_wrap_routegroup_api_singleton_opts(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &RouteGroup(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.api_singleton_opts(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_RouteGroup_get_named']
@@ -1601,6 +1643,26 @@ pub fn vphp_wrap_vslimapp_api_resource(ptr voidptr, ctx vphp.Context) voidptr {
     res := recv.api_resource(arg_0, arg_1)
     return voidptr(res)
 }
+@[export: 'vphp_wrap_VSlimApp_singleton']
+pub fn vphp_wrap_vslimapp_singleton(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.singleton(arg_0, arg_1)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_api_singleton']
+pub fn vphp_wrap_vslimapp_api_singleton(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    res := recv.api_singleton(arg_0, arg_1)
+    return voidptr(res)
+}
 @[export: 'vphp_wrap_VSlimApp_resource_opts']
 pub fn vphp_wrap_vslimapp_resource_opts(ptr voidptr, ctx vphp.Context) voidptr {
     mut recv := unsafe { &VSlimApp(ptr) }
@@ -1621,6 +1683,28 @@ pub fn vphp_wrap_vslimapp_api_resource_opts(ptr voidptr, ctx vphp.Context) voidp
     arg_1 := ctx.arg[string](1)
     arg_2 := ctx.arg_val(2)
     res := recv.api_resource_opts(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_singleton_opts']
+pub fn vphp_wrap_vslimapp_singleton_opts(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.singleton_opts(arg_0, arg_1, arg_2)
+    return voidptr(res)
+}
+@[export: 'vphp_wrap_VSlimApp_api_singleton_opts']
+pub fn vphp_wrap_vslimapp_api_singleton_opts(ptr voidptr, ctx vphp.Context) voidptr {
+    mut recv := unsafe { &VSlimApp(ptr) }
+    vphp_ar_mark := vphp.autorelease_mark()
+    defer { vphp.autorelease_drain(vphp_ar_mark) }
+    arg_0 := ctx.arg[string](0)
+    arg_1 := ctx.arg[string](1)
+    arg_2 := ctx.arg_val(2)
+    res := recv.api_singleton_opts(arg_0, arg_1, arg_2)
     return voidptr(res)
 }
 @[export: 'vphp_wrap_VSlimApp_get_named']

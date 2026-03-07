@@ -291,6 +291,18 @@ pub fn (mut app VSlimApp) api_resource(resource_path string, controller string) 
 }
 
 @[php_method]
+pub fn (mut app VSlimApp) singleton(resource_path string, controller string) &VSlimApp {
+	register_singleton_routes(mut app, resource_path, controller, true)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) api_singleton(resource_path string, controller string) &VSlimApp {
+	register_singleton_routes(mut app, resource_path, controller, false)
+	return app
+}
+
+@[php_method]
 pub fn (mut app VSlimApp) resource_opts(resource_path string, controller string, options vphp.ZVal) &VSlimApp {
 	opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
 	register_resource_routes_with_options(mut app, resource_path, controller, true, opts)
@@ -301,6 +313,20 @@ pub fn (mut app VSlimApp) resource_opts(resource_path string, controller string,
 pub fn (mut app VSlimApp) api_resource_opts(resource_path string, controller string, options vphp.ZVal) &VSlimApp {
 	opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
 	register_resource_routes_with_options(mut app, resource_path, controller, false, opts)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) singleton_opts(resource_path string, controller string, options vphp.ZVal) &VSlimApp {
+	opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+	register_singleton_routes_with_options(mut app, resource_path, controller, true, opts)
+	return app
+}
+
+@[php_method]
+pub fn (mut app VSlimApp) api_singleton_opts(resource_path string, controller string, options vphp.ZVal) &VSlimApp {
+	opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+	register_singleton_routes_with_options(mut app, resource_path, controller, false, opts)
 	return app
 }
 
@@ -580,6 +606,24 @@ pub fn (group &RouteGroup) api_resource(resource_path string, controller string)
 }
 
 @[php_method]
+pub fn (group &RouteGroup) singleton(resource_path string, controller string) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		register_singleton_routes(mut app, group.prefixed_pattern(resource_path), controller, true)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) api_singleton(resource_path string, controller string) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		register_singleton_routes(mut app, group.prefixed_pattern(resource_path), controller, false)
+	}
+	return group
+}
+
+@[php_method]
 pub fn (group &RouteGroup) resource_opts(resource_path string, controller string, options vphp.ZVal) &RouteGroup {
 	unsafe {
 		mut app := &VSlimApp(group.app)
@@ -595,6 +639,26 @@ pub fn (group &RouteGroup) api_resource_opts(resource_path string, controller st
 		mut app := &VSlimApp(group.app)
 		opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
 		register_resource_routes_with_options(mut app, group.prefixed_pattern(resource_path), controller, false, opts)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) singleton_opts(resource_path string, controller string, options vphp.ZVal) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+		register_singleton_routes_with_options(mut app, group.prefixed_pattern(resource_path), controller, true, opts)
+	}
+	return group
+}
+
+@[php_method]
+pub fn (group &RouteGroup) api_singleton_opts(resource_path string, controller string, options vphp.ZVal) &RouteGroup {
+	unsafe {
+		mut app := &VSlimApp(group.app)
+		opts := parse_resource_options(vphp.BorrowedZVal.from_zval(options))
+		register_singleton_routes_with_options(mut app, group.prefixed_pattern(resource_path), controller, false, opts)
 	}
 	return group
 }
@@ -1437,6 +1501,10 @@ fn register_resource_routes(mut app VSlimApp, raw_resource_path string, controll
 	register_resource_routes_with_options(mut app, raw_resource_path, controller, include_page_routes, ResourceRouteOptions{})
 }
 
+fn register_singleton_routes(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool) {
+	register_singleton_routes_with_options(mut app, raw_resource_path, controller, include_page_routes, ResourceRouteOptions{})
+}
+
 struct ResourceRouteOptions {
 mut:
 	only        map[string]bool
@@ -1489,6 +1557,43 @@ fn register_resource_routes_with_options(mut app VSlimApp, raw_resource_path str
 	}
 	if handler_destroy.is_valid() && should_include_resource_action(opts, 'destroy', actions) {
 		app.add_php_route_with_resource_meta('DELETE', resource_route_name(opts, base_name, 'destroy'), id_path, handler_destroy, 'destroy', opts.missing_handler)
+	}
+}
+
+fn register_singleton_routes_with_options(mut app VSlimApp, raw_resource_path string, controller string, include_page_routes bool, options ResourceRouteOptions) {
+	clean_controller := controller.trim_space()
+	path := normalize_resource_path(raw_resource_path)
+	if clean_controller == '' || path == '' {
+		return
+	}
+	base_name := resource_name_from_path(path)
+	opts := options
+	actions := ['show', 'create', 'store', 'edit', 'update', 'destroy']
+	handler_show := make_resource_handler(clean_controller, 'show')
+	handler_store := make_resource_handler(clean_controller, 'store')
+	handler_update := make_resource_handler(clean_controller, 'update')
+	handler_destroy := make_resource_handler(clean_controller, 'destroy')
+	handler_create := make_resource_handler(clean_controller, 'create')
+	handler_edit := make_resource_handler(clean_controller, 'edit')
+	if handler_show.is_valid() && should_include_resource_action(opts, 'show', actions) {
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'show'), path, handler_show, 'show', opts.missing_handler)
+	}
+	if include_page_routes && handler_create.is_valid() && should_include_resource_action(opts, 'create', actions) {
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'create'), '${path}/create', handler_create, 'create', opts.missing_handler)
+	}
+	if handler_store.is_valid() && should_include_resource_action(opts, 'store', actions) {
+		app.add_php_route_with_resource_meta('POST', resource_route_name(opts, base_name, 'store'), path, handler_store, 'store', opts.missing_handler)
+	}
+	if include_page_routes && handler_edit.is_valid() && should_include_resource_action(opts, 'edit', actions) {
+		app.add_php_route_with_resource_meta('GET', resource_route_name(opts, base_name, 'edit'), '${path}/edit', handler_edit, 'edit', opts.missing_handler)
+	}
+	if handler_update.is_valid() && should_include_resource_action(opts, 'update', actions) {
+		name := resource_route_name(opts, base_name, 'update')
+		app.add_php_route_with_resource_meta('PUT', name, path, handler_update, 'update', opts.missing_handler)
+		app.add_php_route_with_resource_meta('PATCH', name, path, handler_update, 'update', opts.missing_handler)
+	}
+	if handler_destroy.is_valid() && should_include_resource_action(opts, 'destroy', actions) {
+		app.add_php_route_with_resource_meta('DELETE', resource_route_name(opts, base_name, 'destroy'), path, handler_destroy, 'destroy', opts.missing_handler)
 	}
 }
 
