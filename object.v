@@ -1,0 +1,102 @@
+module vphp
+
+// ============================================
+// 运行时泛型 Handler
+// 利用 V 的编译期反射 ($for field in T.fields)
+// 替代 codegen 生成的局部 getter/setter 代码
+// ============================================
+
+// 泛型属性读取器 — 替代生成的 Article_get_prop 等函数
+pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+	unsafe {
+		name := name_ptr.vstring_with_len(name_len).clone()
+		obj := &T(ptr)
+		$for field in T.fields {
+			if name == field.name {
+				val := obj.$(field.name)
+				$if field.typ is string {
+					return_val_raw(rv, val)
+				} $else $if field.typ is int {
+					return_val_raw(rv, i64(val))
+				} $else $if field.typ is i64 {
+					return_val_raw(rv, val)
+				} $else $if field.typ is bool {
+					return_val_raw(rv, val)
+				} $else $if field.typ is f64 {
+					return_val_raw(rv, val)
+				}
+				return
+			}
+		}
+	}
+}
+
+// 泛型属性写入器 — 替代生成的 Article_set_prop 等函数
+pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+	unsafe {
+		name := name_ptr.vstring_with_len(name_len).clone()
+		mut obj := &T(ptr)
+		arg := ZVal{ raw: value }
+		$for field in T.fields {
+			if name == field.name {
+				$if field.typ is string {
+					obj.$(field.name) = arg.get_string()
+				} $else $if field.typ is int {
+					obj.$(field.name) = int(arg.get_int())
+				} $else $if field.typ is i64 {
+					obj.$(field.name) = arg.get_int()
+				} $else $if field.typ is bool {
+					obj.$(field.name) = arg.get_bool()
+				} $else $if field.typ is f64 {
+					obj.$(field.name) = C.vphp_get_double(value)
+				}
+				return
+			}
+		}
+	}
+}
+
+// 泛型同步器 — 用于 var_dump() 时将 V 内存同步到 PHP 属性表
+pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
+	unsafe {
+		obj := &T(ptr)
+		out := ZVal{ raw: zv }
+		$for field in T.fields {
+			name := field.name
+			val := obj.$(field.name)
+			$if field.typ is string {
+				out.add_property_string(name, val)
+			} $else $if field.typ is int || field.typ is i64 {
+				out.add_property_long(name, i64(val))
+			} $else $if field.typ is f64 {
+				out.add_property_double(name, val)
+			} $else $if field.typ is bool {
+				out.add_property_bool(name, val)
+			}
+		}
+	}
+}
+
+// 连体分配器声明
+fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
+fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
+
+// 泛型堆分配器 (传统分配，将来会被劫持)
+pub fn generic_new_raw[T]() voidptr {
+	return unsafe { &T{} }
+}
+
+// 泛型释放器：与 generic_new_raw 配套。
+pub fn generic_free_raw[T](ptr voidptr) {
+	if ptr == 0 {
+		return
+	}
+	unsafe {
+		free(&T(ptr))
+	}
+}
+
+// 泛型连体分配器 (新：用于 @[php_class])
+pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
+    return unsafe { C.vphp_allocate_contiguous_object(ce, sizeof(T)) }
+}
