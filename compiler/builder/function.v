@@ -2,23 +2,26 @@ module builder
 
 pub struct FuncBuilder {
 pub mut:
-	php_name string
-	c_func   string
-	args     []ClassMethodArg // reuse ClassMethodArg for function args
+	php_name    string
+	c_func      string
+	return_spec ReturnSpec
+	args        []ClassMethodArg // reuse ClassMethodArg for function args
 }
 
 pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {
 	return &FuncBuilder{
-		php_name: php_name
-		c_func: c_func
+		php_name:    php_name
+		c_func:      c_func
+		return_spec: new_return_spec('', '', '')
 	}
 }
 
-pub fn new_func_builder_with_args(php_name string, c_func string, args []ClassMethodArg) &FuncBuilder {
+pub fn new_func_builder_with_args(php_name string, c_func string, return_spec ReturnSpec, args []ClassMethodArg) &FuncBuilder {
 	return &FuncBuilder{
-		php_name: php_name
-		c_func: c_func
-		args: args
+		php_name:    php_name
+		c_func:      c_func
+		return_spec: return_spec
+		args:        args
 	}
 }
 
@@ -32,24 +35,36 @@ pub fn (b &FuncBuilder) render_declaration() string {
 
 pub fn (b &FuncBuilder) render_arginfo() string {
 	mut res := []string{}
-	res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${b.c_func}, 0, 0, ${b.args.len})'
+	resolved_return_type := b.return_spec.resolved_type()
+	validate_php_return_type_or_panic(resolved_return_type, b.php_name)
+	type_info := arg_type_info(resolved_return_type)
+	required_args := function_required_args(b.args)
+	res << render_standard_arginfo_header(b.c_func, required_args, resolved_return_type,
+		b.return_spec.arginfo_obj_type(), type_info)
 	for arg in b.args {
-		type_code := arg_type_code(arg.type_)
-		if type_code == 'IS_CALLABLE' {
-			res << 'ZEND_ARG_CALLABLE_INFO(0, ${arg.name}, 0)'
-		} else if type_code != '' {
-			res << 'ZEND_ARG_TYPE_INFO(0, ${arg.name}, ${type_code}, 0)'
-		} else {
-			res << 'ZEND_ARG_INFO(0, ${arg.name})'
-		}
+		raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
+		validate_php_arg_type_or_panic(raw_type, arg.name, b.php_name)
+		res << render_arginfo_arg_line(arg.name, raw_type)
 	}
 	res << 'ZEND_END_ARG_INFO()'
 	return res.join('\n')
 }
 
+fn function_required_args(args []ClassMethodArg) int {
+	mut required := args.len
+	for required > 0 {
+		if args[required - 1].is_optional {
+			required--
+			continue
+		}
+		break
+	}
+	return required
+}
+
 pub fn (b FuncBuilder) export_fragments() ExportFragments {
 	return ExportFragments{
-		declarations: [b.render_declaration()]
+		declarations:   [b.render_declaration()]
 		function_table: [b]
 	}
 }

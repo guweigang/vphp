@@ -24,7 +24,7 @@ pub struct ClassMethod {
 pub:
 	php_name    string
 	c_func      string
-	return_type string
+	return_spec ReturnSpec
 	flags       string
 	is_abstract bool
 	args        []ClassMethodArg
@@ -32,8 +32,10 @@ pub:
 
 pub struct ClassMethodArg {
 pub:
-	name  string
-	type_ string
+	name        string
+	type_       string
+	php_type    string
+	is_optional bool
 }
 
 pub struct ClassAttributeArg {
@@ -50,24 +52,25 @@ pub:
 
 pub struct ClassBuilder {
 pub mut:
-	type          ClassType = .class_
-	php_name      string
-	c_name        string
-	parent        string
-	create_object bool = true
-	class_flags   []string
-	interfaces    []string
-	properties    []ClassProperty
-	constants     []ClassConstant
-	methods       []ClassMethod
-	attributes    []ClassAttribute
+	type                  ClassType = .class_
+	php_name              string
+	c_name                string
+	parent                string
+	create_object         bool = true
+	uses_inherited_object bool
+	class_flags           []string
+	interfaces            []string
+	properties            []ClassProperty
+	constants             []ClassConstant
+	methods               []ClassMethod
+	attributes            []ClassAttribute
 }
 
 fn new_builder(type_ ClassType, php_name string, c_name string) &ClassBuilder {
 	return &ClassBuilder{
-		type: type_
+		type:     type_
 		php_name: php_name
-		c_name: c_name
+		c_name:   c_name
 	}
 }
 
@@ -87,16 +90,13 @@ pub fn new_enum_builder(php_name string, c_name string) &ClassBuilder {
 	return b
 }
 
-fn is_exception_like_name(name string) bool {
-	if name == '' {
-		return false
-	}
-	short := if name.contains('\\') { name.all_after_last('\\') } else { name }
-	return short == 'Exception' || short.ends_with('Exception') || short == 'Error' || short.ends_with('Error')
-}
-
 pub fn (mut b ClassBuilder) set_parent(parent_name string) &ClassBuilder {
 	b.parent = parent_name
+	return b
+}
+
+pub fn (mut b ClassBuilder) set_uses_inherited_object(enabled bool) &ClassBuilder {
+	b.uses_inherited_object = enabled
 	return b
 }
 
@@ -125,14 +125,24 @@ pub fn (mut b ClassBuilder) add_constant(name string, type_ string, value string
 	return b
 }
 
-pub fn (mut b ClassBuilder) add_method(php_name string, c_func string, return_type string, flags string, args []ClassMethodArg) &ClassBuilder {
+pub fn (mut b ClassBuilder) add_method(php_name string, c_func string, return_type string, php_return_type string, flags string, args []ClassMethodArg) &ClassBuilder {
+	return b.add_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
+		''), flags, args)
+}
+
+pub fn (mut b ClassBuilder) add_method_with_return_obj(php_name string, c_func string, return_type string, php_return_type string, return_obj_type string, flags string, args []ClassMethodArg) &ClassBuilder {
+	return b.add_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
+		return_obj_type), flags, args)
+}
+
+pub fn (mut b ClassBuilder) add_method_spec(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg) &ClassBuilder {
 	b.methods << ClassMethod{
-		php_name: php_name
-		c_func: c_func
-		return_type: return_type
-		flags: flags
+		php_name:    php_name
+		c_func:      c_func
+		return_spec: return_spec
+		flags:       flags
 		is_abstract: false
-		args: args
+		args:        args
 	}
 	return b
 }
@@ -145,14 +155,24 @@ pub fn (mut b ClassBuilder) add_attribute(name string, args []ClassAttributeArg)
 	return b
 }
 
-pub fn (mut b ClassBuilder) add_abstract_method(php_name string, c_func string, return_type string, flags string, args []ClassMethodArg) &ClassBuilder {
+pub fn (mut b ClassBuilder) add_abstract_method(php_name string, c_func string, return_type string, php_return_type string, flags string, args []ClassMethodArg) &ClassBuilder {
+	return b.add_abstract_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
+		''), flags, args)
+}
+
+pub fn (mut b ClassBuilder) add_abstract_method_with_return_obj(php_name string, c_func string, return_type string, php_return_type string, return_obj_type string, flags string, args []ClassMethodArg) &ClassBuilder {
+	return b.add_abstract_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
+		return_obj_type), flags, args)
+}
+
+pub fn (mut b ClassBuilder) add_abstract_method_spec(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg) &ClassBuilder {
 	b.methods << ClassMethod{
-		php_name: php_name
-		c_func: c_func
-		return_type: return_type
-		flags: flags
+		php_name:    php_name
+		c_func:      c_func
+		return_spec: return_spec
+		flags:       flags
 		is_abstract: true
-		args: args
+		args:        args
 	}
 	return b
 }
@@ -169,109 +189,37 @@ pub fn (b &ClassBuilder) render_ce_extern_declaration() string {
 	return 'extern zend_class_entry *${b.ce_var_name()};'
 }
 
-pub fn (b &ClassBuilder) render_impl_prelude() string {
-	return '${b.render_ce_declaration()}\n${b.render_arginfo_defs()}'
+fn (b &ClassBuilder) registration_func_name() string {
+	return '${b.c_name.to_lower()}_register_class'
 }
 
-pub fn (b &ClassBuilder) render_impl_postlude() string {
-	return b.render_methods_array()
-}
-
-fn arg_type_code(v_type string) string {
-	return match v_type {
-		'string' { 'IS_STRING' }
-		'[]string', '[]int', '[]i64', '[]bool', '[]f64', '[]f32', '[]' { 'IS_ARRAY' }
-		'map[string]string', 'map[string]int', 'map[string]i64', 'map[string]bool', 'map[string]f64' { 'IS_ARRAY' }
-		'int', 'i64' { 'IS_LONG' }
-		'bool' { '_IS_BOOL' }
-		'f64', 'f32' { 'IS_DOUBLE' }
-		'void' { 'IS_VOID' }
-		'vphp.ZVal', 'ZVal' { 'IS_MIXED' }
-		'Callable', 'vphp.Callable' { 'IS_CALLABLE' }
-		else { '' }
-	}
-}
-
-fn method_arginfo_header(m ClassMethod) string {
-	type_code := arg_type_code(m.return_type)
-	if m.php_name == '__toString' {
-		return 'ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_${m.c_func}, 0, 0, IS_STRING, 0)'
-	}
-	if type_code != '' && type_code != 'IS_CALLABLE' {
-		return 'ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_${m.c_func}, 0, ${method_required_args(m)}, ${type_code}, 0)'
-	}
-	return 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, ${method_required_args(m)})'
-}
-
-fn method_required_args(m ClassMethod) int {
-	mut required := m.args.len
-	if m.args.len == 0 {
-		return required
-	}
-	last := m.args[m.args.len - 1]
-	is_zval := last.type_ == 'vphp.ZVal' || last.type_ == 'ZVal'
-	if is_zval && last.name == 'default_value' {
-		required--
-	}
-	return required
-}
-
-fn c_string_escape(s string) string {
-	return s.replace('\\', '\\\\').replace('"', '\\"')
-}
-
-	pub fn (b &ClassBuilder) render_arginfo_defs() string {
-		mut res := []string{}
-		for m in b.methods {
-			res << method_arginfo_header(m)
-			for arg in m.args {
-				type_code := arg_type_code(arg.type_)
-				if type_code == 'IS_CALLABLE' {
-					res << 'ZEND_ARG_CALLABLE_INFO(0, ${arg.name}, 0)'
-				} else if type_code != '' {
-					res << 'ZEND_ARG_TYPE_INFO(0, ${arg.name}, ${type_code}, 0)'
-				} else {
-					res << 'ZEND_ARG_INFO(0, ${arg.name})'
-				}
-			}
-			res << 'ZEND_END_ARG_INFO()'
-		}
-		return res.join('\n')
-	}
-
-pub fn (b &ClassBuilder) render_methods_array() string {
-	mut res := []string{}
-	lower_name := b.c_name.to_lower()
-	res << 'static const zend_function_entry ${lower_name}_methods[] = {'
-	for m in b.methods {
-		if m.is_abstract {
-			res << '    ZEND_RAW_FENTRY("${m.php_name}", NULL, arginfo_${m.c_func}, ${m.flags}, NULL, NULL)'
-		} else {
-			res << '    PHP_ME(${b.c_name}, ${m.php_name}, arginfo_${m.c_func}, ${m.flags})'
-		}
-	}
-	res << '    PHP_FE_END\n};\n'
-	return res.join('\n')
-}
-
-pub fn (b &ClassBuilder) render_minit() string {
+fn (b &ClassBuilder) render_registration_function() string {
 	mut res := []string{}
 	lower_name := b.c_name.to_lower()
 	ce_ptr := b.ce_var_name()
+	self_name := c_string_escape(normalize_php_type_literal(b.php_name))
+
+	res << 'static int ${b.registration_func_name()}(void) {'
+	res << '    if (${ce_ptr} != NULL) {'
+	res << '        return SUCCESS;'
+	res << '    }'
+	res << '    ${ce_ptr} = vphp_find_loaded_class_entry("${self_name}", sizeof("${self_name}")-1);'
+	res << '    if (${ce_ptr} != NULL) {'
+	res << '        return SUCCESS;'
+	res << '    }'
 
 	match b.type {
 		.enum_ {
-			// PHP 8.1 native enum: use zend_register_internal_enum() + zend_enum_add_case_cstr()
-			// V enums are always int-backed, so we use IS_LONG
-			res << '{   ${ce_ptr} = zend_register_internal_enum("${b.php_name}", IS_LONG, NULL);'
+			res << '    ${ce_ptr} = zend_register_internal_enum("${b.php_name}", IS_LONG, NULL);'
 			for con in b.constants {
-				res << '        { zval _ev; ZVAL_LONG(&_ev, ${con.value}); zend_enum_add_case_cstr(${ce_ptr}, "${con.name}", &_ev); }'
+				res << '    { zval _ev; ZVAL_LONG(&_ev, ${con.value}); zend_enum_add_case_cstr(${ce_ptr}, "${con.name}", &_ev); }'
 			}
-			res << '    }'
+			res << '    return SUCCESS;'
+			res << '}'
 			return res.join('\n')
 		}
 		else {
-			res << '{   zend_class_entry ce;'
+			res << '    {   zend_class_entry ce;'
 			res << '        INIT_CLASS_ENTRY(ce, "${b.php_name}", ${lower_name}_methods);'
 
 			match b.type {
@@ -280,9 +228,9 @@ pub fn (b &ClassBuilder) render_minit() string {
 				}
 				else {
 					if b.parent != '' {
-						lower_parent := b.parent.to_lower()
 						parent_display := b.parent.replace('\\', '\\\\')
-						res << '        zend_class_entry *parent_ce = zend_hash_str_find_ptr(CG(class_table), "${lower_parent}", sizeof("${lower_parent}")-1);'
+						parent_name := c_string_escape(normalize_php_type_literal(b.parent))
+						res << '        zend_class_entry *parent_ce = vphp_require_class_entry("${parent_name}", sizeof("${parent_name}")-1, 0);'
 						res << '        if (!parent_ce) {'
 						res << '            vphp_throw("parent class ${parent_display} not found for ${b.php_name}", 0);'
 						res << '            return FAILURE;'
@@ -301,18 +249,16 @@ pub fn (b &ClassBuilder) render_minit() string {
 	}
 	if b.create_object {
 		res << '        ${ce_ptr}->create_object = vphp_create_object_handler;'
-	} else if b.type == .class_ && b.parent != '' && is_exception_like_name(b.parent) {
-		// PDO/SPL-style internal exception subclasses should keep the parent's
-		// exception object factory instead of using the generic wrapper creator.
-		res << '        ${ce_ptr}->create_object = parent_ce->create_object;'
+	} else if b.type == .class_ && b.uses_inherited_object {
+		res << '        ${ce_ptr}->create_object = vphp_create_inherited_object_handler;'
 	}
 	if b.interfaces.len > 0 {
 		mut args := []string{}
 		for i, iface in b.interfaces {
-			lower_iface := iface.to_lower()
 			iface_display := iface.replace('\\', '\\\\')
+			iface_name := c_string_escape(normalize_php_type_literal(iface))
 			iface_var := 'iface_${i}_ce'
-			res << '        zend_class_entry *${iface_var} = zend_hash_str_find_ptr(CG(class_table), "${lower_iface}", sizeof("${lower_iface}")-1);'
+			res << '        zend_class_entry *${iface_var} = vphp_require_class_entry("${iface_name}", sizeof("${iface_name}")-1, 0);'
 			res << '        if (!${iface_var}) {'
 			res << '            vphp_throw("interface ${iface_display} not found for ${b.php_name}", 0);'
 			res << '            return FAILURE;'
@@ -325,7 +271,6 @@ pub fn (b &ClassBuilder) render_minit() string {
 			res << '        zend_class_implements(${ce_ptr}, ${args.len}, ${args.join(', ')});'
 		}
 	}
-
 	if b.type != .interface_ {
 		for con in b.constants {
 			match con.type_ {
@@ -375,7 +320,11 @@ pub fn (b &ClassBuilder) render_minit() string {
 						res << '        ZVAL_STR(&${attr_var}->args[${j}].value, zend_string_init_interned("${c_string_escape(arg.value)}", sizeof("${c_string_escape(arg.value)}")-1, 1));'
 					}
 					'bool' {
-						res << '        ZVAL_BOOL(&${attr_var}->args[${j}].value, ${if arg.value == 'true' { '1' } else { '0' }});'
+						res << '        ZVAL_BOOL(&${attr_var}->args[${j}].value, ${if arg.value == 'true' {
+							'1'
+						} else {
+							'0'
+						}});'
 					}
 					'float' {
 						res << '        ZVAL_DOUBLE(&${attr_var}->args[${j}].value, ${arg.value});'
@@ -395,12 +344,136 @@ pub fn (b &ClassBuilder) render_minit() string {
 	}
 
 	res << '    }'
+	res << '    return SUCCESS;'
+	res << '}'
 	return res.join('\n')
 }
 
-pub fn (b ClassBuilder) export_fragments() ExportFragments {
+pub fn (b &ClassBuilder) render_impl_prelude() string {
+	lower_name := b.c_name.to_lower()
+	return '${b.render_ce_declaration()}\nstatic const zend_function_entry ${lower_name}_methods[];\n${b.render_arginfo_defs()}\n${b.render_registration_function()}'
+}
+
+pub fn (b &ClassBuilder) render_impl_postlude() string {
+	return b.render_methods_array()
+}
+
+fn arg_type_info(v_type string) ArgTypeInfo {
+	decl := parse_php_type_decl(v_type)
+	clean := decl.clean
+	allow_null := decl.allow_null
+	if builtin := php_builtin_type_info(v_type) {
+		return ArgTypeInfo{
+			code:           builtin.code
+			mask:           builtin.mask
+			mask_obj_class: builtin.mask_obj_class
+			allow_null:     allow_null
+		}
+	}
+	code := match clean {
+		'[]string', '[]int', '[]i64', '[]bool', '[]f64', '[]f32', '[]', '[]vphp.ZVal', '[]ZVal' {
+			'IS_ARRAY'
+		}
+		'map[string]string', 'map[string]int', 'map[string]i64', 'map[string]bool',
+		'map[string]f64', 'map[string][]string', 'map[string]vphp.ZVal', 'map[string]ZVal' {
+			'IS_ARRAY'
+		}
+		'vphp.ZVal', 'ZVal', 'vphp.Value', 'Value', 'vphp.BorrowedValue', 'BorrowedValue',
+		'vphp.PersistentValue', 'PersistentValue' {
+			'IS_MIXED'
+		}
+		'callable', 'Callable', 'vphp.Callable' {
+			'IS_CALLABLE'
+		}
+		else {
+			''
+		}
+	}
+	return ArgTypeInfo{
+		code:           code
+		mask:           ''
+		mask_obj_class: ''
+		allow_null:     allow_null
+	}
+}
+
+fn method_has_literal_class_arg(m ClassMethod) bool {
+	for arg in m.args {
+		raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
+		if is_class_literal_type(raw_type) {
+			return true
+		}
+	}
+	return false
+}
+
+fn method_arginfo_header(m ClassMethod) string {
+	resolved_return_type := m.return_spec.resolved_type()
+	type_info := arg_type_info(resolved_return_type)
+	return render_method_arginfo_header(m.c_func, m.php_name, method_required_args(m),
+		resolved_return_type, m.return_spec.arginfo_obj_type(), type_info, method_has_literal_class_arg(m))
+}
+
+fn method_required_args(m ClassMethod) int {
+	mut required := m.args.len
+	for required > 0 {
+		last := m.args[required - 1]
+		if last.is_optional {
+			required--
+			continue
+		}
+		break
+	}
+	return required
+}
+
+fn c_string_escape(s string) string {
+	return s.replace('\\', '\\\\').replace('"', '\\"')
+}
+
+fn normalize_php_type_literal(name string) string {
+	if name == '' {
+		return name
+	}
+	return name.replace('\\\\', '\\')
+}
+
+pub fn (b &ClassBuilder) render_arginfo_defs() string {
+	mut res := []string{}
+	for m in b.methods {
+		res << method_arginfo_header(m)
+		for arg in m.args {
+			raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
+			validate_php_arg_type_or_panic(raw_type, arg.name, m.php_name)
+			res << render_arginfo_arg_line(arg.name, raw_type)
+		}
+		res << 'ZEND_END_ARG_INFO()'
+	}
+	return res.join('\n')
+}
+
+pub fn (b &ClassBuilder) render_methods_array() string {
+	mut res := []string{}
+	lower_name := b.c_name.to_lower()
+	res << 'static const zend_function_entry ${lower_name}_methods[] = {'
+	for m in b.methods {
+		if m.is_abstract {
+			res << '    ZEND_RAW_FENTRY("${m.php_name}", NULL, arginfo_${m.c_func}, ${m.flags}, NULL, NULL)'
+		} else {
+			res << '    PHP_ME(${b.c_name}, ${m.php_name}, arginfo_${m.c_func}, ${m.flags})'
+		}
+	}
+	res << '    PHP_FE_END\n};\n'
+	return res.join('\n')
+}
+
+pub fn (b &ClassBuilder) render_minit() string {
+	return 'if (${b.registration_func_name()}() != SUCCESS) { return FAILURE; }'
+}
+
+pub fn (b &ClassBuilder) export_fragments() ExportFragments {
 	return ExportFragments{
 		declarations: [b.render_ce_extern_declaration()]
-		minit_lines: [b.render_minit()]
+		minit_lines:  [b.render_minit()]
 	}
 }

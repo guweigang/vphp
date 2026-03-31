@@ -28,26 +28,28 @@ pub fn parse_interface_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpInterface
 	for method in interface_decl.methods {
 		mut args := []repr.PhpArg{}
 		for i, param in method.params {
-			param_type := strip_module(table.get_type_name(param.typ))
+			param_type := strip_module(table.type_to_str(param.typ))
 			// V interface AST includes an implicit receiver-like first param (`x`).
 			// It must not leak into PHP interface arginfo, otherwise signatures become save($x).
 			if i == 0 && param.name == 'x' && (param_type == '' || param_type == iface.name) {
 				continue
 			}
 			args << repr.PhpArg{
-				name: param.name
-				v_type: param_type
+				name:     param.name
+				v_type:   param_type
+				php_type: ''
 			}
 		}
 		iface.methods << repr.PhpMethodRepr{
-			name: method.name
-			v_name: method.name
-			v_c_func: ''
-			is_static: false
-			return_type: strip_module(table.type_to_str(method.return_type))
-			args: args
-			has_export: false
-			visibility: 'public'
+			name:        method.name
+			v_name:      method.name
+			v_c_func:    ''
+			is_static:   false
+			return_spec: repr.new_return_spec(strip_module(table.type_to_str(method.return_type)),
+				'')
+			args:        args
+			has_export:  false
+			visibility:  'public'
 			is_abstract: true
 		}
 	}

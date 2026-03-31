@@ -92,6 +92,28 @@ Important:
   `@[php_method]`, including container returns like `map[string]string` and
   `[]string`
 
+## PHP Signature Attributes
+
+The compiler supports a small set of explicit attributes for PHP-facing
+signatures. Prefer these over parameter-name heuristics.
+
+- `@[php_arg_type: 'request=Psr\\Http\\Message\\RequestInterface']`
+  overrides the PHP arginfo type for a specific parameter.
+- `@[php_arg_type: 'a=array,b=Traversable']`
+  supports multiple `name=type` entries in one attribute.
+- `@[php_optional_args: 'default_status,default_reason_phrase']`
+  marks trailing PHP-optional parameters explicitly.
+
+Notes:
+
+- `php_optional_args` only changes PHP required-arg counts / arginfo shape.
+  It does not synthesize V default-value behavior.
+- `php_arg_type` is most useful for interface/object/array/iterable contracts
+  that V cannot express directly in PHP arginfo.
+- Be conservative with scalar narrowing (`string`, `int`, `bool`) on exported
+  interfaces. If compatibility matters, prefer runtime validation over
+  over-constrained arginfo.
+
 ## Guiding Idea
 
 The compiler is organized around this progression:

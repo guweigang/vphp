@@ -5,33 +5,22 @@ import compiler.repr
 
 pub struct CGenerator {
 pub:
-	ext_name         string
-	class_ce_by_type map[string]string
+	ext_name          string
+	class_ce_by_type  map[string]string
+	class_php_by_type map[string]string
 }
 
-fn is_constructor_method(name string) bool {
-	return name == 'construct' || name == 'init'
+fn (g CGenerator) build_func_return_spec(f &repr.PhpFuncRepr) builder.ReturnSpec {
+	return_type := f.return_spec.effective_v_type()
+	return builder.new_return_spec(return_type, effective_export_php_return_type(return_type,
+		f.return_spec.php_type, f.has_export), g.php_name_for_type(return_type))
 }
 
-fn php_method_name(name string) string {
-	return match name {
-		'construct', 'init' { '__construct' }
-		'str' { '__toString' }
-		else { name }
-	}
-}
-
-fn is_exception_like_name(name string) bool {
-	if name == '' {
-		return false
-	}
-	short := if name.contains('\\') { name.all_after_last('\\') } else { name }
-	return short == 'Exception' || short.ends_with('Exception') || short == 'Error' || short.ends_with('Error')
-}
-
-fn method_returns_object(r &repr.PhpClassRepr, m &repr.PhpMethodRepr) bool {
-	is_factory := is_constructor_method(m.name) || (m.is_static && m.return_type.ends_with(r.name))
-	return is_factory || m.return_type.starts_with('&')
+fn (g CGenerator) build_method_return_spec(php_name string, m &repr.PhpMethodRepr) builder.ReturnSpec {
+	raw_return_type := m.return_spec.effective_v_type()
+	return_type := if php_name == '__construct' { '' } else { raw_return_type }
+	return builder.new_return_spec(return_type, effective_export_php_return_type(return_type,
+		m.return_spec.php_type, m.has_export), g.php_name_for_type(return_type))
 }
 
 fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
@@ -42,11 +31,14 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 			continue
 		}
 		args << builder.ClassMethodArg{
-			name: arg.name
-			type_: arg.v_type
+			name:        arg.name
+			type_:       arg.v_type
+			php_type:    arg.php_type
+			is_optional: arg.is_optional
 		}
 	}
-	return *builder.new_func_builder_with_args(f.name, f.name, args)
+	spec := g.build_func_return_spec(f)
+	return *builder.new_func_builder_with_args(f.name, f.name, spec, args)
 }
 
 fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments {
@@ -78,6 +70,26 @@ fn (g CGenerator) build_class_export(r &repr.PhpClassRepr) builder.ExportFragmen
 	return fragments
 }
 
+fn class_uses_inherited_receiver(r &repr.PhpClassRepr) bool {
+	return r.direct_internal_parent || r.uses_inherited_object
+}
+
+fn class_needs_inherited_object_wrapper(r &repr.PhpClassRepr, has_init bool) bool {
+	if !class_uses_inherited_receiver(r) {
+		return false
+	}
+	if has_init || r.has_free_method {
+		return true
+	}
+	for prop in r.properties {
+		if prop.is_static || prop.is_property_only {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
 fn visibility_to_method_flags(visibility string) string {
 	return match visibility {
 		'protected' { 'ZEND_ACC_PROTECTED' }
@@ -100,9 +112,12 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
 	mut out := []builder.ClassMethodArg{}
 	for arg in args {
+		php_type := if arg.php_type != '' { arg.php_type } else { '' }
 		out << builder.ClassMethodArg{
-			name: arg.name
-			type_: arg.v_type
+			name:        arg.name
+			type_:       arg.v_type
+			php_type:    php_type
+			is_optional: arg.is_optional
 		}
 	}
 	return out
@@ -117,8 +132,10 @@ fn interface_method_args_to_builder(iface &repr.PhpInterfaceRepr, args []repr.Ph
 			continue
 		}
 		out << builder.ClassMethodArg{
-			name: arg.name
-			type_: arg.v_type
+			name:        arg.name
+			type_:       arg.v_type
+			php_type:    arg.php_type
+			is_optional: arg.is_optional
 		}
 	}
 	return out
@@ -130,7 +147,16 @@ fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassB
 		class_builder.add_interface(iface)
 	}
 	for m in r.methods {
-		class_builder.add_abstract_method(php_method_name(m.name), '${r.c_name().to_lower()}_${m.name}', m.return_type, visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT', interface_method_args_to_builder(r, m.args))
+		c_func := if m.v_c_func != '' {
+			m.v_c_func.to_lower()
+		} else {
+			'${r.c_name().to_lower()}_${m.v_name}'
+		}
+		php_name := php_method_name(m.name)
+		spec := g.build_method_return_spec(php_name, m)
+		class_builder.add_abstract_method_spec(php_name, c_func, spec,
+			visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT', interface_method_args_to_builder(r,
+			m.args))
 	}
 	return class_builder
 }
@@ -148,8 +174,10 @@ fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &builder.ClassBuilder {
 
 fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder.ClassBuilder {
 	mut class_builder := builder.new_class_builder(r.php_name, r.c_name())
+	needs_inherited_wrapper := class_needs_inherited_object_wrapper(r, has_init)
 	class_builder.set_parent(r.parent)
-	if is_exception_like_name(r.parent) {
+	class_builder.set_uses_inherited_object(needs_inherited_wrapper)
+	if class_uses_inherited_receiver(r) {
 		class_builder.set_create_object(false)
 	}
 	if r.is_abstract {
@@ -164,8 +192,9 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 	for prop in r.properties {
 		class_builder.add_property(prop.name, prop.v_type, visibility_to_property_flags(prop))
 	}
-	if !has_init && !is_exception_like_name(r.parent) {
-		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', '', 'ZEND_ACC_PUBLIC', []builder.ClassMethodArg{})
+	if !has_init && !class_uses_inherited_receiver(r) {
+		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct',
+			'', '', 'ZEND_ACC_PUBLIC', []builder.ClassMethodArg{})
 	}
 	for m in r.methods {
 		php_name := php_method_name(m.name)
@@ -173,19 +202,24 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		if m.is_static {
 			flags += ' | ZEND_ACC_STATIC'
 		}
-		c_func := '${r.c_name().to_lower()}_${m.name}'
-		return_type := if php_name == '__construct' { '' } else { m.return_type }
-		if m.is_abstract {
-			class_builder.add_abstract_method(php_name, c_func, return_type, flags + ' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args))
+		c_func := if m.v_c_func != '' {
+			m.v_c_func.to_lower()
 		} else {
-			class_builder.add_method(php_name, c_func, return_type, flags, method_args_to_builder(m.args))
+			'${r.c_name().to_lower()}_${m.v_name}'
+		}
+		spec := g.build_method_return_spec(php_name, m)
+		if m.is_abstract {
+			class_builder.add_abstract_method_spec(php_name, c_func, spec, flags +
+				' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args))
+		} else {
+			class_builder.add_method_spec(php_name, c_func, spec, flags, method_args_to_builder(m.args))
 		}
 	}
 	for attr in r.attributes {
 		mut args := []builder.ClassAttributeArg{}
 		for arg in attr.args {
 			args << builder.ClassAttributeArg{
-				kind: arg.kind
+				kind:  arg.kind
 				value: arg.value
 			}
 		}
@@ -210,106 +244,280 @@ fn c_string_escape(s string) string {
 
 // C 代码模板：构造函数
 const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
+    vphp_init_owned_instance(Z_OBJ_P(getThis()), h);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    wrapper->v_ptr = h->new_raw();
-    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     void* v_ptr = wrapper->v_ptr;
     {{V_FUNC}}(v_ptr, ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }'
 
 // C 代码模板：静态工厂方法（返回对象指针）
 const tpl_static_factory = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void* {{V_FUNC}}(vphp_context_internal ctx);
     void* v_instance = {{V_FUNC}}(ctx);
-    vphp_return_obj(return_value, v_instance, {{CLASS_CE}});
-    if (Z_TYPE_P(return_value) == IS_OBJECT) {
-        extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
-        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), {{HANDLER_CLASS}}_handlers(), 1);
+    if (EG(exception)) {
+        return;
+    }
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_return_owned_object(return_value, v_instance, {{CLASS_CE}}, {{HANDLER_CLASS}}_handlers());
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_static_object = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* {{V_FUNC}}(vphp_context_internal ctx);
+    void* v_instance = {{V_FUNC}}(ctx);
+    if (EG(exception)) {
+        return;
+    }
+    extern vphp_class_handlers* {{RET_CLASS}}_handlers();
+    vphp_return_bound_object(return_value, v_instance, {{RET_CLASS_CE}}, {{RET_CLASS}}_handlers(), {{RET_OWNS_VPTR}});
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
     }
 }'
 
 // C 代码模板：静态方法（返回基本类型）
 const tpl_static_scalar = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void {{V_FUNC}}(vphp_context_internal ctx);
     {{V_FUNC}}(ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }'
 
 // C 代码模板：静态方法 (void 返回)
 const tpl_static_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void {{V_FUNC}}(vphp_context_internal ctx);
     {{V_FUNC}}(ctx);
+    if (!EG(exception)) {
+        vphp_mark_void_return(return_value);
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_static_manual_ctx = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void {{V_FUNC}}(vphp_context_internal ctx);
+    {{V_FUNC}}(ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }'
 
 // C 代码模板：实例方法（带返回值）
 const tpl_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
     if (!wrapper->v_ptr) RETURN_FALSE;
     {{V_FUNC}}(wrapper->v_ptr, ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_inherited_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
+    {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }'
 
 // C 代码模板：实例方法（void 返回）
 const tpl_instance_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
     if (!wrapper->v_ptr) RETURN_NULL();
     {{V_FUNC}}(wrapper->v_ptr, ctx);
+    if (!EG(exception)) {
+        vphp_mark_void_return(return_value);
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_inherited_instance_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
+    {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
+    if (!EG(exception)) {
+        vphp_mark_void_return(return_value);
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }'
 
 // C 代码模板：Result 类型实例方法
 const tpl_instance_result = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
     if (!wrapper->v_ptr) RETURN_FALSE;
     {{V_FUNC}}(wrapper->v_ptr, ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_inherited_instance_result = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
+    {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }'
 
 // C 代码模板：实例方法（返回对象指针）
 const tpl_instance_object = '
 PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern void* {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
-    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
     // printf("PHP_METHOD {{CLASS}}::{{PHP_METHOD}} called, wrapper->v_ptr=%p\\n", wrapper->v_ptr);
     if (!wrapper->v_ptr) RETURN_NULL();
     void* v_instance = {{V_FUNC}}(wrapper->v_ptr, ctx);
-    vphp_return_obj(return_value, v_instance, {{RET_CLASS_CE}});
-    if (Z_TYPE_P(return_value) == IS_OBJECT) {
-        extern vphp_class_handlers* {{RET_CLASS}}_handlers();
-        vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), {{RET_CLASS}}_handlers(), 0);
+    if (EG(exception)) {
+        return;
+    }
+    extern vphp_class_handlers* {{RET_CLASS}}_handlers();
+    vphp_return_bound_object(return_value, v_instance, {{RET_CLASS_CE}}, {{RET_CLASS}}_handlers(), {{RET_OWNS_VPTR}});
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}
+'
+
+const tpl_inherited_instance_object = '
+PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
+    typedef struct { void* ex; void* ret; } vphp_context_internal;
+    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    extern void* {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
+    void* v_instance = {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
+    if (EG(exception)) {
+        return;
+    }
+    extern vphp_class_handlers* {{RET_CLASS}}_handlers();
+    vphp_return_bound_object(return_value, v_instance, {{RET_CLASS_CE}}, {{RET_CLASS}}_handlers(), {{RET_OWNS_VPTR}});
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
     }
 }
 '
 
 const tpl_default_construct = '
 PHP_METHOD({{CLASS}}, __construct) {
+    if (!vphp_validate_internal_call(execute_data)) {
+        return;
+    }
     typedef struct { void* ex; void* ret; } vphp_context_internal;
     vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
+    vphp_init_owned_instance(Z_OBJ_P(getThis()), h);
     vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
-    wrapper->v_ptr = h->new_raw();
-    vphp_register_object(wrapper->v_ptr, Z_OBJ_P(getThis()));
-    vphp_bind_handlers_with_ownership(Z_OBJ_P(getThis()), h, 1);
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
 }
 '
 
@@ -335,27 +543,39 @@ fn (g CGenerator) gen_enum_c(r &repr.PhpEnumRepr) []string {
 }
 
 fn (g CGenerator) gen_func_c(f &repr.PhpFuncRepr) []string {
-    mut r := []string{}
-    func_builder := g.build_func(f)
-    r << func_builder.render_arginfo()
+	mut r := []string{}
+	func_builder := g.build_func(f)
+	return_type := f.return_spec.effective_v_type()
+	r << func_builder.render_arginfo()
 	target_func := 'vphp_wrap_${f.name}'
-    // The V glue exposes a single wrapper symbol `vphp_wrap_${f.name}` that
-    // performs any necessary argument marshaling and return handling. The C
-    // emitter simply forwards the PHP entry point to that V glue. We avoid
-    // generating additional N-suffixed helper wrappers here — the V glue and
-    // runtime will handle closure wrapping (ctx.wrap_closure /
-    // ctx.wrap_closure_universal) to keep the generated C stable.
-    r << 'extern void ${target_func}(vphp_context_internal ctx);'
-    r << 'PHP_FUNCTION(${f.name}) {'
-    r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
-    r << '    ${target_func}(ctx);'
-    r << '}'
-    return r
+	// The V glue exposes a single wrapper symbol `vphp_wrap_${f.name}` that
+	// performs any necessary argument marshaling and return handling. The C
+	// emitter simply forwards the PHP entry point to that V glue. We avoid
+	// generating additional N-suffixed helper wrappers here — the V glue and
+	// runtime will handle closure wrapping (ctx.wrap_closure /
+	// ctx.wrap_closure_universal) to keep the generated C stable.
+	r << 'extern void ${target_func}(vphp_context_internal ctx);'
+	r << 'PHP_FUNCTION(${f.name}) {'
+	r << '    if (!vphp_validate_internal_call(execute_data)) {'
+	r << '        return;'
+	r << '    }'
+	r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+	r << '    ${target_func}(ctx);'
+	if return_type == 'void' {
+		r << '    if (!EG(exception)) {'
+		r << '        vphp_mark_void_return(return_value);'
+		r << '    }'
+	}
+	r << '    if (!vphp_validate_internal_return(execute_data, return_value)) {'
+	r << '        return;'
+	r << '    }'
+	r << '}'
+	return r
 }
 
 fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	mut c := []string{}
-	c_class := r.c_name()        // C macro safe: VPhp_Task
+	c_class := r.c_name() // C macro safe: VPhp_Task
 	has_init := r.methods.any(is_constructor_method(it.name))
 	class_builder := g.build_class_type(r, has_init)
 
@@ -367,84 +587,112 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 			continue
 		}
 		php_name := php_method_name(m.name)
-		
-		v_c_func := if m.has_export { '${r.name}_${m.name}' } else { 'vphp_wrap_${r.name}_${m.name}' }
-		
-		tm := TypeMap.get_type(m.return_type)
-		returns_object := method_returns_object(r, m)
+		glue_name := if m.v_name != '' { m.v_name } else { m.name }
+
+		v_c_func := if m.has_export { m.v_c_func } else { 'vphp_wrap_${r.name}_${glue_name}' }
+
+		method_return_type := m.return_spec.effective_v_type()
+		return_info := method_runtime_return_info(r.name, m.name, m.is_static, method_return_type,
+			m.borrowed_return)
+		uses_inherited_receiver := class_uses_inherited_receiver(r)
 
 		vars := {
-			'CLASS':      c_class
-			'CLASS_CE':   g.ce_var_for_type(r.name)
+			'CLASS':         c_class
+			'CLASS_CE':      g.ce_var_for_type(r.name)
 			'HANDLER_CLASS': r.name
-			'PHP_METHOD': php_name
-			'V_FUNC':     v_c_func
-			'C_TYPE':     tm.c_type
-			'PHP_RETURN': tm.php_return
+			'PHP_METHOD':    php_name
+			'V_FUNC':        v_c_func
+			'C_TYPE':        return_info.tm.c_type
+			'PHP_RETURN':    return_info.tm.php_return
+		}
+
+		if m.has_export {
+			if m.is_static {
+				c << render_tpl(tpl_static_manual_ctx, vars)
+			} else if uses_inherited_receiver {
+				c << render_tpl(tpl_inherited_instance_method, vars)
+			} else {
+				c << render_tpl(tpl_instance_method, vars)
+			}
+			continue
 		}
 
 		if is_constructor_method(m.name) {
-			if is_exception_like_name(r.parent) {
+			if class_uses_inherited_receiver(r) {
 				continue
 			}
 			c << render_tpl(tpl_construct, vars)
 		} else if m.is_static {
-			if returns_object {
+			if return_info.kind == .static_factory {
 				c << render_tpl(tpl_static_factory, vars)
-			} else if tm.is_result || tm.is_option || tm.v_type == 'void' {
+			} else if return_info.kind == .static_object {
+				mut obj_vars := vars.clone()
+				obj_vars['RET_CLASS'] = return_info.class_key
+				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(return_info.class_key)
+				obj_vars['RET_OWNS_VPTR'] = return_info.owns_vptr
+				c << render_tpl(tpl_static_object, obj_vars)
+			} else if return_info.kind in [.result, .option, .void_] {
 				// Result/Option 类型在 V glue 侧处理 or{}，C 侧等同 void 调用
 				c << render_tpl(tpl_static_void, vars)
 			} else {
 				c << render_tpl(tpl_static_scalar, vars)
 			}
 		} else {
-			if returns_object {
-				ret_class := tm.v_type.replace('&', '').replace('main.', '')
+			if return_info.kind == .instance_object {
 				mut obj_vars := vars.clone()
-				obj_vars['RET_CLASS'] = ret_class
-				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(ret_class)
-				c << render_tpl(tpl_instance_object, obj_vars)
-			} else if tm.is_result {
-				c << render_tpl(tpl_instance_result, vars)
-			} else if tm.is_option {
+				obj_vars['RET_CLASS'] = return_info.class_key
+				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(return_info.class_key)
+				obj_vars['RET_OWNS_VPTR'] = return_info.owns_vptr
+				if uses_inherited_receiver {
+					c << render_tpl(tpl_inherited_instance_object, obj_vars)
+				} else {
+					c << render_tpl(tpl_instance_object, obj_vars)
+				}
+			} else if return_info.kind == .result {
+				if uses_inherited_receiver {
+					c << render_tpl(tpl_inherited_instance_result, vars)
+				} else {
+					c << render_tpl(tpl_instance_result, vars)
+				}
+			} else if return_info.kind == .option {
 				// Option 类型在 V glue 侧处理 or{}，C 侧等同 result 调用模式
-				c << render_tpl(tpl_instance_result, vars)
-			} else if tm.v_type == 'void' {
-				c << render_tpl(tpl_instance_void, vars)
+				if uses_inherited_receiver {
+					c << render_tpl(tpl_inherited_instance_result, vars)
+				} else {
+					c << render_tpl(tpl_instance_result, vars)
+				}
+			} else if return_info.kind == .void_ {
+				if uses_inherited_receiver {
+					c << render_tpl(tpl_inherited_instance_void, vars)
+				} else {
+					c << render_tpl(tpl_instance_void, vars)
+				}
 			} else {
-				c << render_tpl(tpl_instance_method, vars)
+				if uses_inherited_receiver {
+					c << render_tpl(tpl_inherited_instance_method, vars)
+				} else {
+					c << render_tpl(tpl_instance_method, vars)
+				}
 			}
 		}
 	}
 
-	if !has_init && !is_exception_like_name(r.parent) {
+	if !has_init && !class_uses_inherited_receiver(r) {
 		vars := {
-			'CLASS': c_class
+			'CLASS':         c_class
 			'HANDLER_CLASS': r.name
 		}
 		c << render_tpl(tpl_default_construct, vars)
 	}
 
-	// 3. 生成方法表 (zend_function_entry) 
+	// 3. 生成方法表 (zend_function_entry)
 	c << class_builder.render_impl_postlude()
 
 	return c
 }
 
 fn (g CGenerator) ce_var_for_type(v_type string) string {
-	mut key := v_type.trim_space()
-	if key.starts_with('&') {
-		key = key[1..]
-	}
-	if key.starts_with('!') {
-		key = key[1..]
-	}
-	if key.starts_with('?') {
-		key = key[1..]
-	}
-	if key.contains('.') {
-		key = key.all_after('.')
-	}
+	key := normalize_export_type_key(v_type)
 	if key in g.class_ce_by_type {
 		return g.class_ce_by_type[key]
 	}
@@ -452,4 +700,12 @@ fn (g CGenerator) ce_var_for_type(v_type string) string {
 		return '${key.replace('\\', '_').to_lower()}_ce'
 	}
 	return '${key.to_lower()}_ce'
+}
+
+fn (g CGenerator) php_name_for_type(v_type string) string {
+	key := normalize_export_type_key(v_type)
+	if key in g.class_php_by_type {
+		return g.class_php_by_type[key]
+	}
+	return ''
 }

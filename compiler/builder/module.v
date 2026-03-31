@@ -19,6 +19,7 @@ pub mut:
 	description   string
 	functions     []FuncBuilder
 	minit_content []string // 注入到 MINIT 中的代码行
+	rinit_content []string // 注入到 RINIT 中的代码行
 	ini_entries   []IniEntry
 	globals       repr.PhpGlobalsRepr
 }
@@ -37,6 +38,10 @@ pub fn (mut b ModuleBuilder) add_function(fn_builder FuncBuilder) {
 
 pub fn (mut b ModuleBuilder) add_minit_line(line string) {
 	b.minit_content << line
+}
+
+pub fn (mut b ModuleBuilder) add_rinit_line(line string) {
+	b.rinit_content << line
 }
 
 pub fn (mut b ModuleBuilder) add_ini_entry(name string, def_val string) {
@@ -154,6 +159,9 @@ pub fn (b &ModuleBuilder) render_rinit() string {
 	res.write_string('    extern void vphp_ext_request_startup() __attribute__((weak));\n')
 	res.write_string('    if (vphp_ext_request_auto_startup) vphp_ext_request_auto_startup();\n')
 	res.write_string('    if (vphp_ext_request_startup) vphp_ext_request_startup();\n')
+	for line in b.rinit_content {
+		res.write_string('    ${line}\n')
+	}
 	res.write_string('    return SUCCESS;\n}\n')
 	return res.str()
 }

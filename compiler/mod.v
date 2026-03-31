@@ -16,11 +16,11 @@ pub mut:
 	ext_version     string
 	ext_description string
 	ini_entries     map[string]string
-	globals_repr repr.PhpGlobalsRepr
-	elements     []repr.PhpRepr
+	globals_repr    repr.PhpGlobalsRepr
+	elements        []repr.PhpRepr
 mut:
-	table       &ast.Table
-	pref_set    &pref.Preferences
+	table    &ast.Table
+	pref_set &pref.Preferences
 	// 辅助 Map：通过类名快速找到 elements 里的索引，方便追加方法
 	class_index map[string]int
 }
@@ -28,30 +28,34 @@ mut:
 pub fn new(target_files []string) Compiler {
 	return Compiler{
 		target_files: target_files
-		ext_name: ''
-		table: ast.new_table()
-		pref_set: pref.new_preferences()
+		ext_name:     ''
+		table:        ast.new_table()
+		pref_set:     pref.new_preferences()
 	}
 }
 
 pub fn (mut c Compiler) compile() !string {
-    mut all_stmts := []ast.Stmt{}
+	mut all_stmts := []ast.Stmt{}
 
-    for file in c.target_files {
-	    file_ast := parser.parse_file(file, mut c.table, .parse_comments, c.pref_set)
-	    if file_ast.errors.len > 0 {
-		    return error('AST 解析失败: ${file_ast.errors[0].message} in $file')
-	    }
-        if c.ext_name == '' {
-            c.set_extension_meta(file_ast)
-        }
-        all_stmts << file_ast.stmts
-    }
+	for file in c.target_files {
+		file_ast := parser.parse_file(file, mut c.table, .parse_comments, c.pref_set)
+		if file_ast.errors.len > 0 {
+			return error('AST 解析失败: ${file_ast.errors[0].message} in ${file}')
+		}
+		if c.ext_name == '' {
+			c.set_extension_meta(file_ast)
+		}
+		all_stmts << file_ast.stmts
+	}
 
 	if c.ext_name == '' {
 		return error('无法在输入的文件中找到 ext_config 配置，请确保定义了 ExtensionConfig')
 	}
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
+	field_types := collect_struct_field_types(all_stmts, c.table)
+	method_profiles := collect_method_borrow_profiles(all_stmts, c.table, field_types)
+	resolved_borrowed := resolve_method_borrowed_returns(method_profiles)
+	method_return_types := collect_method_return_types(method_profiles)
 
 	// --- 第一阶段：扫描所有 Struct 定义 ---
 	for stmt in all_stmts {
@@ -72,7 +76,7 @@ pub fn (mut c Compiler) compile() !string {
 			}
 		}
 
-			if stmt is ast.StructDecl {
+		if stmt is ast.StructDecl {
 			// A. 探测是否是 Zend Globals 定义
 			if c.globals_repr.name == '' {
 				if globals_repr := cparser.parse_globals_decl(stmt, c.table) {
@@ -102,8 +106,8 @@ pub fn (mut c Compiler) compile() !string {
 					idx := c.class_index[receiver_type]
 					mut el := c.elements[idx]
 					if mut el is repr.PhpClassRepr {
-						cparser.add_class_method(mut el, stmt, c.table)
-                        c.elements[idx] = el // 重要：写回修改后的对象！
+						cparser.add_class_method(mut el, stmt, c.table, field_types, resolved_borrowed, method_return_types)
+						c.elements[idx] = el // 重要：写回修改后的对象！
 					}
 					continue
 				}
@@ -115,7 +119,11 @@ pub fn (mut c Compiler) compile() !string {
 				if parts.len == 2 {
 					// 获取类名：如果是 main.Article，取 Article
 					raw_class := parts[0]
-					class_name := if raw_class.contains('.') { raw_class.all_after('.') } else { raw_class }
+					class_name := if raw_class.contains('.') {
+						raw_class.all_after('.')
+					} else {
+						raw_class
+					}
 					method_name := parts[1]
 
 					if class_name in c.class_index {
@@ -150,9 +158,11 @@ pub fn (mut c Compiler) compile() !string {
 	}
 
 	linker.link_class_shadows(mut c.elements, c.table)
+	apply_resolved_borrowed_returns(mut c.elements, resolved_borrowed)
 	linker.link_class_traits(mut c.elements)!
-	linker.link_class_parents(mut c.elements)!
 	linker.link_class_embeds(mut c.elements)!
+	linker.link_class_parents(mut c.elements)!
+	linker.validate_inherited_object_classes(c.elements)!
 	linker.link_interface_parents(mut c.elements)!
 	linker.link_class_interfaces(mut c.elements)!
 
@@ -184,9 +194,100 @@ fn (mut c Compiler) set_extension_meta(file_ast &ast.File) {
 							}
 						}
 					}
-					if c.ext_name != '' { return }
+					if c.ext_name != '' {
+						return
+					}
 				}
 			}
+		}
+	}
+}
+
+fn collect_struct_field_types(stmts []ast.Stmt, table &ast.Table) map[string]string {
+	mut field_types := map[string]string{}
+	for stmt in stmts {
+		if stmt !is ast.StructDecl {
+			continue
+		}
+		struct_decl := stmt as ast.StructDecl
+		struct_name := if struct_decl.name.contains('.') {
+			struct_decl.name.all_after_last('.')
+		} else {
+			struct_decl.name
+		}
+		for field in struct_decl.fields {
+			field_type := cparser.normalize_delegated_target_type(table.get_type_name(field.typ))
+			if field_type != '' {
+				field_types['${struct_name}::${field.name}'] = field_type
+			}
+		}
+	}
+	return field_types
+}
+
+fn collect_method_borrow_profiles(stmts []ast.Stmt, table &ast.Table, field_types map[string]string) []cparser.MethodBorrowProfile {
+	mut profiles := []cparser.MethodBorrowProfile{}
+	for stmt in stmts {
+		if stmt is ast.FnDecl {
+			if profile := cparser.build_method_borrow_profile(stmt, table, field_types) {
+				profiles << profile
+			}
+		}
+	}
+	return profiles
+}
+
+fn collect_method_return_types(profiles []cparser.MethodBorrowProfile) map[string]string {
+	mut out := map[string]string{}
+	for profile in profiles {
+		key := '${profile.receiver_type}::${profile.method_name}'
+		out[key] = profile.return_type
+	}
+	return out
+}
+
+fn resolve_method_borrowed_returns(profiles []cparser.MethodBorrowProfile) map[string]bool {
+	mut borrowed_methods := map[string]bool{}
+	mut delegated_targets := map[string]string{}
+	for profile in profiles {
+		key := '${profile.receiver_type}::${profile.method_name}'
+		borrowed_methods[key] = profile.direct_borrowed
+		if profile.delegated_target_type != '' && profile.delegated_target_method != '' {
+			delegated_targets[key] = '${profile.delegated_target_type}::${profile.delegated_target_method}'
+		}
+	}
+	for {
+		mut changed := false
+		for method_key, target_key in delegated_targets {
+			if borrowed_methods[method_key] or { false } {
+				continue
+			}
+			if borrowed_methods[target_key] or { false } {
+				borrowed_methods[method_key] = true
+				changed = true
+			}
+		}
+		if !changed {
+			break
+		}
+	}
+	return borrowed_methods
+}
+
+fn apply_resolved_borrowed_returns(mut elements []repr.PhpRepr, resolved_borrowed map[string]bool) {
+	for i in 0 .. elements.len {
+		mut el := elements[i]
+		if mut el is repr.PhpClassRepr {
+			for mi, method in el.methods {
+				if method.v_name == '' {
+					continue
+				}
+				key := '${el.name}::${method.v_name}'
+				if resolved_borrowed[key] or { false } {
+					el.methods[mi].borrowed_return = true
+				}
+			}
+			elements[i] = el
 		}
 	}
 }

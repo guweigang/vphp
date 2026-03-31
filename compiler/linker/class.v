@@ -40,6 +40,10 @@ fn has_method_named(methods []repr.PhpMethodRepr, name string, is_static bool) b
 	return methods.any(it.name == name && it.is_static == is_static)
 }
 
+fn is_inherited_object_safe_property_type(v_type string) bool {
+	return v_type in ['string', 'int', 'i64', 'bool', 'f64']
+}
+
 pub fn link_class_shadows(mut elements []repr.PhpRepr, table &ast.Table) {
 	for i in 0 .. elements.len {
 		mut el := elements[i]
@@ -119,8 +123,57 @@ pub fn link_class_parents(mut elements []repr.PhpRepr) ! {
 				if status != 0 {
 					return error('class `${el.name}` extends unsupported userland PHP class `${el.parent}`; `@[php_extends: ...]` only supports internal PHP classes or classes exported by the same vphp extension')
 				}
+				el.direct_internal_parent = true
+				el.uses_inherited_object = true
 			}
 			elements[i] = el
+		}
+	}
+
+	for {
+		mut changed := false
+		mut inherited_map := map[string]bool{}
+		for el in elements {
+			if el is repr.PhpClassRepr && !el.is_trait {
+				inherited_map[el.name] = el.uses_inherited_object
+				inherited_map[el.php_name] = el.uses_inherited_object
+			}
+		}
+		for i in 0 .. elements.len {
+			mut el := elements[i]
+			if mut el is repr.PhpClassRepr {
+				if el.is_trait || el.parent == '' || el.uses_inherited_object {
+					elements[i] = el
+					continue
+				}
+				parent_name := strip_module_name(el.parent)
+				if inherited_map[el.parent] or { false } || inherited_map[parent_name] or { false } {
+					el.uses_inherited_object = true
+					changed = true
+				}
+				elements[i] = el
+			}
+		}
+		if !changed {
+			break
+		}
+	}
+}
+
+pub fn validate_inherited_object_classes(elements []repr.PhpRepr) ! {
+	for el in elements {
+		if el !is repr.PhpClassRepr {
+			continue
+		}
+		cls := el as repr.PhpClassRepr
+		if cls.is_trait || !cls.uses_inherited_object {
+			continue
+		}
+		for prop in cls.properties {
+			if prop.is_property_only || prop.is_static || is_inherited_object_safe_property_type(prop.v_type) {
+				continue
+			}
+			return error('class `${cls.name}` extends a PHP internal object layout via `${cls.parent}` and cannot embed `${prop.v_type}` field `${prop.name}` in its V struct; keep complex state in PHP properties and access it through property helpers instead')
 		}
 	}
 }

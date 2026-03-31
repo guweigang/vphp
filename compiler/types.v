@@ -9,10 +9,20 @@ pub:
 	is_option  bool   // 是否为 Option 类型 (带 ?)，成功返回值，none 返回 null
 }
 
+pub fn normalize_export_type_key(v_type string) string {
+	mut clean_type := v_type.trim_space().replace('vphp.ZVal', 'ZVal')
+	if clean_type.starts_with('&') || clean_type.starts_with('!') || clean_type.starts_with('?') {
+		clean_type = clean_type[1..]
+	}
+	if !clean_type.starts_with('[]') && !clean_type.starts_with('map[') && clean_type.contains('.') {
+		clean_type = clean_type.all_after('.')
+	}
+	return clean_type
+}
+
 // 静态方法：根据 V 的返回类型字符串获取映射表
 pub fn TypeMap.get_type(v_type string) TypeMap {
-	// 简单清理，防止模块名干扰（如 main.Article -> Article）
-	clean_type := if v_type.contains('.') { v_type.all_after('.') } else { v_type }
+	clean_type := normalize_export_type_key(v_type)
 
 	return match clean_type {
 		'int'    { TypeMap{'int', 'int', 'RETURN_LONG', false, false} }
@@ -21,6 +31,15 @@ pub fn TypeMap.get_type(v_type string) TypeMap {
 		'f64'    { TypeMap{'f64', 'double', 'RETURN_DOUBLE', false, false} }
 		'bool'   { TypeMap{'bool', 'bool', 'RETURN_BOOL', false, false} }
 		'string' { TypeMap{'string', 'v_string', 'VPHP_RETURN_STRING', false, false} }
+		'Value', 'BorrowedValue', 'PersistentValue', 'ZVal' {
+			TypeMap{clean_type, 'zval', 'RETURN_NULL', false, false}
+		}
+		'[]string', '[]int', '[]i64', '[]bool', '[]f64', '[]f32', '[]', '[]ZVal' {
+			TypeMap{clean_type, 'zval', 'RETURN_NULL', false, false}
+		}
+		'map[string]string', 'map[string]int', 'map[string]i64', 'map[string]bool', 'map[string]f64', 'map[string][]string', 'map[string]ZVal' {
+			TypeMap{clean_type, 'zval', 'RETURN_NULL', false, false}
+		}
 
 		// 💡 核心：处理带 ! 的 Result 类型
 		'!bool'   { TypeMap{'!bool', 'void', 'RETURN_NULL', true, false} }

@@ -10,6 +10,7 @@ fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 	c_emitter := CGenerator{
 		ext_name: c.ext_name
 		class_ce_by_type: c.class_ce_map()
+		class_php_by_type: c.class_php_map()
 	}
 
 	for el in c.elements {
@@ -30,6 +31,7 @@ fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	c_emitter := CGenerator{
 		ext_name: c.ext_name
 		class_ce_by_type: c.class_ce_map()
+		class_php_by_type: c.class_php_map()
 	}
 
 	for el in c.elements {
@@ -62,6 +64,18 @@ fn (c Compiler) class_ce_map() map[string]string {
 	return m
 }
 
+fn (c Compiler) class_php_map() map[string]string {
+	mut m := map[string]string{}
+	for el in c.elements {
+		if el is repr.PhpClassRepr {
+			m[el.name] = el.php_name
+			m[el.php_name] = el.php_name
+			m[el.c_name()] = el.php_name
+		}
+	}
+	return m
+}
+
 // ==========================================
 // 1. 总入口：由外部 build.v 调用
 // ==========================================
@@ -82,8 +96,8 @@ fn (mut c Compiler) generate_c() ! {
 
 	// 2. 模块层：初始化 ModuleBuilder 并收集功能点
 	mut mod_builder := builder.new_module_builder(c.ext_name, c.ext_version, c.ext_description)
-	fragments := c.collect_non_type_fragments()
-	type_fragments := c.collect_type_fragments()
+	mut fragments := c.collect_non_type_fragments()
+	mut type_fragments := c.collect_type_fragments()
 	for k, v in c.ini_entries {
 		mod_builder.add_ini_entry(k, v)
 	}
@@ -110,6 +124,12 @@ fn (mut c Compiler) generate_c() ! {
 	}
 	for line in type_fragments.minit_lines {
 		mod_builder.add_minit_line(line)
+	}
+	for line in fragments.rinit_lines {
+		mod_builder.add_rinit_line(line)
+	}
+	for line in type_fragments.rinit_lines {
+		mod_builder.add_rinit_line(line)
 	}
 
 	// 3. 渲染各个 C 块
