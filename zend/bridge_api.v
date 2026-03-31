@@ -11,6 +11,7 @@ pub fn C.vphp_get_arg_ptr(ex &C.zend_execute_data, index u32) &C.zval
 pub fn C.vphp_has_exception() bool
 pub fn C.vphp_get_active_ce(ex &C.zend_execute_data) voidptr
 pub fn C.vphp_get_this_object(ex &C.zend_execute_data) voidptr
+pub fn C.vphp_get_current_this_object() voidptr
 pub fn C.vphp_get_active_globals() voidptr
 
 // ===== 2. 框架与异常 =====
@@ -18,6 +19,8 @@ pub fn C.vphp_init_registry()
 pub fn C.vphp_shutdown_registry()
 pub fn C.vphp_throw(msg &char, code int)
 pub fn C.vphp_throw_class(class_name &char, msg &char, code int)
+pub fn C.vphp_throw_object(exception &C.zval)
+pub fn C.vphp_disown_zval(z &C.zval)
 pub fn C.vphp_error(int, &char)
 
 // ===== 3. zval 类型检测 =====
@@ -100,15 +103,24 @@ pub:
 	prop_handler   voidptr
 	write_handler  voidptr
 	sync_handler   voidptr
-	bind_handler   voidptr
+	original_handlers voidptr
 	std            C.zend_object
 }
 
 pub fn C.vphp_obj_from_obj(obj &C.zend_object) &C.vphp_object_wrapper
 pub fn C.vphp_register_object(v_ptr voidptr, obj &C.zend_object)
 pub fn C.vphp_return_obj(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry)
+pub fn C.vphp_return_bound_object(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry, handlers voidptr, owns_v_ptr int)
+pub fn C.vphp_return_owned_object(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry, handlers voidptr)
+pub fn C.vphp_return_borrowed_object(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry, handlers voidptr)
+pub fn C.vphp_wrap_existing_object(return_value &C.zval, obj &C.zend_object)
 pub fn C.vphp_bind_handlers(obj &C.zend_object, handlers voidptr)
 pub fn C.vphp_bind_handlers_with_ownership(obj &C.zend_object, handlers voidptr, owns_v_ptr int)
+pub fn C.vphp_bind_owned_handlers(obj &C.zend_object, handlers voidptr)
+pub fn C.vphp_bind_borrowed_handlers(obj &C.zend_object, handlers voidptr)
+pub fn C.vphp_ensure_owned_instance_binding(obj &C.zend_object, handlers voidptr) &C.vphp_object_wrapper
+pub fn C.vphp_ensure_borrowed_instance_binding(obj &C.zend_object, handlers voidptr) &C.vphp_object_wrapper
+pub fn C.vphp_init_owned_instance(obj &C.zend_object, handlers voidptr)
 
 // ===== 8. 闭包 & 调用 =====
 pub fn C.vphp_call_php_func(name &char, len int, retval &C.zval, p_count int, params &&C.zval) int

@@ -81,22 +81,108 @@ pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
 fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
 
-// 泛型堆分配器 (传统分配，将来会被劫持)
+// 泛型堆分配器必须保留 V 的默认字段初始化语义。
+// 单纯 `vcalloc(sizeof(T))` 只会得到零内存，像 `[]T{}`、`map{}`、
+// `PersistentOwnedZVal.new_null()` 这类字段默认值都会丢失，导致
+// PHP `new` 出来的 @[php_class] 对象是“半初始化”状态。
 pub fn generic_new_raw[T]() voidptr {
-	return unsafe { &T{} }
+	unsafe {
+		return &T{}
+	}
 }
 
-// 泛型释放器：与 generic_new_raw 配套。
+// 泛型释放器必须走 V 运行时释放语义，不能混用 ZendMM 的 `efree`。
+// 否则 factory/clone 路径里由 `memdup`/`malloc` 产生的对象会在请求结束时打坏 Zend 堆。
 pub fn generic_free_raw[T](ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
 	unsafe {
-		free(&T(ptr))
+		free(ptr)
 	}
 }
 
 // 泛型连体分配器 (新：用于 @[php_class])
 pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
     return unsafe { C.vphp_allocate_contiguous_object(ce, sizeof(T)) }
+}
+
+fn object_from_zval_or_nil(z ZVal) &C.zend_object {
+	if !z.is_valid() || !z.is_object() {
+		return unsafe { nil }
+	}
+	return C.vphp_get_obj_from_zval(z.raw)
+}
+
+pub fn bind_object_with_ownership(z ZVal, handlers voidptr, ownership OwnershipKind) {
+	obj := object_from_zval_or_nil(z)
+	if isnil(obj) {
+		return
+	}
+	match ownership {
+		.borrowed {
+			C.vphp_bind_borrowed_handlers(obj, handlers)
+		}
+		.owned_request, .owned_persistent {
+			C.vphp_bind_owned_handlers(obj, handlers)
+		}
+	}
+}
+
+pub fn bind_owned_object(z ZVal, handlers voidptr) {
+	bind_object_with_ownership(z, handlers, .owned_request)
+}
+
+pub fn bind_borrowed_object(z ZVal, handlers voidptr) {
+	bind_object_with_ownership(z, handlers, .borrowed)
+}
+
+pub fn ensure_object_binding(z ZVal, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
+	obj := object_from_zval_or_nil(z)
+	if isnil(obj) {
+		return unsafe { nil }
+	}
+	return match ownership {
+		.borrowed {
+			C.vphp_ensure_borrowed_instance_binding(obj, handlers)
+		}
+		.owned_request, .owned_persistent {
+			C.vphp_ensure_owned_instance_binding(obj, handlers)
+		}
+	}
+}
+
+pub fn ensure_owned_object_binding(z ZVal, handlers voidptr) &C.vphp_object_wrapper {
+	return ensure_object_binding(z, handlers, .owned_request)
+}
+
+pub fn ensure_borrowed_object_binding(z ZVal, handlers voidptr) &C.vphp_object_wrapper {
+	return ensure_object_binding(z, handlers, .borrowed)
+}
+
+pub fn init_owned_object(z ZVal, handlers voidptr) {
+	obj := object_from_zval_or_nil(z)
+	if isnil(obj) {
+		return
+	}
+	C.vphp_init_owned_instance(obj, handlers)
+}
+
+pub fn return_bound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
+	match ownership {
+		.borrowed {
+			C.vphp_return_borrowed_object(ret, v_ptr, ce, handlers)
+		}
+		.owned_request, .owned_persistent {
+			C.vphp_return_owned_object(ret, v_ptr, ce, handlers)
+		}
+	}
+}
+
+pub fn return_owned_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
+	return_bound_object_raw(ret, v_ptr, ce, handlers, .owned_request)
+}
+
+pub fn return_borrowed_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
+	return_bound_object_raw(ret, v_ptr, ce, handlers, .borrowed)
 }

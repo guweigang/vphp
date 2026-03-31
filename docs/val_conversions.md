@@ -11,8 +11,9 @@ These APIs are strict by default and are designed to be explicit and predictable
 
 Note:
 - `ZVal` is the low-level wrapper over `&C.zval` (in `zval.v`).
-- The semantic V-side value model is now `Val[T]` in `val.v`.
-- The dynamic fallback value model is `DynVal` in `val.v` (`decode_val/encode_val`).
+- `ValueView` / `Value` / `PersistentValue` in `lifecycle.v` keep PHP bridge ownership explicit.
+- `DynValue` in `dyn_value.v` is the detached fallback model for unknown/mixed payloads.
+- Strongly typed business logic should use ordinary V types directly.
 
 ## 1. Zend Value -> V (`to_v[T]`)
 
@@ -115,45 +116,49 @@ arg1 := ZVal.from[int](42) or { return }
 res := callable.call([arg0, arg1])
 ```
 
-## 4. Semantic Val[T] API
+## 4. Value Layers
 
-`Val[T]` is the typed semantic model in `val.v`.
-
-Examples:
+For ordinary typed data, use V types directly:
 
 ```v
-v := val_of[int](100)
-n := v.unwrap()
+cfg := ctx.arg_raw(0).to_v[map[string]string]() or {
+    return
+}
+mode := cfg['mode'] or { 'standard' }
+ctx.return_any(mode)
 ```
 
+For PHP-facing values whose ownership still matters, use the lifecycle wrappers:
+
 ```v
-z := ctx.arg_raw(0)
-name := val_from_zval[string](z)!.unwrap()
+payload := ctx.arg_any(0)
+if payload.is_null() {
+    ctx.return_any('empty')
+    return
+}
 ```
 
-Bridge with `DynVal`:
+For detached dynamic payloads, use `DynValue`:
 
 ```v
-typed := val_of[map[string]string]({
-    'mode': 'HIIT'
-})
-dyn := typed.to_dyn()!
-restored := val_from_dyn[map[string]string](dyn)!.unwrap()
+dyn := decode_dyn_value(ctx.arg_raw(0))!
+z := new_zval_from_dyn_value(dyn)!
+ctx.return_zval(z)
 ```
 
 Recommended boundary:
-- Typed business logic: `Val[T]`
-- Dynamic/unknown payload boundary: `DynVal`
-- PHP bridge boundary: `ZVal`
+- Typed business logic: native V types
+- Dynamic/unknown payload boundary: `DynValue`
+- PHP bridge/lifecycle boundary: `ValueView` / `Value` / `PersistentValue`
 
-## 5. Legacy APIs and recommended usage
+## 5. Low-level APIs and recommended usage
 
-Legacy getters/setters such as `to_int()`, `set_string()`, `add_assoc_*()` are still valid.
+Lower-level getters/setters such as `to_int()`, `set_string()`, `add_assoc_*()` are still valid.
 
 Recommended:
 - Use `to_v[T]()` for argument decoding where type safety matters.
 - Use `from_v[T]()` for in-place writes and `ZVal.from[T]()` for new values.
-- Keep legacy APIs for low-level/manual bridge logic.
+- Keep the low-level APIs for bridge internals and specialized interop paths.
 - For PHP array key-sensitive logic, prefer `is_list()` / `assoc_keys()` / `get_key(...)` over ad hoc stringified lookups.
 
 ## 6. Error handling guidance

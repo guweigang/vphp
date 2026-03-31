@@ -1,6 +1,7 @@
 #include "v_bridge.h"
 #include <Zend/zend_closures.h>
 #include <Zend/zend_exceptions.h>
+#include <Zend/zend_interfaces.h>
 #include <Zend/zend_inheritance.h>
 #include <php.h>
 #include <stdio.h>
@@ -18,6 +19,426 @@ static void vphp_preload_auto_interfaces_for_class(zend_class_entry *class_ce);
 static void vphp_prepare_auto_interfaces_for_class(zend_class_entry *class_ce,
                                                    int autoload);
 static zend_class_entry *vphp_autoload_class(zend_string *name);
+static void vphp_apply_auto_interface_bindings_for_class(zend_class_entry *ce);
+static bool vphp_object_matches_unresolved_named_type(zend_class_entry *class_ce,
+                                                      zend_string *expected_name);
+static zend_string *vphp_normalize_literal_type_name(const char *literal_name);
+static bool vphp_value_matches_type(zend_execute_data *execute_data,
+                                    zend_type type, zval *value,
+                                    bool is_return_type);
+static bool vphp_value_matches_mask(uint32_t mask, zval *value, bool strict,
+                                    bool is_return_type);
+static bool vphp_value_matches_named_type(zend_execute_data *execute_data,
+                                          zend_type type, zval *value,
+                                          bool is_return_type);
+void vphp_free_object_handler(zend_object *obj);
+zval *vphp_read_property(zend_object *object, zend_string *member, int type,
+                         void **cache_slot, zval *rv);
+void vphp_write_property(zend_object *object, zend_string *member, zval *value,
+                         void **cache_slot);
+HashTable *vphp_get_properties(zend_object *object);
+static zend_object_handlers *vphp_clone_inherited_handlers(
+    const zend_object_handlers *original_handlers);
+static const zend_object_handlers *vphp_original_handlers_for(zend_object *obj);
+static const zend_object_handlers *vphp_unwrap_inherited_handlers(
+    const zend_object_handlers *handlers);
+static zend_object *vphp_resolve_inherited_parent_object(
+    zend_class_entry *ce,
+    zend_object *(*self_create_object)(zend_class_entry *));
+
+static zend_class_entry *vphp_type_scope_ce(zend_execute_data *execute_data,
+                                            const char *name) {
+  zend_class_entry *scope = execute_data && execute_data->func
+                                ? execute_data->func->common.scope
+                                : NULL;
+  zend_class_entry *called_scope =
+      execute_data ? zend_get_called_scope(execute_data) : NULL;
+
+  if (scope == NULL || name == NULL) {
+    return NULL;
+  }
+  if (strcmp(name, "self") == 0) {
+    return scope;
+  }
+  if (strcmp(name, "parent") == 0) {
+    return scope->parent;
+  }
+  if (strcmp(name, "static") == 0) {
+    return called_scope ? called_scope : scope;
+  }
+  return NULL;
+}
+
+static zend_string *vphp_normalize_literal_type_name(const char *literal_name) {
+  size_t len = 0;
+  size_t i = 0;
+  size_t out_len = 0;
+  char *buffer = NULL;
+  zend_string *normalized = NULL;
+
+  if (literal_name == NULL) {
+    return NULL;
+  }
+
+  len = strlen(literal_name);
+  buffer = emalloc(len + 1);
+  for (i = 0; i < len; i++) {
+    if (literal_name[i] == '\\' && i + 1 < len && literal_name[i + 1] == '\\') {
+      buffer[out_len++] = '\\';
+      i++;
+      continue;
+    }
+    buffer[out_len++] = literal_name[i];
+  }
+  buffer[out_len] = '\0';
+  normalized = zend_string_init(buffer, out_len, 0);
+  efree(buffer);
+  return normalized;
+}
+
+static zend_class_entry *vphp_lookup_type_ce(zend_execute_data *execute_data,
+                                             zend_type type) {
+  const char *literal_name = NULL;
+  zend_string *name = NULL;
+  zend_class_entry *ce = NULL;
+
+  if (ZEND_TYPE_HAS_NAME(type)) {
+    name = ZEND_TYPE_NAME(type);
+    return zend_lookup_class(name);
+  }
+  if (!ZEND_TYPE_HAS_LITERAL_NAME(type)) {
+    return NULL;
+  }
+
+  literal_name = ZEND_TYPE_LITERAL_NAME(type);
+  name = vphp_normalize_literal_type_name(literal_name);
+  ce = vphp_type_scope_ce(execute_data, ZSTR_VAL(name));
+  if (ce != NULL) {
+    zend_string_release(name);
+    return ce;
+  }
+  if (execute_data && execute_data->func && execute_data->func->common.scope &&
+      strcmp(ZSTR_VAL(execute_data->func->common.scope->name), ZSTR_VAL(name)) ==
+          0) {
+    zend_string_release(name);
+    return execute_data->func->common.scope;
+  }
+  ce = zend_lookup_class(name);
+  zend_string_release(name);
+  return ce;
+}
+
+static bool vphp_value_matches_named_type(zend_execute_data *execute_data,
+                                          zend_type type, zval *value,
+                                          bool is_return_type) {
+  zval *check = value;
+  zend_class_entry *ce = NULL;
+  zend_string *expected_name = NULL;
+  bool release_expected_name = false;
+
+  if (check == NULL) {
+    return false;
+  }
+  ZVAL_DEREF(check);
+  if (Z_TYPE_P(check) != IS_OBJECT) {
+    return false;
+  }
+  vphp_preload_auto_interfaces_for_class(Z_OBJCE_P(check));
+  vphp_apply_auto_interface_bindings_for_class(Z_OBJCE_P(check));
+
+  if (ZEND_TYPE_HAS_NAME(type)) {
+    expected_name = ZEND_TYPE_NAME(type);
+  } else if (ZEND_TYPE_HAS_LITERAL_NAME(type)) {
+    expected_name = vphp_normalize_literal_type_name(ZEND_TYPE_LITERAL_NAME(type));
+    release_expected_name = true;
+  }
+  if (expected_name != NULL &&
+      zend_string_equals_ci(Z_OBJCE_P(check)->name, expected_name)) {
+    if (release_expected_name) {
+      zend_string_release(expected_name);
+    }
+    return true;
+  }
+
+  ce = vphp_lookup_type_ce(execute_data, type);
+  if (ce == NULL) {
+    bool unresolved_match = vphp_object_matches_unresolved_named_type(
+        Z_OBJCE_P(check), expected_name);
+    if (release_expected_name) {
+      zend_string_release(expected_name);
+    }
+    return unresolved_match;
+  }
+  /*
+   * Named return/interface checks can autoload the expected interface here.
+   * Re-apply bindings after lookup so first-touch return validation sees the
+   * freshly loaded interface in the same call frame.
+   */
+  vphp_preload_auto_interfaces_for_class(Z_OBJCE_P(check));
+  vphp_apply_auto_interface_bindings_for_class(Z_OBJCE_P(check));
+  if ((ce->ce_flags & ZEND_ACC_INTERFACE) &&
+      zend_class_implements_interface(Z_OBJCE_P(check), ce)) {
+    if (release_expected_name) {
+      zend_string_release(expected_name);
+    }
+    return true;
+  }
+  if (instanceof_function(Z_OBJCE_P(check), ce) != 0) {
+    if (release_expected_name) {
+      zend_string_release(expected_name);
+    }
+    return true;
+  }
+  if (expected_name != NULL) {
+    zval retval;
+    zval expected_zv;
+    zval *params[2] = {check, &expected_zv};
+    int result = 0;
+
+    ZVAL_UNDEF(&retval);
+    ZVAL_STR_COPY(&expected_zv, expected_name);
+    result = vphp_call_php_func("is_a", 4, &retval, 2, params);
+    zval_ptr_dtor(&expected_zv);
+    if (result == SUCCESS) {
+      bool matched = zend_is_true(&retval) != 0;
+      zval_ptr_dtor(&retval);
+      if (matched) {
+        if (release_expected_name) {
+          zend_string_release(expected_name);
+        }
+        return true;
+      }
+    }
+  }
+  if (release_expected_name) {
+    zend_string_release(expected_name);
+  }
+  return false;
+}
+
+static bool vphp_value_matches_mask(uint32_t mask, zval *value, bool strict,
+                                    bool is_return_type) {
+  zval *check = value;
+  uint32_t scalar_mask = 0;
+
+  if (check == NULL) {
+    return false;
+  }
+  ZVAL_DEREF(check);
+
+  if ((mask & MAY_BE_ANY) == MAY_BE_ANY) {
+    return true;
+  }
+  if ((mask & MAY_BE_TRUE) && Z_TYPE_P(check) == IS_TRUE) {
+    return true;
+  }
+  if ((mask & MAY_BE_FALSE) && Z_TYPE_P(check) == IS_FALSE) {
+    return true;
+  }
+  if ((mask & MAY_BE_STRING) && Z_TYPE_P(check) == IS_STRING) {
+    return true;
+  }
+  if ((mask & MAY_BE_LONG) && Z_TYPE_P(check) == IS_LONG) {
+    return true;
+  }
+  if ((mask & MAY_BE_DOUBLE) && Z_TYPE_P(check) == IS_DOUBLE) {
+    return true;
+  }
+  if ((mask & MAY_BE_BOOL) == MAY_BE_BOOL &&
+      (Z_TYPE_P(check) == IS_TRUE || Z_TYPE_P(check) == IS_FALSE)) {
+    return true;
+  }
+  if ((mask & MAY_BE_ARRAY) && Z_TYPE_P(check) == IS_ARRAY) {
+    return true;
+  }
+  if ((mask & MAY_BE_OBJECT) && Z_TYPE_P(check) == IS_OBJECT) {
+    return true;
+  }
+  if ((mask & MAY_BE_RESOURCE) && Z_TYPE_P(check) == IS_RESOURCE) {
+    return true;
+  }
+  if ((mask & MAY_BE_CALLABLE) && zend_is_callable(check, 0, NULL)) {
+    return true;
+  }
+  if ((mask & MAY_BE_VOID) && is_return_type && Z_TYPE_P(check) == IS_NULL) {
+    return true;
+  }
+
+  if ((mask & MAY_BE_BOOL) == MAY_BE_BOOL) {
+    scalar_mask |= MAY_BE_BOOL;
+  }
+  scalar_mask |= mask & (MAY_BE_LONG | MAY_BE_DOUBLE | MAY_BE_STRING);
+  if (scalar_mask != 0 &&
+      zend_verify_scalar_type_hint(scalar_mask, check, strict, 1)) {
+    return true;
+  }
+
+  return false;
+}
+
+static bool vphp_value_matches_type(zend_execute_data *execute_data,
+                                    zend_type type, zval *value,
+                                    bool is_return_type) {
+  zval *check = value;
+  uint32_t mask = ZEND_TYPE_PURE_MASK(type);
+  bool strict = execute_data && execute_data->prev_execute_data
+                    ? ZEND_CALL_USES_STRICT_TYPES(execute_data->prev_execute_data)
+                    : false;
+
+  if (!ZEND_TYPE_IS_SET(type)) {
+    return true;
+  }
+  if (check == NULL) {
+    return false;
+  }
+  ZVAL_DEREF(check);
+
+  if (Z_TYPE_P(check) == IS_NULL) {
+    return ZEND_TYPE_ALLOW_NULL(type) || (mask & MAY_BE_NULL) != 0;
+  }
+
+  if (ZEND_TYPE_HAS_LIST(type)) {
+    const zend_type *subtype = NULL;
+
+    if (ZEND_TYPE_IS_INTERSECTION(type)) {
+      ZEND_TYPE_LIST_FOREACH(ZEND_TYPE_LIST(type), subtype) {
+        if (!vphp_value_matches_type(execute_data, *subtype, check,
+                                     is_return_type)) {
+          return false;
+        }
+      }
+      ZEND_TYPE_LIST_FOREACH_END();
+      return true;
+    }
+
+    ZEND_TYPE_LIST_FOREACH(ZEND_TYPE_LIST(type), subtype) {
+      if (vphp_value_matches_type(execute_data, *subtype, check,
+                                  is_return_type)) {
+        return true;
+      }
+    }
+    ZEND_TYPE_LIST_FOREACH_END();
+    return false;
+  }
+
+  if (ZEND_TYPE_IS_ITERABLE_FALLBACK(type) && zend_is_iterable(check)) {
+    return true;
+  }
+  if (ZEND_TYPE_HAS_NAME(type) || ZEND_TYPE_HAS_LITERAL_NAME(type)) {
+    if (vphp_value_matches_named_type(execute_data, type, check, is_return_type)) {
+      return true;
+    }
+  }
+  if (vphp_value_matches_mask(mask, check, strict, is_return_type)) {
+    return true;
+  }
+  if (zend_check_user_type_slow(&type, check, NULL, is_return_type)) {
+    return true;
+  }
+  return false;
+}
+
+bool vphp_validate_internal_call(zend_execute_data *execute_data) {
+  const zend_function *func = execute_data ? execute_data->func : NULL;
+  uint32_t arg_count = 0;
+  uint32_t min_args = 0;
+  uint32_t max_args = 0;
+  bool variadic = false;
+  uint32_t i = 0;
+
+  if (func == NULL) {
+    return true;
+  }
+
+  arg_count = ZEND_CALL_NUM_ARGS(execute_data);
+  min_args = func->common.required_num_args;
+  max_args = func->common.num_args;
+  variadic = max_args > 0 &&
+             ZEND_ARG_IS_VARIADIC(&func->common.arg_info[max_args - 1]);
+
+  if (arg_count < min_args || (!variadic && arg_count > max_args)) {
+    zend_wrong_parameters_count_error(min_args,
+                                      variadic ? (uint32_t)-1 : max_args);
+    return false;
+  }
+
+  for (i = 0; i < arg_count; i++) {
+    zend_arg_info *arg_info = NULL;
+    zval *arg = NULL;
+
+    if (func->common.arg_info == NULL) {
+      break;
+    }
+
+    if (variadic && i >= max_args - 1) {
+      arg_info = &func->common.arg_info[max_args - 1];
+    } else if (i < max_args) {
+      arg_info = &func->common.arg_info[i];
+    } else {
+      break;
+    }
+
+    if (!ZEND_TYPE_IS_SET(arg_info->type)) {
+      continue;
+    }
+    arg = ZEND_CALL_ARG(execute_data, i + 1);
+    if (vphp_value_matches_type(execute_data, arg_info->type, arg, false)) {
+      continue;
+    }
+
+    zend_verify_arg_error(func, arg_info, i + 1, arg);
+    return false;
+  }
+
+  return true;
+}
+
+bool vphp_validate_internal_return(zend_execute_data *execute_data,
+                                   zval *return_value) {
+  const zend_function *func = execute_data ? execute_data->func : NULL;
+  zend_arg_info *ret_info = NULL;
+  zval *check = return_value;
+
+  if (func == NULL || func->common.arg_info == NULL) {
+    return true;
+  }
+
+  ret_info = func->common.arg_info - 1;
+  if (!ZEND_TYPE_IS_SET(ret_info->type)) {
+    return true;
+  }
+  if (EG(exception)) {
+    return false;
+  }
+  if (check != NULL) {
+    ZVAL_DEREF(check);
+  }
+  if (ZEND_TYPE_CONTAINS_CODE(ret_info->type, IS_VOID)) {
+    if (check != NULL && Z_TYPE_P(check) == IS_UNDEF) {
+      return true;
+    }
+    zend_verify_return_error(func, return_value);
+    return false;
+  }
+  if (ZEND_TYPE_CONTAINS_CODE(ret_info->type, IS_NEVER)) {
+    zend_verify_never_error(func);
+    return false;
+  }
+  if (vphp_value_matches_type(execute_data, ret_info->type, return_value,
+                              true)) {
+    return true;
+  }
+
+  zend_verify_return_error(func, return_value);
+  return false;
+}
+
+void vphp_mark_void_return(zval *return_value) {
+  if (return_value == NULL) {
+    return;
+  }
+  ZVAL_UNDEF(return_value);
+}
 
 uint32_t vphp_get_num_args(zend_execute_data *ex) {
   return ZEND_CALL_NUM_ARGS(ex);
@@ -47,13 +468,28 @@ void vphp_throw_class(char *class_name, char *msg, int code) {
   }
   zend_throw_exception(ce, msg, (zend_long)code);
 }
+void vphp_throw_object(zval *exception) {
+  zval copy;
+  if (exception == NULL || Z_TYPE_P(exception) != IS_OBJECT) {
+    zend_throw_exception(NULL, "exception object must be a valid object", 0);
+    return;
+  }
+  ZVAL_COPY(&copy, exception);
+  zend_throw_exception_object(&copy);
+}
 void vphp_error(int level, char *msg) { php_error(level, "%s", msg); }
 #define VPHP_MAGIC 0x56504850
 #include <stdbool.h>
 
 static HashTable vphp_object_registry;
 static HashTable vphp_reverse_registry;
+static HashTable vphp_sidecar_registry;
+static HashTable vphp_inherited_handler_registry;
+extern zend_object_handlers vphp_obj_handlers;
 static bool vphp_registry_initialized = false;
+static bool vphp_sidecar_registry_initialized = false;
+static bool vphp_inherited_handler_registry_initialized = false;
+static vphp_object_wrapper vphp_null_wrapper;
 static void vphp_apply_registered_auto_interface_bindings(int autoload);
 static void vphp_flush_pending_auto_interface_bindings(void);
 static int vphp_implement_interface_for_class(zend_class_entry *class_ce,
@@ -99,6 +535,33 @@ ZEND_TLS vphp_pending_auto_iface_binding_t *vphp_pending_auto_iface_bindings =
 ZEND_TLS uint32_t vphp_pending_auto_iface_bindings_len = 0;
 ZEND_TLS uint32_t vphp_pending_auto_iface_bindings_cap = 0;
 ZEND_TLS int vphp_runtime_autoloading = 0;
+
+static bool vphp_object_matches_unresolved_named_type(zend_class_entry *class_ce,
+                                                      zend_string *expected_name) {
+  if (class_ce == NULL || expected_name == NULL) {
+    return false;
+  }
+  if (zend_string_equals_ci(class_ce->name, expected_name)) {
+    return true;
+  }
+  for (uint32_t i = 0; i < vphp_auto_iface_bindings_len; i++) {
+    vphp_auto_iface_binding_t *entry = &vphp_auto_iface_bindings[i];
+    if ((int)ZSTR_LEN(class_ce->name) != entry->class_name_len ||
+        (int)ZSTR_LEN(expected_name) != entry->iface_name_len) {
+      continue;
+    }
+    if (strncasecmp(ZSTR_VAL(class_ce->name), entry->class_name,
+                    (size_t)entry->class_name_len) != 0) {
+      continue;
+    }
+    if (strncmp(ZSTR_VAL(expected_name), entry->iface_name,
+                (size_t)entry->iface_name_len) != 0) {
+      continue;
+    }
+    return true;
+  }
+  return false;
+}
 
 static bool vphp_owned_contains(zval *z) {
   if (z == NULL) {
@@ -156,11 +619,78 @@ void vphp_init_registry() {
     vphp_registry_initialized = true;
   }
 }
+
+static void vphp_init_sidecar_registry(void) {
+  if (vphp_sidecar_registry_initialized) {
+    return;
+  }
+  memset(&vphp_null_wrapper, 0, sizeof(vphp_null_wrapper));
+  zend_hash_init(&vphp_sidecar_registry, 16, NULL, NULL, 0);
+  vphp_sidecar_registry_initialized = true;
+}
+
+static int vphp_object_uses_inline_wrapper(zend_object *obj) {
+  return obj != NULL && obj->handlers == &vphp_obj_handlers;
+}
+
+static void vphp_init_inherited_handler_registry(void) {
+  if (vphp_inherited_handler_registry_initialized) {
+    return;
+  }
+  zend_hash_init(&vphp_inherited_handler_registry, 8, NULL, NULL, 1);
+  vphp_inherited_handler_registry_initialized = true;
+}
+
+static vphp_object_wrapper *vphp_lookup_sidecar(zend_object *obj) {
+  if (!vphp_sidecar_registry_initialized || obj == NULL) {
+    return NULL;
+  }
+  return zend_hash_index_find_ptr(&vphp_sidecar_registry, (zend_ulong)obj);
+}
+
+static vphp_object_wrapper *vphp_binding_for_obj(zend_object *obj, int create) {
+  vphp_object_wrapper *sidecar = NULL;
+  if (obj == NULL) {
+    return &vphp_null_wrapper;
+  }
+  if (vphp_object_uses_inline_wrapper(obj)) {
+    return (vphp_object_wrapper *)((char *)(obj)-offsetof(vphp_object_wrapper, std));
+  }
+  sidecar = vphp_lookup_sidecar(obj);
+  if (sidecar != NULL || !create) {
+    return sidecar != NULL ? sidecar : &vphp_null_wrapper;
+  }
+  vphp_init_sidecar_registry();
+  sidecar = ecalloc(1, sizeof(vphp_object_wrapper));
+  sidecar->magic = VPHP_MAGIC;
+  zend_hash_index_update_ptr(&vphp_sidecar_registry, (zend_ulong)obj, sidecar);
+  return sidecar;
+}
+
+static int vphp_binding_uses_registry(zend_object *obj) {
+  return vphp_object_uses_inline_wrapper(obj);
+}
+
 void vphp_shutdown_registry() {
   if (vphp_registry_initialized) {
     zend_hash_destroy(&vphp_object_registry);
     zend_hash_destroy(&vphp_reverse_registry);
     vphp_registry_initialized = false;
+  }
+  if (vphp_sidecar_registry_initialized) {
+    zend_hash_destroy(&vphp_sidecar_registry);
+    vphp_sidecar_registry_initialized = false;
+  }
+  if (vphp_inherited_handler_registry_initialized) {
+    zend_object_handlers *handlers = NULL;
+    ZEND_HASH_FOREACH_PTR(&vphp_inherited_handler_registry, handlers) {
+      if (handlers != NULL) {
+        pefree(handlers, 1);
+      }
+    }
+    ZEND_HASH_FOREACH_END();
+    zend_hash_destroy(&vphp_inherited_handler_registry);
+    vphp_inherited_handler_registry_initialized = false;
   }
   if (vphp_auto_iface_bindings != NULL) {
     for (uint32_t i = 0; i < vphp_auto_iface_bindings_len; i++) {
@@ -181,9 +711,39 @@ void vphp_register_object(void *v_ptr, zend_object *obj) {
   zend_hash_index_update_ptr(&vphp_object_registry, (zend_ulong)v_ptr, obj);
   zend_hash_index_update_ptr(&vphp_reverse_registry, (zend_ulong)obj, v_ptr);
 }
+void vphp_return_bound_object(zval *return_value, void *v_ptr,
+                              zend_class_entry *ce, vphp_class_handlers *h,
+                              int owns_v_ptr) {
+  vphp_return_obj(return_value, v_ptr, ce);
+  if (Z_TYPE_P(return_value) == IS_OBJECT && h != NULL) {
+    vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), h, owns_v_ptr);
+  }
+}
+void vphp_return_owned_object(zval *return_value, void *v_ptr,
+                              zend_class_entry *ce, vphp_class_handlers *h) {
+  vphp_return_bound_object(return_value, v_ptr, ce, h, VPHP_OWNS_VPTR);
+}
+void vphp_return_borrowed_object(zval *return_value, void *v_ptr,
+                                 zend_class_entry *ce,
+                                 vphp_class_handlers *h) {
+  vphp_return_bound_object(return_value, v_ptr, ce, h, VPHP_BORROWS_VPTR);
+}
+void vphp_wrap_existing_object(zval *return_value, zend_object *obj) {
+  if (return_value == NULL) {
+    return;
+  }
+  if (obj == NULL) {
+    ZVAL_NULL(return_value);
+    return;
+  }
+  GC_ADDREF(obj);
+  ZVAL_OBJ(return_value, obj);
+}
 vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj) {
-  vphp_object_wrapper *wrapper =
-      (vphp_object_wrapper *)((char *)(obj)-offsetof(vphp_object_wrapper, std));
+  vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 0);
+  if (wrapper == &vphp_null_wrapper) {
+    return wrapper;
+  }
   if (vphp_registry_initialized && obj != NULL) {
     void *rev_ptr =
         zend_hash_index_find_ptr(&vphp_reverse_registry, (zend_ulong)obj);
@@ -220,8 +780,10 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
   }
   object_init_ex(return_value, ce);
   zend_object *new_obj = Z_OBJ_P(return_value);
-  vphp_object_wrapper *wrapper = vphp_obj_from_obj(new_obj);
-  wrapper->v_ptr = v_ptr;
+  vphp_object_wrapper *wrapper = vphp_binding_for_obj(new_obj, 1);
+  if (wrapper != &vphp_null_wrapper) {
+    wrapper->v_ptr = v_ptr;
+  }
   vphp_register_object(v_ptr, new_obj);
 }
 zend_object *vphp_get_obj_from_zval(zval *zv) { return Z_OBJ_P(zv); }
@@ -445,6 +1007,13 @@ void vphp_release_zval(zval *z) {
   zval_ptr_dtor(z);
   efree(z);
 }
+void vphp_disown_zval(zval *z) {
+  if (z == NULL) {
+    return;
+  }
+  vphp_autorelease_forget(z);
+  (void)vphp_owned_remove(z);
+}
 int vphp_autorelease_mark(void) { return vphp_autorelease_pool.len; }
 void vphp_autorelease_add(zval *z) {
   if (z == NULL) {
@@ -488,6 +1057,17 @@ void vphp_autorelease_forget(zval *z) {
 }
 void vphp_autorelease_drain(int mark) {
   if (mark < 0 || mark > vphp_autorelease_pool.len) {
+    return;
+  }
+  if (EG(exception) != NULL) {
+    for (int i = vphp_autorelease_pool.len - 1; i >= mark; i--) {
+      zval *z = vphp_autorelease_pool.items[i];
+      if (z != NULL) {
+        (void)vphp_owned_remove(z);
+      }
+      vphp_autorelease_pool.items[i] = NULL;
+    }
+    vphp_autorelease_pool.len = mark;
     return;
   }
   for (int i = vphp_autorelease_pool.len - 1; i >= mark; i--) {
@@ -537,6 +1117,23 @@ void vphp_request_shutdown(void) {
   }
   vphp_pending_auto_iface_bindings_len = 0;
   vphp_pending_auto_iface_bindings_cap = 0;
+  if (vphp_sidecar_registry_initialized) {
+    vphp_object_wrapper *binding = NULL;
+    zend_ulong obj_key = 0;
+    ZEND_HASH_FOREACH_NUM_KEY_PTR(&vphp_sidecar_registry, obj_key, binding) {
+      if (binding == NULL) {
+        continue;
+      }
+      if (vphp_registry_initialized) {
+        zend_hash_index_del(&vphp_reverse_registry, obj_key);
+      }
+      if (binding->v_ptr != NULL && vphp_registry_initialized) {
+        zend_hash_index_del(&vphp_object_registry, (zend_ulong)binding->v_ptr);
+      }
+    }
+    ZEND_HASH_FOREACH_END();
+    zend_hash_clean(&vphp_sidecar_registry);
+  }
 }
 void vphp_autorelease_shutdown(void) {
   /*
@@ -593,6 +1190,26 @@ static zend_class_entry *vphp_find_loaded_class_no_autoload(const char *class_na
   zend_string_release(name);
   return ce;
 }
+zend_class_entry *vphp_find_loaded_class_entry(const char *class_name,
+                                               int class_name_len) {
+  return vphp_find_loaded_class_no_autoload(class_name, class_name_len);
+}
+zend_class_entry *vphp_require_class_entry(const char *class_name,
+                                           int class_name_len, int autoload) {
+  zend_class_entry *ce = NULL;
+
+  if (!class_name || class_name_len <= 0) {
+    return NULL;
+  }
+  ce = vphp_find_loaded_class_no_autoload(class_name, class_name_len);
+  if (ce != NULL) {
+    return ce;
+  }
+  if (!autoload) {
+    return NULL;
+  }
+  return vphp_lookup_class_by_name(class_name, class_name_len);
+}
 static int vphp_class_is_descendant_of(zend_class_entry *ce, zend_class_entry *parent_ce) {
   zend_class_entry *cursor = NULL;
 
@@ -613,12 +1230,6 @@ static int vphp_class_is_throwable(zend_class_entry *ce) {
     return 0;
   }
   return zend_class_implements_interface(ce, zend_ce_throwable) ? 1 : 0;
-}
-static int vphp_name_has_psr_prefix(zend_string *name) {
-  if (!name || ZSTR_LEN(name) < sizeof("Psr\\") - 1) {
-    return 0;
-  }
-  return memcmp(ZSTR_VAL(name), "Psr\\", sizeof("Psr\\") - 1) == 0 ? 1 : 0;
 }
 static zend_class_entry *vphp_autoload_class(zend_string *name) {
   if (!name) {
@@ -966,10 +1577,9 @@ int vphp_call_method(zval *obj, const char *method, int method_len,
                      zval *retval, int param_count, zval **params_ptrs) {
   if (!obj || Z_TYPE_P(obj) != IS_OBJECT)
     return -1;
-  zval method_name;
-  ZVAL_STRINGL(&method_name, method, method_len);
   ZVAL_UNDEF(retval);
   zval *params = NULL;
+  zend_function *fn_proxy = NULL;
   if (param_count > 0) {
     params = (zval *)safe_emalloc(param_count, sizeof(zval), 0);
     for (int i = 0; i < param_count; i++) {
@@ -979,14 +1589,31 @@ int vphp_call_method(zval *obj, const char *method, int method_len,
         ZVAL_NULL(&params[i]);
     }
   }
-  int result = call_user_function(EG(function_table), obj, &method_name, retval,
-                                  param_count, params);
-  zval_ptr_dtor(&method_name);
+  int result = SUCCESS;
+  if (param_count == 0) {
+    zend_call_method_with_0_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), &fn_proxy, method,
+                                   retval);
+  } else if (param_count == 1) {
+    zend_call_method_with_1_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), &fn_proxy, method,
+                                   retval, &params[0]);
+  } else if (param_count == 2) {
+    zend_call_method_with_2_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), &fn_proxy, method,
+                                   retval, &params[0], &params[1]);
+  } else {
+    zval method_name;
+    ZVAL_STRINGL(&method_name, method, method_len);
+    result = call_user_function(EG(function_table), obj, &method_name, retval,
+                                param_count, params);
+    zval_ptr_dtor(&method_name);
+  }
   if (params) {
     for (int i = 0; i < param_count; i++) {
       zval_ptr_dtor(&params[i]);
     }
     efree(params);
+  }
+  if (EG(exception) != NULL) {
+    return SUCCESS;
   }
   return result;
 }
@@ -1022,46 +1649,15 @@ static int vphp_implement_interface_for_class(zend_class_entry *class_ce,
                                               zend_class_entry *iface_ce) {
   int result = 0;
   zend_class_entry *candidate = NULL;
-  uint32_t i = 0;
 
   if (!class_ce || !iface_ce) {
     return 0;
-  }
-
-  if (iface_ce->num_interfaces > 0 && iface_ce->interfaces != NULL) {
-    for (i = 0; i < iface_ce->num_interfaces; i++) {
-      zend_class_entry *parent_iface = iface_ce->interfaces[i];
-      if (!parent_iface) {
-        continue;
-      }
-      if (vphp_class_is_throwable(class_ce) && class_ce->parent != NULL &&
-          vphp_class_is_throwable(class_ce->parent)) {
-        (void)vphp_implement_interface_for_class(class_ce->parent, parent_iface);
-      }
-      (void)vphp_implement_interface_for_class(class_ce, parent_iface);
-    }
   }
 
   if (!zend_class_implements_interface(class_ce, iface_ce)) {
     zend_do_implement_interface(class_ce, iface_ce);
   }
   result = zend_class_implements_interface(class_ce, iface_ce) ? 1 : 0;
-
-  ZEND_HASH_FOREACH_PTR(CG(class_table), candidate) {
-    if (!candidate || candidate == class_ce) {
-      continue;
-    }
-    if (candidate->ce_flags & ZEND_ACC_INTERFACE) {
-      continue;
-    }
-    if (!vphp_class_is_descendant_of(candidate, class_ce)) {
-      continue;
-    }
-    if (zend_class_implements_interface(candidate, iface_ce)) {
-      continue;
-    }
-    zend_do_implement_interface(candidate, iface_ce);
-  } ZEND_HASH_FOREACH_END();
 
   return result;
 }
@@ -1280,13 +1876,98 @@ void vphp_array_foreach(zval *z, void *ctx, void (*callback)(void *, zval *)) {
   }
 }
 zend_object_handlers vphp_obj_handlers;
+static const zend_object_handlers *vphp_original_handlers_for(zend_object *obj) {
+  vphp_object_wrapper *wrapper = NULL;
+  if (obj == NULL) {
+    return zend_get_std_object_handlers();
+  }
+  wrapper = vphp_obj_from_obj(obj);
+  if (wrapper != NULL && wrapper != &vphp_null_wrapper &&
+      wrapper->original_handlers != NULL) {
+    return wrapper->original_handlers;
+  }
+  return zend_get_std_object_handlers();
+}
+
+static zend_object_handlers *vphp_clone_inherited_handlers(
+    const zend_object_handlers *original_handlers) {
+  zend_object_handlers *cloned = NULL;
+  if (original_handlers == NULL) {
+    return NULL;
+  }
+  vphp_init_inherited_handler_registry();
+  cloned = zend_hash_index_find_ptr(&vphp_inherited_handler_registry,
+                                    (zend_ulong)original_handlers);
+  if (cloned != NULL) {
+    return cloned;
+  }
+  cloned = pemalloc(sizeof(zend_object_handlers), 1);
+  memcpy(cloned, original_handlers, sizeof(zend_object_handlers));
+  cloned->read_property = vphp_read_property;
+  cloned->write_property = vphp_write_property;
+  cloned->get_properties = vphp_get_properties;
+  zend_hash_index_update_ptr(&vphp_inherited_handler_registry,
+                             (zend_ulong)original_handlers, cloned);
+  return cloned;
+}
+
+static const zend_object_handlers *vphp_unwrap_inherited_handlers(
+    const zend_object_handlers *handlers) {
+  const zend_object_handlers *current = handlers;
+  if (current == NULL || !vphp_inherited_handler_registry_initialized) {
+    return current;
+  }
+  for (;;) {
+    zend_object_handlers *cloned = NULL;
+    zend_ulong original_key = 0;
+    int unwrapped = 0;
+    ZEND_HASH_FOREACH_NUM_KEY_PTR(&vphp_inherited_handler_registry, original_key,
+                                  cloned) {
+      if ((const zend_object_handlers *)cloned == current) {
+        current = (const zend_object_handlers *)original_key;
+        unwrapped = 1;
+        break;
+      }
+    }
+    ZEND_HASH_FOREACH_END();
+    if (!unwrapped) {
+      return current;
+    }
+  }
+}
+
+static const zend_object_handlers *vphp_fallback_handlers(
+    const zend_object_handlers *handlers) {
+  return handlers != NULL ? handlers : zend_get_std_object_handlers();
+}
+
+static zend_object *vphp_resolve_inherited_parent_object(
+    zend_class_entry *ce,
+    zend_object *(*self_create_object)(zend_class_entry *)) {
+  zend_class_entry *cursor = ce != NULL ? ce->parent : NULL;
+  while (cursor != NULL) {
+    if (cursor->create_object != NULL &&
+        cursor->create_object != self_create_object) {
+      return cursor->create_object(ce);
+    }
+    cursor = cursor->parent;
+  }
+  return NULL;
+}
+
 void vphp_free_object_handler(zend_object *obj) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(obj);
+  const zend_object_handlers *original_handlers = vphp_original_handlers_for(obj);
   void *owned_v_ptr = NULL;
+  void (*cleanup_raw)(void *) = NULL;
   void (*free_raw)(void *) = NULL;
   int owns_v_ptr = 0;
+  int uses_inline_wrapper = vphp_object_uses_inline_wrapper(obj);
+  int has_sidecar_wrapper =
+      !uses_inline_wrapper && wrapper != NULL && wrapper != &vphp_null_wrapper;
   if (wrapper) {
     owned_v_ptr = wrapper->v_ptr;
+    cleanup_raw = wrapper->cleanup_raw;
     free_raw = wrapper->free_raw;
     owns_v_ptr = wrapper->owns_v_ptr;
   }
@@ -1309,16 +1990,42 @@ void vphp_free_object_handler(zend_object *obj) {
       zend_hash_index_del(&vphp_object_registry, (zend_ulong)wrapper->v_ptr);
     }
   }
-  if (owns_v_ptr && owned_v_ptr && free_raw) {
-    free_raw(owned_v_ptr);
+  if (owns_v_ptr && owned_v_ptr) {
+    if (cleanup_raw) {
+      cleanup_raw(owned_v_ptr);
+    }
+    if (free_raw) {
+      free_raw(owned_v_ptr);
+    }
   }
-  if (wrapper) {
+  if (uses_inline_wrapper && wrapper) {
     wrapper->v_ptr = NULL;
     wrapper->owns_v_ptr = 0;
     wrapper->cleanup_raw = NULL;
     wrapper->free_raw = NULL;
+    wrapper->prop_handler = NULL;
+    wrapper->write_handler = NULL;
+    wrapper->sync_handler = NULL;
+    wrapper->original_handlers = NULL;
   }
-  zend_object_std_dtor(obj);
+  if (original_handlers != NULL && original_handlers->free_obj != NULL &&
+      original_handlers->free_obj != vphp_free_object_handler) {
+    original_handlers->free_obj(obj);
+  } else {
+    zend_object_std_dtor(obj);
+  }
+  if (has_sidecar_wrapper && vphp_sidecar_registry_initialized && obj != NULL) {
+    zend_hash_index_del(&vphp_sidecar_registry, (zend_ulong)obj);
+    wrapper->v_ptr = NULL;
+    wrapper->owns_v_ptr = 0;
+    wrapper->cleanup_raw = NULL;
+    wrapper->free_raw = NULL;
+    wrapper->prop_handler = NULL;
+    wrapper->write_handler = NULL;
+    wrapper->sync_handler = NULL;
+    wrapper->original_handlers = NULL;
+    efree(wrapper);
+  }
 }
 
 zval *vphp_read_property(zend_object *object, zend_string *member, int type,
@@ -1331,21 +2038,40 @@ zval *vphp_read_property(zend_object *object, zend_string *member, int type,
     if (Z_TYPE_P(rv) != IS_UNDEF)
       return rv;
   }
+  {
+    const zend_object_handlers *handlers =
+        vphp_fallback_handlers(vphp_original_handlers_for(object));
+    if (handlers->read_property != NULL) {
+      return handlers->read_property(object, member, type, cache_slot, rv);
+    }
+  }
   return zend_get_std_object_handlers()->read_property(object, member, type,
                                                        cache_slot, rv);
 }
 zval *vphp_read_property_compat(zend_object *obj, const char *name,
                                 int name_len, zval *rv) {
   zend_string *member = zend_string_init(name, name_len, 0);
-  zval *out = zend_get_std_object_handlers()->read_property(obj, member, BP_VAR_R,
-                                                            NULL, rv);
+  const zend_object_handlers *handlers =
+      vphp_fallback_handlers(vphp_original_handlers_for(obj));
+  zval *out = handlers->read_property != NULL
+                  ? handlers->read_property(obj, member, BP_VAR_R, NULL, rv)
+                  : zend_get_std_object_handlers()->read_property(
+                        obj, member, BP_VAR_R, NULL, rv);
   zend_string_release(member);
   return out;
 }
 void vphp_write_property_compat(zend_object *obj, const char *name, int name_len,
                                 zval *value) {
   zend_string *member = zend_string_init(name, name_len, 0);
-  zend_get_std_object_handlers()->write_property(obj, member, value, NULL);
+  {
+    const zend_object_handlers *handlers =
+        vphp_fallback_handlers(vphp_original_handlers_for(obj));
+    if (handlers->write_property != NULL) {
+      handlers->write_property(obj, member, value, NULL);
+    } else {
+      zend_get_std_object_handlers()->write_property(obj, member, value, NULL);
+    }
+  }
   zend_string_release(member);
 }
 zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
@@ -1388,21 +2114,37 @@ zval *vphp_read_class_constant_compat(const char *class_name, int class_name_len
 }
 int vphp_has_property_compat(zend_object *obj, const char *name, int name_len) {
   zend_string *member = zend_string_init(name, name_len, 0);
-  int out = zend_get_std_object_handlers()->has_property(
-      obj, member, ZEND_PROPERTY_EXISTS, NULL);
+  const zend_object_handlers *handlers =
+      vphp_fallback_handlers(vphp_original_handlers_for(obj));
+  int out = handlers->has_property != NULL
+                ? handlers->has_property(obj, member, ZEND_PROPERTY_EXISTS, NULL)
+                : zend_get_std_object_handlers()->has_property(
+                      obj, member, ZEND_PROPERTY_EXISTS, NULL);
   zend_string_release(member);
   return out;
 }
 int vphp_isset_property_compat(zend_object *obj, const char *name, int name_len) {
   zend_string *member = zend_string_init(name, name_len, 0);
-  int out = zend_get_std_object_handlers()->has_property(
-      obj, member, ZEND_PROPERTY_ISSET, NULL);
+  const zend_object_handlers *handlers =
+      vphp_fallback_handlers(vphp_original_handlers_for(obj));
+  int out = handlers->has_property != NULL
+                ? handlers->has_property(obj, member, ZEND_PROPERTY_ISSET, NULL)
+                : zend_get_std_object_handlers()->has_property(
+                      obj, member, ZEND_PROPERTY_ISSET, NULL);
   zend_string_release(member);
   return out;
 }
 void vphp_unset_property_compat(zend_object *obj, const char *name, int name_len) {
   zend_string *member = zend_string_init(name, name_len, 0);
-  zend_get_std_object_handlers()->unset_property(obj, member, NULL);
+  {
+    const zend_object_handlers *handlers =
+        vphp_fallback_handlers(vphp_original_handlers_for(obj));
+    if (handlers->unset_property != NULL) {
+      handlers->unset_property(obj, member, NULL);
+    } else {
+      zend_get_std_object_handlers()->unset_property(obj, member, NULL);
+    }
+  }
   zend_string_release(member);
 }
 void vphp_write_property(zend_object *object, zend_string *member, zval *value,
@@ -1419,11 +2161,23 @@ void vphp_write_property(zend_object *object, zend_string *member, zval *value,
   if (wrapper->v_ptr && wrapper->write_handler)
     wrapper->write_handler(wrapper->v_ptr, ZSTR_VAL(member),
                            (int)ZSTR_LEN(member), value);
-  zend_get_std_object_handlers()->write_property(object, member, value,
-                                                 cache_slot);
+  {
+    const zend_object_handlers *handlers =
+        vphp_fallback_handlers(vphp_original_handlers_for(object));
+    if (handlers->write_property != NULL) {
+      handlers->write_property(object, member, value, cache_slot);
+    } else {
+      zend_get_std_object_handlers()->write_property(object, member, value,
+                                                     cache_slot);
+    }
+  }
 }
 HashTable *vphp_get_properties(zend_object *object) {
-  HashTable *props = zend_std_get_properties(object);
+  const zend_object_handlers *handlers =
+      vphp_fallback_handlers(vphp_original_handlers_for(object));
+  HashTable *props = handlers->get_properties != NULL
+                         ? handlers->get_properties(object)
+                         : zend_std_get_properties(object);
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
   if (wrapper->v_ptr && wrapper->sync_handler) {
     zval obj_zv;
@@ -1457,29 +2211,119 @@ zend_object *vphp_create_object_handler(zend_class_entry *ce) {
   obj->owns_v_ptr = 0;
   obj->cleanup_raw = NULL;
   obj->free_raw = NULL;
+  obj->original_handlers = NULL;
   zend_object_std_init(&obj->std, ce);
   object_properties_init(&obj->std, ce);
   obj->std.handlers = &vphp_obj_handlers;
   return &obj->std;
 }
+zend_object *vphp_create_inherited_object_handler(zend_class_entry *ce) {
+  zend_object *obj = NULL;
+  const zend_object_handlers *original_handlers = NULL;
+  zend_object_handlers *cloned_handlers = NULL;
+  vphp_object_wrapper *wrapper = NULL;
+  if (vphp_obj_handlers.read_property == NULL) {
+    vphp_init_handlers();
+  }
+  vphp_preload_auto_interfaces_for_class(ce);
+  obj = vphp_resolve_inherited_parent_object(ce,
+                                             vphp_create_inherited_object_handler);
+  if (obj == NULL) {
+    return vphp_create_object_handler(ce);
+  }
+  vphp_apply_auto_interface_bindings_for_class(ce);
+  original_handlers = obj->handlers;
+  original_handlers = vphp_unwrap_inherited_handlers(original_handlers);
+  cloned_handlers = vphp_clone_inherited_handlers(original_handlers);
+  if (cloned_handlers != NULL) {
+    wrapper = vphp_binding_for_obj(obj, 1);
+    if (wrapper != NULL && wrapper != &vphp_null_wrapper) {
+      wrapper->magic = VPHP_MAGIC;
+      wrapper->original_handlers = original_handlers;
+    }
+    obj->handlers = cloned_handlers;
+  }
+  return obj;
+}
 void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
                                        int owns_v_ptr) {
-  vphp_object_wrapper *wrapper = vphp_obj_from_obj(obj);
+  vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 1);
+  if (wrapper == &vphp_null_wrapper) {
+    return;
+  }
   wrapper->owns_v_ptr = owns_v_ptr ? 1 : 0;
   wrapper->cleanup_raw = h->cleanup_raw;
   wrapper->free_raw = h->free_raw;
   if (h->v_ptr) {
     wrapper->v_ptr = h->v_ptr;
-    vphp_register_object(h->v_ptr, obj);
+    if (vphp_binding_uses_registry(obj)) {
+      vphp_register_object(h->v_ptr, obj);
+    }
   }
   wrapper->prop_handler = h->prop_handler;
   wrapper->write_handler = h->write_handler;
   wrapper->sync_handler = h->sync_handler;
 }
+vphp_object_wrapper *vphp_ensure_instance_binding(zend_object *obj,
+                                                  vphp_class_handlers *h,
+                                                  int owns_v_ptr) {
+  vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 1);
+  if (wrapper == &vphp_null_wrapper) {
+    return wrapper;
+  }
+  wrapper->cleanup_raw = h->cleanup_raw;
+  wrapper->free_raw = h->free_raw;
+  wrapper->prop_handler = h->prop_handler;
+  wrapper->write_handler = h->write_handler;
+  wrapper->sync_handler = h->sync_handler;
+  if (wrapper->v_ptr == NULL && h->new_raw != NULL) {
+    wrapper->owns_v_ptr = owns_v_ptr ? 1 : wrapper->owns_v_ptr;
+    wrapper->v_ptr = h->new_raw();
+    if (wrapper->v_ptr != NULL && vphp_binding_uses_registry(obj)) {
+      vphp_register_object(wrapper->v_ptr, obj);
+    }
+  }
+  return wrapper;
+}
 void vphp_bind_handlers(zend_object *obj, vphp_class_handlers *h) {
   vphp_bind_handlers_with_ownership(obj, h, 1);
 }
+void vphp_bind_owned_handlers(zend_object *obj, vphp_class_handlers *h) {
+  vphp_bind_handlers_with_ownership(obj, h, VPHP_OWNS_VPTR);
+}
+void vphp_bind_borrowed_handlers(zend_object *obj, vphp_class_handlers *h) {
+  vphp_bind_handlers_with_ownership(obj, h, VPHP_BORROWS_VPTR);
+}
+vphp_object_wrapper *vphp_ensure_owned_instance_binding(zend_object *obj,
+                                                        vphp_class_handlers *h) {
+  return vphp_ensure_instance_binding(obj, h, VPHP_OWNS_VPTR);
+}
+vphp_object_wrapper *vphp_ensure_borrowed_instance_binding(
+    zend_object *obj, vphp_class_handlers *h) {
+  return vphp_ensure_instance_binding(obj, h, VPHP_BORROWS_VPTR);
+}
+void vphp_init_owned_instance(zend_object *obj, vphp_class_handlers *h) {
+  vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 1);
+  if (wrapper == &vphp_null_wrapper || h == NULL) {
+    return;
+  }
+  if (wrapper->v_ptr == NULL && h->new_raw != NULL) {
+    wrapper->v_ptr = h->new_raw();
+    if (wrapper->v_ptr != NULL && vphp_binding_uses_registry(obj)) {
+      vphp_register_object(wrapper->v_ptr, obj);
+    }
+  }
+  vphp_bind_owned_handlers(obj, h);
+}
 void *vphp_get_this_object(zend_execute_data *execute_data) {
+  zval *this_obj = getThis();
+  return this_obj ? (void *)Z_OBJ_P(this_obj) : NULL;
+}
+void *vphp_get_current_this_object(void) {
+  zend_execute_data *execute_data = EG(current_execute_data);
+  if (execute_data == NULL) {
+    return NULL;
+  }
   zval *this_obj = getThis();
   return this_obj ? (void *)Z_OBJ_P(this_obj) : NULL;
 }

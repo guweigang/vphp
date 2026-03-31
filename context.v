@@ -84,12 +84,20 @@ pub fn (ctx Context) arg_borrowed_zval(index int) BorrowedZVal {
 	return borrow_zval(ctx.arg_raw(index))
 }
 
+pub fn (ctx Context) arg_any(index int) BorrowedValue {
+	return BorrowedValue.from_zval(ctx.arg_raw(index))
+}
+
 pub fn (ctx Context) arg_owned_request(index int) OwnedValue {
 	return own_request(ctx.arg_raw(index))
 }
 
 pub fn (ctx Context) arg_owned_request_zval(index int) RequestOwnedZVal {
 	return own_request_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_value(index int) Value {
+	return Value.from_zval(ctx.arg_raw(index))
 }
 
 pub fn (ctx Context) arg_owned_persistent(index int) OwnedValue {
@@ -109,6 +117,20 @@ pub fn (ctx Context) arg[T](index int) T {
 		return val
 	}
 	return val.to_v[T]() or { T{} }
+}
+
+pub fn (ctx Context) arg_opt[T](index int) ?T {
+	val := ctx.arg_raw(index)
+	if !val.is_valid() || val.is_null() || val.is_undef() {
+		return none
+	}
+	$if T is ZVal {
+		return val
+	}
+	if converted := val.to_v[T]() {
+		return converted
+	}
+	return none
 }
 
 pub fn (ctx Context) arg_val(index int) ZVal {
@@ -167,12 +189,28 @@ pub fn (ctx Context) return_obj(v_ptr voidptr, ce voidptr) {
 	C.vphp_return_obj(ctx.ret, v_ptr, ce)
 }
 
+pub fn (ctx Context) return_bound_object(v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
+	return_bound_object_raw(ctx.ret, v_ptr, ce, handlers, ownership)
+}
+
+pub fn (ctx Context) return_owned_object(v_ptr voidptr, ce voidptr, handlers voidptr) {
+	return_owned_object_raw(ctx.ret, v_ptr, ce, handlers)
+}
+
+pub fn (ctx Context) return_borrowed_object(v_ptr voidptr, ce voidptr, handlers voidptr) {
+	return_borrowed_object_raw(ctx.ret, v_ptr, ce, handlers)
+}
+
 pub fn (ctx Context) return_zval(val ZVal) {
 	if !val.is_valid() {
 		ctx.return_null()
 		return
 	}
 	unsafe { C.ZVAL_COPY(ctx.ret, val.raw) }
+}
+
+pub fn (ctx Context) return_any[T](val T) {
+	ctx.return_val[T](val)
 }
 
 pub fn (ctx Context) return_val[T](val T) {

@@ -37,6 +37,19 @@ pub fn throw_exception_class(class_name string, msg string, code int) {
 	unsafe { C.vphp_throw_class(&char(class_name.str), &char(msg.str), code) }
 }
 
+pub fn throw_exception_object(mut exception ZVal) {
+	if !exception.is_valid() || !exception.is_object() {
+		throw_exception('exception object must be a valid object', 0)
+		return
+	}
+	unsafe {
+		C.vphp_disown_zval(exception.raw)
+		C.vphp_throw_object(exception.raw)
+	}
+	exception.raw = unsafe { nil }
+	exception.owned = false
+}
+
 // 抛出带稳定错误分类前缀的 PHP 异常
 pub fn throw_interop_error(class InteropErrorClass, msg string, code int) {
 	throw_exception('[${class.str()}] ${msg}', code)

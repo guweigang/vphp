@@ -27,6 +27,16 @@ pub:
 	rev_registry_len u32
 }
 
+pub struct StreamMetadata {
+pub:
+	mode      string
+	uri       string
+	seekable  bool
+	timed_out bool
+	blocked   bool
+	eof       bool
+}
+
 fn invalid_zval() ZVal {
 	return unsafe {
 		ZVal{
@@ -214,6 +224,93 @@ pub fn (v ZVal) is_object() bool {
 
 pub fn (v ZVal) is_resource() bool {
 	return v.type_id() == .resource
+}
+
+pub fn (v ZVal) resource_type() ?string {
+	if !v.is_valid() || !v.is_resource() {
+		return none
+	}
+	res := php_fn('get_resource_type').call([v])
+	if !res.is_valid() || res.is_null() || res.is_undef() {
+		return none
+	}
+	type_name := res.to_string().trim_space()
+	if type_name == '' {
+		return none
+	}
+	return type_name
+}
+
+pub fn (v ZVal) stream_metadata() ?StreamMetadata {
+	if !v.is_valid() || !v.is_resource() {
+		return none
+	}
+	resource_type := v.resource_type() or { return none }
+	if resource_type != 'stream' {
+		return none
+	}
+	meta := php_fn('stream_get_meta_data').call([v])
+	if !meta.is_valid() || !meta.is_array() {
+		return none
+	}
+	return StreamMetadata{
+		mode: zval_string_key_or(meta, 'mode', '')
+		uri: zval_string_key_or(meta, 'uri', '')
+		seekable: zval_bool_key_or(meta, 'seekable', false)
+		timed_out: zval_bool_key_or(meta, 'timed_out', false)
+		blocked: zval_bool_key_or(meta, 'blocked', false)
+		eof: zval_bool_key_or(meta, 'eof', false)
+	}
+}
+
+pub fn (v ZVal) is_stream_resource() bool {
+	return v.stream_metadata() != none
+}
+
+pub fn (v ZVal) stream_rewind() bool {
+	if !v.is_stream_resource() {
+		return false
+	}
+	res := php_fn('rewind').call([v])
+	return res.is_valid() && (!res.is_bool() || res.to_bool())
+}
+
+pub fn (v ZVal) stream_get_contents() ?string {
+	if !v.is_stream_resource() {
+		return none
+	}
+	content := php_fn('stream_get_contents').call([v])
+	if !content.is_valid() || content.is_null() || content.is_undef() || (content.is_bool() && !content.to_bool()) {
+		return none
+	}
+	return content.to_string()
+}
+
+pub fn (v ZVal) stream_eof() bool {
+	if !v.is_stream_resource() {
+		return true
+	}
+	res := php_fn('feof').call([v])
+	return res.is_valid() && res.to_bool()
+}
+
+pub fn (v ZVal) stream_read_line() ?string {
+	if !v.is_stream_resource() {
+		return none
+	}
+	line := php_fn('fgets').call([v])
+	if !line.is_valid() || line.is_null() || line.is_undef() || (line.is_bool() && !line.to_bool()) {
+		return none
+	}
+	return line.to_string()
+}
+
+pub fn (v ZVal) stream_close() bool {
+	if !v.is_stream_resource() {
+		return false
+	}
+	res := php_fn('fclose').call([v])
+	return res.is_valid() && (!res.is_bool() || res.to_bool())
 }
 
 pub fn (v ZVal) is_callable() bool {
@@ -493,6 +590,28 @@ pub fn (v ZVal) get_key(key ZVal) !ZVal {
 pub fn (v ZVal) get_or(key string, default_val string) string {
 	val := v.get(key) or { return default_val }
 	return val.to_string()
+}
+
+fn zval_string_key_or(input ZVal, key string, default_value string) string {
+	raw := input.get(key) or { return default_value }
+	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
+		return default_value
+	}
+	return raw.to_string()
+}
+
+fn zval_bool_key_or(input ZVal, key string, default_value bool) bool {
+	raw := input.get(key) or { return default_value }
+	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
+		return default_value
+	}
+	if raw.is_bool() {
+		return raw.to_bool()
+	}
+	if raw.is_long() {
+		return raw.to_i64() != 0
+	}
+	return raw.to_string().trim_space().to_lower() in ['1', 'true', 'yes', 'on']
 }
 
 // ======== 对象属性与类元信息 ========
@@ -968,6 +1087,24 @@ pub fn (v ZVal) dup_persistent() ZVal {
 	mut out := v.dup()
 	autorelease_forget(out.raw)
 	return out
+}
+
+// current_this_owned_request captures the current PHP `$this` object as a
+// request-owned ZVal so framework code can safely re-enter user-visible
+// methods without hand-constructing object wrappers.
+pub fn current_this_owned_request() ZVal {
+	unsafe {
+		obj_raw := C.vphp_get_current_this_object()
+		if obj_raw == 0 {
+			return invalid_zval()
+		}
+		mut out := C.vphp_new_zval()
+		if out == 0 {
+			return invalid_zval()
+		}
+		C.vphp_wrap_existing_object(out, &C.zend_object(obj_raw))
+		return adopt_raw_with_ownership(out, .owned_request)
+	}
 }
 
 pub fn (v ZVal) construct(args []ZVal) ZVal {
@@ -1473,6 +1610,15 @@ pub fn (v ZVal) to_v[T]() !T {
 	$if T is ZVal {
 		return v
 	}
+	$if T is BorrowedValue {
+		return BorrowedValue.from_zval(v)
+	}
+	$if T is Value {
+		return Value.from_zval(v)
+	}
+	$if T is PersistentValue {
+		return PersistentValue.from_zval(v)
+	}
 	$if T is bool {
 		if !v.is_bool() {
 			return error('type mismatch: expected bool, got ${v.type_name()}')
@@ -1558,6 +1704,16 @@ pub fn (v ZVal) to_v[T]() !T {
 		}
 		return out
 	}
+	$if T is []ZVal {
+		if !v.is_array() {
+			return error('type mismatch: expected array<ZVal>, got ${v.type_name()}')
+		}
+		mut out := []ZVal{}
+		for i in 0 .. v.array_count() {
+			out << v.array_get(i)
+		}
+		return out
+	}
 	$if T is map[string]string {
 		if !v.is_array() {
 			return error('type mismatch: expected map<string,string>, got ${v.type_name()}')
@@ -1588,6 +1744,16 @@ pub fn (v ZVal) to_v[T]() !T {
 		})
 		return out
 	}
+	$if T is map[string]ZVal {
+		if !v.is_array() {
+			return error('type mismatch: expected map<string,ZVal>, got ${v.type_name()}')
+		}
+		mut out := map[string]ZVal{}
+		out = v.foreach_with_ctx[map[string]ZVal](out, fn (key ZVal, val ZVal, mut m map[string]ZVal) {
+			m[key.to_string()] = val
+		})
+		return out
+	}
 	return error('unsupported to_v conversion for requested type')
 }
 
@@ -1599,6 +1765,30 @@ pub fn (v ZVal) from_v[T](value T) ! {
 			return
 		}
 		unsafe { C.ZVAL_COPY(v.raw, value.raw) }
+		return
+	}
+	$if T is BorrowedValue {
+		if !value.is_valid() {
+			v.set_null()
+			return
+		}
+		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
+		return
+	}
+	$if T is Value {
+		if !value.is_valid() {
+			v.set_null()
+			return
+		}
+		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
+		return
+	}
+	$if T is PersistentValue {
+		if !value.is_valid() {
+			v.set_null()
+			return
+		}
+		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
 		return
 	}
 	$if T is bool {
@@ -1645,6 +1835,13 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		}
 		return
 	}
+	$if T is []ZVal {
+		v.array_init()
+		for item in value {
+			v.add_next_val(item)
+		}
+		return
+	}
 	$if T is []map[string]string {
 		v.array_init()
 		for item in value {
@@ -1654,6 +1851,18 @@ pub fn (v ZVal) from_v[T](value T) ! {
 				sub.add_assoc_string(key, val)
 			}
 			v.add_next_val(sub)
+		}
+		return
+	}
+	$if T is map[string][]string {
+		v.array_init()
+		for key, item in value {
+			mut sub := RequestOwnedZVal.new_null().to_zval()
+			sub.array_init()
+			for entry in item {
+				sub.push_string(entry)
+			}
+			C.vphp_array_add_assoc_zval(v.raw, &char(key.str), sub.raw)
 		}
 		return
 	}
@@ -1682,6 +1891,13 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		v.array_init()
 		for key, item in value {
 			v.add_assoc_bool(key, item)
+		}
+		return
+	}
+	$if T is map[string]ZVal {
+		v.array_init()
+		for key, item in value {
+			C.vphp_array_add_assoc_zval(v.raw, &char(key.str), item.raw)
 		}
 		return
 	}

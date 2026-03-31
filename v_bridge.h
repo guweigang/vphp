@@ -14,7 +14,7 @@ typedef struct {
   void (*prop_handler)(void *, char *, int, zval *);
   void (*write_handler)(void *, char *, int, zval *);
   void (*sync_handler)(void *, zval *);
-  void (*bind_handler)(void *, zend_object *);
+  const zend_object_handlers *original_handlers;
   zend_object std;
 } vphp_object_wrapper;
 
@@ -27,6 +27,9 @@ typedef struct {
   void (*cleanup_raw)(void *);
   void (*free_raw)(void *);
 } vphp_class_handlers;
+
+#define VPHP_BORROWS_VPTR 0
+#define VPHP_OWNS_VPTR 1
 
 typedef struct {
   void *ptr;
@@ -42,20 +45,45 @@ void vphp_create_closure_with_arity(zval *zv, void *v_thunk, void *bridge_ptr,
 vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj);
 void vphp_register_object(void *v_ptr, zend_object *obj);
 void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce);
+void vphp_return_bound_object(zval *return_value, void *v_ptr,
+                              zend_class_entry *ce, vphp_class_handlers *h,
+                              int owns_v_ptr);
+void vphp_return_owned_object(zval *return_value, void *v_ptr,
+                              zend_class_entry *ce, vphp_class_handlers *h);
+void vphp_return_borrowed_object(zval *return_value, void *v_ptr,
+                                 zend_class_entry *ce,
+                                 vphp_class_handlers *h);
+void vphp_wrap_existing_object(zval *return_value, zend_object *obj);
 
 // 对象与类管理
 zend_object *vphp_create_object_handler(zend_class_entry *ce);
+zend_object *vphp_create_inherited_object_handler(zend_class_entry *ce);
 void vphp_init_resource_system(int module_number);
 HashTable *vphp_get_properties(zend_object *object);
 void vphp_bind_handlers(zend_object *obj, vphp_class_handlers *h);
 void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
                                        int owns_v_ptr);
+void vphp_bind_owned_handlers(zend_object *obj, vphp_class_handlers *h);
+void vphp_bind_borrowed_handlers(zend_object *obj, vphp_class_handlers *h);
+vphp_object_wrapper *vphp_ensure_instance_binding(zend_object *obj,
+                                                  vphp_class_handlers *h,
+                                                  int owns_v_ptr);
+vphp_object_wrapper *vphp_ensure_owned_instance_binding(zend_object *obj,
+                                                        vphp_class_handlers *h);
+vphp_object_wrapper *vphp_ensure_borrowed_instance_binding(
+    zend_object *obj, vphp_class_handlers *h);
+void vphp_init_owned_instance(zend_object *obj, vphp_class_handlers *h);
+bool vphp_validate_internal_call(zend_execute_data *execute_data);
+bool vphp_validate_internal_return(zend_execute_data *execute_data,
+                                   zval *return_value);
+void vphp_mark_void_return(zval *return_value);
 
 // 参数、值与返回 (由 V 侧代码引用)
 uint32_t vphp_get_num_args(zend_execute_data *ex);
 zval *vphp_get_arg_ptr(zend_execute_data *ex, uint32_t index);
 zval *vphp_new_zval(void);
 void vphp_release_zval(zval *z);
+void vphp_disown_zval(zval *z);
 int vphp_autorelease_mark(void);
 void vphp_autorelease_add(zval *z);
 void vphp_autorelease_forget(zval *z);
@@ -71,6 +99,7 @@ void vphp_uninstall_runtime_binding_hooks(void);
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item);
 void vphp_throw(char *msg, int code);
 void vphp_throw_class(char *class_name, char *msg, int code);
+void vphp_throw_object(zval *exception);
 void vphp_error(int level, char *msg);
 bool vphp_has_exception(void);
 void vphp_init_registry(void);
@@ -144,6 +173,7 @@ long vphp_get_int(zval *z);
 double vphp_get_double(zval *z);
 zend_object *vphp_get_obj_from_zval(zval *zv);
 void *vphp_get_this_object(zend_execute_data *execute_data);
+void *vphp_get_current_this_object(void);
 void *vphp_get_v_ptr_from_zval(zval *zv);
 
 // 方法调用与 Callable
@@ -169,6 +199,10 @@ int vphp_bind_class_interface(const char *class_name, int class_name_len,
 void vphp_register_auto_interface_binding(const char *class_name, int class_name_len,
                                           const char *iface_name, int iface_name_len);
 void vphp_apply_auto_interface_bindings(int autoload);
+zend_class_entry *vphp_find_loaded_class_entry(const char *class_name,
+                                               int class_name_len);
+zend_class_entry *vphp_require_class_entry(const char *class_name,
+                                           int class_name_len, int autoload);
 
 zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
                                        const char *name, int name_len, zval *rv);
