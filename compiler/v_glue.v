@@ -68,6 +68,22 @@ fn uniq_lines(lines []string) []string {
 	return out
 }
 
+fn closure_universal_helper_for(return_type string) string {
+	return match return_type {
+		'ClosureUniversal0', 'vphp.ClosureUniversal0' { 'wrap_closure_universal_0' }
+		'ClosureUniversal1', 'vphp.ClosureUniversal1' { 'wrap_closure_universal_1' }
+		'ClosureUniversal2', 'vphp.ClosureUniversal2' { 'wrap_closure_universal_2' }
+		'ClosureUniversal3', 'vphp.ClosureUniversal3' { 'wrap_closure_universal_3' }
+		'ClosureUniversal4', 'vphp.ClosureUniversal4' { 'wrap_closure_universal_4' }
+		'ClosureUniversal0Void', 'vphp.ClosureUniversal0Void' { 'wrap_closure_universal_0_void' }
+		'ClosureUniversal1Void', 'vphp.ClosureUniversal1Void' { 'wrap_closure_universal_1_void' }
+		'ClosureUniversal2Void', 'vphp.ClosureUniversal2Void' { 'wrap_closure_universal_2_void' }
+		'ClosureUniversal3Void', 'vphp.ClosureUniversal3Void' { 'wrap_closure_universal_3_void' }
+		'ClosureUniversal4Void', 'vphp.ClosureUniversal4Void' { 'wrap_closure_universal_4_void' }
+		else { '' }
+	}
+}
+
 fn is_internal_parent_scalar_field(v_type string) bool {
 	return v_type in ['string', 'int', 'i64', 'bool', 'f64']
 }
@@ -155,13 +171,14 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 	} else if return_type == 'void' {
 		out << '    ${v_call_name}(${call_args})'
 	} else {
+		universal_helper := closure_universal_helper_for(effective_return)
 		// Special-case: if the function returns a V closure type (fn ...),
 		// wrap the returned V closure into a PHP closure before returning it.
 		// We prefer ctx.wrap_closure[T] when the effective return type is a
 		// concrete function type so the runtime can perform comptime arity
 		// inspection. This avoids the emitter needing to generate many
 		// monomorphized N-suffixed helpers.
-		if effective_return.contains('fn') {
+		if effective_return.contains('fn') || universal_helper != '' {
 			// Avoid generating complex generic function type parameters in the
 			// emitted V glue (some V compiler versions have trouble with
 			// post-processing generic function signatures). Instead, parse the
@@ -170,61 +187,64 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 			// stable ctx.wrap_closure_universal[...] helper. This keeps the
 			// generated glue simple and avoids triggering compiler bugs.
 			out << '    res := ${v_call_name}(${call_args})'
-			// parse arity from a shape like: fn (T1, T2) Ret
-			// default to 0 if parsing fails
-			// NOTE: emitted string uses literal ClosureUniversal aliases under vphp namespace
-			// We generate code that selects the alias statically based on the
-			// textual function signature discovered at emit time.
-			// Extract the param list between the first 'fn (' and the following ')'
-			// and count commas to determine arity.
-			// Example: "fn (ZVal, ZVal) ZVal" -> params "ZVal, ZVal" -> arity 2
-			// Example void return: "fn (ZVal) void" -> use ClosureUniversal1Void
-			// Fallback: use ClosureUniversal0
-			// We perform this parsing at emitter-time (string-level) to avoid
-			// depending on V comptime reflection in generated code.
-			em_params := if effective_return.contains('fn (') {
-				effective_return.all_after('fn (').all_before(')')
-			} else {
-				''
-			}
-			em_ret := if effective_return.contains(') ') {
-				effective_return.all_after(') ').trim_space()
-			} else {
-				''
-			}
-			mut em_arity := if em_params.trim_space() == '' { 0 } else { em_params.split(',').len }
-			// Cap arity to 4 — runtime supports 0..4
-			if em_arity > 4 {
-				em_arity = 4
-			}
-			// Choose a concrete helper name (avoid emitting generic bracket form)
-			mut helper := 'wrap_closure_universal_0'
-			if em_ret == 'void' {
-				helper = 'wrap_closure_universal_0_void'
-			}
-			if em_arity == 1 {
-				helper = if em_ret == 'void' {
-					'wrap_closure_universal_1_void'
+			mut helper := universal_helper
+			if helper == '' {
+				// parse arity from a shape like: fn (T1, T2) Ret
+				// default to 0 if parsing fails
+				// NOTE: emitted string uses literal ClosureUniversal aliases under vphp namespace
+				// We generate code that selects the alias statically based on the
+				// textual function signature discovered at emit time.
+				// Extract the param list between the first 'fn (' and the following ')'
+				// and count commas to determine arity.
+				// Example: "fn (ZVal, ZVal) ZVal" -> params "ZVal, ZVal" -> arity 2
+				// Example void return: "fn (ZVal) void" -> use ClosureUniversal1Void
+				// Fallback: use ClosureUniversal0
+				// We perform this parsing at emitter-time (string-level) to avoid
+				// depending on V comptime reflection in generated code.
+				em_params := if effective_return.contains('fn (') {
+					effective_return.all_after('fn (').all_before(')')
 				} else {
-					'wrap_closure_universal_1'
+					''
 				}
-			} else if em_arity == 2 {
-				helper = if em_ret == 'void' {
-					'wrap_closure_universal_2_void'
+				em_ret := if effective_return.contains(') ') {
+					effective_return.all_after(') ').trim_space()
 				} else {
-					'wrap_closure_universal_2'
+					''
 				}
-			} else if em_arity == 3 {
-				helper = if em_ret == 'void' {
-					'wrap_closure_universal_3_void'
-				} else {
-					'wrap_closure_universal_3'
+				mut em_arity := if em_params.trim_space() == '' { 0 } else { em_params.split(',').len }
+				// Cap arity to 4 — runtime supports 0..4
+				if em_arity > 4 {
+					em_arity = 4
 				}
-			} else if em_arity == 4 {
-				helper = if em_ret == 'void' {
-					'wrap_closure_universal_4_void'
-				} else {
-					'wrap_closure_universal_4'
+				// Choose a concrete helper name (avoid emitting generic bracket form)
+				helper = 'wrap_closure_universal_0'
+				if em_ret == 'void' {
+					helper = 'wrap_closure_universal_0_void'
+				}
+				if em_arity == 1 {
+					helper = if em_ret == 'void' {
+						'wrap_closure_universal_1_void'
+					} else {
+						'wrap_closure_universal_1'
+					}
+				} else if em_arity == 2 {
+					helper = if em_ret == 'void' {
+						'wrap_closure_universal_2_void'
+					} else {
+						'wrap_closure_universal_2'
+					}
+				} else if em_arity == 3 {
+					helper = if em_ret == 'void' {
+						'wrap_closure_universal_3_void'
+					} else {
+						'wrap_closure_universal_3'
+					}
+				} else if em_arity == 4 {
+					helper = if em_ret == 'void' {
+						'wrap_closure_universal_4_void'
+					} else {
+						'wrap_closure_universal_4'
+					}
 				}
 			}
 			out << '    // Wrap returned V closure using explicit helper: ${helper}'
@@ -715,6 +735,15 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			if r.shadow_static_name != '' {
 				out << '    ${r.name}.sync_statics_to_php(ctx)'
 			}
+			if returns_object {
+				if m.is_static {
+					out << '    return voidptr(0)'
+				} else if uses_inherited_receiver {
+					out << '    return voidptr(this_obj)'
+				} else {
+					out << '    return ptr'
+				}
+			}
 		} else {
 			out << '    res := ${call_str}'
 			if uses_inherited_receiver && !m.is_static {
@@ -723,57 +752,61 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			if r.shadow_static_name != '' {
 				out << '    ${r.name}.sync_statics_to_php(ctx)'
 			}
-			if effective_return.contains('fn') {
+			universal_helper := closure_universal_helper_for(effective_return)
+			if effective_return.contains('fn') || universal_helper != '' {
 				// Handle functions that return V closures. Use the same
 				// concrete-helper emission strategy as for top-level functions
 				// to avoid emitting generic bracketed forms that can trigger
 				// V compiler alias/signature handling bugs.
 				out << '    // Returned value is a closure type: wrap using concrete helper'
-				em_params := if effective_return.contains('fn (') {
-					effective_return.all_after('fn (').all_before(')')
-				} else {
-					''
-				}
-				em_ret := if effective_return.contains(') ') {
-					effective_return.all_after(') ').trim_space()
-				} else {
-					''
-				}
-				mut em_arity := if em_params.trim_space() == '' {
-					0
-				} else {
-					em_params.split(',').len
-				}
-				if em_arity > 4 {
-					em_arity = 4
-				}
-				mut helper := 'wrap_closure_universal_0'
-				if em_ret == 'void' {
-					helper = 'wrap_closure_universal_0_void'
-				}
-				if em_arity == 1 {
-					helper = if em_ret == 'void' {
-						'wrap_closure_universal_1_void'
+				mut helper := universal_helper
+				if helper == '' {
+					em_params := if effective_return.contains('fn (') {
+						effective_return.all_after('fn (').all_before(')')
 					} else {
-						'wrap_closure_universal_1'
+						''
 					}
-				} else if em_arity == 2 {
-					helper = if em_ret == 'void' {
-						'wrap_closure_universal_2_void'
+					em_ret := if effective_return.contains(') ') {
+						effective_return.all_after(') ').trim_space()
 					} else {
-						'wrap_closure_universal_2'
+						''
 					}
-				} else if em_arity == 3 {
-					helper = if em_ret == 'void' {
-						'wrap_closure_universal_3_void'
+					mut em_arity := if em_params.trim_space() == '' {
+						0
 					} else {
-						'wrap_closure_universal_3'
+						em_params.split(',').len
 					}
-				} else if em_arity == 4 {
-					helper = if em_ret == 'void' {
-						'wrap_closure_universal_4_void'
-					} else {
-						'wrap_closure_universal_4'
+					if em_arity > 4 {
+						em_arity = 4
+					}
+					helper = 'wrap_closure_universal_0'
+					if em_ret == 'void' {
+						helper = 'wrap_closure_universal_0_void'
+					}
+					if em_arity == 1 {
+						helper = if em_ret == 'void' {
+							'wrap_closure_universal_1_void'
+						} else {
+							'wrap_closure_universal_1'
+						}
+					} else if em_arity == 2 {
+						helper = if em_ret == 'void' {
+							'wrap_closure_universal_2_void'
+						} else {
+							'wrap_closure_universal_2'
+						}
+					} else if em_arity == 3 {
+						helper = if em_ret == 'void' {
+							'wrap_closure_universal_3_void'
+						} else {
+							'wrap_closure_universal_3'
+						}
+					} else if em_arity == 4 {
+						helper = if em_ret == 'void' {
+							'wrap_closure_universal_4_void'
+						} else {
+							'wrap_closure_universal_4'
+						}
 					}
 				}
 				out << '    // Wrap returned V closure using explicit helper: ${helper}'
