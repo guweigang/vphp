@@ -6,6 +6,7 @@ pub mut:
 	c_func      string
 	return_spec ReturnSpec
 	args        []ClassMethodArg // reuse ClassMethodArg for function args
+	uses_context bool
 }
 
 pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {
@@ -16,12 +17,13 @@ pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {
 	}
 }
 
-pub fn new_func_builder_with_args(php_name string, c_func string, return_spec ReturnSpec, args []ClassMethodArg) &FuncBuilder {
+pub fn new_func_builder_with_args(php_name string, c_func string, return_spec ReturnSpec, args []ClassMethodArg, uses_context bool) &FuncBuilder {
 	return &FuncBuilder{
 		php_name:    php_name
 		c_func:      c_func
 		return_spec: return_spec
 		args:        args
+		uses_context: uses_context
 	}
 }
 
@@ -34,6 +36,9 @@ pub fn (b &FuncBuilder) render_declaration() string {
 }
 
 pub fn (b &FuncBuilder) render_arginfo() string {
+	if b.uses_context {
+		return 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${b.c_func}, 0, 0, 0)\nZEND_ARG_VARIADIC_TYPE_INFO(0, args, IS_MIXED, 0)\nZEND_END_ARG_INFO()'
+	}
 	mut res := []string{}
 	resolved_return_type := b.return_spec.resolved_type()
 	validate_php_return_type_or_panic(resolved_return_type, b.php_name)

@@ -8,6 +8,7 @@ pub mut:
 	args          []PhpArg
 	has_export    bool
 	is_internal   bool
+	uses_context  bool
 }
 
 pub fn new_func_repr() &PhpFuncRepr {

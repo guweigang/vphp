@@ -38,7 +38,7 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 		}
 	}
 	spec := g.build_func_return_spec(f)
-	return *builder.new_func_builder_with_args(f.name, f.name, spec, args)
+	return *builder.new_func_builder_with_args(f.name, f.name, spec, args, f.uses_context)
 }
 
 fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments {
@@ -556,11 +556,17 @@ fn (g CGenerator) gen_func_c(f &repr.PhpFuncRepr) []string {
 	// ctx.wrap_closure_universal) to keep the generated C stable.
 	r << 'extern void ${target_func}(vphp_context_internal ctx);'
 	r << 'PHP_FUNCTION(${f.name}) {'
-	r << '    if (!vphp_validate_internal_call(execute_data)) {'
-	r << '        return;'
-	r << '    }'
+	if !f.uses_context {
+		r << '    if (!vphp_validate_internal_call(execute_data)) {'
+		r << '        return;'
+		r << '    }'
+	}
 	r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
 	r << '    ${target_func}(ctx);'
+	if f.uses_context {
+		r << '}'
+		return r
+	}
 	if return_type == 'void' {
 		r << '    if (!EG(exception)) {'
 		r << '        vphp_mark_void_return(return_value);'
