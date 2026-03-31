@@ -1,6 +1,7 @@
 module linker
 
 import os
+import rand
 import v.ast
 import compiler.repr
 
@@ -15,12 +16,29 @@ fn shell_single_quote(value string) string {
 	return "'" + value.replace("'", "'\\''") + "'"
 }
 
+fn shell_double_quote(value string) string {
+	return '"' + value.replace('"', '\\"') + '"'
+}
+
+fn shell_quote_arg(value string) string {
+	if os.user_os() == 'windows' {
+		return shell_double_quote(value)
+	}
+	return shell_single_quote(value)
+}
+
 fn php_class_internal_status(name string) int {
 	if name.trim_space() == '' {
 		return -1
 	}
-	cmd := "php -r '\$name = \$argv[1]; if (!class_exists(\$name, false)) { exit(1); } \$r = new ReflectionClass(\$name); exit(\$r->isInternal() ? 0 : 2);' ${shell_single_quote(name)}"
+	tmp_script := os.join_path(os.temp_dir(), 'vphp_internal_class_${rand.u64()}.php')
+	script := "<?php\n\$name = \$argv[1] ?? '';\nif (!class_exists(\$name, false)) { exit(1); }\n\$r = new ReflectionClass(\$name);\nexit(\$r->isInternal() ? 0 : 2);\n"
+	os.write_file(tmp_script, script) or {
+		return -1
+	}
+	cmd := "php ${shell_quote_arg(tmp_script)} ${shell_quote_arg(name)}"
 	res := os.execute(cmd)
+	os.rm(tmp_script) or {}
 	return res.exit_code
 }
 
