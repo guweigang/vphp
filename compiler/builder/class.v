@@ -350,12 +350,11 @@ fn (b &ClassBuilder) render_registration_function() string {
 }
 
 pub fn (b &ClassBuilder) render_impl_prelude() string {
-	lower_name := b.c_name.to_lower()
-	return '${b.render_ce_declaration()}\nstatic const zend_function_entry ${lower_name}_methods[];\n${b.render_arginfo_defs()}\n${b.render_registration_function()}'
+	return '${b.render_ce_declaration()}\n${b.render_arginfo_defs()}'
 }
 
 pub fn (b &ClassBuilder) render_impl_postlude() string {
-	return b.render_methods_array()
+	return '${b.render_methods_array()}\n${b.render_registration_function()}'
 }
 
 fn arg_type_info(v_type string) ArgTypeInfo {
