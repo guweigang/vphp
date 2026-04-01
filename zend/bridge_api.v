@@ -22,6 +22,7 @@ pub fn C.vphp_throw_class(class_name &char, msg &char, code int)
 pub fn C.vphp_throw_object(exception &C.zval)
 pub fn C.vphp_disown_zval(z &C.zval)
 pub fn C.vphp_error(int, &char)
+pub fn C.vphp_output_write(&char, int)
 
 // ===== 3. zval 类型检测 =====
 pub fn C.vphp_get_type(z &C.zval) int

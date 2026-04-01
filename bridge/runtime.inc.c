@@ -425,6 +425,13 @@ void vphp_throw_object(zval *exception) {
 
 void vphp_error(int level, char *msg) { php_error(level, "%s", msg); }
 
+void vphp_output_write(const char *msg, int len) {
+  if (msg == NULL || len <= 0) {
+    return;
+  }
+  PHPWRITE(msg, len);
+}
+
 bool vphp_has_exception() { return EG(exception) != NULL; }
 
 static bool vphp_owned_contains(zval *z) {

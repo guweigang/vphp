@@ -109,6 +109,7 @@ void vphp_throw(char *msg, int code);
 void vphp_throw_class(char *class_name, char *msg, int code);
 void vphp_throw_object(zval *exception);
 void vphp_error(int level, char *msg);
+void vphp_output_write(const char *msg, int len);
 bool vphp_has_exception(void);
 void vphp_init_registry(void);
 void vphp_shutdown_registry(void);
