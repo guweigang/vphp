@@ -103,7 +103,9 @@ pub fn (b &ModuleBuilder) render_ginit() string {
 	for field in b.globals.fields {
 		// 默认初始化为 0 或空
 		if field.v_type == 'string' {
-			res.write_string('    globals->${field.name} = (v_string){0};\n')
+			res.write_string('    globals->${field.name}.str = NULL;\n')
+			res.write_string('    globals->${field.name}.len = 0;\n')
+			res.write_string('    globals->${field.name}.is_lit = 0;\n')
 		} else {
 			res.write_string('    globals->${field.name} = 0;\n')
 		}
@@ -117,10 +119,8 @@ pub fn (b &ModuleBuilder) render_minit() string {
 	mut res := strings.new_builder(1024)
 	res.write_string('PHP_MINIT_FUNCTION(${b.ext_name}) {\n')
 	res.write_string('    vphp_framework_init(module_number);\n')
-	res.write_string('    extern void vphp_ext_auto_startup() __attribute__((weak));\n')
-	res.write_string('    extern void vphp_ext_startup() __attribute__((weak));\n')
-	res.write_string('    if (vphp_ext_auto_startup) vphp_ext_auto_startup();\n')
-	res.write_string('    if (vphp_ext_startup) vphp_ext_startup();\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_auto_startup");\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_startup");\n')
 	
 	if b.ini_entries.len > 0 {
 		res.write_string('    REGISTER_INI_ENTRIES();\n')
@@ -142,10 +142,8 @@ pub fn (b &ModuleBuilder) render_mshutdown() string {
 	if b.ini_entries.len > 0 {
 		res.write_string('    UNREGISTER_INI_ENTRIES();\n')
 	}
-	res.write_string('    extern void vphp_ext_shutdown() __attribute__((weak));\n')
-	res.write_string('    extern void vphp_ext_auto_shutdown() __attribute__((weak));\n')
-	res.write_string('    if (vphp_ext_shutdown) vphp_ext_shutdown();\n')
-	res.write_string('    if (vphp_ext_auto_shutdown) vphp_ext_auto_shutdown();\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_shutdown");\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_auto_shutdown");\n')
 	res.write_string('    vphp_framework_shutdown();\n')
 	res.write_string('    return SUCCESS;\n}\n')
 	return res.str()
@@ -155,10 +153,8 @@ pub fn (b &ModuleBuilder) render_rinit() string {
 	mut res := strings.new_builder(256)
 	res.write_string('PHP_RINIT_FUNCTION(${b.ext_name}) {\n')
 	res.write_string('    vphp_framework_request_startup();\n')
-	res.write_string('    extern void vphp_ext_request_auto_startup() __attribute__((weak));\n')
-	res.write_string('    extern void vphp_ext_request_startup() __attribute__((weak));\n')
-	res.write_string('    if (vphp_ext_request_auto_startup) vphp_ext_request_auto_startup();\n')
-	res.write_string('    if (vphp_ext_request_startup) vphp_ext_request_startup();\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_request_auto_startup");\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_request_startup");\n')
 	for line in b.rinit_content {
 		res.write_string('    ${line}\n')
 	}
@@ -169,10 +165,8 @@ pub fn (b &ModuleBuilder) render_rinit() string {
 pub fn (b &ModuleBuilder) render_rshutdown() string {
 	mut res := strings.new_builder(256)
 	res.write_string('PHP_RSHUTDOWN_FUNCTION(${b.ext_name}) {\n')
-	res.write_string('    extern void vphp_ext_request_shutdown() __attribute__((weak));\n')
-	res.write_string('    extern void vphp_ext_request_auto_shutdown() __attribute__((weak));\n')
-	res.write_string('    if (vphp_ext_request_shutdown) vphp_ext_request_shutdown();\n')
-	res.write_string('    if (vphp_ext_request_auto_shutdown) vphp_ext_request_auto_shutdown();\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_request_shutdown");\n')
+	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_request_auto_shutdown");\n')
 	res.write_string('    vphp_framework_request_shutdown();\n')
 	res.write_string('    return SUCCESS;\n}\n')
 	return res.str()
@@ -240,7 +234,6 @@ void* vphp_get_active_globals() {
 // 渲染所需的显示声明，防止编译器警告
 pub fn (b &ModuleBuilder) render_declarations() string {
 	return '
-typedef struct { void* ex; void* ret; } vphp_context_internal;
 typedef struct { void* str; int len; int is_lit; } v_string;
 
 extern void vphp_framework_init(int module_number);

@@ -7,6 +7,11 @@
 #include <Zend/zend_interfaces.h>
 #include <php.h>
 #include <stdbool.h>
+#ifdef PHP_WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,6 +91,7 @@ static void vphp_runtime_binding_execute_internal(zend_execute_data *execute_dat
 static zend_class_entry *vphp_get_ce_from_zval(zval *zv);
 static void vphp_closure_handler(zend_execute_data *execute_data,
                                  zval *return_value);
+static void *vphp_lookup_optional_symbol(const char *symbol_name);
 void vphp_free_object_handler(zend_object *obj);
 zval *vphp_read_property(zend_object *object, zend_string *member, int type,
                          void **cache_slot, zval *rv);
@@ -141,3 +147,40 @@ ZEND_TLS int vphp_runtime_autoloading = 0;
 #include "bridge/call.inc.c"
 #include "bridge/values.inc.c"
 #include "bridge/object.inc.c"
+
+vphp_context_internal vphp_context_from_execute(zend_execute_data *execute_data,
+                                                zval *return_value) {
+  vphp_context_internal ctx;
+  ctx.ex = (void *)execute_data;
+  ctx.ret = (void *)return_value;
+  return ctx;
+}
+
+static void *vphp_lookup_optional_symbol(const char *symbol_name) {
+  if (symbol_name == NULL || symbol_name[0] == '\0') {
+    return NULL;
+  }
+#ifdef PHP_WIN32
+  HMODULE module = NULL;
+  if (!GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                              GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                          (LPCSTR)(const void *)&vphp_lookup_optional_symbol,
+                          &module) ||
+      module == NULL) {
+    return NULL;
+  }
+  return (void *)GetProcAddress(module, symbol_name);
+#else
+  return dlsym(RTLD_DEFAULT, symbol_name);
+#endif
+}
+
+void vphp_call_optional_void_symbol(const char *symbol_name) {
+  typedef void (*vphp_void_symbol_fn)(void);
+
+  void *symbol = vphp_lookup_optional_symbol(symbol_name);
+  if (symbol == NULL) {
+    return;
+  }
+  ((vphp_void_symbol_fn)symbol)();
+}

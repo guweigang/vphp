@@ -247,8 +247,7 @@ const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
     vphp_init_owned_instance(Z_OBJ_P(getThis()), h);
@@ -269,8 +268,7 @@ const tpl_static_factory = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void* {{V_FUNC}}(vphp_context_internal ctx);
     void* v_instance = {{V_FUNC}}(ctx);
     if (EG(exception)) {
@@ -287,8 +285,7 @@ const tpl_static_object = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void* {{V_FUNC}}(vphp_context_internal ctx);
     void* v_instance = {{V_FUNC}}(ctx);
     if (EG(exception)) {
@@ -306,8 +303,7 @@ const tpl_static_scalar = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(vphp_context_internal ctx);
     {{V_FUNC}}(ctx);
     if (EG(exception)) {
@@ -323,8 +319,7 @@ const tpl_static_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(vphp_context_internal ctx);
     {{V_FUNC}}(ctx);
     if (!EG(exception)) {
@@ -339,8 +334,7 @@ const tpl_static_manual_ctx = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(vphp_context_internal ctx);
     {{V_FUNC}}(ctx);
     if (EG(exception)) {
@@ -356,8 +350,7 @@ const tpl_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
@@ -375,8 +368,7 @@ const tpl_inherited_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
     {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
     if (EG(exception)) {
@@ -392,8 +384,7 @@ const tpl_instance_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
@@ -411,8 +402,7 @@ const tpl_inherited_instance_void = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
     {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
     if (!EG(exception)) {
@@ -428,8 +418,7 @@ const tpl_instance_result = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
@@ -447,8 +436,7 @@ const tpl_inherited_instance_result = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
     {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
     if (EG(exception)) {
@@ -465,8 +453,7 @@ PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void* {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(Z_OBJ_P(getThis()), {{HANDLER_CLASS}}_handlers());
@@ -489,8 +476,7 @@ PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void* {{V_FUNC}}(void* this_obj, vphp_context_internal ctx);
     void* v_instance = {{V_FUNC}}((void*)Z_OBJ_P(getThis()), ctx);
     if (EG(exception)) {
@@ -509,8 +495,6 @@ PHP_METHOD({{CLASS}}, __construct) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
-    typedef struct { void* ex; void* ret; } vphp_context_internal;
-    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
     vphp_init_owned_instance(Z_OBJ_P(getThis()), h);
@@ -561,7 +545,7 @@ fn (g CGenerator) gen_func_c(f &repr.PhpFuncRepr) []string {
 		r << '        return;'
 		r << '    }'
 	}
-	r << '    vphp_context_internal ctx = { .ex = (void*)execute_data, .ret = (void*)return_value };'
+	r << '    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);'
 	r << '    ${target_func}(ctx);'
 	if f.uses_context {
 		r << '}'

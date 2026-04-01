@@ -28,6 +28,11 @@ typedef struct {
   void (*free_raw)(void *);
 } vphp_class_handlers;
 
+typedef struct {
+  void *ex;
+  void *ret;
+} vphp_context_internal;
+
 #define VPHP_BORROWS_VPTR 0
 #define VPHP_OWNS_VPTR 1
 
@@ -77,6 +82,9 @@ bool vphp_validate_internal_call(zend_execute_data *execute_data);
 bool vphp_validate_internal_return(zend_execute_data *execute_data,
                                    zval *return_value);
 void vphp_mark_void_return(zval *return_value);
+vphp_context_internal vphp_context_from_execute(zend_execute_data *execute_data,
+                                                zval *return_value);
+void vphp_call_optional_void_symbol(const char *symbol_name);
 
 // 参数、值与返回 (由 V 侧代码引用)
 uint32_t vphp_get_num_args(zend_execute_data *ex);
