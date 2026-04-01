@@ -89,8 +89,8 @@ static void vphp_runtime_binding_execute_ex(zend_execute_data *execute_data);
 static void vphp_runtime_binding_execute_internal(zend_execute_data *execute_data,
                                                   zval *return_value);
 static zend_class_entry *vphp_get_ce_from_zval(zval *zv);
-static void vphp_closure_handler(zend_execute_data *execute_data,
-                                 zval *return_value);
+static void ZEND_FASTCALL vphp_closure_handler(zend_execute_data *execute_data,
+                                               zval *return_value);
 static void *vphp_lookup_optional_symbol(const char *symbol_name);
 void vphp_free_object_handler(zend_object *obj);
 zval *vphp_read_property(zend_object *object, zend_string *member, int type,
