@@ -246,8 +246,8 @@ void *vphp_get_active_ce(zend_execute_data *ex) {
   return NULL;
 }
 
-static void vphp_closure_handler(zend_execute_data *execute_data,
-                                 zval *return_value) {
+static void ZEND_FASTCALL vphp_closure_handler(zend_execute_data *execute_data,
+                                               zval *return_value) {
   zend_internal_function *zf = (zend_internal_function *)execute_data->func;
   void *v_thunk = zf->reserved[0];
   void *bridge_ptr = zf->reserved[1];
