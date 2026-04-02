@@ -526,7 +526,16 @@ void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
   if (wrapper == &vphp_null_wrapper) {
     return;
   }
-  wrapper->owns_v_ptr = owns_v_ptr ? 1 : 0;
+  /*
+   * Preserve existing ownership when rebinding the same PHP object.
+   * A chainable return or temporary borrowed wrapper must not silently
+   * downgrade an already-owned V instance to borrowed, or Zend will later
+   * observe a different object lifetime contract than the one used at
+   * construction time.
+   */
+  if (owns_v_ptr) {
+    wrapper->owns_v_ptr = 1;
+  }
   wrapper->cleanup_raw = h->cleanup_raw;
   wrapper->free_raw = h->free_raw;
   if (h->v_ptr) {
