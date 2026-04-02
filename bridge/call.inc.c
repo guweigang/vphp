@@ -171,11 +171,20 @@ int vphp_is_callable(zval *callable) {
 int vphp_call_callable(zval *callable, zval *retval, int param_count,
                        zval **params_ptrs) {
   zval *params = NULL;
+  zend_fcall_info fci;
+  zend_fcall_info_cache fcc;
+  char *error = NULL;
 
-  if (!callable || !vphp_zend_is_callable(callable)) {
+  if (!callable) {
     return -1;
   }
   ZVAL_UNDEF(retval);
+  if (zend_fcall_info_init(callable, 0, &fci, &fcc, NULL, &error) != SUCCESS) {
+    if (error != NULL) {
+      efree(error);
+    }
+    return -1;
+  }
   if (param_count > 0) {
     params = (zval *)safe_emalloc(param_count, sizeof(zval), 0);
     for (int i = 0; i < param_count; i++) {
@@ -186,8 +195,10 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
       }
     }
   }
-  int result = call_user_function(EG(function_table), NULL, callable, retval,
-                                  param_count, params);
+  fci.retval = retval;
+  fci.param_count = param_count;
+  fci.params = params;
+  int result = zend_call_function(&fci, &fcc);
   if (params) {
     for (int i = 0; i < param_count; i++) {
       zval_ptr_dtor(&params[i]);
