@@ -212,6 +212,8 @@ zend_class_entry *vphp_find_loaded_class_entry(const char *class_name,
                                                int class_name_len);
 zend_class_entry *vphp_require_class_entry(const char *class_name,
                                            int class_name_len, int autoload);
+zval *vphp_write_property(zend_object *object, zend_string *member, zval *value,
+                          void **cache_slot);
 
 zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
                                        const char *name, int name_len, zval *rv);

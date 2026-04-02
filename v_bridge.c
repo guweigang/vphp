@@ -95,8 +95,8 @@ static void *vphp_lookup_optional_symbol(const char *symbol_name);
 void vphp_free_object_handler(zend_object *obj);
 zval *vphp_read_property(zend_object *object, zend_string *member, int type,
                          void **cache_slot, zval *rv);
-void vphp_write_property(zend_object *object, zend_string *member, zval *value,
-                         void **cache_slot);
+zval *vphp_write_property(zend_object *object, zend_string *member, zval *value,
+                          void **cache_slot);
 HashTable *vphp_get_properties(zend_object *object);
 static zend_object_handlers *vphp_clone_inherited_handlers(
     const zend_object_handlers *original_handlers);

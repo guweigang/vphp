@@ -424,15 +424,15 @@ void vphp_unset_property_compat(zend_object *obj, const char *name, int name_len
   zend_string_release(member);
 }
 
-void vphp_write_property(zend_object *object, zend_string *member, zval *value,
-                         void **cache_slot) {
+zval *vphp_write_property(zend_object *object, zend_string *member, zval *value,
+                          void **cache_slot) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(object);
   zend_property_info *prop_info =
       zend_get_property_info(object->ce, member, /* silent */ true);
   if (prop_info && prop_info != ZEND_WRONG_PROPERTY_INFO &&
       (prop_info->flags & ZEND_ACC_READONLY)) {
     vphp_zend_readonly_property_modification_error(object, member);
-    return;
+    return &EG(error_zval);
   }
   if (wrapper->v_ptr && wrapper->write_handler) {
     wrapper->write_handler(wrapper->v_ptr, ZSTR_VAL(member),
@@ -441,11 +441,10 @@ void vphp_write_property(zend_object *object, zend_string *member, zval *value,
   const zend_object_handlers *handlers =
       vphp_fallback_handlers(vphp_original_handlers_for(object));
   if (handlers->write_property != NULL) {
-    handlers->write_property(object, member, value, cache_slot);
-  } else {
-    zend_get_std_object_handlers()->write_property(object, member, value,
-                                                   cache_slot);
+    return handlers->write_property(object, member, value, cache_slot);
   }
+  return zend_get_std_object_handlers()->write_property(object, member, value,
+                                                        cache_slot);
 }
 
 HashTable *vphp_get_properties(zend_object *object) {
