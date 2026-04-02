@@ -1,3 +1,37 @@
+static int vphp_bridge_object_debug_enabled(void) {
+  const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+  if (path != NULL && path[0] != '\0') {
+    return 2;
+  }
+  const char *flag = getenv("VSLIM_CLI_DEBUG");
+  if (flag != NULL && flag[0] != '\0') {
+    return 1;
+  }
+  return 0;
+}
+
+static void vphp_bridge_object_debug_log(const char *message) {
+  int mode = vphp_bridge_object_debug_enabled();
+  FILE *fp = NULL;
+  if (mode == 0) {
+    return;
+  }
+  if (mode == 2) {
+    const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+    fp = fopen(path, "ab");
+    if (fp == NULL) {
+      return;
+    }
+  } else {
+    fp = stderr;
+  }
+  fprintf(fp, "[vphp-bridge-debug] %s\n", message);
+  fflush(fp);
+  if (mode == 2 && fp != NULL) {
+    fclose(fp);
+  }
+}
+
 void vphp_init_registry() {
   if (!vphp_registry_initialized) {
     zend_hash_init(&vphp_object_registry, 16, NULL, NULL, 1);
@@ -127,10 +161,22 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
 void vphp_return_bound_object(zval *return_value, void *v_ptr,
                               zend_class_entry *ce, vphp_class_handlers *h,
                               int owns_v_ptr) {
+  char debug_buf[256];
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_return_bound_object enter return_value=%p v_ptr=%p ce=%p handlers=%p owns=%d",
+           (void *)return_value, v_ptr, (void *)ce, (void *)h, owns_v_ptr);
+  vphp_bridge_object_debug_log(debug_buf);
   vphp_return_obj(return_value, v_ptr, ce);
   if (Z_TYPE_P(return_value) == IS_OBJECT && h != NULL) {
     vphp_bind_handlers_with_ownership(Z_OBJ_P(return_value), h, owns_v_ptr);
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_return_bound_object exit return_value=%p type=%d obj=%p",
+           (void *)return_value, return_value != NULL ? Z_TYPE_P(return_value) : -1,
+           return_value != NULL && Z_TYPE_P(return_value) == IS_OBJECT
+               ? (void *)Z_OBJ_P(return_value)
+               : NULL);
+  vphp_bridge_object_debug_log(debug_buf);
 }
 
 void vphp_return_owned_object(zval *return_value, void *v_ptr,

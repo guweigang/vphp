@@ -1,3 +1,37 @@
+static int vphp_bridge_call_debug_enabled(void) {
+  const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+  if (path != NULL && path[0] != '\0') {
+    return 2;
+  }
+  const char *flag = getenv("VSLIM_CLI_DEBUG");
+  if (flag != NULL && flag[0] != '\0') {
+    return 1;
+  }
+  return 0;
+}
+
+static void vphp_bridge_call_debug_log(const char *message) {
+  int mode = vphp_bridge_call_debug_enabled();
+  FILE *fp = NULL;
+  if (mode == 0) {
+    return;
+  }
+  if (mode == 2) {
+    const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+    fp = fopen(path, "ab");
+    if (fp == NULL) {
+      return;
+    }
+  } else {
+    fp = stderr;
+  }
+  fprintf(fp, "[vphp-bridge-debug] %s\n", message);
+  fflush(fp);
+  if (mode == 2 && fp != NULL) {
+    fclose(fp);
+  }
+}
+
 static zend_class_entry *vphp_get_ce_from_zval(zval *zv) {
   if (!zv) {
     return NULL;
@@ -174,17 +208,31 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
   zend_fcall_info fci;
   zend_fcall_info_cache fcc;
   char *error = NULL;
+  char debug_buf[256];
 
   if (!callable) {
+    vphp_bridge_call_debug_log("vphp_call_callable callable=NULL");
     return -1;
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_call_callable enter callable=%p retval=%p param_count=%d type=%d",
+           (void *)callable, (void *)retval, param_count, Z_TYPE_P(callable));
+  vphp_bridge_call_debug_log(debug_buf);
   ZVAL_UNDEF(retval);
   if (zend_fcall_info_init(callable, 0, &fci, &fcc, NULL, &error) != SUCCESS) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_call_callable init_fail callable=%p error=%s", (void *)callable,
+             error != NULL ? error : "(null)");
+    vphp_bridge_call_debug_log(debug_buf);
     if (error != NULL) {
       efree(error);
     }
     return -1;
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_call_callable init_ok callable=%p object=%p function_handler=%p",
+           (void *)callable, (void *)fci.object, (void *)fcc.function_handler);
+  vphp_bridge_call_debug_log(debug_buf);
   if (param_count > 0) {
     params = (zval *)safe_emalloc(param_count, sizeof(zval), 0);
     for (int i = 0; i < param_count; i++) {
@@ -195,16 +243,30 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
       }
     }
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_call_callable params_ready callable=%p params=%p count=%d",
+           (void *)callable, (void *)params, param_count);
+  vphp_bridge_call_debug_log(debug_buf);
   fci.retval = retval;
   fci.param_count = param_count;
   fci.params = params;
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_call_callable before_zend_call callable=%p retval=%p", (void *)callable,
+           (void *)retval);
+  vphp_bridge_call_debug_log(debug_buf);
   int result = zend_call_function(&fci, &fcc);
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_call_callable after_zend_call callable=%p result=%d retval_type=%d exception=%p",
+           (void *)callable, result, retval != NULL ? Z_TYPE_P(retval) : -1,
+           (void *)EG(exception));
+  vphp_bridge_call_debug_log(debug_buf);
   if (params) {
     for (int i = 0; i < param_count; i++) {
       zval_ptr_dtor(&params[i]);
     }
     efree(params);
   }
+  vphp_bridge_call_debug_log("vphp_call_callable exit");
   return result;
 }
 
