@@ -325,12 +325,18 @@ void vphp_free_object_handler(zend_object *obj) {
   int uses_inline_wrapper = vphp_object_uses_inline_wrapper(obj);
   int has_sidecar_wrapper =
       !uses_inline_wrapper && wrapper != NULL && wrapper != &vphp_null_wrapper;
+  char debug_buf[256];
   if (wrapper) {
     owned_v_ptr = wrapper->v_ptr;
     cleanup_raw = wrapper->cleanup_raw;
     free_raw = wrapper->free_raw;
     owns_v_ptr = wrapper->owns_v_ptr;
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_free_object_handler enter obj=%p wrapper=%p v_ptr=%p owns=%d inline=%d sidecar=%d",
+           (void *)obj, (void *)wrapper, owned_v_ptr, owns_v_ptr, uses_inline_wrapper,
+           has_sidecar_wrapper);
+  vphp_bridge_object_debug_log(debug_buf);
   if (vphp_registry_initialized && obj) {
     void *mapped_v_ptr =
         zend_hash_index_find_ptr(&vphp_reverse_registry, (zend_ulong)obj);
@@ -351,12 +357,20 @@ void vphp_free_object_handler(zend_object *obj) {
     }
   }
   if (owns_v_ptr && owned_v_ptr) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_free_object_handler owned cleanup obj=%p v_ptr=%p cleanup=%p free=%p",
+             (void *)obj, owned_v_ptr, (void *)cleanup_raw, (void *)free_raw);
+    vphp_bridge_object_debug_log(debug_buf);
     if (cleanup_raw) {
       cleanup_raw(owned_v_ptr);
     }
     if (free_raw) {
       free_raw(owned_v_ptr);
     }
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_free_object_handler owned cleanup done obj=%p v_ptr=%p",
+             (void *)obj, owned_v_ptr);
+    vphp_bridge_object_debug_log(debug_buf);
   }
   if (uses_inline_wrapper && wrapper) {
     wrapper->v_ptr = NULL;
@@ -374,6 +388,10 @@ void vphp_free_object_handler(zend_object *obj) {
   } else {
     zend_object_std_dtor(obj);
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_free_object_handler post_std_dtor obj=%p sidecar=%d",
+           (void *)obj, has_sidecar_wrapper);
+  vphp_bridge_object_debug_log(debug_buf);
   if (has_sidecar_wrapper && vphp_sidecar_registry_initialized && obj != NULL) {
     zend_hash_index_del(&vphp_sidecar_registry, (zend_ulong)obj);
     wrapper->v_ptr = NULL;
@@ -386,6 +404,9 @@ void vphp_free_object_handler(zend_object *obj) {
     wrapper->original_handlers = NULL;
     efree(wrapper);
   }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_free_object_handler exit obj=%p", (void *)obj);
+  vphp_bridge_object_debug_log(debug_buf);
 }
 
 zval *vphp_read_property(zend_object *object, zend_string *member, int type,

@@ -45,6 +45,10 @@ fn invalid_zval() ZVal {
 	}
 }
 
+pub fn ZVal.invalid() ZVal {
+	return invalid_zval()
+}
+
 fn adopt_raw_with_ownership(raw &C.zval, ownership OwnershipKind) ZVal {
 	if raw == 0 {
 		return invalid_zval()

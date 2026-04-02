@@ -185,6 +185,10 @@ pub fn PersistentOwnedZVal.new_null() PersistentOwnedZVal {
 	return own_persistent_zval(ZVal.new_null())
 }
 
+pub fn PersistentOwnedZVal.invalid() PersistentOwnedZVal {
+	return own_persistent_zval(ZVal.invalid())
+}
+
 pub fn PersistentOwnedZVal.new_int(n i64) PersistentOwnedZVal {
 	return own_persistent_zval(ZVal.new_int(n))
 }
