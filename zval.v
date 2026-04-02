@@ -466,7 +466,7 @@ pub fn (v ZVal) add_assoc_bool(key string, val bool) {
 }
 
 pub fn (v ZVal) push_string(s string) {
-	unsafe { C.vphp_array_push_string(v.raw, &char(s.str)) }
+	unsafe { C.vphp_array_push_stringl(v.raw, &char(s.str), s.len) }
 }
 
 pub fn (v ZVal) push_long(val i64) {
@@ -1551,7 +1551,7 @@ pub fn ZVal.new_bool(b bool) ZVal {
 // 创建一个 string ZVal
 pub fn ZVal.new_string(s string) ZVal {
 	unsafe {
-		z := C.vphp_new_str(&char(s.str))
+		z := C.vphp_new_strl(&char(s.str), s.len)
 		autorelease_add(z)
 		return ZVal{
 			raw: z

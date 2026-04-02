@@ -48,6 +48,7 @@ pub fn C.vphp_set_strval(z &C.zval, str &char, len int)
 pub fn C.vphp_set_null(z &C.zval)
 pub fn C.vphp_new_zval() &C.zval
 pub fn C.vphp_new_str(s &char) &C.zval
+pub fn C.vphp_new_strl(s &char, len int) &C.zval
 pub fn C.vphp_release_zval(z &C.zval)
 pub fn C.vphp_autorelease_mark() int
 pub fn C.vphp_autorelease_add(z &C.zval)
@@ -68,6 +69,7 @@ pub fn C.vphp_return_array_start(res &C.zval)
 pub fn C.vphp_array_get_index(z &C.zval, index u32) &C.zval
 pub fn C.vphp_array_get_key(z &C.zval, key &char, len int) &C.zval
 pub fn C.vphp_array_push_string(z &C.zval, val &char)
+pub fn C.vphp_array_push_stringl(z &C.zval, val &char, len int)
 pub fn C.vphp_array_push_double(z &C.zval, val f64)
 pub fn C.vphp_array_push_long(z &C.zval, val i64)
 pub fn C.vphp_array_add_next_zval(main_array &C.zval, sub_item &C.zval)

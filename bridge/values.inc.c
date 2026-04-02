@@ -80,6 +80,12 @@ zval *vphp_new_str(const char *s) {
   return z;
 }
 
+zval *vphp_new_strl(const char *s, int len) {
+  zval *z = vphp_new_zval();
+  ZVAL_STRINGL(z, s, len);
+  return z;
+}
+
 void vphp_release_zval(zval *z) {
   if (!z) {
     return;
@@ -131,6 +137,10 @@ void vphp_array_init(zval *z) { array_init(z); }
 
 void vphp_array_push_string(zval *z, const char *val) {
   add_next_index_string(z, val);
+}
+
+void vphp_array_push_stringl(zval *z, const char *val, int len) {
+  add_next_index_stringl(z, val, len);
 }
 
 void vphp_array_push_double(zval *z, double val) {
