@@ -92,17 +92,25 @@ static int vphp_binding_uses_registry(zend_object *obj) {
 }
 
 void vphp_shutdown_registry() {
+  vphp_bridge_object_debug_log("shutdown_registry enter");
   if (vphp_registry_initialized) {
+    vphp_bridge_object_debug_log("shutdown_registry object_registry destroy begin");
     zend_hash_destroy(&vphp_object_registry);
+    vphp_bridge_object_debug_log("shutdown_registry object_registry destroy done");
+    vphp_bridge_object_debug_log("shutdown_registry reverse_registry destroy begin");
     zend_hash_destroy(&vphp_reverse_registry);
+    vphp_bridge_object_debug_log("shutdown_registry reverse_registry destroy done");
     vphp_registry_initialized = false;
   }
   if (vphp_sidecar_registry_initialized) {
+    vphp_bridge_object_debug_log("shutdown_registry sidecar_registry destroy begin");
     zend_hash_destroy(&vphp_sidecar_registry);
+    vphp_bridge_object_debug_log("shutdown_registry sidecar_registry destroy done");
     vphp_sidecar_registry_initialized = false;
   }
   if (vphp_inherited_handler_registry_initialized) {
     zend_object_handlers *handlers = NULL;
+    vphp_bridge_object_debug_log("shutdown_registry inherited_handler_registry free begin");
     ZEND_HASH_FOREACH_PTR(&vphp_inherited_handler_registry, handlers) {
       if (handlers != NULL) {
         pefree(handlers, 1);
@@ -110,18 +118,22 @@ void vphp_shutdown_registry() {
     }
     ZEND_HASH_FOREACH_END();
     zend_hash_destroy(&vphp_inherited_handler_registry);
+    vphp_bridge_object_debug_log("shutdown_registry inherited_handler_registry free done");
     vphp_inherited_handler_registry_initialized = false;
   }
   if (vphp_auto_iface_bindings != NULL) {
+    vphp_bridge_object_debug_log("shutdown_registry auto_iface_bindings free begin");
     for (uint32_t i = 0; i < vphp_auto_iface_bindings_len; i++) {
       pefree(vphp_auto_iface_bindings[i].class_name, 1);
       pefree(vphp_auto_iface_bindings[i].iface_name, 1);
     }
     pefree(vphp_auto_iface_bindings, 1);
     vphp_auto_iface_bindings = NULL;
+    vphp_bridge_object_debug_log("shutdown_registry auto_iface_bindings free done");
   }
   vphp_auto_iface_bindings_len = 0;
   vphp_auto_iface_bindings_cap = 0;
+  vphp_bridge_object_debug_log("shutdown_registry exit");
 }
 
 void vphp_register_object(void *v_ptr, zend_object *obj) {

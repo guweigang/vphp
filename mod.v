@@ -1,5 +1,7 @@
 module vphp
 
+import os
+
 #include <php.h>
 #include "v_bridge.h" // 统一在这里 include，确保全局可见
 
@@ -43,13 +45,32 @@ pub fn init_framework(module_number int) {
   }
 }
 
+fn framework_debug_enabled() bool {
+	return os.getenv('VSLIM_CLI_DEBUG') != '' || os.getenv('VSLIM_CLI_DEBUG_FILE') != ''
+}
+
+fn framework_debug_log(message string) {
+	if !framework_debug_enabled() {
+		return
+	}
+	eprintln('[vphp-framework-debug] ${message}')
+}
+
 @[export: 'vphp_framework_shutdown']
 pub fn vphp_framework_shutdown() {
+	framework_debug_log('framework_shutdown enter')
 	unsafe {
+		framework_debug_log('framework_shutdown uninstall_runtime_hooks begin')
 		C.vphp_uninstall_runtime_binding_hooks()
+		framework_debug_log('framework_shutdown uninstall_runtime_hooks done')
+		framework_debug_log('framework_shutdown autorelease_shutdown begin')
 		C.vphp_autorelease_shutdown()
+		framework_debug_log('framework_shutdown autorelease_shutdown done')
+		framework_debug_log('framework_shutdown shutdown_registry begin')
 		C.vphp_shutdown_registry()
+		framework_debug_log('framework_shutdown shutdown_registry done')
 	}
+	framework_debug_log('framework_shutdown exit')
 }
 
 @[export: 'vphp_framework_request_startup']

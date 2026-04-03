@@ -692,6 +692,7 @@ void vphp_request_shutdown(void) {
 }
 
 void vphp_autorelease_shutdown(void) {
+  vphp_runtime_debug_log("autorelease_shutdown enter");
   if (vphp_autorelease_pool.items != NULL) {
     pefree(vphp_autorelease_pool.items, 1);
     vphp_autorelease_pool.items = NULL;
@@ -704,6 +705,7 @@ void vphp_autorelease_shutdown(void) {
   }
   vphp_owned_pool.cap = 0;
   vphp_owned_pool.len = 0;
+  vphp_runtime_debug_log("autorelease_shutdown exit");
 }
 
 static zend_class_entry *vphp_lookup_class_by_name(const char *class_name,
