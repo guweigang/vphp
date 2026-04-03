@@ -66,6 +66,7 @@ pub struct RequestOwnedZVal {
 
 pub enum PersistentOwnedKind {
 	zval_data
+	dyn_data
 	string_data
 	retained_object
 }
@@ -74,6 +75,7 @@ pub struct PersistentOwnedZVal {
 	ZValViewState
 pub mut:
 	kind     PersistentOwnedKind = .zval_data
+	dyn_data DynValue
 	string_data string
 	retained RetainedObject
 }
@@ -143,6 +145,26 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 				kind: .retained_object
 				retained: retained
 			}
+		}
+	}
+	if dyn := decode_dyn_value(z) {
+		if dyn.type == .string_ {
+			unsafe {
+				return PersistentOwnedZVal{
+					ZValViewState: ZValViewState{
+						z: invalid_zval()
+					}
+					kind: .string_data
+					string_data: dyn.data.s.clone()
+				}
+			}
+		}
+		return PersistentOwnedZVal{
+			ZValViewState: ZValViewState{
+				z: invalid_zval()
+			}
+			kind: .dyn_data
+			dyn_data: dyn
 		}
 	}
 	if z.is_valid() && z.is_string() {
@@ -380,8 +402,15 @@ fn persistent_string_request_owned(value string) RequestOwnedZVal {
 	return RequestOwnedZVal.new_string(value)
 }
 
+fn persistent_dyn_request_owned(value DynValue) RequestOwnedZVal {
+	return RequestOwnedZVal.from_zval(new_zval_from_dyn_value(value) or { ZVal.new_null() })
+}
+
 pub fn (v PersistentOwnedZVal) borrowed() BorrowedZVal {
 	match v.kind {
+		.dyn_data {
+			return v.clone_request_owned().borrowed()
+		}
 		.retained_object {
 			return v.clone_request_owned().borrowed()
 		}
@@ -396,6 +425,9 @@ pub fn (v PersistentOwnedZVal) borrowed() BorrowedZVal {
 
 pub fn (v PersistentOwnedZVal) clone_request_owned() RequestOwnedZVal {
 	match v.kind {
+		.dyn_data {
+			return persistent_dyn_request_owned(v.dyn_data)
+		}
 		.retained_object {
 			return retained_request_owned(v.retained)
 		}
@@ -410,6 +442,10 @@ pub fn (v PersistentOwnedZVal) clone_request_owned() RequestOwnedZVal {
 
 pub fn (mut v PersistentOwnedZVal) release() {
 	match v.kind {
+		.dyn_data {
+			v.dyn_data = dyn_value_null()
+			v.z = invalid_zval()
+		}
 		.retained_object {
 			mut retained := v.retained
 			retained.release()
@@ -431,6 +467,15 @@ pub fn (mut v PersistentOwnedZVal) release() {
 
 pub fn (v PersistentOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
 	match v.kind {
+		.dyn_data {
+			return PersistentOwnedZVal{
+				ZValViewState: ZValViewState{
+					z: invalid_zval()
+				}
+				kind: .dyn_data
+				dyn_data: v.dyn_data
+			}
+		}
 		.retained_object {
 			return PersistentOwnedZVal{
 				ZValViewState: ZValViewState{
@@ -457,6 +502,9 @@ pub fn (v PersistentOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
 
 pub fn (v PersistentOwnedZVal) to_zval() ZVal {
 	match v.kind {
+		.dyn_data {
+			return new_zval_from_dyn_value(v.dyn_data) or { ZVal.new_null() }
+		}
 		.retained_object {
 			return v.retained.to_request_owned_zval()
 		}
@@ -471,6 +519,9 @@ pub fn (v PersistentOwnedZVal) to_zval() ZVal {
 
 pub fn (v PersistentOwnedZVal) is_valid() bool {
 	match v.kind {
+		.dyn_data {
+			return true
+		}
 		.retained_object {
 			return v.retained.is_valid()
 		}
@@ -485,6 +536,9 @@ pub fn (v PersistentOwnedZVal) is_valid() bool {
 
 pub fn (v PersistentOwnedZVal) is_null() bool {
 	match v.kind {
+		.dyn_data {
+			return v.dyn_data.type == .null_
+		}
 		.retained_object {
 			return false
 		}
@@ -499,6 +553,9 @@ pub fn (v PersistentOwnedZVal) is_null() bool {
 
 pub fn (v PersistentOwnedZVal) is_undef() bool {
 	match v.kind {
+		.dyn_data {
+			return false
+		}
 		.retained_object {
 			return false
 		}
@@ -513,6 +570,9 @@ pub fn (v PersistentOwnedZVal) is_undef() bool {
 
 pub fn (v PersistentOwnedZVal) is_resource() bool {
 	match v.kind {
+		.dyn_data {
+			return false
+		}
 		.retained_object {
 			return false
 		}
@@ -527,6 +587,9 @@ pub fn (v PersistentOwnedZVal) is_resource() bool {
 
 pub fn (v PersistentOwnedZVal) is_callable() bool {
 	match v.kind {
+		.dyn_data {
+			return false
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -545,6 +608,9 @@ pub fn (v PersistentOwnedZVal) is_callable() bool {
 
 pub fn (v PersistentOwnedZVal) is_object() bool {
 	match v.kind {
+		.dyn_data {
+			return false
+		}
 		.retained_object {
 			return true
 		}
@@ -559,6 +625,9 @@ pub fn (v PersistentOwnedZVal) is_object() bool {
 
 pub fn (v PersistentOwnedZVal) is_string() bool {
 	match v.kind {
+		.dyn_data {
+			return v.dyn_data.type == .string_
+		}
 		.retained_object {
 			return false
 		}
@@ -573,6 +642,9 @@ pub fn (v PersistentOwnedZVal) is_string() bool {
 
 pub fn (v PersistentOwnedZVal) is_array() bool {
 	match v.kind {
+		.dyn_data {
+			return v.dyn_data.type in [.list_, .map_]
+		}
 		.retained_object {
 			return false
 		}
@@ -587,6 +659,9 @@ pub fn (v PersistentOwnedZVal) is_array() bool {
 
 pub fn (v PersistentOwnedZVal) method_exists(name string) bool {
 	match v.kind {
+		.dyn_data {
+			return false
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -605,6 +680,30 @@ pub fn (v PersistentOwnedZVal) method_exists(name string) bool {
 
 pub fn (v PersistentOwnedZVal) to_string() string {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.null_ { return '' }
+				.bool_ {
+					unsafe { return if v.dyn_data.data.b { '1' } else { '' } }
+				}
+				.int_ {
+					unsafe { return v.dyn_data.data.i.str() }
+				}
+				.float_ {
+					unsafe { return v.dyn_data.data.f.str() }
+				}
+				.string_ {
+					unsafe { return v.dyn_data.data.s.clone() }
+				}
+				else {
+					mut temp := persistent_dyn_request_owned(v.dyn_data)
+					defer {
+						temp.release()
+					}
+					return temp.to_string()
+				}
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -623,6 +722,33 @@ pub fn (v PersistentOwnedZVal) to_string() string {
 
 pub fn (v PersistentOwnedZVal) to_string_list() []string {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.list_ {
+					mut out := []string{}
+					for item in v.dyn_data.list {
+						out << PersistentOwnedZVal{
+							ZValViewState: ZValViewState{
+								z: invalid_zval()
+							}
+							kind: .dyn_data
+							dyn_data: item
+						}.to_string()
+					}
+					return out
+				}
+				.string_ {
+					return [v.to_string()]
+				}
+				else {
+					mut temp := persistent_dyn_request_owned(v.dyn_data)
+					defer {
+						temp.release()
+					}
+					return temp.to_string_list()
+				}
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -641,6 +767,30 @@ pub fn (v PersistentOwnedZVal) to_string_list() []string {
 
 pub fn (v PersistentOwnedZVal) to_string_map() map[string]string {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.map_ {
+					mut out := map[string]string{}
+					for key, item in v.dyn_data.map {
+						out[key] = PersistentOwnedZVal{
+							ZValViewState: ZValViewState{
+								z: invalid_zval()
+							}
+							kind: .dyn_data
+							dyn_data: item
+						}.to_string()
+					}
+					return out
+				}
+				else {
+					mut temp := persistent_dyn_request_owned(v.dyn_data)
+					defer {
+						temp.release()
+					}
+					return temp.to_string_map()
+				}
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -659,6 +809,9 @@ pub fn (v PersistentOwnedZVal) to_string_map() map[string]string {
 
 pub fn (v PersistentOwnedZVal) resource_type() ?string {
 	match v.kind {
+		.dyn_data {
+			return none
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -677,6 +830,9 @@ pub fn (v PersistentOwnedZVal) resource_type() ?string {
 
 pub fn (v PersistentOwnedZVal) stream_metadata() ?StreamMetadata {
 	match v.kind {
+		.dyn_data {
+			return none
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -695,6 +851,25 @@ pub fn (v PersistentOwnedZVal) stream_metadata() ?StreamMetadata {
 
 pub fn (v PersistentOwnedZVal) to_bool() bool {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.null_ { return false }
+				.bool_ {
+					unsafe { return v.dyn_data.data.b }
+				}
+				.int_ {
+					unsafe { return v.dyn_data.data.i != 0 }
+				}
+				.float_ {
+					unsafe { return v.dyn_data.data.f != 0.0 }
+				}
+				.string_ {
+					unsafe { return v.dyn_data.data.s.len > 0 }
+				}
+				.list_, .map_ { return true }
+				else { return false }
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -713,6 +888,23 @@ pub fn (v PersistentOwnedZVal) to_bool() bool {
 
 pub fn (v PersistentOwnedZVal) to_int() int {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.int_ {
+					unsafe { return int(v.dyn_data.data.i) }
+				}
+				.bool_ {
+					unsafe { return if v.dyn_data.data.b { 1 } else { 0 } }
+				}
+				.float_ {
+					unsafe { return int(v.dyn_data.data.f) }
+				}
+				.string_ {
+					return v.to_string().int()
+				}
+				else { return 0 }
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -731,6 +923,23 @@ pub fn (v PersistentOwnedZVal) to_int() int {
 
 pub fn (v PersistentOwnedZVal) to_i64() i64 {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.int_ {
+					unsafe { return v.dyn_data.data.i }
+				}
+				.bool_ {
+					unsafe { return if v.dyn_data.data.b { i64(1) } else { i64(0) } }
+				}
+				.float_ {
+					unsafe { return i64(v.dyn_data.data.f) }
+				}
+				.string_ {
+					return v.to_string().i64()
+				}
+				else { return 0 }
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -749,6 +958,23 @@ pub fn (v PersistentOwnedZVal) to_i64() i64 {
 
 pub fn (v PersistentOwnedZVal) to_f64() f64 {
 	match v.kind {
+		.dyn_data {
+			match v.dyn_data.type {
+				.float_ {
+					unsafe { return v.dyn_data.data.f }
+				}
+				.int_ {
+					unsafe { return f64(v.dyn_data.data.i) }
+				}
+				.bool_ {
+					unsafe { return if v.dyn_data.data.b { 1.0 } else { 0.0 } }
+				}
+				.string_ {
+					return v.to_string().f64()
+				}
+				else { return 0.0 }
+			}
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -767,6 +993,9 @@ pub fn (v PersistentOwnedZVal) to_f64() f64 {
 
 pub fn (v PersistentOwnedZVal) call_owned_request(args []ZVal) ZVal {
 	match v.kind {
+		.dyn_data {
+			return invalid_zval()
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
@@ -785,6 +1014,9 @@ pub fn (v PersistentOwnedZVal) call_owned_request(args []ZVal) ZVal {
 
 pub fn (v PersistentOwnedZVal) method_owned_request(method string, args []ZVal) ZVal {
 	match v.kind {
+		.dyn_data {
+			return invalid_zval()
+		}
 		.retained_object {
 			mut temp := retained_request_owned(v.retained)
 			defer {
