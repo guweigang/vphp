@@ -32,6 +32,38 @@ static void vphp_bridge_call_debug_log(const char *message) {
   }
 }
 
+static void vphp_bridge_call_debug_log_zval(const char *prefix, zval *zv) {
+  char debug_buf[512];
+  int type = zv ? Z_TYPE_P(zv) : -1;
+  if (zv == NULL) {
+    snprintf(debug_buf, sizeof(debug_buf), "%s zval=NULL", prefix);
+    vphp_bridge_call_debug_log(debug_buf);
+    return;
+  }
+  if (Z_REFCOUNTED_P(zv)) {
+    if (Z_TYPE_P(zv) == IS_OBJECT) {
+      zend_class_entry *ce = Z_OBJCE_P(zv);
+      snprintf(debug_buf, sizeof(debug_buf),
+               "%s zval=%p type=%d refcount=%u gc_flags=0x%x object=%p handlers=%p class=%s",
+               prefix, (void *)zv, type, GC_REFCOUNT(Z_COUNTED_P(zv)),
+               GC_FLAGS(Z_COUNTED_P(zv)), (void *)Z_OBJ_P(zv),
+               Z_OBJ_P(zv) ? (void *)Z_OBJ_HT_P(zv) : NULL,
+               (ce && ZSTR_VAL(ce->name)) ? ZSTR_VAL(ce->name) : "(null)");
+      vphp_bridge_call_debug_log(debug_buf);
+      return;
+    }
+    snprintf(debug_buf, sizeof(debug_buf),
+             "%s zval=%p type=%d refcount=%u gc_flags=0x%x", prefix,
+             (void *)zv, type, GC_REFCOUNT(Z_COUNTED_P(zv)),
+             GC_FLAGS(Z_COUNTED_P(zv)));
+    vphp_bridge_call_debug_log(debug_buf);
+    return;
+  }
+  snprintf(debug_buf, sizeof(debug_buf), "%s zval=%p type=%d non_refcounted",
+           prefix, (void *)zv, type);
+  vphp_bridge_call_debug_log(debug_buf);
+}
+
 static zend_class_entry *vphp_get_ce_from_zval(zval *zv) {
   if (!zv) {
     return NULL;
@@ -218,6 +250,7 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
            "vphp_call_callable enter callable=%p retval=%p param_count=%d type=%d",
            (void *)callable, (void *)retval, param_count, Z_TYPE_P(callable));
   vphp_bridge_call_debug_log(debug_buf);
+  vphp_bridge_call_debug_log_zval("vphp_call_callable callable_state", callable);
   ZVAL_UNDEF(retval);
   if (zend_fcall_info_init(callable, 0, &fci, &fcc, NULL, &error) != SUCCESS) {
     snprintf(debug_buf, sizeof(debug_buf),
@@ -233,11 +266,23 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
            "vphp_call_callable init_ok callable=%p object=%p function_handler=%p",
            (void *)callable, (void *)fci.object, (void *)fcc.function_handler);
   vphp_bridge_call_debug_log(debug_buf);
+  if (fcc.object != NULL) {
+    zval callable_obj;
+    ZVAL_OBJ(&callable_obj, fcc.object);
+    vphp_bridge_call_debug_log_zval("vphp_call_callable fcc_object_state",
+                                    &callable_obj);
+  }
   if (param_count > 0) {
     params = (zval *)safe_emalloc(param_count, sizeof(zval), 0);
     for (int i = 0; i < param_count; i++) {
       if (params_ptrs[i]) {
         ZVAL_COPY(&params[i], params_ptrs[i]);
+        snprintf(debug_buf, sizeof(debug_buf),
+                 "vphp_call_callable param[%d] src=%p dst=%p", i,
+                 (void *)params_ptrs[i], (void *)&params[i]);
+        vphp_bridge_call_debug_log(debug_buf);
+        vphp_bridge_call_debug_log_zval("vphp_call_callable param_state",
+                                        &params[i]);
       } else {
         ZVAL_NULL(&params[i]);
       }
