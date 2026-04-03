@@ -485,6 +485,42 @@ static void vphp_runtime_debug_log_pools(const char *phase) {
   vphp_runtime_debug_log(debug_buf);
 }
 
+static const char *vphp_runtime_debug_zval_class_name(zval *z) {
+  zend_class_entry *ce = NULL;
+  if (z == NULL || Z_TYPE_P(z) != IS_OBJECT) {
+    return "(none)";
+  }
+  ce = Z_OBJCE_P(z);
+  if (ce == NULL || ce->name == NULL) {
+    return "(null)";
+  }
+  return ZSTR_VAL(ce->name);
+}
+
+static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
+  char debug_buf[256];
+  int emitted = 0;
+  for (int i = vphp_owned_pool.len - 1; i >= 0; i--) {
+    zval *z = vphp_owned_pool.items[i];
+    uint32_t refcount = 0;
+    if (z == NULL) {
+      continue;
+    }
+    if (Z_REFCOUNTED_P(z)) {
+      refcount = GC_REFCOUNT(Z_COUNTED_P(z));
+    }
+    snprintf(debug_buf, sizeof(debug_buf),
+             "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u",
+             phase, i, (void *)z, Z_TYPE_P(z),
+             vphp_runtime_debug_zval_class_name(z), refcount);
+    vphp_runtime_debug_log(debug_buf);
+    emitted++;
+    if (limit > 0 && emitted >= limit) {
+      break;
+    }
+  }
+}
+
 static bool vphp_owned_contains(zval *z) {
   if (z == NULL) {
     return false;
@@ -634,8 +670,14 @@ void vphp_request_startup(void) {
 void vphp_request_shutdown(void) {
   char debug_buf[256];
   vphp_runtime_debug_log_pools("enter");
+  if (vphp_owned_pool.len > 0) {
+    vphp_runtime_debug_dump_owned_pool("enter", 24);
+  }
   vphp_autorelease_drain(0);
   vphp_runtime_debug_log_pools("after_autorelease_drain");
+  if (vphp_owned_pool.len > 0) {
+    vphp_runtime_debug_dump_owned_pool("after_autorelease_drain", 24);
+  }
   vphp_last_class_table_count = 0;
   vphp_runtime_binding_applying = 0;
   vphp_runtime_internal_call_depth = 0;
@@ -689,6 +731,9 @@ void vphp_request_shutdown(void) {
     vphp_runtime_debug_log("request_shutdown reverse_registry clean done");
   }
   vphp_runtime_debug_log_pools("exit");
+  if (vphp_owned_pool.len > 0) {
+    vphp_runtime_debug_dump_owned_pool("exit", 24);
+  }
 }
 
 void vphp_autorelease_shutdown(void) {
