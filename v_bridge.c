@@ -43,9 +43,12 @@ typedef struct {
 
 typedef struct {
   zval **items;
+  char **origins;
   int len;
   int cap;
 } vphp_owned_pool_t;
+
+static char *vphp_capture_new_zval_origin(void);
 
 static void vphp_preload_auto_interfaces_for_class(zend_class_entry *class_ce);
 static void vphp_prepare_auto_interfaces_for_class(zend_class_entry *class_ce,

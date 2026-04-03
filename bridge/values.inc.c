@@ -124,13 +124,51 @@ void vphp_convert_to_string(zval *z) {
   }
 }
 
+static char *vphp_capture_new_zval_origin(void) {
+  zend_execute_data *execute_data = EG(current_execute_data);
+  const zend_function *func = execute_data != NULL ? execute_data->func : NULL;
+  const zend_class_entry *scope = func != NULL ? func->common.scope : NULL;
+  const char *file = zend_get_executed_filename();
+  uint32_t line = zend_get_executed_lineno();
+  const char *func_name =
+      (func != NULL && func->common.function_name != NULL)
+          ? ZSTR_VAL(func->common.function_name)
+          : "(main)";
+  const char *scope_name =
+      (scope != NULL && scope->name != NULL) ? ZSTR_VAL(scope->name) : NULL;
+  char buf[768];
+  int written = 0;
+  char *out = NULL;
+
+  if (scope_name != NULL) {
+    written = snprintf(buf, sizeof(buf), "%s::%s %s:%u", scope_name, func_name,
+                       file != NULL ? file : "(unknown)", (unsigned)line);
+  } else {
+    written = snprintf(buf, sizeof(buf), "%s %s:%u", func_name,
+                       file != NULL ? file : "(unknown)", (unsigned)line);
+  }
+  if (written < 0) {
+    return NULL;
+  }
+  if ((size_t)written >= sizeof(buf)) {
+    written = (int)sizeof(buf) - 1;
+  }
+  out = (char *)emalloc((size_t)written + 1);
+  if (out == NULL) {
+    return NULL;
+  }
+  memcpy(out, buf, (size_t)written);
+  out[written] = '\0';
+  return out;
+}
+
 zval *vphp_new_zval() {
   zval *z = (zval *)emalloc(sizeof(zval));
   if (z == NULL) {
     return NULL;
   }
   ZVAL_UNDEF(z);
-  vphp_owned_add(z);
+  vphp_owned_add(z, vphp_capture_new_zval_origin());
   return z;
 }
 

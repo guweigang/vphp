@@ -502,9 +502,13 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
   int emitted = 0;
   for (int i = vphp_owned_pool.len - 1; i >= 0; i--) {
     zval *z = vphp_owned_pool.items[i];
+    const char *origin = "(unknown)";
     uint32_t refcount = 0;
     if (z == NULL) {
       continue;
+    }
+    if (vphp_owned_pool.origins != NULL && vphp_owned_pool.origins[i] != NULL) {
+      origin = vphp_owned_pool.origins[i];
     }
     if (Z_REFCOUNTED_P(z)) {
       refcount = GC_REFCOUNT(Z_COUNTED_P(z));
@@ -518,9 +522,9 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
         memcpy(snippet, Z_STRVAL_P(z), copy_len);
       }
       snprintf(debug_buf, sizeof(debug_buf),
-               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u strlen=%zu str=\"%s%s\"",
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s strlen=%zu str=\"%s%s\"",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount, src_len,
+               vphp_runtime_debug_zval_class_name(z), refcount, origin, src_len,
                snippet, src_len > copy_len ? "..." : "");
     } else if (Z_TYPE_P(z) == IS_ARRAY) {
       zend_array *arr = Z_ARRVAL_P(z);
@@ -555,22 +559,22 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
       }
       ZEND_HASH_FOREACH_END();
       snprintf(debug_buf, sizeof(debug_buf),
-               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u array_count=%u keys=%s",
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s array_count=%u keys=%s",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount,
+               vphp_runtime_debug_zval_class_name(z), refcount, origin,
                (unsigned)zend_hash_num_elements(arr),
                used > 0 ? keys : "(none)");
     } else if (Z_TYPE_P(z) == IS_LONG) {
       snprintf(debug_buf, sizeof(debug_buf),
-               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u long=%lld",
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s long=%lld",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount,
+               vphp_runtime_debug_zval_class_name(z), refcount, origin,
                (long long)Z_LVAL_P(z));
     } else {
       snprintf(debug_buf, sizeof(debug_buf),
-               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u",
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount);
+               vphp_runtime_debug_zval_class_name(z), refcount, origin);
     }
     vphp_runtime_debug_log(debug_buf);
     emitted++;
@@ -592,27 +596,54 @@ static bool vphp_owned_contains(zval *z) {
   return false;
 }
 
-static void vphp_owned_add(zval *z) {
+static void vphp_owned_add(zval *z, char *origin) {
   if (z == NULL || vphp_owned_contains(z)) {
+    if (origin != NULL) {
+      efree(origin);
+    }
     return;
   }
   if (vphp_owned_pool.len >= vphp_owned_pool.cap) {
     int new_cap = vphp_owned_pool.cap == 0 ? 64 : vphp_owned_pool.cap * 2;
     size_t bytes = (size_t)new_cap * sizeof(zval *);
+    size_t origin_bytes = (size_t)new_cap * sizeof(char *);
+    int old_cap = vphp_owned_pool.cap;
     if (vphp_owned_pool.items == NULL) {
       vphp_owned_pool.items = (zval **)pemalloc(bytes, 1);
     } else {
       vphp_owned_pool.items =
           (zval **)perealloc(vphp_owned_pool.items, bytes, 1);
     }
+    if (vphp_owned_pool.origins == NULL) {
+      vphp_owned_pool.origins = (char **)pemalloc(origin_bytes, 1);
+      if (vphp_owned_pool.origins != NULL) {
+        memset(vphp_owned_pool.origins, 0, origin_bytes);
+      }
+    } else {
+      vphp_owned_pool.origins =
+          (char **)perealloc(vphp_owned_pool.origins, origin_bytes, 1);
+      if (vphp_owned_pool.origins != NULL && new_cap > old_cap) {
+        memset(vphp_owned_pool.origins + old_cap, 0,
+               (size_t)(new_cap - old_cap) * sizeof(char *));
+      }
+    }
     if (vphp_owned_pool.items == NULL) {
       vphp_owned_pool.cap = 0;
       vphp_owned_pool.len = 0;
+      if (origin != NULL) {
+        efree(origin);
+      }
       return;
     }
     vphp_owned_pool.cap = new_cap;
   }
-  vphp_owned_pool.items[vphp_owned_pool.len++] = z;
+  vphp_owned_pool.items[vphp_owned_pool.len] = z;
+  if (vphp_owned_pool.origins != NULL) {
+    vphp_owned_pool.origins[vphp_owned_pool.len] = origin;
+  } else if (origin != NULL) {
+    efree(origin);
+  }
+  vphp_owned_pool.len++;
 }
 
 static bool vphp_owned_remove(zval *z) {
@@ -621,7 +652,15 @@ static bool vphp_owned_remove(zval *z) {
   }
   for (int i = vphp_owned_pool.len - 1; i >= 0; i--) {
     if (vphp_owned_pool.items[i] == z) {
+      if (vphp_owned_pool.origins != NULL && vphp_owned_pool.origins[i] != NULL) {
+        efree(vphp_owned_pool.origins[i]);
+      }
       vphp_owned_pool.items[i] = vphp_owned_pool.items[vphp_owned_pool.len - 1];
+      if (vphp_owned_pool.origins != NULL) {
+        vphp_owned_pool.origins[i] =
+            vphp_owned_pool.origins[vphp_owned_pool.len - 1];
+        vphp_owned_pool.origins[vphp_owned_pool.len - 1] = NULL;
+      }
       vphp_owned_pool.items[vphp_owned_pool.len - 1] = NULL;
       vphp_owned_pool.len--;
       return true;
@@ -806,6 +845,15 @@ void vphp_autorelease_shutdown(void) {
   if (vphp_owned_pool.items != NULL) {
     pefree(vphp_owned_pool.items, 1);
     vphp_owned_pool.items = NULL;
+  }
+  if (vphp_owned_pool.origins != NULL) {
+    for (int i = 0; i < vphp_owned_pool.len; i++) {
+      if (vphp_owned_pool.origins[i] != NULL) {
+        efree(vphp_owned_pool.origins[i]);
+      }
+    }
+    pefree(vphp_owned_pool.origins, 1);
+    vphp_owned_pool.origins = NULL;
   }
   vphp_owned_pool.cap = 0;
   vphp_owned_pool.len = 0;
