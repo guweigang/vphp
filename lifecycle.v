@@ -64,8 +64,16 @@ pub struct RequestOwnedZVal {
 	ZValViewState
 }
 
+pub enum PersistentOwnedKind {
+	zval_data
+	retained_object
+}
+
 pub struct PersistentOwnedZVal {
 	ZValViewState
+pub mut:
+	kind     PersistentOwnedKind = .zval_data
+	retained RetainedObject
 }
 
 // --- Developer-facing value API ---
@@ -124,10 +132,22 @@ pub fn Value.from_zval(z ZVal) Value {
 }
 
 pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
+	if z.is_valid() && z.is_object() {
+		if retained := RetainedObject.from_zval(z) {
+			return PersistentOwnedZVal{
+				ZValViewState: ZValViewState{
+					z: invalid_zval()
+				}
+				kind: .retained_object
+				retained: retained
+			}
+		}
+	}
 	return PersistentOwnedZVal{
 		ZValViewState: ZValViewState{
 			z: z.dup_persistent()
 		}
+		kind: .zval_data
 	}
 }
 
@@ -137,7 +157,7 @@ pub fn PersistentOwnedZVal.from_zval(z ZVal) PersistentOwnedZVal {
 
 pub fn PersistentValue.from_zval(z ZVal) PersistentValue {
 	return PersistentValue{
-		ZValViewState: own_persistent_zval(z).ZValViewState
+		ZValViewState: own_persistent_zval(z).clone_request_owned().ZValViewState
 	}
 }
 
@@ -338,15 +358,198 @@ pub fn (mut v RequestOwnedZVal) release() {
 }
 
 pub fn (v PersistentOwnedZVal) borrowed() BorrowedZVal {
-	return borrow_zval(v.z)
+	match v.kind {
+		.retained_object {
+			return v.clone_request_owned().borrowed()
+		}
+		.zval_data {
+			return borrow_zval(v.z)
+		}
+	}
 }
 
 pub fn (v PersistentOwnedZVal) clone_request_owned() RequestOwnedZVal {
-	return own_request_zval(v.z)
+	match v.kind {
+		.retained_object {
+			return RequestOwnedZVal.from_zval(v.retained.to_request_owned_zval())
+		}
+		.zval_data {
+			return own_request_zval(v.z)
+		}
+	}
 }
 
 pub fn (mut v PersistentOwnedZVal) release() {
-	v.z.release()
+	match v.kind {
+		.retained_object {
+			mut retained := v.retained
+			retained.release()
+			v.retained = RetainedObject.invalid()
+			v.z = invalid_zval()
+		}
+		.zval_data {
+			v.z.release()
+		}
+	}
+	v.kind = .zval_data
+}
+
+pub fn (v PersistentOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
+	match v.kind {
+		.retained_object {
+			return own_persistent_zval(v.retained.to_request_owned_zval())
+		}
+		.zval_data {
+			return own_persistent_zval(v.z)
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) to_zval() ZVal {
+	match v.kind {
+		.retained_object {
+			return v.retained.to_request_owned_zval()
+		}
+		.zval_data {
+			return v.z
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_valid() bool {
+	match v.kind {
+		.retained_object {
+			return v.retained.is_valid()
+		}
+		.zval_data {
+			return v.z.is_valid()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_null() bool {
+	match v.kind {
+		.retained_object {
+			return false
+		}
+		.zval_data {
+			return v.z.is_null()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_undef() bool {
+	match v.kind {
+		.retained_object {
+			return false
+		}
+		.zval_data {
+			return v.z.is_undef()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_resource() bool {
+	match v.kind {
+		.retained_object {
+			return false
+		}
+		.zval_data {
+			return v.z.is_resource()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_callable() bool {
+	match v.kind {
+		.retained_object {
+			return v.retained.to_request_owned_zval().is_callable()
+		}
+		.zval_data {
+			return v.z.is_callable()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_object() bool {
+	match v.kind {
+		.retained_object {
+			return true
+		}
+		.zval_data {
+			return v.z.is_object()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_string() bool {
+	match v.kind {
+		.retained_object {
+			return false
+		}
+		.zval_data {
+			return v.z.is_string()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) is_array() bool {
+	match v.kind {
+		.retained_object {
+			return false
+		}
+		.zval_data {
+			return v.z.is_array()
+		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) method_exists(name string) bool {
+	return v.to_zval().method_exists(name)
+}
+
+pub fn (v PersistentOwnedZVal) to_string() string {
+	return v.to_zval().to_string()
+}
+
+pub fn (v PersistentOwnedZVal) to_string_list() []string {
+	return v.to_zval().to_string_list()
+}
+
+pub fn (v PersistentOwnedZVal) to_string_map() map[string]string {
+	return v.to_zval().to_string_map()
+}
+
+pub fn (v PersistentOwnedZVal) resource_type() ?string {
+	return v.to_zval().resource_type()
+}
+
+pub fn (v PersistentOwnedZVal) stream_metadata() ?StreamMetadata {
+	return v.to_zval().stream_metadata()
+}
+
+pub fn (v PersistentOwnedZVal) to_bool() bool {
+	return v.to_zval().to_bool()
+}
+
+pub fn (v PersistentOwnedZVal) to_int() int {
+	return v.to_zval().to_int()
+}
+
+pub fn (v PersistentOwnedZVal) to_i64() i64 {
+	return v.to_zval().to_i64()
+}
+
+pub fn (v PersistentOwnedZVal) to_f64() f64 {
+	return v.to_zval().to_f64()
+}
+
+pub fn (v PersistentOwnedZVal) call_owned_request(args []ZVal) ZVal {
+	return v.to_zval().call_owned_request(args)
+}
+
+pub fn (v PersistentOwnedZVal) method_owned_request(method string, args []ZVal) ZVal {
+	return v.to_zval().method_owned_request(method, args)
 }
 
 pub fn (v BorrowedValue) own_request() Value {
