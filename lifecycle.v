@@ -135,6 +135,16 @@ pub fn Value.from_zval(z ZVal) Value {
 	}
 }
 
+// adopt_request_zval transfers an already request-owned zval into Value
+// without creating another duplicate entry in the owned pool.
+pub fn Value.adopt_request_zval(z ZVal) Value {
+	return Value{
+		ZValViewState: ZValViewState{
+			z: z
+		}
+	}
+}
+
 pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 	if z.is_valid() && z.is_object() {
 		if retained := RetainedObject.from_zval(z) {
