@@ -590,6 +590,7 @@ zend_object *vphp_create_inherited_object_handler(zend_class_entry *ce) {
 void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
                                        int owns_v_ptr) {
   vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 1);
+  char debug_buf[256];
   if (wrapper == &vphp_null_wrapper) {
     return;
   }
@@ -603,13 +604,27 @@ void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
   if (owns_v_ptr) {
     wrapper->owns_v_ptr = 1;
   }
-  wrapper->cleanup_raw = h->cleanup_raw;
-  wrapper->free_raw = h->free_raw;
-  if (h->v_ptr) {
+  if (!(wrapper->owns_v_ptr && !owns_v_ptr && wrapper->v_ptr != NULL)) {
+    wrapper->cleanup_raw = h->cleanup_raw;
+    wrapper->free_raw = h->free_raw;
+  } else {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_bind_handlers_with_ownership preserve_owned obj=%p wrapper=%p existing_v_ptr=%p incoming_v_ptr=%p",
+             (void *)obj, (void *)wrapper, wrapper->v_ptr, h != NULL ? h->v_ptr : NULL);
+    vphp_bridge_object_debug_log(debug_buf);
+  }
+  if (h->v_ptr && !(wrapper->owns_v_ptr && !owns_v_ptr && wrapper->v_ptr != NULL &&
+                    wrapper->v_ptr != h->v_ptr)) {
     wrapper->v_ptr = h->v_ptr;
     if (vphp_binding_uses_registry(obj)) {
       vphp_register_object(h->v_ptr, obj);
     }
+  } else if (h->v_ptr && wrapper->owns_v_ptr && !owns_v_ptr &&
+             wrapper->v_ptr != NULL && wrapper->v_ptr != h->v_ptr) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_bind_handlers_with_ownership skip_borrowed_rebind obj=%p wrapper=%p existing_v_ptr=%p incoming_v_ptr=%p",
+             (void *)obj, (void *)wrapper, wrapper->v_ptr, h->v_ptr);
+    vphp_bridge_object_debug_log(debug_buf);
   }
   wrapper->prop_handler = h->prop_handler;
   wrapper->write_handler = h->write_handler;
