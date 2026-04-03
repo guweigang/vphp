@@ -53,6 +53,19 @@ fn framework_debug_log(message string) {
 	if !framework_debug_enabled() {
 		return
 	}
+	debug_file := os.getenv('VSLIM_CLI_DEBUG_FILE').trim_space()
+	if debug_file != '' {
+		line := '[vphp-framework-debug] ' + message + '\n'
+		mut file := os.open_append(debug_file) or {
+			mut created := os.create(debug_file) or { return }
+			created.write_string(line) or {}
+			created.close()
+			return
+		}
+		file.write_string(line) or {}
+		file.close()
+		return
+	}
 	eprintln('[vphp-framework-debug] ${message}')
 }
 
