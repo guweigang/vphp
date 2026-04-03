@@ -1010,7 +1010,12 @@ pub fn (v ZVal) method(method string, args []ZVal) ZVal {
 // 调用 callable（闭包、匿名函数、函数名字符串等）
 pub fn (v ZVal) call_owned_request(args []ZVal) ZVal {
 	if v.raw == 0 {
+		framework_debug_log('zval.call_owned_request skip raw=0 args=${args.len}')
 		return invalid_zval()
+	}
+	framework_debug_log('zval.call_owned_request enter raw=${usize(v.raw)} valid=${v.is_valid()} type=${v.type_name()} class=${v.class_name()} args=${args.len}')
+	for idx, arg in args {
+		framework_debug_log('zval.call_owned_request arg idx=${idx} raw=${usize(arg.raw)} valid=${arg.is_valid()} type=${arg.type_name()} class=${arg.class_name()}')
 	}
 
 	unsafe {
@@ -1026,10 +1031,13 @@ pub fn (v ZVal) call_owned_request(args []ZVal) ZVal {
 
 		res := C.vphp_call_callable(v.raw, retval, args.len, p_args)
 		if res == -1 {
+			framework_debug_log('zval.call_owned_request failure raw=${usize(v.raw)} retval=${usize(retval)}')
 			C.vphp_release_zval(retval)
 			return invalid_zval()
 		}
-		return adopt_raw_with_ownership(retval, .owned_request)
+		result := adopt_raw_with_ownership(retval, .owned_request)
+		framework_debug_log('zval.call_owned_request exit raw=${usize(v.raw)} retval=${usize(result.raw)} valid=${result.is_valid()} type=${result.type_name()} class=${result.class_name()}')
+		return result
 	}
 }
 
