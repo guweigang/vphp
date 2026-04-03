@@ -434,6 +434,57 @@ void vphp_output_write(const char *msg, int len) {
 
 bool vphp_has_exception() { return EG(exception) != NULL; }
 
+static int vphp_runtime_debug_enabled(void) {
+  const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+  if (path != NULL && path[0] != '\0') {
+    return 2;
+  }
+  const char *flag = getenv("VSLIM_CLI_DEBUG");
+  if (flag != NULL && flag[0] != '\0') {
+    return 1;
+  }
+  return 0;
+}
+
+static void vphp_runtime_debug_log(const char *message) {
+  int mode = vphp_runtime_debug_enabled();
+  FILE *fp = NULL;
+  if (mode == 0) {
+    return;
+  }
+  if (mode == 2) {
+    const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+    fp = fopen(path, "ab");
+    if (fp == NULL) {
+      return;
+    }
+  } else {
+    fp = stderr;
+  }
+  fprintf(fp, "[vphp-runtime-debug] %s\n", message);
+  fflush(fp);
+  if (mode == 2 && fp != NULL) {
+    fclose(fp);
+  }
+}
+
+static void vphp_runtime_debug_log_pools(const char *phase) {
+  char debug_buf[256];
+  snprintf(debug_buf, sizeof(debug_buf),
+           "request_shutdown %s owned_len=%d autorelease_len=%d registry=%u reverse=%u sidecar=%u",
+           phase, vphp_owned_pool.len, vphp_autorelease_pool.len,
+           vphp_registry_initialized
+               ? zend_hash_num_elements(&vphp_object_registry)
+               : 0,
+           vphp_registry_initialized
+               ? zend_hash_num_elements(&vphp_reverse_registry)
+               : 0,
+           vphp_sidecar_registry_initialized
+               ? zend_hash_num_elements(&vphp_sidecar_registry)
+               : 0);
+  vphp_runtime_debug_log(debug_buf);
+}
+
 static bool vphp_owned_contains(zval *z) {
   if (z == NULL) {
     return false;
@@ -581,7 +632,10 @@ void vphp_request_startup(void) {
 }
 
 void vphp_request_shutdown(void) {
+  char debug_buf[256];
+  vphp_runtime_debug_log_pools("enter");
   vphp_autorelease_drain(0);
+  vphp_runtime_debug_log_pools("after_autorelease_drain");
   vphp_last_class_table_count = 0;
   vphp_runtime_binding_applying = 0;
   vphp_runtime_internal_call_depth = 0;
@@ -592,23 +646,41 @@ void vphp_request_shutdown(void) {
   }
   vphp_pending_auto_iface_bindings_len = 0;
   vphp_pending_auto_iface_bindings_cap = 0;
+  vphp_runtime_debug_log_pools("before_sidecar_cleanup");
   if (vphp_sidecar_registry_initialized) {
     vphp_object_wrapper *binding = NULL;
     zend_ulong obj_key = 0;
     ZEND_HASH_FOREACH_NUM_KEY_PTR(&vphp_sidecar_registry, obj_key, binding) {
       if (binding == NULL) {
+        snprintf(debug_buf, sizeof(debug_buf),
+                 "request_shutdown sidecar skip_null obj=%p", (void *)obj_key);
+        vphp_runtime_debug_log(debug_buf);
         continue;
       }
+      snprintf(debug_buf, sizeof(debug_buf),
+               "request_shutdown sidecar binding obj=%p binding=%p v_ptr=%p owns=%d original_handlers=%p",
+               (void *)obj_key, (void *)binding, binding->v_ptr,
+               binding->owns_v_ptr, (void *)binding->original_handlers);
+      vphp_runtime_debug_log(debug_buf);
       if (vphp_registry_initialized) {
         zend_hash_index_del(&vphp_reverse_registry, obj_key);
+        snprintf(debug_buf, sizeof(debug_buf),
+                 "request_shutdown sidecar reverse_del obj=%p", (void *)obj_key);
+        vphp_runtime_debug_log(debug_buf);
       }
       if (binding->v_ptr != NULL && vphp_registry_initialized) {
         zend_hash_index_del(&vphp_object_registry, (zend_ulong)binding->v_ptr);
+        snprintf(debug_buf, sizeof(debug_buf),
+                 "request_shutdown sidecar object_del v_ptr=%p", binding->v_ptr);
+        vphp_runtime_debug_log(debug_buf);
       }
     }
     ZEND_HASH_FOREACH_END();
+    vphp_runtime_debug_log("request_shutdown sidecar clean begin");
     zend_hash_clean(&vphp_sidecar_registry);
+    vphp_runtime_debug_log("request_shutdown sidecar clean done");
   }
+  vphp_runtime_debug_log_pools("exit");
 }
 
 void vphp_autorelease_shutdown(void) {
