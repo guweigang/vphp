@@ -832,21 +832,58 @@ void vphp_request_shutdown(void) {
   if (vphp_owned_pool.len > 0) {
     vphp_runtime_debug_dump_owned_pool("exit", 24);
   }
-}
-
-void vphp_autorelease_shutdown(void) {
-  vphp_runtime_debug_log("autorelease_shutdown enter");
   if (vphp_autorelease_pool.items != NULL) {
     pefree(vphp_autorelease_pool.items, 1);
     vphp_autorelease_pool.items = NULL;
   }
   vphp_autorelease_pool.cap = 0;
   vphp_autorelease_pool.len = 0;
+  if (vphp_owned_pool.origins != NULL) {
+    for (int i = 0; i < vphp_owned_pool.len; i++) {
+      if (vphp_owned_pool.origins[i] != NULL) {
+        efree(vphp_owned_pool.origins[i]);
+      }
+    }
+    pefree(vphp_owned_pool.origins, 1);
+    vphp_owned_pool.origins = NULL;
+  }
   if (vphp_owned_pool.items != NULL) {
     pefree(vphp_owned_pool.items, 1);
     vphp_owned_pool.items = NULL;
   }
+  vphp_owned_pool.cap = 0;
+  vphp_owned_pool.len = 0;
+}
+
+void vphp_autorelease_shutdown(void) {
+  char debug_buf[256];
+  vphp_runtime_debug_log("autorelease_shutdown enter");
+  if (vphp_autorelease_pool.items != NULL) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "autorelease_shutdown free autorelease_pool.items=%p cap=%d len=%d",
+             (void *)vphp_autorelease_pool.items, vphp_autorelease_pool.cap,
+             vphp_autorelease_pool.len);
+    vphp_runtime_debug_log(debug_buf);
+    pefree(vphp_autorelease_pool.items, 1);
+    vphp_autorelease_pool.items = NULL;
+  }
+  vphp_autorelease_pool.cap = 0;
+  vphp_autorelease_pool.len = 0;
+  if (vphp_owned_pool.items != NULL) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "autorelease_shutdown free owned_pool.items=%p cap=%d len=%d",
+             (void *)vphp_owned_pool.items, vphp_owned_pool.cap,
+             vphp_owned_pool.len);
+    vphp_runtime_debug_log(debug_buf);
+    pefree(vphp_owned_pool.items, 1);
+    vphp_owned_pool.items = NULL;
+  }
   if (vphp_owned_pool.origins != NULL) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "autorelease_shutdown free owned_pool.origins=%p cap=%d len=%d",
+             (void *)vphp_owned_pool.origins, vphp_owned_pool.cap,
+             vphp_owned_pool.len);
+    vphp_runtime_debug_log(debug_buf);
     for (int i = 0; i < vphp_owned_pool.len; i++) {
       if (vphp_owned_pool.origins[i] != NULL) {
         efree(vphp_owned_pool.origins[i]);

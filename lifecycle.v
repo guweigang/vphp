@@ -74,10 +74,10 @@ pub enum PersistentOwnedKind {
 pub struct PersistentOwnedZVal {
 	ZValViewState
 pub mut:
-	kind     PersistentOwnedKind = .zval_data
-	dyn_data DynValue
+	kind        PersistentOwnedKind = .zval_data
+	dyn_data    DynValue
 	string_data string
-	retained RetainedObject
+	retained    RetainedObject
 }
 
 // --- Developer-facing value API ---
@@ -152,8 +152,8 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 				ZValViewState: ZValViewState{
 					z: invalid_zval()
 				}
-				kind: .retained_object
-				retained: retained
+				kind:          .retained_object
+				retained:      retained
 			}
 		}
 	}
@@ -164,8 +164,8 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 					ZValViewState: ZValViewState{
 						z: invalid_zval()
 					}
-					kind: .string_data
-					string_data: dyn.data.s.clone()
+					kind:          .string_data
+					string_data:   dyn.data.s.clone()
 				}
 			}
 		}
@@ -173,8 +173,8 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 			ZValViewState: ZValViewState{
 				z: invalid_zval()
 			}
-			kind: .dyn_data
-			dyn_data: dyn
+			kind:          .dyn_data
+			dyn_data:      dyn
 		}
 	}
 	if z.is_valid() && z.is_string() {
@@ -182,15 +182,15 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 			ZValViewState: ZValViewState{
 				z: invalid_zval()
 			}
-			kind: .string_data
-			string_data: z.to_string()
+			kind:          .string_data
+			string_data:   z.to_string()
 		}
 	}
 	return PersistentOwnedZVal{
 		ZValViewState: ZValViewState{
 			z: z.dup_persistent()
 		}
-		kind: .zval_data
+		kind:          .zval_data
 	}
 }
 
@@ -245,7 +245,13 @@ pub fn Value.new_string(s string) Value {
 }
 
 pub fn PersistentOwnedZVal.new_null() PersistentOwnedZVal {
-	return own_persistent_zval(ZVal.new_null())
+	return PersistentOwnedZVal{
+		ZValViewState: ZValViewState{
+			z: invalid_zval()
+		}
+		kind:          .dyn_data
+		dyn_data:      dyn_value_null()
+	}
 }
 
 pub fn PersistentOwnedZVal.invalid() PersistentOwnedZVal {
@@ -486,8 +492,8 @@ pub fn (v PersistentOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
 				ZValViewState: ZValViewState{
 					z: invalid_zval()
 				}
-				kind: .dyn_data
-				dyn_data: v.dyn_data
+				kind:          .dyn_data
+				dyn_data:      v.dyn_data
 			}
 		}
 		.retained_object {
@@ -495,8 +501,8 @@ pub fn (v PersistentOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
 				ZValViewState: ZValViewState{
 					z: invalid_zval()
 				}
-				kind: .retained_object
-				retained: v.retained.clone()
+				kind:          .retained_object
+				retained:      v.retained.clone()
 			}
 		}
 		.string_data {
@@ -504,8 +510,8 @@ pub fn (v PersistentOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
 				ZValViewState: ZValViewState{
 					z: invalid_zval()
 				}
-				kind: .string_data
-				string_data: v.string_data.clone()
+				kind:          .string_data
+				string_data:   v.string_data.clone()
 			}
 		}
 		.zval_data {
@@ -696,18 +702,28 @@ pub fn (v PersistentOwnedZVal) to_string() string {
 	match v.kind {
 		.dyn_data {
 			match v.dyn_data.type {
-				.null_ { return '' }
+				.null_ {
+					return ''
+				}
 				.bool_ {
-					unsafe { return if v.dyn_data.data.b { '1' } else { '' } }
+					unsafe {
+						return if v.dyn_data.data.b { '1' } else { '' }
+					}
 				}
 				.int_ {
-					unsafe { return v.dyn_data.data.i.str() }
+					unsafe {
+						return v.dyn_data.data.i.str()
+					}
 				}
 				.float_ {
-					unsafe { return v.dyn_data.data.f.str() }
+					unsafe {
+						return v.dyn_data.data.f.str()
+					}
 				}
 				.string_ {
-					unsafe { return v.dyn_data.data.s.clone() }
+					unsafe {
+						return v.dyn_data.data.s.clone()
+					}
 				}
 				else {
 					mut temp := persistent_dyn_request_owned(v.dyn_data)
@@ -745,8 +761,8 @@ pub fn (v PersistentOwnedZVal) to_string_list() []string {
 							ZValViewState: ZValViewState{
 								z: invalid_zval()
 							}
-							kind: .dyn_data
-							dyn_data: item
+							kind:          .dyn_data
+							dyn_data:      item
 						}.to_string()
 					}
 					return out
@@ -790,8 +806,8 @@ pub fn (v PersistentOwnedZVal) to_string_map() map[string]string {
 							ZValViewState: ZValViewState{
 								z: invalid_zval()
 							}
-							kind: .dyn_data
-							dyn_data: item
+							kind:          .dyn_data
+							dyn_data:      item
 						}.to_string()
 					}
 					return out
@@ -867,21 +883,35 @@ pub fn (v PersistentOwnedZVal) to_bool() bool {
 	match v.kind {
 		.dyn_data {
 			match v.dyn_data.type {
-				.null_ { return false }
+				.null_ {
+					return false
+				}
 				.bool_ {
-					unsafe { return v.dyn_data.data.b }
+					unsafe {
+						return v.dyn_data.data.b
+					}
 				}
 				.int_ {
-					unsafe { return v.dyn_data.data.i != 0 }
+					unsafe {
+						return v.dyn_data.data.i != 0
+					}
 				}
 				.float_ {
-					unsafe { return v.dyn_data.data.f != 0.0 }
+					unsafe {
+						return v.dyn_data.data.f != 0.0
+					}
 				}
 				.string_ {
-					unsafe { return v.dyn_data.data.s.len > 0 }
+					unsafe {
+						return v.dyn_data.data.s.len > 0
+					}
 				}
-				.list_, .map_ { return true }
-				else { return false }
+				.list_, .map_ {
+					return true
+				}
+				else {
+					return false
+				}
 			}
 		}
 		.retained_object {
@@ -905,18 +935,26 @@ pub fn (v PersistentOwnedZVal) to_int() int {
 		.dyn_data {
 			match v.dyn_data.type {
 				.int_ {
-					unsafe { return int(v.dyn_data.data.i) }
+					unsafe {
+						return int(v.dyn_data.data.i)
+					}
 				}
 				.bool_ {
-					unsafe { return if v.dyn_data.data.b { 1 } else { 0 } }
+					unsafe {
+						return if v.dyn_data.data.b { 1 } else { 0 }
+					}
 				}
 				.float_ {
-					unsafe { return int(v.dyn_data.data.f) }
+					unsafe {
+						return int(v.dyn_data.data.f)
+					}
 				}
 				.string_ {
 					return v.to_string().int()
 				}
-				else { return 0 }
+				else {
+					return 0
+				}
 			}
 		}
 		.retained_object {
@@ -940,18 +978,26 @@ pub fn (v PersistentOwnedZVal) to_i64() i64 {
 		.dyn_data {
 			match v.dyn_data.type {
 				.int_ {
-					unsafe { return v.dyn_data.data.i }
+					unsafe {
+						return v.dyn_data.data.i
+					}
 				}
 				.bool_ {
-					unsafe { return if v.dyn_data.data.b { i64(1) } else { i64(0) } }
+					unsafe {
+						return if v.dyn_data.data.b { i64(1) } else { i64(0) }
+					}
 				}
 				.float_ {
-					unsafe { return i64(v.dyn_data.data.f) }
+					unsafe {
+						return i64(v.dyn_data.data.f)
+					}
 				}
 				.string_ {
 					return v.to_string().i64()
 				}
-				else { return 0 }
+				else {
+					return 0
+				}
 			}
 		}
 		.retained_object {
@@ -975,18 +1021,26 @@ pub fn (v PersistentOwnedZVal) to_f64() f64 {
 		.dyn_data {
 			match v.dyn_data.type {
 				.float_ {
-					unsafe { return v.dyn_data.data.f }
+					unsafe {
+						return v.dyn_data.data.f
+					}
 				}
 				.int_ {
-					unsafe { return f64(v.dyn_data.data.i) }
+					unsafe {
+						return f64(v.dyn_data.data.i)
+					}
 				}
 				.bool_ {
-					unsafe { return if v.dyn_data.data.b { 1.0 } else { 0.0 } }
+					unsafe {
+						return if v.dyn_data.data.b { 1.0 } else { 0.0 }
+					}
 				}
 				.string_ {
 					return v.to_string().f64()
 				}
-				else { return 0.0 }
+				else {
+					return 0.0
+				}
 			}
 		}
 		.retained_object {
@@ -1100,7 +1154,7 @@ pub fn (mut v PersistentValue) release() {
 pub fn borrowed_zval_from_raw(raw &C.zval) BorrowedZVal {
 	return unsafe {
 		borrow_zval(ZVal{
-			raw: raw
+			raw:   raw
 			owned: false
 		})
 	}
@@ -1129,7 +1183,7 @@ pub fn own_request(z ZVal) OwnedValue {
 	owned := own_request_zval(z)
 	return OwnedValue{
 		ZValViewState: owned.ZValViewState
-		lifetime: .owned_request
+		lifetime:      .owned_request
 	}
 }
 
@@ -1137,7 +1191,7 @@ pub fn own_persistent(z ZVal) OwnedValue {
 	persistent := own_persistent_zval(z)
 	return OwnedValue{
 		ZValViewState: persistent.ZValViewState
-		lifetime: .owned_persistent
+		lifetime:      .owned_persistent
 	}
 }
 
@@ -1178,7 +1232,7 @@ mut:
 
 pub fn request_scope() RequestScope {
 	return RequestScope{
-		mark: request_scope_enter()
+		mark:   request_scope_enter()
 		active: true
 	}
 }
