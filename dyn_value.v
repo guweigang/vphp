@@ -198,11 +198,14 @@ pub fn encode_dyn_value(v DynValue, mut out ZVal) ! {
 }
 
 pub fn new_zval_from_dyn_value(v DynValue) !ZVal {
+	framework_debug_log('dyn_value.new_zval enter type=${v.type}')
 	mut out := ZVal{
 		raw:   C.vphp_new_zval()
 		owned: true
 	}
 	autorelease_add(out.raw)
+	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw)}')
 	encode_dyn_value(v, mut out)!
+	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw)} valid=${out.is_valid()} type=${out.type_name()}')
 	return out
 }
