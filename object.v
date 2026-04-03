@@ -214,6 +214,16 @@ pub fn (r RetainedObject) is_valid() bool {
 	return r.raw != unsafe { nil }
 }
 
+pub fn (r RetainedObject) clone() RetainedObject {
+	if r.raw == unsafe { nil } {
+		return RetainedObject.invalid()
+	}
+	C.vphp_object_addref(r.raw)
+	return RetainedObject{
+		raw: r.raw
+	}
+}
+
 pub fn (r RetainedObject) to_request_owned_zval() ZVal {
 	if r.raw == unsafe { nil } {
 		return invalid_zval()
