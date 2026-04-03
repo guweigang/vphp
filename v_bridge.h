@@ -183,6 +183,8 @@ const char *vphp_get_string_ptr(zval *z, int *len);
 long vphp_get_int(zval *z);
 double vphp_get_double(zval *z);
 zend_object *vphp_get_obj_from_zval(zval *zv);
+void vphp_object_addref(zend_object *obj);
+void vphp_object_release(zend_object *obj);
 void *vphp_get_this_object(zend_execute_data *execute_data);
 void *vphp_get_current_this_object(void);
 void *vphp_get_v_ptr_from_zval(zval *zv);

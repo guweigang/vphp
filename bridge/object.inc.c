@@ -214,6 +214,20 @@ void vphp_wrap_existing_object(zval *return_value, zend_object *obj) {
   ZVAL_OBJ(return_value, obj);
 }
 
+void vphp_object_addref(zend_object *obj) {
+  if (obj == NULL) {
+    return;
+  }
+  GC_ADDREF(obj);
+}
+
+void vphp_object_release(zend_object *obj) {
+  if (obj == NULL) {
+    return;
+  }
+  OBJ_RELEASE(obj);
+}
+
 vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj) {
   vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 0);
   if (wrapper == &vphp_null_wrapper) {
