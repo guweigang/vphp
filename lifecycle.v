@@ -403,7 +403,11 @@ fn persistent_string_request_owned(value string) RequestOwnedZVal {
 }
 
 fn persistent_dyn_request_owned(value DynValue) RequestOwnedZVal {
-	return RequestOwnedZVal.from_zval(new_zval_from_dyn_value(value) or { ZVal.new_null() })
+	return RequestOwnedZVal{
+		ZValViewState: ZValViewState{
+			z: new_zval_from_dyn_value(value) or { ZVal.new_null() }
+		}
+	}
 }
 
 pub fn (v PersistentOwnedZVal) borrowed() BorrowedZVal {
