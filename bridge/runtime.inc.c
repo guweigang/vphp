@@ -498,7 +498,7 @@ static const char *vphp_runtime_debug_zval_class_name(zval *z) {
 }
 
 static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
-  char debug_buf[256];
+  char debug_buf[512];
   int emitted = 0;
   for (int i = vphp_owned_pool.len - 1; i >= 0; i--) {
     zval *z = vphp_owned_pool.items[i];
@@ -509,10 +509,69 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
     if (Z_REFCOUNTED_P(z)) {
       refcount = GC_REFCOUNT(Z_COUNTED_P(z));
     }
-    snprintf(debug_buf, sizeof(debug_buf),
-             "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u",
-             phase, i, (void *)z, Z_TYPE_P(z),
-             vphp_runtime_debug_zval_class_name(z), refcount);
+    if (Z_TYPE_P(z) == IS_STRING) {
+      size_t src_len = Z_STRLEN_P(z);
+      size_t copy_len = src_len < 96 ? src_len : 96;
+      char snippet[97];
+      memset(snippet, 0, sizeof(snippet));
+      if (copy_len > 0) {
+        memcpy(snippet, Z_STRVAL_P(z), copy_len);
+      }
+      snprintf(debug_buf, sizeof(debug_buf),
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u strlen=%zu str=\"%s%s\"",
+               phase, i, (void *)z, Z_TYPE_P(z),
+               vphp_runtime_debug_zval_class_name(z), refcount, src_len,
+               snippet, src_len > copy_len ? "..." : "");
+    } else if (Z_TYPE_P(z) == IS_ARRAY) {
+      zend_array *arr = Z_ARRVAL_P(z);
+      zend_ulong idx_key = 0;
+      zend_string *str_key = NULL;
+      zval *item = NULL;
+      char keys[160];
+      size_t used = 0;
+      int key_count = 0;
+      memset(keys, 0, sizeof(keys));
+      ZEND_HASH_FOREACH_KEY_VAL(arr, idx_key, str_key, item) {
+        char piece[48];
+        (void)item;
+        if (key_count >= 4 || used >= sizeof(keys) - 1) {
+          break;
+        }
+        if (str_key != NULL) {
+          snprintf(piece, sizeof(piece), "%s%.*s", key_count == 0 ? "" : ",",
+                   24, ZSTR_VAL(str_key));
+        } else {
+          snprintf(piece, sizeof(piece), "%s%lu", key_count == 0 ? "" : ",",
+                   (unsigned long)idx_key);
+        }
+        size_t piece_len = strlen(piece);
+        if (piece_len == 0 || used + piece_len >= sizeof(keys) - 1) {
+          break;
+        }
+        memcpy(keys + used, piece, piece_len);
+        used += piece_len;
+        keys[used] = '\0';
+        key_count++;
+      }
+      ZEND_HASH_FOREACH_END();
+      snprintf(debug_buf, sizeof(debug_buf),
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u array_count=%u keys=%s",
+               phase, i, (void *)z, Z_TYPE_P(z),
+               vphp_runtime_debug_zval_class_name(z), refcount,
+               (unsigned)zend_hash_num_elements(arr),
+               used > 0 ? keys : "(none)");
+    } else if (Z_TYPE_P(z) == IS_LONG) {
+      snprintf(debug_buf, sizeof(debug_buf),
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u long=%lld",
+               phase, i, (void *)z, Z_TYPE_P(z),
+               vphp_runtime_debug_zval_class_name(z), refcount,
+               (long long)Z_LVAL_P(z));
+    } else {
+      snprintf(debug_buf, sizeof(debug_buf),
+               "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u",
+               phase, i, (void *)z, Z_TYPE_P(z),
+               vphp_runtime_debug_zval_class_name(z), refcount);
+    }
     vphp_runtime_debug_log(debug_buf);
     emitted++;
     if (limit > 0 && emitted >= limit) {
