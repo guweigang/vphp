@@ -680,6 +680,14 @@ void vphp_request_shutdown(void) {
     zend_hash_clean(&vphp_sidecar_registry);
     vphp_runtime_debug_log("request_shutdown sidecar clean done");
   }
+  if (vphp_registry_initialized) {
+    vphp_runtime_debug_log("request_shutdown object_registry clean begin");
+    zend_hash_clean(&vphp_object_registry);
+    vphp_runtime_debug_log("request_shutdown object_registry clean done");
+    vphp_runtime_debug_log("request_shutdown reverse_registry clean begin");
+    zend_hash_clean(&vphp_reverse_registry);
+    vphp_runtime_debug_log("request_shutdown reverse_registry clean done");
+  }
   vphp_runtime_debug_log_pools("exit");
 }
 
