@@ -58,6 +58,66 @@ double vphp_get_double(zval *z) {
   return 0.0;
 }
 
+static int vphp_bridge_value_debug_enabled(void) {
+  const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+  if (path != NULL && path[0] != '\0') {
+    return 2;
+  }
+  const char *flag = getenv("VSLIM_CLI_DEBUG");
+  if (flag != NULL && flag[0] != '\0') {
+    return 1;
+  }
+  return 0;
+}
+
+static void vphp_bridge_value_debug_log(const char *message) {
+  int mode = vphp_bridge_value_debug_enabled();
+  FILE *fp = NULL;
+  if (mode == 0) {
+    return;
+  }
+  if (mode == 2) {
+    const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
+    fp = fopen(path, "ab");
+    if (fp == NULL) {
+      return;
+    }
+  } else {
+    fp = stderr;
+  }
+  fprintf(fp, "[vphp-value-debug] %s\n", message);
+  fflush(fp);
+  if (mode == 2 && fp != NULL) {
+    fclose(fp);
+  }
+}
+
+static const char *vphp_debug_zval_class_name(zval *z) {
+  zend_class_entry *ce = NULL;
+  if (z == NULL || Z_TYPE_P(z) != IS_OBJECT) {
+    return "(none)";
+  }
+  ce = Z_OBJCE_P(z);
+  if (ce == NULL || ce->name == NULL) {
+    return "(null)";
+  }
+  return ZSTR_VAL(ce->name);
+}
+
+static void vphp_debug_log_release_zval(const char *phase, zval *z, int removed) {
+  char debug_buf[256];
+  int type = z != NULL ? Z_TYPE_P(z) : -1;
+  uint32_t refcount = 0;
+  if (z != NULL && Z_REFCOUNTED_P(z)) {
+    refcount = GC_REFCOUNT(Z_COUNTED_P(z));
+  }
+  snprintf(debug_buf, sizeof(debug_buf),
+           "vphp_release_zval %s z=%p type=%d class=%s refcount=%u removed=%d",
+           phase, (void *)z, type, vphp_debug_zval_class_name(z), refcount,
+           removed);
+  vphp_bridge_value_debug_log(debug_buf);
+}
+
 void vphp_convert_to_string(zval *z) {
   if (z && Z_TYPE_P(z) != IS_STRING) {
     convert_to_string(z);
@@ -87,14 +147,21 @@ zval *vphp_new_strl(const char *s, int len) {
 }
 
 void vphp_release_zval(zval *z) {
+  int removed = 0;
   if (!z) {
     return;
   }
-  if (!vphp_owned_remove(z)) {
+  vphp_debug_log_release_zval("enter", z, 0);
+  removed = vphp_owned_remove(z);
+  if (!removed) {
+    vphp_debug_log_release_zval("skip_not_owned", z, 0);
     return;
   }
+  vphp_debug_log_release_zval("before_dtor", z, removed);
   zval_ptr_dtor(z);
+  vphp_bridge_value_debug_log("vphp_release_zval after_dtor");
   efree(z);
+  vphp_bridge_value_debug_log("vphp_release_zval after_efree");
 }
 
 void vphp_disown_zval(zval *z) {
