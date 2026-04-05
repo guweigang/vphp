@@ -108,9 +108,17 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 		// 如果是 Context 类型，直接传递
 		if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
 			out << '    ${var_name} := ctx'
+		} else if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {
+			out << '    ${var_name} := ctx.arg_raw(${i})'
 		} else if arg.v_type == 'Callable' || arg.v_type == 'vphp.Callable' {
 			// Callable is a ZVal alias — read as raw ZVal
 			out << '    ${var_name} := ctx.arg_raw(${i})'
+		} else if arg.v_type == 'RequestBorrowedZBox' || arg.v_type == 'vphp.RequestBorrowedZBox' {
+			out << '    ${var_name} := ctx.arg_borrowed_zbox(${i})'
+		} else if arg.v_type == 'RequestOwnedZBox' || arg.v_type == 'vphp.RequestOwnedZBox' {
+			out << '    ${var_name} := ctx.arg_owned_request_zbox(${i})'
+		} else if arg.v_type == 'PersistentOwnedZBox' || arg.v_type == 'vphp.PersistentOwnedZBox' {
+			out << '    ${var_name} := ctx.arg_owned_persistent_zbox(${i})'
 		} else if arg.v_type.starts_with('?') {
 			out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
 		} else if arg.v_type.starts_with('&') {
@@ -644,10 +652,16 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
 				out << '    ${var_name} := ctx'
 			} else if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {
-				out << '    ${var_name} := ctx.arg_val(${i})'
+				out << '    ${var_name} := ctx.arg_raw(${i})'
 			} else if arg.v_type == 'Callable' || arg.v_type == 'vphp.Callable' {
 				// Callable is a ZVal alias — read as raw ZVal for callable params
-				out << '    ${var_name} := ctx.arg_val(${i})'
+				out << '    ${var_name} := ctx.arg_raw(${i})'
+			} else if arg.v_type == 'RequestBorrowedZBox' || arg.v_type == 'vphp.RequestBorrowedZBox' {
+				out << '    ${var_name} := ctx.arg_borrowed_zbox(${i})'
+			} else if arg.v_type == 'RequestOwnedZBox' || arg.v_type == 'vphp.RequestOwnedZBox' {
+				out << '    ${var_name} := ctx.arg_owned_request_zbox(${i})'
+			} else if arg.v_type == 'PersistentOwnedZBox' || arg.v_type == 'vphp.PersistentOwnedZBox' {
+				out << '    ${var_name} := ctx.arg_owned_persistent_zbox(${i})'
 			} else if arg.v_type.starts_with('?') {
 				out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
 			} else if tm.c_type == 'void*' {
