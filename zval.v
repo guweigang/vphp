@@ -4,8 +4,9 @@ module vphp
 // ZVal — low-level bridge wrapper around Zend zval
 // NOTE:
 // - This type is intended for vphp bridge internals.
-// - Extension/framework code should prefer typed wrappers in lifecycle.v:
-//   BorrowedZVal / RequestOwnedZVal / PersistentOwnedZVal.
+// - Extension/framework code should prefer ownership-aware wrappers in
+//   lifecycle.v, with `RequestBorrowedZBox` / `RequestOwnedZBox` /
+//   `PersistentOwnedZBox` as the primary public naming.
 // ============================================
 
 pub struct ZVal {
@@ -1600,6 +1601,9 @@ pub fn new_val_string(s string) ZVal {
 // ======== 新版清晰转换 API ========
 // Zend Value -> V:   v.to_v[T]()
 // V -> Zend Value:   v.from_v[T](x), new_zval_from[T](x)
+//
+// Ownership-aware code should prefer `RequestBorrowedZBox`,
+// `RequestOwnedZBox`, and `PersistentOwnedZBox`.
 
 // 便捷转换：array => map<string,string>（无效/null/undef 返回空 map）
 pub fn (v ZVal) to_string_map() map[string]string {
@@ -1622,14 +1626,14 @@ pub fn (v ZVal) to_v[T]() !T {
 	$if T is ZVal {
 		return v
 	}
-	$if T is BorrowedValue {
-		return BorrowedValue.from_zval(v)
+	$if T is RequestBorrowedZBox {
+		return RequestBorrowedZBox.of(v)
 	}
-	$if T is Value {
-		return Value.from_zval(v)
+	$if T is RequestOwnedZBox {
+		return RequestOwnedZBox.of(v)
 	}
-	$if T is PersistentValue {
-		return PersistentValue.from_zval(v)
+	$if T is PersistentOwnedZBox {
+		return PersistentOwnedZBox.of(v)
 	}
 	$if T is bool {
 		if !v.is_bool() {
@@ -1779,7 +1783,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		unsafe { C.ZVAL_COPY(v.raw, value.raw) }
 		return
 	}
-	$if T is BorrowedValue {
+	$if T is RequestBorrowedZBox {
 		if !value.is_valid() {
 			v.set_null()
 			return
@@ -1787,7 +1791,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
 		return
 	}
-	$if T is Value {
+	$if T is RequestOwnedZBox {
 		if !value.is_valid() {
 			v.set_null()
 			return
@@ -1795,7 +1799,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
 		return
 	}
-	$if T is PersistentValue {
+	$if T is PersistentOwnedZBox {
 		if !value.is_valid() {
 			v.set_null()
 			return

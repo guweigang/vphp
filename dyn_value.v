@@ -1,6 +1,6 @@
 module vphp
 
-pub enum ValueType {
+pub enum DynValueType {
 	null_
 	bool_
 	int_
@@ -21,10 +21,10 @@ pub union DynValueData {
 }
 
 // DynValue is a detached dynamic value tree for unknown/mixed PHP payloads.
-// Unlike Value/BorrowedValue, it does not preserve Zend ownership semantics.
+// It does not preserve Zend ownership semantics.
 pub struct DynValue {
 pub:
-	type ValueType
+	type DynValueType
 pub mut:
 	data DynValueData
 	list []DynValue

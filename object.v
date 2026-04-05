@@ -238,6 +238,18 @@ pub fn (r RetainedObject) to_request_owned_zval() ZVal {
 	}
 }
 
+pub fn (r RetainedObject) with_request_zval[T](run fn (ZVal) T) T {
+	mut out := RequestOwnedZVal{
+		ZValViewState: ZValViewState{
+			z: r.to_request_owned_zval()
+		}
+	}
+	defer {
+		out.release()
+	}
+	return run(out.to_zval())
+}
+
 pub fn (mut r RetainedObject) release() {
 	if r.raw == unsafe { nil } {
 		return

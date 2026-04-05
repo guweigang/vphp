@@ -92,6 +92,22 @@ Important:
   `@[php_method]`, including container returns like `map[string]string` and
   `[]string`
 
+## Ownership-facing Defaults
+
+For new exported APIs, prefer ownership-aware wrapper types in signatures:
+
+- `RequestBorrowedZBox`
+- `RequestOwnedZBox`
+- `PersistentOwnedZBox`
+
+Treat these as the compiler-facing default vocabulary.
+
+In practice:
+
+- parameter signatures should prefer `RequestBorrowedZBox`
+- temporary owned results inside glue should prefer `RequestOwnedZBox`
+- long-lived stored values should prefer `PersistentOwnedZBox`
+
 ## PHP Signature Attributes
 
 The compiler supports a small set of explicit attributes for PHP-facing

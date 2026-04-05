@@ -23,8 +23,9 @@ This follows the same philosophy used by `ext-php-rs` (`ZBox` + request lifecycl
 `vphp/lifecycle.v` introduces:
 
 - `OwnershipKind`
-- `BorrowedValue`
-- `OwnedValue`
+- `RequestBorrowedZBox`
+- `RequestOwnedZBox`
+- `PersistentOwnedZBox`
 - `RequestScope`
 - `with_request_scope(...)`
 
@@ -128,16 +129,16 @@ Design rule:
 
 ```mermaid
 flowchart LR
-    A["PHP / Zend 当前请求上下文"] --> B["BorrowedZVal<br/>只借用，不释放"]
-    A --> C["RequestOwnedZVal<br/>绑定当前 request cycle"]
+    A["PHP / Zend 当前请求上下文"] --> B["RequestBorrowedZBox<br/>只借用，不释放"]
+    A --> C["RequestOwnedZBox<br/>绑定当前 request cycle"]
     D["跨请求长期状态<br/>worker / router / connection / handler cache"] --> E["PersistentOwnedZVal<br/>必须显式 release"]
 ```
 
 对应到使用规则，就是：
 
-1. `BorrowedZVal` 只能在当前调用栈里短暂查看，不能跨 request 保存。
-2. `RequestOwnedZVal` 可以拥有数据，但必须在当前 request cycle 结束前统一释放。
-3. `PersistentOwnedZVal` 只用于跨请求对象，创建后要有明确的 `release()` 点。
+1. `RequestBorrowedZBox` 只能在当前调用栈里短暂查看，不能跨 request 保存。
+2. `RequestOwnedZBox` 可以拥有数据，但必须在当前 request cycle 结束前统一释放。
+3. `PersistentOwnedZBox` 只用于跨请求对象，创建后要有明确的 `release()` 点。
 
 ### Sequence View
 
@@ -153,14 +154,14 @@ sequenceDiagram
     Note over Client,VPHP: FPM
     Client->>FPM: Request #1
     FPM->>VPHP: request_startup
-    FPM->>VPHP: create/use RequestOwnedZVal
+        FPM->>VPHP: create/use RequestOwnedZBox
     FPM->>VPHP: request_shutdown
     VPHP-->>FPM: autorelease drain
 
     Note over Client,VPHP: CLI Worker
     Client->>CLI: Request #1
     CLI->>VPHP: request_scope_enter
-    CLI->>VPHP: create/use RequestOwnedZVal
+        CLI->>VPHP: create/use RequestOwnedZBox
     CLI->>VPHP: request_scope_leave
     VPHP-->>CLI: autorelease drain
 ```
@@ -180,7 +181,7 @@ sequenceDiagram
 
 ### Phase 2 (Bridge Convergence)
 
-- Convert bridge return paths to explicit `BorrowedValue` / `OwnedValue`.
+- Convert bridge return paths to explicit `RequestBorrowedZBox` / `RequestOwnedZBox`.
 - Remove implicit ownership transfer in helper paths.
 - Restrict `dup_persistent()` usage to explicit ownership handoff points.
 

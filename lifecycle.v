@@ -80,18 +80,23 @@ pub mut:
 	retained    RetainedObject
 }
 
-// --- Developer-facing value API ---
-// These wrappers keep the lifecycle model, but hide Zend-specific naming.
-pub struct BorrowedValue {
-	ZValViewState
+// Preferred public naming for ownership-aware Zend wrappers.
+// Keep the old names as the implementation types for now so existing code stays
+// source-compatible while new code can move to the clearer ZBox terminology.
+pub type RequestBorrowedZBox = BorrowedZVal
+pub type RequestOwnedZBox = RequestOwnedZVal
+pub type PersistentOwnedZBox = PersistentOwnedZVal
+
+pub fn borrow_zbox(z ZVal) RequestBorrowedZBox {
+	return RequestBorrowedZBox.of(z)
 }
 
-pub struct Value {
-	ZValViewState
+pub fn own_request_zbox(z ZVal) RequestOwnedZBox {
+	return RequestOwnedZBox.of(z)
 }
 
-pub struct PersistentValue {
-	ZValViewState
+pub fn own_persistent_zbox(z ZVal) PersistentOwnedZBox {
+	return PersistentOwnedZBox.of(z)
 }
 
 pub fn borrow_zval(z ZVal) BorrowedZVal {
@@ -106,10 +111,8 @@ pub fn BorrowedZVal.from_zval(z ZVal) BorrowedZVal {
 	return borrow_zval(z)
 }
 
-pub fn BorrowedValue.from_zval(z ZVal) BorrowedValue {
-	return BorrowedValue{
-		ZValViewState: borrow_zval(z).ZValViewState
-	}
+pub fn BorrowedZVal.of(z ZVal) BorrowedZVal {
+	return BorrowedZVal.from_zval(z)
 }
 
 // null borrowed helper for call-site ergonomics; lifetime is request-scoped.
@@ -129,16 +132,12 @@ pub fn RequestOwnedZVal.from_zval(z ZVal) RequestOwnedZVal {
 	return own_request_zval(z)
 }
 
-pub fn Value.from_zval(z ZVal) Value {
-	return Value{
-		ZValViewState: own_request_zval(z).ZValViewState
-	}
+pub fn RequestOwnedZVal.of(z ZVal) RequestOwnedZVal {
+	return RequestOwnedZVal.from_zval(z)
 }
 
-// adopt_request_zval transfers an already request-owned zval into Value
-// without creating another duplicate entry in the owned pool.
-pub fn Value.adopt_request_zval(z ZVal) Value {
-	return Value{
+pub fn RequestOwnedZVal.adopt_zval(z ZVal) RequestOwnedZVal {
+	return RequestOwnedZVal{
 		ZValViewState: ZValViewState{
 			z: z
 		}
@@ -186,6 +185,9 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 			string_data:   z.to_string()
 		}
 	}
+	// Keep raw zval fallback as a narrow compatibility path only.
+	// Safe long-lived values should prefer detached DynValue/string data or
+	// retained object handles above.
 	return PersistentOwnedZVal{
 		ZValViewState: ZValViewState{
 			z: z.dup_persistent()
@@ -194,14 +196,92 @@ pub fn own_persistent_zval(z ZVal) PersistentOwnedZVal {
 	}
 }
 
+pub fn own_persistent_dyn(value DynValue) PersistentOwnedZVal {
+	if value.type == .string_ {
+		unsafe {
+			return PersistentOwnedZVal{
+				ZValViewState: ZValViewState{
+					z: invalid_zval()
+				}
+				kind:        .string_data
+				string_data: value.data.s.clone()
+			}
+		}
+	}
+	return PersistentOwnedZVal{
+		ZValViewState: ZValViewState{
+			z: invalid_zval()
+		}
+		kind:     .dyn_data
+		dyn_data: value
+	}
+}
+
+fn dyn_value_is_persistent_safe(value DynValue) bool {
+	return match value.type {
+		.null_, .bool_, .int_, .float_, .string_ { true }
+		.list_ {
+			for item in value.list {
+				if !dyn_value_is_persistent_safe(item) {
+					return false
+				}
+			}
+			true
+		}
+		.map_ {
+			for _, item in value.map {
+				if !dyn_value_is_persistent_safe(item) {
+					return false
+				}
+			}
+			true
+		}
+		.object_ref, .resource_ref { false }
+	}
+}
+
 pub fn PersistentOwnedZVal.from_zval(z ZVal) PersistentOwnedZVal {
 	return own_persistent_zval(z)
 }
 
-pub fn PersistentValue.from_zval(z ZVal) PersistentValue {
-	return PersistentValue{
-		ZValViewState: own_persistent_zval(z).clone_request_owned().ZValViewState
+// of is the friendly long-lived entry point for a general PHP value.
+// It will route safe data into detached storage and objects into retained
+// handles, only falling back to raw persistent zval compatibility when needed.
+pub fn PersistentOwnedZVal.of(z ZVal) PersistentOwnedZVal {
+	return PersistentOwnedZVal.from_zval(z)
+}
+
+pub fn PersistentOwnedZVal.from_dyn(value DynValue) PersistentOwnedZVal {
+	return own_persistent_dyn(value)
+}
+
+// of_data is the preferred long-lived entry point when the caller already has
+// detached V-side data instead of a Zend value.
+pub fn PersistentOwnedZVal.of_data(value DynValue) PersistentOwnedZVal {
+	return PersistentOwnedZVal.from_dyn(value)
+}
+
+pub fn PersistentOwnedZVal.from_detached_zval(z ZVal) ?PersistentOwnedZVal {
+	detached := decode_dyn_value(z) or { return none }
+	if !dyn_value_is_persistent_safe(detached) {
+		return none
 	}
+	return own_persistent_dyn(detached)
+}
+
+// try_of_detached requires the input zval to be safely detachable pure data.
+pub fn PersistentOwnedZVal.try_of_detached(z ZVal) ?PersistentOwnedZVal {
+	return PersistentOwnedZVal.from_detached_zval(z)
+}
+
+pub fn PersistentOwnedZVal.from_value_zval(z ZVal) PersistentOwnedZVal {
+	return PersistentOwnedZVal.from_detached_zval(z) or { PersistentOwnedZVal.from_zval(z) }
+}
+
+// of_value prefers detached long-lived data, then falls back to the general
+// long-lived route for mixed values.
+pub fn PersistentOwnedZVal.of_value(z ZVal) PersistentOwnedZVal {
+	return PersistentOwnedZVal.from_value_zval(z)
 }
 
 pub fn RequestOwnedZVal.new_null() RequestOwnedZVal {
@@ -224,34 +304,8 @@ pub fn RequestOwnedZVal.new_string(s string) RequestOwnedZVal {
 	return own_request_zval(ZVal.new_string(s))
 }
 
-pub fn Value.new_null() Value {
-	return Value.from_zval(ZVal.new_null())
-}
-
-pub fn Value.new_int(n i64) Value {
-	return Value.from_zval(ZVal.new_int(n))
-}
-
-pub fn Value.new_float(f f64) Value {
-	return Value.from_zval(ZVal.new_float(f))
-}
-
-pub fn Value.new_bool(b bool) Value {
-	return Value.from_zval(ZVal.new_bool(b))
-}
-
-pub fn Value.new_string(s string) Value {
-	return Value.from_zval(ZVal.new_string(s))
-}
-
 pub fn PersistentOwnedZVal.new_null() PersistentOwnedZVal {
-	return PersistentOwnedZVal{
-		ZValViewState: ZValViewState{
-			z: invalid_zval()
-		}
-		kind:          .dyn_data
-		dyn_data:      dyn_value_null()
-	}
+	return own_persistent_dyn(dyn_value_null())
 }
 
 pub fn PersistentOwnedZVal.invalid() PersistentOwnedZVal {
@@ -259,40 +313,21 @@ pub fn PersistentOwnedZVal.invalid() PersistentOwnedZVal {
 }
 
 pub fn PersistentOwnedZVal.new_int(n i64) PersistentOwnedZVal {
-	return own_persistent_zval(ZVal.new_int(n))
+	return own_persistent_dyn(dyn_value_int(n))
 }
 
 pub fn PersistentOwnedZVal.new_float(f f64) PersistentOwnedZVal {
-	return own_persistent_zval(ZVal.new_float(f))
+	return own_persistent_dyn(dyn_value_float(f))
 }
 
 pub fn PersistentOwnedZVal.new_bool(b bool) PersistentOwnedZVal {
-	return own_persistent_zval(ZVal.new_bool(b))
+	return own_persistent_dyn(dyn_value_bool(b))
 }
 
 pub fn PersistentOwnedZVal.new_string(s string) PersistentOwnedZVal {
-	return own_persistent_zval(ZVal.new_string(s))
+	return own_persistent_dyn(dyn_value_string(s))
 }
 
-pub fn PersistentValue.new_null() PersistentValue {
-	return PersistentValue.from_zval(ZVal.new_null())
-}
-
-pub fn PersistentValue.new_int(n i64) PersistentValue {
-	return PersistentValue.from_zval(ZVal.new_int(n))
-}
-
-pub fn PersistentValue.new_float(f f64) PersistentValue {
-	return PersistentValue.from_zval(ZVal.new_float(f))
-}
-
-pub fn PersistentValue.new_bool(b bool) PersistentValue {
-	return PersistentValue.from_zval(ZVal.new_bool(b))
-}
-
-pub fn PersistentValue.new_string(s string) PersistentValue {
-	return PersistentValue.from_zval(ZVal.new_string(s))
-}
 
 pub fn (v ZValViewState) to_zval() ZVal {
 	return v.z
@@ -382,6 +417,30 @@ pub fn (v ZValViewState) method_owned_request(method string, args []ZVal) ZVal {
 	return v.z.method_owned_request(method, args)
 }
 
+pub fn with_call_result_zval[T](callable ZVal, args []ZVal, run fn (ZVal) T) T {
+	mut result := callable.call_owned_request(args)
+	defer {
+		result.release()
+	}
+	return run(result)
+}
+
+pub fn call_request_owned_zval(callable ZVal, args []ZVal) RequestOwnedZVal {
+	return RequestOwnedZVal.adopt_zval(callable.call_owned_request(args))
+}
+
+pub fn with_method_result_zval[T](receiver ZVal, method string, args []ZVal, run fn (ZVal) T) T {
+	mut result := receiver.method_owned_request(method, args)
+	defer {
+		result.release()
+	}
+	return run(result)
+}
+
+pub fn method_request_owned_zval(receiver ZVal, method string, args []ZVal) RequestOwnedZVal {
+	return RequestOwnedZVal.adopt_zval(receiver.method_owned_request(method, args))
+}
+
 pub fn (v BorrowedZVal) clone_request_owned() RequestOwnedZVal {
 	return own_request_zval(v.z)
 }
@@ -400,6 +459,16 @@ pub fn (v RequestOwnedZVal) clone_persistent_owned() PersistentOwnedZVal {
 
 pub fn (v RequestOwnedZVal) clone_request_owned() RequestOwnedZVal {
 	return own_request_zval(v.z)
+}
+
+pub fn (v RequestOwnedZVal) with_zval[T](run fn (ZVal) T) T {
+	return run(v.z)
+}
+
+pub fn (mut v RequestOwnedZVal) take_zval() ZVal {
+	out := v.z
+	v.z = invalid_zval()
+	return out
 }
 
 pub fn (mut v RequestOwnedZVal) release() {
@@ -458,6 +527,45 @@ pub fn (v PersistentOwnedZVal) clone_request_owned() RequestOwnedZVal {
 			return own_request_zval(v.z)
 		}
 	}
+}
+
+pub fn (v PersistentOwnedZVal) with_request_zval[T](run fn (ZVal) T) T {
+	mut temp := v.clone_request_owned()
+	defer {
+		temp.release()
+	}
+	return run(temp.to_zval())
+}
+
+pub fn (v PersistentOwnedZVal) call_request_owned(args []ZVal) RequestOwnedZVal {
+	return v.with_request_zval(fn [args] (callable ZVal) RequestOwnedZVal {
+		return RequestOwnedZVal.adopt_zval(callable.call_owned_request(args))
+	})
+}
+
+pub fn (v PersistentOwnedZVal) method_request_owned(method string, args []ZVal) RequestOwnedZVal {
+	return v.with_request_zval(fn [method, args] (receiver ZVal) RequestOwnedZVal {
+		return RequestOwnedZVal.adopt_zval(receiver.method_owned_request(method, args))
+	})
+}
+
+// with_call_result keeps PHP callable result ownership inside the callback
+// scope so callers don't have to manually release transient return zvals.
+pub fn (v PersistentOwnedZVal) with_call_result[T](args []ZVal, run fn (ZVal) T) T {
+	mut result := v.call_request_owned(args)
+	defer {
+		result.release()
+	}
+	return run(result.to_zval())
+}
+
+// with_method_result mirrors with_call_result for object method dispatch.
+pub fn (v PersistentOwnedZVal) with_method_result[T](method string, args []ZVal, run fn (ZVal) T) T {
+	mut result := v.method_request_owned(method, args)
+	defer {
+		result.release()
+	}
+	return run(result.to_zval())
 }
 
 pub fn (mut v PersistentOwnedZVal) release() {
@@ -551,6 +659,15 @@ pub fn (v PersistentOwnedZVal) is_valid() bool {
 		.zval_data {
 			return v.z.is_valid()
 		}
+	}
+}
+
+pub fn (v PersistentOwnedZVal) kind_name() string {
+	return match v.kind {
+		.zval_data { 'zval_data' }
+		.dyn_data { 'dyn_data' }
+		.string_data { 'string_data' }
+		.retained_object { 'retained_object' }
 	}
 }
 
@@ -1101,56 +1218,6 @@ pub fn (v PersistentOwnedZVal) method_owned_request(method string, args []ZVal) 
 	}
 }
 
-pub fn (v BorrowedValue) own_request() Value {
-	return Value{
-		ZValViewState: own_request_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (v BorrowedValue) own_persistent() PersistentValue {
-	return PersistentValue{
-		ZValViewState: own_persistent_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (v Value) view() BorrowedValue {
-	return BorrowedValue{
-		ZValViewState: borrow_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (v Value) own_persistent() PersistentValue {
-	return PersistentValue{
-		ZValViewState: own_persistent_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (v Value) clone_value() Value {
-	return Value{
-		ZValViewState: own_request_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (mut v Value) release() {
-	v.z.release()
-}
-
-pub fn (v PersistentValue) view() BorrowedValue {
-	return BorrowedValue{
-		ZValViewState: borrow_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (v PersistentValue) own_request() Value {
-	return Value{
-		ZValViewState: own_request_zval(v.z).ZValViewState
-	}
-}
-
-pub fn (mut v PersistentValue) release() {
-	v.z.release()
-}
-
 pub fn borrowed_zval_from_raw(raw &C.zval) BorrowedZVal {
 	return unsafe {
 		borrow_zval(ZVal{
@@ -1164,14 +1231,6 @@ pub struct OwnedValue {
 	ZValViewState
 pub mut:
 	lifetime OwnershipKind
-}
-
-pub fn borrow(z ZVal) BorrowedValue {
-	return BorrowedValue{
-		ZValViewState: ZValViewState{
-			z: z
-		}
-	}
 }
 
 // own() keeps backward compatibility and now defaults to request lifetime.
@@ -1195,30 +1254,12 @@ pub fn own_persistent(z ZVal) OwnedValue {
 	}
 }
 
-pub fn (v BorrowedValue) clone_owned() OwnedValue {
-	return own_request(v.z)
-}
-
-pub fn (v BorrowedValue) clone_owned_request() OwnedValue {
-	return own_request(v.z)
-}
-
-pub fn (v BorrowedValue) clone_owned_persistent() OwnedValue {
-	return own_persistent(v.z)
-}
-
 pub fn (mut v OwnedValue) release() {
 	v.z.release()
 }
 
 pub fn (v OwnedValue) ownership() OwnershipKind {
 	return v.lifetime
-}
-
-pub fn borrowed_from_raw(raw &C.zval) BorrowedValue {
-	return BorrowedValue{
-		ZValViewState: borrowed_zval_from_raw(raw).ZValViewState
-	}
 }
 
 // RequestScope gives a structured, nestable request arena on top of

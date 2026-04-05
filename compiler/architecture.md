@@ -170,6 +170,14 @@ Typical examples:
 - task registration glue
 - object property sync helpers
 
+Ownership-facing rule:
+
+- generated glue should prefer `ctx.arg[T](...)` with `T = RequestBorrowedZBox`
+  / `RequestOwnedZBox` / `PersistentOwnedZBox` when the exported V signature can
+  express that ownership shape directly
+- raw `ZVal` remains the low-level escape hatch for bridge internals and
+  callable-heavy paths
+
 ## Compile Pipeline
 
 The current pipeline in [mod.v](/Users/guweigang/Source/vphpx/vphp/compiler/mod.v) is:

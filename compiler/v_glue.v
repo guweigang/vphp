@@ -654,6 +654,10 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 				v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }
 				out << '    ${var_name} := unsafe { ${v_type}(ctx.arg_raw_obj(${i})) }'
 			} else {
+				// Ownership-aware signatures like `RequestBorrowedZBox` flow through
+				// the generic `ctx.arg[T]` path and stay as the preferred generated
+				// glue shape. `ZVal`/`Callable` remain the explicit low-level escape
+				// hatches above.
 				out << '    ${var_name} := ctx.arg[${arg.v_type}](${i})'
 			}
 			arg_names << var_name

@@ -49,7 +49,7 @@ Documentation entry:
 | PHP 类导出 | 有 | 有 | 有 |
 | interface / trait / enum 导出 | 有，且是当前设计重点 | 官方文档重点在 class / object / method，trait / enum 不是首页能力 | class / interface 支持明确；trait / enum 在官方入门材料里不是首屏能力 |
 | attributes / 元信息导出 | 有，支持 PHP 8 class attributes | 官方文档未把 attributes 作为核心能力强调 | 宏和 doc comments 支持明确，attributes 能力偏 Rust 宏驱动 |
-| 统一值桥接抽象 | `ZVal` + typed helper + ownership wrappers | `Php::Value` / `Php::Parameters` | `IntoZval` / `FromZval` / `ZBox` / `ZendObject` |
+| 统一值桥接抽象 | `ZVal` + `*ZBox` ownership wrappers | `Php::Value` / `Php::Parameters` | `IntoZval` / `FromZval` / `ZBox` / `ZendObject` |
 | request / persistent 生命周期模型 | 显式，`Borrowed` / `RequestOwned` / `PersistentOwned` 分层 | 有扩展回调，但对象所有权模型更偏 C++ 开发者自行管理 | 依赖 Rust 类型系统、trait 与 module lifecycle hook |
 | request startup / shutdown hook | 有，且可由框架层显式 request_scope 控制 | 有，`onRequest()` / `onIdle()` / `onStartup()` / `onShutdown()` | 有，`ModuleBuilder` 支持 startup / shutdown / request startup / request shutdown |
 | 命名空间 / 模块注册 | 有 | 有，`Php::Namespace` / `Php::Extension` | 有，`#[php_module]` + `ModuleBuilder` |
@@ -85,7 +85,7 @@ Documentation entry:
 当前最值得关注的能力是：
 
 - 统一的 `ZVal` interop 入口
-- request-owned / persistent-owned / borrowed 所有权模型
+- `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox` 所有权模型
 - V 导出 PHP class / trait / interface / enum
 - PHP 8 class attribute 导出
 - compiler/export pipeline
@@ -96,9 +96,15 @@ Documentation entry:
 
 这是 `vphp` 最基础的一层。
 
-核心对象是：
+核心对象分两层：
 
 - `ZVal`
+- `*ZBox`
+
+其中：
+
+- `ZVal` 负责底层 Zend interop 能力
+- `*ZBox` 负责应用层生命周期与 ownership 语义
 
 V 侧通过 `ZVal` 完成：
 

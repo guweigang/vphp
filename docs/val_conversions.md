@@ -11,9 +11,13 @@ These APIs are strict by default and are designed to be explicit and predictable
 
 Note:
 - `ZVal` is the low-level wrapper over `&C.zval` (in `zval.v`).
-- `ValueView` / `Value` / `PersistentValue` in `lifecycle.v` keep PHP bridge ownership explicit.
+- `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox` are the
+  preferred ownership-facing wrappers in `lifecycle.v`.
 - `DynValue` in `dyn_value.v` is the detached fallback model for unknown/mixed payloads.
 - Strongly typed business logic should use ordinary V types directly.
+
+Practical rule:
+- use `ZBox` while reading, cloning, storing, and passing PHP-facing values
 
 ## 1. Zend Value -> V (`to_v[T]`)
 
@@ -116,7 +120,7 @@ arg1 := ZVal.from[int](42) or { return }
 res := callable.call([arg0, arg1])
 ```
 
-## 4. Value Layers
+## 4. Ownership Wrappers
 
 For ordinary typed data, use V types directly:
 
@@ -128,14 +132,20 @@ mode := cfg['mode'] or { 'standard' }
 ctx.return_any(mode)
 ```
 
-For PHP-facing values whose ownership still matters, use the lifecycle wrappers:
+For PHP-facing values whose ownership still matters, prefer the `ZBox` wrappers:
 
 ```v
-payload := ctx.arg_any(0)
+payload := ctx.arg_borrowed_zbox(0)
 if payload.is_null() {
     ctx.return_any('empty')
     return
 }
+```
+
+When you just need "the argument as a PHP-facing wrapper", use:
+
+```v
+arg := ctx.arg_any_zbox(0)
 ```
 
 For detached dynamic payloads, use `DynValue`:
@@ -149,7 +159,7 @@ ctx.return_zval(z)
 Recommended boundary:
 - Typed business logic: native V types
 - Dynamic/unknown payload boundary: `DynValue`
-- PHP bridge/lifecycle boundary: `ValueView` / `Value` / `PersistentValue`
+- PHP bridge/lifecycle boundary: `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox`
 
 ## 5. Low-level APIs and recommended usage
 

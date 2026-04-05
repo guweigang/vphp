@@ -31,7 +31,7 @@ pub fn TypeMap.get_type(v_type string) TypeMap {
 		'f64'    { TypeMap{'f64', 'double', 'RETURN_DOUBLE', false, false} }
 		'bool'   { TypeMap{'bool', 'bool', 'RETURN_BOOL', false, false} }
 		'string' { TypeMap{'string', 'v_string', 'VPHP_RETURN_STRING', false, false} }
-		'Value', 'BorrowedValue', 'PersistentValue', 'ZVal' {
+		'ZVal', 'RequestBorrowedZBox', 'RequestOwnedZBox', 'PersistentOwnedZBox' {
 			TypeMap{clean_type, 'zval', 'RETURN_NULL', false, false}
 		}
 		'[]string', '[]int', '[]i64', '[]bool', '[]f64', '[]f32', '[]', '[]ZVal' {

@@ -377,8 +377,9 @@ fn arg_type_info(v_type string) ArgTypeInfo {
 		'map[string]f64', 'map[string][]string', 'map[string]vphp.ZVal', 'map[string]ZVal' {
 			'IS_ARRAY'
 		}
-		'vphp.ZVal', 'ZVal', 'vphp.Value', 'Value', 'vphp.BorrowedValue', 'BorrowedValue',
-		'vphp.PersistentValue', 'PersistentValue' {
+		'vphp.ZVal', 'ZVal', 'vphp.RequestBorrowedZBox', 'RequestBorrowedZBox',
+		'vphp.RequestOwnedZBox', 'RequestOwnedZBox', 'vphp.PersistentOwnedZBox',
+		'PersistentOwnedZBox' {
 			'IS_MIXED'
 		}
 		'callable', 'Callable', 'vphp.Callable' {
