@@ -1012,6 +1012,16 @@ pub fn (v PersistentOwnedZBox) to_string() string {
 	}
 }
 
+fn persistent_dyn_item_box(item DynValue) PersistentOwnedZBox {
+	return PersistentOwnedZBox{
+		ZValViewState: ZValViewState{
+			z: invalid_zval()
+		}
+		kind:     .dyn_data
+		dyn_data: item
+	}
+}
+
 pub fn (v PersistentOwnedZBox) to_string_list() []string {
 	match v.kind {
 		.dyn_data {
@@ -1019,13 +1029,8 @@ pub fn (v PersistentOwnedZBox) to_string_list() []string {
 				.list_ {
 					mut out := []string{}
 					for item in v.dyn_data.list {
-						out << PersistentOwnedZBox{
-							ZValViewState: ZValViewState{
-								z: invalid_zval()
-							}
-							kind:          .dyn_data
-							dyn_data:      item
-						}.to_string()
+						item_box := persistent_dyn_item_box(item)
+						out << item_box.to_string()
 					}
 					return out
 				}
@@ -1068,13 +1073,8 @@ pub fn (v PersistentOwnedZBox) to_string_map() map[string]string {
 				.map_ {
 					mut out := map[string]string{}
 					for key, item in v.dyn_data.map {
-						out[key] = PersistentOwnedZBox{
-							ZValViewState: ZValViewState{
-								z: invalid_zval()
-							}
-							kind:          .dyn_data
-							dyn_data:      item
-						}.to_string()
+						item_box := persistent_dyn_item_box(item)
+						out[key] = item_box.to_string()
 					}
 					return out
 				}
