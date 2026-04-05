@@ -370,19 +370,19 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			}
 			match prop.v_type {
 				'string' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZVal.new_string(recv.${prop.name}).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_string(recv.${prop.name}).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				'int', 'i64' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZVal.new_int(i64(recv.${prop.name})).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_int(i64(recv.${prop.name})).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				'bool' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZVal.new_bool(recv.${prop.name}).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_bool(recv.${prop.name}).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				'f64' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZVal.new_float(recv.${prop.name}).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_float(recv.${prop.name}).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				else {}

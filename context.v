@@ -77,11 +77,6 @@ pub fn (ctx Context) arg_raw(index int) ZVal {
 }
 
 // Low-level borrowed view; prefer `arg_borrowed_zbox()` for ownership-facing
-// application code.
-pub fn (ctx Context) arg_borrowed_zval(index int) BorrowedZVal {
-	return borrow_zval(ctx.arg_raw(index))
-}
-
 pub fn (ctx Context) arg_borrowed_zbox(index int) RequestBorrowedZBox {
 	return RequestBorrowedZBox.of(ctx.arg_raw(index))
 }
@@ -90,28 +85,8 @@ pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
 	return RequestBorrowedZBox.of(ctx.arg_raw(index))
 }
 
-pub fn (ctx Context) arg_owned_request(index int) OwnedValue {
-	return own_request(ctx.arg_raw(index))
-}
-
-// Low-level request-owned wrapper; prefer `arg_owned_request_zbox()` for new
-// ownership-facing code.
-pub fn (ctx Context) arg_owned_request_zval(index int) RequestOwnedZVal {
-	return own_request_zval(ctx.arg_raw(index))
-}
-
 pub fn (ctx Context) arg_owned_request_zbox(index int) RequestOwnedZBox {
 	return RequestOwnedZBox.of(ctx.arg_raw(index))
-}
-
-pub fn (ctx Context) arg_owned_persistent(index int) OwnedValue {
-	return own_persistent(ctx.arg_raw(index))
-}
-
-// Low-level persistent wrapper; prefer `arg_owned_persistent_zbox()` for new
-// ownership-facing code.
-pub fn (ctx Context) arg_owned_persistent_zval(index int) PersistentOwnedZVal {
-	return own_persistent_zval(ctx.arg_raw(index))
 }
 
 pub fn (ctx Context) arg_owned_persistent_zbox(index int) PersistentOwnedZBox {

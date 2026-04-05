@@ -27,9 +27,9 @@ typed helper 也有对应版本：
 
 `vphp` 还提供了类型封装，便于在框架内部做约束：
 
-- `BorrowedZVal`
-- `RequestOwnedZVal`
-- `PersistentOwnedZVal`
+- `RequestBorrowedZBox`
+- `RequestOwnedZBox`
+- `PersistentOwnedZBox`
 
 ## 定义权与所有权模型
 

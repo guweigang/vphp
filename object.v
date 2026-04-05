@@ -83,7 +83,7 @@ fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
 
 // 泛型堆分配器必须保留 V 的默认字段初始化语义。
 // 单纯 `vcalloc(sizeof(T))` 只会得到零内存，像 `[]T{}`、`map{}`、
-// `PersistentOwnedZVal.new_null()` 这类字段默认值都会丢失，导致
+// `PersistentOwnedZBox.new_null()` 这类字段默认值都会丢失，导致
 // PHP `new` 出来的 @[php_class] 对象是“半初始化”状态。
 pub fn generic_new_raw[T]() voidptr {
 	unsafe {
@@ -239,7 +239,7 @@ pub fn (r RetainedObject) to_request_owned_zval() ZVal {
 }
 
 pub fn (r RetainedObject) with_request_zval[T](run fn (ZVal) T) T {
-	mut out := RequestOwnedZVal{
+	mut out := RequestOwnedZBox{
 		ZValViewState: ZValViewState{
 			z: r.to_request_owned_zval()
 		}

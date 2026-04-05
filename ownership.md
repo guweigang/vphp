@@ -14,11 +14,11 @@ Preferred public naming:
 - `RequestOwnedZBox`
 - `PersistentOwnedZBox`
 
-Implementation names still exist underneath the aliases:
+Implementation model:
 
-- `BorrowedZVal`: borrowed read-only view of an existing Zend value
-- `RequestOwnedZVal`: short-lived request-owned value
-- `PersistentOwnedZVal`: long-lived detached data or retained handle
+- `RequestBorrowedZBox`: borrowed read-only view of an existing Zend value
+- `RequestOwnedZBox`: short-lived request-owned value
+- `PersistentOwnedZBox`: long-lived detached data or retained handle
 - `RetainedObject`: long-lived PHP object handle
 - `DynValue`: detached data-oriented representation
 
@@ -27,7 +27,7 @@ For new code, prefer the short constructor-style entry points:
 - `RequestBorrowedZBox.of(z)`
 - `RequestOwnedZBox.of(z)`
 - `PersistentOwnedZBox.of(z)`
-- `PersistentOwnedZBox.of_value(z)`
+- `PersistentOwnedZBox.of_mixed(z)`
 - `PersistentOwnedZBox.of_data(value)`
 - `PersistentOwnedZBox.try_of_detached(z)`
 
@@ -37,6 +37,23 @@ call site:
 - `borrow_zbox(z)`
 - `own_request_zbox(z)`
 - `own_persistent_zbox(z)`
+
+`PersistentOwnedZBox.of(z)` is the friendly smart-dispatch entry point:
+
+- safe detached data -> `dyn_data`
+- PHP object -> retained object routing
+- PHP callable -> retained callable routing
+- everything else -> fallback compatibility storage
+
+When the input kind is already known, prefer the more explicit constructors:
+
+- `of_data(...)`
+- `of_object(...)`
+- `of_callable(...)`
+- `of_mixed(...)`
+
+`fallback_zval` is an internal compatibility fallback, not a recommended storage
+model for new application code.
 
 ## Two Independent Axes
 
@@ -112,7 +129,7 @@ Think of the four combinations like this:
 similar constructors produce request-owned temporary Zend values. They must not
 be stored directly in long-lived structs.
 
-2. `PersistentOwnedZVal` is not a generic “store any zval forever” box.
+2. `PersistentOwnedZBox` is not a generic “store any zval forever” box.
 
 Use it for:
 
@@ -132,8 +149,8 @@ that receives a `ZVal` result is responsible for exactly one `release()`.
 4. Long-lived object/callable state must use dedicated handles.
 
 - PHP objects: `RetainedObject`
-- PHP callables: use a dedicated retained callable model instead of storing raw
-  closure zvals in fake-persistent containers
+- PHP callables: `retained_callable` routing through
+  `PersistentOwnedZBox.from_callable_zval(...)` / `of_callable(...)`
 
 5. Debug/logging must not create ownership side effects.
 
@@ -156,12 +173,14 @@ Choose in this order:
 
 ### If the value must be stored
 
+- General long-lived input when the type is not known yet:
+  `PersistentOwnedZBox.of(...)`
 - Pure data: `PersistentOwnedZBox.new_*()`, `of_data(...)`,
-  `try_of_detached(...)`, `of_value(...)`
+  `try_of_detached(...)`, `of_mixed(...)`
 - PHP object: `RetainedObject`, or object-routing through
-  `PersistentOwnedZBox.of(...)` when that is explicitly intended
-- PHP callable: use a dedicated retained-callable model instead of treating a
-  closure zval like generic persistent scalar data
+  `PersistentOwnedZBox.from_object_zval(...)` / `of_object(...)`
+- PHP callable: `PersistentOwnedZBox.from_callable_zval(...)` /
+  `PersistentOwnedZBox.of_callable(...)`
 
 ## Quick Decision Table
 
@@ -170,8 +189,10 @@ Choose in this order:
 | Read an argument without keeping it | `RequestBorrowedZBox.of(...)` |
 | Call PHP and inspect the result in-place | `with_call_result_zval(...)` / `with_method_result_zval(...)` |
 | Call PHP and return/hand off the temporary result | `RequestOwnedZBox.adopt_zval(...)`, `take_zval()` |
-| Store long-lived scalar / string / list / map data | `PersistentOwnedZBox.new_*()`, `of_data(...)`, `try_of_detached(...)`, `of_value(...)` |
-| Store a long-lived PHP object | `RetainedObject` or `PersistentOwnedZBox.of(...)` |
+| Store a long-lived value when the type is not known in advance | `PersistentOwnedZBox.of(...)` |
+| Store long-lived scalar / string / list / map data | `PersistentOwnedZBox.new_*()`, `of_data(...)`, `try_of_detached(...)`, `of_mixed(...)` |
+| Store a long-lived PHP object | `RetainedObject` or `PersistentOwnedZBox.from_object_zval(...)` / `of_object(...)` |
+| Store a long-lived PHP callable | `PersistentOwnedZBox.from_callable_zval(...)` / `of_callable(...)` |
 
 In practice:
 
@@ -211,7 +232,7 @@ Use:
 - `PersistentOwnedZBox.of_data(...)`
 - `PersistentOwnedZBox.try_of_detached(...)` for scalar/array/map payloads that
   do not contain object/resource references
-- `PersistentOwnedZBox.of_value(...)` when detached data is preferred but mixed
+- `PersistentOwnedZBox.of_mixed(...)` when detached data is preferred but mixed
   values still need a compatibility fallback
 
 These constructors should remain detached from raw `ZVal.new_*()` allocation.
@@ -223,6 +244,20 @@ Use:
 - `RetainedObject.from_zval(...)`
 - `PersistentOwnedZBox.of(...)` only when object routing is explicitly
   intended to become a retained-object variant
+
+### Persistent callables
+
+Use:
+
+- `PersistentOwnedZBox.from_callable_zval(...)`
+- `PersistentOwnedZBox.of_callable(...)`
+
+These route long-lived callable forms into the retained-callable model:
+
+- function-name strings
+- `['ClassName', 'method']`
+- `[$object, 'method']`
+- invokable objects / `Closure`
 
 ## Constructor Semantics
 
@@ -244,7 +279,7 @@ Use:
 - Use when the input is expected to be pure detachable data
 - Returns `none` if the payload contains object/resource references
 
-`PersistentOwnedZBox.of_value(z)`
+`PersistentOwnedZBox.of_mixed(z)`
 
 - Use when the value should prefer detached storage, but mixed inputs still
   need a compatibility fallback

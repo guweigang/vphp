@@ -73,9 +73,9 @@
 
 当前关键模型：
 
-- `BorrowedZVal`
-- `RequestOwnedZVal`
-- `PersistentOwnedZVal`
+- `RequestBorrowedZBox`
+- `RequestOwnedZBox`
+- `PersistentOwnedZBox`
 
 对应能力：
 

@@ -45,7 +45,7 @@ flowchart TD
     subgraph FPM["FPM / FastCGI"]
         A1["Worker 进程已启动"] --> A2["请求 1 到来"]
         A2 --> A3["RINIT / request_startup"]
-        A3 --> A4["业务代码运行<br/>创建 RequestOwnedZVal"]
+        A3 --> A4["业务代码运行<br/>创建 RequestOwnedZBox"]
         A4 --> A5["RSHUTDOWN / request_shutdown"]
         A5 --> A6["request-owned 自动释放"]
         A6 --> A7["请求 2 到来"]
@@ -58,7 +58,7 @@ flowchart TD
     subgraph CLI["CLI 长驻进程 / Worker"]
         B1["进程启动一次"] --> B2["循环处理请求 1"]
         B2 --> B3["手动 enter request scope"]
-        B3 --> B4["业务代码运行<br/>创建 RequestOwnedZVal"]
+        B3 --> B4["业务代码运行<br/>创建 RequestOwnedZBox"]
         B4 --> B5["手动 leave request scope"]
         B5 --> B6["request-owned 被 drain"]
         B6 --> B7["循环处理请求 2"]
@@ -131,7 +131,7 @@ Design rule:
 flowchart LR
     A["PHP / Zend 当前请求上下文"] --> B["RequestBorrowedZBox<br/>只借用，不释放"]
     A --> C["RequestOwnedZBox<br/>绑定当前 request cycle"]
-    D["跨请求长期状态<br/>worker / router / connection / handler cache"] --> E["PersistentOwnedZVal<br/>必须显式 release"]
+    D["跨请求长期状态<br/>worker / router / connection / handler cache"] --> E["PersistentOwnedZBox<br/>必须显式 release"]
 ```
 
 对应到使用规则，就是：

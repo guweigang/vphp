@@ -11,10 +11,10 @@
 
 | 维度 | vphp（当前实现） | ext-php-rs |
 |---|---|---|
-| 核心抽象 | `BorrowedZVal` / `RequestOwnedZVal` / `PersistentOwnedZVal` | `ZBox<T>` + `IntoZval/FromZval` trait 体系 |
-| 借用值 | `BorrowedZVal` 不由 vphp 释放，交给 Zend | 借用语义由 Rust 类型系统约束，底层仍走 Zend |
-| 请求级 owned | `RequestOwnedZVal` 进入 autorelease pool，`request_scope` 结束 drain | request 生命周期内自动回收（配合 hook/Drop） |
-| 持久级 owned | `PersistentOwnedZVal` 从 autorelease 脱钩，需显式 `release()` | persistent 分配显式声明，通常由长期持有者 Drop/析构管理 |
+| 核心抽象 | `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox` | `ZBox<T>` + `IntoZval/FromZval` trait 体系 |
+| 借用值 | `RequestBorrowedZBox` 不由 vphp 释放，交给 Zend | 借用语义由 Rust 类型系统约束，底层仍走 Zend |
+| 请求级 owned | `RequestOwnedZBox` 进入 autorelease pool，`request_scope` 结束 drain | request 生命周期内自动回收（配合 hook/Drop） |
+| 持久级 owned | `PersistentOwnedZBox` 从 autorelease 脱钩，需显式 `release()` | persistent 分配显式声明，通常由长期持有者 Drop/析构管理 |
 | 请求边界 | 显式 `request_scope(mark/drain)`，支持嵌套 | 通过模块 builder 的 request startup/shutdown 等钩子接入 |
 | 默认安全性 | 高于裸 `ZVal`，但仍有 `to_zval()` 逃生口 | 更强编译期约束（Rust trait + borrow checker） |
 | 可观测性 | 内建 `runtime_counters` + `[vslim.mem]` 埋点 | 官方抽象偏通用，观测通常由扩展自行实现 |
@@ -22,23 +22,23 @@
 
 ## 2. 生命周期语义（vphp 现状）
 
-### 2.1 BorrowedZVal
+### 2.1 RequestBorrowedZBox
 
 - 来源：PHP 入参、临时读路径、借用转换。
 - 释放：不由 vphp 主动释放。
 - 风险：若越过调用边界缓存 borrowed 引用，会变悬空语义（禁止）。
 
-### 2.2 RequestOwnedZVal
+### 2.2 RequestOwnedZBox
 
-- 创建：`own_request_zval(z)` 或 `RequestOwnedZVal.new_*()`。
+- 创建：`own_request_zbox(z)` 或 `RequestOwnedZBox.new_*()`。
 - 行为：进入 `owned_pool`，并加入 `autorelease_pool`。
 - 释放：
   1. 推荐路径：`request_scope.close()` -> `autorelease_drain(mark)` 自动释放；
   2. 可选路径：显式 `release()` 提前释放。
 
-### 2.3 PersistentOwnedZVal
+### 2.3 PersistentOwnedZBox
 
-- 创建：`own_persistent_zval(z)` 或 `PersistentOwnedZVal.new_*()`。
+- 创建：`own_persistent_zbox(z)` 或 `PersistentOwnedZBox.new_*()`。
 - 行为：从 `autorelease_pool` 中移除（不会被 request drain 清掉）。
 - 释放：由持有者显式 `release()`（通常在 `free()`/析构中）。
 
@@ -70,16 +70,16 @@
 
 ## 5. 对扩展开发者的约束建议
 
-1. 外部 API 入参默认按 `BorrowedZVal` 使用。
-2. 仅在需要跨语句/跨阶段保存时，显式 clone 为 `RequestOwnedZVal`。
-3. 仅在需要跨请求保存时，才升级为 `PersistentOwnedZVal`，并保证释放点。
+1. 外部 API 入参默认按 `RequestBorrowedZBox` 使用。
+2. 仅在需要跨语句/跨阶段保存时，显式 clone 为 `RequestOwnedZBox`。
+3. 仅在需要跨请求保存时，才升级为 `PersistentOwnedZBox`，并保证释放点。
 4. 框架业务层避免裸 `ZVal` 流转；裸 `ZVal` 仅保留在 bridge 内核层。
 
 ## 6. 落地检查清单
 
 - [ ] 每个请求入口是否有 `request_scope`。
-- [ ] 是否存在把 `BorrowedZVal` 挂到全局/长生命周期容器的路径。
-- [ ] 所有 `PersistentOwnedZVal` 是否有对应 `release()` 路径。
+- [ ] 是否存在把 `RequestBorrowedZBox` 挂到全局/长生命周期容器的路径。
+- [ ] 所有 `PersistentOwnedZBox` 是否有对应 `release()` 路径。
 - [ ] 压测时 `autorelease_len` 是否随请求回落到稳定区间。
 - [ ] 在 10k/50k/100k 请求窗口下，`owned_len` 是否出现单调增长。
 
