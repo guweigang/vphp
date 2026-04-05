@@ -123,7 +123,7 @@ fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
 	return out
 }
 
-fn interface_method_args_to_builder(iface &repr.PhpInterfaceRepr, args []repr.PhpArg) []builder.ClassMethodArg {
+fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.PhpArg) []builder.ClassMethodArg {
 	mut out := []builder.ClassMethodArg{}
 	for i, arg in args {
 		// V interface AST can carry an implicit first arg `x` (self-like placeholder).
