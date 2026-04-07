@@ -105,6 +105,26 @@ pub fn dyn_value_resource_ref(ptr voidptr) DynValue {
 	}
 }
 
+pub fn (v DynValue) bool_value() bool {
+	return unsafe { v.data.b }
+}
+
+pub fn (v DynValue) int_value() i64 {
+	return unsafe { v.data.i }
+}
+
+pub fn (v DynValue) float_value() f64 {
+	return unsafe { v.data.f }
+}
+
+pub fn (v DynValue) string_value() string {
+	return unsafe { v.data.s }
+}
+
+pub fn (v DynValue) pointer_value() voidptr {
+	return unsafe { v.data.ptr }
+}
+
 // decode_dyn_value detaches a ZVal into a plain dynamic value tree.
 pub fn decode_dyn_value(z ZVal) !DynValue {
 	if !z.is_valid() || z.is_null() || z.is_undef() {
