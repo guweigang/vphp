@@ -96,6 +96,54 @@ pub mut:
 	retained_callable RetainedCallable
 }
 
+@[inline]
+fn zbox_view_state(z ZVal) ZValViewState {
+	return ZValViewState{
+		z: z
+	}
+}
+
+@[inline]
+fn borrowed_zbox_from_raw_zval(z ZVal) RequestBorrowedZBox {
+	return RequestBorrowedZBox{
+		ZValViewState: zbox_view_state(z)
+	}
+}
+
+@[inline]
+fn request_owned_zbox_from_adopted_zval(z ZVal) RequestOwnedZBox {
+	return RequestOwnedZBox{
+		ZValViewState: zbox_view_state(z)
+	}
+}
+
+@[inline]
+fn persistent_owned_dyn_box(value DynValue) PersistentOwnedZBox {
+	return PersistentOwnedZBox{
+		ZValViewState: zbox_view_state(invalid_zval())
+		kind:          .dyn_data
+		dyn_data:      value
+	}
+}
+
+@[inline]
+fn persistent_owned_retained_object_box(retained RetainedObject) PersistentOwnedZBox {
+	return PersistentOwnedZBox{
+		ZValViewState: zbox_view_state(invalid_zval())
+		kind:          .retained_object
+		retained:      retained
+	}
+}
+
+@[inline]
+fn persistent_owned_retained_callable_box(retained RetainedCallable) PersistentOwnedZBox {
+	return PersistentOwnedZBox{
+		ZValViewState: zbox_view_state(invalid_zval())
+		kind:              .retained_callable
+		retained_callable: retained
+	}
+}
+
 pub fn borrow_zbox(z ZVal) RequestBorrowedZBox {
 	return RequestBorrowedZBox.of(z)
 }
@@ -109,11 +157,7 @@ pub fn own_persistent_zbox(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn borrow_zbox_raw(z ZVal) RequestBorrowedZBox {
-	return RequestBorrowedZBox{
-		ZValViewState: ZValViewState{
-			z: z
-		}
-	}
+	return borrowed_zbox_from_raw_zval(z)
 }
 
 pub fn RequestBorrowedZBox.from_zval(z ZVal) RequestBorrowedZBox {
@@ -130,11 +174,7 @@ pub fn RequestBorrowedZBox.null() RequestBorrowedZBox {
 }
 
 pub fn own_request_zbox_raw(z ZVal) RequestOwnedZBox {
-	return RequestOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: z.dup()
-		}
-	}
+	return request_owned_zbox_from_adopted_zval(z.dup())
 }
 
 pub fn RequestOwnedZBox.from_zval(z ZVal) RequestOwnedZBox {
@@ -146,11 +186,7 @@ pub fn RequestOwnedZBox.of(z ZVal) RequestOwnedZBox {
 }
 
 pub fn RequestOwnedZBox.adopt_zval(z ZVal) RequestOwnedZBox {
-	return RequestOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: z
-		}
-	}
+	return request_owned_zbox_from_adopted_zval(z)
 }
 
 pub fn RetainedCallable.invalid() RetainedCallable {
@@ -265,44 +301,24 @@ pub fn (mut r RetainedCallable) release() {
 pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 	if z.is_valid() && z.is_callable() {
 		if retained_callable := RetainedCallable.from_zval(z) {
-			return PersistentOwnedZBox{
-				ZValViewState: ZValViewState{
-					z: invalid_zval()
-				}
-				kind:              .retained_callable
-				retained_callable: retained_callable
-			}
+			return persistent_owned_retained_callable_box(retained_callable)
 		}
 	}
 	if z.is_valid() && z.is_object() {
 		if retained := RetainedObject.from_zval(z) {
-			return PersistentOwnedZBox{
-				ZValViewState: ZValViewState{
-					z: invalid_zval()
-				}
-				kind:          .retained_object
-				retained:      retained
-			}
+			return persistent_owned_retained_object_box(retained)
 		}
 	}
 	if dyn := decode_dyn_value(z) {
 		if dyn_value_is_persistent_safe(dyn) {
-			return PersistentOwnedZBox{
-				ZValViewState: ZValViewState{
-					z: invalid_zval()
-				}
-				kind:     .dyn_data
-				dyn_data: dyn
-			}
+			return persistent_owned_dyn_box(dyn)
 		}
 	}
 	// Keep raw zval fallback as a narrow compatibility path only.
 	// Safe long-lived values should prefer detached DynValue/string data or
 	// retained object handles above.
 	return PersistentOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: z.dup_persistent()
-		}
+		ZValViewState: zbox_view_state(z.dup_persistent())
 		kind:          .fallback_zval
 	}
 }
@@ -326,13 +342,7 @@ pub fn PersistentOwnedZBox.of_object(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn own_persistent_dyn(value DynValue) PersistentOwnedZBox {
-	return PersistentOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: invalid_zval()
-		}
-		kind:     .dyn_data
-		dyn_data: value
-	}
+	return persistent_owned_dyn_box(value)
 }
 
 fn dyn_value_is_persistent_safe(value DynValue) bool {
@@ -609,26 +619,126 @@ pub fn (mut v RequestOwnedZBox) release() {
 }
 
 fn retained_request_owned(retained RetainedObject) RequestOwnedZBox {
-	return RequestOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: retained.to_request_owned_zval()
-		}
-	}
+	return request_owned_zbox_from_adopted_zval(retained.to_request_owned_zval())
 }
 
 fn retained_callable_request_owned(retained RetainedCallable) RequestOwnedZBox {
-	return RequestOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: retained.to_request_owned_zval()
+	return request_owned_zbox_from_adopted_zval(retained.to_request_owned_zval())
+}
+
+fn persistent_dyn_request_owned(value DynValue) RequestOwnedZBox {
+	return request_owned_zbox_from_adopted_zval(new_zval_from_dyn_value(value) or { ZVal.new_null() })
+}
+
+@[inline]
+fn dyn_to_request_owned_box(value DynValue) RequestOwnedZBox {
+	return persistent_dyn_request_owned(value)
+}
+
+fn dyn_to_string(value DynValue) string {
+	return match value.type {
+		.null_ { '' }
+		.bool_ { if value.bool_value() { '1' } else { '' } }
+		.int_ { value.int_value().str() }
+		.float_ { value.float_value().str() }
+		.string_ { value.string_value().clone() }
+		else {
+			mut temp := dyn_to_request_owned_box(value)
+			defer {
+				temp.release()
+			}
+			temp.to_string()
 		}
 	}
 }
 
-fn persistent_dyn_request_owned(value DynValue) RequestOwnedZBox {
-	return RequestOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: new_zval_from_dyn_value(value) or { ZVal.new_null() }
+fn dyn_to_string_list(value DynValue) []string {
+	return match value.type {
+		.list_ {
+			mut out := []string{}
+			for item in value.list {
+				out << dyn_to_string(item)
+			}
+			out
 		}
+		.string_ { [dyn_to_string(value)] }
+		else {
+			mut temp := dyn_to_request_owned_box(value)
+			defer {
+				temp.release()
+			}
+			temp.to_string_list()
+		}
+	}
+}
+
+fn dyn_to_string_map(value DynValue) map[string]string {
+	return match value.type {
+		.map_ {
+			mut out := map[string]string{}
+			for key, item in value.map {
+				out[key] = dyn_to_string(item)
+			}
+			out
+		}
+		else {
+			mut temp := dyn_to_request_owned_box(value)
+			defer {
+				temp.release()
+			}
+			temp.to_string_map()
+		}
+	}
+}
+
+fn dyn_to_bool(value DynValue) bool {
+	return match value.type {
+		.null_ { false }
+		.bool_ { value.bool_value() }
+		.int_ { value.int_value() != 0 }
+		.float_ { value.float_value() != 0.0 }
+		.string_ { value.string_value().len > 0 }
+		.list_, .map_ { true }
+		else { false }
+	}
+}
+
+fn dyn_to_int(value DynValue) int {
+	return match value.type {
+		.int_ { int(value.int_value()) }
+		.bool_ { if value.bool_value() { 1 } else { 0 } }
+		.float_ { int(value.float_value()) }
+		.string_ { dyn_to_string(value).int() }
+		else { 0 }
+	}
+}
+
+fn dyn_to_i64(value DynValue) i64 {
+	return match value.type {
+		.int_ { value.int_value() }
+		.bool_ { if value.bool_value() { i64(1) } else { i64(0) } }
+		.float_ { i64(value.float_value()) }
+		.string_ { dyn_to_string(value).i64() }
+		else { i64(0) }
+	}
+}
+
+fn dyn_to_f64(value DynValue) f64 {
+	return match value.type {
+		.float_ { value.float_value() }
+		.int_ { f64(value.int_value()) }
+		.bool_ { if value.bool_value() { 1.0 } else { 0.0 } }
+		.string_ { dyn_to_string(value).f64() }
+		else { 0.0 }
+	}
+}
+
+fn (v PersistentOwnedZBox) request_owned_non_dyn() ?RequestOwnedZBox {
+	return match v.kind {
+		.retained_callable { retained_callable_request_owned(v.retained_callable) }
+		.retained_object { retained_request_owned(v.retained) }
+		.fallback_zval { own_request_zbox_raw(v.z) }
+		.dyn_data { none }
 	}
 }
 
@@ -733,31 +843,13 @@ pub fn (mut v PersistentOwnedZBox) release() {
 pub fn (v PersistentOwnedZBox) clone_persistent_owned() PersistentOwnedZBox {
 	match v.kind {
 		.dyn_data {
-			return PersistentOwnedZBox{
-				ZValViewState: ZValViewState{
-					z: invalid_zval()
-				}
-				kind:          .dyn_data
-				dyn_data:      v.dyn_data
-			}
+			return persistent_owned_dyn_box(v.dyn_data)
 		}
 		.retained_callable {
-			return PersistentOwnedZBox{
-				ZValViewState: ZValViewState{
-					z: invalid_zval()
-				}
-				kind:              .retained_callable
-				retained_callable: v.retained_callable.clone()
-			}
+			return persistent_owned_retained_callable_box(v.retained_callable.clone())
 		}
 		.retained_object {
-			return PersistentOwnedZBox{
-				ZValViewState: ZValViewState{
-					z: invalid_zval()
-				}
-				kind:          .retained_object
-				retained:      v.retained.clone()
-			}
+			return persistent_owned_retained_object_box(v.retained.clone())
 		}
 		.fallback_zval {
 			return own_persistent_zbox_raw(v.z)
@@ -864,20 +956,14 @@ pub fn (v PersistentOwnedZBox) is_callable() bool {
 		.dyn_data {
 			return false
 		}
-		.retained_callable {
-			return true
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.is_callable()
-		}
-		.fallback_zval {
-			return v.z.is_callable()
-		}
+		.retained_callable { return true }
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return false }
+	defer {
+		temp.release()
+	}
+	return temp.is_callable()
 }
 
 pub fn (v PersistentOwnedZBox) is_object() bool {
@@ -936,175 +1022,55 @@ pub fn (v PersistentOwnedZBox) method_exists(name string) bool {
 		.dyn_data {
 			return false
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.method_exists(name)
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.method_exists(name)
-		}
-		.fallback_zval {
-			return v.z.method_exists(name)
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return false }
+	defer {
+		temp.release()
+	}
+	return temp.method_exists(name)
 }
 
 pub fn (v PersistentOwnedZBox) to_string() string {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.null_ {
-					return ''
-				}
-				.bool_ {
-					unsafe {
-						return if v.dyn_data.data.b { '1' } else { '' }
-					}
-				}
-				.int_ {
-					unsafe {
-						return v.dyn_data.data.i.str()
-					}
-				}
-				.float_ {
-					unsafe {
-						return v.dyn_data.data.f.str()
-					}
-				}
-				.string_ {
-					unsafe {
-						return v.dyn_data.data.s.clone()
-					}
-				}
-				else {
-					mut temp := persistent_dyn_request_owned(v.dyn_data)
-					defer {
-						temp.release()
-					}
-					return temp.to_string()
-				}
-			}
+			return dyn_to_string(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_string()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_string()
-		}
-		.fallback_zval {
-			return v.z.to_string()
-		}
+		else {}
 	}
-}
-
-fn persistent_dyn_item_box(item DynValue) PersistentOwnedZBox {
-	return PersistentOwnedZBox{
-		ZValViewState: ZValViewState{
-			z: invalid_zval()
-		}
-		kind:     .dyn_data
-		dyn_data: item
+	mut temp := v.request_owned_non_dyn() or { return '' }
+	defer {
+		temp.release()
 	}
+	return temp.to_string()
 }
 
 pub fn (v PersistentOwnedZBox) to_string_list() []string {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.list_ {
-					mut out := []string{}
-					for item in v.dyn_data.list {
-						item_box := persistent_dyn_item_box(item)
-						out << item_box.to_string()
-					}
-					return out
-				}
-				.string_ {
-					return [v.to_string()]
-				}
-				else {
-					mut temp := persistent_dyn_request_owned(v.dyn_data)
-					defer {
-						temp.release()
-					}
-					return temp.to_string_list()
-				}
-			}
+			return dyn_to_string_list(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_string_list()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_string_list()
-		}
-		.fallback_zval {
-			return v.z.to_string_list()
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return []string{} }
+	defer {
+		temp.release()
+	}
+	return temp.to_string_list()
 }
 
 pub fn (v PersistentOwnedZBox) to_string_map() map[string]string {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.map_ {
-					mut out := map[string]string{}
-					for key, item in v.dyn_data.map {
-						item_box := persistent_dyn_item_box(item)
-						out[key] = item_box.to_string()
-					}
-					return out
-				}
-				else {
-					mut temp := persistent_dyn_request_owned(v.dyn_data)
-					defer {
-						temp.release()
-					}
-					return temp.to_string_map()
-				}
-			}
+			return dyn_to_string_map(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_string_map()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_string_map()
-		}
-		.fallback_zval {
-			return v.z.to_string_map()
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return map[string]string{} }
+	defer {
+		temp.release()
+	}
+	return temp.to_string_map()
 }
 
 pub fn (v PersistentOwnedZBox) resource_type() ?string {
@@ -1112,20 +1078,14 @@ pub fn (v PersistentOwnedZBox) resource_type() ?string {
 		.dyn_data {
 			return none
 		}
-		.retained_callable {
-			return none
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.resource_type()
-		}
-		.fallback_zval {
-			return v.z.resource_type()
-		}
+		.retained_callable { return none }
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return none }
+	defer {
+		temp.release()
+	}
+	return temp.resource_type()
 }
 
 pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
@@ -1133,216 +1093,70 @@ pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
 		.dyn_data {
 			return none
 		}
-		.retained_callable {
-			return none
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.stream_metadata()
-		}
-		.fallback_zval {
-			return v.z.stream_metadata()
-		}
+		.retained_callable { return none }
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return none }
+	defer {
+		temp.release()
+	}
+	return temp.stream_metadata()
 }
 
 pub fn (v PersistentOwnedZBox) to_bool() bool {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.null_ {
-					return false
-				}
-				.bool_ {
-					unsafe {
-						return v.dyn_data.data.b
-					}
-				}
-				.int_ {
-					unsafe {
-						return v.dyn_data.data.i != 0
-					}
-				}
-				.float_ {
-					unsafe {
-						return v.dyn_data.data.f != 0.0
-					}
-				}
-				.string_ {
-					unsafe {
-						return v.dyn_data.data.s.len > 0
-					}
-				}
-				.list_, .map_ {
-					return true
-				}
-				else {
-					return false
-				}
-			}
+			return dyn_to_bool(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_bool()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_bool()
-		}
-		.fallback_zval {
-			return v.z.to_bool()
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return false }
+	defer {
+		temp.release()
+	}
+	return temp.to_bool()
 }
 
 pub fn (v PersistentOwnedZBox) to_int() int {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.int_ {
-					unsafe {
-						return int(v.dyn_data.data.i)
-					}
-				}
-				.bool_ {
-					unsafe {
-						return if v.dyn_data.data.b { 1 } else { 0 }
-					}
-				}
-				.float_ {
-					unsafe {
-						return int(v.dyn_data.data.f)
-					}
-				}
-				.string_ {
-					return v.to_string().int()
-				}
-				else {
-					return 0
-				}
-			}
+			return dyn_to_int(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_int()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_int()
-		}
-		.fallback_zval {
-			return v.z.to_int()
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return 0 }
+	defer {
+		temp.release()
+	}
+	return temp.to_int()
 }
 
 pub fn (v PersistentOwnedZBox) to_i64() i64 {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.int_ {
-					unsafe {
-						return v.dyn_data.data.i
-					}
-				}
-				.bool_ {
-					unsafe {
-						return if v.dyn_data.data.b { i64(1) } else { i64(0) }
-					}
-				}
-				.float_ {
-					unsafe {
-						return i64(v.dyn_data.data.f)
-					}
-				}
-				.string_ {
-					return v.to_string().i64()
-				}
-				else {
-					return 0
-				}
-			}
+			return dyn_to_i64(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_i64()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_i64()
-		}
-		.fallback_zval {
-			return v.z.to_i64()
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return i64(0) }
+	defer {
+		temp.release()
+	}
+	return temp.to_i64()
 }
 
 pub fn (v PersistentOwnedZBox) to_f64() f64 {
 	match v.kind {
 		.dyn_data {
-			match v.dyn_data.type {
-				.float_ {
-					unsafe {
-						return v.dyn_data.data.f
-					}
-				}
-				.int_ {
-					unsafe {
-						return f64(v.dyn_data.data.i)
-					}
-				}
-				.bool_ {
-					unsafe {
-						return if v.dyn_data.data.b { 1.0 } else { 0.0 }
-					}
-				}
-				.string_ {
-					return v.to_string().f64()
-				}
-				else {
-					return 0.0
-				}
-			}
+			return dyn_to_f64(v.dyn_data)
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.to_f64()
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.to_f64()
-		}
-		.fallback_zval {
-			return v.z.to_f64()
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return f64(0.0) }
+	defer {
+		temp.release()
+	}
+	return temp.to_f64()
 }
 
 pub fn (v PersistentOwnedZBox) call_owned_request(args []ZVal) ZVal {
@@ -1350,24 +1164,13 @@ pub fn (v PersistentOwnedZBox) call_owned_request(args []ZVal) ZVal {
 		.dyn_data {
 			return invalid_zval()
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.call_owned_request(args)
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.call_owned_request(args)
-		}
-		.fallback_zval {
-			return v.z.call_owned_request(args)
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return invalid_zval() }
+	defer {
+		temp.release()
+	}
+	return temp.call_owned_request(args)
 }
 
 pub fn (v PersistentOwnedZBox) method_owned_request(method string, args []ZVal) ZVal {
@@ -1375,24 +1178,13 @@ pub fn (v PersistentOwnedZBox) method_owned_request(method string, args []ZVal) 
 		.dyn_data {
 			return invalid_zval()
 		}
-		.retained_callable {
-			mut temp := retained_callable_request_owned(v.retained_callable)
-			defer {
-				temp.release()
-			}
-			return temp.method_owned_request(method, args)
-		}
-		.retained_object {
-			mut temp := retained_request_owned(v.retained)
-			defer {
-				temp.release()
-			}
-			return temp.method_owned_request(method, args)
-		}
-		.fallback_zval {
-			return v.z.method_owned_request(method, args)
-		}
+		else {}
 	}
+	mut temp := v.request_owned_non_dyn() or { return invalid_zval() }
+	defer {
+		temp.release()
+	}
+	return temp.method_owned_request(method, args)
 }
 
 pub fn borrowed_zbox_from_raw(raw &C.zval) RequestBorrowedZBox {
