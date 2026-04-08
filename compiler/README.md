@@ -4,17 +4,17 @@ This directory contains the VPHP compiler implementation and its design document
 
 Project overview:
 
-- [../docs/OVERVIEW.md](/Users/guweigang/Source/vphpx/vphp/docs/OVERVIEW.md)
+- [../docs/OVERVIEW.md](../docs/OVERVIEW.md)
 
 ## Start Here
 
 If you are new to the compiler, read these in order:
 
-1. [architecture.md](/Users/guweigang/Source/vphpx/vphp/compiler/architecture.md)
-2. [repr.md](/Users/guweigang/Source/vphpx/vphp/compiler/repr.md)
-3. [class_shadows.md](/Users/guweigang/Source/vphpx/vphp/compiler/class_shadows.md)
-4. [builder.md](/Users/guweigang/Source/vphpx/vphp/compiler/builder.md)
-5. [emission_pipeline.md](/Users/guweigang/Source/vphpx/vphp/compiler/emission_pipeline.md)
+1. [architecture.md](architecture.md)
+2. [repr.md](repr.md)
+3. [class_shadows.md](class_shadows.md)
+4. [builder.md](builder.md)
+5. [emission_pipeline.md](emission_pipeline.md)
 
 ## Implementation Layout
 
@@ -35,10 +35,10 @@ vphp/compiler/
 
 ### Core pipeline
 
-- [mod.v](/Users/guweigang/Source/vphpx/vphp/compiler/mod.v)
-- [export.v](/Users/guweigang/Source/vphpx/vphp/compiler/export.v)
-- [c_emitter.v](/Users/guweigang/Source/vphpx/vphp/compiler/c_emitter.v)
-- [v_glue.v](/Users/guweigang/Source/vphpx/vphp/compiler/v_glue.v)
+- [mod.v](mod.v)
+- [export.v](export.v)
+- [c_emitter.v](c_emitter.v)
+- [v_glue.v](v_glue.v)
 
 ### Submodules
 
@@ -60,31 +60,31 @@ vphp/compiler/
 
 Read:
 
-1. [architecture.md](/Users/guweigang/Source/vphpx/vphp/compiler/architecture.md)
-2. [emission_pipeline.md](/Users/guweigang/Source/vphpx/vphp/compiler/emission_pipeline.md)
+1. [architecture.md](architecture.md)
+2. [emission_pipeline.md](emission_pipeline.md)
 
 ### I want to add a new parsed feature
 
 Read:
 
-1. [repr.md](/Users/guweigang/Source/vphpx/vphp/compiler/repr.md)
+1. [repr.md](repr.md)
 2. `parser/`
-3. [architecture.md](/Users/guweigang/Source/vphpx/vphp/compiler/architecture.md)
+3. [architecture.md](architecture.md)
 
 ### I want to change class static/class const shadow behavior
 
 Read:
 
-1. [class_shadows.md](/Users/guweigang/Source/vphpx/vphp/compiler/class_shadows.md)
-2. [v_glue.v](/Users/guweigang/Source/vphpx/vphp/compiler/v_glue.v)
-3. [c_emitter.v](/Users/guweigang/Source/vphpx/vphp/compiler/c_emitter.v)
+1. [class_shadows.md](class_shadows.md)
+2. [v_glue.v](v_glue.v)
+3. [c_emitter.v](c_emitter.v)
 
 ### I want to change export/code generation
 
 Read:
 
-1. [builder.md](/Users/guweigang/Source/vphpx/vphp/compiler/builder.md)
-2. [emission_pipeline.md](/Users/guweigang/Source/vphpx/vphp/compiler/emission_pipeline.md)
+1. [builder.md](builder.md)
+2. [emission_pipeline.md](emission_pipeline.md)
 
 Important:
 

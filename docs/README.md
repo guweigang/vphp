@@ -5,24 +5,24 @@
 ## Start Here
 
 - 总览：
-  - [OVERVIEW.md](/Users/guweigang/Source/vphpx/vphp/docs/OVERVIEW.md)
+  - [OVERVIEW.md](OVERVIEW.md)
 - 根入口：
-  - [README.md](/Users/guweigang/Source/vphpx/vphp/README.md)
+  - [README.md](../README.md)
 
 ## Runtime / Interop
 
-- [interop.md](/Users/guweigang/Source/vphpx/vphp/docs/interop.md)
-- [lifecycle_model.md](/Users/guweigang/Source/vphpx/vphp/docs/lifecycle_model.md)
-- [val_conversions.md](/Users/guweigang/Source/vphpx/vphp/docs/val_conversions.md)
+- [interop.md](interop.md)
+- [lifecycle_model.md](lifecycle_model.md)
+- [val_conversions.md](val_conversions.md)
 
 ## Export / OOP
 
-- [oop_features.md](/Users/guweigang/Source/vphpx/vphp/docs/oop_features.md)
+- [oop_features.md](oop_features.md)
 
 ## Design Comparison
 
-- [vphp_vs_ext_php_rs.md](/Users/guweigang/Source/vphpx/vphp/docs/vphp_vs_ext_php_rs.md)
+- [vphp_vs_ext_php_rs.md](vphp_vs_ext_php_rs.md)
 
 ## Compiler
 
-- [../compiler/README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+- [../compiler/README.md](../compiler/README.md)

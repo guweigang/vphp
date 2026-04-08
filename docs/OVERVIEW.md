@@ -65,7 +65,7 @@
 
 入口文档：
 
-- [interop.md](/Users/guweigang/Source/vphpx/vphp/docs/interop.md)
+- [interop.md](interop.md)
 
 ### 2. Ownership / Lifecycle
 
@@ -85,8 +85,8 @@
 
 入口文档：
 
-- [lifecycle_model.md](/Users/guweigang/Source/vphpx/vphp/docs/lifecycle_model.md)
-- [vphp_vs_ext_php_rs.md](/Users/guweigang/Source/vphpx/vphp/docs/vphp_vs_ext_php_rs.md)
+- [lifecycle_model.md](lifecycle_model.md)
+- [vphp_vs_ext_php_rs.md](vphp_vs_ext_php_rs.md)
 
 ### 3. PHP-facing OOP Export
 
@@ -107,7 +107,7 @@
 
 入口文档：
 
-- [oop_features.md](/Users/guweigang/Source/vphpx/vphp/docs/oop_features.md)
+- [oop_features.md](oop_features.md)
 
 ### 4. Compiler / Export Pipeline
 
@@ -121,7 +121,7 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 
 入口文档：
 
-- [../compiler/README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+- [../compiler/README.md](../compiler/README.md)
 
 ## Current Highlights
 
@@ -147,17 +147,17 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 第一次接触 `vphp`：
 
 1. 先看这页
-2. 再看 [interop.md](/Users/guweigang/Source/vphpx/vphp/docs/interop.md)
-3. 再看 [oop_features.md](/Users/guweigang/Source/vphpx/vphp/docs/oop_features.md)
-4. 再看 [lifecycle_model.md](/Users/guweigang/Source/vphpx/vphp/docs/lifecycle_model.md)
-5. 最后看 [../compiler/README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+2. 再看 [interop.md](interop.md)
+3. 再看 [oop_features.md](oop_features.md)
+4. 再看 [lifecycle_model.md](lifecycle_model.md)
+5. 最后看 [../compiler/README.md](../compiler/README.md)
 
 如果你更关心工程实践：
 
-1. [vphp_vs_ext_php_rs.md](/Users/guweigang/Source/vphpx/vphp/docs/vphp_vs_ext_php_rs.md)
-2. [val_conversions.md](/Users/guweigang/Source/vphpx/vphp/docs/val_conversions.md)
+1. [vphp_vs_ext_php_rs.md](vphp_vs_ext_php_rs.md)
+2. [val_conversions.md](val_conversions.md)
 
 ## Related Docs
 
-- [README.md](/Users/guweigang/Source/vphpx/vphp/README.md)
-- [README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+- [README.md](../README.md)
+- [README.md](../compiler/README.md)

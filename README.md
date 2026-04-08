@@ -4,8 +4,8 @@
 
 Documentation entry:
 
-- overview: [docs/OVERVIEW.md](/Users/guweigang/Source/vphpx/vphp/docs/OVERVIEW.md)
-- docs index: [docs/README.md](/Users/guweigang/Source/vphpx/vphp/docs/README.md)
+- overview: [docs/OVERVIEW.md](docs/OVERVIEW.md)
+- docs index: [docs/README.md](docs/README.md)
 
 如果 `vslim` 是框架层，`vhttpd` 是运行时层，那么 `vphp` 负责回答的是：
 
@@ -68,7 +68,7 @@ Documentation entry:
 - PHP-CPP 文档：函数、类、常量、命名空间、扩展回调
 - ext-php-rs 文档：`#[php_module]`、`ModuleBuilder`、`#[php_class]`、`RegisteredClass`
 - 仓库内更细的 ownership 对比：
-  - [docs/vphp_vs_ext_php_rs.md](/Users/guweigang/Source/vphpx/vphp/docs/vphp_vs_ext_php_rs.md)
+  - [docs/vphp_vs_ext_php_rs.md](docs/vphp_vs_ext_php_rs.md)
 
 官方参考：
 
@@ -117,7 +117,7 @@ V 侧通过 `ZVal` 完成：
 
 更细文档：
 
-- [docs/interop.md](/Users/guweigang/Source/vphpx/vphp/docs/interop.md)
+- [docs/interop.md](docs/interop.md)
 
 ### 2. PHP-facing OOP Export
 
@@ -191,7 +191,7 @@ fn v_request_boot_count() int {
 
 更细文档：
 
-- [docs/oop_features.md](/Users/guweigang/Source/vphpx/vphp/docs/oop_features.md)
+- [docs/oop_features.md](docs/oop_features.md)
 
 ### 3. Compiler / Export Pipeline
 
@@ -205,26 +205,26 @@ fn v_request_boot_count() int {
 
 入口说明：
 
-- [compiler/README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+- [compiler/README.md](compiler/README.md)
 
 ## Documentation Map
 
 如果你更希望按主题读，而不是按仓库目录读，可以直接走这张图：
 
 - 产品总览：
-  - [docs/OVERVIEW.md](/Users/guweigang/Source/vphpx/vphp/docs/OVERVIEW.md)
+  - [docs/OVERVIEW.md](docs/OVERVIEW.md)
 - interop：
-  - [docs/interop.md](/Users/guweigang/Source/vphpx/vphp/docs/interop.md)
+  - [docs/interop.md](docs/interop.md)
 - 生命周期：
-  - [docs/lifecycle_model.md](/Users/guweigang/Source/vphpx/vphp/docs/lifecycle_model.md)
+  - [docs/lifecycle_model.md](docs/lifecycle_model.md)
 - OOP 导出：
-  - [docs/oop_features.md](/Users/guweigang/Source/vphpx/vphp/docs/oop_features.md)
+  - [docs/oop_features.md](docs/oop_features.md)
 - 值转换：
-  - [docs/val_conversions.md](/Users/guweigang/Source/vphpx/vphp/docs/val_conversions.md)
+  - [docs/val_conversions.md](docs/val_conversions.md)
 - 设计对比：
-  - [docs/vphp_vs_ext_php_rs.md](/Users/guweigang/Source/vphpx/vphp/docs/vphp_vs_ext_php_rs.md)
+  - [docs/vphp_vs_ext_php_rs.md](docs/vphp_vs_ext_php_rs.md)
 - 编译链：
-  - [compiler/README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+  - [compiler/README.md](compiler/README.md)
 
 ## Current Product Role
 
@@ -292,7 +292,7 @@ Notes:
 如果你第一次看 `vphp`，推荐顺序：
 
 1. 先看这页
-2. 再看 [docs/OVERVIEW.md](/Users/guweigang/Source/vphpx/vphp/docs/OVERVIEW.md)
-3. 再看 [docs/interop.md](/Users/guweigang/Source/vphpx/vphp/docs/interop.md)
-4. 再看 [docs/oop_features.md](/Users/guweigang/Source/vphpx/vphp/docs/oop_features.md)
-5. 最后看 [compiler/README.md](/Users/guweigang/Source/vphpx/vphp/compiler/README.md)
+2. 再看 [docs/OVERVIEW.md](docs/OVERVIEW.md)
+3. 再看 [docs/interop.md](docs/interop.md)
+4. 再看 [docs/oop_features.md](docs/oop_features.md)
+5. 最后看 [compiler/README.md](compiler/README.md)
