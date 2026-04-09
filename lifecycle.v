@@ -372,6 +372,15 @@ pub fn PersistentOwnedZBox.from_zval(z ZVal) PersistentOwnedZBox {
 	return own_persistent_zbox_raw(z)
 }
 
+// from_persistent_zval keeps the original zval payload as a persistent duplicate
+// without routing through detached DynValue decoding.
+pub fn PersistentOwnedZBox.from_persistent_zval(z ZVal) PersistentOwnedZBox {
+	return PersistentOwnedZBox{
+		ZValViewState: zbox_view_state(z.dup_persistent())
+		kind:          .fallback_zval
+	}
+}
+
 // of is the friendly long-lived entry point for a general PHP value.
 // It will route safe data into detached storage and objects into retained
 // handles, only falling back to raw persistent zval compatibility when needed.
@@ -843,7 +852,7 @@ pub fn (mut v PersistentOwnedZBox) release() {
 pub fn (v PersistentOwnedZBox) clone_persistent_owned() PersistentOwnedZBox {
 	match v.kind {
 		.dyn_data {
-			return persistent_owned_dyn_box(v.dyn_data)
+			return persistent_owned_dyn_box(v.dyn_data.clone())
 		}
 		.retained_callable {
 			return persistent_owned_retained_callable_box(v.retained_callable.clone())

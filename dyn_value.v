@@ -105,6 +105,32 @@ pub fn dyn_value_resource_ref(ptr voidptr) DynValue {
 	}
 }
 
+pub fn (v DynValue) clone() DynValue {
+	return match v.type {
+		.null_ { dyn_value_null() }
+		.bool_ { dyn_value_bool(v.bool_value()) }
+		.int_ { dyn_value_int(v.int_value()) }
+		.float_ { dyn_value_float(v.float_value()) }
+		.string_ { dyn_value_string(v.string_value()) }
+		.list_ {
+			mut out := []DynValue{cap: v.list.len}
+			for item in v.list {
+				out << item.clone()
+			}
+			dyn_value_list(out)
+		}
+		.map_ {
+			mut out := map[string]DynValue{}
+			for key, item in v.map {
+				out[key] = item.clone()
+			}
+			dyn_value_map(out)
+		}
+		.object_ref { dyn_value_object_ref(v.pointer_value()) }
+		.resource_ref { dyn_value_resource_ref(v.pointer_value()) }
+	}
+}
+
 pub fn (v DynValue) bool_value() bool {
 	return unsafe { v.data.b }
 }

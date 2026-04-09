@@ -154,7 +154,8 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
   zend_object *existing_obj =
       zend_hash_index_find_ptr(&vphp_object_registry, (zend_ulong)v_ptr);
   if (existing_obj) {
-    if (!ce || existing_obj->ce == ce) {
+    if (!ce || existing_obj->ce == ce ||
+        instanceof_function(existing_obj->ce, ce)) {
       GC_ADDREF(existing_obj);
       ZVAL_OBJ(return_value, existing_obj);
       return;
