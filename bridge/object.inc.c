@@ -192,7 +192,25 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
     }
     zend_hash_index_del(&vphp_object_registry, (zend_ulong)v_ptr);
   }
+  if (debug_on) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_return_obj object_init_ex begin return_value=%p v_ptr=%p ce=%p ce_name=%s create_object=%p",
+             (void *)return_value, v_ptr, (void *)ce,
+             ce && ce->name ? ZSTR_VAL(ce->name) : "(null)",
+             ce != NULL ? (void *)ce->create_object : NULL);
+    vphp_bridge_object_debug_log(debug_buf);
+  }
   object_init_ex(return_value, ce);
+  if (debug_on) {
+    snprintf(debug_buf, sizeof(debug_buf),
+             "vphp_return_obj object_init_ex done return_value=%p type=%d obj=%p ce_name=%s",
+             (void *)return_value, return_value != NULL ? Z_TYPE_P(return_value) : -1,
+             return_value != NULL && Z_TYPE_P(return_value) == IS_OBJECT
+                 ? (void *)Z_OBJ_P(return_value)
+                 : NULL,
+             ce && ce->name ? ZSTR_VAL(ce->name) : "(null)");
+    vphp_bridge_object_debug_log(debug_buf);
+  }
   zend_object *new_obj = Z_OBJ_P(return_value);
   vphp_object_wrapper *wrapper = vphp_binding_for_obj(new_obj, 1);
   if (wrapper != &vphp_null_wrapper) {
@@ -218,8 +236,10 @@ void vphp_return_bound_object(zval *return_value, void *v_ptr,
   int debug_on = vphp_bridge_object_debug_enabled();
   if (debug_on) {
     snprintf(debug_buf, sizeof(debug_buf),
-             "vphp_return_bound_object enter return_value=%p v_ptr=%p ce=%p handlers=%p owns=%d",
-             (void *)return_value, v_ptr, (void *)ce, (void *)h, owns_v_ptr);
+             "vphp_return_bound_object enter return_value=%p v_ptr=%p ce=%p ce_name=%s handlers=%p owns=%d",
+             (void *)return_value, v_ptr, (void *)ce,
+             ce && ce->name ? ZSTR_VAL(ce->name) : "(null)", (void *)h,
+             owns_v_ptr);
     vphp_bridge_object_debug_log(debug_buf);
   }
   vphp_return_obj(return_value, v_ptr, ce);
