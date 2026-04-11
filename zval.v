@@ -11,8 +11,9 @@ module vphp
 
 pub struct ZVal {
 pub mut:
-	raw   &C.zval
-	owned bool
+	raw           &C.zval
+	owned         bool
+	is_persistent bool
 }
 
 // Callable — semantic alias for ZVal used as a PHP callable parameter.
@@ -74,8 +75,13 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	mut out := ZVal{
-		raw: C.vphp_new_zval()
-		owned: true
+		raw: if ownership == .owned_persistent {
+			C.vphp_new_persistent_zval()
+		} else {
+			C.vphp_new_zval()
+		}
+		owned:         true
+		is_persistent: ownership == .owned_persistent
 	}
 	C.ZVAL_COPY(out.raw, src)
 	if ownership == .owned_request {
@@ -1106,13 +1112,30 @@ pub fn (mut v ZVal) release() {
 		return
 	}
 	autorelease_forget(v.raw)
-	unsafe { C.vphp_release_zval(v.raw) }
+	unsafe {
+		if v.is_persistent {
+			C.vphp_release_persistent_zval(v.raw)
+		} else {
+			C.vphp_release_zval(v.raw)
+		}
+	}
 	v.raw = unsafe { nil }
 	v.owned = false
+	v.is_persistent = false
+}
+
+pub fn (v ZVal) dup_persistent() ZVal {
+	if v.raw == 0 {
+		return invalid_zval()
+	}
+	return clone_raw_with_ownership(v.raw, .owned_persistent)
 }
 
 // Duplicate and keep beyond current autorelease scope.
-pub fn (v ZVal) dup_persistent() ZVal {
+// dup_escaped creates an emalloc'd copy that escapes the current autorelease
+// scope. The zval is still request-scoped memory — it will NOT survive across
+// PHP requests. Use dup_persistent() for truly long-lived storage.
+pub fn (v ZVal) dup_escaped() ZVal {
 	mut out := v.dup()
 	autorelease_forget(out.raw)
 	return out

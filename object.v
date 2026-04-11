@@ -6,6 +6,35 @@ module vphp
 // 替代 codegen 生成的局部 getter/setter 代码
 // ============================================
 
+__global (
+	vphp_vptr_roots &map[voidptr]int
+)
+
+fn register_vptr_root(ptr voidptr) {
+	if ptr == 0 {
+		return
+	}
+	unsafe {
+		if isnil(vphp_vptr_roots) {
+			vphp_vptr_roots = &map[voidptr]int{}
+		}
+		mut m := vphp_vptr_roots
+		m[ptr] = 1
+	}
+}
+
+fn unregister_vptr_root(ptr voidptr) {
+	if ptr == 0 {
+		return
+	}
+	unsafe {
+		if !isnil(vphp_vptr_roots) {
+			mut m := vphp_vptr_roots
+			m.delete(ptr)
+		}
+	}
+}
+
 // 泛型属性读取器 — 替代生成的 Article_get_prop 等函数
 pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
 	unsafe {
@@ -88,7 +117,9 @@ fn C.builtin___v_free(ptr voidptr)
 // PHP `new` 出来的 @[php_class] 对象是“半初始化”状态。
 pub fn generic_new_raw[T]() voidptr {
 	unsafe {
-		return &T{}
+		ptr := &T{}
+		register_vptr_root(ptr)
+		return ptr
 	}
 }
 
@@ -98,6 +129,7 @@ pub fn generic_free_raw[T](ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
+	unregister_vptr_root(ptr)
 	unsafe {
 		C.builtin___v_free(ptr)
 	}
@@ -175,6 +207,7 @@ pub fn return_bound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers 
 			C.vphp_return_borrowed_object(ret, v_ptr, ce, handlers)
 		}
 		.owned_request, .owned_persistent {
+			register_vptr_root(v_ptr)
 			C.vphp_return_owned_object(ret, v_ptr, ce, handlers)
 		}
 	}

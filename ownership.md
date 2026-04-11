@@ -14,6 +14,8 @@ Preferred public naming:
 - `RequestOwnedZBox`
 - `PersistentOwnedZBox`
 
+**Core Utility:** `.clone()` (formerly `clone_persistent_owned`) is the primary way to move data from Request scope to Persistent scope.
+
 Implementation model:
 
 - `RequestBorrowedZBox`: borrowed read-only view of an existing Zend value
@@ -152,7 +154,13 @@ that receives a `ZVal` result is responsible for exactly one `release()`.
 - PHP callables: `retained_callable` routing through
   `PersistentOwnedZBox.from_callable_zval(...)` / `of_callable(...)`
 
-5. Debug/logging must not create ownership side effects.
+5. **Automatic Root Safety for @[php_class]**
+
+V objects exported to PHP (V-backed objects) are automatically registered as GC roots when they enter the PHP-owned object registry.
+- **V-to-PHP**: If you return a V pointer to PHP with `.owned_request` or `.owned_persistent` ownership, the bridge keeps it alive in the V heap.
+- **Low Mental Effort**: You do not need to manually manage roots for objects passed to PHP; the bridge handles `GC_add_roots` and `GC_remove_roots` under the hood via a global root registry.
+
+6. Debug/logging must not create ownership side effects.
 
 Do not call APIs like `to_zval()` inside debug interpolation when they allocate
 temporary request values.
@@ -204,9 +212,19 @@ In practice:
 - Function parameters should default to borrowed wrappers.
 - PHP call results should default to request-owned wrappers.
 - Long-lived struct fields should default to persistent wrappers or retained handles.
-- Helpers should not secretly take ownership away from callers.
 - The scope that creates an owned request value should also release it, unless
   it explicitly transfers ownership onward.
+
+## Developer's Low Mental Effort Checklist
+
+1. **Reading Data?** Use `RequestBorrowedZBox`. Don't bother with release.
+2. **Moving Data to Storage?** Use `.clone()`.
+   - Source: `RequestOwnedZBox` or `RequestBorrowedZBox`
+   - Target: `PersistentOwnedZBox`
+3. **Clearing Storage?** Use `.release()` or `release_persistent_boxes(mut list)`.
+   - This is the only place where you MUST be careful. Anything in a persistent struct needs an explicit release in the struct's cleanup stage.
+4. **Using V objects in PHP?** Just use them.
+   - No more "Middleware is not valid" errors. The bridge-level root registry makes V objects safely pinnable from the PHP side.
 ## Preferred Construction Patterns
 
 ### Request-scoped values

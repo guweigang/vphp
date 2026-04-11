@@ -45,7 +45,7 @@ static void vphp_init_sidecar_registry(void) {
     return;
   }
   memset(&vphp_null_wrapper, 0, sizeof(vphp_null_wrapper));
-  zend_hash_init(&vphp_sidecar_registry, 16, NULL, NULL, 0);
+  zend_hash_init(&vphp_sidecar_registry, 16, NULL, NULL, 1);
   vphp_sidecar_registry_initialized = true;
 }
 
@@ -393,6 +393,8 @@ static const char *vphp_debug_object_class_name(zend_object *obj) {
   }
   return ZSTR_VAL(obj->ce->name);
 }
+
+
 
 void vphp_free_object_handler(zend_object *obj) {
   vphp_object_wrapper *wrapper = vphp_obj_from_obj(obj);

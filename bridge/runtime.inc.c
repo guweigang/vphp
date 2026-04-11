@@ -584,6 +584,34 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
   }
 }
 
+static void vphp_runtime_debug_dump_autorelease_range(const char *phase, int mark,
+                                                      int limit) {
+  char debug_buf[512];
+  int emitted = 0;
+  if (mark < 0) {
+    mark = 0;
+  }
+  for (int i = vphp_autorelease_pool.len - 1; i >= mark; i--) {
+    zval *z = vphp_autorelease_pool.items[i];
+    uint32_t refcount = 0;
+    if (z == NULL) {
+      continue;
+    }
+    if (Z_REFCOUNTED_P(z)) {
+      refcount = GC_REFCOUNT(Z_COUNTED_P(z));
+    }
+    snprintf(debug_buf, sizeof(debug_buf),
+             "autorelease_pool %s idx=%d z=%p type=%d class=%s refcount=%u",
+             phase, i, (void *)z, Z_TYPE_P(z),
+             vphp_runtime_debug_zval_class_name(z), refcount);
+    vphp_runtime_debug_log(debug_buf);
+    emitted++;
+    if (limit > 0 && emitted >= limit) {
+      break;
+    }
+  }
+}
+
 static bool vphp_owned_contains(zval *z) {
   if (z == NULL) {
     return false;
@@ -717,6 +745,13 @@ void vphp_autorelease_forget(zval *z) {
 void vphp_autorelease_drain(int mark) {
   if (mark < 0 || mark > vphp_autorelease_pool.len) {
     return;
+  }
+  if (vphp_runtime_debug_enabled() != 0 && vphp_autorelease_pool.len > mark) {
+    char debug_buf[128];
+    snprintf(debug_buf, sizeof(debug_buf),
+             "autorelease_drain mark=%d len=%d", mark, vphp_autorelease_pool.len);
+    vphp_runtime_debug_log(debug_buf);
+    vphp_runtime_debug_dump_autorelease_range("before_drain", mark, 32);
   }
   if (EG(exception) != NULL) {
     for (int i = vphp_autorelease_pool.len - 1; i >= mark; i--) {

@@ -47,9 +47,11 @@ pub fn C.vphp_set_bool(z &C.zval, val bool)
 pub fn C.vphp_set_strval(z &C.zval, str &char, len int)
 pub fn C.vphp_set_null(z &C.zval)
 pub fn C.vphp_new_zval() &C.zval
+pub fn C.vphp_new_persistent_zval() &C.zval
 pub fn C.vphp_new_str(s &char) &C.zval
 pub fn C.vphp_new_strl(s &char, len int) &C.zval
 pub fn C.vphp_release_zval(z &C.zval)
+pub fn C.vphp_release_persistent_zval(z &C.zval)
 pub fn C.vphp_autorelease_mark() int
 pub fn C.vphp_autorelease_add(z &C.zval)
 pub fn C.vphp_autorelease_forget(z &C.zval)

@@ -188,6 +188,23 @@ zval *vphp_new_strl(const char *s, int len) {
   return z;
 }
 
+zval *vphp_new_persistent_zval() {
+  zval *z = (zval *)pemalloc(sizeof(zval), 1);
+  if (z == NULL) {
+    return NULL;
+  }
+  ZVAL_UNDEF(z);
+  return z;
+}
+
+void vphp_release_persistent_zval(zval *z) {
+  if (z == NULL) {
+    return;
+  }
+  zval_ptr_dtor(z);
+  pefree(z, 1);
+}
+
 void vphp_release_zval(zval *z) {
   int removed = 0;
   if (!z) {
