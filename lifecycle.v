@@ -324,6 +324,12 @@ pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn PersistentOwnedZBox.from_callable_zval(z ZVal) PersistentOwnedZBox {
+	if retained_callable := RetainedCallable.from_zval(z) {
+		return persistent_owned_retained_callable_box(retained_callable)
+	}
+	if retained := RetainedObject.from_zval(z) {
+		return persistent_owned_retained_object_box(retained)
+	}
 	return own_persistent_zbox_raw(z)
 }
 
@@ -334,6 +340,9 @@ pub fn PersistentOwnedZBox.of_callable(z ZVal) PersistentOwnedZBox {
 // from_object_zval is the explicit long-lived path for PHP objects.
 // Prefer this over generic value routing when the input is known to be object-like.
 pub fn PersistentOwnedZBox.from_object_zval(z ZVal) PersistentOwnedZBox {
+	if retained := RetainedObject.from_zval(z) {
+		return persistent_owned_retained_object_box(retained)
+	}
 	return own_persistent_zbox_raw(z)
 }
 
@@ -861,7 +870,7 @@ pub fn (v PersistentOwnedZBox) clone_persistent_owned() PersistentOwnedZBox {
 			return persistent_owned_retained_object_box(v.retained.clone())
 		}
 		.fallback_zval {
-			return own_persistent_zbox_raw(v.z)
+			return PersistentOwnedZBox.from_persistent_zval(v.z)
 		}
 	}
 }

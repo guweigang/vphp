@@ -80,6 +80,7 @@ pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 // 连体分配器声明
 fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
 fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
+fn C.builtin___v_free(ptr voidptr)
 
 // 泛型堆分配器必须保留 V 的默认字段初始化语义。
 // 单纯 `vcalloc(sizeof(T))` 只会得到零内存，像 `[]T{}`、`map{}`、
@@ -98,7 +99,7 @@ pub fn generic_free_raw[T](ptr voidptr) {
 		return
 	}
 	unsafe {
-		free(ptr)
+		C.builtin___v_free(ptr)
 	}
 }
 
