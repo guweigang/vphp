@@ -185,7 +185,6 @@ int vphp_include_file(const char *filename, int filename_len, zval *retval,
 int vphp_call_method(zval *obj, const char *method, int method_len,
                      zval *retval, int param_count, zval **params_ptrs) {
   zval *params = NULL;
-  zend_function *fn_proxy = NULL;
 
   if (!obj || Z_TYPE_P(obj) != IS_OBJECT) {
     return -1;
@@ -202,22 +201,11 @@ int vphp_call_method(zval *obj, const char *method, int method_len,
     }
   }
   int result = SUCCESS;
-  if (param_count == 0) {
-    zend_call_method_with_0_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), &fn_proxy, method,
-                                   retval);
-  } else if (param_count == 1) {
-    zend_call_method_with_1_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), &fn_proxy, method,
-                                   retval, &params[0]);
-  } else if (param_count == 2) {
-    zend_call_method_with_2_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), &fn_proxy, method,
-                                   retval, &params[0], &params[1]);
-  } else {
-    zval method_name;
-    ZVAL_STRINGL(&method_name, method, method_len);
-    result = call_user_function(EG(function_table), obj, &method_name, retval,
-                                param_count, params);
-    zval_ptr_dtor(&method_name);
-  }
+  zval method_name;
+  ZVAL_STRINGL(&method_name, method, method_len);
+  result = call_user_function(EG(function_table), obj, &method_name, retval,
+                              param_count, params);
+  zval_ptr_dtor(&method_name);
   if (params) {
     for (int i = 0; i < param_count; i++) {
       zval_ptr_dtor(&params[i]);
