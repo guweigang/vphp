@@ -290,10 +290,15 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 	out << '    if ptr == 0 {'
 	out << '        return'
 	out << '    }'
-	if r.has_free_method {
+	if r.has_cleanup_method || r.has_free_method {
 		out << '    unsafe {'
 		out << '        mut obj := &${r.name}(ptr)'
-		out << '        obj.free()'
+		if r.has_cleanup_method {
+			out << '        obj.cleanup()'
+		}
+		if r.has_free_method {
+			out << '        obj.free()'
+		}
 		out << '    }'
 	}
 	out << '}'

@@ -11,6 +11,7 @@ pub mut:
 	is_final                bool
 	is_abstract             bool
 	has_free_method         bool
+	has_cleanup_method      bool
 	embeds_v                []string
 	implements_v            []string
 	implements_attr         []string

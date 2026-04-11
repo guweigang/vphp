@@ -292,8 +292,12 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 }
 
 pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.Table, field_types map[string]string, borrowed_methods map[string]bool, method_return_types map[string]string) {
-	if stmt.name == 'free' && stmt.is_method {
-		cls.has_free_method = true
+	if stmt.is_method {
+		if stmt.name == 'free' {
+			cls.has_free_method = true
+		} else if stmt.name == 'cleanup' {
+			cls.has_cleanup_method = true
+		}
 	}
 	attrs := parse_callable_attrs(stmt.attrs, 'php_method', stmt.name)
 	if !attrs.has_php_callable {

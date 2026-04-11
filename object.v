@@ -131,6 +131,45 @@ pub fn generic_free_raw[T](ptr voidptr) {
 	}
 	unregister_vptr_root(ptr)
 	unsafe {
+		mut obj := &T(ptr)
+		// 1. 自动释放识别到的持久化盒子与句柄。
+		// cleanup()/free() 由 codegen 生成的 *_cleanup_raw 显式调用，
+		// 这里避免使用泛型接口反射，防止 V 为数组/map 等类型生成
+		// 不存在的 *_free 符号引用。
+		$for field in T.fields {
+			$if field.typ is PersistentOwnedZBox {
+				obj.$(field.name).release()
+			} $else $if field.typ is RetainedObject {
+				obj.$(field.name).release()
+			} $else $if field.typ is RetainedCallable {
+				obj.$(field.name).release()
+			} $else $if field.typ is []PersistentOwnedZBox {
+				for mut box in obj.$(field.name) {
+					box.release()
+				}
+			} $else $if field.typ is map[string]PersistentOwnedZBox {
+				for _, mut box in obj.$(field.name) {
+					box.release()
+				}
+			} $else $if field.typ is []RetainedObject {
+				for mut box in obj.$(field.name) {
+					box.release()
+				}
+			} $else $if field.typ is map[string]RetainedObject {
+				for _, mut box in obj.$(field.name) {
+					box.release()
+				}
+			} $else $if field.typ is []RetainedCallable {
+				for mut box in obj.$(field.name) {
+					box.release()
+				}
+			} $else $if field.typ is map[string]RetainedCallable {
+				for _, mut box in obj.$(field.name) {
+					box.release()
+				}
+			}
+		}
+		// 2. 释放 V 侧对象内存
 		C.builtin___v_free(ptr)
 	}
 }
