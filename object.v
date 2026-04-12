@@ -10,7 +10,7 @@ __global (
 	vphp_vptr_roots &map[voidptr]int
 )
 
-fn register_vptr_root(ptr voidptr) {
+pub fn register_vptr_root(ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
@@ -19,18 +19,24 @@ fn register_vptr_root(ptr voidptr) {
 			vphp_vptr_roots = &map[voidptr]int{}
 		}
 		mut m := vphp_vptr_roots
-		m[ptr] = 1
+		count := m[ptr] or { 0 }
+		m[ptr] = count + 1
 	}
 }
 
-fn unregister_vptr_root(ptr voidptr) {
+pub fn unregister_vptr_root(ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
 	unsafe {
 		if !isnil(vphp_vptr_roots) {
 			mut m := vphp_vptr_roots
-			m.delete(ptr)
+			count := m[ptr] or { 0 }
+			if count > 1 {
+				m[ptr] = count - 1
+			} else {
+				m.delete(ptr)
+			}
 		}
 	}
 }
@@ -147,30 +153,50 @@ pub fn generic_free_raw[T](ptr voidptr) {
 				for mut box in obj.$(field.name) {
 					box.release()
 				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
 			} $else $if field.typ is map[string]PersistentOwnedZBox {
 				for _, mut box in obj.$(field.name) {
 					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
 				}
 			} $else $if field.typ is []RetainedObject {
 				for mut box in obj.$(field.name) {
 					box.release()
 				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
 			} $else $if field.typ is map[string]RetainedObject {
 				for _, mut box in obj.$(field.name) {
 					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
 				}
 			} $else $if field.typ is []RetainedCallable {
 				for mut box in obj.$(field.name) {
 					box.release()
 				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
 			} $else $if field.typ is map[string]RetainedCallable {
 				for _, mut box in obj.$(field.name) {
 					box.release()
 				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
 			}
 		}
-		// 2. 释放 V 侧对象内存
-		C.builtin___v_free(ptr)
+		// 2. 释放 V 侧对象内存 (仅在手动管理内存模式下执行)
+		$if nongc ? {
+			C.builtin___v_free(ptr)
+		}
 	}
 }
 
