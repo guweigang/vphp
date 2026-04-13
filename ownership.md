@@ -57,6 +57,11 @@ When the input kind is already known, prefer the more explicit constructors:
 `fallback_zval` is an internal compatibility fallback, not a recommended storage
 model for new application code.
 
+For PHP userland chainable methods that return the receiver itself, make that
+intent explicit with `@[php_borrowed_return]`. A `return &self` / receiver-alias
+instance method should be treated as a borrowed object alias, not as a fresh
+owned object result.
+
 ## Two Independent Axes
 
 These terms answer two different questions:

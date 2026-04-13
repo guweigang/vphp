@@ -1,5 +1,6 @@
 module parser
 
+import os
 import v.ast
 import compiler.repr
 
@@ -11,6 +12,11 @@ pub:
 	direct_borrowed         bool
 	delegated_target_type   string
 	delegated_target_method string
+}
+
+fn compiler_notes_enabled() bool {
+	flag := os.getenv('VPHP_COMPILER_NOTES').trim_space()
+	return flag != '' && flag != '0' && flag.to_lower() != 'false'
 }
 
 fn normalize_attr_value(raw string) string {
@@ -307,14 +313,19 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_optional_args)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
+	inferred_borrowed := infer_borrowed_object_return(stmt, table, field_types, borrowed_methods,
+		method_return_types)
+	if compiler_notes_enabled() && !attrs.borrowed_return && inferred_borrowed
+		&& normalize_delegated_target_type(ret_type) == cls.name {
+		println('  - [Compiler][note] borrowed self-return inferred: ${cls.name}.${stmt.name} -> consider adding @[php_borrowed_return]')
+	}
 	cls.methods << repr.PhpMethodRepr{
 		name:            attrs.php_name
 		v_name:          stmt.name
 		v_c_func:        '${cls.name}_${stmt.name}'
 		is_static:       false
 		return_spec:     repr.new_return_spec(ret_type, attrs.php_return_type)
-		borrowed_return: attrs.borrowed_return
-			|| infer_borrowed_object_return(stmt, table, field_types, borrowed_methods, method_return_types)
+		borrowed_return: attrs.borrowed_return || inferred_borrowed
 		visibility:      if stmt.is_pub { 'public' } else { 'protected' }
 		args:            args
 		has_export:      attrs.has_export
