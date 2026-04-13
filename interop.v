@@ -112,7 +112,9 @@ pub fn include_once(path string) ZVal {
 	}
 }
 
-// 兼容入口：直接调用 PHP 全局函数。
+// Compatibility entry point for direct PHP function calls.
+// Prefer with_php_call_result_zval()/php_call_request_owned_box() in new code so
+// request-owned results stay behind an explicit ownership boundary.
 pub fn call_php(name string, args []ZVal) ZVal {
 	return php_fn(name).call(args)
 }

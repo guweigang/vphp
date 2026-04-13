@@ -104,7 +104,8 @@ static const char *vphp_debug_zval_class_name(zval *z) {
   return ZSTR_VAL(ce->name);
 }
 
-static void vphp_debug_log_release_zval(const char *phase, zval *z, int removed) {
+static void vphp_debug_log_release_zval(const char *phase, zval *z,
+                                        int removed) {
   char debug_buf[256];
   int type = -1;
   uint32_t refcount = 0;
@@ -128,28 +129,20 @@ void vphp_convert_to_string(zval *z) {
   }
 }
 
-static char *vphp_capture_new_zval_origin(void) {
-  zend_execute_data *execute_data = EG(current_execute_data);
-  const zend_function *func = execute_data != NULL ? execute_data->func : NULL;
-  const zend_class_entry *scope = func != NULL ? func->common.scope : NULL;
-  const char *file = zend_get_executed_filename();
+static char *vphp_capture_new_zval_origin_ex(int persistent) {
+  zend_string *file = zend_get_executed_filename();
   uint32_t line = zend_get_executed_lineno();
-  const char *func_name =
-      (func != NULL && func->common.function_name != NULL)
-          ? ZSTR_VAL(func->common.function_name)
-          : "(main)";
-  const char *scope_name =
-      (scope != NULL && scope->name != NULL) ? ZSTR_VAL(scope->name) : NULL;
-  char buf[768];
-  int written = 0;
-  char *out = NULL;
+  char buf[256];
+  char *out;
+  int written;
+  const char *func_name = get_active_function_name();
 
-  if (scope_name != NULL) {
-    written = snprintf(buf, sizeof(buf), "%s::%s %s:%u", scope_name, func_name,
-                       file != NULL ? file : "(unknown)", (unsigned)line);
+  if (func_name == NULL) {
+    written = snprintf(buf, sizeof(buf), "%s:%u",
+                       file != NULL ? file->val : "(unknown)", (unsigned)line);
   } else {
     written = snprintf(buf, sizeof(buf), "%s %s:%u", func_name,
-                       file != NULL ? file : "(unknown)", (unsigned)line);
+                       file != NULL ? file->val : "(unknown)", (unsigned)line);
   }
   if (written < 0) {
     return NULL;
@@ -157,13 +150,17 @@ static char *vphp_capture_new_zval_origin(void) {
   if ((size_t)written >= sizeof(buf)) {
     written = (int)sizeof(buf) - 1;
   }
-  out = (char *)emalloc((size_t)written + 1);
+  out = (char *)pemalloc((size_t)written + 1, persistent);
   if (out == NULL) {
     return NULL;
   }
   memcpy(out, buf, (size_t)written);
   out[written] = '\0';
   return out;
+}
+
+static char *vphp_capture_new_zval_origin(void) {
+  return vphp_capture_new_zval_origin_ex(0);
 }
 
 zval *vphp_new_zval() {
@@ -205,23 +202,32 @@ void vphp_release_persistent_zval(zval *z) {
   pefree(z, 1);
 }
 
-void vphp_release_zval(zval *z) {
-  int removed = 0;
+void vphp_release_zval_ex(zval *z, int persistent) {
+  bool removed = false;
   if (!z) {
     return;
   }
-  vphp_debug_log_release_zval("enter", z, 0);
-  removed = vphp_owned_remove(z);
+  removed = vphp_owned_remove_ex(z, persistent);
   if (!removed) {
     vphp_debug_log_release_zval("skip_not_owned", z, 0);
     return;
   }
+  vphp_debug_log_release_zval("enter_owned", z, removed);
+  vphp_autorelease_forget(z);
   vphp_debug_log_release_zval("before_dtor", z, removed);
   zval_ptr_dtor(z);
   vphp_bridge_value_debug_log("vphp_release_zval after_dtor");
-  efree(z);
-  vphp_bridge_value_debug_log("vphp_release_zval after_efree");
+  if (persistent) {
+    pefree(z, 1);
+  } else {
+    efree(z);
+  }
+  vphp_bridge_value_debug_log("vphp_release_zval after_free");
 }
+
+void vphp_release_zval(zval *z) { vphp_release_zval_ex(z, 0); }
+
+void vphp_release_zval_persistent(zval *z) { vphp_release_zval_ex(z, 1); }
 
 void vphp_disown_zval(zval *z) {
   if (z == NULL) {
@@ -429,8 +435,9 @@ void *vphp_fetch_res(zval *z) {
   return wrapper ? wrapper->ptr : NULL;
 }
 
-zval *vphp_read_static_property_compat(const char *class_name, int class_name_len,
-                                       const char *name, int name_len, zval *rv) {
+zval *vphp_read_static_property_compat(const char *class_name,
+                                       int class_name_len, const char *name,
+                                       int name_len, zval *rv) {
   zend_class_entry *ce = vphp_lookup_class_by_name(class_name, class_name_len);
   if (!ce) {
     ZVAL_NULL(rv);
@@ -445,9 +452,9 @@ zval *vphp_read_static_property_compat(const char *class_name, int class_name_le
   return rv;
 }
 
-int vphp_write_static_property_compat(const char *class_name, int class_name_len,
-                                      const char *name, int name_len,
-                                      zval *value) {
+int vphp_write_static_property_compat(const char *class_name,
+                                      int class_name_len, const char *name,
+                                      int name_len, zval *value) {
   zend_class_entry *ce = vphp_lookup_class_by_name(class_name, class_name_len);
   if (!ce) {
     return -1;
@@ -456,12 +463,12 @@ int vphp_write_static_property_compat(const char *class_name, int class_name_len
   return 0;
 }
 
-zval *vphp_read_class_constant_compat(const char *class_name, int class_name_len,
-                                      const char *name, int name_len, zval *rv) {
+zval *vphp_read_class_constant_compat(const char *class_name,
+                                      int class_name_len, const char *name,
+                                      int name_len, zval *rv) {
   zend_string *class_name_str = zend_string_init(class_name, class_name_len, 0);
   zend_string *const_name_str = zend_string_init(name, name_len, 0);
-  zval *constant =
-      vphp_zend_get_class_constant(class_name_str, const_name_str);
+  zval *constant = vphp_zend_get_class_constant(class_name_str, const_name_str);
   zend_string_release(class_name_str);
   zend_string_release(const_name_str);
   if (!constant) {

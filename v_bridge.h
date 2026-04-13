@@ -93,6 +93,8 @@ zval *vphp_new_zval(void);
 zval *vphp_new_persistent_zval(void);
 zval *vphp_new_strl(const char *s, int len);
 void vphp_release_zval(zval *z);
+void vphp_release_zval_ex(zval *z, int persistent);
+void vphp_release_zval_persistent(zval *z);
 void vphp_release_persistent_zval(zval *z);
 void vphp_disown_zval(zval *z);
 int vphp_autorelease_mark(void);

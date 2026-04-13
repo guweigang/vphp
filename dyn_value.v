@@ -1,5 +1,7 @@
 module vphp
 
+type MapDynValue = map[string]DynValue
+
 pub enum DynValueType {
 	null_
 	bool_
@@ -170,14 +172,28 @@ pub fn decode_dyn_value(z ZVal) !DynValue {
 	}
 	if z.is_array() {
 		mut out := map[string]DynValue{}
-		out = z.foreach_with_ctx[map[string]DynValue](out, fn (key ZVal, v ZVal, mut m map[string]DynValue) {
-			decoded := decode_dyn_value(v) or { dyn_value_null() }
-			m[key.to_string()] = decoded
+		mut err_msg := ''
+		z.foreach_with_ctx[voidptr](unsafe { &mut out }, fn [mut err_msg] (key ZVal, v ZVal, mut ctx voidptr) {
+			if err_msg != '' {
+				return
+			}
+			m := unsafe { &MapDynValue(ctx) }
+			decoded := decode_dyn_value(v) or {
+				err_msg = err.msg()
+				return
+			}
+			(*m)[key.to_string()] = decoded
 		})
+		if err_msg != '' {
+			return error(err_msg)
+		}
 		return dyn_value_map(out)
 	}
 	if z.is_object() {
 		ptr := C.vphp_get_v_ptr_from_zval(z.raw)
+		if ptr == 0 {
+			return error('pure PHP object cannot be decoded into DynValue')
+		}
 		return dyn_value_object_ref(ptr)
 	}
 	if z.is_resource() {

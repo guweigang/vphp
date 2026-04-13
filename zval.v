@@ -29,6 +29,10 @@ pub:
 	rev_registry_len u32
 }
 
+fn C.vphp_release_zval(z &C.zval)
+fn C.vphp_release_zval_persistent(z &C.zval)
+fn C.vphp_disown_zval(z &C.zval)
+
 pub struct StreamMetadata {
 pub:
 	mode      string
@@ -537,34 +541,46 @@ pub fn (v ZVal) keys() ZVal {
 		out.array_init()
 		return out
 	}
-	keys := php_fn('array_keys').call([v])
-	if !keys.is_array() {
+	mut out := ZVal.new_null()
+	out.array_init()
+	v.foreach_with_ctx[ZVal](out, fn (key ZVal, _ ZVal, mut acc ZVal) {
+		acc.add_next_val(key)
+	})
+	return out
+}
+
+pub fn (v ZVal) values() ZVal {
+	if !v.is_array() {
 		mut out := ZVal.new_null()
 		out.array_init()
 		return out
 	}
-	return keys
+	mut out := ZVal.new_null()
+	out.array_init()
+	v.foreach_with_ctx[ZVal](out, fn (_ ZVal, val ZVal, mut acc ZVal) {
+		acc.add_next_val(val)
+	})
+	return out
 }
 
 pub fn (v ZVal) keys_string() []string {
-	mut out := []string{}
-	keys := v.keys()
-	for idx := 0; idx < keys.array_count(); idx++ {
-		out << keys.array_get(idx).to_string()
+	if !v.is_array() {
+		return []string{}
 	}
-	return out
+	return v.foreach_with_ctx[[]string]([]string{}, fn (key ZVal, _ ZVal, mut acc []string) {
+		acc << key.to_string()
+	})
 }
 
 pub fn (v ZVal) assoc_keys() []string {
-	mut out := []string{}
-	keys := v.keys()
-	for idx := 0; idx < keys.array_count(); idx++ {
-		key := keys.array_get(idx)
-		if key.is_string() {
-			out << key.get_string()
-		}
+	if !v.is_array() {
+		return []string{}
 	}
-	return out
+	return v.foreach_with_ctx[[]string]([]string{}, fn (key ZVal, _ ZVal, mut acc []string) {
+		if key.is_string() {
+			acc << key.get_string()
+		}
+	})
 }
 
 // 按字符串 key 取值（带错误处理）
@@ -933,16 +949,8 @@ pub fn (v ZVal) const_names() []string {
 	consts := php_class('ReflectionClass').construct([
 		ZVal.new_string(class_name),
 	]).method('getConstants', [])
-	if !consts.is_array() {
-		return []string{}
-	}
-	keys := php_fn('array_keys').call([consts])
-	if !keys.is_array() {
-		return []string{}
-	}
-	mut out := []string{}
-	out = keys.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
-		acc << val.to_string()
+	mut out := consts.foreach_with_ctx[[]string]([]string{}, fn (k ZVal, _ ZVal, mut acc []string) {
+		acc << k.to_string()
 	})
 	out.sort()
 	return out
@@ -1114,7 +1122,7 @@ pub fn (mut v ZVal) release() {
 	autorelease_forget(v.raw)
 	unsafe {
 		if v.is_persistent {
-			C.vphp_release_persistent_zval(v.raw)
+			C.vphp_release_zval_persistent(v.raw)
 		} else {
 			C.vphp_release_zval(v.raw)
 		}
@@ -1654,18 +1662,22 @@ pub fn new_val_string(s string) ZVal {
 
 // 便捷转换：array => map<string,string>（无效/null/undef 返回空 map）
 pub fn (v ZVal) to_string_map() map[string]string {
-	if !v.is_valid() || v.is_null() || v.is_undef() {
+	if !v.is_valid() || v.is_null() || v.is_undef() || !v.is_array() {
 		return map[string]string{}
 	}
-	return v.to_v[map[string]string]() or { map[string]string{} }
+	return v.foreach_with_ctx[map[string]string](map[string]string{}, fn (key ZVal, val ZVal, mut acc map[string]string) {
+		acc[key.to_string()] = val.to_string()
+	})
 }
 
 // 便捷转换：array => []string（无效/null/undef 返回空数组）
 pub fn (v ZVal) to_string_list() []string {
-	if !v.is_valid() || v.is_null() || v.is_undef() {
+	if !v.is_valid() || v.is_null() || v.is_undef() || !v.is_array() {
 		return []string{}
 	}
-	return v.to_v[[]string]() or { []string{} }
+	return v.foreach_with_ctx[[]string]([]string{}, fn (_ ZVal, val ZVal, mut acc []string) {
+		acc << val.to_string()
+	})
 }
 
 // 将 Zend Value 转换为明确的 V 类型（严格校验类型）

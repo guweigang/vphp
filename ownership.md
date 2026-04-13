@@ -195,7 +195,7 @@ Choose in this order:
 | Situation | Preferred wrapper |
 | --- | --- |
 | Read an argument without keeping it | `RequestBorrowedZBox.of(...)` |
-| Call PHP and inspect the result in-place | `with_call_result_zval(...)` / `with_method_result_zval(...)` |
+| Call PHP and inspect the result in-place | `with_call_result_zval(...)` / `with_method_result_zval(...)` / `with_php_call_result_zval(...)` |
 | Call PHP and return/hand off the temporary result | `RequestOwnedZBox.adopt_zval(...)`, `take_zval()` |
 | Store a long-lived value when the type is not known in advance | `PersistentOwnedZBox.of(...)` |
 | Store long-lived scalar / string / list / map data | `PersistentOwnedZBox.new_*()`, `of_data(...)`, `try_of_detached(...)`, `of_mixed(...)` |
@@ -211,6 +211,8 @@ In practice:
 
 - Function parameters should default to borrowed wrappers.
 - PHP call results should default to request-owned wrappers.
+- Global PHP function calls should prefer `with_php_call_result_*` helpers or
+  `php_call_request_owned_box(...)` over carrying a bare `ZVal`.
 - Long-lived struct fields should default to persistent wrappers or retained handles.
 - The scope that creates an owned request value should also release it, unless
   it explicitly transfers ownership onward.
