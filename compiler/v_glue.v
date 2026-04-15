@@ -219,7 +219,11 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 				} else {
 					''
 				}
-				mut em_arity := if em_params.trim_space() == '' { 0 } else { em_params.split(',').len }
+				mut em_arity := if em_params.trim_space() == '' {
+					0
+				} else {
+					em_params.split(',').len
+				}
 				// Cap arity to 4 — runtime supports 0..4
 				if em_arity > 4 {
 					em_arity = 4
@@ -661,11 +665,13 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			} else if arg.v_type == 'Callable' || arg.v_type == 'vphp.Callable' {
 				// Callable is a ZVal alias — read as raw ZVal for callable params
 				out << '    ${var_name} := ctx.arg_raw(${i})'
-			} else if arg.v_type == 'RequestBorrowedZBox' || arg.v_type == 'vphp.RequestBorrowedZBox' {
+			} else if arg.v_type == 'RequestBorrowedZBox'
+				|| arg.v_type == 'vphp.RequestBorrowedZBox' {
 				out << '    ${var_name} := ctx.arg_borrowed_zbox(${i})'
 			} else if arg.v_type == 'RequestOwnedZBox' || arg.v_type == 'vphp.RequestOwnedZBox' {
 				out << '    ${var_name} := ctx.arg_owned_request_zbox(${i})'
-			} else if arg.v_type == 'PersistentOwnedZBox' || arg.v_type == 'vphp.PersistentOwnedZBox' {
+			} else if arg.v_type == 'PersistentOwnedZBox'
+				|| arg.v_type == 'vphp.PersistentOwnedZBox' {
 				out << '    ${var_name} := ctx.arg_owned_persistent_zbox(${i})'
 			} else if arg.v_type.starts_with('?') {
 				out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
@@ -926,13 +932,11 @@ fn is_v_keyword(name string) bool {
 fn (g VGenerator) gen_task_registration(t &repr.PhpTaskRepr) string {
 	mut out := []string{}
 
-	out << "    vphp.ITask.register('${t.task_name}', fn (ctx vphp.Context) vphp.ITask {"
+	out << "    vphp.ITask.register('${t.task_name}', fn (args []vphp.ZVal) vphp.ITask {"
 	out << '        return ${t.v_name}{'
 
 	for i, param in t.parameters {
-		// 参数索引从 1 开始，因为 ctx.arg[0] 被占用来传任务名称了
-		arg_index := i + 1
-		out << '            ${param.name}: ctx.arg[${param.v_type}](${arg_index})'
+		out << '            ${param.name}: args[${i}].to_v[${param.v_type}]() or { ${param.v_type}{} }'
 	}
 
 	out << '        }'

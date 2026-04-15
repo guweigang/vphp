@@ -16,8 +16,8 @@ pub interface ITask {
 	run() TaskResult // 返回动态类型
 }
 
-// Creator 现在直接接收 Context，可以自由提取需要的参数
-type TaskCreator = fn (ctx Context) ITask
+// Creator directly receives already-decoded PHP args.
+type TaskCreator = fn (args []ZVal) ITask
 
 struct TaskRegistry {
 pub mut:
@@ -52,32 +52,125 @@ pub fn ITask.get_creator(name string) ?TaskCreator {
 	return none
 }
 
-// 暴露给 PHP：获取所有已注册的任务名称
-pub fn task_list(ctx Context) {
+pub fn task_exists(name string) bool {
+	r := get_registry()
+	return name in r.tasks
+}
+
+pub fn task_names() []string {
 	r := get_registry()
 	mut names := []string{}
 	for k, _ in r.tasks {
 		names << k
 	}
-	ctx.return_val(names)
+	return names
 }
 
-// 内部实现：Spawn 逻辑
-pub fn task_spawn(ctx Context) {
-	task_name := ctx.arg[string](0)
+pub fn task_spawn_handle(task_name string, args []ZVal) !&AsyncResult {
+	creator := ITask.get_creator(task_name) or { return error('Task ${task_name} not registered') }
 
-	creator := ITask.get_creator(task_name) or {
-		throw_exception('Task $task_name not registered', 0)
-		return
-	}
-
-	task_inst := creator(ctx)
+	task_inst := creator(args)
 	t := spawn task_inst.run()
 
 	unsafe {
 		mut res := &AsyncResult(C.emalloc(usize(sizeof(AsyncResult))))
 		res.handle = t
-		ctx.return_res(res, 'v_task')
+		return res
+	}
+}
+
+pub fn task_wait_result(ptr voidptr) !TaskResult {
+	unsafe {
+		if ptr == nil {
+			return error('Task handle is nil')
+		}
+
+		task := &AsyncResult(ptr)
+		return task.handle.wait()
+	}
+}
+
+pub fn task_release_handle(ptr voidptr) {
+	if ptr == 0 {
+		return
+	}
+	unsafe {
+		C.efree(ptr)
+	}
+}
+
+pub fn task_wait_box(ptr voidptr) RequestOwnedZBox {
+	results := task_wait_result(ptr) or { return RequestOwnedZBox.new_null() }
+
+	match results {
+		string {
+			return RequestOwnedZBox.new_string(results)
+		}
+		int {
+			return RequestOwnedZBox.new_int(i64(results))
+		}
+		i64 {
+			return RequestOwnedZBox.new_int(results)
+		}
+		f64 {
+			return RequestOwnedZBox.new_float(results)
+		}
+		bool {
+			return RequestOwnedZBox.new_bool(results)
+		}
+		[]string {
+			mut out := RequestOwnedZBox.new_null().to_zval()
+			out.array_init()
+			for item in results {
+				out.push_string(item)
+			}
+			return RequestOwnedZBox.adopt_zval(out)
+		}
+		[]int {
+			mut out := RequestOwnedZBox.new_null().to_zval()
+			out.array_init()
+			for item in results {
+				out.push_long(i64(item))
+			}
+			return RequestOwnedZBox.adopt_zval(out)
+		}
+		[]i64 {
+			mut out := RequestOwnedZBox.new_null().to_zval()
+			out.array_init()
+			for item in results {
+				out.push_long(item)
+			}
+			return RequestOwnedZBox.adopt_zval(out)
+		}
+		[]f64 {
+			mut out := RequestOwnedZBox.new_null().to_zval()
+			out.array_init()
+			for item in results {
+				out.push_double(item)
+			}
+			return RequestOwnedZBox.adopt_zval(out)
+		}
+	}
+}
+
+// 暴露给 PHP：获取所有已注册的任务名称
+pub fn task_list(ctx Context) {
+	ctx.return_val(task_names())
+}
+
+// 内部实现：Spawn 逻辑
+pub fn task_spawn(ctx Context) {
+	task_name := ctx.arg[string](0)
+	args := ctx.get_args()
+	task_args := if args.len > 1 { args[1..] } else { []ZVal{} }
+
+	task_ref := task_spawn_handle(task_name, task_args) or {
+		throw_exception(err.msg(), 0)
+		return
+	}
+
+	unsafe {
+		ctx.return_res(task_ref, 'v_task')
 	}
 }
 
@@ -90,22 +183,9 @@ pub fn task_wait(ctx Context) {
 		if ptr == nil {
 			return
 		}
-
-		mut task := &AsyncResult(ptr)
-		results := task.handle.wait()
-		
-		match results {
-			string   { ctx.return_val[string](results) }
-			int      { ctx.return_val[int](results) }
-			i64      { ctx.return_val[i64](results) }
-			f64      { ctx.return_val[f64](results) }
-			bool     { ctx.return_val[bool](results) }
-			[]string { ctx.return_val[[]string](results) }
-			[]int    { ctx.return_val[[]int](results) }
-			[]i64    { ctx.return_val[[]i64](results) }
-			[]f64    { ctx.return_val[[]f64](results) }
-		}
+		ctx.return_zval(task_wait_box(ptr).to_zval())
 	}
 }
 
 fn C.emalloc(size usize) voidptr
+fn C.efree(ptr voidptr)
