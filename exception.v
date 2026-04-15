@@ -50,6 +50,23 @@ pub fn throw_exception_object(mut exception ZVal) {
 	exception.owned = false
 }
 
+pub fn has_exception() bool {
+	return C.vphp_has_exception()
+}
+
+pub fn current_exception_message() string {
+	mut buffer := []u8{len: 2048}
+	written := unsafe { C.vphp_exception_message(&char(&buffer[0]), buffer.len) }
+	if written <= 0 {
+		return ''
+	}
+	return unsafe { (&char(&buffer[0])).vstring_with_len(written).clone() }
+}
+
+pub fn clear_exception() {
+	C.vphp_clear_exception()
+}
+
 // 抛出带稳定错误分类前缀的 PHP 异常
 pub fn throw_interop_error(class InteropErrorClass, msg string, code int) {
 	throw_exception('[${class.str()}] ${msg}', code)

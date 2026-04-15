@@ -9,6 +9,8 @@ module zend
 pub fn C.vphp_get_num_args(ex &C.zend_execute_data) u32
 pub fn C.vphp_get_arg_ptr(ex &C.zend_execute_data, index u32) &C.zval
 pub fn C.vphp_has_exception() bool
+pub fn C.vphp_exception_message(buffer &char, buffer_len int) int
+pub fn C.vphp_clear_exception()
 pub fn C.vphp_get_active_ce(ex &C.zend_execute_data) voidptr
 pub fn C.vphp_get_this_object(ex &C.zend_execute_data) voidptr
 pub fn C.vphp_get_current_this_object() voidptr

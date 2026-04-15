@@ -434,6 +434,40 @@ void vphp_output_write(const char *msg, int len) {
 
 bool vphp_has_exception() { return EG(exception) != NULL; }
 
+int vphp_exception_message(char *buffer, int buffer_len) {
+  if (buffer == NULL || buffer_len <= 0) {
+    return 0;
+  }
+  buffer[0] = '\0';
+  if (EG(exception) == NULL) {
+    return 0;
+  }
+
+  zval rv;
+  zval *message = zend_read_property(EG(exception)->ce, EG(exception), "message",
+                                     sizeof("message") - 1, 1, &rv);
+  if (message == NULL || Z_TYPE_P(message) == IS_UNDEF || Z_TYPE_P(message) == IS_NULL) {
+    return 0;
+  }
+
+  zval copy;
+  ZVAL_COPY(&copy, message);
+  convert_to_string(&copy);
+  int written = snprintf(buffer, (size_t)buffer_len, "%s", Z_STRVAL(copy));
+  zval_ptr_dtor(&copy);
+  if (written < 0) {
+    buffer[0] = '\0';
+    return 0;
+  }
+  return written >= buffer_len ? buffer_len - 1 : written;
+}
+
+void vphp_clear_exception() {
+  if (EG(exception) != NULL) {
+    zend_clear_exception();
+  }
+}
+
 static int vphp_runtime_debug_enabled(void) {
   const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
   if (path != NULL && path[0] != '\0') {
