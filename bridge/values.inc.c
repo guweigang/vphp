@@ -306,6 +306,51 @@ void vphp_array_add_assoc_zval(zval *z, const char *key, zval *val) {
   add_assoc_zval(z, key, val);
 }
 
+static zval *vphp_ensure_superglobal_array(const char *name, size_t len,
+                                           uint32_t track_vars_index) {
+  zval *global = NULL;
+  if (name == NULL || len == 0) {
+    return NULL;
+  }
+  zend_is_auto_global_str((char *)name, len);
+  global = &PG(http_globals)[track_vars_index];
+  if (Z_TYPE_P(global) != IS_ARRAY) {
+    zval_ptr_dtor_nogc(global);
+    array_init(global);
+  }
+  return global;
+}
+
+void vphp_superglobal_set_env_string(const char *key, const char *val) {
+  zval *global = NULL;
+  zval zv;
+  if (key == NULL || val == NULL) {
+    return;
+  }
+  global = vphp_ensure_superglobal_array("_ENV", sizeof("_ENV") - 1,
+                                         TRACK_VARS_ENV);
+  if (global == NULL) {
+    return;
+  }
+  ZVAL_STRING(&zv, val);
+  zend_hash_str_update(Z_ARRVAL_P(global), key, strlen(key), &zv);
+}
+
+void vphp_superglobal_set_server_string(const char *key, const char *val) {
+  zval *global = NULL;
+  zval zv;
+  if (key == NULL || val == NULL) {
+    return;
+  }
+  global = vphp_ensure_superglobal_array("_SERVER", sizeof("_SERVER") - 1,
+                                         TRACK_VARS_SERVER);
+  if (global == NULL) {
+    return;
+  }
+  ZVAL_STRING(&zv, val);
+  zend_hash_str_update(Z_ARRVAL_P(global), key, strlen(key), &zv);
+}
+
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item) {
   if (main_array == NULL || sub_item == NULL) {
     return;

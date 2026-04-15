@@ -80,6 +80,8 @@ pub fn C.vphp_array_add_assoc_double(res &C.zval, key &char, val f64)
 pub fn C.vphp_array_add_assoc_long(res &C.zval, key &char, val i64)
 pub fn C.vphp_array_add_assoc_bool(res &C.zval, key &char, val int)
 pub fn C.vphp_array_add_assoc_zval(z &C.zval, key &char, val &C.zval)
+pub fn C.vphp_superglobal_set_env_string(key &char, val &char)
+pub fn C.vphp_superglobal_set_server_string(key &char, val &char)
 pub fn C.vphp_array_each(z &C.zval, ctx voidptr, cb voidptr)
 pub fn C.vphp_array_foreach(z &C.zval, ctx voidptr, cb voidptr)
 
