@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend
+import vphp.zend as _
 
 pub fn write_output(msg string) {
 	if msg.len == 0 {
