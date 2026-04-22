@@ -107,12 +107,23 @@ fn render_method_arginfo_header(c_func string, php_name string, required_args in
 		return_obj_type, type_info)
 }
 
-fn render_arginfo_arg_line(arg_name string, raw_type string) string {
+fn render_php_default_value_literal(default_value string) string {
+	if default_value == '' {
+		return 'NULL'
+	}
+	return '"${c_string_escape(default_value)}"'
+}
+
+fn render_arginfo_arg_line(arg_name string, raw_type string, default_value string) string {
 	arg_info := arg_type_info(raw_type)
+	default_literal := render_php_default_value_literal(default_value)
 	if is_class_literal_type(raw_type) {
-		return '{ "${arg_name}", ${render_class_type_init_literal(raw_type)}, NULL },'
+		return '{ "${arg_name}", ${render_class_type_init_literal(raw_type)}, ${default_literal} },'
 	}
 	if arg_info.code == 'IS_CALLABLE' {
+		if default_value != '' {
+			return '{ "${arg_name}", ZEND_TYPE_INIT_CODE(IS_CALLABLE, 0, _ZEND_ARG_INFO_FLAGS(0, 0, 0)), ${default_literal} },'
+		}
 		return 'ZEND_ARG_CALLABLE_INFO(0, ${arg_name}, 0)'
 	}
 	if arg_info.mask_obj_class != '' {
@@ -120,18 +131,24 @@ fn render_arginfo_arg_line(arg_name string, raw_type string) string {
 		if arg_info.allow_null {
 			mask += '|MAY_BE_NULL'
 		}
-		return 'ZEND_ARG_OBJ_TYPE_MASK(0, ${arg_name}, ${arg_info.mask_obj_class}, ${mask}, NULL)'
+		return 'ZEND_ARG_OBJ_TYPE_MASK(0, ${arg_name}, ${arg_info.mask_obj_class}, ${mask}, ${default_literal})'
 	}
 	if arg_info.mask != '' {
 		mut mask := arg_info.mask
 		if arg_info.allow_null {
 			mask += '|MAY_BE_NULL'
 		}
-		return 'ZEND_ARG_TYPE_MASK(0, ${arg_name}, ${mask}, NULL)'
+		return 'ZEND_ARG_TYPE_MASK(0, ${arg_name}, ${mask}, ${default_literal})'
 	}
 	if arg_info.code != '' {
 		allow_null := if arg_info.allow_null { '1' } else { '0' }
+		if default_value != '' {
+			return 'ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, ${arg_name}, ${arg_info.code}, ${allow_null}, ${default_literal})'
+		}
 		return 'ZEND_ARG_TYPE_INFO(0, ${arg_name}, ${arg_info.code}, ${allow_null})'
+	}
+	if default_value != '' {
+		return 'ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, ${arg_name}, ${default_literal})'
 	}
 	return 'ZEND_ARG_INFO(0, ${arg_name})'
 }

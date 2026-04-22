@@ -310,7 +310,8 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 		return
 	}
 	start_idx := if stmt.is_method { 1 } else { 0 }
-	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_optional_args)
+	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_optional_args,
+		attrs.php_arg_defaults)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	inferred_borrowed := infer_borrowed_object_return(stmt, table, field_types, borrowed_methods,
@@ -341,7 +342,8 @@ pub fn add_class_static_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table
 	if !attrs.has_php_callable {
 		return
 	}
-	args := build_php_args(stmt.params, table, 0, attrs.php_arg_types, attrs.php_optional_args)
+	args := build_php_args(stmt.params, table, 0, attrs.php_arg_types, attrs.php_optional_args,
+		attrs.php_arg_defaults)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	cls.methods << repr.PhpMethodRepr{

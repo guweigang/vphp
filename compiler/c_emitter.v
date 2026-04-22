@@ -35,6 +35,7 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 			type_:       arg.v_type
 			php_type:    arg.php_type
 			is_optional: arg.is_optional
+			php_default: arg.php_default
 		}
 	}
 	spec := g.build_func_return_spec(f)
@@ -118,6 +119,7 @@ fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
 			type_:       arg.v_type
 			php_type:    php_type
 			is_optional: arg.is_optional
+			php_default: arg.php_default
 		}
 	}
 	return out
@@ -136,6 +138,7 @@ fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.P
 			type_:       arg.v_type
 			php_type:    arg.php_type
 			is_optional: arg.is_optional
+			php_default: arg.php_default
 		}
 	}
 	return out

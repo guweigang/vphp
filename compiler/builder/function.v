@@ -49,7 +49,7 @@ pub fn (b &FuncBuilder) render_arginfo() string {
 	for arg in b.args {
 		raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 		validate_php_arg_type_or_panic(raw_type, arg.name, b.php_name)
-		res << render_arginfo_arg_line(arg.name, raw_type)
+		res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default)
 	}
 	res << 'ZEND_END_ARG_INFO()'
 	return res.join('\n')

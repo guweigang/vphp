@@ -36,6 +36,7 @@ pub:
 	type_       string
 	php_type    string
 	is_optional bool
+	php_default string
 }
 
 pub struct ClassAttributeArg {
@@ -445,7 +446,7 @@ pub fn (b &ClassBuilder) render_arginfo_defs() string {
 		for arg in m.args {
 			raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 			validate_php_arg_type_or_panic(raw_type, arg.name, m.php_name)
-			res << render_arginfo_arg_line(arg.name, raw_type)
+			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default)
 		}
 		res << 'ZEND_END_ARG_INFO()'
 	}

@@ -73,6 +73,7 @@ pub mut:
 	v_type      string
 	php_type    string
 	is_optional bool
+	php_default string
 }
 
 pub struct PhpAttributeRepr {
