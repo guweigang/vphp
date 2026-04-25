@@ -119,12 +119,12 @@ signatures. Prefer these over parameter-name heuristics.
   supports multiple `name=type` entries in one attribute.
 - `@[php_arg_default: 'default_status=200,default_reason_phrase=""']`
   records PHP reflection default values for optional parameters.
-- `@[php_optional_args: 'default_status,default_reason_phrase']`
+- `@[php_arg_optional: 'default_status,default_reason_phrase']`
   marks trailing PHP-optional parameters explicitly.
 
 Notes:
 
-- `php_optional_args` only changes PHP required-arg counts / arginfo shape.
+- `php_arg_optional` only changes PHP required-arg counts / arginfo shape.
   It does not synthesize V default-value behavior.
 - `php_arg_default` only affects PHP arginfo / reflection metadata.
   It does not change runtime behavior by itself.

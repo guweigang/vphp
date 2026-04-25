@@ -8,6 +8,9 @@ pub fn parse_task_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpTaskRepr {
 		return none
 	}
 	struct_decl := stmt as ast.StructDecl
+	if struct_decl.attrs.any(it.name == 'php_ignore') {
+		return none
+	}
 	mut task := repr.new_task_repr()
 	if !struct_decl.attrs.any(it.name == 'php_task') {
 		return none

@@ -8,6 +8,9 @@ pub fn parse_constant_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpConstRepr 
 		return none
 	}
 	const_decl := stmt as ast.ConstDecl
+	if const_decl.attrs.any(it.name == 'php_ignore') {
+		return none
+	}
 	mut con := repr.new_const_repr()
 	con.has_php_const = const_decl.attrs.any(it.name == 'php_const')
 

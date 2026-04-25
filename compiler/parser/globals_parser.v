@@ -8,6 +8,9 @@ pub fn parse_globals_decl(stmt ast.Stmt, table &ast.Table) ?repr.PhpGlobalsRepr 
 		return none
 	}
 	struct_decl := stmt as ast.StructDecl
+	if struct_decl.attrs.any(it.name == 'php_ignore') {
+		return none
+	}
 	mut globals_repr := repr.PhpGlobalsRepr{}
 	if !struct_decl.attrs.any(it.name == 'php_globals') {
 		return none

@@ -44,6 +44,7 @@ pub:
 pub struct PhpClassProp {
 pub:
 	name             string
+	v_field_name     string
 	v_type           string // V 端的原始类型，如 'int', 'string', 'bool'
 	visibility       string // 'public', 'protected', 'private'
 	is_static        bool
@@ -70,6 +71,7 @@ pub mut:
 pub struct PhpArg {
 pub mut:
 	name        string
+	v_name      string
 	v_type      string
 	php_type    string
 	is_optional bool

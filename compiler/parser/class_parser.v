@@ -52,6 +52,24 @@ fn parse_php_arg_types(raw string) map[string]string {
 	return out
 }
 
+fn parse_php_prop_map(raw string) map[string]string {
+	mut out := map[string]string{}
+	for part in raw.split(',') {
+		entry := part.trim_space()
+		if entry == '' {
+			continue
+		}
+		if idx := entry.index('=') {
+			v_field_name := entry[..idx].trim_space()
+			php_prop_name := normalize_attr_value(entry[idx + 1..])
+			if v_field_name != '' && php_prop_name != '' {
+				out[v_field_name] = php_prop_name
+			}
+		}
+	}
+	return out
+}
+
 fn parse_php_prop_attr(raw string) ?repr.PhpClassProp {
 	value := normalize_attr_value(raw)
 	if value == '' {
@@ -68,6 +86,7 @@ fn parse_php_prop_attr(raw string) ?repr.PhpClassProp {
 	}
 	return repr.PhpClassProp{
 		name:             name
+		v_field_name:     name
 		v_type:           if v_type == '' { 'mixed' } else { v_type }
 		visibility:       'public'
 		is_static:        false
@@ -225,6 +244,9 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 		return none
 	}
 	struct_decl := stmt as ast.StructDecl
+	if struct_decl.attrs.any(it.name == 'php_ignore') {
+		return none
+	}
 	mut cls := repr.new_class_repr()
 	if !struct_decl.attrs.any(it.name == 'php_class' || it.name == 'php_trait') {
 		return none
@@ -240,6 +262,7 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 	if attr := struct_decl.attrs.find_first('php_extends') {
 		cls.parent = normalize_attr_value(attr.arg)
 	}
+	mut php_prop_map := map[string]string{}
 	for attr in struct_decl.attrs {
 		if attr.name == 'php_const' {
 			cls.shadow_const_name = attr.arg
@@ -256,6 +279,10 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 		} else if attr.name == 'php_attr' {
 			if php_attr := parse_php_attr(attr.arg) {
 				cls.attributes << php_attr
+			}
+		} else if attr.name == 'php_prop_map' {
+			for v_field_name, php_prop_name in parse_php_prop_map(attr.arg) {
+				php_prop_map[v_field_name] = php_prop_name
 			}
 		}
 	}
@@ -274,8 +301,24 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 		}
 	}
 	for field in struct_decl.fields {
+		if field.attrs.any(it.name == 'php_ignore') {
+			continue
+		}
 		type_name := table.get_type_name(field.typ)
 		mut is_static := field.attrs.any(it.name == 'php_static')
+		mut php_prop_name := php_prop_map[field.name] or { field.name }
+		if attr := field.attrs.find_first('php_prop') {
+			normalized := normalize_attr_value(attr.arg)
+			if normalized != '' {
+				php_prop_name = normalized
+			}
+		}
+		if attr := field.attrs.find_first('php_prop_name') {
+			normalized := normalize_attr_value(attr.arg)
+			if normalized != '' {
+				php_prop_name = normalized
+			}
+		}
 		if !is_static {
 			for comment in field.comments {
 				if comment.text.contains('@[php_static]') {
@@ -284,9 +327,23 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 				}
 			}
 		}
+		if php_prop_name == field.name {
+			for comment in field.comments {
+				text := comment.text
+				start := text.index('@[php_prop_name:') or { continue }
+				rest := text[start + '@[php_prop_name:'.len..]
+				end := rest.index(']') or { continue }
+				normalized := normalize_attr_value(rest[..end])
+				if normalized != '' {
+					php_prop_name = normalized
+					break
+				}
+			}
+		}
 
 		cls.properties << repr.PhpClassProp{
-			name:             field.name
+			name:             php_prop_name
+			v_field_name:     field.name
 			v_type:           type_name
 			visibility:       if field.is_pub { 'public' } else { 'protected' }
 			is_static:        is_static
@@ -310,8 +367,8 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 		return
 	}
 	start_idx := if stmt.is_method { 1 } else { 0 }
-	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_optional_args,
-		attrs.php_arg_defaults)
+	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_arg_names,
+		attrs.php_arg_optional, attrs.php_arg_defaults)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	inferred_borrowed := infer_borrowed_object_return(stmt, table, field_types, borrowed_methods,
@@ -342,8 +399,8 @@ pub fn add_class_static_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table
 	if !attrs.has_php_callable {
 		return
 	}
-	args := build_php_args(stmt.params, table, 0, attrs.php_arg_types, attrs.php_optional_args,
-		attrs.php_arg_defaults)
+	args := build_php_args(stmt.params, table, 0, attrs.php_arg_types, attrs.php_arg_names,
+		attrs.php_arg_optional, attrs.php_arg_defaults)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	cls.methods << repr.PhpMethodRepr{

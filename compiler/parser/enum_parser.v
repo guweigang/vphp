@@ -8,6 +8,9 @@ pub fn parse_enum_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpEnumRepr {
 		return none
 	}
 	enum_decl := stmt as ast.EnumDecl
+	if enum_decl.attrs.any(it.name == 'php_ignore') {
+		return none
+	}
 	mut enum_repr := repr.new_enum_repr()
 	if !enum_decl.attrs.any(it.name == 'php_enum') {
 		return none

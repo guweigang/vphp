@@ -9,9 +9,10 @@ mut:
 	has_php_callable  bool
 	php_name          string
 	php_arg_types     map[string]string
+	php_arg_names     map[string]string
 	php_arg_defaults  map[string]string
 	php_return_type   string
-	php_optional_args map[string]bool
+	php_arg_optional  map[string]bool
 	borrowed_return   bool
 	is_abstract       bool
 }
@@ -104,6 +105,11 @@ fn parse_callable_attrs(attrs []ast.Attr, callable_attr_name string, default_nam
 		php_name: default_name
 	}
 	for attr in attrs {
+		if attr.name == 'php_ignore' {
+			return ParsedCallableAttrs{
+				php_name: default_name
+			}
+		}
 		if attr.name == callable_attr_name {
 			parsed.has_php_callable = true
 			if attr.arg != '' {
@@ -125,15 +131,21 @@ fn parse_callable_attrs(attrs []ast.Attr, callable_attr_name string, default_nam
 			}
 			continue
 		}
+		if attr.name == 'php_arg_name' && attr.arg != '' {
+			for arg_name, php_arg_name in parse_php_arg_name_values(attr.arg) {
+				parsed.php_arg_names[arg_name] = normalize_attr_value(php_arg_name)
+			}
+			continue
+		}
 		if attr.name == 'php_arg_default' && attr.arg != '' {
 			for arg_name, default_value in parse_php_arg_name_values(attr.arg) {
 				parsed.php_arg_defaults[arg_name] = default_value
 			}
 			continue
 		}
-		if attr.name == 'php_optional_args' && attr.arg != '' {
+		if attr.name == 'php_arg_optional' && attr.arg != '' {
 			for arg_name in parse_attr_list(attr.arg) {
-				parsed.php_optional_args[arg_name] = true
+				parsed.php_arg_optional[arg_name] = true
 			}
 			continue
 		}
@@ -166,12 +178,13 @@ fn parse_php_arg_name_values(raw string) map[string]string {
 	return out
 }
 
-fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides map[string]string, optional map[string]bool, defaults map[string]string) []repr.PhpArg {
+fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides map[string]string, names map[string]string, optional map[string]bool, defaults map[string]string) []repr.PhpArg {
 	mut args := []repr.PhpArg{}
 	for i := start_idx; i < params.len; i++ {
 		param := params[i]
 		args << repr.PhpArg{
-			name:        param.name
+			name:        names[param.name] or { param.name }
+			v_name:      param.name
 			v_type:      strip_module(table.type_to_str(param.typ))
 			php_type:    overrides[param.name] or { '' }
 			is_optional: param.name in optional

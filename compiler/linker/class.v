@@ -191,7 +191,7 @@ pub fn validate_inherited_object_classes(elements []repr.PhpRepr) ! {
 			if prop.is_property_only || prop.is_static || is_inherited_object_safe_property_type(prop.v_type) {
 				continue
 			}
-			return error('class `${cls.name}` extends a PHP internal object layout via `${cls.parent}` and cannot embed `${prop.v_type}` field `${prop.name}` in its V struct; keep complex state in PHP properties and access it through property helpers instead')
+			return error('class `${cls.name}` extends a PHP internal object layout via `${cls.parent}` and cannot embed `${prop.v_type}` field `${prop.v_field_name}` in its V struct; keep complex state in PHP properties and access it through property helpers instead')
 		}
 	}
 }
@@ -258,6 +258,7 @@ fn link_class_shadow_statics(mut cls repr.PhpClassRepr, elements []repr.PhpRepr,
 					for field in sym_info.fields {
 						cls.properties << repr.PhpClassProp{
 							name: field.name
+							v_field_name: field.name
 							v_type: table.get_type_name(field.typ)
 							visibility: 'public'
 							is_static: true

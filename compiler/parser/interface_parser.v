@@ -8,6 +8,9 @@ pub fn parse_interface_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpInterface
 		return none
 	}
 	interface_decl := stmt as ast.InterfaceDecl
+	if interface_decl.attrs.any(it.name == 'php_ignore') {
+		return none
+	}
 	mut iface := repr.new_interface_repr()
 	if !interface_decl.attrs.any(it.name == 'php_interface') {
 		return none

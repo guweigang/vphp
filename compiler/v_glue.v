@@ -316,7 +316,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 		} else {
 			out << '    mut recv := ${r.name}{'
 			for prop in zval_fields {
-				out << '        ${prop.name}: vphp.ZVal.new_null()'
+				out << '        ${prop.v_field_name}: vphp.ZVal.new_null()'
 			}
 			out << '    }'
 		}
@@ -341,27 +341,27 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			match prop.v_type {
 				'string' {
 					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.name} = value_${prop.name}.to_string()'
+					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_string()'
 					out << '        }'
 				}
 				'int' {
 					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.name} = int(value_${prop.name}.to_i64())'
+					out << '            recv.${prop.v_field_name} = int(value_${prop.name}.to_i64())'
 					out << '        }'
 				}
 				'i64' {
 					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.name} = value_${prop.name}.to_i64()'
+					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_i64()'
 					out << '        }'
 				}
 				'bool' {
 					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.name} = value_${prop.name}.to_bool()'
+					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_bool()'
 					out << '        }'
 				}
 				'f64' {
 					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.name} = value_${prop.name}.to_f64()'
+					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_f64()'
 					out << '        }'
 				}
 				'vphp.ZVal', 'ZVal' {}
@@ -387,19 +387,19 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			}
 			match prop.v_type {
 				'string' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_string(recv.${prop.name}).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_string(recv.${prop.v_field_name}).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				'int', 'i64' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_int(i64(recv.${prop.name})).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_int(i64(recv.${prop.v_field_name})).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				'bool' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_bool(recv.${prop.name}).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_bool(recv.${prop.v_field_name}).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				'f64' {
-					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_float(recv.${prop.name}).to_zval()'
+					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_float(recv.${prop.v_field_name}).to_zval()'
 					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
 				}
 				else {}
@@ -449,31 +449,31 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			match prop.v_type {
 				'string' {
 					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.name})'
+					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
 					out << '            return'
 					out << '        }'
 				}
 				'int' {
 					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, i64(obj.${prop.name}))'
+					out << '            vphp.return_val_raw(rv, i64(obj.${prop.v_field_name}))'
 					out << '            return'
 					out << '        }'
 				}
 				'i64' {
 					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.name})'
+					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
 					out << '            return'
 					out << '        }'
 				}
 				'bool' {
 					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.name})'
+					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
 					out << '            return'
 					out << '        }'
 				}
 				'f64' {
 					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.name})'
+					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
 					out << '            return'
 					out << '        }'
 				}
@@ -505,31 +505,31 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			match prop.v_type {
 				'string' {
 					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.name} = arg.get_string()'
+					out << '            obj.${prop.v_field_name} = arg.get_string()'
 					out << '            return'
 					out << '        }'
 				}
 				'int' {
 					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.name} = int(arg.get_int())'
+					out << '            obj.${prop.v_field_name} = int(arg.get_int())'
 					out << '            return'
 					out << '        }'
 				}
 				'i64' {
 					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.name} = arg.get_int()'
+					out << '            obj.${prop.v_field_name} = arg.get_int()'
 					out << '            return'
 					out << '        }'
 				}
 				'bool' {
 					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.name} = arg.get_bool()'
+					out << '            obj.${prop.v_field_name} = arg.get_bool()'
 					out << '            return'
 					out << '        }'
 				}
 				'f64' {
 					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.name} = C.vphp_get_double(value)'
+					out << '            obj.${prop.v_field_name} = C.vphp_get_double(value)'
 					out << '            return'
 					out << '        }'
 				}
@@ -556,16 +556,16 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			}
 			match prop.v_type {
 				'string' {
-					out << "        out.add_property_string('${prop.name}', obj.${prop.name})"
+					out << "        out.add_property_string('${prop.name}', obj.${prop.v_field_name})"
 				}
 				'int', 'i64' {
-					out << "        out.add_property_long('${prop.name}', i64(obj.${prop.name}))"
+					out << "        out.add_property_long('${prop.name}', i64(obj.${prop.v_field_name}))"
 				}
 				'f64' {
-					out << "        out.add_property_double('${prop.name}', obj.${prop.name})"
+					out << "        out.add_property_double('${prop.name}', obj.${prop.v_field_name})"
 				}
 				'bool' {
-					out << "        out.add_property_bool('${prop.name}', obj.${prop.name})"
+					out << "        out.add_property_bool('${prop.name}', obj.${prop.v_field_name})"
 				}
 				else {}
 			}
