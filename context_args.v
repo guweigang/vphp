@@ -42,6 +42,14 @@ pub fn (ctx Context) arg_borrowed_zbox(index int) RequestBorrowedZBox {
 	return RequestBorrowedZBox.of(ctx.arg_raw(index))
 }
 
+pub fn (ctx Context) arg_borrowed_zbox_opt(index int) ?RequestBorrowedZBox {
+	val := ctx.arg_raw(index)
+	if !val.is_valid() || val.is_null() || val.is_undef() {
+		return none
+	}
+	return RequestBorrowedZBox.of(val)
+}
+
 pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
 	return ctx.arg_borrowed_zbox(index)
 }

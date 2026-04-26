@@ -182,13 +182,15 @@ fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides
 	mut args := []repr.PhpArg{}
 	for i := start_idx; i < params.len; i++ {
 		param := params[i]
+		v_type := strip_module(table.type_to_str(param.typ))
+		inferred_optional := v_type.starts_with('?')
 		args << repr.PhpArg{
 			name:        names[param.name] or { param.name }
 			v_name:      param.name
-			v_type:      strip_module(table.type_to_str(param.typ))
+			v_type:      v_type
 			php_type:    overrides[param.name] or { '' }
-			is_optional: param.name in optional
-			php_default: defaults[param.name] or { '' }
+			is_optional: param.name in optional || inferred_optional
+			php_default: defaults[param.name] or { if inferred_optional { 'null' } else { '' } }
 		}
 	}
 	return args

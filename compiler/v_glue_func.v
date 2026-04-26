@@ -33,6 +33,8 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 			false)
 		{
 			out << semantic_arg_lines
+		} else if arg.v_type == '?RequestBorrowedZBox' || arg.v_type == '?vphp.RequestBorrowedZBox' {
+			out << '    ${var_name} := ctx.arg_borrowed_zbox_opt(${i})'
 		} else if arg.v_type.starts_with('?') {
 			out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
 		} else if arg.v_type.starts_with('&') {
