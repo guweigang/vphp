@@ -4,6 +4,17 @@ pub struct PhpClass {
 	class_name string
 }
 
+pub struct PhpClassMeta {
+pub:
+	name           string
+	namespace_name string
+	short_name     string
+	parent_name    string
+	interfaces     []string
+	is_internal    bool
+	is_user        bool
+}
+
 pub fn PhpClass.named(name string) PhpClass {
 	return PhpClass{
 		class_name: name
@@ -35,6 +46,30 @@ pub fn (c PhpClass) namespace_name() string {
 
 pub fn (c PhpClass) short_name() string {
 	return c.to_zval().short_name()
+}
+
+pub fn (c PhpClass) parent_name() string {
+	return c.to_zval().parent_class_name()
+}
+
+pub fn (c PhpClass) is_internal() bool {
+	return c.to_zval().is_internal_class()
+}
+
+pub fn (c PhpClass) is_user() bool {
+	return c.exists() && !c.is_internal()
+}
+
+pub fn (c PhpClass) meta() PhpClassMeta {
+	return PhpClassMeta{
+		name:           c.name()
+		namespace_name: c.namespace_name()
+		short_name:     c.short_name()
+		parent_name:    c.parent_name()
+		interfaces:     c.interface_names()
+		is_internal:    c.is_internal()
+		is_user:        c.is_user()
+	}
 }
 
 pub fn (c PhpClass) interface_names() []string {
