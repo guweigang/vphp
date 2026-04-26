@@ -1,7 +1,7 @@
 module vphp
 
 pub struct PhpClosure {
-	callable ZVal
+	callable RequestBorrowedZBox
 }
 
 pub struct PersistentPhpClosure {
@@ -14,7 +14,7 @@ pub fn PhpClosure.from_zval(z ZVal) ?PhpClosure {
 		return none
 	}
 	return PhpClosure{
-		callable: z
+		callable: RequestBorrowedZBox.from_zval(z)
 	}
 }
 
@@ -39,12 +39,12 @@ pub fn PhpClosure.must_from_zval(z ZVal) !PhpClosure {
 
 pub fn (c PhpClosure) to_persistent() PersistentPhpClosure {
 	return PersistentPhpClosure{
-		callable: PersistentOwnedZBox.of_callable(c.callable)
+		callable: PersistentOwnedZBox.of_callable(c.callable.to_zval())
 	}
 }
 
 pub fn (c PhpClosure) to_zval() ZVal {
-	return c.callable
+	return c.callable.to_zval()
 }
 
 pub fn (c PhpClosure) is_callable() bool {
@@ -52,15 +52,15 @@ pub fn (c PhpClosure) is_callable() bool {
 }
 
 pub fn (c PhpClosure) call(args []ZVal) ZVal {
-	return c.callable.call(args)
+	return c.callable.to_zval().call(args)
 }
 
 pub fn (c PhpClosure) call_owned_request(args []ZVal) ZVal {
-	return c.callable.call_owned_request(args)
+	return c.callable.to_zval().call_owned_request(args)
 }
 
 pub fn (c PhpClosure) call_owned_persistent(args []ZVal) ZVal {
-	return c.callable.call_owned_persistent(args)
+	return c.callable.to_zval().call_owned_persistent(args)
 }
 
 pub fn (c PhpClosure) invoke(args []ZVal) ZVal {
