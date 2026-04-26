@@ -216,7 +216,7 @@ In practice:
 
 - Function parameters should default to borrowed wrappers.
 - PHP call results should default to request-owned wrappers.
-- Global PHP function calls should prefer `php_call_string/bool/i64`,
+- Global PHP function calls should prefer `php_call_result_string/bool/i64`,
   `with_php_call_result_zval(...)`, or `php_call_request_owned_box(...)` over
   carrying a bare `ZVal`.
 - Long-lived struct fields should default to persistent wrappers or retained handles.
