@@ -45,5 +45,5 @@ pub fn (i PhpIterable) key_strings() []string {
 }
 
 pub fn (i PhpIterable) to_dyn() !DynValue {
-	return decode_dyn_value(i.to_zval())
+	return DynValue.from_zval(i.to_zval())
 }

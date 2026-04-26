@@ -139,7 +139,7 @@ pub fn (v PhpValue) to_v[T]() !T {
 }
 
 pub fn (v PhpValue) to_dyn() !DynValue {
-	return decode_dyn_value(v.to_zval())
+	return DynValue.from_zval(v.to_zval())
 }
 
 pub fn (v PhpValue) as_null() ?PhpNull {
@@ -229,7 +229,7 @@ pub fn (v PersistentPhpValue) to_dyn() !DynValue {
 	defer {
 		temp.release()
 	}
-	return decode_dyn_value(temp.to_zval())
+	return DynValue.from_zval(temp.to_zval())
 }
 
 pub fn (v PersistentPhpValue) with_array[T](run fn (PhpArray) T) ?T {

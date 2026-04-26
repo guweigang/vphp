@@ -109,11 +109,21 @@ pub fn dyn_value_resource_ref(ptr voidptr) DynValue {
 
 pub fn (v DynValue) clone() DynValue {
 	return match v.type {
-		.null_ { dyn_value_null() }
-		.bool_ { dyn_value_bool(v.bool_value()) }
-		.int_ { dyn_value_int(v.int_value()) }
-		.float_ { dyn_value_float(v.float_value()) }
-		.string_ { dyn_value_string(v.string_value()) }
+		.null_ {
+			dyn_value_null()
+		}
+		.bool_ {
+			dyn_value_bool(v.bool_value())
+		}
+		.int_ {
+			dyn_value_int(v.int_value())
+		}
+		.float_ {
+			dyn_value_float(v.float_value())
+		}
+		.string_ {
+			dyn_value_string(v.string_value())
+		}
 		.list_ {
 			mut out := []DynValue{cap: v.list.len}
 			for item in v.list {
@@ -128,8 +138,12 @@ pub fn (v DynValue) clone() DynValue {
 			}
 			dyn_value_map(out)
 		}
-		.object_ref { dyn_value_object_ref(v.pointer_value()) }
-		.resource_ref { dyn_value_resource_ref(v.pointer_value()) }
+		.object_ref {
+			dyn_value_object_ref(v.pointer_value())
+		}
+		.resource_ref {
+			dyn_value_resource_ref(v.pointer_value())
+		}
 	}
 }
 
@@ -153,8 +167,8 @@ pub fn (v DynValue) pointer_value() voidptr {
 	return unsafe { v.data.ptr }
 }
 
-// decode_dyn_value detaches a ZVal into a plain dynamic value tree.
-pub fn decode_dyn_value(z ZVal) !DynValue {
+// from_zval detaches a ZVal into a plain dynamic value tree.
+pub fn DynValue.from_zval(z ZVal) !DynValue {
 	if !z.is_valid() || z.is_null() || z.is_undef() {
 		return dyn_value_null()
 	}
@@ -178,7 +192,7 @@ pub fn decode_dyn_value(z ZVal) !DynValue {
 				return
 			}
 			m := unsafe { &MapDynValue(ctx) }
-			decoded := decode_dyn_value(v) or {
+			decoded := DynValue.from_zval(v) or {
 				err_msg = err.msg()
 				return
 			}
@@ -202,8 +216,8 @@ pub fn decode_dyn_value(z ZVal) !DynValue {
 	return error('unsupported zval type: ${z.type_name()}')
 }
 
-// encode_dyn_value writes a detached dynamic value tree back into a ZVal.
-pub fn encode_dyn_value(v DynValue, mut out ZVal) ! {
+// to_zval writes a detached dynamic value tree back into an existing ZVal.
+pub fn (v DynValue) to_zval(mut out ZVal) ! {
 	match v.type {
 		.null_ {
 			out.set_null()
@@ -235,7 +249,7 @@ pub fn encode_dyn_value(v DynValue, mut out ZVal) ! {
 				mut sub := ZVal{
 					raw: &sub_raw
 				}
-				encode_dyn_value(item, mut sub)!
+				item.to_zval(mut sub)!
 				out.add_next_val(sub)
 			}
 		}
@@ -246,7 +260,7 @@ pub fn encode_dyn_value(v DynValue, mut out ZVal) ! {
 				mut sub := ZVal{
 					raw: &sub_raw
 				}
-				encode_dyn_value(item, mut sub)!
+				item.to_zval(mut sub)!
 				C.vphp_array_add_assoc_zval(out.raw, &char(k.str), sub.raw)
 			}
 		}
@@ -259,7 +273,7 @@ pub fn encode_dyn_value(v DynValue, mut out ZVal) ! {
 	}
 }
 
-pub fn new_zval_from_dyn_value(v DynValue) !ZVal {
+pub fn (v DynValue) new_zval() !ZVal {
 	framework_debug_log('dyn_value.new_zval enter type=${v.type}')
 	mut out := ZVal{
 		raw:   C.vphp_new_zval()
@@ -267,7 +281,7 @@ pub fn new_zval_from_dyn_value(v DynValue) !ZVal {
 	}
 	autorelease_add(out.raw)
 	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw)}')
-	encode_dyn_value(v, mut out)!
+	v.to_zval(mut out)!
 	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw)} valid=${out.is_valid()} type=${out.type_name()}')
 	return out
 }

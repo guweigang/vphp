@@ -114,7 +114,7 @@ pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 			return persistent_owned_retained_object_box(retained)
 		}
 	}
-	if dyn := decode_dyn_value(z) {
+	if dyn := DynValue.from_zval(z) {
 		if dyn_value_is_persistent_safe(dyn) {
 			return persistent_owned_dyn_box(dyn)
 		}
@@ -187,7 +187,7 @@ pub fn PersistentOwnedZBox.of_data(value DynValue) PersistentOwnedZBox {
 }
 
 pub fn PersistentOwnedZBox.from_detached_zval(z ZVal) ?PersistentOwnedZBox {
-	detached := decode_dyn_value(z) or { return none }
+	detached := DynValue.from_zval(z) or { return none }
 	if !dyn_value_is_persistent_safe(detached) {
 		return none
 	}

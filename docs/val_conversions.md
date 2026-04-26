@@ -151,8 +151,8 @@ arg := ctx.arg_any_zbox(0)
 For detached dynamic payloads, use `DynValue`:
 
 ```v
-dyn := decode_dyn_value(ctx.arg_raw(0))!
-z := new_zval_from_dyn_value(dyn)!
+dyn := DynValue.from_zval(ctx.arg_raw(0))!
+z := dyn.new_zval()!
 ctx.return_zval(z)
 ```
 

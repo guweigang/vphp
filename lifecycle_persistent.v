@@ -130,7 +130,7 @@ pub fn (v PersistentOwnedZBox) clone() PersistentOwnedZBox {
 pub fn (v PersistentOwnedZBox) to_zval() ZVal {
 	match v.kind {
 		.dyn_data {
-			return new_zval_from_dyn_value(v.dyn_data) or { ZVal.new_null() }
+			return v.dyn_data.new_zval() or { ZVal.new_null() }
 		}
 		.retained_callable {
 			return v.retained_callable.to_request_owned_zval()

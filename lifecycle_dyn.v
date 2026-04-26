@@ -28,9 +28,7 @@ fn dyn_value_is_persistent_safe(value DynValue) bool {
 }
 
 fn persistent_dyn_request_owned(value DynValue) RequestOwnedZBox {
-	return request_owned_zbox_from_adopted_zval(new_zval_from_dyn_value(value) or {
-		ZVal.new_null()
-	})
+	return request_owned_zbox_from_adopted_zval(value.new_zval() or { ZVal.new_null() })
 }
 
 @[inline]

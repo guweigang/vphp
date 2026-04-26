@@ -48,7 +48,7 @@ pub fn (a PhpArray) to_persistent() PersistentPhpArray {
 }
 
 pub fn (a PhpArray) to_dyn() !DynValue {
-	return decode_dyn_value(a.to_zval())
+	return DynValue.from_zval(a.to_zval())
 }
 
 pub fn (a PhpArray) count() int {
@@ -125,7 +125,7 @@ pub fn (a PersistentPhpArray) to_dyn() !DynValue {
 	defer {
 		temp.release()
 	}
-	return decode_dyn_value(temp.to_zval())
+	return DynValue.from_zval(temp.to_zval())
 }
 
 pub fn (mut a PersistentPhpArray) release() {
