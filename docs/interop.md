@@ -192,6 +192,13 @@ mut version := vphp.php_call_request_owned_box('phpversion', []vphp.ZVal{})
 defer { version.release() }
 ```
 
+如果只要标量结果，可以用更直接的命名：
+
+```v
+version := vphp.php_call_string('phpversion', []vphp.ZVal{})
+exists := vphp.php_call_bool('function_exists', [vphp.ZVal.new_string('strlen')])
+```
+
 `php_fn(...)` 仍适合表达 callable 风格的 PHP 函数引用：
 
 ```v
@@ -205,6 +212,9 @@ res := vphp.php_fn('phpversion').call([])
 | `php_fn(name)` | 获取一个可调用的 PHP 函数引用 |
 | `function_exists(name)` | 判断 PHP 全局函数是否存在 |
 | `with_php_call_result_zval(name, args, run)` | 调用 PHP 全局函数，并在 callback 内借用返回值 |
+| `php_call_string(name, args)` | 调用 PHP 全局函数，并返回 string |
+| `php_call_bool(name, args)` | 调用 PHP 全局函数，并返回 bool |
+| `php_call_i64(name, args)` | 调用 PHP 全局函数，并返回 i64 |
 | `php_call_request_owned_box(name, args)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
 | `z.call(args)` | 调用 callable（request-owned） |
 | `z.call_owned_request(args)` | 显式 request-owned |

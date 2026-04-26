@@ -15,22 +15,35 @@ pub fn with_php_call_result_zval[T](name string, args []ZVal, run fn (ZVal) T) T
 	return with_call_result_zval(php_fn(name), args, run)
 }
 
-pub fn with_php_call_result_string(name string, args []ZVal) string {
+pub fn php_call_string(name string, args []ZVal) string {
 	return with_php_call_result_zval(name, args, fn (z ZVal) string {
 		return z.to_string()
 	})
 }
 
-pub fn with_php_call_result_bool(name string, args []ZVal) bool {
+pub fn php_call_bool(name string, args []ZVal) bool {
 	return with_php_call_result_zval(name, args, fn (z ZVal) bool {
 		return z.to_bool()
 	})
 }
 
-pub fn with_php_call_result_i64(name string, args []ZVal) i64 {
+pub fn php_call_i64(name string, args []ZVal) i64 {
 	return with_php_call_result_zval(name, args, fn (z ZVal) i64 {
 		return z.to_i64()
 	})
+}
+
+// Compatibility aliases. Prefer php_call_string/bool/i64 in new code.
+pub fn with_php_call_result_string(name string, args []ZVal) string {
+	return php_call_string(name, args)
+}
+
+pub fn with_php_call_result_bool(name string, args []ZVal) bool {
+	return php_call_bool(name, args)
+}
+
+pub fn with_php_call_result_i64(name string, args []ZVal) i64 {
+	return php_call_i64(name, args)
 }
 
 pub fn call_request_owned_box(callable ZVal, args []ZVal) RequestOwnedZBox {
