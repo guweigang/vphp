@@ -157,7 +157,9 @@ void vphp_array_add_assoc_double(zval *return_value, const char *key,
 void vphp_array_add_assoc_string(zval *z, const char *key, const char *val);
 void vphp_array_add_assoc_zval(zval *z, const char *key, zval *val);
 void vphp_superglobal_set_env_string(const char *key, const char *val);
+zval *vphp_superglobal_get_env(void);
 void vphp_superglobal_set_server_string(const char *key, const char *val);
+zval *vphp_superglobal_get_server(void);
 void vphp_array_foreach(zval *z, void *ctx, void (*callback)(void *, zval *));
 
 // 属性与兼容层

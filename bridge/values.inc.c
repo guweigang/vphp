@@ -336,6 +336,11 @@ void vphp_superglobal_set_env_string(const char *key, const char *val) {
   zend_hash_str_update(Z_ARRVAL_P(global), key, strlen(key), &zv);
 }
 
+zval *vphp_superglobal_get_env(void) {
+  return vphp_ensure_superglobal_array("_ENV", sizeof("_ENV") - 1,
+                                       TRACK_VARS_ENV);
+}
+
 void vphp_superglobal_set_server_string(const char *key, const char *val) {
   zval *global = NULL;
   zval zv;
@@ -349,6 +354,11 @@ void vphp_superglobal_set_server_string(const char *key, const char *val) {
   }
   ZVAL_STRING(&zv, val);
   zend_hash_str_update(Z_ARRVAL_P(global), key, strlen(key), &zv);
+}
+
+zval *vphp_superglobal_get_server(void) {
+  return vphp_ensure_superglobal_array("_SERVER", sizeof("_SERVER") - 1,
+                                       TRACK_VARS_SERVER);
 }
 
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item) {

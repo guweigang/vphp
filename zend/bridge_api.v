@@ -83,7 +83,9 @@ pub fn C.vphp_array_add_assoc_long(res &C.zval, key &char, val i64)
 pub fn C.vphp_array_add_assoc_bool(res &C.zval, key &char, val int)
 pub fn C.vphp_array_add_assoc_zval(z &C.zval, key &char, val &C.zval)
 pub fn C.vphp_superglobal_set_env_string(key &char, val &char)
+pub fn C.vphp_superglobal_get_env() &C.zval
 pub fn C.vphp_superglobal_set_server_string(key &char, val &char)
+pub fn C.vphp_superglobal_get_server() &C.zval
 pub fn C.vphp_array_each(z &C.zval, ctx voidptr, cb voidptr)
 pub fn C.vphp_array_foreach(z &C.zval, ctx voidptr, cb voidptr)
 
@@ -106,16 +108,16 @@ pub fn C.vphp_add_property_double(obj &C.zval, name &char, val f64)
 @[typedef]
 pub struct C.vphp_object_wrapper {
 pub:
-	magic          u32
-	v_ptr          voidptr
-	owns_v_ptr     int
-	cleanup_raw    voidptr
-	free_raw       voidptr
-	prop_handler   voidptr
-	write_handler  voidptr
-	sync_handler   voidptr
+	magic             u32
+	v_ptr             voidptr
+	owns_v_ptr        int
+	cleanup_raw       voidptr
+	free_raw          voidptr
+	prop_handler      voidptr
+	write_handler     voidptr
+	sync_handler      voidptr
 	original_handlers voidptr
-	std            C.zend_object
+	std               C.zend_object
 }
 
 pub fn C.vphp_obj_from_obj(obj &C.zend_object) &C.vphp_object_wrapper
