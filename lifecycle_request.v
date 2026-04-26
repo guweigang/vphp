@@ -33,6 +33,12 @@ pub fn php_call_result_i64(name string, args []ZVal) i64 {
 	})
 }
 
+pub fn php_call_result_double(name string, args []ZVal) f64 {
+	return with_php_call_result_zval(name, args, fn (z ZVal) f64 {
+		return z.to_f64()
+	})
+}
+
 pub fn call_request_owned_box(callable ZVal, args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(callable.call_owned_request(args))
 }

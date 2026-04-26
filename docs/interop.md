@@ -215,6 +215,7 @@ res := vphp.php_fn('phpversion').call([])
 | `php_call_result_string(name, args)` | 调用 PHP 全局函数，并返回 string |
 | `php_call_result_bool(name, args)` | 调用 PHP 全局函数，并返回 bool |
 | `php_call_result_i64(name, args)` | 调用 PHP 全局函数，并返回 i64 |
+| `php_call_result_double(name, args)` | 调用 PHP 全局函数，并返回 f64 |
 | `php_call_request_owned_box(name, args)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
 | `z.call(args)` | 调用 callable（request-owned） |
 | `z.call_owned_request(args)` | 显式 request-owned |

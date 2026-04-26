@@ -11,9 +11,9 @@ pub fn function_exists(name string) bool {
 }
 
 // Compatibility entry point for direct PHP function calls.
-// Prefer php_call_result_string/bool/i64, with_php_call_result_zval(), or
-// php_call_request_owned_box() in new code so request-owned results stay behind
-// an explicit ownership boundary.
+// Prefer php_call_result_string/bool/i64/double, with_php_call_result_zval(),
+// or php_call_request_owned_box() in new code so request-owned results stay
+// behind an explicit ownership boundary.
 pub fn call_php(name string, args []ZVal) ZVal {
 	return php_fn(name).call(args)
 }
