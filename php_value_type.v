@@ -81,6 +81,10 @@ pub fn (v PhpValue) is_numeric() bool {
 	return v.to_zval().is_numeric()
 }
 
+pub fn (v PhpValue) is_scalar() bool {
+	return PhpScalar.from_zval(v.to_zval()) != none
+}
+
 pub fn (v PhpValue) is_string() bool {
 	return v.to_zval().is_string()
 }
@@ -136,6 +140,30 @@ pub fn (v PhpValue) to_v[T]() !T {
 
 pub fn (v PhpValue) to_dyn() !DynValue {
 	return decode_dyn_value(v.to_zval())
+}
+
+pub fn (v PhpValue) as_null() ?PhpNull {
+	return PhpNull.from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) as_bool() ?PhpBool {
+	return PhpBool.from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) as_int() ?PhpInt {
+	return PhpInt.from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) as_double() ?PhpDouble {
+	return PhpDouble.from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) as_string() ?PhpString {
+	return PhpString.from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) as_scalar() ?PhpScalar {
+	return PhpScalar.from_zval(v.to_zval())
 }
 
 pub fn (v PhpValue) as_array() ?PhpArray {
