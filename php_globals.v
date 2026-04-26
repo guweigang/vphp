@@ -7,3 +7,10 @@ import vphp.zend as _
 pub fn get_globals[T]() &T {
 	return unsafe { &T(C.vphp_get_active_globals()) }
 }
+
+// with_globals makes mutation intent explicit while still using Zend's active
+// request/thread globals storage.
+pub fn with_globals[T](run fn (mut T)) {
+	mut globals := get_globals[T]()
+	run(mut globals)
+}
