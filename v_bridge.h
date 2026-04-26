@@ -131,6 +131,8 @@ void vphp_set_lval(zval *z, long val);
 char *vphp_get_strval(zval *z);
 int vphp_get_strlen(zval *z);
 int vphp_get_type(zval *z);
+zval *vphp_reference_value(zval *z);
+void vphp_reference_set_zval(zval *z, zval *value);
 void vphp_set_strval(zval *z, char *str, int len);
 void vphp_convert_to_string(zval *z);
 zval *vphp_new_str(const char *s);
@@ -160,6 +162,11 @@ void vphp_superglobal_set_env_string(const char *key, const char *val);
 zval *vphp_superglobal_get_env(void);
 void vphp_superglobal_set_server_string(const char *key, const char *val);
 zval *vphp_superglobal_get_server(void);
+zval *vphp_superglobal_get_get(void);
+zval *vphp_superglobal_get_post(void);
+zval *vphp_superglobal_get_cookie(void);
+zval *vphp_superglobal_get_files(void);
+zval *vphp_superglobal_get_request(void);
 void vphp_array_foreach(zval *z, void *ctx, void (*callback)(void *, zval *));
 
 // 属性与兼容层

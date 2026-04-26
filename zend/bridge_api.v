@@ -30,6 +30,8 @@ pub fn C.vphp_output_write(&char, int)
 pub fn C.vphp_get_type(z &C.zval) int
 pub fn C.vphp_is_null(z &C.zval) bool
 pub fn C.vphp_is_type(z &C.zval, typ int) bool
+pub fn C.vphp_reference_value(z &C.zval) &C.zval
+pub fn C.vphp_reference_set_zval(z &C.zval, value &C.zval)
 
 // ===== 4. zval 读取 — 标量 =====
 pub fn C.vphp_get_lval(z &C.zval) i64
@@ -86,6 +88,11 @@ pub fn C.vphp_superglobal_set_env_string(key &char, val &char)
 pub fn C.vphp_superglobal_get_env() &C.zval
 pub fn C.vphp_superglobal_set_server_string(key &char, val &char)
 pub fn C.vphp_superglobal_get_server() &C.zval
+pub fn C.vphp_superglobal_get_get() &C.zval
+pub fn C.vphp_superglobal_get_post() &C.zval
+pub fn C.vphp_superglobal_get_cookie() &C.zval
+pub fn C.vphp_superglobal_get_files() &C.zval
+pub fn C.vphp_superglobal_get_request() &C.zval
 pub fn C.vphp_array_each(z &C.zval, ctx voidptr, cb voidptr)
 pub fn C.vphp_array_foreach(z &C.zval, ctx voidptr, cb voidptr)
 

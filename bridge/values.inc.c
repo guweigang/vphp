@@ -8,6 +8,23 @@ int vphp_get_strlen(zval *z) { return z ? Z_STRLEN_P(z) : 0; }
 
 int vphp_get_type(zval *z) { return z ? Z_TYPE_P(z) : IS_UNDEF; }
 
+zval *vphp_reference_value(zval *z) {
+  if (z == NULL || Z_TYPE_P(z) != IS_REFERENCE) {
+    return NULL;
+  }
+  return Z_REFVAL_P(z);
+}
+
+void vphp_reference_set_zval(zval *z, zval *value) {
+  zval *target = NULL;
+  if (z == NULL || value == NULL || Z_TYPE_P(z) != IS_REFERENCE) {
+    return;
+  }
+  target = Z_REFVAL_P(z);
+  zval_ptr_dtor(target);
+  ZVAL_COPY(target, value);
+}
+
 const char *vphp_get_string_ptr(zval *z, int *len) {
   if (z && Z_TYPE_P(z) == IS_STRING) {
     *len = Z_STRLEN_P(z);
@@ -309,10 +326,19 @@ void vphp_array_add_assoc_zval(zval *z, const char *key, zval *val) {
 static zval *vphp_ensure_superglobal_array(const char *name, size_t len,
                                            uint32_t track_vars_index) {
   zval *global = NULL;
+  zval *symbol = NULL;
   if (name == NULL || len == 0) {
     return NULL;
   }
   zend_is_auto_global_str((char *)name, len);
+  symbol = zend_hash_str_find(&EG(symbol_table), name, len);
+  if (symbol != NULL) {
+    if (Z_TYPE_P(symbol) != IS_ARRAY) {
+      zval_ptr_dtor_nogc(symbol);
+      array_init(symbol);
+    }
+    return symbol;
+  }
   global = &PG(http_globals)[track_vars_index];
   if (Z_TYPE_P(global) != IS_ARRAY) {
     zval_ptr_dtor_nogc(global);
@@ -359,6 +385,31 @@ void vphp_superglobal_set_server_string(const char *key, const char *val) {
 zval *vphp_superglobal_get_server(void) {
   return vphp_ensure_superglobal_array("_SERVER", sizeof("_SERVER") - 1,
                                        TRACK_VARS_SERVER);
+}
+
+zval *vphp_superglobal_get_get(void) {
+  return vphp_ensure_superglobal_array("_GET", sizeof("_GET") - 1,
+                                       TRACK_VARS_GET);
+}
+
+zval *vphp_superglobal_get_post(void) {
+  return vphp_ensure_superglobal_array("_POST", sizeof("_POST") - 1,
+                                       TRACK_VARS_POST);
+}
+
+zval *vphp_superglobal_get_cookie(void) {
+  return vphp_ensure_superglobal_array("_COOKIE", sizeof("_COOKIE") - 1,
+                                       TRACK_VARS_COOKIE);
+}
+
+zval *vphp_superglobal_get_files(void) {
+  return vphp_ensure_superglobal_array("_FILES", sizeof("_FILES") - 1,
+                                       TRACK_VARS_FILES);
+}
+
+zval *vphp_superglobal_get_request(void) {
+  return vphp_ensure_superglobal_array("_REQUEST", sizeof("_REQUEST") - 1,
+                                       TRACK_VARS_REQUEST);
 }
 
 void vphp_array_add_next_zval(zval *main_array, zval *sub_item) {
