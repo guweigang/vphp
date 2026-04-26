@@ -2,7 +2,7 @@ module vphp
 
 import vphp.zend as _
 
-// ======== 类与静态属性辅助 ========
+// ======== Class entry static property helpers ========
 
 pub fn set_static_prop[T](ce voidptr, name string, val T) {
 	$if T is int {
