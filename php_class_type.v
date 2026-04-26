@@ -4,17 +4,17 @@ pub struct PhpClass {
 	class_name string
 }
 
-pub fn php_class_ref(name string) PhpClass {
+pub fn PhpClass.named(name string) PhpClass {
 	return PhpClass{
 		class_name: name
 	}
 }
 
-pub fn find_php_class(name string) ?PhpClass {
+pub fn PhpClass.find(name string) ?PhpClass {
 	if !class_exists(name) {
 		return none
 	}
-	return php_class_ref(name)
+	return PhpClass.named(name)
 }
 
 pub fn (c PhpClass) name() string {
