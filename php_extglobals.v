@@ -9,7 +9,7 @@ pub fn get_globals[T]() &T {
 }
 
 // with_globals makes mutation intent explicit while still using Zend's active
-// request/thread globals storage.
+// request/thread extension globals storage.
 pub fn with_globals[T](run fn (mut T)) {
 	mut globals := get_globals[T]()
 	run(mut globals)
