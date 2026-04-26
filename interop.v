@@ -2,6 +2,10 @@ module vphp
 
 import vphp.zend as _
 
+pub fn get_globals[T]() &T {
+	return unsafe { &T(C.vphp_get_active_globals()) }
+}
+
 // PHP 函数入口。返回一个 callable ZVal，后续可通过 `.call(args)` 调用。
 pub fn php_fn(name string) ZVal {
 	return ZVal.new_string(name)

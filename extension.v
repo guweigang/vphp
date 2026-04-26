@@ -14,35 +14,21 @@ pub:
 	ini_entries map[string]string
 }
 
-pub fn get_globals[T]() &T {
-    return unsafe { &T(C.vphp_get_active_globals()) }
-}
-
-pub fn bind_class_interface(class_name string, iface_name string) bool {
-	return C.vphp_bind_class_interface(&char(class_name.str), class_name.len, &char(iface_name.str),
-		iface_name.len) != 0
-}
-
-pub fn register_auto_interface_binding(class_name string, iface_name string) {
-	C.vphp_register_auto_interface_binding(&char(class_name.str), class_name.len,
-		&char(iface_name.str), iface_name.len)
-}
-
-@[export: 'vphp_framework_init']// 框架核心入口
+@[export: 'vphp_framework_init'] // 框架核心入口
 pub fn vphp_framework_init(module_number int) {
 	// ... 目前占位
-  // 自动初始化资源系统
-  init_framework(module_number)
-  // 这里的并发任务注册逻辑也可以放在这里
-  // println('VPHP Framework initialized.')
+	// 自动初始化资源系统
+	init_framework(module_number)
+	// 这里的并发任务注册逻辑也可以放在这里
+	// println('VPHP Framework initialized.')
 }
 
 pub fn init_framework(module_number int) {
-  unsafe {
-    C.vphp_init_registry()
-    C.vphp_init_resource_system(module_number)
-    C.vphp_install_runtime_binding_hooks()
-  }
+	unsafe {
+		C.vphp_init_registry()
+		C.vphp_init_resource_system(module_number)
+		C.vphp_install_runtime_binding_hooks()
+	}
 }
 
 fn framework_debug_enabled() bool {
