@@ -30,24 +30,6 @@ fn persistent_owned_dyn_box(value DynValue) PersistentOwnedZBox {
 	}
 }
 
-@[inline]
-fn persistent_owned_retained_object_box(retained RetainedObject) PersistentOwnedZBox {
-	return PersistentOwnedZBox{
-		ZValViewState: zbox_view_state(invalid_zval())
-		kind:          .retained_object
-		retained:      retained
-	}
-}
-
-@[inline]
-fn persistent_owned_retained_callable_box(retained RetainedCallable) PersistentOwnedZBox {
-	return PersistentOwnedZBox{
-		ZValViewState:     zbox_view_state(invalid_zval())
-		kind:              .retained_callable
-		retained_callable: retained
-	}
-}
-
 fn persistent_owned_fallback_zval_box(z ZVal) PersistentOwnedZBox {
 	if z.is_valid() {
 		persistent_fallback_zval_inc()
@@ -106,16 +88,16 @@ pub fn RequestOwnedZBox.adopt_zval(z ZVal) RequestOwnedZBox {
 pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 	if z.is_valid() && z.is_callable() {
 		if retained_callable := RetainedCallable.from_zval(z) {
-			return persistent_owned_retained_callable_box(retained_callable)
+			return persistent_owned_dyn_box(dyn_value_persistent_retained_callable(retained_callable))
 		}
 	}
 	if z.is_valid() && z.is_object() {
 		if retained := RetainedObject.from_zval(z) {
-			return persistent_owned_retained_object_box(retained)
+			return persistent_owned_dyn_box(dyn_value_persistent_retained_object(retained))
 		}
 	}
 	if dyn := DynValue.from_zval(z) {
-		if dyn_value_is_persistent_safe(dyn) {
+		if dyn.is_persistent_safe() {
 			return persistent_owned_dyn_box(dyn)
 		}
 	}
@@ -127,10 +109,10 @@ pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 
 pub fn PersistentOwnedZBox.from_callable_zval(z ZVal) PersistentOwnedZBox {
 	if retained_callable := RetainedCallable.from_zval(z) {
-		return persistent_owned_retained_callable_box(retained_callable)
+		return persistent_owned_dyn_box(dyn_value_persistent_retained_callable(retained_callable))
 	}
 	if retained := RetainedObject.from_zval(z) {
-		return persistent_owned_retained_object_box(retained)
+		return persistent_owned_dyn_box(dyn_value_persistent_retained_object(retained))
 	}
 	return own_persistent_zbox_raw(z)
 }
@@ -143,7 +125,7 @@ pub fn PersistentOwnedZBox.of_callable(z ZVal) PersistentOwnedZBox {
 // Prefer this over generic value routing when the input is known to be object-like.
 pub fn PersistentOwnedZBox.from_object_zval(z ZVal) PersistentOwnedZBox {
 	if retained := RetainedObject.from_zval(z) {
-		return persistent_owned_retained_object_box(retained)
+		return persistent_owned_dyn_box(dyn_value_persistent_retained_object(retained))
 	}
 	return own_persistent_zbox_raw(z)
 }
@@ -188,7 +170,7 @@ pub fn PersistentOwnedZBox.of_data(value DynValue) PersistentOwnedZBox {
 
 pub fn PersistentOwnedZBox.from_detached_zval(z ZVal) ?PersistentOwnedZBox {
 	detached := DynValue.from_zval(z) or { return none }
-	if !dyn_value_is_persistent_safe(detached) {
+	if !detached.is_persistent_safe() {
 		return none
 	}
 	return own_persistent_dyn(detached)
@@ -278,14 +260,6 @@ pub fn PersistentOwnedZBox.new_bool(b bool) PersistentOwnedZBox {
 
 pub fn PersistentOwnedZBox.new_string(s string) PersistentOwnedZBox {
 	return own_persistent_dyn(dyn_value_string(s))
-}
-
-fn retained_request_owned(retained RetainedObject) RequestOwnedZBox {
-	return request_owned_zbox_from_adopted_zval(retained.to_request_owned_zval())
-}
-
-fn retained_callable_request_owned(retained RetainedCallable) RequestOwnedZBox {
-	return request_owned_zbox_from_adopted_zval(retained.to_request_owned_zval())
 }
 
 pub fn borrowed_zbox_from_raw(raw &C.zval) RequestBorrowedZBox {

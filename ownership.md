@@ -156,7 +156,7 @@ that receives a `ZVal` result is responsible for exactly one `release()`.
 4. Long-lived object/callable state must use dedicated handles.
 
 - PHP objects: `RetainedObject`
-- PHP callables: `retained_callable` routing through
+- PHP callables: `RetainedCallable` routed through persistent `DynValue` via
   `PersistentOwnedZBox.from_callable_zval(...)` / `of_callable(...)`
 
 5. **Automatic Root Safety for @[php_class]**

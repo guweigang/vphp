@@ -383,6 +383,13 @@ fn arg_type_info(v_type string) ArgTypeInfo {
 			allow_null:     allow_null
 		}
 	}
+	if clean in ['vphp.PhpIterable', 'PhpIterable'] {
+		return ArgTypeInfo{
+			mask:           'MAY_BE_ARRAY'
+			mask_obj_class: 'Traversable'
+			allow_null:     allow_null
+		}
+	}
 	code := match clean {
 		'[]string', '[]int', '[]i64', '[]bool', '[]f64', '[]f32', '[]', '[]vphp.ZVal', '[]ZVal' {
 			'IS_ARRAY'
@@ -393,8 +400,34 @@ fn arg_type_info(v_type string) ArgTypeInfo {
 		}
 		'vphp.ZVal', 'ZVal', 'vphp.RequestBorrowedZBox', 'RequestBorrowedZBox',
 		'vphp.RequestOwnedZBox', 'RequestOwnedZBox', 'vphp.PersistentOwnedZBox',
-		'PersistentOwnedZBox' {
+		'PersistentOwnedZBox', 'vphp.PhpValue', 'PhpValue', 'vphp.PhpScalar', 'PhpScalar',
+		'vphp.PhpResource', 'PhpResource', 'vphp.PhpReference', 'PhpReference', 'vphp.PhpEnumCase',
+		'PhpEnumCase' {
 			'IS_MIXED'
+		}
+		'vphp.PhpNull', 'PhpNull' {
+			'IS_NULL'
+		}
+		'vphp.PhpBool', 'PhpBool' {
+			'_IS_BOOL'
+		}
+		'vphp.PhpInt', 'PhpInt' {
+			'IS_LONG'
+		}
+		'vphp.PhpDouble', 'PhpDouble' {
+			'IS_DOUBLE'
+		}
+		'vphp.PhpString', 'PhpString' {
+			'IS_STRING'
+		}
+		'vphp.PhpArray', 'PhpArray' {
+			'IS_ARRAY'
+		}
+		'vphp.PhpObject', 'PhpObject', 'vphp.PhpThrowable', 'PhpThrowable' {
+			'IS_OBJECT'
+		}
+		'vphp.PhpCallable', 'PhpCallable' {
+			'IS_CALLABLE'
 		}
 		'callable', 'Callable', 'vphp.Callable' {
 			'IS_CALLABLE'

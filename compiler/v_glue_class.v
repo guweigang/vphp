@@ -404,6 +404,10 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			} else if arg.v_type == 'PersistentOwnedZBox'
 				|| arg.v_type == 'vphp.PersistentOwnedZBox' {
 				out << '    ${var_name} := ctx.arg_owned_persistent_zbox(${i})'
+			} else if semantic_arg_lines := gen_semantic_arg_lines(var_name, arg.v_type,
+				i, returns_object)
+			{
+				out << semantic_arg_lines
 			} else if arg.v_type.starts_with('?') {
 				out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
 			} else if tm.c_type == 'void*' {

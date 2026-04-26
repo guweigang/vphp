@@ -58,8 +58,6 @@ pub struct RequestOwnedZBox {
 pub enum PersistentOwnedKind {
 	fallback_zval
 	dyn_data
-	retained_callable
-	retained_object
 }
 
 pub enum RetainedCallableKind {
@@ -81,8 +79,6 @@ pub mut:
 pub struct PersistentOwnedZBox {
 	ZValViewState
 pub mut:
-	kind              PersistentOwnedKind = .fallback_zval
-	dyn_data          DynValue
-	retained          RetainedObject
-	retained_callable RetainedCallable
+	kind     PersistentOwnedKind = .fallback_zval
+	dyn_data DynValue
 }

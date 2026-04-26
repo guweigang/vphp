@@ -35,6 +35,12 @@ pub fn PersistentPhpValue.from_dyn(value DynValue) PersistentPhpValue {
 	}
 }
 
+pub fn PersistentPhpValue.null_value() PersistentPhpValue {
+	return PersistentPhpValue{
+		value: PersistentOwnedZBox.new_null()
+	}
+}
+
 pub fn (v PhpValue) to_zval() ZVal {
 	return v.value.to_zval()
 }
@@ -214,6 +220,12 @@ pub fn (v PersistentPhpValue) clone() PersistentPhpValue {
 
 pub fn (v PersistentPhpValue) clone_request_owned() RequestOwnedZBox {
 	return v.value.clone_request_owned()
+}
+
+pub fn (mut v PersistentPhpValue) take_owned_box() PersistentOwnedZBox {
+	box := v.value
+	v.value = PersistentOwnedZBox.new_null()
+	return box
 }
 
 pub fn (v PersistentPhpValue) with_value[T](run fn (PhpValue) T) T {

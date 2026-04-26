@@ -181,6 +181,12 @@ pub fn (o PersistentPhpObject) clone_request_owned() RequestOwnedZBox {
 	return o.value.clone_request_owned()
 }
 
+pub fn (mut o PersistentPhpObject) take_owned_box() PersistentOwnedZBox {
+	box := o.value
+	o.value = PersistentOwnedZBox.new_null()
+	return box
+}
+
 pub fn (o PersistentPhpObject) with_object[T](run fn (PhpObject) T) T {
 	mut temp := o.clone_request_owned()
 	defer {

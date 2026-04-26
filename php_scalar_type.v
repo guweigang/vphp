@@ -48,6 +48,14 @@ pub fn (v PhpNull) to_zval() ZVal {
 	return v.value.to_zval()
 }
 
+pub fn (v PhpNull) to_request_owned() RequestOwnedZBox {
+	return RequestOwnedZBox.new_null()
+}
+
+pub fn (v PhpNull) to_persistent() PersistentPhpValue {
+	return PersistentPhpValue.null_value()
+}
+
 pub fn (v PhpNull) to_dyn() DynValue {
 	return dyn_value_null()
 }

@@ -1,13 +1,7 @@
 module vphp
 
 pub fn (v PersistentOwnedZBox) method_exists(name string) bool {
-	match v.kind {
-		.dyn_data {
-			return false
-		}
-		else {}
-	}
-	mut temp := v.request_owned_non_dyn() or { return false }
+	mut temp := v.request_owned_box() or { return false }
 	defer {
 		temp.release()
 	}
@@ -17,11 +11,11 @@ pub fn (v PersistentOwnedZBox) method_exists(name string) bool {
 pub fn (v PersistentOwnedZBox) to_string() string {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_string(v.dyn_data)
+			return v.dyn_data.to_string()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return '' }
+	mut temp := v.request_owned_box() or { return '' }
 	defer {
 		temp.release()
 	}
@@ -31,11 +25,11 @@ pub fn (v PersistentOwnedZBox) to_string() string {
 pub fn (v PersistentOwnedZBox) to_string_list() []string {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_string_list(v.dyn_data)
+			return v.dyn_data.to_string_list()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return []string{} }
+	mut temp := v.request_owned_box() or { return []string{} }
 	defer {
 		temp.release()
 	}
@@ -45,11 +39,11 @@ pub fn (v PersistentOwnedZBox) to_string_list() []string {
 pub fn (v PersistentOwnedZBox) to_string_map() map[string]string {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_string_map(v.dyn_data)
+			return v.dyn_data.to_string_map()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return map[string]string{} }
+	mut temp := v.request_owned_box() or { return map[string]string{} }
 	defer {
 		temp.release()
 	}
@@ -61,12 +55,9 @@ pub fn (v PersistentOwnedZBox) resource_type() ?string {
 		.dyn_data {
 			return none
 		}
-		.retained_callable {
-			return none
-		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return none }
+	mut temp := v.request_owned_box() or { return none }
 	defer {
 		temp.release()
 	}
@@ -78,12 +69,9 @@ pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
 		.dyn_data {
 			return none
 		}
-		.retained_callable {
-			return none
-		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return none }
+	mut temp := v.request_owned_box() or { return none }
 	defer {
 		temp.release()
 	}
@@ -93,11 +81,11 @@ pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
 pub fn (v PersistentOwnedZBox) to_bool() bool {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_bool(v.dyn_data)
+			return v.dyn_data.to_bool()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return false }
+	mut temp := v.request_owned_box() or { return false }
 	defer {
 		temp.release()
 	}
@@ -107,11 +95,11 @@ pub fn (v PersistentOwnedZBox) to_bool() bool {
 pub fn (v PersistentOwnedZBox) to_int() int {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_int(v.dyn_data)
+			return v.dyn_data.to_int()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return 0 }
+	mut temp := v.request_owned_box() or { return 0 }
 	defer {
 		temp.release()
 	}
@@ -121,11 +109,11 @@ pub fn (v PersistentOwnedZBox) to_int() int {
 pub fn (v PersistentOwnedZBox) to_i64() i64 {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_i64(v.dyn_data)
+			return v.dyn_data.to_i64()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return i64(0) }
+	mut temp := v.request_owned_box() or { return i64(0) }
 	defer {
 		temp.release()
 	}
@@ -135,11 +123,11 @@ pub fn (v PersistentOwnedZBox) to_i64() i64 {
 pub fn (v PersistentOwnedZBox) to_f64() f64 {
 	match v.kind {
 		.dyn_data {
-			return dyn_to_f64(v.dyn_data)
+			return v.dyn_data.to_f64()
 		}
 		else {}
 	}
-	mut temp := v.request_owned_non_dyn() or { return f64(0.0) }
+	mut temp := v.request_owned_box() or { return f64(0.0) }
 	defer {
 		temp.release()
 	}
@@ -147,13 +135,7 @@ pub fn (v PersistentOwnedZBox) to_f64() f64 {
 }
 
 pub fn (v PersistentOwnedZBox) call_owned_request(args []ZVal) ZVal {
-	match v.kind {
-		.dyn_data {
-			return invalid_zval()
-		}
-		else {}
-	}
-	mut temp := v.request_owned_non_dyn() or { return invalid_zval() }
+	mut temp := v.request_owned_box() or { return invalid_zval() }
 	defer {
 		temp.release()
 	}
@@ -161,13 +143,7 @@ pub fn (v PersistentOwnedZBox) call_owned_request(args []ZVal) ZVal {
 }
 
 pub fn (v PersistentOwnedZBox) method_owned_request(method string, args []ZVal) ZVal {
-	match v.kind {
-		.dyn_data {
-			return invalid_zval()
-		}
-		else {}
-	}
-	mut temp := v.request_owned_non_dyn() or { return invalid_zval() }
+	mut temp := v.request_owned_box() or { return invalid_zval() }
 	defer {
 		temp.release()
 	}

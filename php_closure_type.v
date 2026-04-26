@@ -113,6 +113,12 @@ pub fn (c PersistentPhpClosure) clone_request_owned() RequestOwnedZBox {
 	return c.callable.clone_request_owned()
 }
 
+pub fn (mut c PersistentPhpClosure) take_owned_box() PersistentOwnedZBox {
+	box := c.callable
+	c.callable = PersistentOwnedZBox.new_null()
+	return box
+}
+
 pub fn (c PersistentPhpClosure) call_request_owned(args []ZVal) RequestOwnedZBox {
 	return c.callable.call_request_owned(args)
 }

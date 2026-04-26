@@ -29,6 +29,10 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 			out << '    ${var_name} := ctx.arg_owned_request_zbox(${i})'
 		} else if arg.v_type == 'PersistentOwnedZBox' || arg.v_type == 'vphp.PersistentOwnedZBox' {
 			out << '    ${var_name} := ctx.arg_owned_persistent_zbox(${i})'
+		} else if semantic_arg_lines := gen_semantic_arg_lines(var_name, arg.v_type, i,
+			false)
+		{
+			out << semantic_arg_lines
 		} else if arg.v_type.starts_with('?') {
 			out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
 		} else if arg.v_type.starts_with('&') {

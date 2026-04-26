@@ -13,7 +13,8 @@ Note:
 - `ZVal` is the low-level wrapper over `&C.zval` (in `zval.v`).
 - `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox` are the
   preferred ownership-facing wrappers in `lifecycle.v`.
-- `DynValue` in `dyn_value.v` is the detached fallback model for unknown/mixed payloads.
+- `DynValue` in `dyn_value.v` is the V-side mixed value model for unknown payloads:
+  scalar/list/map values are detached data, while object/callable/resource values are runtime refs.
 - Strongly typed business logic should use ordinary V types directly.
 
 Practical rule:
@@ -155,6 +156,36 @@ dyn := DynValue.from_zval(ctx.arg_raw(0))!
 z := dyn.new_zval()!
 ctx.return_zval(z)
 ```
+
+For mixed values that may contain PHP runtime refs, narrow through the semantic wrappers:
+
+```v
+dyn := DynValue.from_zval(ctx.arg_raw(0))!
+obj := dyn.as_object() or {
+    return
+}
+res := obj.method('name', [])
+```
+
+`DynValue.new_zval()` only supports detached data. Use `dyn.has_runtime_refs()` /
+`dyn.can_new_zval()` to check that boundary. Runtime refs can be converted back into
+a request zval with `dyn.to_zval(mut out)`, and object/callable refs can be promoted
+with `dyn.to_persistent()`. Resource refs are request-only.
+
+Runtime ref constructors live on `DynValue`:
+
+```v
+obj_dyn := DynValue.object_ref(obj)
+call_dyn := DynValue.callable_ref(callable)
+res_dyn := DynValue.resource_ref(resource)
+stored_obj_dyn := DynValue.persistent_object_ref(persistent_obj)
+stored_call_dyn := DynValue.persistent_closure_ref(persistent_closure)
+```
+
+Persistent object/callable refs are stored as retained runtime handles inside
+`DynValue`, not as request-borrowed zvals. Use `with_object(...)`,
+`with_callable(...)`, or `with_closure(...)` when a call needs a temporary
+request-scoped semantic wrapper.
 
 Recommended boundary:
 - Typed business logic: native V types

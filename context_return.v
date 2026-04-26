@@ -60,6 +60,26 @@ pub fn (ctx Context) return_zval(val ZVal) {
 	unsafe { C.ZVAL_COPY(ctx.ret, val.raw) }
 }
 
+pub fn (ctx Context) return_value(value PhpValue) {
+	ctx.return_zval(value.to_zval())
+}
+
+pub fn (ctx Context) return_null_value(value PhpNull) {
+	ctx.return_zval(value.to_zval())
+}
+
+pub fn (ctx Context) return_dyn(value DynValue) {
+	mut box := value.request_owned_box()
+	defer {
+		box.release()
+	}
+	ctx.return_zval(box.to_zval())
+}
+
+pub fn (ctx Context) return_request_owned(value RequestOwnedZBox) {
+	ctx.return_zval(value.to_zval())
+}
+
 pub fn (ctx Context) return_any[T](val T) {
 	ctx.return_val[T](val)
 }

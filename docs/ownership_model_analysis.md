@@ -57,7 +57,7 @@ graph TD
 - **文件**: [app_psr_bridge.v](file:///Users/guweigang/Source/vphpx/vslim/src/app_psr_bridge.v) 全文
 
 ### 3. `PersistentOwnedZBox.borrowed()` 危险用法清理
-- **根因**: 对 `.dyn_data` / `.retained_callable` / `.retained_object` 类型调用 `.borrowed()` 会产生一个临时 `RequestOwnedZBox` 然后立即 borrow，但那个 owned box 无人持有 → 可能被提前 drain
+- **根因**: 对 `.dyn_data` 类型调用 `.borrowed()` 会产生一个临时 `RequestOwnedZBox` 然后立即 borrow，但那个 owned box 无人持有 → 可能被提前 drain
 - **修法**: [lifecycle.v:763-778](file:///Users/guweigang/Source/vphpx/vphp/lifecycle.v#L763-L778) — 所有非 fallback 路径改为 `clone_request_owned().borrowed()`
 
 ### 4. `vphp_get_type(NULL)` 真 bug

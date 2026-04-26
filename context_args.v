@@ -46,6 +46,66 @@ pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
 	return ctx.arg_borrowed_zbox(index)
 }
 
+pub fn (ctx Context) arg_value(index int) PhpValue {
+	return PhpValue.from_zval(ctx.arg_val(index))
+}
+
+pub fn (ctx Context) arg_null(index int) ?PhpNull {
+	return PhpNull.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_bool(index int) ?PhpBool {
+	return PhpBool.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_int(index int) ?PhpInt {
+	return PhpInt.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_double(index int) ?PhpDouble {
+	return PhpDouble.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_string(index int) ?PhpString {
+	return PhpString.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_scalar(index int) ?PhpScalar {
+	return PhpScalar.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_array(index int) ?PhpArray {
+	return PhpArray.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_object(index int) ?PhpObject {
+	return PhpObject.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_callable(index int) ?PhpCallable {
+	return PhpCallable.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_resource(index int) ?PhpResource {
+	return PhpResource.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_reference(index int) ?PhpReference {
+	return PhpReference.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_iterable(index int) ?PhpIterable {
+	return PhpIterable.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_throwable(index int) ?PhpThrowable {
+	return PhpThrowable.from_zval(ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) arg_enum_case(index int) ?PhpEnumCase {
+	return PhpEnumCase.from_zval(ctx.arg_raw(index))
+}
+
 pub fn (ctx Context) arg_owned_request_zbox(index int) RequestOwnedZBox {
 	return RequestOwnedZBox.of(ctx.arg_raw(index))
 }
