@@ -8,6 +8,30 @@ pub enum OwnershipKind {
 	owned_persistent
 }
 
+__global (
+	vphp_persistent_fallback_zval_count int
+)
+
+fn persistent_fallback_zval_count() int {
+	unsafe {
+		return vphp_persistent_fallback_zval_count
+	}
+}
+
+fn persistent_fallback_zval_inc() {
+	unsafe {
+		vphp_persistent_fallback_zval_count++
+	}
+}
+
+fn persistent_fallback_zval_dec() {
+	unsafe {
+		if vphp_persistent_fallback_zval_count > 0 {
+			vphp_persistent_fallback_zval_count--
+		}
+	}
+}
+
 // ZValView defines read-only inspection/conversion surface for typed wrappers.
 pub interface ZValView {
 	to_zval() ZVal
@@ -182,9 +206,19 @@ fn persistent_owned_retained_object_box(retained RetainedObject) PersistentOwned
 @[inline]
 fn persistent_owned_retained_callable_box(retained RetainedCallable) PersistentOwnedZBox {
 	return PersistentOwnedZBox{
-		ZValViewState: zbox_view_state(invalid_zval())
+		ZValViewState:     zbox_view_state(invalid_zval())
 		kind:              .retained_callable
 		retained_callable: retained
+	}
+}
+
+fn persistent_owned_fallback_zval_box(z ZVal) PersistentOwnedZBox {
+	if z.is_valid() {
+		persistent_fallback_zval_inc()
+	}
+	return PersistentOwnedZBox{
+		ZValViewState: zbox_view_state(z)
+		kind:          .fallback_zval
 	}
 }
 
@@ -361,11 +395,7 @@ pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 	// Keep raw zval fallback as a narrow compatibility path only.
 	// Safe long-lived values should prefer detached DynValue/string data or
 	// retained object handles above.
-	return PersistentOwnedZBox{
-		ZValViewState: zbox_view_state(z.dup_persistent())
-		kind:          .fallback_zval
-	}
-
+	return persistent_owned_fallback_zval_box(z.dup_persistent())
 }
 
 pub fn PersistentOwnedZBox.from_callable_zval(z ZVal) PersistentOwnedZBox {
@@ -401,7 +431,9 @@ pub fn own_persistent_dyn(value DynValue) PersistentOwnedZBox {
 
 fn dyn_value_is_persistent_safe(value DynValue) bool {
 	return match value.type {
-		.null_, .bool_, .int_, .float_, .string_ { true }
+		.null_, .bool_, .int_, .float_, .string_ {
+			true
+		}
 		.list_ {
 			for item in value.list {
 				if !dyn_value_is_persistent_safe(item) {
@@ -418,7 +450,9 @@ fn dyn_value_is_persistent_safe(value DynValue) bool {
 			}
 			true
 		}
-		.object_ref, .resource_ref { false }
+		.object_ref, .resource_ref {
+			false
+		}
 	}
 }
 
@@ -432,10 +466,7 @@ pub fn PersistentOwnedZBox.from_persistent_zval(z ZVal) PersistentOwnedZBox {
 	if !z.is_valid() || z.is_undef() {
 		return PersistentOwnedZBox.new_null()
 	}
-	return PersistentOwnedZBox{
-		ZValViewState: zbox_view_state(z.dup_persistent())
-		kind:          .fallback_zval
-	}
+	return persistent_owned_fallback_zval_box(z.dup_persistent())
 }
 
 // of is the friendly long-lived entry point for a general PHP value.
@@ -548,7 +579,6 @@ pub fn PersistentOwnedZBox.new_bool(b bool) PersistentOwnedZBox {
 pub fn PersistentOwnedZBox.new_string(s string) PersistentOwnedZBox {
 	return own_persistent_dyn(dyn_value_string(s))
 }
-
 
 pub fn (v ZValViewState) to_zval() ZVal {
 	return v.z
@@ -741,7 +771,9 @@ fn retained_callable_request_owned(retained RetainedCallable) RequestOwnedZBox {
 }
 
 fn persistent_dyn_request_owned(value DynValue) RequestOwnedZBox {
-	return request_owned_zbox_from_adopted_zval(new_zval_from_dyn_value(value) or { ZVal.new_null() })
+	return request_owned_zbox_from_adopted_zval(new_zval_from_dyn_value(value) or {
+		ZVal.new_null()
+	})
 }
 
 @[inline]
@@ -751,11 +783,25 @@ fn dyn_to_request_owned_box(value DynValue) RequestOwnedZBox {
 
 fn dyn_to_string(value DynValue) string {
 	return match value.type {
-		.null_ { '' }
-		.bool_ { if value.bool_value() { '1' } else { '' } }
-		.int_ { value.int_value().str() }
-		.float_ { value.float_value().str() }
-		.string_ { value.string_value().clone() }
+		.null_ {
+			''
+		}
+		.bool_ {
+			if value.bool_value() {
+				'1'
+			} else {
+				''
+			}
+		}
+		.int_ {
+			value.int_value().str()
+		}
+		.float_ {
+			value.float_value().str()
+		}
+		.string_ {
+			value.string_value().clone()
+		}
 		else {
 			mut temp := dyn_to_request_owned_box(value)
 			defer {
@@ -775,7 +821,9 @@ fn dyn_to_string_list(value DynValue) []string {
 			}
 			out
 		}
-		.string_ { [dyn_to_string(value)] }
+		.string_ {
+			[dyn_to_string(value)]
+		}
 		else {
 			mut temp := dyn_to_request_owned_box(value)
 			defer {
@@ -819,31 +867,73 @@ fn dyn_to_bool(value DynValue) bool {
 
 fn dyn_to_int(value DynValue) int {
 	return match value.type {
-		.int_ { int(value.int_value()) }
-		.bool_ { if value.bool_value() { 1 } else { 0 } }
-		.float_ { int(value.float_value()) }
-		.string_ { dyn_to_string(value).int() }
-		else { 0 }
+		.int_ {
+			int(value.int_value())
+		}
+		.bool_ {
+			if value.bool_value() {
+				1
+			} else {
+				0
+			}
+		}
+		.float_ {
+			int(value.float_value())
+		}
+		.string_ {
+			dyn_to_string(value).int()
+		}
+		else {
+			0
+		}
 	}
 }
 
 fn dyn_to_i64(value DynValue) i64 {
 	return match value.type {
-		.int_ { value.int_value() }
-		.bool_ { if value.bool_value() { i64(1) } else { i64(0) } }
-		.float_ { i64(value.float_value()) }
-		.string_ { dyn_to_string(value).i64() }
-		else { i64(0) }
+		.int_ {
+			value.int_value()
+		}
+		.bool_ {
+			if value.bool_value() {
+				i64(1)
+			} else {
+				i64(0)
+			}
+		}
+		.float_ {
+			i64(value.float_value())
+		}
+		.string_ {
+			dyn_to_string(value).i64()
+		}
+		else {
+			i64(0)
+		}
 	}
 }
 
 fn dyn_to_f64(value DynValue) f64 {
 	return match value.type {
-		.float_ { value.float_value() }
-		.int_ { f64(value.int_value()) }
-		.bool_ { if value.bool_value() { 1.0 } else { 0.0 } }
-		.string_ { dyn_to_string(value).f64() }
-		else { 0.0 }
+		.float_ {
+			value.float_value()
+		}
+		.int_ {
+			f64(value.int_value())
+		}
+		.bool_ {
+			if value.bool_value() {
+				1.0
+			} else {
+				0.0
+			}
+		}
+		.string_ {
+			dyn_to_string(value).f64()
+		}
+		else {
+			0.0
+		}
 	}
 }
 
@@ -948,6 +1038,9 @@ pub fn (mut v PersistentOwnedZBox) release() {
 			v.z = invalid_zval()
 		}
 		.fallback_zval {
+			if v.z.is_valid() {
+				persistent_fallback_zval_dec()
+			}
 			v.z.release()
 		}
 	}
@@ -1070,7 +1163,9 @@ pub fn (v PersistentOwnedZBox) is_callable() bool {
 		.dyn_data {
 			return false
 		}
-		.retained_callable { return true }
+		.retained_callable {
+			return true
+		}
 		else {}
 	}
 	mut temp := v.request_owned_non_dyn() or { return false }
@@ -1192,7 +1287,9 @@ pub fn (v PersistentOwnedZBox) resource_type() ?string {
 		.dyn_data {
 			return none
 		}
-		.retained_callable { return none }
+		.retained_callable {
+			return none
+		}
 		else {}
 	}
 	mut temp := v.request_owned_non_dyn() or { return none }
@@ -1207,7 +1304,9 @@ pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
 		.dyn_data {
 			return none
 		}
-		.retained_callable { return none }
+		.retained_callable {
+			return none
+		}
 		else {}
 	}
 	mut temp := v.request_owned_non_dyn() or { return none }

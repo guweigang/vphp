@@ -52,15 +52,17 @@ fn (mut cli CliApp) run_command(args []string) { ... }
 Zval 资源的泄漏通常隐蔽且致命。由于跨语言调用涉及复杂的条件分支，如果在代码中途发生 `panic` 或 `return error`，手动编写的 `release()` 函数经常会被跳过。
 
 ### 避坑准则
-* **谁创建，谁释放**：在 V 代码中，只要创建了需要进入 PHP 引擎的 `ZVal`（无论是 RequestOwnedZBox 还是动态分配的 Zval），立刻在下一行写下 `defer { zval.release() }`。
+* **谁创建，谁释放**：在 V 代码中，只要创建了需要进入 PHP 引擎的 owned wrapper（如 `RequestOwnedZBox` / `PersistentOwnedZBox`），立刻在下一行写下 `defer { box.release() }`，除非它被明确转移给上层所有者。
+* **PHP call 结果不要裸奔**：新代码优先用 `with_php_call_result_zval(...)` 在 callback 内消费返回值，或者用 `php_call_request_owned_box(...)` 接收 request-owned 结果。`call_php(...)` 只作为旧代码兼容入口。
 * 不要让资源的生命周期跨越不必要的逻辑块。
 
 ```v
-mut args_z := vphp.ZVal.new_null()
-args_z.array_init()
-defer { 
-    args_z.release() // 确保即使后续抛出错误，C 端内存也能正确释放
-}
+mut path := vphp.RequestOwnedZBox.new_string('/tmp/demo.txt')
+defer { path.release() }
+
+ok := vphp.with_php_call_result_zval('file_exists', [path.to_zval()], fn (res vphp.ZVal) bool {
+	return res.to_bool()
+})
 ```
 
 ## 4. 尊重目标语言的哲学：鸭子类型优先于严格继承
@@ -81,6 +83,25 @@ is_valid := obj.is_instance_of('VSlim\\Cli\\Command')
 is_valid := obj.is_object() && obj.method_exists('handle')
 ```
 
+## 5. Windows/MSVC ABI 规则要产品化，而不是靠记忆
+
+### 现象与原因
+Linux/macOS 下能工作的 V 到 C 到 Zend 链路，不代表 Windows/MSVC 下也稳定。Windows PHP 扩展最终由 PHP 官方 devel pack 和 MSVC 编译；V 侧更适合生成桥接 C，而不是直接替代 Zend ABI 的最终编译链。
+
+### 避坑准则
+* **桥接层签名只传轻量值**：跨 V/C/Zend 的 exported wrapper 避免按值传递 V 数组、map、字符串切片、泛型容器或复杂结构体。传 `Context`、裸指针、整数、布尔值，复杂数据留在对象字段或通过 `ZVal`/box API 读取。
+* **Zend ABI 由 C emitter 收口**：PHP arginfo、return type、object handler、module entry 等 Zend 细节只在 compiler C emitter / runtime C helper 一侧生成，V glue 不直接散落 Zend 宏。
+* **Windows binary 走 MSVC**：Windows 发布包坚持 PHP 8.5 NTS x64 devel pack + MSVC/NMake；V 侧使用 emit-only 生成桥接源码。
+* **GC 模式固定可复现**：基础 CI 和 release job 使用 `VPHP_V_GC=none` 做最小依赖验证；需要 Boehm 时作为额外矩阵加入，不能替代 none 模式。
+* **ABI 变更必须有 smoke**：新增 wrapper 模板、Context 参数规则、返回值模板或 module ABI 字段时，至少跑 `make -C vphptest test`，并优先覆盖 `Context`、`?T/!T`、object return、persistent fallback 这几类高风险路径。
+
+### PR 检查清单
+1. exported wrapper 是否只传轻量值或指针？
+2. V glue 是否没有新增 Zend 宏/ABI 细节？
+3. `Context` 参数是否从 PHP arginfo 和参数解析中隐藏？
+4. owned wrapper 是否有明确 release 或所有权转移？
+5. `VPHP_V_GC=none make -C vphptest test` 是否通过？
+
 ## 总结
 VPHP 作为一个桥接层，本身就站在两个世界的断层线上。未来的开发中请时刻铭记：
-**状态留给堆，传参用指针，判断靠特征，永远敬畏虚拟机的黑盒边界。**
+**状态留给堆，传参用指针，返回值有所有权，判断靠特征，永远敬畏虚拟机的黑盒边界。**

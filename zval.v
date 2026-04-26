@@ -23,10 +23,11 @@ pub type Callable = ZVal
 
 pub struct RuntimeCounters {
 pub:
-	autorelease_len int
-	owned_len       int
-	obj_registry_len u32
-	rev_registry_len u32
+	autorelease_len              int
+	owned_len                    int
+	obj_registry_len             u32
+	rev_registry_len             u32
+	persistent_fallback_zval_len int
 }
 
 fn C.vphp_release_zval(z &C.zval)
@@ -61,7 +62,7 @@ fn adopt_raw_with_ownership(raw &C.zval, ownership OwnershipKind) ZVal {
 	}
 	mut out := unsafe {
 		ZVal{
-			raw: raw
+			raw:   raw
 			owned: true
 		}
 	}
@@ -79,7 +80,7 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	mut out := ZVal{
-		raw: if ownership == .owned_persistent {
+		raw:           if ownership == .owned_persistent {
 			C.vphp_new_persistent_zval()
 		} else {
 			C.vphp_new_zval()
@@ -157,10 +158,11 @@ pub fn runtime_counters() RuntimeCounters {
 	mut rev_reg := u32(0)
 	C.vphp_runtime_counters(&ar, &owned, &obj_reg, &rev_reg)
 	return RuntimeCounters{
-		autorelease_len: ar
-		owned_len: owned
-		obj_registry_len: obj_reg
-		rev_registry_len: rev_reg
+		autorelease_len:              ar
+		owned_len:                    owned
+		obj_registry_len:             obj_reg
+		rev_registry_len:             rev_reg
+		persistent_fallback_zval_len: persistent_fallback_zval_count()
 	}
 }
 
@@ -278,12 +280,12 @@ pub fn (v ZVal) stream_metadata() ?StreamMetadata {
 		return none
 	}
 	return StreamMetadata{
-		mode: zval_string_key_or(meta, 'mode', '')
-		uri: zval_string_key_or(meta, 'uri', '')
-		seekable: zval_bool_key_or(meta, 'seekable', false)
+		mode:      zval_string_key_or(meta, 'mode', '')
+		uri:       zval_string_key_or(meta, 'uri', '')
+		seekable:  zval_bool_key_or(meta, 'seekable', false)
 		timed_out: zval_bool_key_or(meta, 'timed_out', false)
-		blocked: zval_bool_key_or(meta, 'blocked', false)
-		eof: zval_bool_key_or(meta, 'eof', false)
+		blocked:   zval_bool_key_or(meta, 'blocked', false)
+		eof:       zval_bool_key_or(meta, 'eof', false)
 	}
 }
 
@@ -304,7 +306,8 @@ pub fn (v ZVal) stream_get_contents() ?string {
 		return none
 	}
 	content := php_fn('stream_get_contents').call([v])
-	if !content.is_valid() || content.is_null() || content.is_undef() || (content.is_bool() && !content.to_bool()) {
+	if !content.is_valid() || content.is_null() || content.is_undef()
+		|| (content.is_bool() && !content.to_bool()) {
 		return none
 	}
 	return content.to_string()
@@ -349,9 +352,7 @@ pub fn (v ZVal) to_callable() ?Callable {
 }
 
 pub fn (v ZVal) must_callable() !Callable {
-	callable := v.to_callable() or {
-		return error('zval is not callable')
-	}
+	callable := v.to_callable() or { return error('zval is not callable') }
 	return callable
 }
 
@@ -876,7 +877,8 @@ pub fn (v ZVal) is_subclass_of(name string) bool {
 	if v.raw == 0 {
 		return false
 	}
-	res := php_fn('is_subclass_of').call([v, ZVal.new_string(name), ZVal.new_bool(true)])
+	res := php_fn('is_subclass_of').call([v, ZVal.new_string(name),
+		ZVal.new_bool(true)])
 	return res.is_valid() && res.to_bool()
 }
 
@@ -1022,7 +1024,8 @@ pub fn (v ZVal) method_owned_persistent(method string, args []ZVal) ZVal {
 		if argv.len > 0 {
 			p_args = &argv[0]
 		}
-		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len, p_args)
+		res := C.vphp_call_method(v.raw, &char(method.str), method.len, retval, args.len,
+			p_args)
 		if res == -1 {
 			C.vphp_release_zval(retval)
 			return invalid_zval()
@@ -1571,7 +1574,7 @@ pub fn ZVal.new_null() ZVal {
 		C.vphp_set_null(z)
 		autorelease_add(z)
 		return ZVal{
-			raw: z
+			raw:   z
 			owned: true
 		}
 	}
@@ -1584,7 +1587,7 @@ pub fn ZVal.new_int(n i64) ZVal {
 		C.vphp_set_lval(z, n)
 		autorelease_add(z)
 		return ZVal{
-			raw: z
+			raw:   z
 			owned: true
 		}
 	}
@@ -1597,7 +1600,7 @@ pub fn ZVal.new_float(f f64) ZVal {
 		C.vphp_set_double(z, f)
 		autorelease_add(z)
 		return ZVal{
-			raw: z
+			raw:   z
 			owned: true
 		}
 	}
@@ -1610,7 +1613,7 @@ pub fn ZVal.new_bool(b bool) ZVal {
 		C.vphp_set_bool(z, b)
 		autorelease_add(z)
 		return ZVal{
-			raw: z
+			raw:   z
 			owned: true
 		}
 	}
@@ -1622,7 +1625,7 @@ pub fn ZVal.new_string(s string) ZVal {
 		z := C.vphp_new_strl(&char(s.str), s.len)
 		autorelease_add(z)
 		return ZVal{
-			raw: z
+			raw:   z
 			owned: true
 		}
 	}
@@ -1982,7 +1985,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 // 便捷工厂：从 V 类型直接创建 Zend Value 包装
 pub fn new_zval_from[T](value T) !ZVal {
 	mut out := ZVal{
-		raw: C.vphp_new_zval()
+		raw:   C.vphp_new_zval()
 		owned: true
 	}
 	autorelease_add(out.raw)

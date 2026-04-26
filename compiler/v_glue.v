@@ -936,10 +936,37 @@ fn (g VGenerator) gen_task_registration(t &repr.PhpTaskRepr) string {
 	out << '        return ${t.v_name}{'
 
 	for i, param in t.parameters {
-		out << '            ${param.name}: args[${i}].to_v[${param.v_type}]() or { ${param.v_type}{} }'
+		out << '            ${param.name}: args[${i}].to_v[${param.v_type}]() or { ${task_zero_value_literal(param.v_type)} }'
 	}
 
 	out << '        }'
 	out << '    })'
 	return out.join('\n')
+}
+
+fn task_zero_value_literal(v_type string) string {
+	clean := v_type.trim_space()
+	return match clean {
+		'string' {
+			"''"
+		}
+		'bool' {
+			'false'
+		}
+		'int', 'i8', 'i16', 'i32', 'i64', 'u8', 'u16', 'u32', 'u64', 'usize', 'isize' {
+			'0'
+		}
+		'f32', 'f64' {
+			'0.0'
+		}
+		else {
+			if clean.starts_with('[]') {
+				'${clean}{}'
+			} else if clean.starts_with('map[') {
+				'${clean}{}'
+			} else {
+				'${clean}{}'
+			}
+		}
+	}
 }

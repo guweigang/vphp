@@ -22,12 +22,13 @@ pub:
 
 pub struct ClassMethod {
 pub:
-	php_name    string
-	c_func      string
-	return_spec ReturnSpec
-	flags       string
-	is_abstract bool
-	args        []ClassMethodArg
+	php_name     string
+	c_func       string
+	return_spec  ReturnSpec
+	flags        string
+	is_abstract  bool
+	uses_context bool
+	args         []ClassMethodArg
 }
 
 pub struct ClassMethodArg {
@@ -137,13 +138,19 @@ pub fn (mut b ClassBuilder) add_method_with_return_obj(php_name string, c_func s
 }
 
 pub fn (mut b ClassBuilder) add_method_spec(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg) &ClassBuilder {
+	return b.add_method_spec_with_context(php_name, c_func, return_spec, flags, args,
+		false)
+}
+
+pub fn (mut b ClassBuilder) add_method_spec_with_context(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg, uses_context bool) &ClassBuilder {
 	b.methods << ClassMethod{
-		php_name:    php_name
-		c_func:      c_func
-		return_spec: return_spec
-		flags:       flags
-		is_abstract: false
-		args:        args
+		php_name:     php_name
+		c_func:       c_func
+		return_spec:  return_spec
+		flags:        flags
+		is_abstract:  false
+		uses_context: uses_context
+		args:         args
 	}
 	return b
 }
@@ -167,13 +174,19 @@ pub fn (mut b ClassBuilder) add_abstract_method_with_return_obj(php_name string,
 }
 
 pub fn (mut b ClassBuilder) add_abstract_method_spec(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg) &ClassBuilder {
+	return b.add_abstract_method_spec_with_context(php_name, c_func, return_spec, flags,
+		args, false)
+}
+
+pub fn (mut b ClassBuilder) add_abstract_method_spec_with_context(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg, uses_context bool) &ClassBuilder {
 	b.methods << ClassMethod{
-		php_name:    php_name
-		c_func:      c_func
-		return_spec: return_spec
-		flags:       flags
-		is_abstract: true
-		args:        args
+		php_name:     php_name
+		c_func:       c_func
+		return_spec:  return_spec
+		flags:        flags
+		is_abstract:  true
+		uses_context: uses_context
+		args:         args
 	}
 	return b
 }
@@ -442,6 +455,12 @@ fn normalize_php_type_literal(name string) string {
 pub fn (b &ClassBuilder) render_arginfo_defs() string {
 	mut res := []string{}
 	for m in b.methods {
+		if m.uses_context {
+			res << 'ZEND_BEGIN_ARG_INFO_EX(arginfo_${m.c_func}, 0, 0, 0)'
+			res << 'ZEND_ARG_VARIADIC_TYPE_INFO(0, args, IS_MIXED, 0)'
+			res << 'ZEND_END_ARG_INFO()'
+			continue
+		}
 		res << method_arginfo_header(m)
 		for arg in m.args {
 			raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }

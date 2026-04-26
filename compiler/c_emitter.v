@@ -113,6 +113,9 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
 	mut out := []builder.ClassMethodArg{}
 	for arg in args {
+		if is_context_v_type(arg.v_type) {
+			continue
+		}
 		php_type := if arg.php_type != '' { arg.php_type } else { '' }
 		out << builder.ClassMethodArg{
 			name:        arg.name
@@ -123,6 +126,19 @@ fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
 		}
 	}
 	return out
+}
+
+fn is_context_v_type(v_type string) bool {
+	return v_type == 'Context' || v_type == 'vphp.Context'
+}
+
+fn method_uses_context_arg(m &repr.PhpMethodRepr) bool {
+	for arg in m.args {
+		if is_context_v_type(arg.v_type) {
+			return true
+		}
+	}
+	return false
 }
 
 fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.PhpArg) []builder.ClassMethodArg {
@@ -211,11 +227,13 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 			'${r.c_name().to_lower()}_${m.v_name}'
 		}
 		spec := g.build_method_return_spec(php_name, m)
+		uses_context_arg := method_uses_context_arg(m)
 		if m.is_abstract {
-			class_builder.add_abstract_method_spec(php_name, c_func, spec, flags +
-				' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args))
+			class_builder.add_abstract_method_spec_with_context(php_name, c_func, spec,
+				flags + ' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args), uses_context_arg)
 		} else {
-			class_builder.add_method_spec(php_name, c_func, spec, flags, method_args_to_builder(m.args))
+			class_builder.add_method_spec_with_context(php_name, c_func, spec, flags,
+				method_args_to_builder(m.args), uses_context_arg)
 		}
 	}
 	for attr in r.attributes {
@@ -250,6 +268,23 @@ const tpl_construct = 'PHP_METHOD({{CLASS}}, __construct) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
+    vphp_init_owned_instance(Z_OBJ_P(getThis()), h);
+    vphp_object_wrapper *wrapper = vphp_obj_from_obj(Z_OBJ_P(getThis()));
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    void* v_ptr = wrapper->v_ptr;
+    {{V_FUNC}}(v_ptr, ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_construct_context = 'PHP_METHOD({{CLASS}}, __construct) {
     vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
     vphp_class_handlers *h = {{HANDLER_CLASS}}_handlers();
@@ -348,6 +383,18 @@ const tpl_static_manual_ctx = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     }
 }'
 
+const tpl_static_context = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
+    extern void {{V_FUNC}}(vphp_context_internal ctx);
+    {{V_FUNC}}(ctx);
+    if (EG(exception)) {
+        return;
+    }
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
 // C 代码模板：实例方法（带返回值）
 const tpl_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
@@ -374,10 +421,54 @@ const tpl_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     }
 }'
 
+const tpl_instance_context = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    zend_object *vphp_this_obj = Z_OBJ_P(getThis());
+    vphp_object_addref(vphp_this_obj);
+    vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(vphp_this_obj, {{HANDLER_CLASS}}_handlers());
+    if (!wrapper->v_ptr) {
+        vphp_object_release(vphp_this_obj);
+        RETURN_FALSE;
+    }
+    {{V_FUNC}}(wrapper->v_ptr, ctx);
+    if (EG(exception)) {
+        vphp_object_release(vphp_this_obj);
+        return;
+    }
+    vphp_object_release(vphp_this_obj);
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
 const tpl_inherited_instance_method = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     if (!vphp_validate_internal_call(execute_data)) {
         return;
     }
+    vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
+    extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
+    extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
+    zend_object *vphp_this_obj = Z_OBJ_P(getThis());
+    vphp_object_addref(vphp_this_obj);
+    vphp_object_wrapper *wrapper = vphp_ensure_owned_instance_binding(vphp_this_obj, {{HANDLER_CLASS}}_handlers());
+    if (!wrapper->v_ptr) {
+        vphp_object_release(vphp_this_obj);
+        RETURN_FALSE;
+    }
+    {{V_FUNC}}(wrapper->v_ptr, ctx);
+    if (EG(exception)) {
+        vphp_object_release(vphp_this_obj);
+        return;
+    }
+    vphp_object_release(vphp_this_obj);
+    if (!vphp_validate_internal_return(execute_data, return_value)) {
+        return;
+    }
+}'
+
+const tpl_inherited_instance_context = 'PHP_METHOD({{CLASS}}, {{PHP_METHOD}}) {
     vphp_context_internal ctx = vphp_context_from_execute(execute_data, return_value);
     extern void {{V_FUNC}}(void* v_ptr, vphp_context_internal ctx);
     extern vphp_class_handlers* {{HANDLER_CLASS}}_handlers();
@@ -654,6 +745,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		return_info := method_runtime_return_info(r.name, m.name, m.is_static, method_return_type,
 			m.borrowed_return)
 		uses_inherited_receiver := class_uses_inherited_receiver(r)
+		uses_context_arg := method_uses_context_arg(m)
 
 		vars := {
 			'CLASS':         c_class
@@ -680,9 +772,15 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 			if class_uses_inherited_receiver(r) {
 				continue
 			}
-			c << render_tpl(tpl_construct, vars)
+			if uses_context_arg {
+				c << render_tpl(tpl_construct_context, vars)
+			} else {
+				c << render_tpl(tpl_construct, vars)
+			}
 		} else if m.is_static {
-			if return_info.kind == .static_factory {
+			if uses_context_arg {
+				c << render_tpl(tpl_static_context, vars)
+			} else if return_info.kind == .static_factory {
 				c << render_tpl(tpl_static_factory, vars)
 			} else if return_info.kind == .static_object {
 				mut obj_vars := vars.clone()
@@ -690,14 +788,27 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(return_info.class_key)
 				obj_vars['RET_OWNS_VPTR'] = return_info.owns_vptr
 				c << render_tpl(tpl_static_object, obj_vars)
-			} else if return_info.kind in [.result, .option, .void_] {
+			} else if return_info.kind in [.result, .option] {
 				// Result/Option 类型在 V glue 侧处理 or{}，C 侧等同 void 调用
+				payload_return := method_return_type[1..]
+				if payload_return == '' || payload_return == 'void' {
+					c << render_tpl(tpl_static_void, vars)
+				} else {
+					c << render_tpl(tpl_static_scalar, vars)
+				}
+			} else if return_info.kind == .void_ {
 				c << render_tpl(tpl_static_void, vars)
 			} else {
 				c << render_tpl(tpl_static_scalar, vars)
 			}
 		} else {
-			if return_info.kind == .instance_object {
+			if uses_context_arg {
+				if uses_inherited_receiver {
+					c << render_tpl(tpl_inherited_instance_context, vars)
+				} else {
+					c << render_tpl(tpl_instance_context, vars)
+				}
+			} else if return_info.kind == .instance_object {
 				mut obj_vars := vars.clone()
 				obj_vars['RET_CLASS'] = return_info.class_key
 				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(return_info.class_key)
