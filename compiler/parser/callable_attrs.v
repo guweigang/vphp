@@ -5,16 +5,16 @@ import compiler.repr
 
 struct ParsedCallableAttrs {
 mut:
-	has_export        bool
-	has_php_callable  bool
-	php_name          string
-	php_arg_types     map[string]string
-	php_arg_names     map[string]string
-	php_arg_defaults  map[string]string
-	php_return_type   string
-	php_arg_optional  map[string]bool
-	borrowed_return   bool
-	is_abstract       bool
+	has_export       bool
+	has_php_callable bool
+	php_name         string
+	php_arg_types    map[string]string
+	php_arg_names    map[string]string
+	php_arg_defaults map[string]string
+	php_return_type  string
+	php_arg_optional map[string]bool
+	borrowed_return  bool
+	is_abstract      bool
 }
 
 fn split_attr_entries(raw string) []string {
@@ -178,20 +178,61 @@ fn parse_php_arg_name_values(raw string) map[string]string {
 	return out
 }
 
-fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides map[string]string, names map[string]string, optional map[string]bool, defaults map[string]string) []repr.PhpArg {
-	mut args := []repr.PhpArg{}
+fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides map[string]string, names map[string]string, optional map[string]bool, defaults map[string]string, params_structs map[string]repr.PhpParamsStruct) []repr.PhpArgRepr {
+	mut args := []repr.PhpArgRepr{}
 	for i := start_idx; i < params.len; i++ {
 		param := params[i]
 		v_type := strip_module(table.type_to_str(param.typ))
+		if i == params.len - 1 {
+			if params_struct := params_structs[v_type] {
+				for field in params_struct.fields {
+					args << repr.PhpArgRepr{
+						name:        names[field.name] or { snake_to_camel(field.name) }
+						v_type:      field.v_type
+						php_type:    overrides[field.name] or { '' }
+						is_optional: true
+						php_default: defaults[field.name] or { field.php_default }
+						source:      repr.PhpArgSource{
+							kind:             .params_field
+							params_arg_name:  param.name
+							params_type:      v_type
+							params_field:     field.name
+							params_v_default: field.v_default
+						}
+					}
+				}
+				continue
+			}
+		}
 		inferred_optional := v_type.starts_with('?')
-		args << repr.PhpArg{
+		args << repr.PhpArgRepr{
 			name:        names[param.name] or { param.name }
-			v_name:      param.name
 			v_type:      v_type
 			php_type:    overrides[param.name] or { '' }
 			is_optional: param.name in optional || inferred_optional
-			php_default: defaults[param.name] or { if inferred_optional { 'null' } else { '' } }
+			php_default: defaults[param.name] or {
+				if inferred_optional { 'null' } else { '' }
+			}
+			source:      repr.PhpArgSource{
+				kind:        .direct
+				direct_name: param.name
+			}
 		}
 	}
 	return args
+}
+
+fn snake_to_camel(name string) string {
+	parts := name.split('_')
+	if parts.len <= 1 {
+		return name
+	}
+	mut out := parts[0]
+	for part in parts[1..] {
+		if part == '' {
+			continue
+		}
+		out += part[..1].to_upper() + part[1..]
+	}
+	return out
 }

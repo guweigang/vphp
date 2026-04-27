@@ -1,4 +1,4 @@
-// vphp/compiler/mod.v
+// vphp/compiler/entry.v
 module compiler
 
 import v.ast
@@ -53,6 +53,7 @@ pub fn (mut c Compiler) compile() !string {
 	}
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
 	field_types := collect_struct_field_types(all_stmts, c.table)
+	params_structs := cparser.collect_params_structs(all_stmts, c.table)
 	method_profiles := collect_method_borrow_profiles(all_stmts, c.table, field_types)
 	resolved_borrowed := resolve_method_borrowed_returns(method_profiles)
 	method_return_types := collect_method_return_types(method_profiles)
@@ -106,7 +107,8 @@ pub fn (mut c Compiler) compile() !string {
 					idx := c.class_index[receiver_type]
 					mut el := c.elements[idx]
 					if mut el is repr.PhpClassRepr {
-						cparser.add_class_method(mut el, stmt, c.table, field_types, resolved_borrowed, method_return_types)
+						cparser.add_class_method(mut el, stmt, c.table, field_types, resolved_borrowed,
+							method_return_types, params_structs)
 						c.elements[idx] = el // 重要：写回修改后的对象！
 					}
 					continue
@@ -130,7 +132,8 @@ pub fn (mut c Compiler) compile() !string {
 						idx := c.class_index[class_name]
 						mut el := c.elements[idx]
 						if mut el is repr.PhpClassRepr {
-							cparser.add_class_static_method(mut el, stmt, c.table, method_name)
+							cparser.add_class_static_method(mut el, stmt, c.table, method_name,
+								params_structs)
 						}
 						continue
 					}
@@ -138,7 +141,7 @@ pub fn (mut c Compiler) compile() !string {
 			}
 
 			// 3. 否则，作为普通全局函数处理
-			if func := cparser.parse_function_decl(stmt, c.table) {
+			if func := cparser.parse_function_decl(stmt, c.table, params_structs) {
 				c.elements << func
 				continue
 			}

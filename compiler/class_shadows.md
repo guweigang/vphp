@@ -41,7 +41,7 @@ Class-side metadata:
 
 Linked result:
 
-- appended `PhpClassConst` entries on the class repr
+- appended `PhpClassConstRepr` entries on the class repr
 
 ### 2. Shadow Statics
 
@@ -56,7 +56,7 @@ Class-side metadata:
 
 Linked result:
 
-- appended `PhpClassProp` entries with `is_static = true`
+- appended `PhpClassPropRepr` entries with `is_static = true`
 
 ## Current Linker Entry
 
@@ -101,7 +101,7 @@ And `elements` contains a matching `repr.PhpConstRepr` whose:
 1. find the matching `PhpConstRepr`
 2. copy its `v_type` into `cls.shadow_const_type`
 3. iterate over `el.fields`
-4. append one `PhpClassConst` per field into `cls.constants`
+4. append one `PhpClassConstRepr` per field into `cls.constants`
 
 ### Result
 
@@ -143,7 +143,7 @@ That constant repr points to a V type through:
 2. copy `el.v_type` into `cls.shadow_static_type`
 3. resolve that type in the V type table
 4. read its struct fields from `ast.Table`
-5. append one `PhpClassProp` per field:
+5. append one `PhpClassPropRepr` per field:
    - `visibility = 'public'`
    - `is_static = true`
 
@@ -205,7 +205,7 @@ Current constraints are intentional.
 ### Shadow constants
 
 - expect a structured `PhpConstRepr.fields`
-- map cleanly to `PhpClassConst`
+- map cleanly to `PhpClassConstRepr`
 
 ### Shadow statics
 
@@ -226,7 +226,7 @@ This linker can grow in predictable ways.
 3. property hook / interface property relationship checks
 4. stricter validation for missing or malformed shadow carriers
 
-If those arrive, they should likely become additional linker files rather than enlarging `parser` or `mod.v`.
+If those arrive, they should likely become additional linker files rather than enlarging `parser` or `entry.v`.
 
 ## Failure Modes To Watch
 

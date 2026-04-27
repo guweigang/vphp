@@ -50,7 +50,7 @@ fn is_php_exported_class(el repr.PhpRepr) bool {
 	return el is repr.PhpClassRepr && !el.is_trait
 }
 
-fn has_property_named(props []repr.PhpClassProp, name string) bool {
+fn has_property_named(props []repr.PhpClassPropRepr, name string) bool {
 	return props.any(it.name == name)
 }
 
@@ -256,7 +256,7 @@ fn link_class_shadow_statics(mut cls repr.PhpClassRepr, elements []repr.PhpRepr,
 				sym_info := sym.info
 				if sym_info is ast.Struct {
 					for field in sym_info.fields {
-						cls.properties << repr.PhpClassProp{
+						cls.properties << repr.PhpClassPropRepr{
 							name: field.name
 							v_field_name: field.name
 							v_type: table.get_type_name(field.typ)
@@ -280,7 +280,7 @@ fn link_class_shadow_constants(mut cls repr.PhpClassRepr, elements []repr.PhpRep
 		if el is repr.PhpConstRepr && el.name == cls.shadow_const_name {
 			cls.shadow_const_type = el.v_type
 			for f_name, sub_con in el.fields {
-				cls.constants << repr.PhpClassConst{
+				cls.constants << repr.PhpClassConstRepr{
 					name: sub_con.name
 					v_field_name: f_name
 					value: sub_con.value

@@ -87,6 +87,14 @@ pub fn PhpBool.of(value bool) PhpBool {
 	}
 }
 
+pub fn PhpBool.true_value() PhpBool {
+	return PhpBool.of(true)
+}
+
+pub fn PhpBool.false_value() PhpBool {
+	return PhpBool.of(false)
+}
+
 pub fn (v PhpBool) to_zval() ZVal {
 	return v.value.to_zval()
 }
@@ -124,6 +132,10 @@ pub fn PhpInt.of(value i64) PhpInt {
 	return PhpInt{
 		value: RequestBorrowedZBox.from_zval(ZVal.new_int(value))
 	}
+}
+
+pub fn PhpInt.zero() PhpInt {
+	return PhpInt.of(0)
 }
 
 pub fn (v PhpInt) to_zval() ZVal {
@@ -169,6 +181,10 @@ pub fn PhpDouble.of(value f64) PhpDouble {
 	}
 }
 
+pub fn PhpDouble.zero() PhpDouble {
+	return PhpDouble.of(0.0)
+}
+
 pub fn (v PhpDouble) to_zval() ZVal {
 	return v.value.to_zval()
 }
@@ -205,6 +221,10 @@ pub fn PhpString.of(value string) PhpString {
 	return PhpString{
 		value: RequestBorrowedZBox.from_zval(ZVal.new_string(value))
 	}
+}
+
+pub fn PhpString.empty() PhpString {
+	return PhpString.of('')
 }
 
 pub fn (v PhpString) to_zval() ZVal {

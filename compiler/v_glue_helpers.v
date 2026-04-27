@@ -32,56 +32,6 @@ fn closure_universal_helper_for(return_type string) string {
 	}
 }
 
-struct SemanticArgSpec {
-	method string
-	label  string
-	total  bool
-}
-
-fn semantic_arg_spec(v_type string) ?SemanticArgSpec {
-	clean := normalize_export_type_key(v_type)
-	return match clean {
-		'PhpValue' { SemanticArgSpec{'arg_value', 'value', true} }
-		'PhpNull' { SemanticArgSpec{'arg_null', 'null', false} }
-		'PhpBool' { SemanticArgSpec{'arg_bool', 'bool', false} }
-		'PhpInt' { SemanticArgSpec{'arg_int', 'int', false} }
-		'PhpDouble' { SemanticArgSpec{'arg_double', 'double', false} }
-		'PhpString' { SemanticArgSpec{'arg_string', 'string', false} }
-		'PhpScalar' { SemanticArgSpec{'arg_scalar', 'scalar', false} }
-		'PhpArray' { SemanticArgSpec{'arg_array', 'array', false} }
-		'PhpObject' { SemanticArgSpec{'arg_object', 'object', false} }
-		'PhpCallable' { SemanticArgSpec{'arg_callable', 'callable', false} }
-		'PhpResource' { SemanticArgSpec{'arg_resource', 'resource', false} }
-		'PhpReference' { SemanticArgSpec{'arg_reference', 'reference', false} }
-		'PhpIterable' { SemanticArgSpec{'arg_iterable', 'iterable', false} }
-		'PhpThrowable' { SemanticArgSpec{'arg_throwable', 'throwable', false} }
-		'PhpEnumCase' { SemanticArgSpec{'arg_enum_case', 'enum case', false} }
-		else { none }
-	}
-}
-
-fn arg_return_stmt(returns_voidptr bool) string {
-	return if returns_voidptr { 'return unsafe { nil }' } else { 'return' }
-}
-
-fn gen_semantic_arg_lines(var_name string, v_type string, index int, returns_voidptr bool) ?[]string {
-	if v_type.starts_with('?') {
-		inner := v_type[1..]
-		spec := semantic_arg_spec(inner) or { return none }
-		return ['    ${var_name} := ctx.${spec.method}(${index})']
-	}
-	spec := semantic_arg_spec(v_type) or { return none }
-	if spec.total {
-		return ['    ${var_name} := ctx.${spec.method}(${index})']
-	}
-	return [
-		'    ${var_name} := ctx.${spec.method}(${index}) or {',
-		"        vphp.throw_exception('argument ${index} must be ${spec.label}', 0)",
-		'        ${arg_return_stmt(returns_voidptr)}',
-		'    }',
-	]
-}
-
 fn is_internal_parent_scalar_field(v_type string) bool {
 	return v_type in ['string', 'int', 'i64', 'bool', 'f64']
 }

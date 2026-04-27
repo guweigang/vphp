@@ -70,7 +70,7 @@ fn parse_php_prop_map(raw string) map[string]string {
 	return out
 }
 
-fn parse_php_prop_attr(raw string) ?repr.PhpClassProp {
+fn parse_php_prop_attr(raw string) ?repr.PhpClassPropRepr {
 	value := normalize_attr_value(raw)
 	if value == '' {
 		return none
@@ -84,7 +84,7 @@ fn parse_php_prop_attr(raw string) ?repr.PhpClassProp {
 	if name == '' {
 		return none
 	}
-	return repr.PhpClassProp{
+	return repr.PhpClassPropRepr{
 		name:             name
 		v_field_name:     name
 		v_type:           if v_type == '' { 'mixed' } else { v_type }
@@ -341,7 +341,7 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 			}
 		}
 
-		cls.properties << repr.PhpClassProp{
+		cls.properties << repr.PhpClassPropRepr{
 			name:             php_prop_name
 			v_field_name:     field.name
 			v_type:           type_name
@@ -354,7 +354,7 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 	return cls
 }
 
-pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.Table, field_types map[string]string, borrowed_methods map[string]bool, method_return_types map[string]string) {
+pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.Table, field_types map[string]string, borrowed_methods map[string]bool, method_return_types map[string]string, params_structs map[string]repr.PhpParamsStruct) {
 	if stmt.is_method {
 		if stmt.name == 'free' {
 			cls.has_free_method = true
@@ -368,7 +368,7 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 	}
 	start_idx := if stmt.is_method { 1 } else { 0 }
 	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_arg_names,
-		attrs.php_arg_optional, attrs.php_arg_defaults)
+		attrs.php_arg_optional, attrs.php_arg_defaults, params_structs)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	inferred_borrowed := infer_borrowed_object_return(stmt, table, field_types, borrowed_methods,
@@ -382,7 +382,7 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 		v_name:          stmt.name
 		v_c_func:        '${cls.name}_${stmt.name}'
 		is_static:       false
-		return_spec:     repr.new_return_spec(ret_type, attrs.php_return_type)
+		return_spec:     repr.new_return_repr(ret_type, attrs.php_return_type)
 		borrowed_return: attrs.borrowed_return || inferred_borrowed
 		visibility:      if stmt.is_pub { 'public' } else { 'protected' }
 		args:            args
@@ -394,13 +394,13 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 	cls.methods[cls.methods.len - 1].delegated_target_method = delegated_method
 }
 
-pub fn add_class_static_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.Table, method_name string) {
+pub fn add_class_static_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.Table, method_name string, params_structs map[string]repr.PhpParamsStruct) {
 	attrs := parse_callable_attrs(stmt.attrs, 'php_method', method_name)
 	if !attrs.has_php_callable {
 		return
 	}
 	args := build_php_args(stmt.params, table, 0, attrs.php_arg_types, attrs.php_arg_names,
-		attrs.php_arg_optional, attrs.php_arg_defaults)
+		attrs.php_arg_optional, attrs.php_arg_defaults, params_structs)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	cls.methods << repr.PhpMethodRepr{
@@ -408,7 +408,7 @@ pub fn add_class_static_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table
 		v_name:          method_name
 		v_c_func:        '${cls.name}_${method_name}'
 		is_static:       true
-		return_spec:     repr.new_return_spec(ret_type, attrs.php_return_type)
+		return_spec:     repr.new_return_repr(ret_type, attrs.php_return_type)
 		borrowed_return: attrs.borrowed_return
 		visibility:      if stmt.is_pub { 'public' } else { 'protected' }
 		args:            args
@@ -430,7 +430,8 @@ pub fn build_method_borrow_profile(stmt ast.FnDecl, table &ast.Table, field_type
 		receiver_type:           receiver_type
 		method_name:             stmt.name
 		return_type:             normalize_delegated_target_type(table.type_to_str(stmt.return_type))
-		direct_borrowed:         infer_borrowed_object_return(stmt, table, field_types, map[string]bool{}, map[string]string{})
+		direct_borrowed:         infer_borrowed_object_return(stmt, table, field_types,
+			map[string]bool{}, map[string]string{})
 		delegated_target_type:   delegated_type
 		delegated_target_method: delegated_method
 	}
@@ -451,7 +452,8 @@ fn infer_borrowed_object_return(stmt ast.FnDecl, table &ast.Table, field_types m
 		return false
 	}
 	mut state := BorrowedReturnInferenceState{}
-	collect_borrowed_return_hints(stmt.stmts, table, field_types, borrowed_methods, method_return_types, mut borrow_roots, mut state)
+	collect_borrowed_return_hints(stmt.stmts, table, field_types, borrowed_methods, method_return_types, mut
+		borrow_roots, mut state)
 	return state.saw_borrowed && !state.saw_conflict && !state.saw_unknown
 }
 
@@ -469,29 +471,34 @@ fn collect_borrowed_return_hints(stmts []ast.Stmt, table &ast.Table, field_types
 				if stmt.exprs.len != 1 {
 					continue
 				}
-				match infer_object_return_expr(stmt.exprs[0], table, borrow_roots, field_types, borrowed_methods, method_return_types) {
+				match infer_object_return_expr(stmt.exprs[0], table, borrow_roots, field_types,
+					borrowed_methods, method_return_types) {
 					.borrowed { state.saw_borrowed = true }
 					.fresh { state.saw_conflict = true }
 					.unknown { state.saw_unknown = true }
 				}
 			}
 			ast.AssignStmt {
-				update_borrow_roots_from_assign(stmt, table, field_types, borrowed_methods, method_return_types, mut borrow_roots)
+				update_borrow_roots_from_assign(stmt, table, field_types, borrowed_methods,
+					method_return_types, mut borrow_roots)
 			}
 			ast.ExprStmt {
 				if stmt.expr is ast.IfExpr {
 					if_expr := stmt.expr as ast.IfExpr
 					for branch in if_expr.branches {
 						mut branch_roots := borrow_roots.clone()
-						apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods, method_return_types, mut branch_roots)
-						collect_borrowed_return_hints(branch.stmts, table, field_types, borrowed_methods, method_return_types, mut branch_roots, mut
+						apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods,
+							method_return_types, mut branch_roots)
+						collect_borrowed_return_hints(branch.stmts, table, field_types,
+							borrowed_methods, method_return_types, mut branch_roots, mut
 							state)
 					}
 				}
 			}
 			ast.Block {
 				mut block_roots := borrow_roots.clone()
-				collect_borrowed_return_hints(stmt.stmts, table, field_types, borrowed_methods, method_return_types, mut block_roots, mut state)
+				collect_borrowed_return_hints(stmt.stmts, table, field_types, borrowed_methods,
+					method_return_types, mut block_roots, mut state)
 			}
 			else {}
 		}
@@ -516,22 +523,28 @@ fn infer_object_return_expr(expr ast.Expr, table &ast.Table, borrow_roots map[st
 			return .fresh
 		}
 		ast.IfExpr {
-			return infer_if_expr_return_ownership(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_if_expr_return_ownership(expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.MatchExpr {
-			return infer_match_expr_return_ownership(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_match_expr_return_ownership(expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.ParExpr {
-			return infer_object_return_expr(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_object_return_expr(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.UnsafeExpr {
-			return infer_object_return_expr(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_object_return_expr(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.CastExpr {
-			return infer_object_return_expr(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_object_return_expr(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.PrefixExpr {
-			return infer_object_return_expr(expr.right, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_object_return_expr(expr.right, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.CallExpr {
 			if expr_root_is_borrowed(expr.left, borrow_roots)
@@ -540,11 +553,13 @@ fn infer_object_return_expr(expr ast.Expr, table &ast.Table, borrow_roots map[st
 			}
 			if expr.or_block.stmts.len > 0 {
 				mut primary := InferredObjectReturnOwnership.unknown
-				if infer_borrowed_call_return_type(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types) != none {
+				if infer_borrowed_call_return_type(expr, table, borrow_roots, field_types,
+					borrowed_methods, method_return_types) != none {
 					primary = .borrowed
 				}
 				mut fallback_roots := borrow_roots.clone()
-				fallback := infer_expr_block_result_ownership(expr.or_block.stmts, table, field_types, borrowed_methods, method_return_types, mut fallback_roots)
+				fallback := infer_expr_block_result_ownership(expr.or_block.stmts, table,
+					field_types, borrowed_methods, method_return_types, mut fallback_roots)
 				if primary == .borrowed && fallback == .borrowed {
 					return .borrowed
 				}
@@ -553,7 +568,8 @@ fn infer_object_return_expr(expr ast.Expr, table &ast.Table, borrow_roots map[st
 				}
 				return .unknown
 			}
-			if infer_borrowed_call_return_type(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types) != none {
+			if infer_borrowed_call_return_type(expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types) != none {
 				return .borrowed
 			}
 			return .unknown
@@ -572,8 +588,10 @@ fn infer_if_expr_return_ownership(if_expr ast.IfExpr, table &ast.Table, borrow_r
 	mut saw_unknown := false
 	for branch in if_expr.branches {
 		mut branch_roots := borrow_roots.clone()
-		apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods, method_return_types, mut branch_roots)
-		match infer_expr_block_result_ownership(branch.stmts, table, field_types, borrowed_methods, method_return_types, mut branch_roots) {
+		apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods,
+			method_return_types, mut branch_roots)
+		match infer_expr_block_result_ownership(branch.stmts, table, field_types, borrowed_methods,
+			method_return_types, mut branch_roots) {
 			.borrowed { saw_borrowed = true }
 			.fresh { return .fresh }
 			.unknown { saw_unknown = true }
@@ -593,7 +611,8 @@ fn infer_match_expr_return_ownership(match_expr ast.MatchExpr, table &ast.Table,
 	mut saw_unknown := false
 	for branch in match_expr.branches {
 		mut branch_roots := borrow_roots.clone()
-		match infer_expr_block_result_ownership(branch.stmts, table, field_types, borrowed_methods, method_return_types, mut branch_roots) {
+		match infer_expr_block_result_ownership(branch.stmts, table, field_types, borrowed_methods,
+			method_return_types, mut branch_roots) {
 			.borrowed { saw_borrowed = true }
 			.fresh { return .fresh }
 			.unknown { saw_unknown = true }
@@ -613,11 +632,13 @@ fn infer_expr_block_result_ownership(stmts []ast.Stmt, table &ast.Table, field_t
 		is_last := idx == stmts.len - 1
 		match stmt {
 			ast.AssignStmt {
-				update_borrow_roots_from_assign(stmt, table, field_types, borrowed_methods, method_return_types, mut borrow_roots)
+				update_borrow_roots_from_assign(stmt, table, field_types, borrowed_methods,
+					method_return_types, mut borrow_roots)
 			}
 			ast.ExprStmt {
 				if is_last {
-					return infer_object_return_expr(stmt.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+					return infer_object_return_expr(stmt.expr, table, borrow_roots, field_types,
+						borrowed_methods, method_return_types)
 				}
 			}
 			else {}
@@ -653,7 +674,8 @@ fn update_borrow_roots_from_assign(stmt ast.AssignStmt, table &ast.Table, field_
 		return
 	}
 	left := stmt.left[0] as ast.Ident
-	root_type := infer_borrow_root_type(stmt.right[0], table, borrow_roots, field_types, borrowed_methods, method_return_types)
+	root_type := infer_borrow_root_type(stmt.right[0], table, borrow_roots, field_types,
+		borrowed_methods, method_return_types)
 	if root_type == '' {
 		borrow_roots.delete(left.name)
 		return
@@ -667,35 +689,46 @@ fn infer_borrow_root_type(expr ast.Expr, table &ast.Table, borrow_roots map[stri
 			return borrow_roots[expr.name] or { '' }
 		}
 		ast.SelectorExpr {
-			base_type := infer_borrow_root_type(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			base_type := infer_borrow_root_type(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 			if base_type == '' {
 				return ''
 			}
 			return field_types['${base_type}::${expr.field_name}'] or { '' }
 		}
 		ast.IfExpr {
-			return infer_if_expr_borrow_root_type(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_if_expr_borrow_root_type(expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.MatchExpr {
-			return infer_match_expr_borrow_root_type(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_match_expr_borrow_root_type(expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.ParExpr {
-			return infer_borrow_root_type(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_borrow_root_type(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.UnsafeExpr {
-			return infer_borrow_root_type(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_borrow_root_type(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.CastExpr {
-			return infer_borrow_root_type(expr.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_borrow_root_type(expr.expr, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.PrefixExpr {
-			return infer_borrow_root_type(expr.right, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+			return infer_borrow_root_type(expr.right, table, borrow_roots, field_types,
+				borrowed_methods, method_return_types)
 		}
 		ast.CallExpr {
-			if call_borrowed_type := infer_borrowed_call_return_type(expr, table, borrow_roots, field_types, borrowed_methods, method_return_types) {
+			if call_borrowed_type := infer_borrowed_call_return_type(expr, table, borrow_roots,
+				field_types, borrowed_methods, method_return_types)
+			{
 				if expr.or_block.stmts.len > 0 {
 					mut fallback_roots := borrow_roots.clone()
-					fallback_type := infer_expr_block_result_root_type(expr.or_block.stmts, table, field_types, borrowed_methods, method_return_types, mut fallback_roots)
+					fallback_type := infer_expr_block_result_root_type(expr.or_block.stmts,
+						table, field_types, borrowed_methods, method_return_types, mut
+						fallback_roots)
 					if fallback_type == call_borrowed_type {
 						return call_borrowed_type
 					}
@@ -704,7 +737,8 @@ fn infer_borrow_root_type(expr ast.Expr, table &ast.Table, borrow_roots map[stri
 				return call_borrowed_type
 			}
 			if expr.args.len == 1 {
-				return infer_borrow_root_type(expr.args[0].expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+				return infer_borrow_root_type(expr.args[0].expr, table, borrow_roots,
+					field_types, borrowed_methods, method_return_types)
 			}
 			return ''
 		}
@@ -721,8 +755,10 @@ fn infer_if_expr_borrow_root_type(if_expr ast.IfExpr, table &ast.Table, borrow_r
 	mut inferred_type := ''
 	for branch in if_expr.branches {
 		mut branch_roots := borrow_roots.clone()
-		apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods, method_return_types, mut branch_roots)
-		branch_type := infer_expr_block_result_root_type(branch.stmts, table, field_types, borrowed_methods, method_return_types, mut branch_roots)
+		apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods,
+			method_return_types, mut branch_roots)
+		branch_type := infer_expr_block_result_root_type(branch.stmts, table, field_types,
+			borrowed_methods, method_return_types, mut branch_roots)
 		if branch_type == '' {
 			return ''
 		}
@@ -744,7 +780,8 @@ fn infer_match_expr_borrow_root_type(match_expr ast.MatchExpr, table &ast.Table,
 	mut inferred_type := ''
 	for branch in match_expr.branches {
 		mut branch_roots := borrow_roots.clone()
-		branch_type := infer_expr_block_result_root_type(branch.stmts, table, field_types, borrowed_methods, method_return_types, mut branch_roots)
+		branch_type := infer_expr_block_result_root_type(branch.stmts, table, field_types,
+			borrowed_methods, method_return_types, mut branch_roots)
 		if branch_type == '' {
 			return ''
 		}
@@ -767,11 +804,13 @@ fn infer_expr_block_result_root_type(stmts []ast.Stmt, table &ast.Table, field_t
 		is_last := idx == stmts.len - 1
 		match stmt {
 			ast.AssignStmt {
-				update_borrow_roots_from_assign(stmt, table, field_types, borrowed_methods, method_return_types, mut borrow_roots)
+				update_borrow_roots_from_assign(stmt, table, field_types, borrowed_methods,
+					method_return_types, mut borrow_roots)
 			}
 			ast.ExprStmt {
 				if is_last {
-					return infer_borrow_root_type(stmt.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+					return infer_borrow_root_type(stmt.expr, table, borrow_roots, field_types,
+						borrowed_methods, method_return_types)
 				}
 			}
 			else {}
@@ -807,7 +846,8 @@ fn apply_if_guard_borrow_root(cond ast.Expr, table &ast.Table, field_types map[s
 	if guard.vars.len == 0 {
 		return
 	}
-	mut root_type := infer_borrow_root_type(guard.expr, table, borrow_roots, field_types, borrowed_methods, method_return_types)
+	mut root_type := infer_borrow_root_type(guard.expr, table, borrow_roots, field_types,
+		borrowed_methods, method_return_types)
 	if root_type == '' && guard.expr_type.is_full() {
 		root_type = normalize_delegated_target_type(table.type_to_str(guard.expr_type))
 	}
@@ -877,7 +917,8 @@ fn infer_delegated_method_ref(stmt ast.FnDecl, table &ast.Table, field_types map
 	receiver_type := normalize_delegated_target_type(table.get_type_name(stmt.receiver.typ))
 	mut borrow_roots := initial_borrow_roots(stmt, table)
 	mut state := DelegatedReceiverMethodState{}
-	collect_delegated_method_ref(stmt.stmts, receiver_name, receiver_type, table, field_types, mut borrow_roots, mut state)
+	collect_delegated_method_ref(stmt.stmts, receiver_name, receiver_type, table, field_types, mut
+		borrow_roots, mut state)
 	if state.invalid || !state.saw_delegate {
 		return '', ''
 	}
@@ -899,7 +940,8 @@ fn collect_delegated_method_ref(stmts []ast.Stmt, receiver_name string, receiver
 				if stmt.exprs.len != 1 {
 					continue
 				}
-				target_type, target_method := delegated_method_ref(stmt.exprs[0], receiver_name, receiver_type, table, field_types, borrow_roots)
+				target_type, target_method := delegated_method_ref(stmt.exprs[0], receiver_name,
+					receiver_type, table, field_types, borrow_roots)
 				if target_type == '' || target_method == '' {
 					state.invalid = true
 					continue
@@ -915,22 +957,25 @@ fn collect_delegated_method_ref(stmts []ast.Stmt, receiver_name string, receiver
 				}
 			}
 			ast.AssignStmt {
-				update_borrow_roots_from_assign(stmt, table, field_types, map[string]bool{}, map[string]string{}, mut borrow_roots)
+				update_borrow_roots_from_assign(stmt, table, field_types, map[string]bool{},
+					map[string]string{}, mut borrow_roots)
 			}
 			ast.ExprStmt {
 				if stmt.expr is ast.IfExpr {
 					if_expr := stmt.expr as ast.IfExpr
 					for branch in if_expr.branches {
 						mut branch_roots := borrow_roots.clone()
-						apply_if_guard_borrow_root(branch.cond, table, field_types, map[string]bool{}, map[string]string{}, mut branch_roots)
-						collect_delegated_method_ref(branch.stmts, receiver_name, receiver_type, table, field_types, mut branch_roots, mut
-							state)
+						apply_if_guard_borrow_root(branch.cond, table, field_types, map[string]bool{},
+							map[string]string{}, mut branch_roots)
+						collect_delegated_method_ref(branch.stmts, receiver_name, receiver_type,
+							table, field_types, mut branch_roots, mut state)
 					}
 				}
 			}
 			ast.Block {
 				mut block_roots := borrow_roots.clone()
-				collect_delegated_method_ref(stmt.stmts, receiver_name, receiver_type, table, field_types, mut block_roots, mut state)
+				collect_delegated_method_ref(stmt.stmts, receiver_name, receiver_type,
+					table, field_types, mut block_roots, mut state)
 			}
 			else {}
 		}
@@ -946,23 +991,28 @@ fn delegated_method_ref(expr ast.Expr, receiver_name string, receiver_type strin
 			if !expr_root_is_borrowed(expr.left, borrow_roots) {
 				return '', ''
 			}
-			target_type := delegated_call_target_type(expr, receiver_name, receiver_type, table, field_types, borrow_roots)
+			target_type := delegated_call_target_type(expr, receiver_name, receiver_type,
+				table, field_types, borrow_roots)
 			if target_type == '' {
 				return '', ''
 			}
 			return target_type, expr.name
 		}
 		ast.ParExpr {
-			return delegated_method_ref(expr.expr, receiver_name, receiver_type, table, field_types, borrow_roots)
+			return delegated_method_ref(expr.expr, receiver_name, receiver_type, table,
+				field_types, borrow_roots)
 		}
 		ast.UnsafeExpr {
-			return delegated_method_ref(expr.expr, receiver_name, receiver_type, table, field_types, borrow_roots)
+			return delegated_method_ref(expr.expr, receiver_name, receiver_type, table,
+				field_types, borrow_roots)
 		}
 		ast.CastExpr {
-			return delegated_method_ref(expr.expr, receiver_name, receiver_type, table, field_types, borrow_roots)
+			return delegated_method_ref(expr.expr, receiver_name, receiver_type, table,
+				field_types, borrow_roots)
 		}
 		ast.PrefixExpr {
-			return delegated_method_ref(expr.right, receiver_name, receiver_type, table, field_types, borrow_roots)
+			return delegated_method_ref(expr.right, receiver_name, receiver_type, table,
+				field_types, borrow_roots)
 		}
 		else {
 			return '', ''
@@ -977,7 +1027,8 @@ fn delegated_call_target_type(expr ast.CallExpr, receiver_name string, receiver_
 	if expr.receiver_type.is_full() {
 		return normalize_delegated_target_type(table.type_to_str(expr.receiver_type))
 	}
-	return infer_receiver_expr_type(expr.left, receiver_name, receiver_type, field_types, borrow_roots)
+	return infer_receiver_expr_type(expr.left, receiver_name, receiver_type, field_types,
+		borrow_roots)
 }
 
 fn infer_receiver_expr_type(expr ast.Expr, receiver_name string, receiver_type string, field_types map[string]string, borrow_roots map[string]string) string {
@@ -989,27 +1040,33 @@ fn infer_receiver_expr_type(expr ast.Expr, receiver_name string, receiver_type s
 			return ''
 		}
 		ast.SelectorExpr {
-			base_type := infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types, borrow_roots)
+			base_type := infer_receiver_expr_type(expr.expr, receiver_name, receiver_type,
+				field_types, borrow_roots)
 			if base_type == '' {
 				return ''
 			}
 			return field_types['${base_type}::${expr.field_name}'] or { '' }
 		}
 		ast.ParExpr {
-			return infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types, borrow_roots)
+			return infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types,
+				borrow_roots)
 		}
 		ast.UnsafeExpr {
-			return infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types, borrow_roots)
+			return infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types,
+				borrow_roots)
 		}
 		ast.CastExpr {
-			return infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types, borrow_roots)
+			return infer_receiver_expr_type(expr.expr, receiver_name, receiver_type, field_types,
+				borrow_roots)
 		}
 		ast.PrefixExpr {
-			return infer_receiver_expr_type(expr.right, receiver_name, receiver_type, field_types, borrow_roots)
+			return infer_receiver_expr_type(expr.right, receiver_name, receiver_type,
+				field_types, borrow_roots)
 		}
 		ast.CallExpr {
 			if expr.args.len == 1 {
-				return infer_receiver_expr_type(expr.args[0].expr, receiver_name, receiver_type, field_types, borrow_roots)
+				return infer_receiver_expr_type(expr.args[0].expr, receiver_name, receiver_type,
+					field_types, borrow_roots)
 			}
 			return ''
 		}

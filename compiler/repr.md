@@ -120,7 +120,7 @@ Fields:
 - `methods`
   - PHP-visible method metadata
 
-### `PhpClassConst`
+### `PhpClassConstRepr`
 
 Represents one PHP class constant.
 
@@ -146,7 +146,7 @@ Fields:
     - `string`
     - `bool`
 
-### `PhpClassProp`
+### `PhpClassPropRepr`
 
 Represents one PHP property.
 
@@ -211,7 +211,7 @@ Fields:
 - `is_abstract`
   - Whether the method should be emitted as abstract
 
-### `PhpArg`
+### `PhpArgRepr`
 
 Used by both functions and methods.
 
@@ -297,13 +297,13 @@ Fields:
   - PHP-visible enum class name
 
 - `cases`
-  - Enum cases, stored as `PhpEnumCase`
+  - Enum cases, stored as `PhpEnumCaseRepr`
 
 - `parse_err`
   - Deferred parse error slot
   - Used when enum syntax is discovered but cannot be safely exported
 
-### `PhpEnumCase`
+### `PhpEnumCaseRepr`
 
 Fields:
 

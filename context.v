@@ -15,18 +15,46 @@ pub:
 // ======== 构造与基础状态 ========
 
 // 创建 Context 实例
-pub fn Context.new(ex &C.zend_execute_data, ret &C.zval) Context {
+pub fn Context.new(ex voidptr, ret &C.zval) Context {
 	return unsafe {
 		Context{
-			ex:  ex
+			ex:  &C.zend_execute_data(ex)
 			ret: ret
 		}
 	}
 }
 
-pub fn new_context(ex &C.zend_execute_data, ret &C.zval) Context {
+pub fn new_context(ex voidptr, ret &C.zval) Context {
 	// Backward-compat alias; prefer Context.new(...)
 	return Context.new(ex, ret)
+}
+
+pub fn (ctx Context) arg_at(index int) PhpArg {
+	return ctx.arg_named(index, '')
+}
+
+pub fn (ctx Context) arg_named(index int, name string) PhpArg {
+	return PhpArg.from_zval(index, name, ctx.arg_raw(index))
+}
+
+pub fn (ctx Context) args(metas []PhpArgMeta) PhpArgs {
+	num := ctx.num_args()
+	mut items := []PhpArg{cap: num}
+	for index in 0 .. num {
+		mut name := ''
+		for meta in metas {
+			if meta.index == index {
+				name = meta.name
+				break
+			}
+		}
+		items << ctx.arg_named(index, name)
+	}
+	return PhpArgs.new(items)
+}
+
+pub fn (ctx Context) @return() PhpReturn {
+	return PhpReturn.new(ctx.ret)
 }
 
 pub fn (ctx Context) num_args() int {

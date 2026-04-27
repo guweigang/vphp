@@ -432,6 +432,20 @@ dt.to_object[Article]() or { /* none */ }
 
 ## 参数构造建议
 
+导出给 PHP 的函数参数目前分成五类：`vphp.Context`、V 原生值、
+PHP 语义 wrapper、生命周期/裸 `ZVal` escape hatch、以及 `@[params]`
+struct。完整规则见 [../compiler/README.md](../compiler/README.md) 的
+“Exported Function Parameter Forms”。
+
+导出函数的返回值也分成五类：`ctx.return()` 手动返回、V 原生值、V
+容器/struct 序列化、PHP 语义 wrapper、生命周期/裸 `ZVal` 返回。完整
+规则见 [../compiler/README.md](../compiler/README.md) 的
+“Exported Function Return Forms”。
+
+其中最容易踩坑的是 PHP 语义 wrapper：`vphp.PhpObject`、
+`vphp.PhpArray`、`vphp.PhpCallable`、`vphp.PhpValue` 等返回时保留原
+PHP 值语义，不会被当成 V struct 展开成数组。
+
 手动组装参数时，推荐统一使用：
 
 ```v

@@ -139,171 +139,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 		out << '}'
 	}
 
-	mut has_readable_props := false
-	mut has_writable_props := false
-	mut has_syncable_props := false
-	for prop in r.properties {
-		if prop.is_static || prop.visibility != 'public' {
-			continue
-		}
-		if prop.is_property_only {
-			continue
-		}
-		match prop.v_type {
-			'string', 'int', 'i64', 'bool', 'f64' {
-				has_readable_props = true
-				has_syncable_props = true
-				if prop.is_mut {
-					has_writable_props = true
-				}
-			}
-			else {}
-		}
-	}
-
-	// B. 属性读取
-	out << "@[export: '${r.name}_get_prop']"
-	out << 'pub fn ${lower_name}_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {'
-	if !has_readable_props {
-		out << '    _ = ptr'
-		out << '    _ = name_ptr'
-		out << '    _ = name_len'
-		out << '    _ = rv'
-	} else {
-		out << '    unsafe {'
-		out << '        name := name_ptr.vstring_with_len(name_len).clone()'
-		out << '        obj := &${r.name}(ptr)'
-		for prop in r.properties {
-			if prop.is_static || prop.visibility != 'public' || prop.is_property_only {
-				continue
-			}
-			match prop.v_type {
-				'string' {
-					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
-					out << '            return'
-					out << '        }'
-				}
-				'int' {
-					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, i64(obj.${prop.v_field_name}))'
-					out << '            return'
-					out << '        }'
-				}
-				'i64' {
-					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
-					out << '            return'
-					out << '        }'
-				}
-				'bool' {
-					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
-					out << '            return'
-					out << '        }'
-				}
-				'f64' {
-					out << "        if name == '${prop.name}' {"
-					out << '            vphp.return_val_raw(rv, obj.${prop.v_field_name})'
-					out << '            return'
-					out << '        }'
-				}
-				else {}
-			}
-		}
-		out << '    }'
-	}
-	out << '}'
-
-	// C. 属性写入
-	out << "@[export: '${r.name}_set_prop']"
-	out << 'pub fn ${lower_name}_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {'
-	if !has_writable_props {
-		out << '    _ = ptr'
-		out << '    _ = name_ptr'
-		out << '    _ = name_len'
-		out << '    _ = value'
-	} else {
-		out << '    unsafe {'
-		out << '        name := name_ptr.vstring_with_len(name_len).clone()'
-		out << '        mut obj := &${r.name}(ptr)'
-		out << '        arg := vphp.ZVal{ raw: value }'
-		for prop in r.properties {
-			if prop.is_static || prop.visibility != 'public' || prop.is_property_only
-				|| !prop.is_mut {
-				continue
-			}
-			match prop.v_type {
-				'string' {
-					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.v_field_name} = arg.get_string()'
-					out << '            return'
-					out << '        }'
-				}
-				'int' {
-					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.v_field_name} = int(arg.get_int())'
-					out << '            return'
-					out << '        }'
-				}
-				'i64' {
-					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.v_field_name} = arg.get_int()'
-					out << '            return'
-					out << '        }'
-				}
-				'bool' {
-					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.v_field_name} = arg.get_bool()'
-					out << '            return'
-					out << '        }'
-				}
-				'f64' {
-					out << "        if name == '${prop.name}' {"
-					out << '            obj.${prop.v_field_name} = C.vphp_get_double(value)'
-					out << '            return'
-					out << '        }'
-				}
-				else {}
-			}
-		}
-		out << '    }'
-	}
-	out << '}'
-
-	// E. 同步器
-	out << "@[export: '${r.name}_sync_props']"
-	out << 'pub fn ${lower_name}_sync_props(ptr voidptr, zv &C.zval) {'
-	if !has_syncable_props {
-		out << '    _ = ptr'
-		out << '    _ = zv'
-	} else {
-		out << '    unsafe {'
-		out << '        obj := &${r.name}(ptr)'
-		out << '        out := vphp.ZVal{ raw: zv }'
-		for prop in r.properties {
-			if prop.is_static || prop.visibility != 'public' || prop.is_property_only {
-				continue
-			}
-			match prop.v_type {
-				'string' {
-					out << "        out.add_property_string('${prop.name}', obj.${prop.v_field_name})"
-				}
-				'int', 'i64' {
-					out << "        out.add_property_long('${prop.name}', i64(obj.${prop.v_field_name}))"
-				}
-				'f64' {
-					out << "        out.add_property_double('${prop.name}', obj.${prop.v_field_name})"
-				}
-				'bool' {
-					out << "        out.add_property_bool('${prop.name}', obj.${prop.v_field_name})"
-				}
-				else {}
-			}
-		}
-		out << '    }'
-	}
-	out << '}'
+	out << ClassPropertyGlue.new(r.name, lower_name, r.properties).render_lines()
 
 	// F. 影子访问器
 	if r.shadow_const_name != '' {
@@ -358,16 +194,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 
 		return_info := method_runtime_return_info(r.name, m.name, m.is_static, return_type,
 			m.borrowed_return)
-		is_result := return_info.kind == .result
-		is_option := return_info.kind == .option
-		// Result/Option 类型在 V glue 侧通过 or{} 处理，C 侧不返回值
-		effective_return := if is_result {
-			return_type[1..]
-		} else if is_option {
-			return_type[1..]
-		} else {
-			return_type
-		}
+		return_binding := ReturnBinding.new(return_type)
 		returns_object := return_info.kind in [.static_factory, .static_object, .instance_object]
 		ret_decl := if returns_object { 'voidptr' } else { '' }
 
@@ -385,46 +212,9 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 		out << '    vphp_ar_mark := vphp.autorelease_mark()'
 		out << '    defer { vphp.autorelease_drain(vphp_ar_mark) }'
 
-		mut arg_names := []string{}
-		for i, arg in m.args {
-			var_name := 'arg_${i}'
-			tm := TypeMap.get_type(arg.v_type)
-			if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
-				out << '    ${var_name} := ctx'
-			} else if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {
-				out << '    ${var_name} := ctx.arg_raw(${i})'
-			} else if arg.v_type == 'Callable' || arg.v_type == 'vphp.Callable' {
-				// Callable is a ZVal alias — read as raw ZVal for callable params
-				out << '    ${var_name} := ctx.arg_raw(${i})'
-			} else if arg.v_type == 'RequestBorrowedZBox'
-				|| arg.v_type == 'vphp.RequestBorrowedZBox' {
-				out << '    ${var_name} := ctx.arg_borrowed_zbox(${i})'
-			} else if arg.v_type == 'RequestOwnedZBox' || arg.v_type == 'vphp.RequestOwnedZBox' {
-				out << '    ${var_name} := ctx.arg_owned_request_zbox(${i})'
-			} else if arg.v_type == 'PersistentOwnedZBox'
-				|| arg.v_type == 'vphp.PersistentOwnedZBox' {
-				out << '    ${var_name} := ctx.arg_owned_persistent_zbox(${i})'
-			} else if semantic_arg_lines := gen_semantic_arg_lines(var_name, arg.v_type,
-				i, returns_object)
-			{
-				out << semantic_arg_lines
-			} else if arg.v_type == '?RequestBorrowedZBox'
-				|| arg.v_type == '?vphp.RequestBorrowedZBox' {
-				out << '    ${var_name} := ctx.arg_borrowed_zbox_opt(${i})'
-			} else if arg.v_type.starts_with('?') {
-				out << '    ${var_name} := ctx.arg_opt[${arg.v_type[1..]}](${i})'
-			} else if tm.c_type == 'void*' {
-				v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }
-				out << '    ${var_name} := unsafe { ${v_type}(ctx.arg_raw_obj(${i})) }'
-			} else {
-				// Ownership-aware signatures like `RequestBorrowedZBox` flow through
-				// the generic `ctx.arg[T]` path and stay as the preferred generated
-				// glue shape. `ZVal`/`Callable` remain the explicit low-level escape
-				// hatches above.
-				out << '    ${var_name} := ctx.arg[${arg.v_type}](${i})'
-			}
-			arg_names << var_name
-		}
+		arg_setup := build_php_arg_setup(m.args, returns_object, true)
+		out << arg_setup.lines
+		arg_names := arg_setup.names
 
 		call_args := arg_names.join(', ')
 		v_name := if m.v_name != '' { m.v_name } else { m.name }
@@ -444,149 +234,19 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			out << '    ${r.name}.sync_statics_from_php(ctx)'
 		}
 
-		if is_result {
-			// Result 类型：通过运行时 helper 桥接 V error → PHP exception
-			// 构建闭包捕获列表
-			mut captures := arg_names.clone()
-			if m.is_static {
-				// 静态方法无需捕获 recv
-			} else {
-				captures << 'recv'
-			}
-			capture_list := if captures.len > 0 { captures.join(', ') } else { '' }
-
-			if effective_return == '' || effective_return == 'void' {
-				// !void: fn () !
-				out << '    vphp.call_or_throw(fn [${capture_list}] () ! {'
-				out << '        ${call_str}!'
-				out << '    })'
-			} else {
-				// !T: fn () !T
-				out << '    vphp.call_or_throw_val[${effective_return}](fn [${capture_list}] () !${effective_return} {'
-				out << '        return ${call_str}!'
-				out << '    }, ctx)'
-			}
-			if r.shadow_static_name != '' {
-				out << '    ${r.name}.sync_statics_to_php(ctx)'
-			}
-		} else if is_option {
-			// Option 类型：通过运行时 helper 桥接 V none → PHP null
-			// 构建闭包捕获列表
-			mut captures := arg_names.clone()
-			if m.is_static {
-				// 静态方法无需捕获 recv
-			} else {
-				captures << 'recv'
-			}
-			capture_list := if captures.len > 0 { captures.join(', ') } else { '' }
-
-			if effective_return == '' || effective_return == 'void' {
-				// ?void: fn () ? — V option 自动传播，无需 ? 后缀
-				out << '    vphp.call_or_null(fn [${capture_list}] () ? {'
-				out << '        ${call_str}'
-				out << '    }, ctx)'
-			} else {
-				// ?T: fn () ?T — V option 自动传播，无需 ? 后缀
-				out << '    vphp.call_or_null_val[${effective_return}](fn [${capture_list}] () ?${effective_return} {'
-				out << '        return ${call_str}'
-				out << '    }, ctx)'
-			}
-			if r.shadow_static_name != '' {
-				out << '    ${r.name}.sync_statics_to_php(ctx)'
-			}
-		} else if return_type == 'void' {
-			out << '    ${call_str}'
-			if uses_inherited_receiver && !m.is_static {
-				out << '    ${lower_name}_sync_to_php(this_obj, recv)'
-			}
-			if r.shadow_static_name != '' {
-				out << '    ${r.name}.sync_statics_to_php(ctx)'
-			}
-			if returns_object {
-				if m.is_static {
-					out << '    return voidptr(0)'
-				} else if uses_inherited_receiver {
-					out << '    return voidptr(this_obj)'
-				} else {
-					out << '    return ptr'
-				}
-			}
-		} else {
-			out << '    res := ${call_str}'
-			if uses_inherited_receiver && !m.is_static {
-				out << '    ${lower_name}_sync_to_php(this_obj, recv)'
-			}
-			if r.shadow_static_name != '' {
-				out << '    ${r.name}.sync_statics_to_php(ctx)'
-			}
-			universal_helper := closure_universal_helper_for(effective_return)
-			if effective_return.contains('fn') || universal_helper != '' {
-				// Handle functions that return V closures. Use the same
-				// concrete-helper emission strategy as for top-level functions
-				// to avoid emitting generic bracketed forms that can trigger
-				// V compiler alias/signature handling bugs.
-				out << '    // Returned value is a closure type: wrap using concrete helper'
-				mut helper := universal_helper
-				if helper == '' {
-					em_params := if effective_return.contains('fn (') {
-						effective_return.all_after('fn (').all_before(')')
-					} else {
-						''
-					}
-					em_ret := if effective_return.contains(') ') {
-						effective_return.all_after(') ').trim_space()
-					} else {
-						''
-					}
-					mut em_arity := if em_params.trim_space() == '' {
-						0
-					} else {
-						em_params.split(',').len
-					}
-					if em_arity > 4 {
-						em_arity = 4
-					}
-					helper = 'wrap_closure_universal_0'
-					if em_ret == 'void' {
-						helper = 'wrap_closure_universal_0_void'
-					}
-					if em_arity == 1 {
-						helper = if em_ret == 'void' {
-							'wrap_closure_universal_1_void'
-						} else {
-							'wrap_closure_universal_1'
-						}
-					} else if em_arity == 2 {
-						helper = if em_ret == 'void' {
-							'wrap_closure_universal_2_void'
-						} else {
-							'wrap_closure_universal_2'
-						}
-					} else if em_arity == 3 {
-						helper = if em_ret == 'void' {
-							'wrap_closure_universal_3_void'
-						} else {
-							'wrap_closure_universal_3'
-						}
-					} else if em_arity == 4 {
-						helper = if em_ret == 'void' {
-							'wrap_closure_universal_4_void'
-						} else {
-							'wrap_closure_universal_4'
-						}
-					}
-				}
-				out << '    // Wrap returned V closure using explicit helper: ${helper}'
-				out << '    ctx.${helper}(res)'
-			} else {
-				if !returns_object {
-					out << '    ctx.return_val[${return_type}](res)'
-				}
-			}
-			if returns_object {
-				out << '    return voidptr(res)'
-			}
+		method_ctx := ClassMethodGlueContext{
+			class_name:              r.name
+			lower_name:              lower_name
+			shadow_static_name:      r.shadow_static_name
+			is_static:               m.is_static
+			uses_inherited_receiver: uses_inherited_receiver
+			returns_object:          returns_object
+			return_type:             return_type
+			call_expr:               call_str
+			arg_names:               arg_names
+			return_binding:          return_binding
 		}
+		out << method_ctx.render_return_lines()
 		out << '}'
 	}
 

@@ -32,7 +32,7 @@ pub fn parse_enum_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpEnumRepr {
 			}
 			next_value = explicit
 		}
-		enum_repr.cases << repr.PhpEnumCase{
+		enum_repr.cases << repr.PhpEnumCaseRepr{
 			name: field.name
 			value: next_value.str()
 		}

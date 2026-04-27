@@ -1,6 +1,7 @@
 module compiler
 
 import compiler.builder
+import compiler.php_types
 import compiler.repr
 
 pub struct CGenerator {
@@ -24,7 +25,7 @@ fn (g CGenerator) build_method_return_spec(php_name string, m &repr.PhpMethodRep
 }
 
 fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
-	// Convert PhpArg to ClassMethodArg for arginfo generation
+	// Convert PhpArgRepr to ClassMethodArg for arginfo generation
 	mut args := []builder.ClassMethodArg{}
 	for arg in f.args {
 		if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
@@ -99,7 +100,7 @@ fn visibility_to_method_flags(visibility string) string {
 	}
 }
 
-fn visibility_to_property_flags(prop repr.PhpClassProp) string {
+fn visibility_to_property_flags(prop repr.PhpClassPropRepr) string {
 	mut flags := visibility_to_method_flags(prop.visibility)
 	if prop.is_static {
 		flags += ' | ZEND_ACC_STATIC'
@@ -110,7 +111,7 @@ fn visibility_to_property_flags(prop repr.PhpClassProp) string {
 	return flags
 }
 
-fn method_args_to_builder(args []repr.PhpArg) []builder.ClassMethodArg {
+fn method_args_to_builder(args []repr.PhpArgRepr) []builder.ClassMethodArg {
 	mut out := []builder.ClassMethodArg{}
 	for arg in args {
 		if is_context_v_type(arg.v_type) {
@@ -141,7 +142,7 @@ fn method_uses_context_arg(m &repr.PhpMethodRepr) bool {
 	return false
 }
 
-fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.PhpArg) []builder.ClassMethodArg {
+fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.PhpArgRepr) []builder.ClassMethodArg {
 	mut out := []builder.ClassMethodArg{}
 	for i, arg in args {
 		// V interface AST can carry an implicit first arg `x` (self-like placeholder).
@@ -460,7 +461,7 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 }
 
 fn (g CGenerator) ce_var_for_type(v_type string) string {
-	key := normalize_export_type_key(v_type)
+	key := php_types.normalize_export_type_key(v_type)
 	if key in g.class_ce_by_type {
 		return g.class_ce_by_type[key]
 	}
@@ -471,7 +472,7 @@ fn (g CGenerator) ce_var_for_type(v_type string) string {
 }
 
 fn (g CGenerator) php_name_for_type(v_type string) string {
-	key := normalize_export_type_key(v_type)
+	key := php_types.normalize_export_type_key(v_type)
 	if key in g.class_php_by_type {
 		return g.class_php_by_type[key]
 	}

@@ -39,15 +39,11 @@ pub fn (ctx Context) arg_raw(index int) ZVal {
 
 // Low-level borrowed view; prefer `arg_borrowed_zbox()` for ownership-facing
 pub fn (ctx Context) arg_borrowed_zbox(index int) RequestBorrowedZBox {
-	return RequestBorrowedZBox.of(ctx.arg_raw(index))
+	return ctx.arg_at(index).zbox()
 }
 
 pub fn (ctx Context) arg_borrowed_zbox_opt(index int) ?RequestBorrowedZBox {
-	val := ctx.arg_raw(index)
-	if !val.is_valid() || val.is_null() || val.is_undef() {
-		return none
-	}
-	return RequestBorrowedZBox.of(val)
+	return ctx.arg_at(index).zbox_opt()
 }
 
 pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
@@ -55,112 +51,85 @@ pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
 }
 
 pub fn (ctx Context) arg_value(index int) PhpValue {
-	return PhpValue.from_zval(ctx.arg_val(index))
+	return ctx.arg_at(index).value
 }
 
 pub fn (ctx Context) arg_null(index int) ?PhpNull {
-	return PhpNull.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).null_value()
 }
 
 pub fn (ctx Context) arg_bool(index int) ?PhpBool {
-	return PhpBool.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).bool_value()
 }
 
 pub fn (ctx Context) arg_int(index int) ?PhpInt {
-	return PhpInt.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).int_value()
 }
 
 pub fn (ctx Context) arg_double(index int) ?PhpDouble {
-	return PhpDouble.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).double_value()
 }
 
 pub fn (ctx Context) arg_string(index int) ?PhpString {
-	return PhpString.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).string_value()
 }
 
 pub fn (ctx Context) arg_scalar(index int) ?PhpScalar {
-	return PhpScalar.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).scalar()
 }
 
 pub fn (ctx Context) arg_array(index int) ?PhpArray {
-	return PhpArray.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).array()
 }
 
 pub fn (ctx Context) arg_object(index int) ?PhpObject {
-	return PhpObject.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).object()
 }
 
 pub fn (ctx Context) arg_callable(index int) ?PhpCallable {
-	return PhpCallable.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).callable()
 }
 
 pub fn (ctx Context) arg_resource(index int) ?PhpResource {
-	return PhpResource.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).resource()
 }
 
 pub fn (ctx Context) arg_reference(index int) ?PhpReference {
-	return PhpReference.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).reference()
 }
 
 pub fn (ctx Context) arg_iterable(index int) ?PhpIterable {
-	return PhpIterable.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).iterable()
 }
 
 pub fn (ctx Context) arg_throwable(index int) ?PhpThrowable {
-	return PhpThrowable.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).throwable()
 }
 
 pub fn (ctx Context) arg_enum_case(index int) ?PhpEnumCase {
-	return PhpEnumCase.from_zval(ctx.arg_raw(index))
+	return ctx.arg_at(index).enum_case()
 }
 
 pub fn (ctx Context) arg_owned_request_zbox(index int) RequestOwnedZBox {
-	return RequestOwnedZBox.of(ctx.arg_raw(index))
+	return ctx.arg_at(index).request_owned_zbox()
 }
 
 pub fn (ctx Context) arg_owned_persistent_zbox(index int) PersistentOwnedZBox {
-	return PersistentOwnedZBox.of(ctx.arg_raw(index))
+	return ctx.arg_at(index).persistent_owned_zbox()
 }
 
 pub fn (ctx Context) arg[T](index int) T {
-	val := ctx.arg_raw(index)
-	if !val.is_valid() {
-		return T{}
-	}
-	$if T is ZVal {
-		return val
-	}
-	return val.to_v[T]() or { T{} }
+	return ctx.arg_at(index).as_v[T]()
 }
 
 pub fn (ctx Context) arg_opt[T](index int) ?T {
-	val := ctx.arg_raw(index)
-	if !val.is_valid() || val.is_null() || val.is_undef() {
-		return none
-	}
-	$if T is ZVal {
-		return val
-	}
-	if converted := val.to_v[T]() {
-		return converted
-	}
-	return none
+	return ctx.arg_at(index).as_v_opt[T]()
 }
 
 pub fn (ctx Context) arg_val(index int) ZVal {
-	val := ctx.arg_raw(index)
-	if !val.is_valid() {
-		return ZVal.new_null()
-	}
-	return val
+	return ctx.arg_at(index).val()
 }
 
 pub fn (ctx Context) arg_raw_obj(index int) voidptr {
-	val := ctx.arg_raw(index)
-	if !val.is_valid() || !val.is_object() {
-		return unsafe { nil }
-	}
-	obj := C.vphp_get_obj_from_zval(val.raw)
-	wrapper := C.vphp_obj_from_obj(obj)
-	return wrapper.v_ptr
+	return ctx.arg_at(index).raw_obj()
 }

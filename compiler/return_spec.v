@@ -1,5 +1,7 @@
 module compiler
 
+import compiler.php_types
+
 pub enum RuntimeReturnKind {
 	scalar
 	void_
@@ -12,7 +14,7 @@ pub enum RuntimeReturnKind {
 
 pub struct RuntimeReturnInfo {
 pub mut:
-	tm        TypeMap
+	tm        php_types.TypeMap
 	kind      RuntimeReturnKind
 	class_key string
 	owns_vptr string
@@ -41,7 +43,7 @@ pub fn effective_export_php_return_type(return_type string, php_return_type stri
 }
 
 fn base_runtime_return_info(return_type string) RuntimeReturnInfo {
-	tm := TypeMap.get_type(return_type)
+	tm := php_types.TypeMap.get_type(return_type)
 	if return_type.starts_with('!') {
 		return RuntimeReturnInfo{
 			tm:        tm
@@ -72,8 +74,8 @@ fn base_runtime_return_info(return_type string) RuntimeReturnInfo {
 
 pub fn method_runtime_return_info(owner_name string, method_name string, is_static bool, return_type string, borrowed_return bool) RuntimeReturnInfo {
 	mut info := base_runtime_return_info(return_type)
-	owner_key := normalize_export_type_key(owner_name)
-	ret_key := normalize_export_type_key(return_type)
+	owner_key := php_types.normalize_export_type_key(owner_name)
+	ret_key := php_types.normalize_export_type_key(return_type)
 	if is_constructor_method(method_name) || (is_static && ret_key == owner_key) {
 		info.kind = .static_factory
 		info.class_key = owner_key

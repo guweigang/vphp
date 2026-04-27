@@ -1,5 +1,7 @@
 module builder
 
+import compiler.php_types
+
 pub enum ClassType {
 	class_
 	interface_
@@ -383,52 +385,15 @@ fn arg_type_info(v_type string) ArgTypeInfo {
 			allow_null:     allow_null
 		}
 	}
-	if clean in ['vphp.PhpIterable', 'PhpIterable'] {
+	if spec := php_types.PhpTypeSpec.from_v_type(clean) {
 		return ArgTypeInfo{
-			mask:           'MAY_BE_ARRAY'
-			mask_obj_class: 'Traversable'
+			code:           spec.php_code
+			mask:           spec.php_mask
+			mask_obj_class: spec.mask_obj_class
 			allow_null:     allow_null
 		}
 	}
 	code := match clean {
-		'[]string', '[]int', '[]i64', '[]bool', '[]f64', '[]f32', '[]', '[]vphp.ZVal', '[]ZVal' {
-			'IS_ARRAY'
-		}
-		'map[string]string', 'map[string]int', 'map[string]i64', 'map[string]bool',
-		'map[string]f64', 'map[string][]string', 'map[string]vphp.ZVal', 'map[string]ZVal' {
-			'IS_ARRAY'
-		}
-		'vphp.ZVal', 'ZVal', 'vphp.RequestBorrowedZBox', 'RequestBorrowedZBox',
-		'vphp.RequestOwnedZBox', 'RequestOwnedZBox', 'vphp.PersistentOwnedZBox',
-		'PersistentOwnedZBox', 'vphp.PhpValue', 'PhpValue', 'vphp.PhpScalar', 'PhpScalar',
-		'vphp.PhpResource', 'PhpResource', 'vphp.PhpReference', 'PhpReference', 'vphp.PhpEnumCase',
-		'PhpEnumCase' {
-			'IS_MIXED'
-		}
-		'vphp.PhpNull', 'PhpNull' {
-			'IS_NULL'
-		}
-		'vphp.PhpBool', 'PhpBool' {
-			'_IS_BOOL'
-		}
-		'vphp.PhpInt', 'PhpInt' {
-			'IS_LONG'
-		}
-		'vphp.PhpDouble', 'PhpDouble' {
-			'IS_DOUBLE'
-		}
-		'vphp.PhpString', 'PhpString' {
-			'IS_STRING'
-		}
-		'vphp.PhpArray', 'PhpArray' {
-			'IS_ARRAY'
-		}
-		'vphp.PhpObject', 'PhpObject', 'vphp.PhpThrowable', 'PhpThrowable' {
-			'IS_OBJECT'
-		}
-		'vphp.PhpCallable', 'PhpCallable' {
-			'IS_CALLABLE'
-		}
 		'callable', 'Callable', 'vphp.Callable' {
 			'IS_CALLABLE'
 		}

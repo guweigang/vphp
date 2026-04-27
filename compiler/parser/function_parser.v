@@ -3,7 +3,7 @@ module parser
 import v.ast
 import compiler.repr
 
-pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpFuncRepr {
+pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table, params_structs map[string]repr.PhpParamsStruct) ?&repr.PhpFuncRepr {
 	if stmt !is ast.FnDecl {
 		return none
 	}
@@ -28,7 +28,7 @@ pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpFuncRepr {
 	func.name = if attrs.php_name != '' { attrs.php_name } else { fn_decl.name.all_after('.') }
 	func.original_name = fn_decl.name.all_after('.')
 	func.args = build_php_args(fn_decl.params, table, 0, attrs.php_arg_types, attrs.php_arg_names,
-		attrs.php_arg_optional, attrs.php_arg_defaults)
+		attrs.php_arg_optional, attrs.php_arg_defaults, params_structs)
 	func.uses_context = func.args.len == 1 && is_context_type(func.args[0].v_type)
 
 	ret_type := strip_module(table.type_to_str(fn_decl.return_type))
@@ -37,7 +37,7 @@ pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpFuncRepr {
 	} else {
 		ret_type
 	}
-	func.return_spec = repr.new_return_spec(v_return_type, attrs.php_return_type)
+	func.return_spec = repr.new_return_repr(v_return_type, attrs.php_return_type)
 	func.has_export = attrs.has_export
 
 	return func

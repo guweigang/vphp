@@ -23,6 +23,14 @@ pub fn PhpArray.must_from_zval(z ZVal) !PhpArray {
 	return arr
 }
 
+pub fn PhpArray.empty() PhpArray {
+	mut z := ZVal.new_null()
+	z.array_init()
+	return PhpArray{
+		value: RequestBorrowedZBox.from_zval(z)
+	}
+}
+
 pub fn PersistentPhpArray.from_zval(z ZVal) ?PersistentPhpArray {
 	if !z.is_array() {
 		return none
@@ -35,6 +43,10 @@ pub fn PersistentPhpArray.from_zval(z ZVal) ?PersistentPhpArray {
 pub fn PersistentPhpArray.must_from_zval(z ZVal) !PersistentPhpArray {
 	arr := PersistentPhpArray.from_zval(z) or { return error('zval is not array') }
 	return arr
+}
+
+pub fn PersistentPhpArray.empty() PersistentPhpArray {
+	return PhpArray.empty().to_persistent()
 }
 
 pub fn (a PhpArray) to_zval() ZVal {

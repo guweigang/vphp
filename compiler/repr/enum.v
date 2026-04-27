@@ -4,11 +4,11 @@ pub struct PhpEnumRepr {
 pub mut:
 	name      string
 	php_name  string
-	cases     []PhpEnumCase
+	cases     []PhpEnumCaseRepr
 	parse_err string
 }
 
-pub struct PhpEnumCase {
+pub struct PhpEnumCaseRepr {
 pub:
 	name  string
 	value string

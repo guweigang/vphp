@@ -14,11 +14,16 @@ The compiler is intentionally split into a few small layers so that parsing, lin
 
 ```text
 vphp/compiler/
-  mod.v          # Compiler entry and compile pipeline
+  entry.v        # Compiler entry and compile pipeline
   export.v       # export assembly and final file emission
   c_emitter.v    # C-side wrapper and glue emission
   v_glue.v       # V-side bridge/glue emission
-  types.v        # shared runtime/type mapping helpers
+  arg_binding.v  # PhpArgRepr -> V glue argument bindings
+  params_struct_binding.v # @[params] struct argument construction
+  return_binding.v # PhpReturnRepr -> V glue return handling
+  class_method_binding.v # class method call / sync / return composition
+  class_property_binding.v # class property get / set / sync glue
+  php_types/     # shared PHP-facing type/spec mapping
   repr/          # compiler representations
   parser/        # AST -> repr
   linker/        # repr -> linked repr
@@ -99,7 +104,7 @@ Current entry:
 
 - `link_class_shadows(mut elements, table)`
 
-This layer exists to keep `mod.v` from becoming a second parser.
+This layer exists to keep `entry.v` from becoming a second parser.
 
 ### 4. `builder`
 
@@ -126,6 +131,28 @@ This layer should answer:
 It should not answer:
 
 - "How do I parse V syntax?"
+
+### 4.5. `php_types`
+
+Module: `vphp.compiler.php_types`
+
+Purpose:
+
+- Describe PHP-facing type semantics once
+- Share V type normalization between glue and arginfo generation
+- Keep semantic wrapper metadata out of ad hoc emitter branches
+
+Typical examples:
+
+- `PhpTypeSpec`
+- `PhpTypeSpec.from_v_type(...)`
+- `PhpTypeSpec.semantic_wrapper_for(...)`
+- `PhpDefaultSpec.from_v_type(...)`
+- `normalize_v_type_key(...)`
+
+This layer is intentionally small. It should describe facts such as
+"`PhpArray` maps to PHP `array` and uses `PhpArg.array()` for decoding"; it
+should not render C macros or V glue lines directly.
 
 ### 5. `export`
 
@@ -178,9 +205,100 @@ Ownership-facing rule:
 - raw `ZVal` remains the low-level escape hatch for bridge internals and
   callable-heavy paths
 
+### 7.5. `arg_binding`
+
+File: `vphp/compiler/arg_binding.v`
+
+Purpose:
+
+- Convert `repr.PhpArgRepr` into V glue argument bindings
+- Keep PHP argument indexing, `Context` escape hatch handling, semantic wrapper
+  decoding, lifecycle box decoding, and `@[params]` struct construction in one
+  place
+
+Key types:
+
+- `PhpArgBinding`
+- `PhpArgBindingKind`
+- `PhpArgSetup`
+
+This layer answers "how does this exported parameter become a V call argument?"
+The caller-facing glue files should consume `PhpArgSetup` instead of
+reimplementing argument indexing or wrapper decoding.
+
+### 7.6. `params_struct_binding`
+
+File: `vphp/compiler/params_struct_binding.v`
+
+Purpose:
+
+- Convert flattened `@[params]` fields into one V params struct argument
+- Keep params struct field indexes, field defaults, and field value expressions
+  out of generic argument binding
+
+Key types:
+
+- `ParamsStructBinding`
+
+This layer answers "how do these PHP arguments become this V `@[params]`
+struct literal?"
+
+### 7.7. `return_binding`
+
+File: `vphp/compiler/return_binding.v`
+
+Purpose:
+
+- Convert return type strings into V glue return behavior
+- Keep `!T`, `?T`, `void`, plain value, and returned-closure handling in one
+  place
+
+Key types:
+
+- `ReturnBinding`
+- `ReturnBindingKind`
+
+This layer answers "how does this V call result get written back to PHP?" Glue
+files should consume `ReturnBinding` instead of reimplementing result / option /
+closure branches.
+
+### 7.8. `class_method_binding`
+
+File: `vphp/compiler/class_method_binding.v`
+
+Purpose:
+
+- Compose class method call results with class-specific side effects
+- Keep inherited receiver sync, static-property sync, object returns, and
+  `ReturnBinding` behavior out of the main class glue loop
+
+Key types:
+
+- `ClassMethodGlueContext`
+
+This layer answers "after a generated class method call runs, what extra PHP
+runtime state must be written back, and how is the result returned?"
+
+### 7.9. `class_property_binding`
+
+File: `vphp/compiler/class_property_binding.v`
+
+Purpose:
+
+- Generate class property read, write, and sync glue
+- Keep scalar public property filtering and per-type read/write code out of the
+  main class glue loop
+
+Key types:
+
+- `ClassPropertyGlue`
+
+This layer answers "how are V struct fields exposed and synchronized as PHP
+object properties?"
+
 ## Compile Pipeline
 
-The current pipeline in [mod.v](/Users/guweigang/Source/vphpx/vphp/compiler/mod.v) is:
+The current pipeline in [entry.v](/Users/guweigang/Source/vphpx/vphp/compiler/entry.v) is:
 
 ```mermaid
 flowchart TD

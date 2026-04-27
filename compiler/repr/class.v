@@ -22,8 +22,8 @@ pub mut:
 	shadow_static_name      string // 新增：绑定的影子静态属性名，如 "article_statics"
 	shadow_const_type       string // 绑定的影子常量的 V 侧类型
 	shadow_static_type      string // 新增：绑定的影子静态属性的 V 侧类型
-	constants               []PhpClassConst
-	properties              []PhpClassProp
+	constants               []PhpClassConstRepr
+	properties              []PhpClassPropRepr
 	methods                 []PhpMethodRepr
 	attributes              []PhpAttributeRepr
 }
@@ -33,7 +33,7 @@ pub fn (r PhpClassRepr) c_name() string {
 	return r.php_name.replace('\\', '_')
 }
 
-pub struct PhpClassConst {
+pub struct PhpClassConstRepr {
 pub:
 	name         string // PHP 侧大写名，如 "MAX_TITLE_LEN"
 	v_field_name string // V 侧原始名，如 "max_title_len"
@@ -41,7 +41,7 @@ pub:
 	const_type   string
 }
 
-pub struct PhpClassProp {
+pub struct PhpClassPropRepr {
 pub:
 	name             string
 	v_field_name     string
@@ -58,23 +58,52 @@ pub mut:
 	v_name                  string // V 侧原始方法名，如 "spawn"
 	v_c_func                string // V 导出的 C 符号名，如 "Article_create"
 	is_static               bool   // 是否为静态方法
-	return_spec             PhpReturnSpec
+	return_spec             PhpReturnRepr
 	borrowed_return         bool
 	delegated_target_type   string
 	delegated_target_method string
-	args                    []PhpArg
+	args                    []PhpArgRepr
 	has_export              bool
 	visibility              string
 	is_abstract             bool
 }
 
-pub struct PhpArg {
+pub struct PhpArgRepr {
 pub mut:
 	name        string
-	v_name      string
 	v_type      string
 	php_type    string
 	is_optional bool
+	php_default string
+	source      PhpArgSource
+}
+
+pub enum PhpArgSourceKind {
+	direct
+	params_field
+}
+
+pub struct PhpArgSource {
+pub mut:
+	kind             PhpArgSourceKind = .direct
+	direct_name      string
+	params_arg_name  string
+	params_type      string
+	params_field     string
+	params_v_default string
+}
+
+pub struct PhpParamsStruct {
+pub mut:
+	name   string
+	fields []PhpParamsField
+}
+
+pub struct PhpParamsField {
+pub mut:
+	name        string
+	v_type      string
+	v_default   string
 	php_default string
 }
 
