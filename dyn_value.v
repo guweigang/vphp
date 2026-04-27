@@ -50,13 +50,13 @@ pub mut:
 	runtime_ref       ?DynRuntimeRefData
 }
 
-pub fn dyn_value_null() DynValue {
+pub fn DynValue.null() DynValue {
 	return DynValue{
 		type: .null_
 	}
 }
 
-pub fn dyn_value_bool(v bool) DynValue {
+pub fn DynValue.of_bool(v bool) DynValue {
 	return DynValue{
 		type: .bool_
 		data: DynValueData{
@@ -65,7 +65,7 @@ pub fn dyn_value_bool(v bool) DynValue {
 	}
 }
 
-pub fn dyn_value_int(v i64) DynValue {
+pub fn DynValue.of_int(v i64) DynValue {
 	return DynValue{
 		type: .int_
 		data: DynValueData{
@@ -74,7 +74,7 @@ pub fn dyn_value_int(v i64) DynValue {
 	}
 }
 
-pub fn dyn_value_float(v f64) DynValue {
+pub fn DynValue.of_float(v f64) DynValue {
 	return DynValue{
 		type: .float_
 		data: DynValueData{
@@ -83,7 +83,7 @@ pub fn dyn_value_float(v f64) DynValue {
 	}
 }
 
-pub fn dyn_value_string(v string) DynValue {
+pub fn DynValue.of_string(v string) DynValue {
 	return DynValue{
 		type: .string_
 		data: DynValueData{
@@ -92,18 +92,46 @@ pub fn dyn_value_string(v string) DynValue {
 	}
 }
 
-pub fn dyn_value_list(v []DynValue) DynValue {
+pub fn DynValue.of_list(v []DynValue) DynValue {
 	return DynValue{
 		type: .list_
 		list: v
 	}
 }
 
-pub fn dyn_value_map(v map[string]DynValue) DynValue {
+pub fn DynValue.of_map(v map[string]DynValue) DynValue {
 	return DynValue{
 		type: .map_
 		map:  v
 	}
+}
+
+pub fn dyn_value_null() DynValue {
+	return DynValue.null()
+}
+
+pub fn dyn_value_bool(v bool) DynValue {
+	return DynValue.of_bool(v)
+}
+
+pub fn dyn_value_int(v i64) DynValue {
+	return DynValue.of_int(v)
+}
+
+pub fn dyn_value_float(v f64) DynValue {
+	return DynValue.of_float(v)
+}
+
+pub fn dyn_value_string(v string) DynValue {
+	return DynValue.of_string(v)
+}
+
+pub fn dyn_value_list(v []DynValue) DynValue {
+	return DynValue.of_list(v)
+}
+
+pub fn dyn_value_map(v map[string]DynValue) DynValue {
+	return DynValue.of_map(v)
 }
 
 pub fn DynValue.object_ref(obj PhpObject) DynValue {
@@ -179,33 +207,33 @@ pub fn DynValue.resource_ref(res PhpResource) DynValue {
 pub fn (v DynValue) clone() DynValue {
 	return match v.type {
 		.null_ {
-			dyn_value_null()
+			DynValue.null()
 		}
 		.bool_ {
-			dyn_value_bool(v.bool_value())
+			DynValue.of_bool(v.bool_value())
 		}
 		.int_ {
-			dyn_value_int(v.int_value())
+			DynValue.of_int(v.int_value())
 		}
 		.float_ {
-			dyn_value_float(v.float_value())
+			DynValue.of_float(v.float_value())
 		}
 		.string_ {
-			dyn_value_string(v.string_value())
+			DynValue.of_string(v.string_value())
 		}
 		.list_ {
 			mut out := []DynValue{cap: v.list.len}
 			for item in v.list {
 				out << item.clone()
 			}
-			dyn_value_list(out)
+			DynValue.of_list(out)
 		}
 		.map_ {
 			mut out := map[string]DynValue{}
 			for key, item in v.map {
 				out[key] = item.clone()
 			}
-			dyn_value_map(out)
+			DynValue.of_map(out)
 		}
 		.object_ref {
 			v.clone_runtime_ref()
@@ -301,7 +329,7 @@ pub fn (mut v DynValue) release() {
 			for key, _ in v.map {
 				mut item := v.map[key] or { continue }
 				item.release()
-				v.map[key] = dyn_value_null()
+				v.map[key] = DynValue.null()
 			}
 			v.map = map[string]DynValue{}
 		}
@@ -579,19 +607,19 @@ pub fn (v DynValue) to_persistent() !PersistentOwnedZBox {
 // from_zval detaches a ZVal into a plain dynamic value tree.
 pub fn DynValue.from_zval(z ZVal) !DynValue {
 	if !z.is_valid() || z.is_null() || z.is_undef() {
-		return dyn_value_null()
+		return DynValue.null()
 	}
 	if z.is_bool() {
-		return dyn_value_bool(z.to_bool())
+		return DynValue.of_bool(z.to_bool())
 	}
 	if z.is_long() {
-		return dyn_value_int(z.to_i64())
+		return DynValue.of_int(z.to_i64())
 	}
 	if z.is_double() {
-		return dyn_value_float(z.to_f64())
+		return DynValue.of_float(z.to_f64())
 	}
 	if z.is_string() {
-		return dyn_value_string(z.to_string())
+		return DynValue.of_string(z.to_string())
 	}
 	if z.is_array() {
 		mut out := map[string]DynValue{}
@@ -610,7 +638,7 @@ pub fn DynValue.from_zval(z ZVal) !DynValue {
 		if err_msg != '' {
 			return error(err_msg)
 		}
-		return dyn_value_map(out)
+		return DynValue.of_map(out)
 	}
 	if z.is_callable() {
 		callable := PhpCallable.from_zval(z) or { return error('zval is not callable') }

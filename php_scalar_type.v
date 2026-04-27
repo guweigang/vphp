@@ -57,7 +57,7 @@ pub fn (v PhpNull) to_persistent() PersistentPhpValue {
 }
 
 pub fn (v PhpNull) to_dyn() DynValue {
-	return dyn_value_null()
+	return DynValue.null()
 }
 
 pub fn PhpBool.from_zval(z ZVal) ?PhpBool {
@@ -104,7 +104,7 @@ pub fn (v PhpBool) value() bool {
 }
 
 pub fn (v PhpBool) to_dyn() DynValue {
-	return dyn_value_bool(v.value())
+	return DynValue.of_bool(v.value())
 }
 
 pub fn PhpInt.from_zval(z ZVal) ?PhpInt {
@@ -151,7 +151,7 @@ pub fn (v PhpInt) to_int() int {
 }
 
 pub fn (v PhpInt) to_dyn() DynValue {
-	return dyn_value_int(v.value())
+	return DynValue.of_int(v.value())
 }
 
 pub fn PhpDouble.from_zval(z ZVal) ?PhpDouble {
@@ -194,7 +194,7 @@ pub fn (v PhpDouble) value() f64 {
 }
 
 pub fn (v PhpDouble) to_dyn() DynValue {
-	return dyn_value_float(v.value())
+	return DynValue.of_float(v.value())
 }
 
 pub fn PhpString.from_zval(z ZVal) ?PhpString {
@@ -240,7 +240,7 @@ pub fn (v PhpString) len() int {
 }
 
 pub fn (v PhpString) to_dyn() DynValue {
-	return dyn_value_string(v.value())
+	return DynValue.of_string(v.value())
 }
 
 pub fn PhpScalar.from_zval(z ZVal) ?PhpScalar {
@@ -309,16 +309,16 @@ pub fn (v PhpScalar) to_string() string {
 pub fn (v PhpScalar) to_dyn() DynValue {
 	z := v.to_zval()
 	if !z.is_valid() || z.is_undef() || z.is_null() {
-		return dyn_value_null()
+		return DynValue.null()
 	}
 	if z.is_bool() {
-		return dyn_value_bool(z.to_bool())
+		return DynValue.of_bool(z.to_bool())
 	}
 	if z.is_long() {
-		return dyn_value_int(z.to_i64())
+		return DynValue.of_int(z.to_i64())
 	}
 	if z.is_double() {
-		return dyn_value_float(z.to_f64())
+		return DynValue.of_float(z.to_f64())
 	}
-	return dyn_value_string(z.to_string())
+	return DynValue.of_string(z.to_string())
 }

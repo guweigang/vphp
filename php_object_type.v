@@ -18,6 +18,12 @@ pub fn PhpObject.from_zval(z ZVal) ?PhpObject {
 	}
 }
 
+pub fn PhpObject.borrowed(z ZVal) PhpObject {
+	return PhpObject{
+		value: RequestBorrowedZBox.from_zval(z)
+	}
+}
+
 pub fn PhpObject.must_from_zval(z ZVal) !PhpObject {
 	obj := PhpObject.from_zval(z) or { return error('zval is not object') }
 	return obj
@@ -35,6 +41,29 @@ pub fn PersistentPhpObject.from_zval(z ZVal) ?PersistentPhpObject {
 pub fn PersistentPhpObject.must_from_zval(z ZVal) !PersistentPhpObject {
 	obj := PersistentPhpObject.from_zval(z) or { return error('zval is not object') }
 	return obj
+}
+
+pub fn PhpObject.current() ?PhpObject {
+	z := PhpObject.current_request_owned_zval()
+	if !z.is_valid() {
+		return none
+	}
+	return PhpObject.from_zval(z)
+}
+
+pub fn PhpObject.current_request_owned_zval() ZVal {
+	unsafe {
+		obj_raw := C.vphp_get_current_this_object()
+		if obj_raw == 0 {
+			return invalid_zval()
+		}
+		mut out := C.vphp_new_zval()
+		if out == 0 {
+			return invalid_zval()
+		}
+		C.vphp_wrap_existing_object(out, &C.zend_object(obj_raw))
+		return adopt_raw_with_ownership(out, .owned_request)
+	}
 }
 
 pub fn (o PhpObject) to_zval() ZVal {
@@ -121,6 +150,18 @@ pub fn (o PhpObject) method_owned_request(method string, args []ZVal) ZVal {
 
 pub fn (o PhpObject) method_owned_persistent(method string, args []ZVal) ZVal {
 	return o.to_zval().method_owned_persistent(method, args)
+}
+
+pub fn (o PhpObject) method_request_owned_box(method string, args []ZVal) RequestOwnedZBox {
+	return RequestOwnedZBox.adopt_zval(o.method_owned_request(method, args))
+}
+
+pub fn (o PhpObject) with_method_result_zval[T](method string, args []ZVal, run fn (ZVal) T) T {
+	mut result := o.method_owned_request(method, args)
+	defer {
+		result.release()
+	}
+	return run(result)
 }
 
 pub fn (o PhpObject) prop(name string) ZVal {

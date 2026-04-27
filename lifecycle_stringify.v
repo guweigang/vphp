@@ -1,6 +1,10 @@
 module vphp
 
 pub fn stringify_value(value ZVal) string {
+	return value.stringify()
+}
+
+pub fn (value ZVal) stringify() string {
 	if !value.is_valid() || value.is_null() || value.is_undef() {
 		return ''
 	}
@@ -8,20 +12,20 @@ pub fn stringify_value(value ZVal) string {
 		return value.to_string()
 	}
 	if value.is_array() {
-		encoded := json_encode(value)
-		if json_last_error_code() == 0 {
+		encoded := PhpJson.encode(value)
+		if PhpJson.last_error_code() == 0 {
 			return encoded
 		}
 		return '[array]'
 	}
 	if value.is_object() {
 		if value.method_exists('__toString') {
-			return with_method_result_zval(value, '__toString', []ZVal{}, fn (raw ZVal) string {
+			return PhpObject.borrowed(value).with_method_result_zval('__toString', []ZVal{}, fn (raw ZVal) string {
 				return raw.to_string()
 			})
 		}
-		encoded := json_encode(value)
-		if json_last_error_code() == 0 {
+		encoded := PhpJson.encode(value)
+		if PhpJson.last_error_code() == 0 {
 			return encoded
 		}
 		class_name := value.class_name().trim_space()

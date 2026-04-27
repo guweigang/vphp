@@ -11,6 +11,14 @@ pub mut:
 	handle thread TaskResult
 }
 
+pub struct PhpTask {
+	name string
+}
+
+pub struct PhpTaskHandle {
+	ptr voidptr
+}
+
 // 通用任务接口
 pub interface ITask {
 	run() TaskResult // 返回动态类型
@@ -52,12 +60,13 @@ pub fn ITask.get_creator(name string) ?TaskCreator {
 	return none
 }
 
-pub fn task_exists(name string) bool {
-	r := get_registry()
-	return name in r.tasks
+pub fn PhpTask.named(name string) PhpTask {
+	return PhpTask{
+		name: name
+	}
 }
 
-pub fn task_names() []string {
+pub fn PhpTask.names() []string {
 	r := get_registry()
 	mut names := []string{}
 	for k, _ in r.tasks {
@@ -66,8 +75,17 @@ pub fn task_names() []string {
 	return names
 }
 
-pub fn task_spawn_handle(task_name string, args []ZVal) !&AsyncResult {
-	creator := ITask.get_creator(task_name) or { return error('Task ${task_name} not registered') }
+pub fn (task PhpTask) name() string {
+	return task.name
+}
+
+pub fn (task PhpTask) exists() bool {
+	r := get_registry()
+	return task.name in r.tasks
+}
+
+pub fn (task PhpTask) spawn(args []ZVal) !PhpTaskHandle {
+	creator := ITask.get_creator(task.name) or { return error('Task ${task.name} not registered') }
 
 	task_inst := creator(args)
 	t := spawn task_inst.run()
@@ -75,32 +93,46 @@ pub fn task_spawn_handle(task_name string, args []ZVal) !&AsyncResult {
 	unsafe {
 		mut res := &AsyncResult(C.emalloc(usize(sizeof(AsyncResult))))
 		res.handle = t
-		return res
+		return PhpTaskHandle{
+			ptr: res
+		}
 	}
 }
 
-pub fn task_wait_result(ptr voidptr) !TaskResult {
+pub fn PhpTaskHandle.null() PhpTaskHandle {
+	return PhpTaskHandle{}
+}
+
+pub fn (handle PhpTaskHandle) raw() voidptr {
+	return handle.ptr
+}
+
+pub fn (handle PhpTaskHandle) is_valid() bool {
+	return handle.ptr != unsafe { nil }
+}
+
+pub fn (handle PhpTaskHandle) wait_result() !TaskResult {
 	unsafe {
-		if ptr == nil {
+		if handle.ptr == nil {
 			return error('Task handle is nil')
 		}
 
-		task := &AsyncResult(ptr)
+		task := &AsyncResult(handle.ptr)
 		return task.handle.wait()
 	}
 }
 
-pub fn task_release_handle(ptr voidptr) {
-	if ptr == 0 {
+pub fn (handle PhpTaskHandle) release() {
+	if handle.ptr == 0 {
 		return
 	}
 	unsafe {
-		C.efree(ptr)
+		C.efree(handle.ptr)
 	}
 }
 
-pub fn task_wait_box(ptr voidptr) RequestOwnedZBox {
-	results := task_wait_result(ptr) or { return RequestOwnedZBox.new_null() }
+pub fn (handle PhpTaskHandle) wait_box() RequestOwnedZBox {
+	results := handle.wait_result() or { return RequestOwnedZBox.new_null() }
 
 	match results {
 		string {
@@ -151,6 +183,36 @@ pub fn task_wait_box(ptr voidptr) RequestOwnedZBox {
 			return RequestOwnedZBox.adopt_zval(out)
 		}
 	}
+}
+
+pub fn task_exists(name string) bool {
+	return PhpTask.named(name).exists()
+}
+
+pub fn task_names() []string {
+	return PhpTask.names()
+}
+
+pub fn task_spawn_handle(task_name string, args []ZVal) !&AsyncResult {
+	return unsafe { &AsyncResult(PhpTask.named(task_name).spawn(args)!.raw()) }
+}
+
+pub fn task_wait_result(ptr voidptr) !TaskResult {
+	return PhpTaskHandle{
+		ptr: ptr
+	}.wait_result()
+}
+
+pub fn task_release_handle(ptr voidptr) {
+	PhpTaskHandle{
+		ptr: ptr
+	}.release()
+}
+
+pub fn task_wait_box(ptr voidptr) RequestOwnedZBox {
+	return PhpTaskHandle{
+		ptr: ptr
+	}.wait_box()
 }
 
 // 暴露给 PHP：获取所有已注册的任务名称

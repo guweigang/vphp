@@ -3,7 +3,7 @@ module vphp
 fn (v PersistentOwnedZBox) request_owned_box() ?RequestOwnedZBox {
 	return match v.kind {
 		.dyn_data { v.dyn_data.request_owned_box() }
-		.fallback_zval { own_request_zbox_raw(v.z) }
+		.fallback_zval { RequestOwnedZBox.from_raw_zval(v.z) }
 	}
 }
 
@@ -13,7 +13,7 @@ pub fn (v PersistentOwnedZBox) borrowed() RequestBorrowedZBox {
 			return v.clone_request_owned().borrowed()
 		}
 		.fallback_zval {
-			return borrow_zbox_raw(v.z)
+			return RequestBorrowedZBox.from_raw_zval(v.z)
 		}
 	}
 }
@@ -24,7 +24,7 @@ pub fn (v PersistentOwnedZBox) clone_request_owned() RequestOwnedZBox {
 			return v.dyn_data.request_owned_box()
 		}
 		.fallback_zval {
-			return own_request_zbox_raw(v.z)
+			return RequestOwnedZBox.from_raw_zval(v.z)
 		}
 	}
 }
@@ -72,7 +72,7 @@ pub fn (mut v PersistentOwnedZBox) release() {
 	match v.kind {
 		.dyn_data {
 			v.dyn_data.release()
-			v.dyn_data = dyn_value_null()
+			v.dyn_data = DynValue.null()
 			v.z = invalid_zval()
 		}
 		.fallback_zval {
@@ -88,7 +88,7 @@ pub fn (mut v PersistentOwnedZBox) release() {
 pub fn (v PersistentOwnedZBox) clone() PersistentOwnedZBox {
 	match v.kind {
 		.dyn_data {
-			return persistent_owned_dyn_box(v.dyn_data.clone())
+			return PersistentOwnedZBox.from_dyn(v.dyn_data.clone())
 		}
 		.fallback_zval {
 			return PersistentOwnedZBox.from_persistent_zval(v.z)

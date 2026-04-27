@@ -55,7 +55,7 @@ pub fn (ret PhpReturn) object(v_ptr voidptr, ce voidptr) {
 }
 
 pub fn (ret PhpReturn) bound_object(v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
-	return_bound_object_raw(ret.raw, v_ptr, ce, handlers, ownership)
+	return_bound_object_to(ret.raw, v_ptr, ce, handlers, ownership)
 }
 
 pub fn (ret PhpReturn) owned_object(v_ptr voidptr, ce voidptr, handlers voidptr) {

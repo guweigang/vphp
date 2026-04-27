@@ -2,18 +2,16 @@ module vphp
 
 // PHP function entry. Return a callable ZVal for `.call(args)`.
 pub fn php_fn(name string) ZVal {
-	return ZVal.new_string(name)
+	return PhpFunction.named(name).to_zval()
 }
 
 pub fn function_exists(name string) bool {
-	res := php_fn('function_exists').call([ZVal.new_string(name)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named(name).exists()
 }
 
-// Compatibility entry point for direct PHP function calls.
-// Prefer php_call_result_string/bool/i64/double, with_php_call_result_zval(),
-// or php_call_request_owned_box() in new code so request-owned results stay
-// behind an explicit ownership boundary.
-pub fn call_php(name string, args []ZVal) ZVal {
-	return php_fn(name).call(args)
+// Direct PHP function call by name.
+// Prefer php_call_result_string/bool/i64/double, PhpFunction.with_result_zval(),
+// or PhpFunction.request_owned_box() in new code so request-owned results stay scoped.
+pub fn call_php_fn(name string, args []ZVal) ZVal {
+	return PhpFunction.named(name).call(args)
 }

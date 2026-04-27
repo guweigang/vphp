@@ -63,8 +63,20 @@ pub fn (c PhpClosure) call_owned_persistent(args []ZVal) ZVal {
 	return c.callable.to_zval().call_owned_persistent(args)
 }
 
+pub fn (c PhpClosure) request_owned_box(args []ZVal) RequestOwnedZBox {
+	return RequestOwnedZBox.adopt_zval(c.call_owned_request(args))
+}
+
 pub fn (c PhpClosure) invoke(args []ZVal) ZVal {
 	return c.call(args)
+}
+
+pub fn (c PhpClosure) with_result_zval[T](args []ZVal, run fn (ZVal) T) T {
+	mut result := c.call_owned_request(args)
+	defer {
+		result.release()
+	}
+	return run(result)
 }
 
 pub fn (c PhpClosure) call_v[T](args []ZVal) !T {

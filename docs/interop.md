@@ -170,17 +170,17 @@ length := vphp.php_fn('strlen').call_v[int]([
 ])!
 ```
 
-兼容入口仍然保留，但只用于迁移旧代码：
+如果只想按名字直接调用 PHP 函数，也可以用 `call_php_fn(...)`：
 
 ```v
-res := vphp.call_php('phpversion', [])
+res := vphp.call_php_fn('phpversion', [])
 ```
 
 新代码如果只需要在当前作用域读取返回值，推荐用 ownership-aware
 callback，把 PHP 返回值限制在一个小作用域里：
 
 ```v
-version := vphp.with_php_call_result_zval('phpversion', []vphp.ZVal{}, fn (res vphp.ZVal) string {
+version := vphp.PhpFunction.named('phpversion').with_result_zval([]vphp.ZVal{}, fn (res vphp.ZVal) string {
 	return res.to_string()
 })
 ```
@@ -188,7 +188,7 @@ version := vphp.with_php_call_result_zval('phpversion', []vphp.ZVal{}, fn (res v
 如果结果要交给后续逻辑继续持有，推荐接收 request-owned box：
 
 ```v
-mut version := vphp.php_call_request_owned_box('phpversion', []vphp.ZVal{})
+mut version := vphp.PhpFunction.named('phpversion').request_owned_box([]vphp.ZVal{})
 defer { version.release() }
 ```
 
@@ -210,13 +210,15 @@ res := vphp.php_fn('phpversion').call([])
 | API | 说明 |
 | --- | --- |
 | `php_fn(name)` | 获取一个可调用的 PHP 函数引用 |
+| `call_php_fn(name, args)` | 按名字直接调用 PHP 函数 |
+| `PhpFunction.named(name)` | 获取语义化 PHP 函数 wrapper |
 | `function_exists(name)` | 判断 PHP 全局函数是否存在 |
-| `with_php_call_result_zval(name, args, run)` | 调用 PHP 全局函数，并在 callback 内借用返回值 |
+| `PhpFunction.named(name).with_result_zval(args, run)` | 调用 PHP 全局函数，并在 callback 内借用返回值 |
 | `php_call_result_string(name, args)` | 调用 PHP 全局函数，并返回 string |
 | `php_call_result_bool(name, args)` | 调用 PHP 全局函数，并返回 bool |
 | `php_call_result_i64(name, args)` | 调用 PHP 全局函数，并返回 i64 |
 | `php_call_result_double(name, args)` | 调用 PHP 全局函数，并返回 f64 |
-| `php_call_request_owned_box(name, args)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
+| `PhpFunction.named(name).request_owned_box(args)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
 | `z.call(args)` | 调用 callable（request-owned） |
 | `z.call_owned_request(args)` | 显式 request-owned |
 | `z.call_owned_persistent(args)` | 显式 persistent-owned |

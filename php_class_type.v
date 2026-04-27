@@ -37,7 +37,9 @@ pub fn (c PhpClass) to_zval() ZVal {
 }
 
 pub fn (c PhpClass) exists() bool {
-	return class_exists(c.class_name)
+	res := PhpFunction.named('class_exists').call([ZVal.new_string(c.class_name),
+		ZVal.new_bool(true)])
+	return res.is_valid() && res.to_bool()
 }
 
 pub fn (c PhpClass) namespace_name() string {

@@ -45,16 +45,5 @@ pub fn (v ZVal) dup_escaped() ZVal {
 // request-owned ZVal so framework code can safely re-enter user-visible
 // methods without hand-constructing object wrappers.
 pub fn current_this_owned_request() ZVal {
-	unsafe {
-		obj_raw := C.vphp_get_current_this_object()
-		if obj_raw == 0 {
-			return invalid_zval()
-		}
-		mut out := C.vphp_new_zval()
-		if out == 0 {
-			return invalid_zval()
-		}
-		C.vphp_wrap_existing_object(out, &C.zend_object(obj_raw))
-		return adopt_raw_with_ownership(out, .owned_request)
-	}
+	return PhpObject.current_request_owned_zval()
 }

@@ -13,6 +13,12 @@ pub fn PhpCallable.from_zval(z ZVal) ?PhpCallable {
 	}
 }
 
+pub fn PhpCallable.borrowed(z ZVal) PhpCallable {
+	return PhpCallable{
+		callable: RequestBorrowedZBox.from_zval(z)
+	}
+}
+
 pub fn PhpCallable.must_from_zval(z ZVal) !PhpCallable {
 	callable := PhpCallable.from_zval(z) or { return error('zval is not callable') }
 	return callable
@@ -50,8 +56,20 @@ pub fn (c PhpCallable) call_owned_persistent(args []ZVal) ZVal {
 	return c.to_zval().call_owned_persistent(args)
 }
 
+pub fn (c PhpCallable) request_owned_box(args []ZVal) RequestOwnedZBox {
+	return RequestOwnedZBox.adopt_zval(c.call_owned_request(args))
+}
+
 pub fn (c PhpCallable) invoke(args []ZVal) ZVal {
 	return c.call(args)
+}
+
+pub fn (c PhpCallable) with_result_zval[T](args []ZVal, run fn (ZVal) T) T {
+	mut result := c.call_owned_request(args)
+	defer {
+		result.release()
+	}
+	return run(result)
 }
 
 pub fn (c PhpCallable) call_v[T](args []ZVal) !T {

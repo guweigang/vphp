@@ -53,14 +53,14 @@ Zval 资源的泄漏通常隐蔽且致命。由于跨语言调用涉及复杂的
 
 ### 避坑准则
 * **谁创建，谁释放**：在 V 代码中，只要创建了需要进入 PHP 引擎的 owned wrapper（如 `RequestOwnedZBox` / `PersistentOwnedZBox`），立刻在下一行写下 `defer { box.release() }`，除非它被明确转移给上层所有者。
-* **PHP call 结果不要裸奔**：新代码优先用 `with_php_call_result_zval(...)` 在 callback 内消费返回值，或者用 `php_call_request_owned_box(...)` 接收 request-owned 结果。`call_php(...)` 只作为旧代码兼容入口。
+* **PHP call 结果不要裸奔**：新代码优先用 `PhpFunction.with_result_zval(...)` 在 callback 内消费返回值，或者用 `PhpFunction.request_owned_box(...)` 接收 request-owned 结果。需要按名字直接调用 PHP 函数时，用 `call_php_fn(...)`。
 * 不要让资源的生命周期跨越不必要的逻辑块。
 
 ```v
 mut path := vphp.RequestOwnedZBox.new_string('/tmp/demo.txt')
 defer { path.release() }
 
-ok := vphp.with_php_call_result_zval('file_exists', [path.to_zval()], fn (res vphp.ZVal) bool {
+ok := vphp.PhpFunction.named('file_exists').with_result_zval([path.to_zval()], fn (res vphp.ZVal) bool {
 	return res.to_bool()
 })
 ```

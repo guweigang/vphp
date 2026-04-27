@@ -53,15 +53,28 @@ pub fn own_persistent_zbox(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn borrow_zbox_raw(z ZVal) RequestBorrowedZBox {
-	return borrowed_zbox_from_raw_zval(z)
+	return RequestBorrowedZBox.from_raw_zval(z)
 }
 
 pub fn RequestBorrowedZBox.from_zval(z ZVal) RequestBorrowedZBox {
-	return borrow_zbox_raw(z)
+	return RequestBorrowedZBox.from_raw_zval(z)
 }
 
 pub fn RequestBorrowedZBox.of(z ZVal) RequestBorrowedZBox {
 	return RequestBorrowedZBox.from_zval(z)
+}
+
+pub fn RequestBorrowedZBox.from_raw_zval(z ZVal) RequestBorrowedZBox {
+	return borrowed_zbox_from_raw_zval(z)
+}
+
+pub fn RequestBorrowedZBox.from_raw(raw &C.zval) RequestBorrowedZBox {
+	return unsafe {
+		RequestBorrowedZBox.from_raw_zval(ZVal{
+			raw:   raw
+			owned: false
+		})
+	}
 }
 
 // null borrowed helper for call-site ergonomics; lifetime is request-scoped.
@@ -70,15 +83,19 @@ pub fn RequestBorrowedZBox.null() RequestBorrowedZBox {
 }
 
 pub fn own_request_zbox_raw(z ZVal) RequestOwnedZBox {
-	return request_owned_zbox_from_adopted_zval(z.dup())
+	return RequestOwnedZBox.from_raw_zval(z)
 }
 
 pub fn RequestOwnedZBox.from_zval(z ZVal) RequestOwnedZBox {
-	return own_request_zbox_raw(z)
+	return RequestOwnedZBox.from_raw_zval(z)
 }
 
 pub fn RequestOwnedZBox.of(z ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.from_zval(z)
+}
+
+pub fn RequestOwnedZBox.from_raw_zval(z ZVal) RequestOwnedZBox {
+	return request_owned_zbox_from_adopted_zval(z.dup())
 }
 
 pub fn RequestOwnedZBox.adopt_zval(z ZVal) RequestOwnedZBox {
@@ -86,6 +103,10 @@ pub fn RequestOwnedZBox.adopt_zval(z ZVal) RequestOwnedZBox {
 }
 
 pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
+	return PersistentOwnedZBox.from_raw_zval(z)
+}
+
+pub fn PersistentOwnedZBox.from_raw_zval(z ZVal) PersistentOwnedZBox {
 	if z.is_valid() && z.is_callable() {
 		if retained_callable := RetainedCallable.from_zval(z) {
 			return persistent_owned_dyn_box(dyn_value_persistent_retained_callable(retained_callable))
@@ -114,7 +135,7 @@ pub fn PersistentOwnedZBox.from_callable_zval(z ZVal) PersistentOwnedZBox {
 	if retained := RetainedObject.from_zval(z) {
 		return persistent_owned_dyn_box(dyn_value_persistent_retained_object(retained))
 	}
-	return own_persistent_zbox_raw(z)
+	return PersistentOwnedZBox.from_raw_zval(z)
 }
 
 pub fn PersistentOwnedZBox.of_callable(z ZVal) PersistentOwnedZBox {
@@ -127,7 +148,7 @@ pub fn PersistentOwnedZBox.from_object_zval(z ZVal) PersistentOwnedZBox {
 	if retained := RetainedObject.from_zval(z) {
 		return persistent_owned_dyn_box(dyn_value_persistent_retained_object(retained))
 	}
-	return own_persistent_zbox_raw(z)
+	return PersistentOwnedZBox.from_raw_zval(z)
 }
 
 pub fn PersistentOwnedZBox.of_object(z ZVal) PersistentOwnedZBox {
@@ -135,11 +156,11 @@ pub fn PersistentOwnedZBox.of_object(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn own_persistent_dyn(value DynValue) PersistentOwnedZBox {
-	return persistent_owned_dyn_box(value)
+	return PersistentOwnedZBox.from_dyn(value)
 }
 
 pub fn PersistentOwnedZBox.from_zval(z ZVal) PersistentOwnedZBox {
-	return own_persistent_zbox_raw(z)
+	return PersistentOwnedZBox.from_raw_zval(z)
 }
 
 // from_persistent_zval keeps the original zval payload as a persistent duplicate
@@ -159,7 +180,7 @@ pub fn PersistentOwnedZBox.of(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn PersistentOwnedZBox.from_dyn(value DynValue) PersistentOwnedZBox {
-	return own_persistent_dyn(value)
+	return persistent_owned_dyn_box(value)
 }
 
 // of_data is the preferred long-lived entry point when the caller already has
@@ -173,7 +194,7 @@ pub fn PersistentOwnedZBox.from_detached_zval(z ZVal) ?PersistentOwnedZBox {
 	if !detached.is_persistent_safe() {
 		return none
 	}
-	return own_persistent_dyn(detached)
+	return PersistentOwnedZBox.from_dyn(detached)
 }
 
 // try_of_detached requires the input zval to be safely detachable pure data.
@@ -207,27 +228,27 @@ pub fn PersistentOwnedZBox.of_value(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn RequestOwnedZBox.new_null() RequestOwnedZBox {
-	return own_request_zbox_raw(ZVal.new_null())
+	return RequestOwnedZBox.adopt_zval(ZVal.new_null())
 }
 
 pub fn RequestOwnedZBox.new_int(n i64) RequestOwnedZBox {
-	return own_request_zbox_raw(ZVal.new_int(n))
+	return RequestOwnedZBox.adopt_zval(ZVal.new_int(n))
 }
 
 pub fn RequestOwnedZBox.new_float(f f64) RequestOwnedZBox {
-	return own_request_zbox_raw(ZVal.new_float(f))
+	return RequestOwnedZBox.adopt_zval(ZVal.new_float(f))
 }
 
 pub fn RequestOwnedZBox.new_bool(b bool) RequestOwnedZBox {
-	return own_request_zbox_raw(ZVal.new_bool(b))
+	return RequestOwnedZBox.adopt_zval(ZVal.new_bool(b))
 }
 
 pub fn RequestOwnedZBox.new_string(s string) RequestOwnedZBox {
-	return own_request_zbox_raw(ZVal.new_string(s))
+	return RequestOwnedZBox.adopt_zval(ZVal.new_string(s))
 }
 
 pub fn PersistentOwnedZBox.new_null() PersistentOwnedZBox {
-	return own_persistent_dyn(dyn_value_null())
+	return PersistentOwnedZBox.from_dyn(DynValue.null())
 }
 
 pub fn PersistentOwnedZBox.invalid() PersistentOwnedZBox {
@@ -238,6 +259,10 @@ pub fn PersistentOwnedZBox.invalid() PersistentOwnedZBox {
 }
 
 pub fn release_persistent_boxes(mut list []PersistentOwnedZBox) {
+	PersistentOwnedZBox.release_all(mut list)
+}
+
+pub fn PersistentOwnedZBox.release_all(mut list []PersistentOwnedZBox) {
 	for i in 0 .. list.len {
 		list[i].release()
 	}
@@ -247,26 +272,21 @@ pub fn release_persistent_boxes(mut list []PersistentOwnedZBox) {
 }
 
 pub fn PersistentOwnedZBox.new_int(n i64) PersistentOwnedZBox {
-	return own_persistent_dyn(dyn_value_int(n))
+	return PersistentOwnedZBox.from_dyn(DynValue.of_int(n))
 }
 
 pub fn PersistentOwnedZBox.new_float(f f64) PersistentOwnedZBox {
-	return own_persistent_dyn(dyn_value_float(f))
+	return PersistentOwnedZBox.from_dyn(DynValue.of_float(f))
 }
 
 pub fn PersistentOwnedZBox.new_bool(b bool) PersistentOwnedZBox {
-	return own_persistent_dyn(dyn_value_bool(b))
+	return PersistentOwnedZBox.from_dyn(DynValue.of_bool(b))
 }
 
 pub fn PersistentOwnedZBox.new_string(s string) PersistentOwnedZBox {
-	return own_persistent_dyn(dyn_value_string(s))
+	return PersistentOwnedZBox.from_dyn(DynValue.of_string(s))
 }
 
 pub fn borrowed_zbox_from_raw(raw &C.zval) RequestBorrowedZBox {
-	return unsafe {
-		borrow_zbox_raw(ZVal{
-			raw:   raw
-			owned: false
-		})
-	}
+	return RequestBorrowedZBox.from_raw(raw)
 }

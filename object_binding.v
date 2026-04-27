@@ -8,6 +8,10 @@ fn object_from_zval_or_nil(z ZVal) &C.zend_object {
 }
 
 pub fn bind_object_with_ownership(z ZVal, handlers voidptr, ownership OwnershipKind) {
+	z.bind_object(handlers, ownership)
+}
+
+pub fn (z ZVal) bind_object(handlers voidptr, ownership OwnershipKind) {
 	obj := object_from_zval_or_nil(z)
 	if isnil(obj) {
 		return
@@ -22,15 +26,27 @@ pub fn bind_object_with_ownership(z ZVal, handlers voidptr, ownership OwnershipK
 	}
 }
 
+pub fn (z ZVal) bind_owned_object(handlers voidptr) {
+	z.bind_object(handlers, .owned_request)
+}
+
+pub fn (z ZVal) bind_borrowed_object(handlers voidptr) {
+	z.bind_object(handlers, .borrowed)
+}
+
 pub fn bind_owned_object(z ZVal, handlers voidptr) {
-	bind_object_with_ownership(z, handlers, .owned_request)
+	z.bind_owned_object(handlers)
 }
 
 pub fn bind_borrowed_object(z ZVal, handlers voidptr) {
-	bind_object_with_ownership(z, handlers, .borrowed)
+	z.bind_borrowed_object(handlers)
 }
 
 pub fn ensure_object_binding(z ZVal, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
+	return z.ensure_object_binding(handlers, ownership)
+}
+
+pub fn (z ZVal) ensure_object_binding(handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
 	obj := object_from_zval_or_nil(z)
 	if isnil(obj) {
 		return unsafe { nil }
@@ -45,15 +61,27 @@ pub fn ensure_object_binding(z ZVal, handlers voidptr, ownership OwnershipKind) 
 	}
 }
 
+pub fn (z ZVal) ensure_owned_object_binding(handlers voidptr) &C.vphp_object_wrapper {
+	return z.ensure_object_binding(handlers, .owned_request)
+}
+
+pub fn (z ZVal) ensure_borrowed_object_binding(handlers voidptr) &C.vphp_object_wrapper {
+	return z.ensure_object_binding(handlers, .borrowed)
+}
+
 pub fn ensure_owned_object_binding(z ZVal, handlers voidptr) &C.vphp_object_wrapper {
-	return ensure_object_binding(z, handlers, .owned_request)
+	return z.ensure_owned_object_binding(handlers)
 }
 
 pub fn ensure_borrowed_object_binding(z ZVal, handlers voidptr) &C.vphp_object_wrapper {
-	return ensure_object_binding(z, handlers, .borrowed)
+	return z.ensure_borrowed_object_binding(handlers)
 }
 
 pub fn init_owned_object(z ZVal, handlers voidptr) {
+	z.init_owned_object(handlers)
+}
+
+pub fn (z ZVal) init_owned_object(handlers voidptr) {
 	obj := object_from_zval_or_nil(z)
 	if isnil(obj) {
 		return
@@ -62,6 +90,10 @@ pub fn init_owned_object(z ZVal, handlers voidptr) {
 }
 
 pub fn return_bound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
+	PhpReturn.new(ret).bound_object(v_ptr, ce, handlers, ownership)
+}
+
+fn return_bound_object_to(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
 	match ownership {
 		.borrowed {
 			C.vphp_return_borrowed_object(ret, v_ptr, ce, handlers)
