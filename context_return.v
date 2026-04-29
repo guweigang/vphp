@@ -78,7 +78,7 @@ pub fn (ctx Context) return_list[T](list []T) {
 
 pub fn (ctx Context) return_map[T](m map[string]T) {
 	out := ZVal{
-		raw: ctx.ret
+		raw: ctx.ret.raw_zval()
 	}
 	out.array_init()
 	for k, v in m {

@@ -30,7 +30,7 @@ fn (v DynValue) is_persistent_safe() bool {
 	}
 }
 
-fn (v DynValue) request_owned_box() RequestOwnedZBox {
+fn (v DynValue) request_owned() RequestOwnedZBox {
 	mut out := ZVal{
 		raw:   C.vphp_new_zval()
 		owned: true
@@ -64,7 +64,7 @@ fn (v DynValue) to_string() string {
 			v.string_value().clone()
 		}
 		else {
-			mut temp := v.request_owned_box()
+			mut temp := v.request_owned()
 			defer {
 				temp.release()
 			}
@@ -86,7 +86,7 @@ fn (v DynValue) to_string_list() []string {
 			[v.to_string()]
 		}
 		else {
-			mut temp := v.request_owned_box()
+			mut temp := v.request_owned()
 			defer {
 				temp.release()
 			}
@@ -105,7 +105,7 @@ fn (v DynValue) to_string_map() map[string]string {
 			out
 		}
 		else {
-			mut temp := v.request_owned_box()
+			mut temp := v.request_owned()
 			defer {
 				temp.release()
 			}

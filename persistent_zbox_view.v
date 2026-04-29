@@ -1,7 +1,7 @@
 module vphp
 
 pub fn (v PersistentOwnedZBox) method_exists(name string) bool {
-	mut temp := v.request_owned_box() or { return false }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -15,7 +15,7 @@ pub fn (v PersistentOwnedZBox) to_string() string {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return '' }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -29,7 +29,7 @@ pub fn (v PersistentOwnedZBox) to_string_list() []string {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return []string{} }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -43,7 +43,7 @@ pub fn (v PersistentOwnedZBox) to_string_map() map[string]string {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return map[string]string{} }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -57,7 +57,7 @@ pub fn (v PersistentOwnedZBox) resource_type() ?string {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return none }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -71,7 +71,7 @@ pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return none }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -85,7 +85,7 @@ pub fn (v PersistentOwnedZBox) to_bool() bool {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return false }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -99,7 +99,7 @@ pub fn (v PersistentOwnedZBox) to_int() int {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return 0 }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -113,7 +113,7 @@ pub fn (v PersistentOwnedZBox) to_i64() i64 {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return i64(0) }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -127,7 +127,7 @@ pub fn (v PersistentOwnedZBox) to_f64() f64 {
 		}
 		else {}
 	}
-	mut temp := v.request_owned_box() or { return f64(0.0) }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -135,7 +135,7 @@ pub fn (v PersistentOwnedZBox) to_f64() f64 {
 }
 
 pub fn (v PersistentOwnedZBox) call_owned_request(args []ZVal) ZVal {
-	mut temp := v.request_owned_box() or { return invalid_zval() }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}
@@ -143,7 +143,7 @@ pub fn (v PersistentOwnedZBox) call_owned_request(args []ZVal) ZVal {
 }
 
 pub fn (v PersistentOwnedZBox) method_owned_request(method string, args []ZVal) ZVal {
-	mut temp := v.request_owned_box() or { return invalid_zval() }
+	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
 	}

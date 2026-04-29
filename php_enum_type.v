@@ -34,7 +34,7 @@ pub fn (e PhpEnum) exists() bool {
 }
 
 pub fn (e PhpEnum) cases() PhpArray {
-	raw := e.class.static_method('cases', [])
+	raw := e.class.static_method_zval('cases', [])
 	return PhpArray.must_from_zval(raw) or {
 		mut empty := ZVal.new_null()
 		empty.array_init()

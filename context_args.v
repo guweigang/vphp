@@ -4,37 +4,13 @@ import vphp.zend as _
 
 // 获取当前 PHP 函数调用的所有参数
 pub fn (ctx Context) get_args() []ZVal {
-	num := ctx.num_args()
-	mut res := []ZVal{}
-	for i in 1 .. (num + 1) {
-		res << ZVal{
-			raw: C.vphp_get_arg_ptr(ctx.ex, u32(i))
-		}
-	}
-	return res
+	return ctx.ex.args()
 }
 
 // ======== 参数读取 ========
 
 pub fn (ctx Context) arg_raw(index int) ZVal {
-	if index < 0 || index >= ctx.num_args() {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
-	}
-	raw := C.vphp_get_arg_ptr(ctx.ex, u32(index + 1))
-	if raw == 0 {
-		return unsafe {
-			ZVal{
-				raw: 0
-			}
-		}
-	}
-	return ZVal{
-		raw: raw
-	}
+	return ctx.ex.arg_raw(index)
 }
 
 // Low-level borrowed view; prefer `arg_borrowed_zbox()` for ownership-facing

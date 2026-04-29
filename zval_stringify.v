@@ -20,7 +20,7 @@ pub fn (value ZVal) stringify() string {
 	}
 	if value.is_object() {
 		if value.method_exists('__toString') {
-			return PhpObject.borrowed(value).with_method_result_zval('__toString', []ZVal{}, fn (raw ZVal) string {
+			return PhpObject.borrowed(value).with_method_result_zval('__toString', fn (raw ZVal) string {
 				return raw.to_string()
 			})
 		}

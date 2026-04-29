@@ -44,19 +44,21 @@ fn save_closure_value[T](v_cb T) voidptr {
 
 @[inline]
 fn (ctx Context) create_saved_full_auto_closure[T](v_cb T, bridge voidptr) {
-	C.vphp_create_closure_FULL_AUTO_V2(ctx.ret, save_closure_value[T](v_cb), bridge)
+	C.vphp_create_closure_FULL_AUTO_V2(ctx.ret.raw_zval(), save_closure_value[T](v_cb),
+		bridge)
 }
 
 @[inline]
 fn (ctx Context) create_saved_universal_closure[T](v_cb T, bridge voidptr, arity int) {
-	C.vphp_create_closure_with_arity(ctx.ret, save_closure_value[T](v_cb), bridge, arity, arity)
+	C.vphp_create_closure_with_arity(ctx.ret.raw_zval(), save_closure_value[T](v_cb),
+		bridge, arity, arity)
 }
 
 fn bridge_handler[T](v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
 		c := Context{
-			ex:  ex
-			ret: ret
+			ex:  ZExData.new(ex)
+			ret: PhpReturn.new(ret)
 		}
 
 		// Note: We avoid inspecting param types here because V's comptime
@@ -96,7 +98,7 @@ fn bridge_handler[T](v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 
 fn bridge_universal_0(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal0(v_ptr))
 		result := cb()
 		c.return_zval(result)
@@ -105,7 +107,7 @@ fn bridge_universal_0(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 
 fn bridge_universal_1(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal1(v_ptr))
 		result := cb(c.arg_val(0))
 		c.return_zval(result)
@@ -114,7 +116,7 @@ fn bridge_universal_1(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 
 fn bridge_universal_2(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal2(v_ptr))
 		result := cb(c.arg_val(0), c.arg_val(1))
 		c.return_zval(result)
@@ -123,7 +125,7 @@ fn bridge_universal_2(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 
 fn bridge_universal_1_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal1Void(v_ptr))
 		cb(c.arg_val(0))
 		c.return_null()
@@ -132,7 +134,7 @@ fn bridge_universal_1_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) 
 
 fn bridge_universal_2_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal2Void(v_ptr))
 		cb(c.arg_val(0), c.arg_val(1))
 		c.return_null()
@@ -141,7 +143,7 @@ fn bridge_universal_2_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) 
 
 fn bridge_universal_3(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal3(v_ptr))
 		result := cb(c.arg_val(0), c.arg_val(1), c.arg_val(2))
 		c.return_zval(result)
@@ -150,7 +152,7 @@ fn bridge_universal_3(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 
 fn bridge_universal_4(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal4(v_ptr))
 		result := cb(c.arg_val(0), c.arg_val(1), c.arg_val(2), c.arg_val(3))
 		c.return_zval(result)
@@ -159,7 +161,7 @@ fn bridge_universal_4(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 
 fn bridge_universal_3_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal3Void(v_ptr))
 		cb(c.arg_val(0), c.arg_val(1), c.arg_val(2))
 		c.return_null()
@@ -168,7 +170,7 @@ fn bridge_universal_3_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) 
 
 fn bridge_universal_4_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal4Void(v_ptr))
 		cb(c.arg_val(0), c.arg_val(1), c.arg_val(2), c.arg_val(3))
 		c.return_null()
@@ -214,7 +216,7 @@ pub fn (ctx Context) wrap_closure_universal[T](v_cb T) {
 
 fn bridge_universal_0_void(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {
 	unsafe {
-		c := Context{ ex: ex, ret: ret }
+		c := Context{ ex: ZExData.new(ex), ret: PhpReturn.new(ret) }
 		cb := *(&ClosureUniversal0Void(v_ptr))
 		cb()
 		c.return_null()

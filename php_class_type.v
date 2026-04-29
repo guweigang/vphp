@@ -37,7 +37,7 @@ pub fn (c PhpClass) to_zval() ZVal {
 }
 
 pub fn (c PhpClass) exists() bool {
-	res := PhpFunction.named('class_exists').call([ZVal.new_string(c.class_name),
+	res := PhpFunction.named('class_exists').call_zval([ZVal.new_string(c.class_name),
 		ZVal.new_bool(true)])
 	return res.is_valid() && res.to_bool()
 }
@@ -110,31 +110,70 @@ pub fn (c PhpClass) const_exists(name string) bool {
 	return c.to_zval().const_exists(name)
 }
 
-pub fn (c PhpClass) construct(args []ZVal) ZVal {
+pub fn (c PhpClass) construct_zval(args []ZVal) ZVal {
 	return c.to_zval().construct(args)
 }
 
-pub fn (c PhpClass) construct_owned_request(args []ZVal) ZVal {
+pub fn (c PhpClass) construct_owned_request_zval(args []ZVal) ZVal {
 	return c.to_zval().construct_owned_request(args)
 }
 
-pub fn (c PhpClass) construct_owned_persistent(args []ZVal) ZVal {
+pub fn (c PhpClass) construct_owned_persistent_zval(args []ZVal) ZVal {
 	return c.to_zval().construct_owned_persistent(args)
 }
 
-pub fn (c PhpClass) static_method(method string, args []ZVal) ZVal {
+pub fn (c PhpClass) construct_request_owned_zval(args []ZVal) RequestOwnedZBox {
+	return RequestOwnedZBox.adopt_zval(c.construct_owned_request_zval(args))
+}
+
+pub fn (c PhpClass) construct(args ...PhpFnArg) !PhpObject {
+	result := c.construct_owned_request_zval(php_fn_args_to_zvals(args))
+	return PhpObject.must_from_zval(result)
+}
+
+pub fn (c PhpClass) with_object[R](run fn (PhpObject) R, args ...PhpFnArg) !R {
+	mut result := c.construct_owned_request_zval(php_fn_args_to_zvals(args))
+	defer {
+		result.release()
+	}
+	obj := PhpObject.must_from_zval(result)!
+	return run(obj)
+}
+
+pub fn (c PhpClass) static_method_zval(method string, args []ZVal) ZVal {
 	return c.to_zval().static_method(method, args)
 }
 
-pub fn (c PhpClass) static_method_owned_request(method string, args []ZVal) ZVal {
+pub fn (c PhpClass) static_method_owned_request_zval(method string, args []ZVal) ZVal {
 	return c.to_zval().static_method_owned_request(method, args)
 }
 
-pub fn (c PhpClass) static_method_owned_persistent(method string, args []ZVal) ZVal {
+pub fn (c PhpClass) static_method_owned_persistent_zval(method string, args []ZVal) ZVal {
 	return c.to_zval().static_method_owned_persistent(method, args)
 }
 
-pub fn (c PhpClass) static_prop(name string) ZVal {
+pub fn (c PhpClass) static_method_request_owned(method string, args ...PhpFnArg) RequestOwnedZBox {
+	return RequestOwnedZBox.adopt_zval(c.static_method_owned_request_zval(method, php_fn_args_to_zvals(args)))
+}
+
+pub fn (c PhpClass) static_method[T](method string, args ...PhpFnArg) !T {
+	mut result := c.static_method_owned_request_zval(method, php_fn_args_to_zvals(args))
+	defer {
+		result.release()
+	}
+	return php_fn_copied_result_as[T](result)
+}
+
+pub fn (c PhpClass) with_static_method_result[T, R](method string, run fn (T) R, args ...PhpFnArg) !R {
+	mut result := c.static_method_owned_request_zval(method, php_fn_args_to_zvals(args))
+	defer {
+		result.release()
+	}
+	value := php_fn_result_as[T](result)!
+	return run(value)
+}
+
+pub fn (c PhpClass) static_prop_zval(name string) ZVal {
 	return c.to_zval().static_prop(name)
 }
 
@@ -148,6 +187,23 @@ pub fn (c PhpClass) static_prop_owned_request(name string) ZVal {
 
 pub fn (c PhpClass) static_prop_owned_persistent(name string) ZVal {
 	return c.to_zval().static_prop_owned_persistent(name)
+}
+
+pub fn (c PhpClass) static_prop[T](name string) !T {
+	mut result := c.static_prop_owned_request(name)
+	defer {
+		result.release()
+	}
+	return php_fn_copied_result_as[T](result)
+}
+
+pub fn (c PhpClass) with_static_prop_result[T, R](name string, run fn (T) R) !R {
+	mut result := c.static_prop_owned_request(name)
+	defer {
+		result.release()
+	}
+	value := php_fn_result_as[T](result)!
+	return run(value)
 }
 
 pub fn (c PhpClass) set_static_prop(name string, value ZVal) {
@@ -170,92 +226,19 @@ pub fn (c PhpClass) const_owned_persistent(name string) ZVal {
 	return c.to_zval().const_owned_persistent(name)
 }
 
-// Compatibility alias. Prefer `.@const(...)` in new code.
-pub fn (c PhpClass) constant(name string) ZVal {
-	return c.@const(name)
+pub fn (c PhpClass) const_value[T](name string) !T {
+	mut result := c.const_owned_request(name)
+	defer {
+		result.release()
+	}
+	return php_fn_copied_result_as[T](result)
 }
 
-pub fn (c PhpClass) construct_v[T](args []ZVal) !T {
-	return c.construct(args).to_v[T]()
-}
-
-pub fn (c PhpClass) construct_owned_request_v[T](args []ZVal) !T {
-	return c.construct_owned_request(args).to_v[T]()
-}
-
-pub fn (c PhpClass) construct_owned_persistent_v[T](args []ZVal) !T {
-	return c.construct_owned_persistent(args).to_v[T]()
-}
-
-pub fn (c PhpClass) static_method_v[T](method string, args []ZVal) !T {
-	return c.static_method(method, args).to_v[T]()
-}
-
-pub fn (c PhpClass) static_method_owned_request_v[T](method string, args []ZVal) !T {
-	return c.static_method_owned_request(method, args).to_v[T]()
-}
-
-pub fn (c PhpClass) static_method_owned_persistent_v[T](method string, args []ZVal) !T {
-	return c.static_method_owned_persistent(method, args).to_v[T]()
-}
-
-pub fn (c PhpClass) static_prop_v[T](name string) !T {
-	return c.static_prop(name).to_v[T]()
-}
-
-pub fn (c PhpClass) static_prop_borrowed_v[T](name string) !T {
-	return c.static_prop_borrowed(name).to_v[T]()
-}
-
-pub fn (c PhpClass) static_prop_owned_request_v[T](name string) !T {
-	return c.static_prop_owned_request(name).to_v[T]()
-}
-
-pub fn (c PhpClass) static_prop_owned_persistent_v[T](name string) !T {
-	return c.static_prop_owned_persistent(name).to_v[T]()
-}
-
-pub fn (c PhpClass) const_v[T](name string) !T {
-	return c.@const(name).to_v[T]()
-}
-
-pub fn (c PhpClass) const_borrowed_v[T](name string) !T {
-	return c.const_borrowed(name).to_v[T]()
-}
-
-pub fn (c PhpClass) const_owned_request_v[T](name string) !T {
-	return c.const_owned_request(name).to_v[T]()
-}
-
-pub fn (c PhpClass) const_owned_persistent_v[T](name string) !T {
-	return c.const_owned_persistent(name).to_v[T]()
-}
-
-pub fn (c PhpClass) construct_object[T](args []ZVal) ?&T {
-	return c.construct(args).to_object[T]()
-}
-
-pub fn (c PhpClass) construct_owned_request_object[T](args []ZVal) ?&T {
-	return c.construct_owned_request(args).to_object[T]()
-}
-
-pub fn (c PhpClass) construct_owned_persistent_object[T](args []ZVal) ?&T {
-	return c.construct_owned_persistent(args).to_object[T]()
-}
-
-pub fn (c PhpClass) static_method_object[T](method string, args []ZVal) ?&T {
-	return c.static_method(method, args).to_object[T]()
-}
-
-pub fn (c PhpClass) static_method_owned_request_object[T](method string, args []ZVal) ?&T {
-	return c.static_method_owned_request(method, args).to_object[T]()
-}
-
-pub fn (c PhpClass) static_method_owned_persistent_object[T](method string, args []ZVal) ?&T {
-	return c.static_method_owned_persistent(method, args).to_object[T]()
-}
-
-// 兼容旧命名：建议改用 `.const_v[T](...)`
-pub fn (c PhpClass) constant_v[T](name string) !T {
-	return c.const_v[T](name)
+pub fn (c PhpClass) with_const_result[T, R](name string, run fn (T) R) !R {
+	mut result := c.const_owned_request(name)
+	defer {
+		result.release()
+	}
+	value := php_fn_result_as[T](result)!
+	return run(value)
 }

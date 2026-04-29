@@ -204,6 +204,42 @@ pub fn (v PhpValue) as_enum_case() ?PhpEnumCase {
 	return PhpEnumCase.from_zval(v.to_zval())
 }
 
+pub fn (v PhpValue) require_null() !PhpNull {
+	return PhpNull.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_bool() !PhpBool {
+	return PhpBool.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_int() !PhpInt {
+	return PhpInt.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_double() !PhpDouble {
+	return PhpDouble.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_string() !PhpString {
+	return PhpString.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_scalar() !PhpScalar {
+	return PhpScalar.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_array() !PhpArray {
+	return PhpArray.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_object() !PhpObject {
+	return PhpObject.must_from_zval(v.to_zval())
+}
+
+pub fn (v PhpValue) require_callable() !PhpCallable {
+	return PhpCallable.must_from_zval(v.to_zval())
+}
+
 pub fn (v PersistentPhpValue) kind_name() string {
 	return v.value.kind_name()
 }

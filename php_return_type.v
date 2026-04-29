@@ -83,11 +83,11 @@ pub fn (ret PhpReturn) null_value(value PhpNull) {
 }
 
 pub fn (ret PhpReturn) dyn_value(value DynValue) {
-	mut box := value.request_owned_box()
+	mut owned := value.request_owned()
 	defer {
-		box.release()
+		owned.release()
 	}
-	ret.zval(box.to_zval())
+	ret.zval(owned.to_zval())
 }
 
 pub fn (ret PhpReturn) request_owned(value RequestOwnedZBox) {

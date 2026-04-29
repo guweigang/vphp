@@ -8,19 +8,17 @@ import vphp.zend as _
 
 pub struct Context {
 pub:
-	ex  &C.zend_execute_data
-	ret &C.zval
+	ex  ZExData
+	ret PhpReturn
 }
 
 // ======== 构造与基础状态 ========
 
 // 创建 Context 实例
 pub fn Context.new(ex voidptr, ret &C.zval) Context {
-	return unsafe {
-		Context{
-			ex:  &C.zend_execute_data(ex)
-			ret: ret
-		}
+	return Context{
+		ex:  ZExData.from_voidptr(ex)
+		ret: PhpReturn.new(ret)
 	}
 }
 
@@ -54,17 +52,13 @@ pub fn (ctx Context) args(metas []PhpArgMeta) PhpArgs {
 }
 
 pub fn (ctx Context) @return() PhpReturn {
-	return PhpReturn.new(ctx.ret)
+	return ctx.ret
 }
 
 pub fn (ctx Context) num_args() int {
-	return int(C.vphp_get_num_args(ctx.ex))
-}
-
-pub fn (ctx Context) has_exception() bool {
-	return C.vphp_has_exception()
+	return ctx.ex.num_args()
 }
 
 pub fn (ctx Context) get_ce() voidptr {
-	return C.vphp_get_active_ce(ctx.ex)
+	return ctx.ex.active_ce()
 }
