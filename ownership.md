@@ -62,6 +62,56 @@ intent explicit with `@[php_borrowed_return]`. A `return &self` / receiver-alias
 instance method should be treated as a borrowed object alias, not as a fresh
 owned object result.
 
+## Value Wrapper Layers
+
+VPHP separates a PHP value into four layers:
+
+```mermaid
+flowchart LR
+    A["Zend value<br/>C.zval / zend_object / zend_array"] --> B["ZVal<br/>low-level handle"]
+    B --> C["ZBox<br/>lifetime and ownership"]
+    C --> D["PHP semantic wrapper<br/>PhpValue / PhpInt / PhpString / PhpObject"]
+```
+
+| Layer | Types | Main question |
+| --- | --- | --- |
+| Zend value | `C.zval`, `zend_object`, `zend_array` | What does the PHP engine store? |
+| `ZVal` | `vphp.ZVal` | How do we touch the Zend value from V? |
+| `ZBox` | `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox` | How long may it live, and who releases it? |
+| Semantic wrapper | `PhpValue`, `PhpInt`, `PhpString`, `PhpArray`, `PhpObject` | What PHP type does application code mean? |
+
+These layers are intentionally separate:
+
+- `ZVal` is the bridge-level handle.
+- `ZBox` is the lifetime boundary.
+- `PhpValue` / `PhpInt` / `PhpString` / `PhpObject` are the application-facing
+  PHP type vocabulary.
+
+Examples:
+
+```v
+// Read an argument as a semantic PHP string. The value is request-borrowed.
+fn hello(name vphp.PhpString) string {
+	return 'Hello ${name.value()}'
+}
+
+// Copy a scalar result out of a PHP function call.
+len := vphp.PhpFunction.named('strlen').call[vphp.PhpInt](vphp.PhpString.of('codex'))!
+
+// Borrow a complex result only inside the callback.
+summary := vphp.PhpFunction.named('array_filter').with_result[vphp.PhpArray, string](fn (filtered vphp.PhpArray) string {
+	return 'count=${filtered.count()}'
+}, items)!
+
+// Store a long-lived value by upgrading the lifecycle, not by keeping a
+// request-borrowed semantic wrapper.
+mut result := vphp.PhpFunction.named('factory').request_owned()
+defer {
+	result.release()
+}
+mut stored := result.clone()
+```
+
 ## Two Independent Axes
 
 These terms answer two different questions:
@@ -200,7 +250,7 @@ Choose in this order:
 | Situation | Preferred wrapper |
 | --- | --- |
 | Read an argument without keeping it | `RequestBorrowedZBox.of(...)` |
-| Call PHP and inspect the result in-place | `PhpFunction.with_result_zval(...)` / `PhpCallable.with_result_zval(...)` / `PhpObject.with_method_result_zval(...)` |
+| Call PHP and inspect the result in-place | `PhpFunction.with_result(...)` / `PhpFunction.with_result_zval(...)` / `PhpCallable.with_result_zval(...)` / `PhpObject.with_method_result(...)` / `PhpObject.with_method_result_zval(...)` |
 | Call PHP and return/hand off the temporary result | `RequestOwnedZBox.adopt_zval(...)`, `take_zval()` |
 | Store a long-lived value when the type is not known in advance | `PersistentOwnedZBox.of(...)` |
 | Store long-lived scalar / string / list / map data | `PersistentOwnedZBox.new_*()`, `of_data(...)`, `try_of_detached(...)`, `of_mixed(...)` |
@@ -216,9 +266,12 @@ In practice:
 
 - Function parameters should default to borrowed wrappers.
 - PHP call results should default to request-owned wrappers.
-- Global PHP function calls should prefer `php_call_result_string/bool/i64/double`,
-  `PhpFunction.with_result_zval(...)`, or `PhpFunction.request_owned_box(...)` over
+- Global PHP function calls should prefer `PhpFunction.call[T](...)`,
+  `PhpFunction.with_result(...)`, or `PhpFunction.request_owned(...)` over
   carrying a bare `ZVal`.
+- PHP object method calls should prefer `PhpObject.method[T](...)` for copied
+  scalar wrapper results, or `PhpObject.with_method_result(...)` for borrowed
+  wrapper results.
 - Long-lived struct fields should default to persistent wrappers or retained handles.
 - The scope that creates an owned request value should also release it, unless
   it explicitly transfers ownership onward.

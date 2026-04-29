@@ -92,7 +92,7 @@ Behavior:
 ### Example
 
 ```v
-mut out := ZVal{ raw: ctx.ret }
+mut out := ZVal{ raw: ctx.return().raw_zval() }
 out.from_v[map[string]f64]({
     'avg': 91.2
     'max': 120.5

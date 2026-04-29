@@ -2,11 +2,130 @@
 
 `vphp` 的 interop 层负责把 `V -> PHP` 的调用收成一套统一语义：
 
-- 入口函数先拿到一个 `ZVal`
-- 后续动作都挂在 `ZVal` 上
-- typed helper 只是 `to_v[T]()` / `to_object[T]()` 的语法糖
+- 底层 bridge 先拿到 Zend value / `ZVal`
+- 生命周期边界交给 `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox`
+- 上层业务代码优先使用 `PhpValue` / `PhpInt` / `PhpString` / `PhpObject` 等 PHP 语义 wrapper
+- 裸 `ZVal` 入口仍然保留，但命名会显式带出 `_zval` 或 ownership 语义
 
 推荐把这份文档当成使用手册来查。
+
+## 值分层地图
+
+`vphp` 现在把“一个 PHP 值”拆成四层来看：
+
+```mermaid
+flowchart LR
+    A["Zend value<br/>C.zval / zend_object / zend_array"] --> B["ZVal<br/>底层 PHP 值句柄"]
+    B --> C["ZBox<br/>生命周期 wrapper"]
+    C --> D["PHP 语义 wrapper<br/>PhpValue / PhpInt / PhpString / PhpArray / PhpObject"]
+    B -. "bridge / escape hatch" .-> D
+```
+
+| 层级 | 代表类型 | 关注点 | 常见使用位置 |
+| --- | --- | --- | --- |
+| Zend value | `C.zval`, `zend_object`, `zend_array` | PHP 引擎内部内存 | C bridge / Zend API |
+| ZVal | `vphp.ZVal` | 低层 PHP 值句柄 | bridge helper、底层调用、escape hatch |
+| ZBox | `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox` | 生命周期和释放责任 | 参数读取、临时结果、长期保存 |
+| PHP 语义 wrapper | `PhpValue`, `PhpInt`, `PhpString`, `PhpArray`, `PhpObject`, `PhpCallable` | PHP 类型语义 | 扩展业务代码、框架层 API |
+
+更细一点看，`ZBox` 负责回答“这个值能活多久”，语义 wrapper 负责回答“这个值在 PHP 里是什么”：
+
+```mermaid
+flowchart TD
+    Z["Zend value"] --> ZV["ZVal"]
+
+    ZV --> RB["RequestBorrowedZBox<br/>借用当前 request 内的值"]
+    ZV --> RO["RequestOwnedZBox<br/>当前 request owned，需要释放/进入 request scope"]
+    ZV --> PO["PersistentOwnedZBox<br/>长期持有，需明确 release"]
+
+    RB --> PV["PhpValue<br/>mixed"]
+    RB --> PS["PhpInt / PhpString / PhpBool / PhpDouble / PhpNull"]
+    RB --> PC["PhpArray / PhpObject / PhpCallable / PhpClosure"]
+
+    RO --> PV
+    PO --> PV
+```
+
+几个基本判断：
+
+| 问题 | 选择 |
+| --- | --- |
+| 只是调用 Zend / C bridge | 用 `ZVal` 或显式 `_zval` API |
+| 读取 PHP 入参，不保存 | 用 `RequestBorrowedZBox` 或语义 wrapper 参数 |
+| 接收 PHP 调用返回值，当前 request 内继续用 | 用 `RequestOwnedZBox` 或 `with_result(...)` |
+| 要跨 request / 长期保存 | 用 `PersistentOwnedZBox` / retained handle |
+| 希望调用点表达 PHP 类型 | 用 `PhpValue` / `PhpString` / `PhpObject` 等语义 wrapper |
+
+### 示例：从裸 `ZVal` 进入语义 wrapper
+
+```v
+fn read_name(raw vphp.ZVal) !string {
+	value := vphp.PhpValue.from_zval(raw)
+	name := value.as_string()!
+	return name.value()
+}
+```
+
+这里 `raw` 是底层句柄，`PhpValue` 表达 mixed PHP 值，`PhpString` 再表达“我确认它是 PHP string”。
+
+### 示例：读取函数参数
+
+```v
+@[php_function]
+fn greet(name vphp.PhpString) string {
+	return 'Hello ${name.value()}'
+}
+```
+
+函数参数默认是 request 内借用语义：调用点不需要关心释放，也不应该把这个 wrapper 存进长期结构。
+
+### 示例：调用 PHP 函数并返回标量 wrapper
+
+```v
+len := vphp.PhpFunction.named('strlen').call[vphp.PhpInt](vphp.PhpString.of('codex'))!
+println(len.value())
+```
+
+`call[T]` 只适合可复制的标量 PHP wrapper：`PhpNull` / `PhpBool` / `PhpInt` / `PhpDouble` / `PhpString`。
+
+### 示例：调用 PHP 函数并读取复杂值
+
+```v
+count := vphp.PhpFunction.named('array_filter').with_result[vphp.PhpArray, int](fn (filtered vphp.PhpArray) int {
+	return filtered.count()
+}, items)!
+```
+
+`PhpArray` / `PhpObject` / `PhpCallable` / `PhpValue` 这类复杂 wrapper 默认不要从临时返回值里逃逸，优先在 `with_result(...)` callback 内消费。
+
+### 示例：调用对象方法
+
+```v
+obj := vphp.PhpObject.borrowed(raw_obj)
+
+title := obj.method[vphp.PhpString]('title')!
+
+payload_kind := obj.with_method_result[vphp.PhpValue, string]('payload',
+	fn (payload vphp.PhpValue) string {
+	return payload.type_name()
+})!
+```
+
+对象方法和函数调用遵循同一条规则：标量结果可以用 `method[T]` 直接复制返回，复杂结果放进 `with_method_result(...)`。
+
+### 示例：需要长期保存时升级生命周期
+
+```v
+mut owned := vphp.PhpFunction.named('make_handler').request_owned()
+defer {
+	owned.release()
+}
+
+mut stored := owned.clone()
+// stored 是 PersistentOwnedZBox，适合放进长期结构；持有者负责 release。
+```
+
+长期保存是生命周期问题，不是类型语义问题。即使值在 PHP 语义上是 `PhpObject` 或 `PhpCallable`，保存时也必须有 persistent / retained 语义。
 
 ## 所有权速查（新）
 
@@ -58,13 +177,9 @@ typed helper 也有对应版本：
 例如：
 
 ```v
-dt := vphp.php_class('DateTimeImmutable').construct([
-	vphp.ZVal.new_string('2026-03-04'),
-])
+dt := vphp.PhpClass.named('DateTimeImmutable').construct(vphp.PhpString.of('2026-03-04'))!
 
-stamp := dt.method_v[string]('format', [
-	vphp.ZVal.new_string('c'),
-])!
+stamp := dt.method[vphp.PhpString]('format', vphp.PhpString.of('c'))!
 ```
 
 这里：
@@ -130,7 +245,7 @@ stamp := dt.method_v[string]('format', [
 如果对象来自 PHP 原生定义，例如：
 
 ```v
-obj := vphp.php_class('DateTimeImmutable').construct([])
+obj := vphp.PhpClass.named('DateTimeImmutable').construct()!
 ```
 
 那么 V 侧拿到的是“PHP 对象的 `ZVal` 视图”。
@@ -138,7 +253,8 @@ obj := vphp.php_class('DateTimeImmutable').construct([])
 如果对象来自 `vphp` 导出的 V 类，例如：
 
 ```v
-article := vphp.php_class('Article').construct_object[Article]([...]) or { return }
+article_z := vphp.php_class('Article').construct([...])
+article := article_z.to_object[Article]() or { return }
 ```
 
 那么它同时有两层：
@@ -156,47 +272,30 @@ article := vphp.php_class('Article').construct_object[Article]([...]) or { retur
 全局函数入口：
 
 ```v
-fn_ref := vphp.php_fn('strlen')
-res := fn_ref.call([
-	vphp.ZVal.new_string('codex'),
-])
+length := vphp.PhpFunction.named('strlen').call[vphp.PhpInt](vphp.PhpString.of('codex'))!
 ```
 
-更短的写法：
+如果只需要在当前作用域读取复杂返回值，推荐用语义化 callback，
+把 PHP 返回值限制在一个小作用域里：
 
 ```v
-length := vphp.php_fn('strlen').call_v[int]([
-	vphp.ZVal.new_string('codex'),
-])!
-```
-
-如果只想按名字直接调用 PHP 函数，也可以用 `call_php_fn(...)`：
-
-```v
-res := vphp.call_php_fn('phpversion', [])
-```
-
-新代码如果只需要在当前作用域读取返回值，推荐用 ownership-aware
-callback，把 PHP 返回值限制在一个小作用域里：
-
-```v
-version := vphp.PhpFunction.named('phpversion').with_result_zval([]vphp.ZVal{}, fn (res vphp.ZVal) string {
-	return res.to_string()
-})
+version := vphp.PhpFunction.named('phpversion').with_result[vphp.PhpString, string](fn (res vphp.PhpString) string {
+	return res.value()
+})!
 ```
 
 如果结果要交给后续逻辑继续持有，推荐接收 request-owned box：
 
 ```v
-mut version := vphp.PhpFunction.named('phpversion').request_owned_box([]vphp.ZVal{})
+mut version := vphp.PhpFunction.named('phpversion').request_owned()
 defer { version.release() }
 ```
 
 如果只要标量结果，可以用更直接的命名：
 
 ```v
-version := vphp.php_call_result_string('phpversion', []vphp.ZVal{})
-exists := vphp.php_call_result_bool('function_exists', [vphp.ZVal.new_string('strlen')])
+version := vphp.PhpFunction.named('phpversion').result_string()
+exists := vphp.PhpFunction.named('function_exists').result_bool(vphp.PhpString.of('strlen'))
 ```
 
 `php_fn(...)` 仍适合表达 callable 风格的 PHP 函数引用：
@@ -209,98 +308,97 @@ res := vphp.php_fn('phpversion').call([])
 
 | API | 说明 |
 | --- | --- |
-| `php_fn(name)` | 获取一个可调用的 PHP 函数引用 |
-| `call_php_fn(name, args)` | 按名字直接调用 PHP 函数 |
 | `PhpFunction.named(name)` | 获取语义化 PHP 函数 wrapper |
 | `function_exists(name)` | 判断 PHP 全局函数是否存在 |
-| `PhpFunction.named(name).with_result_zval(args, run)` | 调用 PHP 全局函数，并在 callback 内借用返回值 |
-| `php_call_result_string(name, args)` | 调用 PHP 全局函数，并返回 string |
-| `php_call_result_bool(name, args)` | 调用 PHP 全局函数，并返回 bool |
-| `php_call_result_i64(name, args)` | 调用 PHP 全局函数，并返回 i64 |
-| `php_call_result_double(name, args)` | 调用 PHP 全局函数，并返回 f64 |
-| `PhpFunction.named(name).request_owned_box(args)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
+| `PhpFunction.named(name).call[T](args)` | 调用 PHP 全局函数，并返回可复制的 PHP 语义标量 wrapper |
+| `PhpFunction.named(name).with_result[T, R](run, args...)` | 调用 PHP 全局函数，并在 callback 内借用 PHP 语义 wrapper |
+| `PhpFunction.named(name).call_zval(args)` | 底层 ZVal 调用入口 |
+| `PhpFunction.named(name).with_result_zval(run, args...)` | 底层 ZVal callback 入口 |
+| `PhpFunction.named(name).result_string(args)` | 调用 PHP 全局函数，并返回 string |
+| `PhpFunction.named(name).result_bool(args)` | 调用 PHP 全局函数，并返回 bool |
+| `PhpFunction.named(name).result_i64(args)` | 调用 PHP 全局函数，并返回 i64 |
+| `PhpFunction.named(name).result_double(args)` | 调用 PHP 全局函数，并返回 f64 |
+| `PhpFunction.named(name).request_owned(args...)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
+| `php_fn(name)` | 底层 callable ZVal 函数引用 |
 | `z.call(args)` | 调用 callable（request-owned） |
 | `z.call_owned_request(args)` | 显式 request-owned |
 | `z.call_owned_persistent(args)` | 显式 persistent-owned |
-| `z.call_v[T](args)` | `call(args).to_v[T]()` |
-| `z.invoke_v[T](args)` | `invoke(args).to_v[T]()`（`call_v` 语义别名） |
-| `z.call_object[T](args)` | `call(args).to_object[T]()` |
+| `z.call(args)` | 底层 callable 调用入口 |
+| `z.to_v[T]()` | raw `ZVal` 到 V 值转换 |
+| `z.to_object[T]()` | raw `ZVal` 到 vphp 导出对象指针恢复 |
 
 ## 2. 类
 
 类入口：
 
 ```v
-cls := vphp.php_class('DateTimeImmutable')
-obj := cls.construct([
-	vphp.ZVal.new_string('2026-03-04'),
-])
+cls := vphp.PhpClass.named('DateTimeImmutable')
+obj := cls.construct(vphp.PhpString.of('2026-03-04'))!
 ```
 
 如果目标是 `vphp` 导出的对象，可以直接恢复成 `&T`：
 
 ```v
-article := vphp.php_class('Article').construct_object[Article]([
+article_z := vphp.php_class('Article').construct([
 	vphp.ZVal.new_string('Bridge'),
 	vphp.ZVal.new_int(7),
-]) or { return }
+])
+article := article_z.to_object[Article]() or { return }
 ```
 
 类相关的常用 API：
 
 | API | 说明 |
 | --- | --- |
-| `php_class(name)` | 获取 class-string `ZVal` |
+| `PhpClass.named(name)` | 构造 PHP class 语义 wrapper |
+| `PhpClass.find(name)` | 存在时返回 PHP class 语义 wrapper |
 | `class_exists(name)` | 判断类是否存在 |
 | `interface_exists(name)` | 判断接口是否存在 |
 | `trait_exists(name)` | 判断 trait 是否存在 |
-| `z.construct(args)` | 构造对象（request-owned） |
-| `z.construct_owned_request(args)` | 显式 request-owned |
-| `z.construct_owned_persistent(args)` | 显式 persistent-owned |
-| `z.construct_v[T](args)` | `construct(args).to_v[T]()` |
-| `z.construct_object[T](args)` | `construct(args).to_object[T]()` |
-| `z.static_method(name, args)` | 调用静态方法（request-owned） |
-| `z.static_method_owned_request(name, args)` | 显式 request-owned |
-| `z.static_method_owned_persistent(name, args)` | 显式 persistent-owned |
-| `z.static_method_v[T](name, args)` | `static_method(name, args).to_v[T]()` |
-| `z.static_method_object[T](name, args)` | 期望结果是 `vphp` 对象时恢复 `&T` |
-| `z.static_prop(name)` | 读取静态属性（request-owned） |
-| `z.static_prop_borrowed(name)` | 借用静态属性 |
-| `z.static_prop_owned_request(name)` | 显式 request-owned |
-| `z.static_prop_owned_persistent(name)` | 显式 persistent-owned |
-| `z.static_prop_v[T](name)` | 读取静态属性并转成 V 值 |
-| `z.@const(name)` | 读取类常量（request-owned） |
-| `z.const_borrowed(name)` | 借用类常量 |
-| `z.const_owned_request(name)` | 显式 request-owned |
-| `z.const_owned_persistent(name)` | 显式 persistent-owned |
-| `z.const_v[T](name)` | 读取类常量并转成 V 值 |
-| `z.const_names()` | 获取类常量名列表 |
-| `z.const_exists(name)` | 判断类常量是否存在 |
+| `cls.construct(args)` | 构造对象，并返回 `PhpObject` |
+| `cls.with_object(run, args...)` | 在 callback 内借用构造出的 `PhpObject` |
+| `cls.construct(args...)` | 语义参数构造 PHP 对象，并返回 `PhpObject` |
+| `cls.construct_zval(args)` | raw `ZVal` 构造入口 |
+| `cls.static_method[T](name, args)` | 调用静态方法，并返回可复制的 PHP 语义标量 wrapper |
+| `cls.with_static_method_result[T, R](name, run, args...)` | 静态方法 callback 入口，可借用复杂 PHP 语义 wrapper |
+| `cls.static_method_request_owned(name, args...)` | 语义参数 + request-owned 生命周期入口 |
+| `cls.static_method_zval(name, args)` | raw `ZVal` 静态方法入口 |
+| `cls.static_prop[T](name)` | 读取静态属性，并返回可复制的 PHP 语义标量 wrapper |
+| `cls.with_static_prop_result[T, R](name, run)` | 静态属性 callback 入口 |
+| `cls.static_prop_zval(name)` | raw `ZVal` 静态属性入口 |
+| `cls.const_value[T](name)` | 读取类常量，并返回可复制的 PHP 语义标量 wrapper |
+| `cls.with_const_result[T, R](name, run)` | 类常量 callback 入口 |
+| `cls.const_names()` | 获取类常量名列表 |
+| `cls.const_exists(name)` | 判断类常量是否存在 |
+| `php_class(name)` | 获取 class-string `ZVal`，用于底层 interop |
 
 例子：
 
 ```v
-label := vphp.php_class('PhpTypedBox').const_v[string]('LABEL')!
-count := vphp.php_class('PhpCounter').static_prop_v[int]('count')!
+label := vphp.PhpClass.named('PhpTypedBox').const_value[vphp.PhpString]('LABEL')!
+count := vphp.PhpClass.named('PhpCounter').static_prop[vphp.PhpInt]('count')!
 ```
 
 ## 3. 对象
 
-对象的实例调用和属性访问都挂在 `ZVal` 上：
+对象的实例调用可以走 `PhpObject` 语义 wrapper；底层 `ZVal` 入口仍然保留：
 
 ```v
-obj := vphp.php_class('PhpGreeter').construct([
-	vphp.ZVal.new_string('Codex'),
-])
+php_obj := vphp.PhpClass.named('PhpGreeter').construct(vphp.PhpString.of('Codex'))!
 
-msg := obj.method_v[string]('greet', [])!
-name := obj.prop_v[string]('name')!
+msg := php_obj.method[vphp.PhpString]('greet')!
+name := php_obj.prop_v[string]('name')!
 ```
 
 对象相关的常用 API：
 
 | API | 说明 |
 | --- | --- |
+| `PhpObject.borrowed(z)` | 从 object zval 构造语义对象 wrapper |
+| `PhpObject.method[T](name, args)` | 调用实例方法，并返回可复制的 PHP 语义标量 wrapper |
+| `PhpObject.with_method_result[T, R](name, args, run)` | 调用实例方法，并在 callback 内借用 PHP 语义 wrapper |
+| `PhpObject.method_zval(name, args)` | 底层 ZVal 方法调用入口 |
+| `PhpObject.with_method_result_zval(name, run, args...)` | 底层 ZVal callback 入口 |
 | `z.method(name, args)` | 调用实例方法（request-owned） |
 | `z.method_owned_request(name, args)` | 显式 request-owned |
 | `z.method_owned_persistent(name, args)` | 显式 persistent-owned |
@@ -375,9 +473,7 @@ loaded := vphp.include_once('/tmp/bootstrap.php')
 例子：
 
 ```v
-obj := vphp.php_class('DateTimeImmutable').construct([
-	vphp.ZVal.new_string('2026-03-04'),
-])
+obj := vphp.PhpClass.named('DateTimeImmutable').construct(vphp.PhpString.of('2026-03-04'))!
 
 println(obj.class_name())
 println(obj.parent_class_name())
@@ -389,23 +485,16 @@ println(obj.const_exists('ATOM'))
 
 推荐原则：
 
-1. 已知返回类型时，优先 `*_v[T]`
-2. 已知返回值是 `vphp` 对象时，优先 `*_object[T]`
-3. 需要动态判断类型或做通用运行时时，先拿 raw `ZVal`
+1. 已知 PHP 语义返回类型时，优先 `PhpFunction/PhpClass/PhpObject` 上的 `call[T]`、`static_method[T]`、`method[T]`
+2. 需要在 callback 内借用复杂 PHP 值时，优先 `with_result[T, R]` / `with_method_result[T, R]`
+3. 需要动态判断类型或做通用运行时时，使用 `PhpValue`
+4. 只有落到底层 interop 时，才直接使用 raw `ZVal`
 
 例如：
 
 ```v
-res := vphp.php_fn('strlen').call([vphp.ZVal.new_string('codex')])
-length := res.to_v[int]()!
-```
-
-或者直接：
-
-```v
-length := vphp.php_fn('strlen').call_v[int]([
-	vphp.ZVal.new_string('codex'),
-])!
+length := vphp.PhpFunction.named('strlen').call[vphp.PhpInt](vphp.PhpString.of('codex'))!
+println(length.value())
 ```
 
 ## `vphp` 对象与普通 PHP 对象的边界
@@ -417,14 +506,15 @@ length := vphp.php_fn('strlen').call_v[int]([
 也就是说，这种可以：
 
 ```v
-article := vphp.php_class('Article').construct_object[Article]([...]) or { return }
+article_z := vphp.php_class('Article').construct([...])
+article := article_z.to_object[Article]() or { return }
 ```
 
 这种不可以恢复成 `&Article`：
 
 ```v
-dt := vphp.php_class('DateTimeImmutable').construct([])
-dt.to_object[Article]() or { /* none */ }
+dt := vphp.PhpClass.named('DateTimeImmutable').construct()!
+dt.to_zval().to_object[Article]() or { /* none */ }
 ```
 
 原因很简单：
@@ -447,6 +537,22 @@ struct。完整规则见 [../compiler/README.md](../compiler/README.md) 的
 其中最容易踩坑的是 PHP 语义 wrapper：`vphp.PhpObject`、
 `vphp.PhpArray`、`vphp.PhpCallable`、`vphp.PhpValue` 等返回时保留原
 PHP 值语义，不会被当成 V struct 展开成数组。
+
+`Context` 是显式进入底层调用帧的入口，但它本身也不再直接暴露 C 指针：
+
+```v
+pub struct Context {
+pub:
+	ex  vphp.ZExData
+	ret vphp.PhpReturn
+}
+```
+
+`ZExData` 和 `ZVal` 属于同一层级：它是 Zend execute data 的低层句柄。
+`PhpReturn` 是 return slot 的语义 wrapper。常规代码应该通过
+`ctx.arg_*()` / `ctx.args(...)` / `ctx.return()` 操作参数和返回值；
+只有 bridge-level 代码才需要 `ctx.ex.raw_ex()` 或
+`ctx.return().raw_zval()`。
 
 手动组装参数时，推荐统一使用：
 
@@ -604,9 +710,7 @@ for idx := 0; idx < keys.array_count(); idx++ {
 当 PHP 调用失败就应该立刻转成 PHP 异常时：
 
 ```v
-length := vphp.php_fn('strlen').call_v[int]([
-	vphp.ZVal.new_string('codex'),
-]) or {
+length := vphp.PhpFunction.named('strlen').call[vphp.PhpInt](vphp.PhpString.of('codex')) or {
 	vphp.throw_exception('strlen failed: ${err.msg()}', 0)
 	return
 }
@@ -618,7 +722,7 @@ length := vphp.php_fn('strlen').call_v[int]([
 
 ```v
 mode := cfg.prop_v[string]('mode') or { 'default' }
-count := vphp.php_class('PhpCounter').static_prop_v[int]('count') or { 0 }
+count := vphp.PhpClass.named('PhpCounter').static_prop[vphp.PhpInt]('count') or { vphp.PhpInt.zero() }
 ```
 
 经验规则：
@@ -672,11 +776,9 @@ if !vphp.class_exists('Demo\\IncludeCase\\ModuleBox') {
 	return
 }
 
-box := vphp.php_class('Demo\\IncludeCase\\ModuleBox').construct([
-	vphp.ZVal.new_string('codex'),
-])
+box := vphp.PhpClass.named('Demo\\IncludeCase\\ModuleBox').construct(vphp.PhpString.of('codex')) or { return }
 
-desc := box.method_v[string]('describe', []) or { return }
+desc := box.method[vphp.PhpString]('describe') or { return }
 class_name := box.class_name()
 short_name := box.short_name()
 
@@ -688,14 +790,14 @@ entries = config.foreach_with_ctx[[]string](entries, fn (key vphp.ZVal, val vphp
 println('count=${config.array_count()}')
 println('class=${class_name}')
 println('short=${short_name}')
-println('desc=${desc}')
+println('desc=${desc.value()}')
 println('items=${entries.join(",")}')
 ```
 
 这条链说明了：
 
 - `include_once()` 不只是加载值，也可以加载 PHP 类型定义
-- `php_class(...)` 不会主动检查类是否存在，存在性判断应显式走 `class_exists(...)`
+- `PhpClass.named(...)` 不会主动检查类是否存在，存在性判断应显式走 `class_exists(...)` 或 `PhpClass.find(...)`
 - PHP 返回的数组可以直接在 V 侧 `count + foreach`
 - 同一条 interop 链里可以同时处理：
   - 文件加载
