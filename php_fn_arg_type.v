@@ -1,6 +1,7 @@
 module vphp
 
 pub type PhpFnArg = PhpArray
+	| PhpInArg
 	| PhpBool
 	| PhpCallable
 	| PhpClosure
@@ -20,6 +21,7 @@ pub type PhpFnArg = PhpArray
 pub fn (arg PhpFnArg) to_zval() ZVal {
 	return match arg {
 		PhpArray { arg.to_zval() }
+		PhpInArg { arg.to_zval() }
 		PhpBool { arg.to_zval() }
 		PhpCallable { arg.to_zval() }
 		PhpClosure { arg.to_zval() }

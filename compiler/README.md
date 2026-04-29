@@ -121,7 +121,7 @@ Use `Context` when the implementation needs the full PHP call frame:
 @[php_function]
 fn handle(ctx vphp.Context) {
 	args := ctx.args([
-		vphp.PhpArgMeta{ index: 0, name: 'payload' },
+		vphp.PhpInArgMeta{ index: 0, name: 'payload' },
 	])
 	value := args.at(0).value
 	ctx.return().string(value.type_name())
@@ -131,7 +131,7 @@ fn handle(ctx vphp.Context) {
 `Context` is hidden from PHP arginfo. It is the escape hatch for dynamic
 argument handling, manual return writes, or direct access to request state.
 
-Do not combine `Context` with `PhpArgs`; `PhpArgs` is derived from `Context`.
+Do not combine `Context` with `PhpInArgs`; `PhpInArgs` is derived from `Context`.
 
 ### 2. V Native Values
 
@@ -228,7 +228,7 @@ fn create_response(params CreateResponseParams) string {
 ```
 
 The compiler expands the final `@[params]` struct into PHP-visible arguments,
-builds `PhpArgs` in glue, applies V defaults when arguments are omitted, and
+builds `PhpInArgs` in glue, applies V defaults when arguments are omitted, and
 then calls the V function with the constructed params struct.
 
 Generated params struct bindings read arguments by PHP parameter name first and
@@ -243,7 +243,7 @@ Params struct fields may use plain V scalar types or semantic PHP wrappers such
 as `vphp.PhpString`, `vphp.PhpBool`, and `vphp.PhpArray`. Wrapper fields get
 semantic empty defaults and still validate the PHP value when it is supplied.
 
-Do not expose `vphp.PhpArgs` directly as a function parameter. `PhpArgs` is a
+Do not expose `vphp.PhpInArgs` directly as a function parameter. `PhpInArgs` is a
 glue/runtime model and is available from `Context` via `ctx.args(...)` when a
 function intentionally enters the low-level `Context` mode.
 
@@ -261,7 +261,7 @@ needs to write the PHP return slot manually:
 @[php_function]
 fn dynamic(ctx vphp.Context) {
 	args := ctx.args([
-		vphp.PhpArgMeta{ index: 0, name: 'payload' },
+		vphp.PhpInArgMeta{ index: 0, name: 'payload' },
 	])
 	ctx.return().string_value(args.at(0).value.type_name())
 }

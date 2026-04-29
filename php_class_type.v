@@ -1,7 +1,8 @@
 module vphp
 
 pub struct PhpClass {
-	class_name string
+	name string
+	meta ?PhpClassMeta
 }
 
 pub struct PhpClassMeta {
@@ -17,7 +18,14 @@ pub:
 
 pub fn PhpClass.named(name string) PhpClass {
 	return PhpClass{
-		class_name: name
+		name: name
+	}
+}
+
+pub fn PhpClass.from_meta(meta PhpClassMeta) PhpClass {
+	return PhpClass{
+		name: meta.name
+		meta: meta
 	}
 }
 
@@ -29,15 +37,15 @@ pub fn PhpClass.find(name string) ?PhpClass {
 }
 
 pub fn (c PhpClass) name() string {
-	return c.class_name
+	return c.name
 }
 
 pub fn (c PhpClass) to_zval() ZVal {
-	return ZVal.new_string(c.class_name)
+	return ZVal.new_string(c.name())
 }
 
 pub fn (c PhpClass) exists() bool {
-	res := PhpFunction.named('class_exists').call_zval([ZVal.new_string(c.class_name),
+	res := PhpFunction.named('class_exists').call_zval([ZVal.new_string(c.name()),
 		ZVal.new_bool(true)])
 	return res.is_valid() && res.to_bool()
 }

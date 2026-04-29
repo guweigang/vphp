@@ -151,7 +151,7 @@ Typical examples:
 - `normalize_v_type_key(...)`
 
 This layer is intentionally small. It should describe facts such as
-"`PhpArray` maps to PHP `array` and uses `PhpArg.array()` for decoding"; it
+"`PhpArray` maps to PHP `array` and uses `PhpInArg.array()` for decoding"; it
 should not render C macros or V glue lines directly.
 
 ### 5. `export`

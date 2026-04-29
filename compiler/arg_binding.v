@@ -57,7 +57,7 @@ fn gen_php_args_lines(args []repr.PhpArgRepr) []string {
 		if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
 			continue
 		}
-		lines << '        vphp.PhpArgMeta{ index: ${php_index}, name: ${v_single_quote(arg.name)} },'
+		lines << '        vphp.PhpInArgMeta{ index: ${php_index}, name: ${v_single_quote(arg.name)} },'
 		php_index++
 	}
 	lines << '    ])'

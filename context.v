@@ -27,17 +27,17 @@ pub fn new_context(ex voidptr, ret &C.zval) Context {
 	return Context.new(ex, ret)
 }
 
-pub fn (ctx Context) arg_at(index int) PhpArg {
+pub fn (ctx Context) arg_at(index int) PhpInArg {
 	return ctx.arg_named(index, '')
 }
 
-pub fn (ctx Context) arg_named(index int, name string) PhpArg {
-	return PhpArg.from_zval(index, name, ctx.arg_raw(index))
+pub fn (ctx Context) arg_named(index int, name string) PhpInArg {
+	return PhpInArg.from_zval(index, name, ctx.arg_raw(index))
 }
 
-pub fn (ctx Context) args(metas []PhpArgMeta) PhpArgs {
+pub fn (ctx Context) args(metas []PhpInArgMeta) PhpInArgs {
 	num := ctx.num_args()
-	mut items := []PhpArg{cap: num}
+	mut items := []PhpInArg{cap: num}
 	for index in 0 .. num {
 		mut name := ''
 		for meta in metas {
@@ -48,7 +48,7 @@ pub fn (ctx Context) args(metas []PhpArgMeta) PhpArgs {
 		}
 		items << ctx.arg_named(index, name)
 	}
-	return PhpArgs.new(items)
+	return PhpInArgs.new(items)
 }
 
 pub fn (ctx Context) @return() PhpReturn {
