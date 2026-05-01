@@ -292,12 +292,12 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 	}
 	if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {
 		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.raw()')}',
+			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.zval()')}',
 		]
 	}
 	if arg.v_type == 'Callable' || arg.v_type == 'vphp.Callable' {
 		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.raw()')}',
+			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.zval()')}',
 		]
 	}
 	if arg.v_type == 'RequestBorrowedZBox' || arg.v_type == 'vphp.RequestBorrowedZBox' {

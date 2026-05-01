@@ -94,7 +94,7 @@ fn (binding ParamsStructFieldBinding) arg_expr() string {
 fn (binding ParamsStructFieldBinding) value_expr() string {
 	arg_expr := binding.arg_expr()
 	if binding.arg.v_type == 'vphp.ZVal' || binding.arg.v_type == 'ZVal' {
-		return '${arg_expr}.raw()'
+		return '${arg_expr}.zval()'
 	}
 	if binding.arg.v_type == 'RequestBorrowedZBox'
 		|| binding.arg.v_type == 'vphp.RequestBorrowedZBox' {

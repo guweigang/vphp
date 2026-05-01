@@ -65,6 +65,7 @@
 
 入口文档：
 
+- [value_layers.md](value_layers.md)
 - [interop.md](interop.md)
 
 ### 2. Ownership / Lifecycle
@@ -85,6 +86,7 @@
 
 入口文档：
 
+- [value_layers.md](value_layers.md)
 - [lifecycle_model.md](lifecycle_model.md)
 - [vphp_vs_ext_php_rs.md](vphp_vs_ext_php_rs.md)
 
@@ -122,6 +124,8 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 入口文档：
 
 - [../compiler/README.md](../compiler/README.md)
+- [../compiler/docs/architecture.md](../compiler/docs/architecture.md)
+- [../compiler/docs/emission_pipeline.md](../compiler/docs/emission_pipeline.md)
 
 ## Current Highlights
 
@@ -147,10 +151,11 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 第一次接触 `vphp`：
 
 1. 先看这页
-2. 再看 [interop.md](interop.md)
-3. 再看 [oop_features.md](oop_features.md)
-4. 再看 [lifecycle_model.md](lifecycle_model.md)
-5. 最后看 [../compiler/README.md](../compiler/README.md)
+2. 再看 [value_layers.md](value_layers.md)
+3. 再看 [interop.md](interop.md)
+4. 再看 [oop_features.md](oop_features.md)
+5. 再看 [lifecycle_model.md](lifecycle_model.md)
+6. 最后看 [../compiler/README.md](../compiler/README.md)
 
 如果你更关心工程实践：
 
@@ -159,5 +164,6 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 
 ## Related Docs
 
-- [README.md](../README.md)
-- [README.md](../compiler/README.md)
+- [vphp README](../README.md)
+- [compiler README](../compiler/README.md)
+- [compiler architecture](../compiler/docs/architecture.md)

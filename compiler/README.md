@@ -10,11 +10,11 @@ Project overview:
 
 If you are new to the compiler, read these in order:
 
-1. [architecture.md](architecture.md)
-2. [repr.md](repr.md)
-3. [class_shadows.md](class_shadows.md)
-4. [builder.md](builder.md)
-5. [emission_pipeline.md](emission_pipeline.md)
+1. [docs/architecture.md](docs/architecture.md)
+2. [docs/repr.md](docs/repr.md)
+3. [docs/class_shadows.md](docs/class_shadows.md)
+4. [docs/builder.md](docs/builder.md)
+5. [docs/emission_pipeline.md](docs/emission_pipeline.md)
 
 ## Implementation Layout
 
@@ -60,22 +60,22 @@ vphp/compiler/
 
 Read:
 
-1. [architecture.md](architecture.md)
-2. [emission_pipeline.md](emission_pipeline.md)
+1. [docs/architecture.md](docs/architecture.md)
+2. [docs/emission_pipeline.md](docs/emission_pipeline.md)
 
 ### I want to add a new parsed feature
 
 Read:
 
-1. [repr.md](repr.md)
+1. [docs/repr.md](docs/repr.md)
 2. `parser/`
-3. [architecture.md](architecture.md)
+3. [docs/architecture.md](docs/architecture.md)
 
 ### I want to change class static/class const shadow behavior
 
 Read:
 
-1. [class_shadows.md](class_shadows.md)
+1. [docs/class_shadows.md](docs/class_shadows.md)
 2. [v_glue.v](v_glue.v)
 3. [c_emitter.v](c_emitter.v)
 
@@ -83,12 +83,12 @@ Read:
 
 Read:
 
-1. [builder.md](builder.md)
-2. [emission_pipeline.md](emission_pipeline.md)
+1. [docs/builder.md](docs/builder.md)
+2. [docs/emission_pipeline.md](docs/emission_pipeline.md)
 
 Important:
 
-- `emission_pipeline.md` now documents return-shape classification for
+- `docs/emission_pipeline.md` now documents return-shape classification for
   `@[php_method]`, including container returns like `map[string]string` and
   `[]string`
 
@@ -326,8 +326,8 @@ fn same_array(arr vphp.PhpArray) vphp.PhpArray {
 
 Supported wrapper returns include the parameter wrappers listed above, plus
 `vphp.PhpClass`, `vphp.PhpFunction`, `vphp.PhpClosure`, and persistent wrapper
-forms such as `vphp.PersistentPhpValue`, `vphp.PersistentPhpArray`,
-`vphp.PersistentPhpObject`, and `vphp.PersistentPhpClosure`.
+forms such as `vphp.PhpValue`, `vphp.PhpArray` with persistent-owned storage,
+`vphp.PhpObject`, and `vphp.PhpClosure` with persistent-owned storage.
 
 Semantic wrapper returns preserve the wrapped PHP value. They are not serialized
 as V structs.

@@ -9,8 +9,8 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 	// 基础包装器
 	out << "@[export: 'vphp_wrap_${f.name}']"
 	out << 'fn vphp_wrap_${f.name}(ctx vphp.Context) {'
-	out << '    vphp_ar_mark := vphp.autorelease_mark()'
-	out << '    defer { vphp.autorelease_drain(vphp_ar_mark) }'
+	out << '    mut vphp_scope := vphp.PhpScope.once()'
+	out << '    defer { vphp_scope.close() }'
 
 	arg_setup := build_php_arg_setup(f.args, false, false)
 	out << arg_setup.lines

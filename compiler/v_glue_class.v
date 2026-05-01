@@ -209,8 +209,8 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 				out << '    mut recv := unsafe { &${r.name}(ptr) }'
 			}
 		}
-		out << '    vphp_ar_mark := vphp.autorelease_mark()'
-		out << '    defer { vphp.autorelease_drain(vphp_ar_mark) }'
+		out << '    mut vphp_scope := vphp.PhpScope.once()'
+		out << '    defer { vphp_scope.close() }'
 
 		arg_setup := build_php_arg_setup(m.args, returns_object, true)
 		out << arg_setup.lines
