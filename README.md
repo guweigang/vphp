@@ -252,40 +252,45 @@ fn v_request_boot_count() int {
 
 ### Returning V closures to PHP
 
-vphp provides a single, minimal ergonomic API for returning V closures to PHP. The recommended pattern is to use "universal" ZVal-based closures (arity 0..4) and the helper wrappers exposed on the Context.
+vphp returns V closures to PHP through compiler-generated bridge code. Prefer declaring the closure type directly on the exported function and let the compiler choose the bridge.
 
 Examples:
 
-1) Generic, typed wrapper (preferred when you already have a function type):
+1) Struct params:
 
 ```v
-// If you have a typed function type, you can use the generic wrapper.
-// The wrapper inspects arity at compile time and registers the correct bridge.
-pub fn (ctx vphp.Context) get_cb() {
-    // Suppose my_cb is fn (vphp.ZVal, vphp.ZVal) vphp.ZVal
-    ctx.wrap_closure(my_cb)
+@[params]
+pub struct SearchParams {
+    q string
+    limit int
+}
+
+fn search_cb(p SearchParams) string {
+    return '${p.q}:${p.limit}'
+}
+
+@[php_function]
+pub fn get_search_cb() fn (SearchParams) string {
+    return search_cb
 }
 ```
 
-2) Convenience helpers (recommended for most users):
+2) Variadic values:
 
 ```v
-// Plain functions taking/returning ZVal can be wrapped easily:
-pub fn my_cb(a vphp.ZVal, b vphp.ZVal) vphp.ZVal {
-    return vphp.ZVal.new_string(a.to_string() + "+" + b.to_string())
+fn join_cb(args ...vphp.VScalarValue) string {
+    return args.map(it.str()).join(',')
 }
 
-pub fn (ctx vphp.Context) get_cb2() {
-    // Prefer the single minimal API: either use the generic wrapper or the
-    // explicit ClosureUniversal alias with wrap_closure_universal. For example:
-    ctx.wrap_closure(my_cb)
+@[php_function]
+pub fn get_join_cb() fn (...vphp.VScalarValue) string {
+    return join_cb
 }
 ```
 
 Notes:
-- Universal closures use ZVal for parameter and return types to avoid brittle comptime type reflection and to keep the bridge stable across V versions.
-- Supported arity: 0..4. For unsupported arity, the wrapper will return null at runtime.
-- The single generic entrypoint is `wrap_closure[T]`; helper `wrap_closure_from_fnN` functions are provided for ergonomics.
+- Supported variadic argument carriers are `vphp.PhpValue`, `vphp.ZVal`, `vphp.RequestBorrowedZBox`, and `vphp.VScalarValue`.
+- Supported closure returns follow the normal vphp return binding rules, including `void`, V scalars, `vphp.PhpValue`, and `vphp.VScalarValue`.
 
 ## Recommended Reading Order
 

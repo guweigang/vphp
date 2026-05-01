@@ -18,6 +18,7 @@ pub mut:
 	ini_entries     map[string]string
 	globals_repr    repr.PhpGlobalsRepr
 	elements        []repr.PhpRepr
+	params_structs  map[string]repr.PhpParamsStruct
 mut:
 	table    &ast.Table
 	pref_set &pref.Preferences
@@ -54,6 +55,7 @@ pub fn (mut c Compiler) compile() !string {
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
 	field_types := collect_struct_field_types(all_stmts, c.table)
 	params_structs := cparser.collect_params_structs(all_stmts, c.table)
+	c.params_structs = params_structs.clone()
 	method_profiles := collect_method_borrow_profiles(all_stmts, c.table, field_types)
 	resolved_borrowed := resolve_method_borrowed_returns(method_profiles)
 	method_return_types := collect_method_return_types(method_profiles)

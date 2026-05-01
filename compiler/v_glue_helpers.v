@@ -16,22 +16,6 @@ fn uniq_lines(lines []string) []string {
 	return out
 }
 
-fn closure_universal_helper_for(return_type string) string {
-	return match return_type {
-		'ClosureUniversal0', 'vphp.ClosureUniversal0' { 'wrap_closure_universal_0' }
-		'ClosureUniversal1', 'vphp.ClosureUniversal1' { 'wrap_closure_universal_1' }
-		'ClosureUniversal2', 'vphp.ClosureUniversal2' { 'wrap_closure_universal_2' }
-		'ClosureUniversal3', 'vphp.ClosureUniversal3' { 'wrap_closure_universal_3' }
-		'ClosureUniversal4', 'vphp.ClosureUniversal4' { 'wrap_closure_universal_4' }
-		'ClosureUniversal0Void', 'vphp.ClosureUniversal0Void' { 'wrap_closure_universal_0_void' }
-		'ClosureUniversal1Void', 'vphp.ClosureUniversal1Void' { 'wrap_closure_universal_1_void' }
-		'ClosureUniversal2Void', 'vphp.ClosureUniversal2Void' { 'wrap_closure_universal_2_void' }
-		'ClosureUniversal3Void', 'vphp.ClosureUniversal3Void' { 'wrap_closure_universal_3_void' }
-		'ClosureUniversal4Void', 'vphp.ClosureUniversal4Void' { 'wrap_closure_universal_4_void' }
-		else { '' }
-	}
-}
-
 fn is_internal_parent_scalar_field(v_type string) bool {
 	return v_type in ['string', 'int', 'i64', 'bool', 'f64']
 }

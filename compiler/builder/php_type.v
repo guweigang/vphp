@@ -46,10 +46,8 @@ fn is_class_literal_type(raw_type string) bool {
 
 fn is_php_builtin_type(raw_type string) bool {
 	decl := parse_php_type_decl(raw_type)
-	_ := php_builtin_type_info_from_clean(decl.clean) or {
-		return false
-	}
-	return true
+	return decl.clean in ['array', 'string', 'int', 'i64', 'bool', 'f64', 'f32', 'object', 'callable',
+		'iterable', 'mixed', 'null', 'false', 'true', 'static', 'never', 'void']
 }
 
 fn php_builtin_type_info(raw_type string) ?PhpBuiltinTypeInfo {
@@ -59,22 +57,85 @@ fn php_builtin_type_info(raw_type string) ?PhpBuiltinTypeInfo {
 
 fn php_builtin_type_info_from_clean(clean string) ?PhpBuiltinTypeInfo {
 	return match clean {
-		'array' { PhpBuiltinTypeInfo{code: 'IS_ARRAY'} }
-		'string' { PhpBuiltinTypeInfo{code: 'IS_STRING'} }
-		'int', 'i64' { PhpBuiltinTypeInfo{code: 'IS_LONG'} }
-		'bool' { PhpBuiltinTypeInfo{code: '_IS_BOOL'} }
-		'f64', 'f32' { PhpBuiltinTypeInfo{code: 'IS_DOUBLE'} }
-		'object' { PhpBuiltinTypeInfo{code: 'IS_OBJECT'} }
-		'callable' { PhpBuiltinTypeInfo{code: 'IS_CALLABLE'} }
-		'iterable' { PhpBuiltinTypeInfo{mask: 'MAY_BE_ARRAY', mask_obj_class: 'Traversable'} }
-		'mixed' { PhpBuiltinTypeInfo{code: 'IS_MIXED'} }
-		'null' { PhpBuiltinTypeInfo{code: 'IS_NULL'} }
-		'false' { PhpBuiltinTypeInfo{code: 'IS_FALSE'} }
-		'true' { PhpBuiltinTypeInfo{code: 'IS_TRUE'} }
-		'static' { PhpBuiltinTypeInfo{code: 'IS_STATIC'} }
-		'never' { PhpBuiltinTypeInfo{code: 'IS_NEVER'} }
-		'void' { PhpBuiltinTypeInfo{code: 'IS_VOID'} }
-		else { none }
+		'array' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_ARRAY'
+			}
+		}
+		'string' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_STRING'
+			}
+		}
+		'int', 'i64' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_LONG'
+			}
+		}
+		'bool' {
+			PhpBuiltinTypeInfo{
+				code: '_IS_BOOL'
+			}
+		}
+		'f64', 'f32' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_DOUBLE'
+			}
+		}
+		'object' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_OBJECT'
+			}
+		}
+		'callable' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_CALLABLE'
+			}
+		}
+		'iterable' {
+			PhpBuiltinTypeInfo{
+				mask:           'MAY_BE_ARRAY'
+				mask_obj_class: 'Traversable'
+			}
+		}
+		'mixed' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_MIXED'
+			}
+		}
+		'null' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_NULL'
+			}
+		}
+		'false' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_FALSE'
+			}
+		}
+		'true' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_TRUE'
+			}
+		}
+		'static' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_STATIC'
+			}
+		}
+		'never' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_NEVER'
+			}
+		}
+		'void' {
+			PhpBuiltinTypeInfo{
+				code: 'IS_VOID'
+			}
+		}
+		else {
+			none
+		}
 	}
 }
 
@@ -103,7 +164,8 @@ fn is_php_identifier_literal(name string) bool {
 		return false
 	}
 	for ch in name[1..].bytes() {
-		if !((ch >= `A` && ch <= `Z`) || (ch >= `a` && ch <= `z`) || (ch >= `0` && ch <= `9`) || ch == `_`) {
+		if !((ch >= `A` && ch <= `Z`) || (ch >= `a` && ch <= `z`)
+			|| (ch >= `0` && ch <= `9`) || ch == `_`) {
 			return false
 		}
 	}

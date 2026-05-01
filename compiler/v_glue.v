@@ -5,8 +5,9 @@ import compiler.repr
 
 pub struct VGenerator {
 pub:
-	ext_name     string
-	globals_repr repr.PhpGlobalsRepr
+	ext_name       string
+	globals_repr   repr.PhpGlobalsRepr
+	params_structs map[string]repr.PhpParamsStruct
 }
 
 fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
@@ -19,12 +20,8 @@ fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
 	// 生成每个 repr 的 V 胶水
 	for mut el in elements {
 		if mut el is repr.PhpFuncRepr {
-			// Ensure generated V glue for exported functions uses explicit
-			// concrete function TYPEs when emitting closures. Prefer emitting
-			// calls to wrap_closure_universal[ClosureUniversalN] for
-			// universal ZVal-based closures so the runtime's single
-			// universal bridges are used and the C emitter doesn't need to
-			// generate many monomorphized helper wrappers.
+			// Closure returns are wrapped through compiler-generated concrete
+			// bridges so the runtime only keeps the low-level closure storage API.
 			out.write_string(g.gen_func_glue(el).join('\n') + '\n\n')
 		} else if mut el is repr.PhpClassRepr {
 			if el.is_trait {

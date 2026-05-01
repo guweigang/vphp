@@ -47,6 +47,7 @@ void vphp_create_closure_FULL_AUTO_V2(zval *zv, void *v_thunk,
                                       void *bridge_ptr);
 void vphp_create_closure_with_arity(zval *zv, void *v_thunk, void *bridge_ptr,
                                     int num_args, int required_args);
+void vphp_create_variadic_closure(zval *zv, void *v_thunk, void *bridge_ptr);
 vphp_object_wrapper *vphp_obj_from_obj(zend_object *obj);
 void vphp_register_object(void *v_ptr, zend_object *obj);
 void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce);

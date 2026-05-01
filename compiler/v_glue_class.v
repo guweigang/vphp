@@ -189,15 +189,20 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 		}
 
 		glue_name := if m.v_name != '' { m.v_name } else { m.name }
-		out << "@[export: 'vphp_wrap_${r.name}_${glue_name}']"
 		return_type := m.return_spec.effective_v_type()
+		struct_closure := StructClosureBinding.new('${r.name}_${glue_name}', return_type,
+			g.params_structs)
+		if closure_binding := struct_closure {
+			out << closure_binding.render_helper_lines()
+		}
 
 		return_info := method_runtime_return_info(r.name, m.name, m.is_static, return_type,
 			m.borrowed_return)
-		return_binding := ReturnBinding.new(return_type)
+		return_binding := ReturnBinding.new_with_struct_closure(return_type, struct_closure)
 		returns_object := return_info.kind in [.static_factory, .static_object, .instance_object]
 		ret_decl := if returns_object { 'voidptr' } else { '' }
 
+		out << "@[export: 'vphp_wrap_${r.name}_${glue_name}']"
 		if m.is_static {
 			out << 'pub fn vphp_wrap_${lower_name}_${glue_name}(ctx vphp.Context) ${ret_decl} {'
 		} else {

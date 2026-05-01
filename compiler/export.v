@@ -154,8 +154,9 @@ fn (mut c Compiler) generate_c() ! {
 // ==========================================
 fn (mut c Compiler) generate_v_glue() ! {
 	v_glue := VGenerator{
-		ext_name: c.ext_name
-		globals_repr: c.globals_repr
+		ext_name:       c.ext_name
+		globals_repr:   c.globals_repr
+		params_structs: c.params_structs
 	}
 	v_code := v_glue.generate(mut c.elements)
 	os.write_file(c.bridge_output_path(), v_code)!

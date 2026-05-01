@@ -5,6 +5,11 @@ import compiler.repr
 // ---- Func V Glue ----
 fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 	mut out := []string{}
+	return_type := f.return_spec.effective_v_type()
+	struct_closure := StructClosureBinding.new(f.name, return_type, g.params_structs)
+	if closure_binding := struct_closure {
+		out << closure_binding.render_helper_lines()
+	}
 
 	// 基础包装器
 	out << "@[export: 'vphp_wrap_${f.name}']"
@@ -21,8 +26,7 @@ fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
 	// 这里统一使用原始 V 名来调用
 	v_func_name := if f.original_name != '' { f.original_name } else { f.name }
 	v_call_name := if is_v_keyword(v_func_name) { '@' + v_func_name } else { v_func_name }
-	return_type := f.return_spec.effective_v_type()
-	return_binding := ReturnBinding.new(return_type)
+	return_binding := ReturnBinding.new_with_struct_closure(return_type, struct_closure)
 	out << return_binding.render_function_lines(v_call_name, call_args, arg_names)
 	out << '}'
 

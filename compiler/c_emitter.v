@@ -293,10 +293,8 @@ fn (g CGenerator) gen_func_c(f &repr.PhpFuncRepr) []string {
 	target_func := 'vphp_wrap_${f.name}'
 	// The V glue exposes a single wrapper symbol `vphp_wrap_${f.name}` that
 	// performs any necessary argument marshaling and return handling. The C
-	// emitter simply forwards the PHP entry point to that V glue. We avoid
-	// generating additional N-suffixed helper wrappers here — the V glue and
-	// runtime will handle closure wrapping (ctx.wrap_closure /
-	// ctx.wrap_closure_universal) to keep the generated C stable.
+	// emitter simply forwards the PHP entry point to that V glue. Closure
+	// wrapping is handled by generated V bridge code.
 	r << 'extern void ${target_func}(vphp_context_internal ctx);'
 	r << 'PHP_FUNCTION(${f.name}) {'
 	if !f.uses_context {

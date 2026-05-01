@@ -54,6 +54,14 @@ pub fn (ctx Context) arg_scalar(index int) ?PhpScalar {
 	return ctx.arg_at(index).scalar()
 }
 
+pub fn (ctx Context) arg_v_scalar(index int) !VScalarValue {
+	return VScalarValue.from_zval(ctx.arg_val(index))
+}
+
+pub fn (ctx Context) arg_v_scalar_opt(index int) ?VScalarValue {
+	return VScalarValue.from_zval(ctx.arg_val(index)) or { return none }
+}
+
 pub fn (ctx Context) arg_array(index int) ?PhpArray {
 	return ctx.arg_at(index).array()
 }

@@ -398,3 +398,24 @@ void vphp_create_closure_with_arity(zval *zv, void *v_thunk, void *bridge_ptr,
 
   zend_create_closure(zv, (zend_function *)zf, NULL, NULL, NULL);
 }
+
+static const zend_internal_arg_info vphp_variadic_closure_arginfo[] = {
+    {(const char *)(uintptr_t)(0),
+     ZEND_TYPE_INIT_NONE(_ZEND_ARG_INFO_FLAGS(0, 0, 0)), NULL},
+    ZEND_ARG_VARIADIC_TYPE_INFO(0, args, IS_MIXED, 0)};
+
+void vphp_create_variadic_closure(zval *zv, void *v_thunk, void *bridge_ptr) {
+  zend_internal_function *zf =
+      (zend_internal_function *)pecalloc(1, sizeof(zend_internal_function), 1);
+  zf->type = ZEND_INTERNAL_FUNCTION;
+  zf->handler = vphp_closure_handler;
+  zf->fn_flags = ZEND_ACC_CLOSURE | ZEND_ACC_PUBLIC;
+  zf->function_name = zend_string_init("VPHPClosure", 11, 1);
+  zf->num_args = 1;
+  zf->required_num_args = 0;
+  zf->arg_info = (zend_internal_arg_info *)vphp_variadic_closure_arginfo + 1;
+  zf->reserved[0] = v_thunk;
+  zf->reserved[1] = bridge_ptr;
+
+  zend_create_closure(zv, (zend_function *)zf, NULL, NULL, NULL);
+}

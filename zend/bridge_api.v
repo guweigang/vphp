@@ -157,6 +157,7 @@ pub fn C.vphp_bind_class_interface(class_name &char, class_name_len int, iface_n
 pub fn C.vphp_register_auto_interface_binding(class_name &char, class_name_len int, iface_name &char, iface_name_len int)
 pub fn C.vphp_create_closure_FULL_AUTO_V2(z &C.zval, thunk voidptr, bridge voidptr)
 pub fn C.vphp_create_closure_with_arity(z &C.zval, thunk voidptr, bridge voidptr, num_args int, required_args int)
+pub fn C.vphp_create_variadic_closure(z &C.zval, thunk voidptr, bridge voidptr)
 
 // ===== 9. 资源系统 =====
 pub fn C.vphp_init_resource_system(module_number int)

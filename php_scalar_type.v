@@ -182,7 +182,9 @@ pub fn (v PhpBool) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (v PhpBool) to_request_owned() PhpBool {
-	return PhpBool.from_request_owned_zbox(v.value.to_request_owned_zbox()) or { PhpBool.false_value() }
+	return PhpBool.from_request_owned_zbox(v.value.to_request_owned_zbox()) or {
+		PhpBool.false_value()
+	}
 }
 
 pub fn (v PhpBool) to_request_owned_zbox() RequestOwnedZBox {
@@ -297,7 +299,9 @@ pub fn (mut v PhpInt) release() {
 }
 
 pub fn (v PhpInt) to_persistent_owned() PhpInt {
-	return PhpInt.from_persistent_owned_zbox(v.value.to_persistent_owned_zbox()) or { PhpInt.zero() }
+	return PhpInt.from_persistent_owned_zbox(v.value.to_persistent_owned_zbox()) or {
+		PhpInt.zero()
+	}
 }
 
 pub fn (v PhpInt) to_persistent_owned_zbox() PersistentOwnedZBox {
@@ -382,7 +386,9 @@ pub fn (v PhpDouble) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (v PhpDouble) to_request_owned() PhpDouble {
-	return PhpDouble.from_request_owned_zbox(v.value.to_request_owned_zbox()) or { PhpDouble.zero() }
+	return PhpDouble.from_request_owned_zbox(v.value.to_request_owned_zbox()) or {
+		PhpDouble.zero()
+	}
 }
 
 pub fn (v PhpDouble) to_request_owned_zbox() RequestOwnedZBox {
@@ -480,7 +486,9 @@ pub fn (v PhpString) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (v PhpString) to_request_owned() PhpString {
-	return PhpString.from_request_owned_zbox(v.value.to_request_owned_zbox()) or { PhpString.empty() }
+	return PhpString.from_request_owned_zbox(v.value.to_request_owned_zbox()) or {
+		PhpString.empty()
+	}
 }
 
 pub fn (v PhpString) to_request_owned_zbox() RequestOwnedZBox {
@@ -533,7 +541,7 @@ pub fn PhpScalar.must_from_zval(z ZVal) !PhpScalar {
 }
 
 pub fn PhpScalar.from_request_owned_zbox(value RequestOwnedZBox) ?PhpScalar {
-	if scalar := PhpScalar.from_zval(value.to_zval()) {
+	if PhpScalar.is_zval_scalar(value.to_zval()) {
 		return PhpScalar{
 			value: PhpValueZBox.request_owned(value)
 		}
@@ -543,13 +551,17 @@ pub fn PhpScalar.from_request_owned_zbox(value RequestOwnedZBox) ?PhpScalar {
 
 pub fn PhpScalar.from_persistent_owned_zbox(value PersistentOwnedZBox) ?PhpScalar {
 	z := value.to_zval()
-	if !z.is_valid() || z.is_undef() || z.is_null() || z.is_bool() || z.is_long() || z.is_double()
-		|| z.is_string() {
+	if PhpScalar.is_zval_scalar(z) {
 		return PhpScalar{
 			value: PhpValueZBox.persistent_owned(value)
 		}
 	}
 	return none
+}
+
+fn PhpScalar.is_zval_scalar(z ZVal) bool {
+	return !z.is_valid() || z.is_undef() || z.is_null() || z.is_bool() || z.is_long()
+		|| z.is_double() || z.is_string()
 }
 
 pub fn PhpScalar.from_persistent_zval(z ZVal) ?PhpScalar {
