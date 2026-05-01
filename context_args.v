@@ -103,7 +103,7 @@ pub fn (ctx Context) arg_opt[T](index int) ?T {
 }
 
 pub fn (ctx Context) arg_val(index int) ZVal {
-	return ctx.arg_at(index).val()
+	return ctx.arg_at(index).zval_or_null()
 }
 
 pub fn (ctx Context) arg_raw_obj(index int) voidptr {

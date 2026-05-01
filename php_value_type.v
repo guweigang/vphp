@@ -1,54 +1,106 @@
 module vphp
 
 pub struct PhpValue {
-	value RequestBorrowedZBox
-}
-
-pub struct PersistentPhpValue {
 mut:
-	value PersistentOwnedZBox
+	value PhpValueZBox
 }
 
 pub fn PhpValue.from_zval(z ZVal) PhpValue {
 	return PhpValue{
-		value: RequestBorrowedZBox.from_zval(z)
+		value: PhpValueZBox.from_zval(z)
 	}
 }
 
 pub fn PhpValue.of(z ZVal) PhpValue {
-	return PhpValue.from_zval(z)
-}
-
-pub fn PersistentPhpValue.from_zval(z ZVal) PersistentPhpValue {
-	return PersistentPhpValue{
-		value: PersistentOwnedZBox.of_mixed(z)
+	return PhpValue{
+		value: PhpValueZBox.request_owned(RequestOwnedZBox.of(z))
 	}
 }
 
-pub fn PersistentPhpValue.of(z ZVal) PersistentPhpValue {
-	return PersistentPhpValue.from_zval(z)
-}
-
-pub fn PersistentPhpValue.from_dyn(value DynValue) PersistentPhpValue {
-	return PersistentPhpValue{
-		value: PersistentOwnedZBox.of_data(value)
+pub fn PhpValue.from_request_borrowed_zbox(value RequestBorrowedZBox) PhpValue {
+	return PhpValue{
+		value: PhpValueZBox.borrowed(value)
 	}
 }
 
-pub fn PersistentPhpValue.null_value() PersistentPhpValue {
-	return PersistentPhpValue{
-		value: PersistentOwnedZBox.new_null()
+pub fn PhpValue.from_request_owned_zbox(value RequestOwnedZBox) PhpValue {
+	return PhpValue{
+		value: PhpValueZBox.request_owned(value)
 	}
+}
+
+pub fn PhpValue.from_persistent_owned_zbox(value PersistentOwnedZBox) PhpValue {
+	return PhpValue{
+		value: PhpValueZBox.persistent_owned(value)
+	}
+}
+
+pub fn PhpValue.from_persistent_zval(z ZVal) PhpValue {
+	return PhpValue.from_persistent_owned_zbox(PersistentOwnedZBox.from_persistent_zval(z))
 }
 
 pub fn (v PhpValue) to_zval() ZVal {
 	return v.value.to_zval()
 }
 
-pub fn (v PhpValue) to_persistent() PersistentPhpValue {
-	return PersistentPhpValue{
-		value: PersistentOwnedZBox.of_mixed(v.to_zval())
+pub fn (v PhpValue) to_json() string {
+	return PhpJson.encode(v.to_zval())
+}
+
+pub fn (v PhpValue) to_json_with_flags(flags int) string {
+	return PhpJson.encode_with_flags(v.to_zval(), flags)
+}
+
+pub fn (v PhpValue) borrowed() PhpValue {
+	return v.to_borrowed()
+}
+
+pub fn (v PhpValue) to_borrowed() PhpValue {
+	return PhpValue{
+		value: v.value.borrowed()
 	}
+}
+
+pub fn (v PhpValue) to_borrowed_zbox() RequestBorrowedZBox {
+	return v.value.to_borrowed_zbox()
+}
+
+pub fn (v PhpValue) to_request_owned() PhpValue {
+	return PhpValue{
+		value: PhpValueZBox.request_owned(v.value.to_request_owned_zbox())
+	}
+}
+
+pub fn (v PhpValue) to_request_owned_zbox() RequestOwnedZBox {
+	return v.value.to_request_owned_zbox()
+}
+
+pub fn (mut v PhpValue) take_zval() ZVal {
+	return v.value.take_zval()
+}
+
+pub fn (v PhpValue) to_persistent_owned() PhpValue {
+	return PhpValue{
+		value: PhpValueZBox.persistent_owned(v.value.to_persistent_owned_zbox())
+	}
+}
+
+pub fn (v PhpValue) to_persistent_owned_zbox() PersistentOwnedZBox {
+	return v.value.to_persistent_owned_zbox()
+}
+
+pub fn (v PhpValue) kind_name() string {
+	return v.value.kind_name()
+}
+
+pub fn (v PhpValue) clone() PhpValue {
+	return PhpValue{
+		value: v.value.clone()
+	}
+}
+
+pub fn (v PhpValue) clone_request_owned() RequestOwnedZBox {
+	return v.to_request_owned_zbox()
 }
 
 pub fn (v PhpValue) type_id() PHPType {
@@ -79,8 +131,16 @@ pub fn (v PhpValue) is_int() bool {
 	return v.to_zval().is_long()
 }
 
+pub fn (v PhpValue) is_long() bool {
+	return v.is_int()
+}
+
 pub fn (v PhpValue) is_float() bool {
 	return v.to_zval().is_double()
+}
+
+pub fn (v PhpValue) is_double() bool {
+	return v.is_float()
 }
 
 pub fn (v PhpValue) is_numeric() bool {
@@ -144,8 +204,12 @@ pub fn (v PhpValue) to_v[T]() !T {
 	return v.to_zval().to_v[T]()
 }
 
-pub fn (v PhpValue) to_dyn() !DynValue {
-	return DynValue.from_zval(v.to_zval())
+pub fn (v PhpValue) to_dyn_value() !DynValue {
+	mut temp := v.clone_request_owned()
+	defer {
+		temp.release()
+	}
+	return DynValue.from_zval(temp.to_zval())
 }
 
 pub fn (v PhpValue) as_null() ?PhpNull {
@@ -240,73 +304,30 @@ pub fn (v PhpValue) require_callable() !PhpCallable {
 	return PhpCallable.must_from_zval(v.to_zval())
 }
 
-pub fn (v PersistentPhpValue) kind_name() string {
-	return v.value.kind_name()
+pub fn (v PhpValue) with_value[T](run fn (PhpValue) T) T {
+	return v.value.with_request_value[T](fn [run] [T](value PhpValue) T {
+		return run(value)
+	})
 }
 
-pub fn (v PersistentPhpValue) is_valid() bool {
-	return v.value.is_valid()
+pub fn (v PhpValue) with_array[T](run fn (PhpArray) T) ?T {
+	return v.value.with_request_array[T](fn [run] [T](arr PhpArray) T {
+		return run(arr)
+	})
 }
 
-pub fn (v PersistentPhpValue) clone() PersistentPhpValue {
-	return PersistentPhpValue{
-		value: v.value.clone()
-	}
+pub fn (v PhpValue) with_object[T](run fn (PhpObject) T) ?T {
+	return v.value.with_request_object[T](fn [run] [T](obj PhpObject) T {
+		return run(obj)
+	})
 }
 
-pub fn (v PersistentPhpValue) clone_request_owned() RequestOwnedZBox {
-	return v.value.clone_request_owned()
+pub fn (v PhpValue) with_callable[T](run fn (PhpCallable) T) ?T {
+	return v.value.with_request_callable[T](fn [run] [T](callable PhpCallable) T {
+		return run(callable)
+	})
 }
 
-pub fn (mut v PersistentPhpValue) take_owned_box() PersistentOwnedZBox {
-	box := v.value
-	v.value = PersistentOwnedZBox.new_null()
-	return box
-}
-
-pub fn (v PersistentPhpValue) with_value[T](run fn (PhpValue) T) T {
-	mut temp := v.clone_request_owned()
-	defer {
-		temp.release()
-	}
-	return run(PhpValue.from_zval(temp.to_zval()))
-}
-
-pub fn (v PersistentPhpValue) to_dyn() !DynValue {
-	mut temp := v.clone_request_owned()
-	defer {
-		temp.release()
-	}
-	return DynValue.from_zval(temp.to_zval())
-}
-
-pub fn (v PersistentPhpValue) with_array[T](run fn (PhpArray) T) ?T {
-	mut temp := v.clone_request_owned()
-	defer {
-		temp.release()
-	}
-	arr := PhpArray.from_zval(temp.to_zval()) or { return none }
-	return run(arr)
-}
-
-pub fn (v PersistentPhpValue) with_object[T](run fn (PhpObject) T) ?T {
-	mut temp := v.clone_request_owned()
-	defer {
-		temp.release()
-	}
-	obj := PhpObject.from_zval(temp.to_zval()) or { return none }
-	return run(obj)
-}
-
-pub fn (v PersistentPhpValue) with_callable[T](run fn (PhpCallable) T) ?T {
-	mut temp := v.clone_request_owned()
-	defer {
-		temp.release()
-	}
-	callable := PhpCallable.from_zval(temp.to_zval()) or { return none }
-	return run(callable)
-}
-
-pub fn (mut v PersistentPhpValue) release() {
+pub fn (mut v PhpValue) release() {
 	v.value.release()
 }

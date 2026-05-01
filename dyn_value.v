@@ -106,34 +106,6 @@ pub fn DynValue.of_map(v map[string]DynValue) DynValue {
 	}
 }
 
-pub fn dyn_value_null() DynValue {
-	return DynValue.null()
-}
-
-pub fn dyn_value_bool(v bool) DynValue {
-	return DynValue.of_bool(v)
-}
-
-pub fn dyn_value_int(v i64) DynValue {
-	return DynValue.of_int(v)
-}
-
-pub fn dyn_value_float(v f64) DynValue {
-	return DynValue.of_float(v)
-}
-
-pub fn dyn_value_string(v string) DynValue {
-	return DynValue.of_string(v)
-}
-
-pub fn dyn_value_list(v []DynValue) DynValue {
-	return DynValue.of_list(v)
-}
-
-pub fn dyn_value_map(v map[string]DynValue) DynValue {
-	return DynValue.of_map(v)
-}
-
 pub fn DynValue.object_ref(obj PhpObject) DynValue {
 	return DynValue{
 		type:              .object_ref
@@ -144,14 +116,14 @@ pub fn DynValue.object_ref(obj PhpObject) DynValue {
 	}
 }
 
-pub fn DynValue.persistent_object_ref(obj PersistentPhpObject) DynValue {
-	retained := obj.value.with_request_zval(fn (z ZVal) RetainedObject {
+pub fn DynValue.persistent_object_ref(obj PhpObject) DynValue {
+	retained := obj.value.with_request_zval[RetainedObject](fn (z ZVal) RetainedObject {
 		return RetainedObject.from_zval(z) or { RetainedObject.invalid() }
 	})
-	return dyn_value_persistent_retained_object(retained)
+	return DynValue.retained_object(retained)
 }
 
-fn dyn_value_persistent_retained_object(retained RetainedObject) DynValue {
+pub fn DynValue.retained_object(retained RetainedObject) DynValue {
 	return DynValue{
 		type:              .object_ref
 		runtime_lifecycle: .persistent
@@ -177,14 +149,14 @@ pub fn DynValue.closure_ref(closure PhpClosure) DynValue {
 	})
 }
 
-pub fn DynValue.persistent_closure_ref(closure PersistentPhpClosure) DynValue {
-	retained := closure.callable.with_request_zval(fn (z ZVal) RetainedCallable {
+pub fn DynValue.persistent_closure_ref(closure PhpClosure) DynValue {
+	retained := closure.callable.with_request_zval[RetainedCallable](fn (z ZVal) RetainedCallable {
 		return RetainedCallable.from_zval(z) or { RetainedCallable.invalid() }
 	})
-	return dyn_value_persistent_retained_callable(retained)
+	return DynValue.retained_callable(retained)
 }
 
-fn dyn_value_persistent_retained_callable(retained RetainedCallable) DynValue {
+pub fn DynValue.retained_callable(retained RetainedCallable) DynValue {
 	return DynValue{
 		type:              .callable_ref
 		runtime_lifecycle: .persistent
@@ -265,7 +237,7 @@ fn (v DynValue) clone_runtime_ref() DynValue {
 		.persistent {
 			match v.type {
 				.object_ref {
-					ref := v.retained_object()
+					ref := v.retained_object_ref()
 
 					DynValue{
 						type:              v.type
@@ -276,7 +248,7 @@ fn (v DynValue) clone_runtime_ref() DynValue {
 					}
 				}
 				.callable_ref {
-					ref := v.retained_call()
+					ref := v.retained_callable_ref()
 
 					DynValue{
 						type:              v.type
@@ -307,12 +279,12 @@ fn (v DynValue) request_ref() ?RequestBorrowedZBox {
 	return request
 }
 
-fn (v DynValue) retained_object() RetainedObject {
+fn (v DynValue) retained_object_ref() RetainedObject {
 	runtime_ref := v.runtime_ref or { return RetainedObject.invalid() }
 	return unsafe { runtime_ref.object }
 }
 
-fn (v DynValue) retained_call() RetainedCallable {
+fn (v DynValue) retained_callable_ref() RetainedCallable {
 	runtime_ref := v.runtime_ref or { return RetainedCallable.invalid() }
 	return unsafe { runtime_ref.callable }
 }
@@ -335,11 +307,11 @@ pub fn (mut v DynValue) release() {
 		}
 		.object_ref, .callable_ref, .resource_ref {
 			if v.runtime_lifecycle == .persistent && v.type == .object_ref {
-				mut retained := v.retained_object()
+				mut retained := v.retained_object_ref()
 				retained.release()
 			}
 			if v.runtime_lifecycle == .persistent && v.type == .callable_ref {
-				mut retained := v.retained_call()
+				mut retained := v.retained_callable_ref()
 				retained.release()
 			}
 			v.runtime_lifecycle = .detached
@@ -449,38 +421,34 @@ pub fn (v DynValue) as_resource() ?PhpResource {
 	return PhpResource.from_zval(ref.to_zval())
 }
 
-pub fn (v DynValue) as_persistent_object() ?PersistentPhpObject {
+pub fn (v DynValue) as_persistent_object() ?PhpObject {
 	if v.type != .object_ref {
 		return none
 	}
 	if v.runtime_lifecycle == .persistent {
-		ref := v.retained_object()
+		ref := v.retained_object_ref()
 		if !ref.is_valid() {
 			return none
 		}
-		return PersistentPhpObject{
-			value: persistent_owned_dyn_box(dyn_value_persistent_retained_object(ref.clone()))
-		}
+		return PhpObject.from_persistent_owned_zbox(DynValue.persistent_owned_zbox(ref.clone()))
 	}
 	ref := v.request_ref() or { return none }
-	return PersistentPhpObject.from_zval(ref.to_zval())
+	return PhpObject.from_persistent_owned_zbox(PersistentOwnedZBox.of_object(ref.to_zval()))
 }
 
-pub fn (v DynValue) as_persistent_closure() ?PersistentPhpClosure {
+pub fn (v DynValue) as_persistent_closure() ?PhpClosure {
 	if v.type != .callable_ref {
 		return none
 	}
 	if v.runtime_lifecycle == .persistent {
-		ref := v.retained_call()
+		ref := v.retained_callable_ref()
 		if !ref.is_valid() {
 			return none
 		}
-		return PersistentPhpClosure{
-			callable: persistent_owned_dyn_box(dyn_value_persistent_retained_callable(ref.clone()))
-		}
+		return PhpClosure.from_persistent_owned_zbox(DynValue.persistent_owned_zbox(ref.clone()))
 	}
 	ref := v.request_ref() or { return none }
-	return PersistentPhpClosure.from_zval(ref.to_zval())
+	return PhpClosure.from_persistent_owned_zbox(PersistentOwnedZBox.of_callable(ref.to_zval()))
 }
 
 pub fn (v DynValue) with_object[T](run fn (PhpObject) T) ?T {
@@ -491,7 +459,7 @@ pub fn (v DynValue) with_object[T](run fn (PhpObject) T) ?T {
 		obj := v.as_object() or { return none }
 		return run(obj)
 	}
-	ref := v.retained_object()
+	ref := v.retained_object_ref()
 	if !ref.is_valid() {
 		return none
 	}
@@ -511,7 +479,7 @@ pub fn (v DynValue) with_callable[T](run fn (PhpCallable) T) ?T {
 		callable := v.as_callable() or { return none }
 		return run(callable)
 	}
-	ref := v.retained_call()
+	ref := v.retained_callable_ref()
 	if !ref.is_valid() {
 		return none
 	}
@@ -531,7 +499,7 @@ pub fn (v DynValue) with_closure[T](run fn (PhpClosure) T) ?T {
 		closure := v.as_closure() or { return none }
 		return run(closure)
 	}
-	ref := v.retained_call()
+	ref := v.retained_callable_ref()
 	if !ref.is_valid() {
 		return none
 	}
@@ -553,7 +521,7 @@ pub fn (v DynValue) with_runtime_zval[T](run fn (ZVal) T) ?T {
 	}
 	match v.type {
 		.object_ref {
-			ref := v.retained_object()
+			ref := v.retained_object_ref()
 			mut temp := ref.to_request_owned_zval()
 			defer {
 				temp.release()
@@ -561,7 +529,7 @@ pub fn (v DynValue) with_runtime_zval[T](run fn (ZVal) T) ?T {
 			return run(temp)
 		}
 		.callable_ref {
-			ref := v.retained_call()
+			ref := v.retained_callable_ref()
 			mut temp := ref.to_request_owned_zval()
 			defer {
 				temp.release()
@@ -574,20 +542,20 @@ pub fn (v DynValue) with_runtime_zval[T](run fn (ZVal) T) ?T {
 	}
 }
 
-pub fn (v DynValue) to_persistent() !PersistentOwnedZBox {
+pub fn (v DynValue) to_persistent_owned_zbox() !PersistentOwnedZBox {
 	return match v.type {
 		.object_ref {
 			if v.runtime_lifecycle == .persistent {
-				ref := v.retained_object()
-				return persistent_owned_dyn_box(dyn_value_persistent_retained_object(ref.clone()))
+				ref := v.retained_object_ref()
+				return DynValue.persistent_owned_zbox(ref.clone())
 			}
 			ref := v.request_ref() or { return error('object_ref is no longer valid') }
 			PersistentOwnedZBox.of_object(ref.to_zval())
 		}
 		.callable_ref {
 			if v.runtime_lifecycle == .persistent {
-				ref := v.retained_call()
-				return persistent_owned_dyn_box(dyn_value_persistent_retained_callable(ref.clone()))
+				ref := v.retained_callable_ref()
+				return DynValue.persistent_owned_zbox(ref.clone())
 			}
 			ref := v.request_ref() or { return error('callable_ref is no longer valid') }
 			PersistentOwnedZBox.of_callable(ref.to_zval())
@@ -661,11 +629,15 @@ pub fn DynValue.from_persistent_zval(z ZVal) !DynValue {
 		return DynValue.from_zval(z)
 	}
 	if z.is_callable() {
-		closure := PersistentPhpClosure.from_zval(z) or { return error('zval is not callable') }
+		closure := PhpClosure.from_persistent_owned_zbox(PersistentOwnedZBox.of_callable(z)) or {
+			return error('zval is not callable')
+		}
 		return DynValue.persistent_closure_ref(closure)
 	}
 	if z.is_object() {
-		obj := PersistentPhpObject.from_zval(z) or { return error('zval is not object') }
+		obj := PhpObject.from_persistent_owned_zbox(PersistentOwnedZBox.of_object(z)) or {
+			return error('zval is not object')
+		}
 		return DynValue.persistent_object_ref(obj)
 	}
 	if z.is_resource() {
@@ -749,12 +721,12 @@ fn (v DynValue) runtime_ref_to_zval(mut out ZVal) ! {
 		.persistent {
 			mut temp := match v.type {
 				.object_ref {
-					ref := v.retained_object()
+					ref := v.retained_object_ref()
 
 					ref.to_request_owned_zval()
 				}
 				.callable_ref {
-					ref := v.retained_call()
+					ref := v.retained_callable_ref()
 
 					ref.to_request_owned_zval()
 				}
@@ -782,7 +754,7 @@ pub fn (v DynValue) new_zval() !ZVal {
 		raw:   C.vphp_new_zval()
 		owned: true
 	}
-	autorelease_add(out.raw)
+	RequestScope.autorelease_add(out.raw)
 	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw)}')
 	v.to_zval(mut out)!
 	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw)} valid=${out.is_valid()} type=${out.type_name()}')

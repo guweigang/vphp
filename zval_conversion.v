@@ -158,7 +158,7 @@ pub fn new_zval_from[T](value T) !ZVal {
 		raw:   C.vphp_new_zval()
 		owned: true
 	}
-	autorelease_add(out.raw)
+	RequestScope.autorelease_add(out.raw)
 	out.from_v[T](value)!
 	return out
 }

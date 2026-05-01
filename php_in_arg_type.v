@@ -54,33 +54,33 @@ pub fn (arg PhpInArg) name() string {
 	return ''
 }
 
-pub fn (arg PhpInArg) raw() ZVal {
+pub fn (arg PhpInArg) zval() ZVal {
 	return arg.value.to_zval()
 }
 
 pub fn (arg PhpInArg) to_zval() ZVal {
-	return arg.raw()
+	return arg.zval()
 }
 
 pub fn (arg PhpInArg) is_present() bool {
-	val := arg.raw()
+	val := arg.zval()
 	return val.is_valid() && !val.is_undef()
 }
 
 pub fn (arg PhpInArg) zbox() RequestBorrowedZBox {
-	return RequestBorrowedZBox.of(arg.raw())
+	return RequestBorrowedZBox.of(arg.zval())
 }
 
 pub fn (arg PhpInArg) zbox_opt() ?RequestBorrowedZBox {
-	val := arg.raw()
+	val := arg.zval()
 	if !val.is_valid() || val.is_null() || val.is_undef() {
 		return none
 	}
 	return RequestBorrowedZBox.of(val)
 }
 
-pub fn (arg PhpInArg) val() ZVal {
-	val := arg.raw()
+pub fn (arg PhpInArg) zval_or_null() ZVal {
+	val := arg.zval()
 	if !val.is_valid() {
 		return ZVal.new_null()
 	}
@@ -88,71 +88,71 @@ pub fn (arg PhpInArg) val() ZVal {
 }
 
 pub fn (arg PhpInArg) null_value() ?PhpNull {
-	return PhpNull.from_zval(arg.raw())
+	return PhpNull.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) bool_value() ?PhpBool {
-	return PhpBool.from_zval(arg.raw())
+	return PhpBool.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) int_value() ?PhpInt {
-	return PhpInt.from_zval(arg.raw())
+	return PhpInt.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) double_value() ?PhpDouble {
-	return PhpDouble.from_zval(arg.raw())
+	return PhpDouble.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) string_value() ?PhpString {
-	return PhpString.from_zval(arg.raw())
+	return PhpString.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) scalar() ?PhpScalar {
-	return PhpScalar.from_zval(arg.raw())
+	return PhpScalar.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) array() ?PhpArray {
-	return PhpArray.from_zval(arg.raw())
+	return PhpArray.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) object() ?PhpObject {
-	return PhpObject.from_zval(arg.raw())
+	return PhpObject.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) callable() ?PhpCallable {
-	return PhpCallable.from_zval(arg.raw())
+	return PhpCallable.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) resource() ?PhpResource {
-	return PhpResource.from_zval(arg.raw())
+	return PhpResource.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) reference() ?PhpReference {
-	return PhpReference.from_zval(arg.raw())
+	return PhpReference.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) iterable() ?PhpIterable {
-	return PhpIterable.from_zval(arg.raw())
+	return PhpIterable.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) throwable() ?PhpThrowable {
-	return PhpThrowable.from_zval(arg.raw())
+	return PhpThrowable.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) enum_case() ?PhpEnumCase {
-	return PhpEnumCase.from_zval(arg.raw())
+	return PhpEnumCase.from_zval(arg.zval())
 }
 
 pub fn (arg PhpInArg) request_owned_zbox() RequestOwnedZBox {
-	return RequestOwnedZBox.of(arg.raw())
+	return RequestOwnedZBox.of(arg.zval())
 }
 
 pub fn (arg PhpInArg) persistent_owned_zbox() PersistentOwnedZBox {
-	return PersistentOwnedZBox.of(arg.raw())
+	return PersistentOwnedZBox.of(arg.zval())
 }
 
 pub fn (arg PhpInArg) as_v[T]() T {
-	val := arg.raw()
+	val := arg.zval()
 	if !val.is_valid() {
 		return T{}
 	}
@@ -163,7 +163,7 @@ pub fn (arg PhpInArg) as_v[T]() T {
 }
 
 pub fn (arg PhpInArg) as_v_opt[T]() ?T {
-	val := arg.raw()
+	val := arg.zval()
 	if !val.is_valid() || val.is_null() || val.is_undef() {
 		return none
 	}
@@ -177,7 +177,7 @@ pub fn (arg PhpInArg) as_v_opt[T]() ?T {
 }
 
 pub fn (arg PhpInArg) raw_obj() voidptr {
-	val := arg.raw()
+	val := arg.zval()
 	if !val.is_valid() || !val.is_object() {
 		return unsafe { nil }
 	}

@@ -63,6 +63,25 @@ pub fn (r RetainedObject) with_request_zval[T](run fn (ZVal) T) T {
 	return run(out.to_zval())
 }
 
+pub fn (r RetainedObject) with_request_value[T](run fn (PhpValue) T) T {
+	return r.with_request_zval[T](fn [run] [T] (z ZVal) T {
+		return run(PhpValue.from_zval(z))
+	})
+}
+
+pub fn (r RetainedObject) with_request_object[T](run fn (PhpObject) T) ?T {
+	mut out := RequestOwnedZBox{
+		ZValViewState: ZValViewState{
+			z: r.to_request_owned_zval()
+		}
+	}
+	defer {
+		out.release()
+	}
+	obj := PhpObject.from_zval(out.to_zval()) or { return none }
+	return run(obj)
+}
+
 pub fn (mut r RetainedObject) release() {
 	if r.raw == unsafe { nil } {
 		return

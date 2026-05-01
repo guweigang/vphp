@@ -57,9 +57,9 @@ fn adopt_raw_with_ownership(raw &C.zval, ownership OwnershipKind) ZVal {
 		}
 	}
 	if ownership == .owned_request {
-		autorelease_add(out.raw)
+		RequestScope.autorelease_add(out.raw)
 		if out.is_object() {
-			autorelease_forget(out.raw)
+			RequestScope.autorelease_forget(out.raw)
 		}
 	}
 	return out
@@ -80,9 +80,9 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 	}
 	C.ZVAL_COPY(out.raw, src)
 	if ownership == .owned_request {
-		autorelease_add(out.raw)
+		RequestScope.autorelease_add(out.raw)
 		if out.is_object() {
-			autorelease_forget(out.raw)
+			RequestScope.autorelease_forget(out.raw)
 		}
 	}
 	return out
@@ -108,37 +108,6 @@ fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
 		}
 	}
 	return clone_raw_with_ownership(res, ownership)
-}
-
-pub fn autorelease_mark() int {
-	return C.vphp_autorelease_mark()
-}
-
-fn autorelease_add(z &C.zval) {
-	if z == 0 {
-		return
-	}
-	C.vphp_autorelease_add(z)
-}
-
-fn autorelease_forget(z &C.zval) {
-	if z == 0 {
-		return
-	}
-	C.vphp_autorelease_forget(z)
-}
-
-pub fn autorelease_drain(mark int) {
-	C.vphp_autorelease_drain(mark)
-}
-
-// Request scope helpers for frameworks (supports nested scopes).
-pub fn request_scope_enter() int {
-	return autorelease_mark()
-}
-
-pub fn request_scope_leave(mark int) {
-	autorelease_drain(mark)
 }
 
 pub fn runtime_counters() RuntimeCounters {

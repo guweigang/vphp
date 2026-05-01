@@ -27,7 +27,9 @@ This follows the same philosophy used by `ext-php-rs` (`ZBox` + request lifecycl
 - `RequestOwnedZBox`
 - `PersistentOwnedZBox`
 - `RequestScope`
-- `with_request_scope(...)`
+- `PhpScope.request()`
+- `PhpScope.once()`
+- `PhpScope.frame()`
 
 These are the canonical APIs for framework authors.
 
@@ -57,14 +59,14 @@ flowchart TD
 
     subgraph CLI["CLI 长驻进程 / Worker"]
         B1["进程启动一次"] --> B2["循环处理请求 1"]
-        B2 --> B3["手动 enter request scope"]
+        B2 --> B3["PhpScope.request()"]
         B3 --> B4["业务代码运行<br/>创建 RequestOwnedZBox"]
-        B4 --> B5["手动 leave request scope"]
+        B4 --> B5["scope.close()"]
         B5 --> B6["request-owned 被 drain"]
         B6 --> B7["循环处理请求 2"]
-        B7 --> B8["再次 enter request scope"]
+        B7 --> B8["再次 PhpScope.request()"]
         B8 --> B9["业务代码运行"]
-        B9 --> B10["再次 leave request scope"]
+        B9 --> B10["再次 scope.close()"]
         B10 --> B11["request-owned 被 drain"]
     end
 ```
@@ -160,9 +162,9 @@ sequenceDiagram
 
     Note over Client,VPHP: CLI Worker
     Client->>CLI: Request #1
-    CLI->>VPHP: request_scope_enter
+    CLI->>VPHP: PhpScope.request()
         CLI->>VPHP: create/use RequestOwnedZBox
-    CLI->>VPHP: request_scope_leave
+    CLI->>VPHP: scope.close()
     VPHP-->>CLI: autorelease drain
 ```
 

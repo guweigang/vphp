@@ -16,7 +16,7 @@ pub fn (v RequestOwnedZBox) clone() PersistentOwnedZBox {
 	return PersistentOwnedZBox.from_raw_zval(v.z)
 }
 
-pub fn (v RequestOwnedZBox) to_persistent() PersistentOwnedZBox {
+pub fn (v RequestOwnedZBox) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return v.clone()
 }
 

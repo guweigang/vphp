@@ -170,7 +170,7 @@ res := obj.method('name', [])
 `DynValue.new_zval()` only supports detached data. Use `dyn.has_runtime_refs()` /
 `dyn.can_new_zval()` to check that boundary. Runtime refs can be converted back into
 a request zval with `dyn.to_zval(mut out)`, and object/callable refs can be promoted
-with `dyn.to_persistent()`. Resource refs are request-only.
+with `dyn.to_persistent_owned_zbox()`. Resource refs are request-only.
 
 Runtime ref constructors live on `DynValue`:
 

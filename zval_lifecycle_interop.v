@@ -11,7 +11,7 @@ pub fn (mut v ZVal) release() {
 	if v.raw == 0 || !v.owned {
 		return
 	}
-	autorelease_forget(v.raw)
+	RequestScope.autorelease_forget(v.raw)
 	unsafe {
 		if v.is_persistent {
 			C.vphp_release_zval_persistent(v.raw)
@@ -37,7 +37,7 @@ pub fn (v ZVal) dup_persistent() ZVal {
 // PHP requests. Use dup_persistent() for truly long-lived storage.
 pub fn (v ZVal) dup_escaped() ZVal {
 	mut out := v.dup()
-	autorelease_forget(out.raw)
+	RequestScope.autorelease_forget(out.raw)
 	return out
 }
 

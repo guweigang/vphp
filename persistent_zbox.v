@@ -30,6 +30,30 @@ pub fn (v PersistentOwnedZBox) with_request_zval[T](run fn (ZVal) T) T {
 	return run(temp.to_zval())
 }
 
+pub fn (v PersistentOwnedZBox) with_request_value[T](run fn (PhpValue) T) T {
+	return v.with_request_zval[T](fn [run] [T] (z ZVal) T {
+		return run(PhpValue.from_zval(z))
+	})
+}
+
+pub fn (v PersistentOwnedZBox) with_request_array[T](run fn (PhpArray) T) ?T {
+	mut temp := v.clone_request_owned()
+	defer {
+		temp.release()
+	}
+	arr := PhpArray.from_zval(temp.to_zval()) or { return none }
+	return run(arr)
+}
+
+pub fn (v PersistentOwnedZBox) with_request_object[T](run fn (PhpObject) T) ?T {
+	mut temp := v.clone_request_owned()
+	defer {
+		temp.release()
+	}
+	obj := PhpObject.from_zval(temp.to_zval()) or { return none }
+	return run(obj)
+}
+
 pub fn (v PersistentOwnedZBox) fn_request_owned_zval(args []ZVal) RequestOwnedZBox {
 	return v.with_request_zval(fn [args] (callable ZVal) RequestOwnedZBox {
 		return RequestOwnedZBox.adopt_zval(callable.call_owned_request(args))
@@ -48,6 +72,24 @@ pub fn (v PersistentOwnedZBox) method_request_owned_zval(method string, args []Z
 
 pub fn (v PersistentOwnedZBox) method_request_owned(method string, args ...PhpFnArg) RequestOwnedZBox {
 	return v.method_request_owned_zval(method, php_fn_args_to_zvals(args))
+}
+
+pub fn (v PersistentOwnedZBox) with_fn_result[T, R](run fn (T) R, args ...PhpFnArg) !R {
+	mut result := v.fn_request_owned(args)
+	defer {
+		result.release()
+	}
+	value := php_fn_result_as[T](result.to_zval())!
+	return run(value)
+}
+
+pub fn (v PersistentOwnedZBox) with_method_result[T, R](method string, run fn (T) R, args ...PhpFnArg) !R {
+	mut result := v.method_request_owned(method, args)
+	defer {
+		result.release()
+	}
+	value := php_fn_result_as[T](result.to_zval())!
+	return run(value)
 }
 
 // with_fn_result_zval keeps PHP callable result ownership inside the callback

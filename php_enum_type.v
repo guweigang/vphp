@@ -5,6 +5,7 @@ pub struct PhpEnum {
 }
 
 pub struct PhpEnumCase {
+mut:
 	object PhpObject
 }
 
@@ -60,12 +61,68 @@ pub fn PhpEnumCase.must_from_zval(z ZVal) !PhpEnumCase {
 	return case
 }
 
+pub fn PhpEnumCase.from_persistent_owned_zbox(value PersistentOwnedZBox) ?PhpEnumCase {
+	if !value.is_object() || !value.to_zval().is_instance_of('UnitEnum') {
+		return none
+	}
+	object := PhpObject.from_persistent_owned_zbox(value) or { return none }
+	return PhpEnumCase{
+		object: object
+	}
+}
+
+pub fn PhpEnumCase.from_persistent_zval(z ZVal) ?PhpEnumCase {
+	return PhpEnumCase.from_persistent_owned_zbox(PersistentOwnedZBox.from_persistent_zval(z))
+}
+
+pub fn PhpEnumCase.from_request_owned_zbox(value RequestOwnedZBox) ?PhpEnumCase {
+	object := PhpObject.from_request_owned_zbox(value) or { return none }
+	if !object.to_zval().is_instance_of('UnitEnum') {
+		return none
+	}
+	return PhpEnumCase{
+		object: object
+	}
+}
+
 pub fn (c PhpEnumCase) to_zval() ZVal {
 	return c.object.to_zval()
 }
 
 pub fn (c PhpEnumCase) to_object() PhpObject {
 	return c.object
+}
+
+pub fn (c PhpEnumCase) to_borrowed() PhpEnumCase {
+	return PhpEnumCase{
+		object: c.object.to_borrowed()
+	}
+}
+
+pub fn (c PhpEnumCase) to_borrowed_zbox() RequestBorrowedZBox {
+	return c.object.to_borrowed_zbox()
+}
+
+pub fn (c PhpEnumCase) to_request_owned() PhpEnumCase {
+	return PhpEnumCase.from_request_owned_zbox(c.object.to_request_owned_zbox()) or { c.to_borrowed() }
+}
+
+pub fn (c PhpEnumCase) to_request_owned_zbox() RequestOwnedZBox {
+	return c.object.to_request_owned_zbox()
+}
+
+pub fn (c PhpEnumCase) to_persistent_owned() PhpEnumCase {
+	return PhpEnumCase.from_persistent_owned_zbox(c.object.to_persistent_owned_zbox()) or {
+		c.to_borrowed()
+	}
+}
+
+pub fn (c PhpEnumCase) to_persistent_owned_zbox() PersistentOwnedZBox {
+	return c.object.to_persistent_owned_zbox()
+}
+
+pub fn (mut c PhpEnumCase) release() {
+	c.object.release()
 }
 
 pub fn (c PhpEnumCase) enum_name() string {

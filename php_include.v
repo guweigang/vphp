@@ -30,7 +30,7 @@ pub fn (file PhpIncludeFile) load() ZVal {
 			raw:   retval
 			owned: true
 		}
-		autorelease_add(out.raw)
+		RequestScope.autorelease_add(out.raw)
 		return out
 	}
 }
@@ -49,7 +49,7 @@ pub fn (file PhpIncludeFile) load_once() ZVal {
 			raw:   retval
 			owned: true
 		}
-		autorelease_add(out.raw)
+		RequestScope.autorelease_add(out.raw)
 		return out
 	}
 }

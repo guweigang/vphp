@@ -24,6 +24,38 @@ pub fn generic_free_raw[T](ptr voidptr) {
 		$for field in T.fields {
 			$if field.typ is PersistentOwnedZBox {
 				obj.$(field.name).release()
+			} $else $if field.typ is PhpValue {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpArray {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpObject {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpCallable {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpClosure {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpIterable {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpResource {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpReference {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpNull {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpBool {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpInt {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpDouble {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpString {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpScalar {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpThrowable {
+				obj.$(field.name).release()
+			} $else $if field.typ is PhpEnumCase {
+				obj.$(field.name).release()
 			} $else $if field.typ is RetainedObject {
 				obj.$(field.name).release()
 			} $else $if field.typ is RetainedCallable {

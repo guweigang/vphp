@@ -24,7 +24,7 @@ pub fn (v ZVal) method_owned_request(method string, args []ZVal) ZVal {
 		}
 		mut result := adopt_raw_with_ownership(retval, .owned_request)
 		if result.is_object() {
-			autorelease_forget(result.raw)
+			RequestScope.autorelease_forget(result.raw)
 		}
 		return result
 	}
@@ -87,7 +87,7 @@ pub fn (v ZVal) call_owned_request(args []ZVal) ZVal {
 		}
 		mut result := adopt_raw_with_ownership(retval, .owned_request)
 		if result.is_object() {
-			autorelease_forget(result.raw)
+			RequestScope.autorelease_forget(result.raw)
 		}
 		framework_debug_log('zval.call_owned_request exit raw=${usize(v.raw)} retval=${usize(result.raw)} valid=${result.is_valid()} type=${result.type_name()} class=${result.class_name()}')
 		return result

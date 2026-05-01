@@ -7,7 +7,7 @@ pub fn ZVal.new_null() ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_null(z)
-		autorelease_add(z)
+		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
 			owned: true
@@ -20,7 +20,7 @@ pub fn ZVal.new_int(n i64) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_lval(z, n)
-		autorelease_add(z)
+		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
 			owned: true
@@ -33,7 +33,7 @@ pub fn ZVal.new_float(f f64) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_double(z, f)
-		autorelease_add(z)
+		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
 			owned: true
@@ -46,7 +46,7 @@ pub fn ZVal.new_bool(b bool) ZVal {
 	unsafe {
 		z := C.vphp_new_zval()
 		C.vphp_set_bool(z, b)
-		autorelease_add(z)
+		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
 			owned: true
@@ -58,7 +58,7 @@ pub fn ZVal.new_bool(b bool) ZVal {
 pub fn ZVal.new_string(s string) ZVal {
 	unsafe {
 		z := C.vphp_new_strl(&char(s.str), s.len)
-		autorelease_add(z)
+		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
 			owned: true

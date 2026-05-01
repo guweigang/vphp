@@ -37,7 +37,7 @@ graph TD
 | 类型 | 持有 refcount? | 生命周期 | 合法用途 | 危险操作 |
 |------|-------------|---------|---------|---------|
 | `RequestBorrowedZBox` | ❌ | 仅在当前栈帧/调用链内 | 函数参数传递，临时读取 | 存入 struct 字段、跨请求保存 |
-| `RequestOwnedZBox` | ✅ (request autorelease) | 到 `request_scope_leave()` | 一次请求内的计算中间值 | 存入 App 级 struct |
+| `RequestOwnedZBox` | ✅ (request autorelease) | 到 `RequestScope.close()` | 一次请求内的计算中间值 | 存入 App 级 struct |
 | `PersistentOwnedZBox` | ✅ (手动管理) | 到 `release()` | App 级注册表：route handlers, middlewares, container entries | 直接 `.borrowed()` 后传给 PHP 调用 |
 
 ---
@@ -231,7 +231,7 @@ if (existing_obj) {
 > 1. **PersistentOwnedZBox 绝不直接 `.borrowed()` 后跨调用链传递** — 除非 fallback_zval 类型
 > 2. **跨请求存活的对象必须走 RetainedObject（addref）或 DynValue（纯 V 数据）** — 不允许原始 zval 跨请求
 > 3. **所有返回给 PHP 层的 object 必须通过 `return_owned_object_raw()` 或 `return_borrowed_object_raw()`** — 不允许裸指针
-> 4. **`request_scope_leave()` 之后，所有该 scope 内的 RequestOwnedZBox 视为无效**
+> 4. **`RequestScope.close()` 之后，所有该 scope 内的 RequestOwnedZBox 视为无效**
 > 5. **VSlimPsr7ServerRequest 的 snapshot 必须深拷贝所有 PersistentOwnedZBox 字段**
 
 > [!TIP]

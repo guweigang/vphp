@@ -15,7 +15,7 @@
 | 借用值 | `RequestBorrowedZBox` 不由 vphp 释放，交给 Zend | 借用语义由 Rust 类型系统约束，底层仍走 Zend |
 | 请求级 owned | `RequestOwnedZBox` 进入 autorelease pool，`request_scope` 结束 drain | request 生命周期内自动回收（配合 hook/Drop） |
 | 持久级 owned | `PersistentOwnedZBox` 从 autorelease 脱钩，需显式 `release()` | persistent 分配显式声明，通常由长期持有者 Drop/析构管理 |
-| 请求边界 | 显式 `request_scope(mark/drain)`，支持嵌套 | 通过模块 builder 的 request startup/shutdown 等钩子接入 |
+| 请求边界 | 显式 `PhpScope.request()` / `scope.close()`，支持嵌套 | 通过模块 builder 的 request startup/shutdown 等钩子接入 |
 | 默认安全性 | 高于裸 `ZVal`，但仍有 `to_zval()` 逃生口 | 更强编译期约束（Rust trait + borrow checker） |
 | 可观测性 | 内建 `runtime_counters` + `[vslim.mem]` 埋点 | 官方抽象偏通用，观测通常由扩展自行实现 |
 | 适用场景 | 适合 `vhttpd + php-worker` 常驻进程的精细控制 | 适合通用 PHP 扩展开发与 Rust 生态集成 |
@@ -33,7 +33,7 @@
 - 创建：`own_request_zbox(z)` 或 `RequestOwnedZBox.new_*()`。
 - 行为：进入 `owned_pool`，并加入 `autorelease_pool`。
 - 释放：
-  1. 推荐路径：`request_scope.close()` -> `autorelease_drain(mark)` 自动释放；
+  1. 推荐路径：`scope.close()` 自动释放；
   2. 可选路径：显式 `release()` 提前释放。
 
 ### 2.3 PersistentOwnedZBox
@@ -46,7 +46,7 @@
 
 ## 3. Request Cycle 回收边界（VSlim）
 
-`VSlimApp` 的 request 入口（`dispatch_request` / `dispatch_envelope` / `dispatch_envelope_map`）均显式创建 `request_scope`，并在 `defer` 中关闭。
+`VSlimApp` 的 request 入口（`dispatch_request` / `dispatch_envelope` / `dispatch_envelope_map`）均显式创建 `PhpScope.request()`，并在 `defer` 中关闭。
 
 这意味着：
 
