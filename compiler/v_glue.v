@@ -14,6 +14,10 @@ fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
 	mut out := strings.new_builder(2048)
 	out.write_string('module main\n\nimport vphp\n\n')
 	out.write_string('#include "php_bridge.h"\n\n')
+	c_global_lines := g.c_global_lines(elements)
+	if c_global_lines.len > 0 {
+		out.write_string(c_global_lines.join('\n') + '\n\n')
+	}
 
 	mut task_registrations := []string{}
 	mut startup_lines := []string{}
@@ -49,4 +53,21 @@ fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
 	}
 
 	return out.str()
+}
+
+fn (g VGenerator) c_global_lines(elements []repr.PhpRepr) []string {
+	mut lines := []string{}
+	for el in elements {
+		if el is repr.PhpClassRepr {
+			if el.is_trait {
+				continue
+			}
+			lines << '__global C.${el.c_name().to_lower()}_ce &C.zend_class_entry'
+		} else if el is repr.PhpInterfaceRepr {
+			lines << '__global C.${el.c_name().to_lower()}_ce &C.zend_class_entry'
+		} else if el is repr.PhpEnumRepr {
+			lines << '__global C.${el.c_name().to_lower()}_ce &C.zend_class_entry'
+		}
+	}
+	return uniq_lines(lines)
 }
