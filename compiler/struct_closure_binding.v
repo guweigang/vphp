@@ -159,16 +159,10 @@ fn (binding StructClosureBinding) render_variadic_helper_lines() []string {
 	lines << '            ret: vphp.PhpReturn.new(ret)'
 	lines << '        }'
 	lines << '        cb := *(&${binding.alias}(v_ptr))'
-	lines << '        mut args := []${binding.variadic_arg_type}{cap: ctx.num_args()}'
-	lines << '        for i in 0 .. ctx.num_args() {'
-	lines << '            args << ${binding.variadic_arg_expr('i')}'
-	lines << '        }'
 	if binding.ret_type == 'void' {
-		lines << '        cb(...args)'
-		lines << '        ctx.return_null()'
+		lines << '        ctx.invoke_variadic_closure_void[${binding.alias}](cb)'
 	} else {
-		lines << '        res := cb(...args)'
-		lines << '        ctx.return_val[${binding.ret_type}](res)'
+		lines << '        ctx.invoke_variadic_closure[${binding.alias}, ${binding.ret_type}](cb)'
 	}
 	lines << '    }'
 	lines << '}'
@@ -178,26 +172,6 @@ fn (binding StructClosureBinding) render_variadic_helper_lines() []string {
 	lines << '}'
 	lines << ''
 	return lines
-}
-
-fn (binding StructClosureBinding) variadic_arg_expr(index string) string {
-	match binding.variadic_arg_type {
-		'PhpValue', 'vphp.PhpValue' {
-			return 'ctx.arg_value(${index})'
-		}
-		'ZVal', 'vphp.ZVal' {
-			return 'ctx.arg_val(${index})'
-		}
-		'RequestBorrowedZBox', 'vphp.RequestBorrowedZBox' {
-			return 'ctx.arg_borrowed_zbox(${index})'
-		}
-		'VScalarValue', 'vphp.VScalarValue' {
-			return 'ctx.arg_v_scalar(${index}) or { vphp.throw_exception(err.msg(), 0); return }'
-		}
-		else {
-			return 'ctx.arg_value(${index})'
-		}
-	}
 }
 
 fn (binding StructClosureBinding) field_arg_expr(field repr.PhpParamsField, index int) string {
