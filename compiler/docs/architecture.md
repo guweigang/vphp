@@ -151,7 +151,7 @@ Typical examples:
 - `normalize_v_type_key(...)`
 
 This layer is intentionally small. It should describe facts such as
-"`PhpArray` maps to PHP `array` and uses `PhpInArg.array()` for decoding"; it
+"`PhpArray` maps to PHP `array` and uses `PhpArg.array()` for decoding"; it
 should not render C macros or V glue lines directly.
 
 ### 5. `export`
@@ -225,6 +225,10 @@ Key types:
 This layer answers "how does this exported parameter become a V call argument?"
 The caller-facing glue files should consume `PhpArgSetup` instead of
 reimplementing argument indexing or wrapper decoding.
+
+PHP-facing argument names are resolved before this layer. Direct V parameters
+and `@[params]` struct fields both default from `snake_case` to `camelCase`,
+unless `@[php_arg_name]` provides an explicit override.
 
 ### 7.6. `params_struct_binding`
 

@@ -12,6 +12,7 @@
 ## Runtime / Interop
 
 - [value_layers.md](value_layers.md)
+- [zend_wrapper_layers.md](zend_wrapper_layers.md)
 - [interop.md](interop.md)
 - [lifecycle_model.md](lifecycle_model.md)
 - [val_conversions.md](val_conversions.md)

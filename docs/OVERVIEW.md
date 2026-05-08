@@ -66,6 +66,7 @@
 入口文档：
 
 - [value_layers.md](value_layers.md)
+- [zend_wrapper_layers.md](zend_wrapper_layers.md)
 - [interop.md](interop.md)
 
 ### 2. Ownership / Lifecycle
@@ -132,6 +133,7 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 按现在代码状态，`vphp` 最值得强调的亮点有：
 
 - 基于 `ZVal` 的统一 interop 入口
+- 分层隔离 Zend C API，避免上层语义 wrapper 直接散落 `C.xxx` 调用
 - 显式所有权模型，而不是全靠调用者猜测释放责任
 - V 导出 PHP class / trait / interface / enum
 - PHP 8 class attribute 导出
@@ -152,10 +154,11 @@ AST -> repr -> linker/builder -> emitted C/V bridge code
 
 1. 先看这页
 2. 再看 [value_layers.md](value_layers.md)
-3. 再看 [interop.md](interop.md)
-4. 再看 [oop_features.md](oop_features.md)
-5. 再看 [lifecycle_model.md](lifecycle_model.md)
-6. 最后看 [../compiler/README.md](../compiler/README.md)
+3. 再看 [zend_wrapper_layers.md](zend_wrapper_layers.md)
+4. 再看 [interop.md](interop.md)
+5. 再看 [oop_features.md](oop_features.md)
+6. 再看 [lifecycle_model.md](lifecycle_model.md)
+7. 最后看 [../compiler/README.md](../compiler/README.md)
 
 如果你更关心工程实践：
 

@@ -550,7 +550,8 @@ pub:
 
 `ZExData` 和 `ZVal` 属于同一层级：它是 Zend execute data 的低层句柄。
 `PhpReturn` 是 return slot 的语义 wrapper。常规代码应该通过
-`ctx.arg_*()` / `ctx.args(...)` / `ctx.return()` 操作参数和返回值；
+`ctx.arg_*()` / `ctx.args()` / `ctx.args_with_meta(...)` / `ctx.return()`
+操作参数和返回值；
 只有 bridge-level 代码才需要 `ctx.ex.raw_ex()` 或
 `ctx.return().raw_zval()`。
 

@@ -120,8 +120,11 @@ Use `Context` when the implementation needs the full PHP call frame:
 ```v
 @[php_function]
 fn handle(ctx vphp.Context) {
-	args := ctx.args([
-		vphp.PhpInArgMeta{ index: 0, name: 'payload' },
+	args := ctx.args_with_meta([
+		vphp.PhpArgMeta{
+			index: 0
+			name:  'payload'
+		},
 	])
 	value := args.at(0).value
 	ctx.return().string(value.type_name())
@@ -131,7 +134,11 @@ fn handle(ctx vphp.Context) {
 `Context` is hidden from PHP arginfo. It is the escape hatch for dynamic
 argument handling, manual return writes, or direct access to request state.
 
-Do not combine `Context` with `PhpInArgs`; `PhpInArgs` is derived from `Context`.
+Use `ctx.args()` when raw argument values are enough. Use
+`ctx.args_with_meta(...)` when a manual `Context` function wants to attach
+declaration metadata such as names or attributes.
+
+Do not combine `Context` with `PhpArgs`; `PhpArgs` is derived from `Context`.
 
 ### 2. V Native Values
 
@@ -209,7 +216,100 @@ Supported low-level forms include:
 These are useful for infrastructure and compatibility code. Prefer semantic
 wrappers for application-facing APIs.
 
-### 5. `@[params]` Structs
+### 5. PHP Argument Names
+
+Exported V parameters use PHP-facing names in generated arginfo, stubs, and
+named-argument lookup. By default, V `snake_case` parameter names are exported
+as PHP `camelCase` names, matching `@[params]` struct fields:
+
+```v
+@[php_function]
+fn find_user(default_value string) string {
+	return default_value
+}
+```
+
+PHP callers see `$defaultValue` and can call `find_user(defaultValue: 'x')`.
+Use `@[php_arg_name: 'v_name=phpName']` only for explicit exceptions.
+
+Argument metadata attributes accept both the legacy string form and V
+call-style attributes:
+
+```v
+@[php_arg_name: 'default_value=defaultValue']
+@[php_arg_default(default_value: '7')]
+@[php_arg_optional(default_value: true)]
+@[php_arg_type(default_value: 'int')]
+@[php_param_attr(default_value: 'FromQuery("default"), MustBeInt')]
+@[php_function]
+fn read_value(default_value int) int {
+	return default_value
+}
+```
+
+`php_param_attr` attaches PHP 8 attributes to function or method parameters.
+The key is the V parameter name, and the value is a comma-separated list of PHP
+attributes parsed with the same scalar DSL as class-level `php_attr`:
+
+```v
+@[php_param_attr(query: 'FromQuery("q"), MustBeString', page: 'FromQuery("page"), MustBeInt')]
+@[php_function]
+fn search(query string, page int) string {
+	return query
+}
+```
+
+This produces PHP parameter attributes visible through `ReflectionParameter`.
+V does not currently support attributes directly on parameters, so
+`php_param_attr` is the parameter-level escape hatch.
+
+The generated glue also carries parameter attributes into `PhpArgMeta`, so
+runtime helpers can inspect them from `PhpArg`:
+
+```v
+@[php_param_attr(query: 'FromQuery("q"), MustBeString')]
+@[php_function]
+fn search(query string) string {
+	return query
+}
+```
+
+Inside generated glue this becomes a `PhpArgMeta` entry similar to:
+
+```v
+vphp.PhpArgMeta{
+	index: 0
+	name:  'query'
+	attributes: [
+		vphp.PhpArgAttribute.named('FromQuery').string('q'),
+		vphp.PhpArgAttribute.named('MustBeString'),
+	]
+}
+```
+
+For pure `Context` functions, there is no V parameter list for the compiler to
+read. Extension authors must provide the metadata explicitly when they need it:
+
+```v
+@[php_function]
+fn dynamic(ctx vphp.Context) {
+	args := ctx.args_with_meta([
+		vphp.PhpArgMeta{
+			index: 0
+			name:  'query'
+			attributes: [
+				vphp.PhpArgAttribute.named('FromQuery').string('q'),
+				vphp.PhpArgAttribute.named('Range').int(1).int(100),
+			]
+		},
+	])
+	query := args.at(0)
+	source := query.attr('FromQuery') or { vphp.PhpArgAttribute.named('') }
+	ctx.return().string_value(source.args[0].value)
+}
+```
+
+### 6. `@[params]` Structs
 
 Use a params struct when PHP arguments should map to a named/default parameter
 object:
@@ -228,7 +328,7 @@ fn create_response(params CreateResponseParams) string {
 ```
 
 The compiler expands the final `@[params]` struct into PHP-visible arguments,
-builds `PhpInArgs` in glue, applies V defaults when arguments are omitted, and
+builds `PhpArgs` in glue, applies V defaults when arguments are omitted, and
 then calls the V function with the constructed params struct.
 
 Generated params struct bindings read arguments by PHP parameter name first and
@@ -243,9 +343,10 @@ Params struct fields may use plain V scalar types or semantic PHP wrappers such
 as `vphp.PhpString`, `vphp.PhpBool`, and `vphp.PhpArray`. Wrapper fields get
 semantic empty defaults and still validate the PHP value when it is supplied.
 
-Do not expose `vphp.PhpInArgs` directly as a function parameter. `PhpInArgs` is a
-glue/runtime model and is available from `Context` via `ctx.args(...)` when a
-function intentionally enters the low-level `Context` mode.
+Do not expose `vphp.PhpArgs` directly as a function parameter. `PhpArgs` is a
+glue/runtime model and is available from `Context` via `ctx.args()` or
+`ctx.args_with_meta(...)` when a function intentionally enters the low-level
+`Context` mode.
 
 ## Exported Function Return Forms
 
@@ -260,8 +361,11 @@ needs to write the PHP return slot manually:
 ```v
 @[php_function]
 fn dynamic(ctx vphp.Context) {
-	args := ctx.args([
-		vphp.PhpInArgMeta{ index: 0, name: 'payload' },
+	args := ctx.args_with_meta([
+		vphp.PhpArgMeta{
+			index: 0
+			name:  'payload'
+		},
 	])
 	ctx.return().string_value(args.at(0).value.type_name())
 }
@@ -363,6 +467,8 @@ signatures. Prefer these over parameter-name heuristics.
   records PHP reflection default values for optional parameters.
 - `@[php_arg_optional: 'default_status,default_reason_phrase']`
   marks trailing PHP-optional parameters explicitly.
+- `@[php_param_attr(query: 'FromQuery("q"), MustBeString')]`
+  attaches one or more PHP 8 attributes to a parameter.
 
 Notes:
 
@@ -373,6 +479,9 @@ Notes:
   ordinary parameter forms, provides the value used by glue when omitted.
 - `php_arg_type` is most useful for interface/object/array/iterable contracts
   that V cannot express directly in PHP arginfo.
+- `php_param_attr` supports function and method parameters. Its attribute
+  arguments support positional scalar literals, and named scalar literals are
+  preserved for PHP attributes and `PhpArgAttributeItem.name`.
 - Be conservative with scalar narrowing (`string`, `int`, `bool`) on exported
   interfaces. If compatibility matters, prefer runtime validation over
   over-constrained arginfo.

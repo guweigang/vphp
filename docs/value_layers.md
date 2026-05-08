@@ -7,7 +7,7 @@ Use it when choosing between:
 - `ZVal`
 - `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox`
 - `PhpValue` / `PhpInt` / `PhpString` / `PhpArray` / `PhpObject` / ...
-- `PhpInArg` / `PhpFnArg`
+- `PhpArg` / `PhpArgInput`
 - `RequestScope` / `FrameScope`
 
 ## One Value, Several Questions
@@ -32,8 +32,8 @@ flowchart TD
     SEM --> PS["PhpInt / PhpString / PhpBool / PhpDouble / PhpNull"]
     SEM --> PC["PhpArray / PhpObject / PhpCallable / PhpClosure / PhpResource"]
 
-    ARG --> IN["PhpInArg / PhpInArgs"]
-    ARG --> FN["PhpFnArg"]
+    ARG --> IN["PhpArg / PhpArgs"]
+    ARG --> FN["PhpArgInput"]
 
     SCOPE --> REQ["RequestScope"]
     SCOPE --> FRAME["FrameScope"]
@@ -45,7 +45,7 @@ flowchart TD
 | Low-level handle | `ZVal` | How does V touch the Zend value? |
 | Lifecycle | `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox` | How long can this value live, and who releases it? |
 | PHP semantics | `PhpValue`, `PhpInt`, `PhpArray`, `PhpObject`, ... | What PHP type does this value mean? |
-| Arguments | `PhpInArg`, `PhpFnArg` | Is this value coming from PHP, or going into a PHP call? |
+| Arguments | `PhpArg`, `PhpArgInput` | Does this value carry PHP input metadata, or is it accepted as a PHP call argument? |
 | Scopes | `RequestScope`, `FrameScope` | Where are temporary request-owned values released? |
 
 The important rule: do not use a lower layer when a higher layer expresses the
@@ -165,18 +165,19 @@ Use `call[T]` / `method[T]` for copied scalar wrappers:
 length := vphp.PhpFunction.named('strlen').call[vphp.PhpInt](vphp.PhpString.of('codex'))!
 ```
 
-## `PhpInArg` And `PhpFnArg`
+## `PhpArg` And `PhpArgInput`
 
-These two names are intentionally different.
+These names separate the normalized argument object from the broad input shape
+accepted by PHP call helpers.
 
-### `PhpInArg`
+### `PhpArg`
 
-`PhpInArg` means: "a PHP argument that came into a V-exported function".
+`PhpArg` means: "a PHP argument value, optionally with input metadata".
 
 It carries:
 
 - `value PhpValue`
-- optional `PhpInArgMeta` with `index` and `name`
+- optional `PhpArgMeta` with `index`, `name`, and `attributes`
 
 Use it when the function needs dynamic access to the original PHP argument list:
 
@@ -184,6 +185,39 @@ Use it when the function needs dynamic access to the original PHP argument list:
 arg := ctx.arg_at(0)
 name := arg.name()
 value := arg.string_value() or { vphp.PhpString.empty() }
+```
+
+`Context` exposes two collection helpers:
+
+```v
+args := ctx.args()
+args_with_decl := ctx.args_with_meta([
+	vphp.PhpArgMeta{
+		index: 0
+		name:  'query'
+		attributes: [
+			vphp.PhpArgAttribute.named('FromQuery').string('q'),
+			vphp.PhpArgAttribute.named('Range').int(1).int(100),
+		]
+	},
+])
+```
+
+`ctx.args()` reads the actual PHP arguments only. `ctx.args_with_meta(...)`
+attaches declaration metadata supplied by generated glue or by a hand-written
+`Context` function.
+
+Parameter attributes are available through `PhpArg`:
+
+```v
+query := args_with_decl.at(0)
+if from_query := query.attr('FromQuery') {
+	source := from_query.args[0].value
+}
+
+if query.has_attr('Range') {
+	// inspect query.attr('Range')!.args
+}
 ```
 
 Normally, exported V functions should prefer typed parameters instead:
@@ -195,16 +229,16 @@ fn hello(name vphp.PhpString, count int) string {
 }
 ```
 
-### `PhpFnArg`
+### `PhpArgInput`
 
-`PhpFnArg` means: "a value being passed from V into a PHP function, method, or
-callable".
+`PhpArgInput` means: "a semantic value shape accepted when V calls a PHP
+function, method, or callable".
 
-It is a sum type over semantic wrappers, plus `PhpInArg` for pass-through cases:
+It is a sum type over semantic wrappers, plus `PhpArg` for pass-through cases:
 
 ```v
-pub type PhpFnArg = PhpArray
-	| PhpInArg
+pub type PhpArgInput = PhpArray
+	| PhpArg
 	| PhpBool
 	| PhpCallable
 	| PhpClosure
@@ -235,8 +269,8 @@ Rule of thumb:
 
 | Direction | Type |
 | --- | --- |
-| PHP -> V argument metadata | `PhpInArg` / `PhpInArgs` |
-| V -> PHP call argument | `PhpFnArg` |
+| PHP -> V argument metadata | `PhpArg` / `PhpArgs` |
+| V -> PHP call argument input | `PhpArgInput` |
 | Already typed V-exported function parameter | `PhpString`, `PhpObject`, `int`, `string`, etc. |
 
 ## Scopes
@@ -303,7 +337,7 @@ cleanup helper.
 ```mermaid
 flowchart LR
     PHP["PHP call"] --> CTX["Context / ZExData"]
-    CTX --> INARGS["PhpInArgs / PhpInArg"]
+    CTX --> INARGS["PhpArgs / PhpArg"]
     INARGS --> SEM["Typed params<br/>PhpString / PhpObject / int / string"]
     SEM --> V["V function body"]
 ```
@@ -318,15 +352,16 @@ Supported parameter styles:
 | optional params | `fn value(default ?vphp.PhpValue)` | Missing argument matters |
 | `@[params]` struct | `fn create(p CreateParams)` | Named/default argument groups |
 
-Do not combine `Context` with `PhpInArgs` as public parameters. `PhpInArgs` is
-derived from the context inside glue.
+Do not combine `Context` with `PhpArgs` as public parameters. `PhpArgs` is
+derived from the context inside glue through `ctx.args()` or
+`ctx.args_with_meta(...)`.
 
 ### V Calls PHP
 
 ```mermaid
 flowchart LR
     V["V code"] --> SEM["PhpValue / PhpString / PhpObject"]
-    SEM --> ARG["PhpFnArg"]
+    SEM --> ARG["PhpArgInput"]
     ARG --> CALL["PhpFunction / PhpObject / PhpClass"]
     CALL --> RESULT["RequestOwnedZBox or with_result callback"]
 ```
