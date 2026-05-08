@@ -6,7 +6,7 @@ English | [中文](#中文)
 
 `vphp` is the low-level Zend binding and PHP export layer for V.
 
-If `vslim` is the framework layer and `vhttpd` is the runtime layer, `vphp` answers the foundational questions:
+It answers the foundational questions behind the whole stack:
 
 - how V code is exported as PHP functions, classes, interfaces, traits, and enums
 - how V code calls PHP functions, classes, objects, properties, constants, and callables
@@ -21,6 +21,7 @@ In one sentence:
 - overview: [docs/OVERVIEW.md](docs/OVERVIEW.md)
 - docs index: [docs/README.md](docs/README.md)
 - interop: [docs/interop.md](docs/interop.md)
+- Zend wrapper layers: [docs/zend_wrapper_layers.md](docs/zend_wrapper_layers.md)
 - ownership: [docs/ownership.md](docs/ownership.md)
 - lifecycle: [docs/lifecycle_model.md](docs/lifecycle_model.md)
 - OOP export: [docs/oop_features.md](docs/oop_features.md)
@@ -37,6 +38,50 @@ It provides both directions of the bridge:
 
 The design center is a stable boundary between Zend's raw runtime model and V's typed, explicit ownership model.
 
+## One-Minute Example
+
+The smallest useful flow is:
+
+- define `ExtensionConfig`
+- export a function
+- compile the extension
+- load it from PHP
+
+```v
+module main
+
+import vphp
+
+const ext_config = vphp.ExtensionConfig{
+    name: 'hello_vphp'
+    version: '0.1.0'
+    description: 'Hello extension built with vphp'
+}
+
+@[php_function]
+fn hello_from_v(name string) string {
+    return 'Hello, ${name} from VPHP'
+}
+```
+
+Then the extension build flow looks like:
+
+```bash
+make -C vphptest build
+```
+
+And the PHP side looks like:
+
+```bash
+php -d extension=./hello_vphp.so -r 'echo hello_from_v("PHP"), PHP_EOL;'
+```
+
+If you want a real in-repo example instead of a toy snippet, start with:
+
+- [`../vphptest/config.v`](../vphptest/config.v)
+- [`../vphptest/functions.v`](../vphptest/functions.v)
+- [`../vphptest/Makefile`](../vphptest/Makefile)
+
 ## vphp vs PHP-CPP vs ext-php-rs
 
 All three projects help developers build PHP extensions without writing raw Zend C directly, but they optimize for different languages and boundaries.
@@ -50,8 +95,8 @@ All three projects help developers build PHP extensions without writing raw Zend
 | Interface / trait / enum export | Yes; part of the export model | Class/object/method export is the primary documented path; trait/enum are not the central model | Class/interface support is explicit; trait/enum are less central in the public entry path |
 | PHP attributes / metadata | Yes; PHP 8 class attributes and export metadata | Not a primary advertised abstraction | Macro/doc-comment driven metadata; Rust attributes are central |
 | Runtime value abstraction | `ZVal`, `PhpValue`, `PhpInt`, `PhpString`, `PhpBool`, `PhpDouble`, `PhpArray`, `PhpObject`, `PhpClosure`, `PhpCallable` | `Php::Value`, `Php::Parameters` | `Zval`, `ZBox`, `IntoZval`, `FromZval`, `ZendObject` |
-| Function call arguments | Semantic `PhpFnArg`; `PhpValue` and scalar/object wrappers can be used at the semantic layer | `Php::Parameters` / `Php::Value` | Trait-based conversion into zvals |
-| Exported function input model | Raw `Context`, unpacked V scalars, semantic wrappers like `PhpValue` / `PhpObject` / `PhpArray`, optional args, params structs, and `PhpInArg` where raw input metadata is needed | C++ function/method signatures with PHP-CPP wrappers | Rust function signatures with proc-macro driven conversions |
+| Function call arguments | Semantic `PhpArgInput`; `PhpValue` and scalar/object wrappers can be used at the semantic layer | `Php::Parameters` / `Php::Value` | Trait-based conversion into zvals |
+| Exported function input model | Raw `Context`, unpacked V scalars, semantic wrappers like `PhpValue` / `PhpObject` / `PhpArray`, optional args, params structs, and `PhpArg` where raw input metadata is needed | C++ function/method signatures with PHP-CPP wrappers | Rust function signatures with proc-macro driven conversions |
 | Closure bridge | Compiler-generated closure bridges; struct-param closures; variadic closure invoke for `PhpValue`, `ZVal`, `RequestBorrowedZBox`, and `VScalarValue` | Callback/function support through C++ wrapper APIs | Callable/closure support through Rust binding abstractions |
 | Ownership / lifetime model | Explicit: `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox`, `PhpValueZBox`, request/frame scopes, retained objects/callables | Available through extension lifecycle and C++ ownership patterns; more manual | Strongly shaped by Rust ownership and module/request lifecycle hooks |
 | Request / frame scope | Objectized `RequestScope` / `FrameScope` helpers and autorelease handling | Extension callbacks such as request/startup/shutdown | Module/request startup and shutdown hooks |
@@ -63,7 +108,7 @@ A simplified view:
 
 - PHP-CPP is a C++-friendly extension SDK.
 - ext-php-rs is a Rust-style Zend binding and macro framework.
-- `vphp` is a V-to-Zend bridge plus export compiler, designed to support higher layers such as `vslim` and `vhttpd`.
+- `vphp` is a V-to-Zend bridge plus export compiler, designed to support higher PHP-facing layers such as `vslim`.
 
 ## Current Capabilities
 
@@ -74,8 +119,8 @@ The current `vphp` runtime and compiler include:
 - explicit ownership wrappers: `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox`
 - unified value lifecycle storage through `PhpValueZBox`
 - request/frame scope helpers for temporary request-owned values
-- `PhpFnArg` for semantic PHP function-call arguments
-- `PhpInArg` for exported-function input metadata and raw PHP argument access
+- `PhpArgInput` for semantic PHP function-call arguments
+- `PhpArg` for exported-function input metadata and raw PHP argument access
 - `PhpFunction` and `PhpObject` semantic call helpers, with lower-level `ZVal` escape hatches where needed
 - V export to PHP functions, classes, interfaces, traits, enums, constants, properties, static properties, and class attributes
 - compiler support for V scalars, semantic PHP wrappers, option args, params structs, and generated arginfo/defaults
@@ -199,7 +244,7 @@ Supported closure returns follow the normal vphp return binding rules, including
 
 `vphp` 是 V 面向 Zend/PHP 的底层绑定层和导出层。
 
-如果 `vslim` 是框架层，`vhttpd` 是运行时层，那么 `vphp` 负责回答这些底层问题：
+它负责回答整套技术栈背后的底层问题：
 
 - V 代码如何导出成 PHP function / class / interface / trait / enum
 - V 代码如何调用 PHP 函数、类、对象、属性、常量、callable
@@ -214,6 +259,7 @@ Supported closure returns follow the normal vphp return binding rules, including
 - 总览：[docs/OVERVIEW.md](docs/OVERVIEW.md)
 - 文档索引：[docs/README.md](docs/README.md)
 - interop：[docs/interop.md](docs/interop.md)
+- Zend wrapper 分层：[docs/zend_wrapper_layers.md](docs/zend_wrapper_layers.md)
 - ownership：[docs/ownership.md](docs/ownership.md)
 - lifecycle：[docs/lifecycle_model.md](docs/lifecycle_model.md)
 - OOP 导出：[docs/oop_features.md](docs/oop_features.md)
@@ -230,6 +276,50 @@ Supported closure returns follow the normal vphp return binding rules, including
 
 它的设计重点，是在 Zend 原始 runtime 模型和 V 的类型化 ownership 模型之间建立稳定边界。
 
+## 一分钟上手
+
+最小可用流程其实很简单：
+
+- 定义 `ExtensionConfig`
+- 导出一个函数
+- 编译扩展
+- 在 PHP 里加载
+
+```v
+module main
+
+import vphp
+
+const ext_config = vphp.ExtensionConfig{
+    name: 'hello_vphp'
+    version: '0.1.0'
+    description: 'Hello extension built with vphp'
+}
+
+@[php_function]
+fn hello_from_v(name string) string {
+    return 'Hello, ${name} from VPHP'
+}
+```
+
+编译这类扩展时，仓库内真实样例的构建流程是：
+
+```bash
+make -C vphptest build
+```
+
+PHP 侧加载时的使用方式类似：
+
+```bash
+php -d extension=./hello_vphp.so -r 'echo hello_from_v("PHP"), PHP_EOL;'
+```
+
+如果你想看仓库里的真实扩展，而不是最小示例，直接从这里开始：
+
+- [`../vphptest/config.v`](../vphptest/config.v)
+- [`../vphptest/functions.v`](../vphptest/functions.v)
+- [`../vphptest/Makefile`](../vphptest/Makefile)
+
 ## vphp vs PHP-CPP vs ext-php-rs
 
 三者都在解决“避免直接写 Zend C，也能开发 PHP 扩展”的问题，但语言、抽象边界和目标场景不同。
@@ -243,8 +333,8 @@ Supported closure returns follow the normal vphp return binding rules, including
 | interface / trait / enum 导出 | 支持，是当前导出模型的一部分 | 文档主线更聚焦 class/object/method；trait/enum 不是中心模型 | class/interface 支持明确；trait/enum 不是公开入口里的中心能力 |
 | PHP attributes / 元信息 | 支持 PHP 8 class attributes 和导出元信息 | 不是主要宣传的核心抽象 | macro/doc-comment 驱动，Rust attributes 是核心入口 |
 | runtime value 抽象 | `ZVal`、`PhpValue`、`PhpInt`、`PhpString`、`PhpBool`、`PhpDouble`、`PhpArray`、`PhpObject`、`PhpClosure`、`PhpCallable` | `Php::Value`、`Php::Parameters` | `Zval`、`ZBox`、`IntoZval`、`FromZval`、`ZendObject` |
-| PHP 函数调用参数 | 语义化 `PhpFnArg`；语义层可以直接使用 `PhpValue` 和标量/对象 wrapper | `Php::Parameters` / `Php::Value` | 基于 trait 转换到 zval |
-| 导出函数入参模型 | `Context`、解包后的 V 标量、`PhpValue` / `PhpObject` / `PhpArray` 等语义 wrapper、optional args、params struct，以及需要原始输入元信息时的 `PhpInArg` | C++ 函数/方法签名 + PHP-CPP wrapper | Rust 函数签名 + proc macro 转换 |
+| PHP 函数调用参数 | 语义化 `PhpArgInput`；语义层可以直接使用 `PhpValue` 和标量/对象 wrapper | `Php::Parameters` / `Php::Value` | 基于 trait 转换到 zval |
+| 导出函数入参模型 | `Context`、解包后的 V 标量、`PhpValue` / `PhpObject` / `PhpArray` 等语义 wrapper、optional args、params struct，以及需要原始输入元信息时的 `PhpArg` | C++ 函数/方法签名 + PHP-CPP wrapper | Rust 函数签名 + proc macro 转换 |
 | Closure bridge | 编译器生成 closure bridge；支持 struct params；variadic closure invoke 支持 `PhpValue`、`ZVal`、`RequestBorrowedZBox`、`VScalarValue` | 通过 C++ wrapper API 支持 callback/function | 通过 Rust binding 抽象支持 callable/closure |
 | ownership / lifetime | 显式分层：`RequestBorrowedZBox`、`RequestOwnedZBox`、`PersistentOwnedZBox`、`PhpValueZBox`、request/frame scope、retained object/callable | 有扩展生命周期回调，但对象 ownership 更偏 C++ 开发者管理 | 强依赖 Rust ownership、trait 与 module/request lifecycle hook |
 | request / frame scope | 对象化 `RequestScope` / `FrameScope` helper 和 autorelease 处理 | extension callbacks，如 request/startup/shutdown | module/request startup/shutdown hooks |
@@ -256,7 +346,7 @@ Supported closure returns follow the normal vphp return binding rules, including
 
 - PHP-CPP 更像 C++ 友好的扩展 SDK。
 - ext-php-rs 更像 Rust 风格的 Zend binding / macro 框架。
-- `vphp` 更像把 V 接进 Zend 世界的桥接层和导出编译器，并服务于 `vslim` / `vhttpd` 这样的上层。
+- `vphp` 更像把 V 接进 Zend 世界的桥接层和导出编译器，并服务于 `vslim` 这样的上层。
 
 ## 当前能力
 
@@ -267,8 +357,8 @@ Supported closure returns follow the normal vphp return binding rules, including
 - ownership wrapper：`RequestBorrowedZBox`、`RequestOwnedZBox`、`PersistentOwnedZBox`
 - 统一值生命周期存储：`PhpValueZBox`
 - request/frame scope helper，用于 request-owned 临时值
-- `PhpFnArg`，用于语义化 PHP 函数调用参数
-- `PhpInArg`，用于导出函数入参元信息和原始 PHP 入参访问
+- `PhpArgInput`，用于语义化 PHP 函数调用参数
+- `PhpArg`，用于导出函数入参元信息和原始 PHP 入参访问
 - `PhpFunction` / `PhpObject` 语义调用 API，必要时仍可退到底层 `ZVal`
 - V 导出 PHP function / class / interface / trait / enum / constant / property / static property / class attribute
 - compiler 支持 V 标量、PHP 语义 wrapper、option args、params struct、arginfo/default 生成
