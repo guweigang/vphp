@@ -28,7 +28,7 @@ pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table, params_structs map[s
 	func.name = if attrs.php_name != '' { attrs.php_name } else { fn_decl.name.all_after('.') }
 	func.original_name = fn_decl.name.all_after('.')
 	func.args = build_php_args(fn_decl.params, table, 0, attrs.php_arg_types, attrs.php_arg_names,
-		attrs.php_arg_optional, attrs.php_arg_defaults, params_structs)
+		attrs.php_arg_optional, attrs.php_arg_defaults, attrs.php_param_attrs, params_structs)
 	func.uses_context = func.args.len == 1 && is_context_type(func.args[0].v_type)
 
 	ret_type := strip_module(table.type_to_str(fn_decl.return_type))

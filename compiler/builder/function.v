@@ -2,10 +2,10 @@ module builder
 
 pub struct FuncBuilder {
 pub mut:
-	php_name    string
-	c_func      string
-	return_spec ReturnSpec
-	args        []ClassMethodArg // reuse ClassMethodArg for function args
+	php_name     string
+	c_func       string
+	return_spec  ReturnSpec
+	args         []ClassMethodArg // reuse ClassMethodArg for function args
 	uses_context bool
 }
 
@@ -19,10 +19,10 @@ pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {
 
 pub fn new_func_builder_with_args(php_name string, c_func string, return_spec ReturnSpec, args []ClassMethodArg, uses_context bool) &FuncBuilder {
 	return &FuncBuilder{
-		php_name:    php_name
-		c_func:      c_func
-		return_spec: return_spec
-		args:        args
+		php_name:     php_name
+		c_func:       c_func
+		return_spec:  return_spec
+		args:         args
 		uses_context: uses_context
 	}
 }
@@ -55,6 +55,26 @@ pub fn (b &FuncBuilder) render_arginfo() string {
 	return res.join('\n')
 }
 
+pub fn (b FuncBuilder) render_parameter_attribute_minit_lines() []string {
+	if b.args.all(it.attributes.len == 0) {
+		return []
+	}
+	mut res := []string{}
+	func_var := 'func_${b.c_func}'
+	res << '{'
+	res << '    zend_function *${func_var} = zend_hash_str_find_ptr(CG(function_table), "${c_string_escape(b.php_name)}", sizeof("${c_string_escape(b.php_name)}")-1);'
+	res << '    if (${func_var} != NULL) {'
+	for ai, arg in b.args {
+		for attr_i, attr in arg.attributes {
+			attr_var := 'attribute_${b.c_func}_${ai}_${attr_i}'
+			res << render_add_parameter_attribute_lines(func_var, ai, attr, attr_var)
+		}
+	}
+	res << '    }'
+	res << '}'
+	return res
+}
+
 fn function_required_args(args []ClassMethodArg) int {
 	mut required := args.len
 	for required > 0 {
@@ -70,6 +90,7 @@ fn function_required_args(args []ClassMethodArg) int {
 pub fn (b FuncBuilder) export_fragments() ExportFragments {
 	return ExportFragments{
 		declarations:   [b.render_declaration()]
+		minit_lines:    b.render_parameter_attribute_minit_lines()
 		function_table: [b]
 	}
 }

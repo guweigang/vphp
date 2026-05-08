@@ -1,7 +1,7 @@
 module vphp
 
-pub type PhpFnArg = PhpArray
-	| PhpInArg
+pub type PhpArgInput = PhpArray
+	| PhpArg
 	| PhpBool
 	| PhpCallable
 	| PhpClosure
@@ -18,10 +18,10 @@ pub type PhpFnArg = PhpArray
 	| PhpThrowable
 	| PhpValue
 
-pub fn (arg PhpFnArg) to_zval() ZVal {
+pub fn (arg PhpArgInput) to_zval() ZVal {
 	return match arg {
 		PhpArray { arg.to_zval() }
-		PhpInArg { arg.to_zval() }
+		PhpArg { arg.to_zval() }
 		PhpBool { arg.to_zval() }
 		PhpCallable { arg.to_zval() }
 		PhpClosure { arg.to_zval() }
@@ -40,7 +40,7 @@ pub fn (arg PhpFnArg) to_zval() ZVal {
 	}
 }
 
-pub fn php_fn_args_to_zvals(args []PhpFnArg) []ZVal {
+pub fn php_arg_inputs_to_zvals(args []PhpArgInput) []ZVal {
 	mut out := []ZVal{cap: args.len}
 	for arg in args {
 		out << arg.to_zval()
@@ -48,7 +48,7 @@ pub fn php_fn_args_to_zvals(args []PhpFnArg) []ZVal {
 	return out
 }
 
-fn php_fn_result_as[T](z ZVal) !T {
+fn php_call_result_as[T](z ZVal) !T {
 	$if T is PhpValue {
 		return PhpValue.from_zval(z)
 	} $else $if T is PhpNull {
@@ -82,11 +82,11 @@ fn php_fn_result_as[T](z ZVal) !T {
 	} $else $if T is PhpEnumCase {
 		return PhpEnumCase.must_from_zval(z)!
 	} $else {
-		return error('unsupported PHP function result type')
+		return error('unsupported PHP call result type')
 	}
 }
 
-fn php_fn_copied_result_as[T](z ZVal) !T {
+fn php_call_copied_result_as[T](z ZVal) !T {
 	$if T is PhpNull {
 		_ := PhpNull.must_from_zval(z)!
 		return PhpNull.value()

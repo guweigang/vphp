@@ -134,13 +134,13 @@ pub fn (c PhpClass) construct_request_owned_zval(args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.construct_owned_request_zval(args))
 }
 
-pub fn (c PhpClass) construct(args ...PhpFnArg) !PhpObject {
-	result := c.construct_owned_request_zval(php_fn_args_to_zvals(args))
+pub fn (c PhpClass) construct(args ...PhpArgInput) !PhpObject {
+	result := c.construct_owned_request_zval(php_arg_inputs_to_zvals(args))
 	return PhpObject.must_from_zval(result)
 }
 
-pub fn (c PhpClass) with_object[R](run fn (PhpObject) R, args ...PhpFnArg) !R {
-	mut result := c.construct_owned_request_zval(php_fn_args_to_zvals(args))
+pub fn (c PhpClass) with_object[R](run fn (PhpObject) R, args ...PhpArgInput) !R {
+	mut result := c.construct_owned_request_zval(php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
@@ -160,24 +160,25 @@ pub fn (c PhpClass) static_method_owned_persistent_zval(method string, args []ZV
 	return c.to_zval().static_method_owned_persistent(method, args)
 }
 
-pub fn (c PhpClass) static_method_request_owned(method string, args ...PhpFnArg) RequestOwnedZBox {
-	return RequestOwnedZBox.adopt_zval(c.static_method_owned_request_zval(method, php_fn_args_to_zvals(args)))
+pub fn (c PhpClass) static_method_request_owned(method string, args ...PhpArgInput) RequestOwnedZBox {
+	return RequestOwnedZBox.adopt_zval(c.static_method_owned_request_zval(method,
+		php_arg_inputs_to_zvals(args)))
 }
 
-pub fn (c PhpClass) static_method[T](method string, args ...PhpFnArg) !T {
-	mut result := c.static_method_owned_request_zval(method, php_fn_args_to_zvals(args))
+pub fn (c PhpClass) static_method[T](method string, args ...PhpArgInput) !T {
+	mut result := c.static_method_owned_request_zval(method, php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	return php_fn_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result)
 }
 
-pub fn (c PhpClass) with_static_method_result[T, R](method string, run fn (T) R, args ...PhpFnArg) !R {
-	mut result := c.static_method_owned_request_zval(method, php_fn_args_to_zvals(args))
+pub fn (c PhpClass) with_static_method_result[T, R](method string, run fn (T) R, args ...PhpArgInput) !R {
+	mut result := c.static_method_owned_request_zval(method, php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	value := php_fn_result_as[T](result)!
+	value := php_call_result_as[T](result)!
 	return run(value)
 }
 
@@ -202,7 +203,7 @@ pub fn (c PhpClass) static_prop[T](name string) !T {
 	defer {
 		result.release()
 	}
-	return php_fn_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result)
 }
 
 pub fn (c PhpClass) with_static_prop_result[T, R](name string, run fn (T) R) !R {
@@ -210,7 +211,7 @@ pub fn (c PhpClass) with_static_prop_result[T, R](name string, run fn (T) R) !R 
 	defer {
 		result.release()
 	}
-	value := php_fn_result_as[T](result)!
+	value := php_call_result_as[T](result)!
 	return run(value)
 }
 
@@ -239,7 +240,7 @@ pub fn (c PhpClass) const_value[T](name string) !T {
 	defer {
 		result.release()
 	}
-	return php_fn_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result)
 }
 
 pub fn (c PhpClass) with_const_result[T, R](name string, run fn (T) R) !R {
@@ -247,6 +248,6 @@ pub fn (c PhpClass) with_const_result[T, R](name string, run fn (T) R) !R {
 	defer {
 		result.release()
 	}
-	value := php_fn_result_as[T](result)!
+	value := php_call_result_as[T](result)!
 	return run(value)
 }

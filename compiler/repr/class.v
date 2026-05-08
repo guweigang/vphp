@@ -76,6 +76,7 @@ pub mut:
 	is_optional bool
 	php_default string
 	source      PhpArgSource
+	attributes  []PhpAttributeRepr
 }
 
 pub enum PhpArgSourceKind {
@@ -116,6 +117,7 @@ pub:
 pub struct PhpAttributeArg {
 pub:
 	kind  string
+	name  string
 	value string
 }
 

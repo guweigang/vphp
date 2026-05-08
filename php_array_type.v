@@ -97,7 +97,7 @@ pub fn (a PhpArray) to_dyn_value() !DynValue {
 	return DynValue.from_zval(temp.to_zval())
 }
 
-pub fn (a PhpArray) assoc(key string, value PhpFnArg) {
+pub fn (a PhpArray) assoc(key string, value PhpArgInput) {
 	raw := value.to_zval()
 	unsafe { C.vphp_array_add_assoc_zval(a.to_zval().raw, &char(key.str), raw.raw) }
 }
@@ -106,7 +106,7 @@ pub fn (a PhpArray) assoc_zval(key string, value ZVal) {
 	unsafe { C.vphp_array_add_assoc_zval(a.to_zval().raw, &char(key.str), value.raw) }
 }
 
-pub fn (a PhpArray) set(key string, value PhpFnArg) {
+pub fn (a PhpArray) set(key string, value PhpArgInput) {
 	a.assoc(key, value)
 }
 
@@ -140,7 +140,7 @@ pub fn (a PhpArray) null_value(key string) {
 	a.assoc(key, PhpNull.value())
 }
 
-pub fn (a PhpArray) next(value PhpFnArg) {
+pub fn (a PhpArray) next(value PhpArgInput) {
 	a.to_zval().add_next_val(value.to_zval())
 }
 
@@ -148,7 +148,7 @@ pub fn (a PhpArray) next_zval(value ZVal) {
 	a.to_zval().add_next_val(value)
 }
 
-pub fn (a PhpArray) push(value PhpFnArg) {
+pub fn (a PhpArray) push(value PhpArgInput) {
 	a.next(value)
 }
 

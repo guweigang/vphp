@@ -174,46 +174,46 @@ pub fn (o PhpObject) const_exists(name string) bool {
 	return o.to_zval().const_exists(name)
 }
 
-pub fn (o PhpObject) method_zval(method string, args []ZVal) ZVal {
+pub fn (o PhpObject) method_zval(method string, args []vphp.ZVal) ZVal {
 	return o.value.with_request_object[ZVal](fn [method, args] (obj PhpObject) ZVal {
 		return obj.to_zval().method(method, args)
 	}) or { invalid_zval() }
 }
 
-pub fn (o PhpObject) method_owned_request(method string, args []ZVal) ZVal {
+pub fn (o PhpObject) method_owned_request(method string, args []vphp.ZVal) ZVal {
 	return o.value.with_request_object[ZVal](fn [method, args] (obj PhpObject) ZVal {
 		return obj.to_zval().method_owned_request(method, args)
 	}) or { invalid_zval() }
 }
 
-pub fn (o PhpObject) method_owned_persistent(method string, args []ZVal) ZVal {
+pub fn (o PhpObject) method_owned_persistent(method string, args []vphp.ZVal) ZVal {
 	return o.value.with_request_object[ZVal](fn [method, args] (obj PhpObject) ZVal {
 		return obj.to_zval().method_owned_persistent(method, args)
 	}) or { invalid_zval() }
 }
 
-pub fn (o PhpObject) method_request_owned_zval(method string, args []ZVal) RequestOwnedZBox {
+pub fn (o PhpObject) method_request_owned_zval(method string, args []vphp.ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(o.method_owned_request(method, args))
 }
 
-pub fn (o PhpObject) method_request_owned(method string, args ...PhpFnArg) RequestOwnedZBox {
-	return o.method_request_owned_zval(method, php_fn_args_to_zvals(args))
+pub fn (o PhpObject) method_request_owned(method string, args ...PhpArgInput) RequestOwnedZBox {
+	return o.method_request_owned_zval(method, php_arg_inputs_to_zvals(args))
 }
 
-pub fn (o PhpObject) method[T](method string, args ...PhpFnArg) !T {
-	mut result := o.method_owned_request(method, php_fn_args_to_zvals(args))
+pub fn (o PhpObject) method[T](method string, args ...PhpArgInput) !T {
+	mut result := o.method_owned_request(method, php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	return php_fn_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result)
 }
 
-pub fn (o PhpObject) with_method_result[T, R](method string, run fn (T) R, args ...PhpFnArg) !R {
-	mut result := o.method_owned_request(method, php_fn_args_to_zvals(args))
+pub fn (o PhpObject) with_method_result[T, R](method string, run fn (T) R, args ...PhpArgInput) !R {
+	mut result := o.method_owned_request(method, php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	value := php_fn_result_as[T](result)!
+	value := php_call_result_as[T](result)!
 	return run(value)
 }
 
@@ -257,7 +257,7 @@ pub fn (o PhpObject) unset_prop(name string) {
 	o.to_zval().unset_prop(name)
 }
 
-pub fn (o PhpObject) method_v[T](method string, args []ZVal) !T {
+pub fn (o PhpObject) method_v[T](method string, args []vphp.ZVal) !T {
 	return o.method_zval(method, args).to_v[T]()
 }
 

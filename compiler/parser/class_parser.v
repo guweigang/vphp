@@ -161,6 +161,7 @@ fn decode_attr_string(raw string) string {
 				`"` { `"` }
 				else { ch }
 			}
+
 			escaped = false
 			continue
 		}
@@ -173,42 +174,70 @@ fn decode_attr_string(raw string) string {
 	return out.string()
 }
 
+fn is_attr_arg_name(value string) bool {
+	if value == '' {
+		return false
+	}
+	for ch in value {
+		if !ch.is_letter() && !ch.is_digit() && ch != `_` {
+			return false
+		}
+	}
+	return true
+}
+
 fn parse_attr_arg(token string) repr.PhpAttributeArg {
-	value := token.trim_space()
+	raw := token.trim_space()
+	mut name := ''
+	mut value := raw
+	if raw.contains(':') {
+		parts := raw.split_nth(':', 2)
+		candidate := parts[0].trim_space()
+		if is_attr_arg_name(candidate) {
+			name = candidate
+			value = parts[1].trim_space()
+		}
+	}
 	lower := value.to_lower()
 	if (value.starts_with("'") && value.ends_with("'"))
 		|| (value.starts_with('"') && value.ends_with('"')) {
 		return repr.PhpAttributeArg{
 			kind:  'string'
+			name:  name
 			value: decode_attr_string(value)
 		}
 	}
 	if lower == 'true' || lower == 'false' {
 		return repr.PhpAttributeArg{
 			kind:  'bool'
+			name:  name
 			value: lower
 		}
 	}
 	if lower == 'null' {
 		return repr.PhpAttributeArg{
 			kind:  'null'
+			name:  name
 			value: ''
 		}
 	}
 	if value.contains('.') && (value.f64() != 0.0 || value == '0.0' || value == '-0.0') {
 		return repr.PhpAttributeArg{
 			kind:  'float'
+			name:  name
 			value: value
 		}
 	}
 	if value.i64() != 0 || value == '0' || value == '-0' {
 		return repr.PhpAttributeArg{
 			kind:  'int'
+			name:  name
 			value: value
 		}
 	}
 	return repr.PhpAttributeArg{
 		kind:  'string'
+		name:  name
 		value: value
 	}
 }
@@ -368,7 +397,7 @@ pub fn add_class_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table &ast.T
 	}
 	start_idx := if stmt.is_method { 1 } else { 0 }
 	args := build_php_args(stmt.params, table, start_idx, attrs.php_arg_types, attrs.php_arg_names,
-		attrs.php_arg_optional, attrs.php_arg_defaults, params_structs)
+		attrs.php_arg_optional, attrs.php_arg_defaults, attrs.php_param_attrs, params_structs)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	inferred_borrowed := infer_borrowed_object_return(stmt, table, field_types, borrowed_methods,
@@ -400,7 +429,7 @@ pub fn add_class_static_method(mut cls repr.PhpClassRepr, stmt ast.FnDecl, table
 		return
 	}
 	args := build_php_args(stmt.params, table, 0, attrs.php_arg_types, attrs.php_arg_names,
-		attrs.php_arg_optional, attrs.php_arg_defaults, params_structs)
+		attrs.php_arg_optional, attrs.php_arg_defaults, attrs.php_param_attrs, params_structs)
 
 	ret_type := strip_module(table.type_to_str(stmt.return_type))
 	cls.methods << repr.PhpMethodRepr{
@@ -452,8 +481,8 @@ fn infer_borrowed_object_return(stmt ast.FnDecl, table &ast.Table, field_types m
 		return false
 	}
 	mut state := BorrowedReturnInferenceState{}
-	collect_borrowed_return_hints(stmt.stmts, table, field_types, borrowed_methods, method_return_types, mut
-		borrow_roots, mut state)
+	collect_borrowed_return_hints(stmt.stmts, table, field_types, borrowed_methods,
+		method_return_types, mut borrow_roots, mut state)
 	return state.saw_borrowed && !state.saw_conflict && !state.saw_unknown
 }
 
@@ -487,11 +516,10 @@ fn collect_borrowed_return_hints(stmts []ast.Stmt, table &ast.Table, field_types
 					if_expr := stmt.expr as ast.IfExpr
 					for branch in if_expr.branches {
 						mut branch_roots := borrow_roots.clone()
-						apply_if_guard_borrow_root(branch.cond, table, field_types, borrowed_methods,
-							method_return_types, mut branch_roots)
+						apply_if_guard_borrow_root(branch.cond, table, field_types,
+							borrowed_methods, method_return_types, mut branch_roots)
 						collect_borrowed_return_hints(branch.stmts, table, field_types,
-							borrowed_methods, method_return_types, mut branch_roots, mut
-							state)
+							borrowed_methods, method_return_types, mut branch_roots, mut state)
 					}
 				}
 			}
@@ -726,9 +754,8 @@ fn infer_borrow_root_type(expr ast.Expr, table &ast.Table, borrow_roots map[stri
 			{
 				if expr.or_block.stmts.len > 0 {
 					mut fallback_roots := borrow_roots.clone()
-					fallback_type := infer_expr_block_result_root_type(expr.or_block.stmts,
-						table, field_types, borrowed_methods, method_return_types, mut
-						fallback_roots)
+					fallback_type := infer_expr_block_result_root_type(expr.or_block.stmts, table,
+						field_types, borrowed_methods, method_return_types, mut fallback_roots)
 					if fallback_type == call_borrowed_type {
 						return call_borrowed_type
 					}
@@ -737,8 +764,8 @@ fn infer_borrow_root_type(expr ast.Expr, table &ast.Table, borrow_roots map[stri
 				return call_borrowed_type
 			}
 			if expr.args.len == 1 {
-				return infer_borrow_root_type(expr.args[0].expr, table, borrow_roots,
-					field_types, borrowed_methods, method_return_types)
+				return infer_borrow_root_type(expr.args[0].expr, table, borrow_roots, field_types,
+					borrowed_methods, method_return_types)
 			}
 			return ''
 		}
@@ -900,6 +927,7 @@ fn normalize_local_return_like_method_name(name string) string {
 		'str' { '__tostring' }
 		else { base }
 	}
+
 	if base.contains('.') {
 		return base.all_after_last('.')
 	}
@@ -965,8 +993,8 @@ fn collect_delegated_method_ref(stmts []ast.Stmt, receiver_name string, receiver
 					if_expr := stmt.expr as ast.IfExpr
 					for branch in if_expr.branches {
 						mut branch_roots := borrow_roots.clone()
-						apply_if_guard_borrow_root(branch.cond, table, field_types, map[string]bool{},
-							map[string]string{}, mut branch_roots)
+						apply_if_guard_borrow_root(branch.cond, table, field_types,
+							map[string]bool{}, map[string]string{}, mut branch_roots)
 						collect_delegated_method_ref(branch.stmts, receiver_name, receiver_type,
 							table, field_types, mut branch_roots, mut state)
 					}
@@ -974,8 +1002,8 @@ fn collect_delegated_method_ref(stmts []ast.Stmt, receiver_name string, receiver
 			}
 			ast.Block {
 				mut block_roots := borrow_roots.clone()
-				collect_delegated_method_ref(stmt.stmts, receiver_name, receiver_type,
-					table, field_types, mut block_roots, mut state)
+				collect_delegated_method_ref(stmt.stmts, receiver_name, receiver_type, table,
+					field_types, mut block_roots, mut state)
 			}
 			else {}
 		}
@@ -991,8 +1019,8 @@ fn delegated_method_ref(expr ast.Expr, receiver_name string, receiver_type strin
 			if !expr_root_is_borrowed(expr.left, borrow_roots) {
 				return '', ''
 			}
-			target_type := delegated_call_target_type(expr, receiver_name, receiver_type,
-				table, field_types, borrow_roots)
+			target_type := delegated_call_target_type(expr, receiver_name, receiver_type, table,
+				field_types, borrow_roots)
 			if target_type == '' {
 				return '', ''
 			}
@@ -1060,8 +1088,8 @@ fn infer_receiver_expr_type(expr ast.Expr, receiver_name string, receiver_type s
 				borrow_roots)
 		}
 		ast.PrefixExpr {
-			return infer_receiver_expr_type(expr.right, receiver_name, receiver_type,
-				field_types, borrow_roots)
+			return infer_receiver_expr_type(expr.right, receiver_name, receiver_type, field_types,
+				borrow_roots)
 		}
 		ast.CallExpr {
 			if expr.args.len == 1 {

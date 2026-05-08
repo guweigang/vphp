@@ -62,7 +62,9 @@ pub fn (c PhpClosure) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (c PhpClosure) to_request_owned() PhpClosure {
-	return PhpClosure.from_request_owned_zbox(c.callable.to_request_owned_zbox()) or { c.to_borrowed() }
+	return PhpClosure.from_request_owned_zbox(c.callable.to_request_owned_zbox()) or {
+		c.to_borrowed()
+	}
 }
 
 pub fn (c PhpClosure) to_request_owned_zbox() RequestOwnedZBox {
@@ -81,46 +83,46 @@ pub fn (c PhpClosure) is_callable() bool {
 	return c.to_zval().is_callable()
 }
 
-pub fn (c PhpClosure) call_zval(args []ZVal) ZVal {
+pub fn (c PhpClosure) call_zval(args []vphp.ZVal) ZVal {
 	return c.callable.with_request_callable[ZVal](fn [args] (callable PhpCallable) ZVal {
 		return callable.to_zval().call(args)
 	}) or { invalid_zval() }
 }
 
-pub fn (c PhpClosure) call_owned_request_zval(args []ZVal) ZVal {
+pub fn (c PhpClosure) call_owned_request_zval(args []vphp.ZVal) ZVal {
 	return c.callable.with_request_callable[ZVal](fn [args] (callable PhpCallable) ZVal {
 		return callable.to_zval().call_owned_request(args)
 	}) or { invalid_zval() }
 }
 
-pub fn (c PhpClosure) call_owned_persistent_zval(args []ZVal) ZVal {
+pub fn (c PhpClosure) call_owned_persistent_zval(args []vphp.ZVal) ZVal {
 	return c.callable.with_request_callable[ZVal](fn [args] (callable PhpCallable) ZVal {
 		return callable.to_zval().call_owned_persistent(args)
 	}) or { invalid_zval() }
 }
 
-pub fn (c PhpClosure) fn_request_owned_zval(args []ZVal) RequestOwnedZBox {
+pub fn (c PhpClosure) fn_request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.call_owned_request_zval(args))
 }
 
-pub fn (c PhpClosure) fn_request_owned(args ...PhpFnArg) RequestOwnedZBox {
-	return c.fn_request_owned_zval(php_fn_args_to_zvals(args))
+pub fn (c PhpClosure) fn_request_owned(args ...PhpArgInput) RequestOwnedZBox {
+	return c.fn_request_owned_zval(php_arg_inputs_to_zvals(args))
 }
 
-pub fn (c PhpClosure) call[T](args ...PhpFnArg) !T {
-	mut result := c.call_owned_request_zval(php_fn_args_to_zvals(args))
+pub fn (c PhpClosure) call[T](args ...PhpArgInput) !T {
+	mut result := c.call_owned_request_zval(php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	return php_fn_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result)
 }
 
-pub fn (c PhpClosure) with_result[T, R](run fn (T) R, args ...PhpFnArg) !R {
-	mut result := c.call_owned_request_zval(php_fn_args_to_zvals(args))
+pub fn (c PhpClosure) with_result[T, R](run fn (T) R, args ...PhpArgInput) !R {
+	mut result := c.call_owned_request_zval(php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	value := php_fn_result_as[T](result)!
+	value := php_call_result_as[T](result)!
 	return run(value)
 }
 

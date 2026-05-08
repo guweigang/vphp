@@ -40,11 +40,13 @@ pub:
 	php_type    string
 	is_optional bool
 	php_default string
+	attributes  []ClassAttribute
 }
 
 pub struct ClassAttributeArg {
 pub:
 	kind  string
+	name  string
 	value string
 }
 
@@ -130,8 +132,8 @@ pub fn (mut b ClassBuilder) add_constant(name string, type_ string, value string
 }
 
 pub fn (mut b ClassBuilder) add_method(php_name string, c_func string, return_type string, php_return_type string, flags string, args []ClassMethodArg) &ClassBuilder {
-	return b.add_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
-		''), flags, args)
+	return b.add_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type, ''),
+		flags, args)
 }
 
 pub fn (mut b ClassBuilder) add_method_with_return_obj(php_name string, c_func string, return_type string, php_return_type string, return_obj_type string, flags string, args []ClassMethodArg) &ClassBuilder {
@@ -140,8 +142,7 @@ pub fn (mut b ClassBuilder) add_method_with_return_obj(php_name string, c_func s
 }
 
 pub fn (mut b ClassBuilder) add_method_spec(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg) &ClassBuilder {
-	return b.add_method_spec_with_context(php_name, c_func, return_spec, flags, args,
-		false)
+	return b.add_method_spec_with_context(php_name, c_func, return_spec, flags, args, false)
 }
 
 pub fn (mut b ClassBuilder) add_method_spec_with_context(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg, uses_context bool) &ClassBuilder {
@@ -166,18 +167,18 @@ pub fn (mut b ClassBuilder) add_attribute(name string, args []ClassAttributeArg)
 }
 
 pub fn (mut b ClassBuilder) add_abstract_method(php_name string, c_func string, return_type string, php_return_type string, flags string, args []ClassMethodArg) &ClassBuilder {
-	return b.add_abstract_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
-		''), flags, args)
+	return b.add_abstract_method_spec(php_name, c_func, new_return_spec(return_type,
+		php_return_type, ''), flags, args)
 }
 
 pub fn (mut b ClassBuilder) add_abstract_method_with_return_obj(php_name string, c_func string, return_type string, php_return_type string, return_obj_type string, flags string, args []ClassMethodArg) &ClassBuilder {
-	return b.add_abstract_method_spec(php_name, c_func, new_return_spec(return_type, php_return_type,
-		return_obj_type), flags, args)
+	return b.add_abstract_method_spec(php_name, c_func, new_return_spec(return_type,
+		php_return_type, return_obj_type), flags, args)
 }
 
 pub fn (mut b ClassBuilder) add_abstract_method_spec(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg) &ClassBuilder {
-	return b.add_abstract_method_spec_with_context(php_name, c_func, return_spec, flags,
-		args, false)
+	return b.add_abstract_method_spec_with_context(php_name, c_func, return_spec, flags, args,
+		false)
 }
 
 pub fn (mut b ClassBuilder) add_abstract_method_spec_with_context(php_name string, c_func string, return_spec ReturnSpec, flags string, args []ClassMethodArg, uses_context bool) &ClassBuilder {
@@ -330,33 +331,23 @@ fn (b &ClassBuilder) render_registration_function() string {
 			res << '        zend_string *${attr_name_var} = zend_string_init_interned("${c_string_escape(attr.name)}", sizeof("${c_string_escape(attr.name)}")-1, 1);'
 			res << '        zend_attribute *${attr_var} = zend_add_class_attribute(${ce_ptr}, ${attr_name_var}, ${attr.args.len});'
 			res << '        zend_string_release(${attr_name_var});'
-			for j, arg in attr.args {
-				match arg.kind {
-					'string' {
-						res << '        ZVAL_STR(&${attr_var}->args[${j}].value, zend_string_init_interned("${c_string_escape(arg.value)}", sizeof("${c_string_escape(arg.value)}")-1, 1));'
-					}
-					'bool' {
-						res << '        ZVAL_BOOL(&${attr_var}->args[${j}].value, ${if arg.value == 'true' {
-							'1'
-						} else {
-							'0'
-						}});'
-					}
-					'float' {
-						res << '        ZVAL_DOUBLE(&${attr_var}->args[${j}].value, ${arg.value});'
-					}
-					'int' {
-						res << '        ZVAL_LONG(&${attr_var}->args[${j}].value, ${arg.value});'
-					}
-					'null' {
-						res << '        ZVAL_NULL(&${attr_var}->args[${j}].value);'
-					}
-					else {
-						res << '        ZVAL_STR(&${attr_var}->args[${j}].value, zend_string_init_interned("${c_string_escape(arg.value)}", sizeof("${c_string_escape(arg.value)}")-1, 1));'
-					}
-				}
+			res << render_attribute_arg_value_lines(attr_var, attr.args)
+		}
+	}
+	for mi, method in b.methods {
+		if method.args.all(it.attributes.len == 0) {
+			continue
+		}
+		method_func_var := 'method_${lower_name}_${mi}'
+		res << '        zend_function *${method_func_var} = zend_hash_str_find_ptr(&${ce_ptr}->function_table, "${c_string_escape(method.php_name)}", sizeof("${c_string_escape(method.php_name)}")-1);'
+		res << '        if (${method_func_var} != NULL) {'
+		for ai, arg in method.args {
+			for attr_i, attr in arg.attributes {
+				attr_var := 'attribute_${lower_name}_${mi}_${ai}_${attr_i}'
+				res << render_add_parameter_attribute_lines(method_func_var, ai, attr, attr_var)
 			}
 		}
+		res << '        }'
 	}
 
 	res << '    }'
@@ -401,6 +392,7 @@ fn arg_type_info(v_type string) ArgTypeInfo {
 			''
 		}
 	}
+
 	return ArgTypeInfo{
 		code:           code
 		mask:           ''
@@ -423,7 +415,8 @@ fn method_arginfo_header(m ClassMethod) string {
 	resolved_return_type := m.return_spec.resolved_type()
 	type_info := arg_type_info(resolved_return_type)
 	return render_method_arginfo_header(m.c_func, m.php_name, method_required_args(m),
-		resolved_return_type, m.return_spec.arginfo_obj_type(), type_info, method_has_literal_class_arg(m))
+		resolved_return_type, m.return_spec.arginfo_obj_type(), type_info,
+		method_has_literal_class_arg(m))
 }
 
 fn method_required_args(m ClassMethod) int {
@@ -441,6 +434,50 @@ fn method_required_args(m ClassMethod) int {
 
 fn c_string_escape(s string) string {
 	return s.replace('\\', '\\\\').replace('"', '\\"')
+}
+
+fn render_attribute_arg_value_lines(attr_var string, args []ClassAttributeArg) []string {
+	mut res := []string{}
+	for j, arg in args {
+		if arg.name != '' {
+			res << '        ${attr_var}->args[${j}].name = zend_string_init_interned("${c_string_escape(arg.name)}", sizeof("${c_string_escape(arg.name)}")-1, 1);'
+		}
+		match arg.kind {
+			'string' {
+				res << '        ZVAL_STR(&${attr_var}->args[${j}].value, zend_string_init_interned("${c_string_escape(arg.value)}", sizeof("${c_string_escape(arg.value)}")-1, 1));'
+			}
+			'bool' {
+				res << '        ZVAL_BOOL(&${attr_var}->args[${j}].value, ${if arg.value == 'true' {
+					'1'
+				} else {
+					'0'
+				}});'
+			}
+			'float' {
+				res << '        ZVAL_DOUBLE(&${attr_var}->args[${j}].value, ${arg.value});'
+			}
+			'int' {
+				res << '        ZVAL_LONG(&${attr_var}->args[${j}].value, ${arg.value});'
+			}
+			'null' {
+				res << '        ZVAL_NULL(&${attr_var}->args[${j}].value);'
+			}
+			else {
+				res << '        ZVAL_STR(&${attr_var}->args[${j}].value, zend_string_init_interned("${c_string_escape(arg.value)}", sizeof("${c_string_escape(arg.value)}")-1, 1));'
+			}
+		}
+	}
+	return res
+}
+
+fn render_add_parameter_attribute_lines(func_var string, arg_index int, attr ClassAttribute, attr_var string) []string {
+	mut res := []string{}
+	attr_name_var := '${attr_var}_name'
+	res << '        zend_string *${attr_name_var} = zend_string_init_interned("${c_string_escape(attr.name)}", sizeof("${c_string_escape(attr.name)}")-1, 1);'
+	res << '        zend_attribute *${attr_var} = zend_add_parameter_attribute(${func_var}, ${arg_index}, ${attr_name_var}, ${attr.args.len});'
+	res << '        zend_string_release(${attr_name_var});'
+	res << render_attribute_arg_value_lines(attr_var, attr.args)
+	return res
 }
 
 fn normalize_php_type_literal(name string) string {

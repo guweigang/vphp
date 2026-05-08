@@ -37,6 +37,43 @@ fn v_single_quote(s string) string {
 	return "'" + s.replace('\\', '\\\\').replace("'", "\\'") + "'"
 }
 
+fn php_attribute_arg_literal(arg repr.PhpAttributeArg) string {
+	mut call := match arg.kind {
+		'string' { 'string(${v_single_quote(arg.value)})' }
+		'bool' { 'bool_value(${arg.value})' }
+		'null' { 'null_value()' }
+		'float' { 'f64(${arg.value})' }
+		'int' { 'i64(${arg.value})' }
+		else { 'string(${v_single_quote(arg.value)})' }
+	}
+	if arg.name != '' {
+		call = match arg.kind {
+			'string' { 'named_string(${v_single_quote(arg.name)}, ${v_single_quote(arg.value)})' }
+			'bool' { 'named_bool(${v_single_quote(arg.name)}, ${arg.value})' }
+			'null' { 'named_null(${v_single_quote(arg.name)})' }
+			'float' { 'named_f64(${v_single_quote(arg.name)}, ${arg.value})' }
+			'int' { 'named_i64(${v_single_quote(arg.name)}, ${arg.value})' }
+			else { 'named_string(${v_single_quote(arg.name)}, ${v_single_quote(arg.value)})' }
+		}
+	}
+	return call
+}
+
+fn php_attribute_literal(attr repr.PhpAttributeRepr) string {
+	mut out := 'vphp.PhpArgAttribute.named(${v_single_quote(attr.name)})'
+	for arg in attr.args {
+		out += '.${php_attribute_arg_literal(arg)}'
+	}
+	return out
+}
+
+fn php_attributes_literal(attrs []repr.PhpAttributeRepr) string {
+	if attrs.len == 0 {
+		return '[]vphp.PhpArgAttribute{}'
+	}
+	return '[' + attrs.map(php_attribute_literal(it)).join(', ') + ']'
+}
+
 fn needs_php_args(args []repr.PhpArgRepr) bool {
 	for arg in args {
 		if arg.v_type != 'Context' && arg.v_type != 'vphp.Context' {
@@ -51,13 +88,13 @@ fn gen_php_args_lines(args []repr.PhpArgRepr) []string {
 		return []
 	}
 	mut lines := []string{}
-	lines << '    php_args := ctx.args(['
+	lines << '    php_args := ctx.args_with_meta(['
 	mut php_index := 0
 	for arg in args {
 		if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
 			continue
 		}
-		lines << '        vphp.PhpInArgMeta{ index: ${php_index}, name: ${v_single_quote(arg.name)} },'
+		lines << '        vphp.PhpArgMeta{ index: ${php_index}, name: ${v_single_quote(arg.name)}, attributes: ${php_attributes_literal(arg.attributes)} },'
 		php_index++
 	}
 	lines << '    ])'
@@ -232,8 +269,8 @@ fn build_php_arg_bindings(args []repr.PhpArgRepr) []PhpArgBinding {
 				kind:          .params_struct
 				var_name:      params_var
 				arg:           arg
-				params_struct: ParamsStructBinding.new(params_var, arg.source.params_type,
-					fields, php_index - fields.len)
+				params_struct: ParamsStructBinding.new(params_var, arg.source.params_type, fields,
+					php_index - fields.len)
 				php_index:     php_index - fields.len
 			}
 			continue

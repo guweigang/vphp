@@ -37,6 +37,7 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 			php_type:    arg.php_type
 			is_optional: arg.is_optional
 			php_default: arg.php_default
+			attributes:  php_attributes_to_builder(arg.attributes)
 		}
 	}
 	spec := g.build_func_return_spec(f)
@@ -124,6 +125,7 @@ fn method_args_to_builder(args []repr.PhpArgRepr) []builder.ClassMethodArg {
 			php_type:    php_type
 			is_optional: arg.is_optional
 			php_default: arg.php_default
+			attributes:  php_attributes_to_builder(arg.attributes)
 		}
 	}
 	return out
@@ -156,6 +158,26 @@ fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.P
 			php_type:    arg.php_type
 			is_optional: arg.is_optional
 			php_default: arg.php_default
+			attributes:  php_attributes_to_builder(arg.attributes)
+		}
+	}
+	return out
+}
+
+fn php_attributes_to_builder(attrs []repr.PhpAttributeRepr) []builder.ClassAttribute {
+	mut out := []builder.ClassAttribute{}
+	for attr in attrs {
+		mut args := []builder.ClassAttributeArg{}
+		for arg in attr.args {
+			args << builder.ClassAttributeArg{
+				kind:  arg.kind
+				name:  arg.name
+				value: arg.value
+			}
+		}
+		out << builder.ClassAttribute{
+			name: attr.name
+			args: args
 		}
 	}
 	return out
@@ -175,6 +197,7 @@ fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassB
 		php_name := php_method_name(m.name)
 		spec := g.build_method_return_spec(php_name, m)
 		class_builder.add_abstract_method_spec(php_name, c_func, spec,
+
 			visibility_to_method_flags(m.visibility) + ' | ZEND_ACC_ABSTRACT', interface_method_args_to_builder(r,
 			m.args))
 	}
@@ -213,8 +236,8 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		class_builder.add_property(prop.name, prop.v_type, visibility_to_property_flags(prop))
 	}
 	if !has_init && !class_uses_inherited_receiver(r) {
-		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct',
-			'', '', 'ZEND_ACC_PUBLIC', []builder.ClassMethodArg{})
+		class_builder.add_method('__construct', '${r.c_name().to_lower()}___construct', '', '',
+			'ZEND_ACC_PUBLIC', []builder.ClassMethodArg{})
 	}
 	for m in r.methods {
 		php_name := php_method_name(m.name)
@@ -230,8 +253,8 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 		spec := g.build_method_return_spec(php_name, m)
 		uses_context_arg := method_uses_context_arg(m)
 		if m.is_abstract {
-			class_builder.add_abstract_method_spec_with_context(php_name, c_func, spec,
-				flags + ' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args), uses_context_arg)
+			class_builder.add_abstract_method_spec_with_context(php_name, c_func, spec, flags +
+				' | ZEND_ACC_ABSTRACT', method_args_to_builder(m.args), uses_context_arg)
 		} else {
 			class_builder.add_method_spec_with_context(php_name, c_func, spec, flags,
 				method_args_to_builder(m.args), uses_context_arg)
