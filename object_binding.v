@@ -56,34 +56,18 @@ pub fn (z ZVal) init_owned_object(handlers voidptr) {
 	ZendObject.from_zval(z).init_owned_instance(handlers)
 }
 
-pub fn return_bound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
-	PhpReturn.new(ret).bound_object(v_ptr, ce, handlers, ownership)
+fn return_unbound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr) {
+	C.vphp_return_obj(ret.raw_zval(), v_ptr, ce)
 }
 
-pub fn return_unbound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr) {
-	return_unbound_object_to(ret, v_ptr, ce)
-}
-
-fn return_unbound_object_to(ret &C.zval, v_ptr voidptr, ce voidptr) {
-	C.vphp_return_obj(ret, v_ptr, ce)
-}
-
-fn return_bound_object_to(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
+fn return_bound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
 	match ownership {
 		.borrowed {
-			C.vphp_return_borrowed_object(ret, v_ptr, ce, handlers)
+			C.vphp_return_borrowed_object(ret.raw_zval(), v_ptr, ce, handlers)
 		}
 		.owned_request, .owned_persistent {
 			register_vptr_root(v_ptr)
-			C.vphp_return_owned_object(ret, v_ptr, ce, handlers)
+			C.vphp_return_owned_object(ret.raw_zval(), v_ptr, ce, handlers)
 		}
 	}
-}
-
-pub fn return_owned_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	return_bound_object_raw(ret, v_ptr, ce, handlers, .owned_request)
-}
-
-pub fn return_borrowed_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	return_bound_object_raw(ret, v_ptr, ce, handlers, .borrowed)
 }

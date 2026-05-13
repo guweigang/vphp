@@ -43,19 +43,19 @@ pub fn (ret PhpReturn) resource(ptr voidptr, label string) {
 }
 
 pub fn (ret PhpReturn) object(v_ptr voidptr, ce voidptr) {
-	return_unbound_object_to(ret.raw, v_ptr, ce)
+	return_unbound_object_to(ret, v_ptr, ce)
 }
 
 pub fn (ret PhpReturn) bound_object(v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
-	return_bound_object_to(ret.raw, v_ptr, ce, handlers, ownership)
+	return_bound_object_to(ret, v_ptr, ce, handlers, ownership)
 }
 
 pub fn (ret PhpReturn) owned_object(v_ptr voidptr, ce voidptr, handlers voidptr) {
-	return_owned_object_raw(ret.raw, v_ptr, ce, handlers)
+	ret.bound_object(v_ptr, ce, handlers, .owned_request)
 }
 
 pub fn (ret PhpReturn) borrowed_object(v_ptr voidptr, ce voidptr, handlers voidptr) {
-	return_borrowed_object_raw(ret.raw, v_ptr, ce, handlers)
+	ret.bound_object(v_ptr, ce, handlers, .borrowed)
 }
 
 pub fn (ret PhpReturn) zval(val ZVal) {
