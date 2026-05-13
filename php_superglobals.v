@@ -1,13 +1,9 @@
 module vphp
 
-import vphp.zend as _
-
 pub struct PhpSuperglobals {}
 
 pub fn PhpSuperglobals.env_box() RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_zval(ZVal{
-		raw: C.vphp_superglobal_get_env()
-	})
+	return zend_superglobal_box(.env)
 }
 
 pub fn PhpSuperglobals.env() PhpArray {
@@ -15,7 +11,7 @@ pub fn PhpSuperglobals.env() PhpArray {
 }
 
 pub fn PhpSuperglobals.set_env(name string, value string) {
-	C.vphp_superglobal_set_env_string(&char(name.str), &char(value.str))
+	zend_set_env_superglobal_string(name, value)
 }
 
 pub fn PhpSuperglobals.env_value(name string) ?RequestBorrowedZBox {
@@ -24,9 +20,7 @@ pub fn PhpSuperglobals.env_value(name string) ?RequestBorrowedZBox {
 }
 
 pub fn PhpSuperglobals.server_box() RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_zval(ZVal{
-		raw: C.vphp_superglobal_get_server()
-	})
+	return zend_superglobal_box(.server)
 }
 
 pub fn PhpSuperglobals.server() PhpArray {
@@ -34,7 +28,7 @@ pub fn PhpSuperglobals.server() PhpArray {
 }
 
 pub fn PhpSuperglobals.set_server(name string, value string) {
-	C.vphp_superglobal_set_server_string(&char(name.str), &char(value.str))
+	zend_set_server_superglobal_string(name, value)
 }
 
 pub fn PhpSuperglobals.server_value(name string) ?RequestBorrowedZBox {
@@ -43,33 +37,23 @@ pub fn PhpSuperglobals.server_value(name string) ?RequestBorrowedZBox {
 }
 
 pub fn PhpSuperglobals.get() PhpArray {
-	return PhpArray.must_from_zval(ZVal{
-		raw: C.vphp_superglobal_get_get()
-	}) or { panic(err) }
+	return zend_superglobal_array(.get)
 }
 
 pub fn PhpSuperglobals.post() PhpArray {
-	return PhpArray.must_from_zval(ZVal{
-		raw: C.vphp_superglobal_get_post()
-	}) or { panic(err) }
+	return zend_superglobal_array(.post)
 }
 
 pub fn PhpSuperglobals.cookie() PhpArray {
-	return PhpArray.must_from_zval(ZVal{
-		raw: C.vphp_superglobal_get_cookie()
-	}) or { panic(err) }
+	return zend_superglobal_array(.cookie)
 }
 
 pub fn PhpSuperglobals.files() PhpArray {
-	return PhpArray.must_from_zval(ZVal{
-		raw: C.vphp_superglobal_get_files()
-	}) or { panic(err) }
+	return zend_superglobal_array(.files)
 }
 
 pub fn PhpSuperglobals.request() PhpArray {
-	return PhpArray.must_from_zval(ZVal{
-		raw: C.vphp_superglobal_get_request()
-	}) or { panic(err) }
+	return zend_superglobal_array(.request)
 }
 
 pub fn get_env_superglobal() RequestBorrowedZBox {
