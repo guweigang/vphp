@@ -581,7 +581,10 @@ ZVal copy/adoption paths now use a private `zend_copy_zval(...)` helper instead
 of spelling `ZVAL_COPY` at each copy site. The old V-side
 `return_*_object_raw(...)` helpers have been removed; object return paths now
 flow through `PhpReturn` receiver methods and private object-return helpers that
-accept `PhpReturn` directly.
+accept `PhpReturn` directly. `ZendClassEntry` static-property receiver methods,
+include-file helpers, and superglobal helpers now also route their bridge calls
+through narrower private helpers, keeping each public wrapper method focused on
+V-facing behavior.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
