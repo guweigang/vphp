@@ -1,7 +1,6 @@
 module vphp
 
 fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
-fn C.vphp_get_wrapper_from_vptr(v_ptr voidptr) voidptr
 fn C.builtin___v_free(ptr voidptr)
 
 // Preserve V default field initialization for generated PHP classes.
