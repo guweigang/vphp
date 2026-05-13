@@ -1,9 +1,5 @@
 module vphp
 
-pub fn bind_object_with_ownership(z ZVal, handlers voidptr, ownership OwnershipKind) {
-	z.bind_object(handlers, ownership)
-}
-
 pub fn (z ZVal) bind_object(handlers voidptr, ownership OwnershipKind) {
 	ZendObject.from_zval(z).bind_handlers(handlers, ownership)
 }
@@ -16,18 +12,6 @@ pub fn (z ZVal) bind_borrowed_object(handlers voidptr) {
 	z.bind_object(handlers, .borrowed)
 }
 
-pub fn bind_owned_object(z ZVal, handlers voidptr) {
-	z.bind_owned_object(handlers)
-}
-
-pub fn bind_borrowed_object(z ZVal, handlers voidptr) {
-	z.bind_borrowed_object(handlers)
-}
-
-pub fn ensure_object_binding(z ZVal, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
-	return z.ensure_object_binding(handlers, ownership)
-}
-
 pub fn (z ZVal) ensure_object_binding(handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
 	return ZendObject.from_zval(z).ensure_binding(handlers, ownership)
 }
@@ -38,18 +22,6 @@ pub fn (z ZVal) ensure_owned_object_binding(handlers voidptr) &C.vphp_object_wra
 
 pub fn (z ZVal) ensure_borrowed_object_binding(handlers voidptr) &C.vphp_object_wrapper {
 	return z.ensure_object_binding(handlers, .borrowed)
-}
-
-pub fn ensure_owned_object_binding(z ZVal, handlers voidptr) &C.vphp_object_wrapper {
-	return z.ensure_owned_object_binding(handlers)
-}
-
-pub fn ensure_borrowed_object_binding(z ZVal, handlers voidptr) &C.vphp_object_wrapper {
-	return z.ensure_borrowed_object_binding(handlers)
-}
-
-pub fn init_owned_object(z ZVal, handlers voidptr) {
-	z.init_owned_object(handlers)
 }
 
 pub fn (z ZVal) init_owned_object(handlers voidptr) {

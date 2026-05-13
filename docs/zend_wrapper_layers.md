@@ -584,7 +584,10 @@ flow through `PhpReturn` receiver methods and private object-return helpers that
 accept `PhpReturn` directly. `ZendClassEntry` static-property receiver methods,
 include-file helpers, and superglobal helpers now also route their bridge calls
 through narrower private helpers, keeping each public wrapper method focused on
-V-facing behavior.
+V-facing behavior. Unused global object-binding aliases were removed in favor
+of `ZVal` receiver methods, and `ZendObject` receiver methods now delegate
+refcount, handler binding, wrapper lookup, and existing-object wrapping through
+private Zend object helpers.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
