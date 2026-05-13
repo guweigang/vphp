@@ -110,10 +110,22 @@ pub fn (ex ZExData) args() []ZVal {
 	return res
 }
 
+pub fn (ex ZExData) active_class_entry() ZendClassEntry {
+	return ZendClassEntry.from_raw(C.vphp_get_active_ce(ex.raw))
+}
+
 pub fn (ex ZExData) active_ce() voidptr {
-	return C.vphp_get_active_ce(ex.raw)
+	return ex.active_class_entry().raw_ptr()
+}
+
+pub fn (ex ZExData) this_zend_object() ZendObject {
+	obj_raw := C.vphp_get_this_object(ex.raw)
+	if obj_raw == 0 {
+		return ZendObject.invalid()
+	}
+	return ZendObject.from_ptr(obj_raw)
 }
 
 pub fn (ex ZExData) this_object() voidptr {
-	return C.vphp_get_this_object(ex.raw)
+	return ex.this_zend_object().raw_ptr()
 }

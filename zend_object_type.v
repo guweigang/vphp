@@ -49,6 +49,10 @@ pub fn (obj ZendObject) is_valid() bool {
 	return obj.raw != 0
 }
 
+pub fn (obj ZendObject) raw_ptr() voidptr {
+	return obj.raw
+}
+
 pub fn (obj ZendObject) add_ref() {
 	if !obj.is_valid() {
 		return

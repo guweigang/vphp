@@ -16,6 +16,10 @@ pub fn (ce ZendClassEntry) is_valid() bool {
 	return ce.raw != 0
 }
 
+pub fn (ce ZendClassEntry) raw_ptr() voidptr {
+	return ce.raw
+}
+
 pub fn (ce ZendClassEntry) set_static_prop[T](name string, val T) {
 	if !ce.is_valid() {
 		return
