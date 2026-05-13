@@ -91,7 +91,7 @@ pub fn (task PhpTask) spawn(args []ZVal) !PhpTaskHandle {
 	t := spawn task_inst.run()
 
 	unsafe {
-		mut res := &AsyncResult(C.emalloc(usize(sizeof(AsyncResult))))
+		mut res := &AsyncResult(zend_emalloc(usize(sizeof(AsyncResult))))
 		res.handle = t
 		return PhpTaskHandle{
 			ptr: res
@@ -126,9 +126,7 @@ pub fn (handle PhpTaskHandle) release() {
 	if handle.ptr == 0 {
 		return
 	}
-	unsafe {
-		C.efree(handle.ptr)
-	}
+	zend_efree(handle.ptr)
 }
 
 pub fn (handle PhpTaskHandle) wait_box() RequestOwnedZBox {
@@ -248,6 +246,3 @@ pub fn task_wait(ctx Context) {
 		ctx.return_zval(task_wait_box(ptr).to_zval())
 	}
 }
-
-fn C.emalloc(size usize) voidptr
-fn C.efree(ptr voidptr)

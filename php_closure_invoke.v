@@ -4,7 +4,7 @@ module vphp
 
 @[inline]
 fn save_closure_value[T](v_cb T) voidptr {
-	mut saved_cb := unsafe { &T(C.emalloc(usize(sizeof(T)))) }
+	mut saved_cb := unsafe { &T(zend_emalloc(usize(sizeof(T)))) }
 	unsafe {
 		*saved_cb = v_cb
 	}
@@ -113,5 +113,3 @@ fn (ctx Context) variadic_v_scalar_args() ![]vphp.VScalarValue {
 	}
 	return args
 }
-
-fn C.emalloc(size usize) voidptr

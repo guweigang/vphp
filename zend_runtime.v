@@ -2,6 +2,17 @@ module vphp
 
 import vphp.zend as _
 
+fn C.emalloc(size usize) voidptr
+fn C.efree(ptr voidptr)
+
+fn zend_emalloc(size usize) voidptr {
+	return C.emalloc(size)
+}
+
+fn zend_efree(ptr voidptr) {
+	C.efree(ptr)
+}
+
 fn zend_throw_exception(msg string, code int) {
 	unsafe { C.vphp_throw(&char(msg.str), code) }
 }
