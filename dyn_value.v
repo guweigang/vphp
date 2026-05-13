@@ -676,23 +676,13 @@ pub fn (v DynValue) to_zval(mut out ZVal) ! {
 		.list_ {
 			out.array_init()
 			for item in v.list {
-				mut sub_raw := C.zval{}
-				mut sub := ZVal{
-					raw: &sub_raw
-				}
-				item.to_zval(mut sub)!
-				out.add_next_val(sub)
+				out.add_next_dyn_value(item)!
 			}
 		}
 		.map_ {
 			out.array_init()
 			for k, item in v.map {
-				mut sub_raw := C.zval{}
-				mut sub := ZVal{
-					raw: &sub_raw
-				}
-				item.to_zval(mut sub)!
-				out.add_assoc_zval(k, sub)
+				out.add_assoc_dyn_value(k, item)!
 			}
 		}
 		.object_ref {

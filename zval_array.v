@@ -30,6 +30,15 @@ pub fn (v ZVal) add_assoc_zval(key string, val ZVal) {
 	unsafe { C.vphp_array_add_assoc_zval(v.raw, &char(key.str), val.raw) }
 }
 
+fn (v ZVal) add_assoc_dyn_value(key string, val DynValue) ! {
+	mut sub_raw := C.zval{}
+	mut sub := ZVal{
+		raw: &sub_raw
+	}
+	val.to_zval(mut sub)!
+	v.add_assoc_zval(key, sub)
+}
+
 pub fn (v ZVal) push_string(s string) {
 	unsafe { C.vphp_array_push_stringl(v.raw, &char(s.str), s.len) }
 }
@@ -51,6 +60,15 @@ pub fn (v ZVal) push_bool(val bool) {
 
 pub fn (v ZVal) add_next_val(val ZVal) {
 	unsafe { C.vphp_array_add_next_zval(v.raw, val.raw) }
+}
+
+fn (v ZVal) add_next_dyn_value(val DynValue) ! {
+	mut sub_raw := C.zval{}
+	mut sub := ZVal{
+		raw: &sub_raw
+	}
+	val.to_zval(mut sub)!
+	v.add_next_val(sub)
 }
 
 // 获取数组长度
