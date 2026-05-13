@@ -43,7 +43,7 @@ pub fn (ret PhpReturn) resource(ptr voidptr, label string) {
 }
 
 pub fn (ret PhpReturn) object(v_ptr voidptr, ce voidptr) {
-	C.vphp_return_obj(ret.raw, v_ptr, ce)
+	return_unbound_object_to(ret.raw, v_ptr, ce)
 }
 
 pub fn (ret PhpReturn) bound_object(v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {

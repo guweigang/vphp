@@ -60,6 +60,14 @@ pub fn return_bound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr, handlers 
 	PhpReturn.new(ret).bound_object(v_ptr, ce, handlers, ownership)
 }
 
+pub fn return_unbound_object_raw(ret &C.zval, v_ptr voidptr, ce voidptr) {
+	return_unbound_object_to(ret, v_ptr, ce)
+}
+
+fn return_unbound_object_to(ret &C.zval, v_ptr voidptr, ce voidptr) {
+	C.vphp_return_obj(ret, v_ptr, ce)
+}
+
 fn return_bound_object_to(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
 	match ownership {
 		.borrowed {
