@@ -42,3 +42,31 @@ fn zend_output_write(msg string) {
 		C.vphp_output_write(&char(msg.str), msg.len)
 	}
 }
+
+fn zend_framework_init(module_number int) {
+	unsafe {
+		C.vphp_init_registry()
+		C.vphp_init_resource_system(module_number)
+		C.vphp_install_runtime_binding_hooks()
+	}
+}
+
+fn zend_uninstall_runtime_binding_hooks() {
+	C.vphp_uninstall_runtime_binding_hooks()
+}
+
+fn zend_autorelease_shutdown() {
+	C.vphp_autorelease_shutdown()
+}
+
+fn zend_shutdown_registry() {
+	C.vphp_shutdown_registry()
+}
+
+fn zend_request_startup() {
+	C.vphp_request_startup()
+}
+
+fn zend_request_shutdown() {
+	C.vphp_request_shutdown()
+}

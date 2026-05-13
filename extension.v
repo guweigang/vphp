@@ -14,7 +14,8 @@ pub:
 	ini_entries map[string]string
 }
 
-@[export: 'vphp_framework_init'] // 框架核心入口
+// 框架核心入口
+@[export: 'vphp_framework_init']
 pub fn vphp_framework_init(module_number int) {
 	// ... 目前占位
 	// 自动初始化资源系统
@@ -24,11 +25,7 @@ pub fn vphp_framework_init(module_number int) {
 }
 
 pub fn init_framework(module_number int) {
-	unsafe {
-		C.vphp_init_registry()
-		C.vphp_init_resource_system(module_number)
-		C.vphp_install_runtime_binding_hooks()
-	}
+	zend_framework_init(module_number)
 }
 
 fn framework_debug_enabled() bool {
@@ -58,30 +55,24 @@ fn framework_debug_log(message string) {
 @[export: 'vphp_framework_shutdown']
 pub fn vphp_framework_shutdown() {
 	framework_debug_log('framework_shutdown enter')
-	unsafe {
-		framework_debug_log('framework_shutdown uninstall_runtime_hooks begin')
-		C.vphp_uninstall_runtime_binding_hooks()
-		framework_debug_log('framework_shutdown uninstall_runtime_hooks done')
-		framework_debug_log('framework_shutdown autorelease_shutdown begin')
-		C.vphp_autorelease_shutdown()
-		framework_debug_log('framework_shutdown autorelease_shutdown done')
-		framework_debug_log('framework_shutdown shutdown_registry begin')
-		C.vphp_shutdown_registry()
-		framework_debug_log('framework_shutdown shutdown_registry done')
-	}
+	framework_debug_log('framework_shutdown uninstall_runtime_hooks begin')
+	zend_uninstall_runtime_binding_hooks()
+	framework_debug_log('framework_shutdown uninstall_runtime_hooks done')
+	framework_debug_log('framework_shutdown autorelease_shutdown begin')
+	zend_autorelease_shutdown()
+	framework_debug_log('framework_shutdown autorelease_shutdown done')
+	framework_debug_log('framework_shutdown shutdown_registry begin')
+	zend_shutdown_registry()
+	framework_debug_log('framework_shutdown shutdown_registry done')
 	framework_debug_log('framework_shutdown exit')
 }
 
 @[export: 'vphp_framework_request_startup']
 pub fn vphp_framework_request_startup() {
-	unsafe {
-		C.vphp_request_startup()
-	}
+	zend_request_startup()
 }
 
 @[export: 'vphp_framework_request_shutdown']
 pub fn vphp_framework_request_shutdown() {
-	unsafe {
-		C.vphp_request_shutdown()
-	}
+	zend_request_shutdown()
 }
