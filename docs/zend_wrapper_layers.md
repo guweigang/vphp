@@ -561,7 +561,9 @@ methods. DynValue array/list encoding and `PhpReturn.list(...)` struct encoding
 now keep their temporary stack `C.zval{}` values inside `ZVal` helpers, instead
 of leaking scratch-zval construction into semantic wrapper code. Generic object
 payload release now calls a private V-runtime free helper instead of directly
-calling `C.builtin___v_free(...)`.
+calling `C.builtin___v_free(...)`. ZVal object initialization and scalar
+property insertion now delegate through private Zend object helpers instead of
+calling Zend property APIs directly from `zval_object_props.v`.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
