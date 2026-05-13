@@ -570,7 +570,10 @@ through private Zend execute-data helpers for argument count, argument lookup,
 active class lookup, and `$this` object lookup. Compiler-generated static
 property sync now uses `ctx.active_class_entry()` and `ZendClassEntry` receiver
 methods directly; the old global `set_static_prop(...)` / `get_static_prop(...)`
-voidptr helpers have been removed.
+voidptr helpers have been removed. ZVal array and scalar receiver methods now
+delegate through private `zend_array_*` and `zend_zval_*` helpers, keeping
+bridge calls grouped inside the low-level wrapper files instead of spread across
+each public receiver method.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
