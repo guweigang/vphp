@@ -98,7 +98,7 @@ pub fn (v ZVal) to_object[T]() ?&T {
 	if !v.is_object() {
 		return none
 	}
-	ptr := C.vphp_get_v_ptr_from_zval(v.raw)
+	ptr := ZendObject.from_zval(v).bound_v_ptr()
 	if ptr == 0 {
 		return none
 	}
