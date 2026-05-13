@@ -319,6 +319,7 @@ pub fn (mut v DynValue) release() {
 		}
 		else {}
 	}
+
 	v.type = .null_
 }
 
@@ -691,7 +692,7 @@ pub fn (v DynValue) to_zval(mut out ZVal) ! {
 					raw: &sub_raw
 				}
 				item.to_zval(mut sub)!
-				C.vphp_array_add_assoc_zval(out.raw, &char(k.str), sub.raw)
+				out.add_assoc_zval(k, sub)
 			}
 		}
 		.object_ref {
@@ -734,6 +735,7 @@ fn (v DynValue) runtime_ref_to_zval(mut out ZVal) ! {
 					return error('persistent runtime ref is no longer valid')
 				}
 			}
+
 			defer {
 				temp.release()
 			}

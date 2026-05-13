@@ -1,8 +1,16 @@
 module vphp
 
 // -------- 对象属性操作 --------
+pub fn (v ZVal) object_init() {
+	unsafe { C.vphp_object_init(v.raw) }
+}
+
 pub fn (v ZVal) add_property_string(key string, val string) {
 	unsafe { C.add_property_stringl(v.raw, &char(key.str), &char(val.str), val.len) }
+}
+
+pub fn (v ZVal) update_property_string(key string, val string) {
+	unsafe { C.vphp_update_property_string(v.raw, &char(key.str), key.len, &char(val.str)) }
 }
 
 pub fn (v ZVal) add_property_long(key string, val i64) {

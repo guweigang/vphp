@@ -533,6 +533,10 @@ ownership-parametrized helpers. Generic property handlers use `PhpReturn` and
 `ZVal.from_raw(...)` instead of older raw helper forms. `PhpReturn` and object
 property convenience paths also prefer `ZVal.from_raw(...)` and scalar receiver
 methods over direct raw field construction where no ownership semantics change.
+Array/object write helpers such as associative zval insertion, next-value
+insertion, object initialization, and string property updates are also exposed as
+`ZVal` receiver methods, so semantic wrappers can avoid direct `C.vphp_array_*`
+and `C.vphp_object_*` calls for those paths.
 The broader layer migration is still not implemented and should continue
 incrementally.
 

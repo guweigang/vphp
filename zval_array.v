@@ -26,6 +26,10 @@ pub fn (v ZVal) add_assoc_bool(key string, val bool) {
 	}
 }
 
+pub fn (v ZVal) add_assoc_zval(key string, val ZVal) {
+	unsafe { C.vphp_array_add_assoc_zval(v.raw, &char(key.str), val.raw) }
+}
+
 pub fn (v ZVal) push_string(s string) {
 	unsafe { C.vphp_array_push_stringl(v.raw, &char(s.str), s.len) }
 }

@@ -208,7 +208,7 @@ pub fn (ret PhpReturn) list[T](list []T) {
 					sub.add_assoc_bool(key, item.$(field.name))
 				}
 			}
-			C.vphp_array_add_next_zval(out.raw, sub.raw)
+			out.add_next_val(sub)
 		}
 	}
 }
@@ -230,11 +230,10 @@ pub fn (ret PhpReturn) map_value[T](m map[string]T) {
 }
 
 pub fn (ret PhpReturn) object_props(props map[string]string) {
-	unsafe {
-		C.vphp_object_init(ret.raw)
-		for k, v in props {
-			C.vphp_update_property_string(ret.raw, &char(k.str), k.len, &char(v.str))
-		}
+	out := ZVal.from_raw(ret.raw)
+	out.object_init()
+	for k, v in props {
+		out.update_property_string(k, v)
 	}
 }
 

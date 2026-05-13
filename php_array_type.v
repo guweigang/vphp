@@ -99,11 +99,11 @@ pub fn (a PhpArray) to_dyn_value() !DynValue {
 
 pub fn (a PhpArray) assoc(key string, value PhpArgInput) {
 	raw := value.to_zval()
-	unsafe { C.vphp_array_add_assoc_zval(a.to_zval().raw, &char(key.str), raw.raw) }
+	a.to_zval().add_assoc_zval(key, raw)
 }
 
 pub fn (a PhpArray) assoc_zval(key string, value ZVal) {
-	unsafe { C.vphp_array_add_assoc_zval(a.to_zval().raw, &char(key.str), value.raw) }
+	a.to_zval().add_assoc_zval(key, value)
 }
 
 pub fn (a PhpArray) set(key string, value PhpArgInput) {

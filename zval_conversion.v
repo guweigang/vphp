@@ -110,7 +110,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 			for entry in item {
 				sub.push_string(entry)
 			}
-			C.vphp_array_add_assoc_zval(v.raw, &char(key.str), sub.raw)
+			v.add_assoc_zval(key, sub)
 		}
 		return
 	}
@@ -145,7 +145,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 	$if T is map[string]ZVal {
 		v.array_init()
 		for key, item in value {
-			C.vphp_array_add_assoc_zval(v.raw, &char(key.str), item.raw)
+			v.add_assoc_zval(key, item)
 		}
 		return
 	}
