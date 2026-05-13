@@ -13,7 +13,7 @@ fn call_with_zval_args(args []ZVal, ownership OwnershipKind, run fn (&C.zval, in
 		}
 		res := run(retval, args.len, p_args)
 		if res == -1 {
-			C.vphp_release_zval(retval)
+			zend_release_zval(retval)
 			return invalid_zval()
 		}
 		return adopt_raw_with_ownership(retval, ownership)

@@ -42,6 +42,18 @@ fn C.vphp_release_zval(z &C.zval)
 fn C.vphp_release_zval_persistent(z &C.zval)
 fn C.vphp_disown_zval(z &C.zval)
 
+fn zend_release_zval(z &C.zval) {
+	C.vphp_release_zval(z)
+}
+
+fn zend_release_persistent_zval(z &C.zval) {
+	C.vphp_release_zval_persistent(z)
+}
+
+fn zend_disown_zval(z &C.zval) {
+	C.vphp_disown_zval(z)
+}
+
 fn invalid_zval() ZVal {
 	return unsafe {
 		ZVal{
@@ -101,13 +113,13 @@ fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	if res == 0 {
-		C.vphp_release_zval(rv)
+		zend_release_zval(rv)
 		return invalid_zval()
 	}
 	if usize(res) == usize(rv) {
 		return adopt_raw_with_ownership(rv, ownership)
 	}
-	C.vphp_release_zval(rv)
+	zend_release_zval(rv)
 	if ownership == .borrowed {
 		return unsafe {
 			ZVal{
