@@ -1,7 +1,5 @@
 module vphp
 
-import vphp.zend as _
-
 pub struct PhpIncludeFile {
 	path string
 }
@@ -17,16 +15,7 @@ pub fn (file PhpIncludeFile) path() string {
 }
 
 fn (file PhpIncludeFile) load_with_once_flag(once bool) ZVal {
-	unsafe {
-		retval := C.vphp_new_zval()
-		once_flag := if once { 1 } else { 0 }
-		res := C.vphp_include_file(&char(file.path.str), file.path.len, retval, once_flag)
-		if res == -1 {
-			C.vphp_release_zval(retval)
-			return invalid_zval()
-		}
-		return adopt_raw_with_ownership(retval, .owned_request)
-	}
+	return zend_include_file(file.path, once)
 }
 
 pub fn (file PhpIncludeFile) load() ZVal {
