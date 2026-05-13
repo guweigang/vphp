@@ -87,12 +87,3 @@ pub fn (ctx Context) return_object(props map[string]string) {
 pub fn (ctx Context) return_struct[T](s T) {
 	ctx.return().struct_value[T](s)
 }
-
-pub fn return_val_raw[T](ret &C.zval, val T) {
-	mut out := ZVal.from_raw(ret)
-	out.from_v[T](val) or { out.set_null() }
-}
-
-pub fn return_zval_raw(ret &C.zval, val ZVal) {
-	ZVal.from_raw(ret).copy_from(val)
-}

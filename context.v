@@ -28,16 +28,6 @@ pub fn Context.from_raw(ex voidptr, ret &C.zval) Context {
 	}
 }
 
-// 创建 Context 实例
-pub fn Context.new(ex voidptr, ret &C.zval) Context {
-	return Context.from_raw(ex, ret)
-}
-
-pub fn new_context(ex voidptr, ret &C.zval) Context {
-	// Backward-compat alias; prefer Context.from_raw(...) or Context.from_entry(...).
-	return Context.from_raw(ex, ret)
-}
-
 pub fn (ctx Context) arg_at(index int) PhpArg {
 	return ctx.arg_named(index, '')
 }
