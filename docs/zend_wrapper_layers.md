@@ -565,7 +565,9 @@ calling `C.builtin___v_free(...)`. ZVal object initialization and scalar
 property insertion now delegate through private Zend object helpers instead of
 calling Zend property APIs directly from `zval_object_props.v`. Closure creation
 helpers now accept `PhpReturn`, so closure binding code no longer has to pass
-`ctx.return().raw_zval()` down manually.
+`ctx.return().raw_zval()` down manually. `ZExData` receiver methods now delegate
+through private Zend execute-data helpers for argument count, argument lookup,
+active class lookup, and `$this` object lookup.
 The broader layer migration is still not implemented and should continue
 incrementally.
 

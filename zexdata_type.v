@@ -26,8 +26,28 @@ pub fn (ex ZExData) raw_ex() &C.zend_execute_data {
 	return ex.raw
 }
 
-pub fn (ex ZExData) num_args() int {
+fn zend_execute_num_args(ex ZExData) int {
 	return int(C.vphp_get_num_args(ex.raw))
+}
+
+fn zend_execute_arg(ex ZExData, index int) &C.zval {
+	return C.vphp_get_arg_ptr(ex.raw, u32(index + 1))
+}
+
+fn zend_execute_active_class(ex ZExData) ZendClassEntry {
+	return ZendClassEntry.from_raw(C.vphp_get_active_ce(ex.raw))
+}
+
+fn zend_execute_this_object(ex ZExData) ZendObject {
+	obj_raw := C.vphp_get_this_object(ex.raw)
+	if obj_raw == 0 {
+		return ZendObject.invalid()
+	}
+	return ZendObject.from_ptr(obj_raw)
+}
+
+pub fn (ex ZExData) num_args() int {
+	return zend_execute_num_args(ex)
 }
 
 pub fn (ex ZExData) arg(index int) ZVal {
@@ -38,7 +58,7 @@ pub fn (ex ZExData) arg_raw(index int) ZVal {
 	if index < 0 || index >= ex.num_args() {
 		return invalid_zval()
 	}
-	raw := C.vphp_get_arg_ptr(ex.raw, u32(index + 1))
+	raw := zend_execute_arg(ex, index)
 	if raw == 0 {
 		return invalid_zval()
 	}
@@ -111,7 +131,7 @@ pub fn (ex ZExData) args() []ZVal {
 }
 
 pub fn (ex ZExData) active_class_entry() ZendClassEntry {
-	return ZendClassEntry.from_raw(C.vphp_get_active_ce(ex.raw))
+	return zend_execute_active_class(ex)
 }
 
 pub fn (ex ZExData) active_ce() voidptr {
@@ -119,11 +139,7 @@ pub fn (ex ZExData) active_ce() voidptr {
 }
 
 pub fn (ex ZExData) this_zend_object() ZendObject {
-	obj_raw := C.vphp_get_this_object(ex.raw)
-	if obj_raw == 0 {
-		return ZendObject.invalid()
-	}
-	return ZendObject.from_ptr(obj_raw)
+	return zend_execute_this_object(ex)
 }
 
 pub fn (ex ZExData) this_object() voidptr {
