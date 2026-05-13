@@ -1,7 +1,5 @@
 module vphp
 
-import vphp.zend as _
-
 pub struct PhpReference {
 mut:
 	value PhpValueZBox
@@ -56,7 +54,9 @@ pub fn (r PhpReference) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (r PhpReference) to_request_owned() PhpReference {
-	return PhpReference.from_request_owned_zbox(r.value.to_request_owned_zbox()) or { r.to_borrowed() }
+	return PhpReference.from_request_owned_zbox(r.value.to_request_owned_zbox()) or {
+		r.to_borrowed()
+	}
 }
 
 pub fn (r PhpReference) to_request_owned_zbox() RequestOwnedZBox {
@@ -82,17 +82,15 @@ pub fn (mut r PhpReference) release() {
 }
 
 pub fn (r PhpReference) deref() PhpValue {
-	raw := C.vphp_reference_value(r.to_zval().raw)
-	if raw == 0 {
+	value := r.to_zval().reference_value()
+	if !value.is_valid() {
 		return PhpValue.from_zval(invalid_zval())
 	}
-	return PhpValue.from_zval(ZVal{
-		raw: raw
-	})
+	return PhpValue.from_zval(value)
 }
 
 pub fn (r PhpReference) set(value ZVal) {
-	C.vphp_reference_set_zval(r.to_zval().raw, value.raw)
+	r.to_zval().set_reference_value(value)
 }
 
 pub fn (r PhpReference) set_value(value PhpValue) {
