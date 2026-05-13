@@ -2,6 +2,10 @@ module vphp
 
 fn C.builtin___v_free(ptr voidptr)
 
+fn v_runtime_free(ptr voidptr) {
+	C.builtin___v_free(ptr)
+}
+
 // Preserve V default field initialization for generated PHP classes.
 pub fn generic_new_raw[T]() voidptr {
 	unsafe {
@@ -103,7 +107,7 @@ pub fn generic_free_raw[T](ptr voidptr) {
 			}
 		}
 		$if nongc ? {
-			C.builtin___v_free(ptr)
+			v_runtime_free(ptr)
 		}
 	}
 }

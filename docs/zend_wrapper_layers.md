@@ -246,6 +246,14 @@ ret.raw_zval()
 
 But normal code should not need those escape hatches.
 
+`PhpReturn` is a special boundary wrapper: it represents Zend's callback
+`return_value` slot. It may store a raw `&C.zval` internally, but normal callers
+should write through receiver methods such as `ret.string_value(...)`,
+`ret.value(...)`, `ret.zval(...)`, `ret.owned_object(...)`, or
+`ctx.return().v(result)`. `ret.raw_zval()` is only for bridge code that must pass
+the return slot to another Zend-facing helper, such as closure creation or
+object binding.
+
 ## Compiler Projection
 
 The compiler has its own internal layers, but generated code should still follow
@@ -546,7 +554,14 @@ Direct PHP allocator usage for saved closures and task handles is now routed
 through private `zend_emalloc` / `zend_efree` helpers. ZVal release and disown
 paths now use private `zend_release_zval*` / `zend_disown_zval` helpers, so
 failure cleanup in include/call/read helpers no longer calls the release C API
-directly.
+directly. ZVal allocation paths now use private `zend_new_zval*` helpers.
+`RetainedObject` now stores a `ZendObject` wrapper instead of a raw
+`&C.zend_object`, keeping refcount operations behind `ZendObject` receiver
+methods. DynValue array/list encoding and `PhpReturn.list(...)` struct encoding
+now keep their temporary stack `C.zval{}` values inside `ZVal` helpers, instead
+of leaking scratch-zval construction into semantic wrapper code. Generic object
+payload release now calls a private V-runtime free helper instead of directly
+calling `C.builtin___v_free(...)`.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
