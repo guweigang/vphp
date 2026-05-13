@@ -215,7 +215,7 @@ pub fn task_wait_box(ptr voidptr) RequestOwnedZBox {
 
 // 暴露给 PHP：获取所有已注册的任务名称
 pub fn task_list(ctx Context) {
-	ctx.return_val(task_names())
+	ctx.return().v[[]string](task_names())
 }
 
 // 内部实现：Spawn 逻辑
@@ -230,7 +230,7 @@ pub fn task_spawn(ctx Context) {
 	}
 
 	unsafe {
-		ctx.return_res(task_ref, 'v_task')
+		ctx.return().resource(task_ref, 'v_task')
 	}
 }
 
@@ -243,6 +243,6 @@ pub fn task_wait(ctx Context) {
 		if ptr == nil {
 			return
 		}
-		ctx.return_zval(task_wait_box(ptr).to_zval())
+		ctx.return().request_owned(task_wait_box(ptr))
 	}
 }

@@ -587,7 +587,9 @@ through narrower private helpers, keeping each public wrapper method focused on
 V-facing behavior. Unused global object-binding aliases were removed in favor
 of `ZVal` receiver methods, and `ZendObject` receiver methods now delegate
 refcount, handler binding, wrapper lookup, and existing-object wrapping through
-private Zend object helpers.
+private Zend object helpers. Runtime task entrypoints now write returns through
+`ctx.return()` / `PhpReturn` receiver methods instead of the older
+`ctx.return_*` convenience API.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
