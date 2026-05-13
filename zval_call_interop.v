@@ -25,8 +25,7 @@ fn call_method_zval(receiver ZVal, method string, args []ZVal, ownership Ownersh
 		return invalid_zval()
 	}
 	return call_with_zval_args(args, ownership, fn [receiver, method] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_method(receiver.raw, &char(method.str), method.len, retval, count,
-			params)
+		return zend_call_method(receiver, method, retval, count, params)
 	})
 }
 
@@ -35,7 +34,7 @@ fn call_callable_zval(callable ZVal, args []ZVal, ownership OwnershipKind) ZVal 
 		return invalid_zval()
 	}
 	return call_with_zval_args(args, ownership, fn [callable] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_callable(callable.raw, retval, count, params)
+		return zend_call_callable(callable, retval, count, params)
 	})
 }
 
