@@ -60,6 +60,7 @@ void vphp_return_borrowed_object(zval *return_value, void *v_ptr,
                                  zend_class_entry *ce,
                                  vphp_class_handlers *h);
 void vphp_wrap_existing_object(zval *return_value, zend_object *obj);
+void *vphp_allocate_contiguous_object(zend_class_entry *ce, size_t v_size);
 
 // 对象与类管理
 zend_object *vphp_create_object_handler(zend_class_entry *ce);

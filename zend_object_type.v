@@ -2,6 +2,8 @@ module vphp
 
 import vphp.zend as _
 
+fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
+
 pub struct ZendObject {
 	raw &C.zend_object
 }
@@ -28,6 +30,10 @@ pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
 			raw: &C.zend_object(ptr)
 		}
 	}
+}
+
+fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {
+	return C.vphp_allocate_contiguous_object(ce, v_size)
 }
 
 pub fn ZendObject.current() ZendObject {

@@ -134,6 +134,7 @@ pub fn C.vphp_return_bound_object(return_value &C.zval, v_ptr voidptr, ce &C.zen
 pub fn C.vphp_return_owned_object(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry, handlers voidptr)
 pub fn C.vphp_return_borrowed_object(return_value &C.zval, v_ptr voidptr, ce &C.zend_class_entry, handlers voidptr)
 pub fn C.vphp_wrap_existing_object(return_value &C.zval, obj &C.zend_object)
+pub fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
 pub fn C.vphp_bind_handlers(obj &C.zend_object, handlers voidptr)
 pub fn C.vphp_bind_handlers_with_ownership(obj &C.zend_object, handlers voidptr, owns_v_ptr int)
 pub fn C.vphp_bind_owned_handlers(obj &C.zend_object, handlers voidptr)

@@ -1,6 +1,5 @@
 module vphp
 
-fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
 fn C.builtin___v_free(ptr voidptr)
 
 // Preserve V default field initialization for generated PHP classes.
@@ -110,5 +109,5 @@ pub fn generic_free_raw[T](ptr voidptr) {
 }
 
 pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
-	return unsafe { C.vphp_allocate_contiguous_object(ce, sizeof(T)) }
+	return zend_allocate_contiguous_object(ce, sizeof(T))
 }

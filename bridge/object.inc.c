@@ -280,6 +280,15 @@ void vphp_wrap_existing_object(zval *return_value, zend_object *obj) {
   ZVAL_OBJ(return_value, obj);
 }
 
+void *vphp_allocate_contiguous_object(zend_class_entry *ce, size_t v_size) {
+  (void)ce;
+  if (v_size == 0) {
+    return NULL;
+  }
+  /* Matches generic_free_raw's C.builtin___v_free release path. */
+  return calloc(1, v_size);
+}
+
 void vphp_object_addref(zend_object *obj) {
   if (obj == NULL) {
     return;
