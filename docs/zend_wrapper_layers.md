@@ -567,7 +567,10 @@ calling Zend property APIs directly from `zval_object_props.v`. Closure creation
 helpers now accept `PhpReturn`, so closure binding code no longer has to pass
 `ctx.return().raw_zval()` down manually. `ZExData` receiver methods now delegate
 through private Zend execute-data helpers for argument count, argument lookup,
-active class lookup, and `$this` object lookup.
+active class lookup, and `$this` object lookup. Compiler-generated static
+property sync now uses `ctx.active_class_entry()` and `ZendClassEntry` receiver
+methods directly; the old global `set_static_prop(...)` / `get_static_prop(...)`
+voidptr helpers have been removed.
 The broader layer migration is still not implemented and should continue
 incrementally.
 

@@ -146,22 +146,22 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 		// 生成同步器：利用 ctx 自动识别 CE
 
 		out << 'pub fn ${r.name}.sync_statics_to_php(ctx vphp.Context) {'
-		out << '    ce := ctx.get_ce()'
-		out << '    if ce == voidptr(0) { return }'
+		out << '    ce := ctx.active_class_entry()'
+		out << '    if !ce.is_valid() { return }'
 		for prop in r.properties {
 			if prop.is_static {
-				out << '    vphp.set_static_prop(ce, "${prop.name}", ${r.shadow_static_name}.${prop.name})'
+				out << '    ce.set_static_prop("${prop.name}", ${r.shadow_static_name}.${prop.name})'
 			}
 		}
 		out << '}'
 
 		out << 'pub fn ${r.name}.sync_statics_from_php(ctx vphp.Context) {'
-		out << '    ce := ctx.get_ce()'
-		out << '    if ce == voidptr(0) { return }'
+		out << '    ce := ctx.active_class_entry()'
+		out << '    if !ce.is_valid() { return }'
 		out << '    mut s := ${r.name}.statics()'
 		for prop in r.properties {
 			if prop.is_static {
-				out << '    s.${prop.name} = vphp.get_static_prop[${prop.v_type}](ce, "${prop.name}")'
+				out << '    s.${prop.name} = ce.static_prop[${prop.v_type}]("${prop.name}")'
 			}
 		}
 		out << '}'

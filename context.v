@@ -70,6 +70,10 @@ pub fn (ctx Context) num_args() int {
 	return ctx.ex.num_args()
 }
 
+pub fn (ctx Context) active_class_entry() ZendClassEntry {
+	return ctx.ex.active_class_entry()
+}
+
 pub fn (ctx Context) get_ce() voidptr {
 	return ctx.ex.active_ce()
 }
