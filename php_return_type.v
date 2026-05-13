@@ -189,22 +189,7 @@ pub fn (ret PhpReturn) list[T](list []T) {
 		} $else $if T is int || T is i64 {
 			out.push_long(i64(item))
 		} $else {
-			mut sub_raw := C.zval{}
-			mut sub := ZVal.from_raw(&sub_raw)
-			sub.array_init()
-			$for field in T.fields {
-				key := field.name
-				$if field.typ is string {
-					sub.add_assoc_string(key, item.$(field.name))
-				} $else $if field.typ is f64 {
-					sub.add_assoc_double(key, item.$(field.name))
-				} $else $if field.typ is int || field.typ is i64 {
-					sub.add_assoc_long(key, i64(item.$(field.name)))
-				} $else $if field.typ is bool {
-					sub.add_assoc_bool(key, item.$(field.name))
-				}
-			}
-			out.add_next_val(sub)
+			out.push_struct(item)
 		}
 	}
 }

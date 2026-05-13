@@ -144,6 +144,25 @@ pub fn (v ZVal) from_v[T](value T) ! {
 	return error('unsupported from_v conversion for source type')
 }
 
+fn (v ZVal) push_struct[T](item T) {
+	mut sub_raw := C.zval{}
+	mut sub := ZVal.from_raw(&sub_raw)
+	sub.array_init()
+	$for field in T.fields {
+		key := field.name
+		$if field.typ is string {
+			sub.add_assoc_string(key, item.$(field.name))
+		} $else $if field.typ is f64 {
+			sub.add_assoc_double(key, item.$(field.name))
+		} $else $if field.typ is int || field.typ is i64 {
+			sub.add_assoc_long(key, i64(item.$(field.name)))
+		} $else $if field.typ is bool {
+			sub.add_assoc_bool(key, item.$(field.name))
+		}
+	}
+	v.add_next_val(sub)
+}
+
 // 便捷工厂：从 V 类型直接创建 Zend Value 包装
 pub fn new_zval_from[T](value T) !ZVal {
 	mut out := ZVal{
