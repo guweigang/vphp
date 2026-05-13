@@ -224,3 +224,38 @@ pub fn (obj ZendObject) unset_prop(name string) {
 	}
 	C.vphp_unset_property_compat(obj.raw, &char(name.str), name.len)
 }
+
+fn zend_object_class_name(v ZVal) string {
+	if v.raw == 0 {
+		return ''
+	}
+	unsafe {
+		mut len := 0
+		name := C.vphp_get_object_class_name(v.raw, &len)
+		if name == 0 || len <= 0 {
+			return ''
+		}
+		return name.vstring_with_len(len).clone()
+	}
+}
+
+fn zend_object_parent_class_name(v ZVal) string {
+	if v.raw == 0 {
+		return ''
+	}
+	unsafe {
+		mut len := 0
+		name := C.vphp_get_parent_class_name(v.raw, &len)
+		if name == 0 || len <= 0 {
+			return ''
+		}
+		return name.vstring_with_len(len).clone()
+	}
+}
+
+fn zend_object_class_is_internal(v ZVal) bool {
+	if v.raw == 0 {
+		return false
+	}
+	return C.vphp_class_is_internal(v.raw) == 1
+}

@@ -11,14 +11,7 @@ pub fn (v ZVal) class_name() string {
 	if !v.is_object() {
 		return ''
 	}
-	unsafe {
-		mut len := 0
-		name := C.vphp_get_object_class_name(v.raw, &len)
-		if name == 0 || len <= 0 {
-			return ''
-		}
-		return name.vstring_with_len(len).clone()
-	}
+	return zend_object_class_name(v)
 }
 
 pub fn (v ZVal) namespace_name() string {
@@ -41,21 +34,14 @@ pub fn (v ZVal) parent_class_name() string {
 	if v.raw == 0 {
 		return ''
 	}
-	unsafe {
-		mut len := 0
-		name := C.vphp_get_parent_class_name(v.raw, &len)
-		if name == 0 || len <= 0 {
-			return ''
-		}
-		return name.vstring_with_len(len).clone()
-	}
+	return zend_object_parent_class_name(v)
 }
 
 pub fn (v ZVal) is_internal_class() bool {
 	if v.raw == 0 {
 		return false
 	}
-	return C.vphp_class_is_internal(v.raw) == 1
+	return zend_object_class_is_internal(v)
 }
 
 pub fn (v ZVal) is_user_class() bool {
