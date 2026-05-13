@@ -6,7 +6,7 @@ pub struct PhpArgMeta {
 pub:
 	index      int
 	name       string
-	attributes []PhpArgAttribute
+	attributes []PhpAttribute
 }
 
 pub struct PhpArg {
@@ -50,6 +50,22 @@ pub fn PhpArg.from_meta_zval(meta PhpArgMeta, z ZVal) PhpArg {
 	return PhpArg.from_meta(meta, PhpValue.from_zval(val))
 }
 
+pub fn (meta PhpArgMeta) with_attribute_target(target PhpAttributeTarget) PhpArgMeta {
+	mut attrs := []PhpAttribute{cap: meta.attributes.len}
+	for attr in meta.attributes {
+		if attr.target == .unknown {
+			attrs << attr.for_target(target)
+		} else {
+			attrs << attr
+		}
+	}
+	return PhpArgMeta{
+		index:      meta.index
+		name:       meta.name
+		attributes: attrs
+	}
+}
+
 pub fn (arg PhpArg) index() int {
 	if meta := arg.meta {
 		return meta.index
@@ -64,14 +80,14 @@ pub fn (arg PhpArg) name() string {
 	return ''
 }
 
-pub fn (arg PhpArg) attributes() []PhpArgAttribute {
+pub fn (arg PhpArg) attributes() []PhpAttribute {
 	if meta := arg.meta {
 		return meta.attributes
 	}
 	return []
 }
 
-pub fn (arg PhpArg) attr(name string) ?PhpArgAttribute {
+pub fn (arg PhpArg) attr(name string) ?PhpAttribute {
 	for attr in arg.attributes() {
 		if attr.name == name {
 			return attr

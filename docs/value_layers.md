@@ -179,6 +179,12 @@ It carries:
 - `value PhpValue`
 - optional `PhpArgMeta` with `index`, `name`, and `attributes`
 
+`PhpAttribute` is intentionally generic. `PhpArgMeta.attributes` is only one
+mount point; class, function, method, property, or return metadata can reuse the
+same `[]PhpAttribute` model when those runtime meta wrappers grow attributes.
+`PhpAttribute.target` records the current mount point. `ctx.args_with_meta(...)`
+normalizes missing attribute targets to `.parameter`.
+
 Use it when the function needs dynamic access to the original PHP argument list:
 
 ```v
@@ -196,8 +202,8 @@ args_with_decl := ctx.args_with_meta([
 		index: 0
 		name:  'query'
 		attributes: [
-			vphp.PhpArgAttribute.named('FromQuery').string('q'),
-			vphp.PhpArgAttribute.named('Range').int(1).int(100),
+			vphp.PhpAttribute.named('FromQuery').string('q'),
+			vphp.PhpAttribute.named('Range').int(1).int(100),
 		]
 	},
 ])
@@ -212,11 +218,11 @@ Parameter attributes are available through `PhpArg`:
 ```v
 query := args_with_decl.at(0)
 if from_query := query.attr('FromQuery') {
-	source := from_query.args[0].value
+	source := from_query.items[0].value
 }
 
 if query.has_attr('Range') {
-	// inspect query.attr('Range')!.args
+	// inspect query.attr('Range')!.items
 }
 ```
 

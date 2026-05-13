@@ -216,6 +216,7 @@ Typical concepts:
 - `PhpClass`
 - `PhpArgInput`
 - `PhpArg`
+- `PhpAttribute`
 - `PhpReturn`
 
 Typical APIs:
@@ -239,6 +240,184 @@ ret.raw_zval()
 ```
 
 But normal code should not need those escape hatches.
+
+## Compiler Projection
+
+The compiler has its own internal layers, but generated code should still follow
+the runtime wrapper layers above.
+
+The compiler question is slightly different:
+
+```text
+Which runtime layer should this generated code target?
+```
+
+That question matters more than whether a compiler file itself lives in
+`parser/`, `builder/`, or `v_glue/`.
+
+### Compiler Layer Map
+
+| Compiler area | Runtime layer it may target | Should know about Zend C? | Responsibility |
+| --- | --- | --- | --- |
+| `repr/` | none directly | no | Plain data that describes PHP/V export semantics |
+| `parser/` | none directly | no | Convert V AST and attributes into `repr` |
+| `linker/` | none directly | no | Resolve relationships between repr values |
+| `php_types/` | Layer 3 and Layer 4 facts | no C macros | Centralize type mapping, defaults, arg decoding, return facts |
+| `arg_binding.v` / `params_struct_binding.v` | Layer 3 or Layer 4 V glue | no direct Zend C | Generate parameter decoding through `Context`, `PhpArg`, semantic wrappers, and ZBox wrappers |
+| `return_binding.v` | Layer 3 or Layer 4 V glue | no direct Zend C | Generate return handling through `PhpReturn`, semantic wrappers, and explicit low-level escape hatches |
+| `class_method_binding.v` / `class_property_binding.v` | Layer 3 V glue, sometimes C-boundary bridge glue | limited | Generate object method/property glue; prefer wrappers where available |
+| `v_glue*.v` | Layer 3 or Layer 4 V glue | limited | Connect PHP-visible C wrappers to exported V functions/classes |
+| `builder/` | C implementation / Zend registration code | yes, as generated text | Generate arginfo, class/function tables, module registration, attributes, properties |
+| `c_emitter.v` / `c_templates.v` | C implementation / Zend registration code | yes, as generated text | Generate PHP wrapper bodies and C glue that cannot be expressed as reusable builder fragments |
+| `export.v` | assembly only | no new Zend logic | Assemble fragments into `php_bridge.c`, `php_bridge.h`, and `bridge.v` |
+
+### Repr And Parser
+
+`repr/` and `parser/` should describe intent, not Zend implementation.
+
+Good repr fields:
+
+- PHP name
+- V type
+- PHP type hint
+- optional/default metadata
+- attributes
+- visibility
+- return shape
+- ownership intent
+
+Poor repr fields:
+
+- `zend_long`
+- `ZEND_ACC_PUBLIC`
+- `ZEND_ARG_TYPE_INFO`
+- raw `&C.zval`
+- pre-rendered C lines
+
+Those details belong in `builder/`, `c_emitter.v`, or lower runtime wrappers.
+
+### php_types As Type Semantics
+
+`php_types/` should be the compiler's type facts center.
+
+It should answer questions like:
+
+- Which PHP type hint does this V type imply?
+- Is this argument optional?
+- Which `PhpArg` method decodes this semantic wrapper?
+- Which default literal is valid for this type?
+- Which return path should be used for this type?
+
+It should not render Zend C macros directly. For example, `php_types/` may say
+that `PhpArray` maps to PHP `array`, but `builder/arginfo.v` should decide how
+that becomes `ZEND_ARG_TYPE_INFO(...)`.
+
+### Builder And C Emitter
+
+`builder/` and `c_emitter.v` are allowed to generate Zend C API usage.
+
+They are the compiler-side equivalent of the C implementation and Zend
+registration boundary:
+
+```text
+builder/arginfo.v
+builder/class.v
+builder/function.v
+builder/module.v
+c_emitter.v
+c_templates.v
+```
+
+These files may generate:
+
+- `ZEND_BEGIN_ARG_*`
+- `ZEND_ARG_*`
+- `zend_register_internal_class`
+- `zend_declare_property_*`
+- `zend_add_class_attribute`
+- `zend_add_parameter_attribute`
+- `PHP_FUNCTION`
+- `PHP_METHOD`
+
+The important rule is that Zend C details should stay concentrated here. If
+multiple builder files need the same Zend pattern, prefer a small builder helper
+over duplicating generated C strings.
+
+### V Glue
+
+Generated `bridge.v` should prefer no-C or semantic wrappers.
+
+Preferred generated forms:
+
+```v
+ctx := vphp.Context.new(ex, ret)
+php_args := ctx.args_with_meta([...])
+name := php_args.at_named_or_index(0, 'name').string_value() or { ... }
+ctx.return().string_value(result)
+```
+
+Acceptable low-level forms:
+
+```v
+raw := ctx.arg[vphp.ZVal](0)
+box := ctx.arg[vphp.RequestBorrowedZBox](0)
+```
+
+Less desirable forms:
+
+```v
+mut rv := C.zval{}
+C.vphp_read_property_compat(...)
+C.vphp_write_property_compat(...)
+```
+
+These are still sometimes necessary today, especially in class/object glue, but
+they should be treated as migration targets. When the generated V glue needs
+direct `C.xxx`, that usually means one of these wrappers is missing:
+
+- `ZExData`
+- `PhpReturn`
+- object property helper
+- class/object lifecycle helper
+- `ZVal`/`ZBox` conversion helper
+
+### Generated Code Review Rules
+
+When reviewing compiler changes, ask:
+
+1. Does parser/repr contain generated C details?
+2. Is a type mapping duplicated outside `php_types/`?
+3. Does `builder/` duplicate a Zend registration pattern that should be a helper?
+4. Does generated `bridge.v` use `C.xxx` where `Context`, `PhpArg`, `PhpReturn`, `ZVal`, or `ZBox` would be enough?
+5. Does generated user-facing glue force extension authors down to `ZVal` when a semantic wrapper exists?
+6. Is a new compiler concept just mirroring a runtime semantic type with a worse name?
+
+### Migration Priority
+
+This compiler projection is also a migration plan.
+
+Near-term, low-risk cleanup:
+
+- keep adding argument and return behavior to `arg_binding.v` and
+  `return_binding.v`
+- keep PHP-facing type facts in `php_types/`
+- move repeated attribute, arginfo, property, and class registration snippets
+  into builder helpers
+- make generated glue prefer `PhpArg`, `PhpReturn`, and semantic wrappers
+
+Medium-term cleanup:
+
+- reduce direct `C.xxx` in `v_glue_class.v` and `class_property_binding.v`
+- introduce missing `ZExData` and object property wrappers before changing
+  generated glue shape
+- split large C templates only when a repeated pattern has a clear owner
+
+Non-goals for now:
+
+- a large compiler directory reshuffle
+- forcing every generated glue path to avoid `ZVal`
+- hiding all Zend concepts from `builder/` and `c_emitter.v`
+- inventing new public runtime types only to make generated code look nicer
 
 ## Review Rules
 

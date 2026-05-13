@@ -281,8 +281,8 @@ vphp.PhpArgMeta{
 	index: 0
 	name:  'query'
 	attributes: [
-		vphp.PhpArgAttribute.named('FromQuery').string('q'),
-		vphp.PhpArgAttribute.named('MustBeString'),
+		vphp.PhpAttribute.named('FromQuery').for_parameter().string('q'),
+		vphp.PhpAttribute.named('MustBeString').for_parameter(),
 	]
 }
 ```
@@ -298,16 +298,20 @@ fn dynamic(ctx vphp.Context) {
 			index: 0
 			name:  'query'
 			attributes: [
-				vphp.PhpArgAttribute.named('FromQuery').string('q'),
-				vphp.PhpArgAttribute.named('Range').int(1).int(100),
+				vphp.PhpAttribute.named('FromQuery').string('q'),
+				vphp.PhpAttribute.named('Range').int(1).int(100),
 			]
 		},
 	])
 	query := args.at(0)
-	source := query.attr('FromQuery') or { vphp.PhpArgAttribute.named('') }
-	ctx.return().string_value(source.args[0].value)
+	source := query.attr('FromQuery') or { vphp.PhpAttribute.named('') }
+	ctx.return().string_value(source.items[0].value)
 }
 ```
+
+`ctx.args_with_meta(...)` fills missing attribute targets with `.parameter`.
+Generated glue writes `.for_parameter()` explicitly so the generated code is
+self-describing.
 
 ### 6. `@[params]` Structs
 
@@ -481,7 +485,7 @@ Notes:
   that V cannot express directly in PHP arginfo.
 - `php_param_attr` supports function and method parameters. Its attribute
   arguments support positional scalar literals, and named scalar literals are
-  preserved for PHP attributes and `PhpArgAttributeItem.name`.
+  preserved for PHP attributes and `PhpAttributeItem.name`.
 - Be conservative with scalar narrowing (`string`, `int`, `bool`) on exported
   interfaces. If compatibility matters, prefer runtime validation over
   over-constrained arginfo.

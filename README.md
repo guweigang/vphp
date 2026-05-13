@@ -121,7 +121,7 @@ The current `vphp` runtime and compiler include:
 - request/frame scope helpers for temporary request-owned values
 - `PhpArgInput` for semantic PHP function-call arguments
 - `PhpArg` for exported-function input metadata and raw PHP argument access
-- `PhpArgAttribute` / `PhpArgMeta.attributes` for parameter attribute metadata in V runtime code
+- `PhpAttribute` as the shared PHP attribute metadata model, currently mounted on `PhpArgMeta.attributes`
 - `PhpFunction` and `PhpObject` semantic call helpers, with lower-level `ZVal` escape hatches where needed
 - V export to PHP functions, classes, interfaces, traits, enums, constants, properties, static properties, and class attributes
 - compiler support for V scalars, semantic PHP wrappers, option args, params structs, generated arginfo/defaults, and parameter attributes
@@ -360,7 +360,7 @@ php -d extension=./hello_vphp.so -r 'echo hello_from_v("PHP"), PHP_EOL;'
 - request/frame scope helper，用于 request-owned 临时值
 - `PhpArgInput`，用于语义化 PHP 函数调用参数
 - `PhpArg`，用于导出函数入参元信息和原始 PHP 入参访问
-- `PhpArgAttribute` / `PhpArgMeta.attributes`，用于在 V runtime 读取参数 attribute 元信息
+- `PhpAttribute`，作为通用 PHP attribute 元信息模型；当前已挂载到 `PhpArgMeta.attributes`
 - `PhpFunction` / `PhpObject` 语义调用 API，必要时仍可退到底层 `ZVal`
 - V 导出 PHP function / class / interface / trait / enum / constant / property / static property / class attribute
 - compiler 支持 V 标量、PHP 语义 wrapper、option args、params struct、arginfo/default 生成、parameter attributes

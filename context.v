@@ -52,7 +52,7 @@ pub fn (ctx Context) args_with_meta(metas []PhpArgMeta) PhpArgs {
 		}
 		for meta in metas {
 			if meta.index == index {
-				arg_meta = meta
+				arg_meta = meta.with_attribute_target(.parameter)
 				break
 			}
 		}

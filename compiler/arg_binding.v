@@ -60,7 +60,7 @@ fn php_attribute_arg_literal(arg repr.PhpAttributeArg) string {
 }
 
 fn php_attribute_literal(attr repr.PhpAttributeRepr) string {
-	mut out := 'vphp.PhpArgAttribute.named(${v_single_quote(attr.name)})'
+	mut out := 'vphp.PhpAttribute.named(${v_single_quote(attr.name)}).for_parameter()'
 	for arg in attr.args {
 		out += '.${php_attribute_arg_literal(arg)}'
 	}
@@ -69,7 +69,7 @@ fn php_attribute_literal(attr repr.PhpAttributeRepr) string {
 
 fn php_attributes_literal(attrs []repr.PhpAttributeRepr) string {
 	if attrs.len == 0 {
-		return '[]vphp.PhpArgAttribute{}'
+		return '[]vphp.PhpAttribute{}'
 	}
 	return '[' + attrs.map(php_attribute_literal(it)).join(', ') + ']'
 }
