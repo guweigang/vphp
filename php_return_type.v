@@ -39,7 +39,7 @@ pub fn (ret PhpReturn) string_value(val string) {
 }
 
 pub fn (ret PhpReturn) resource(ptr voidptr, label string) {
-	C.vphp_make_res(ret.raw, ptr, &char(label.str))
+	ZVal.from_raw(ret.raw).make_resource(ptr, label)
 }
 
 pub fn (ret PhpReturn) object(v_ptr voidptr, ce voidptr) {

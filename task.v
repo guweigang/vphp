@@ -241,7 +241,7 @@ pub fn task_wait(ctx Context) {
 	res_val := ctx.arg_raw(0)
 
 	unsafe {
-		ptr := res_val.to_res()
+		ptr := res_val.resource_ptr()
 		if ptr == nil {
 			return
 		}

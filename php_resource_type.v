@@ -54,7 +54,9 @@ pub fn (r PhpResource) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (r PhpResource) to_request_owned() PhpResource {
-	return PhpResource.from_request_owned_zbox(r.value.to_request_owned_zbox()) or { r.to_borrowed() }
+	return PhpResource.from_request_owned_zbox(r.value.to_request_owned_zbox()) or {
+		r.to_borrowed()
+	}
 }
 
 pub fn (r PhpResource) to_request_owned_zbox() RequestOwnedZBox {
@@ -80,7 +82,7 @@ pub fn (mut r PhpResource) release() {
 }
 
 pub fn (r PhpResource) ptr() voidptr {
-	return r.to_zval().to_res()
+	return r.to_zval().resource_ptr()
 }
 
 pub fn (r PhpResource) type_name() string {

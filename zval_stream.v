@@ -97,8 +97,3 @@ pub fn (v ZVal) stream_close() bool {
 	res := php_fn('fclose').call([v])
 	return res.is_valid() && (!res.is_bool() || res.to_bool())
 }
-
-// resource
-pub fn (v ZVal) to_res() voidptr {
-	return C.vphp_fetch_res(v.raw)
-}
