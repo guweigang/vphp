@@ -1,13 +1,11 @@
 module vphp
 
 pub fn (c PhpClass) bind_interface(iface_name string) bool {
-	return C.vphp_bind_class_interface(&char(c.name().str), c.name().len, &char(iface_name.str),
-		iface_name.len) != 0
+	return zend_bind_class_interface(c.name(), iface_name)
 }
 
 pub fn (c PhpClass) register_auto_interface(iface_name string) {
-	C.vphp_register_auto_interface_binding(&char(c.name().str), c.name().len, &char(iface_name.str),
-		iface_name.len)
+	zend_register_auto_interface_binding(c.name(), iface_name)
 }
 
 pub fn bind_class_interface(class_name string, iface_name string) bool {
