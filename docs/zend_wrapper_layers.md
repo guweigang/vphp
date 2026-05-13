@@ -563,7 +563,9 @@ of leaking scratch-zval construction into semantic wrapper code. Generic object
 payload release now calls a private V-runtime free helper instead of directly
 calling `C.builtin___v_free(...)`. ZVal object initialization and scalar
 property insertion now delegate through private Zend object helpers instead of
-calling Zend property APIs directly from `zval_object_props.v`.
+calling Zend property APIs directly from `zval_object_props.v`. Closure creation
+helpers now accept `PhpReturn`, so closure binding code no longer has to pass
+`ctx.return().raw_zval()` down manually.
 The broader layer migration is still not implemented and should continue
 incrementally.
 

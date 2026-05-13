@@ -12,12 +12,11 @@ fn save_closure_value[T](v_cb T) voidptr {
 }
 
 pub fn (ctx Context) create_saved_closure[T](v_cb T, bridge voidptr, arity int) {
-	zend_create_closure_with_arity(ctx.ret.raw_zval(), save_closure_value[T](v_cb), bridge, arity,
-		arity)
+	zend_create_closure_with_arity(ctx.return(), save_closure_value[T](v_cb), bridge, arity, arity)
 }
 
 pub fn (ctx Context) create_saved_variadic_closure[T](v_cb T, bridge voidptr) {
-	zend_create_variadic_closure(ctx.ret.raw_zval(), save_closure_value[T](v_cb), bridge)
+	zend_create_variadic_closure(ctx.return(), save_closure_value[T](v_cb), bridge)
 }
 
 pub fn (ctx Context) invoke_variadic_closure[T, R](cb T) {
