@@ -26,7 +26,7 @@ The goal is not to hide Zend completely. The goal is to keep `C.xxx`, raw `&C.zv
 | C implementation | C code, Zend macros, PHP headers | V APIs | `vphp/bridge/*.inc.c`, `vphp/v_bridge.c`, `vphp/v_bridge.h` | `vphp_call_method(...)` |
 | 1. Zend C declarations | `C.zval`, `C.zend_object`, `C.vphp_call_*`, `C.ZVAL_COPY` declarations | V semantic objects | `vphp/zend/types.v`, `vphp/zend/bridge_api.v`, `vphp/zend/native_api.v`, `vphp/zend/constants.v` | `pub fn C.vphp_call_method(...)` |
 | 2. Low-level C-boundary wrapper | Direct `C.xxx`, `&C.zval`, `&&C.zval`, retval allocation/release/adopt | Public semantic APIs | Target: `vphp/zend/call.v`, `vphp/zend/value.v`, `vphp/zend/object.v`, `vphp/zend/property.v`, `vphp/zend/array.v` | `call_function_zval(...)`, `raw_read_property(...)` |
-| 3. No-C low-level V wrapper | `ZVal`, `ZExData`, `OwnershipKind`, `RequestScope`, `*ZBox` | Direct `C.xxx` in signatures or normal call paths | Target: `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, `vphp/object/` | `ZVal.method_owned_request(...)` |
+| 3. No-C low-level V wrapper | `ZVal`, `ZExData`, `ZendObject`, `OwnershipKind`, `RequestScope`, `*ZBox` | Direct `C.xxx` in signatures or normal call paths | Target: `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, `vphp/object/` | `ZVal.method_owned_request(...)` |
 | 4. Abstract V semantic wrapper | `PhpValue`, `PhpInt`, `PhpString`, `PhpArray`, `PhpObject`, `PhpFunction`, `PhpArgInput`, `PhpArg`, `PhpReturn` | Raw Zend types except explicit escape hatches | `php_*_type.v` | `PhpFunction.named(...).call[T](...)` |
 
 ## C Implementation: bridge/
@@ -143,6 +143,7 @@ Allowed concepts:
 
 - `ZVal`
 - `ZExData`
+- `ZendObject`
 - `OwnershipKind`
 - `RequestBorrowedZBox`
 - `RequestOwnedZBox`
@@ -172,6 +173,10 @@ vphp/zbox/
 vphp/scope/
   request.v
   frame.v
+
+vphp/execute/
+  data.v
+  args.v
 
 vphp/object/
   binding.v
@@ -350,7 +355,7 @@ Generated `bridge.v` should prefer no-C or semantic wrappers.
 Preferred generated forms:
 
 ```v
-ctx := vphp.Context.new(ex, ret)
+ctx := vphp.Context.from_entry(ex, ret)
 php_args := ctx.args_with_meta([...])
 name := php_args.at_named_or_index(0, 'name').string_value() or { ... }
 ctx.return().string_value(result)
@@ -377,7 +382,7 @@ direct `C.xxx`, that usually means one of these wrappers is missing:
 
 - `ZExData`
 - `PhpReturn`
-- object property helper
+- `ZendObject` / object property helper
 - class/object lifecycle helper
 - `ZVal`/`ZBox` conversion helper
 
@@ -439,7 +444,31 @@ That is usually a sign that a Layer 2 or Layer 3 helper is missing.
 
 ## Migration Strategy
 
-Status: **not implemented yet**. Do this incrementally when the migration starts.
+Status: **partially started**. The first low-risk compiler/runtime cleanup makes
+generated return glue prefer `ctx.return().*` / `PhpReturn` over older
+`Context.return_*` convenience calls. `ZExData` now owns the low-level argument
+read helpers that `Context` delegates to. Generated property glue now uses
+`PhpReturn` and `ZVal.from_raw(...)` instead of direct return/raw-zval helpers
+inside the generated body, and inherited object property sync goes through
+`ZendObject` instead of direct `vphp_read/write_property_compat` calls in the
+generated body. Inherited property reads now use
+`ZendObject.prop_owned_request(...)`, so generated V glue no longer emits
+`C.zval{}` scratch values for that path. Generated class handler exports now
+use `ZendClassHandlers.new(...)` instead of constructing `C.vphp_class_handlers`
+directly in generated `bridge.v`. ZVal call/construct/static-method paths now
+share a private `call_with_zval_args(...)` helper, so retval allocation,
+argv conversion, Zend result handling, and ownership adoption live in one
+place. Inherited scalar property loading uses `ZendObject.prop_*_or(...)`
+helpers that borrow only inside the wrapper and immediately copy into V scalar
+values; generated code no longer needs `prop_owned_request(...)` for that path.
+`PhpIncludeFile` now shares the same request-owned adoption path as other
+retval-producing helpers, and static property/class constant reads share
+ownership-parametrized helpers. Generic property handlers use `PhpReturn` and
+`ZVal.from_raw(...)` instead of older raw helper forms. `PhpReturn` and object
+property convenience paths also prefer `ZVal.from_raw(...)` and scalar receiver
+methods over direct raw field construction where no ownership semantics change.
+The broader layer migration is still not implemented and should continue
+incrementally.
 
 ### First: Call Paths
 

@@ -25,17 +25,17 @@ pub fn (ctx Context) invoke_variadic_closure[T, R](cb T) {
 		fn (...vphp.ZVal) R {
 			args := ctx.variadic_zval_args()
 			res := cb(...args)
-			ctx.return_val[R](res)
+			ctx.return().v[R](res)
 		}
 		fn (...vphp.PhpValue) R {
 			args := ctx.variadic_php_value_args()
 			res := cb(...args)
-			ctx.return_val[R](res)
+			ctx.return().v[R](res)
 		}
 		fn (...vphp.RequestBorrowedZBox) R {
 			args := ctx.variadic_borrowed_zbox_args()
 			res := cb(...args)
-			ctx.return_val[R](res)
+			ctx.return().v[R](res)
 		}
 		fn (...vphp.VScalarValue) R {
 			args := ctx.variadic_v_scalar_args() or {
@@ -43,7 +43,7 @@ pub fn (ctx Context) invoke_variadic_closure[T, R](cb T) {
 				return
 			}
 			res := cb(...args)
-			ctx.return_val[R](res)
+			ctx.return().v[R](res)
 		}
 		$else {
 			throw_exception('unsupported variadic closure type', 0)
@@ -56,17 +56,17 @@ pub fn (ctx Context) invoke_variadic_closure_void[T](cb T) {
 		fn (...vphp.ZVal) {
 			args := ctx.variadic_zval_args()
 			cb(...args)
-			ctx.return_null()
+			ctx.return().null()
 		}
 		fn (...vphp.PhpValue) {
 			args := ctx.variadic_php_value_args()
 			cb(...args)
-			ctx.return_null()
+			ctx.return().null()
 		}
 		fn (...vphp.RequestBorrowedZBox) {
 			args := ctx.variadic_borrowed_zbox_args()
 			cb(...args)
-			ctx.return_null()
+			ctx.return().null()
 		}
 		fn (...vphp.VScalarValue) {
 			args := ctx.variadic_v_scalar_args() or {
@@ -74,7 +74,7 @@ pub fn (ctx Context) invoke_variadic_closure_void[T](cb T) {
 				return
 			}
 			cb(...args)
-			ctx.return_null()
+			ctx.return().null()
 		}
 		$else {
 			throw_exception('unsupported variadic closure type', 0)

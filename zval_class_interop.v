@@ -9,53 +9,20 @@ pub fn (v ZVal) construct_owned_request(args []ZVal) ZVal {
 		return invalid_zval()
 	}
 
-	unsafe {
-		mut retval := C.vphp_new_zval()
-		mut argv := []&C.zval{cap: args.len}
-		for arg in args {
-			argv << arg.raw
-		}
-		mut p_args := &&C.zval(nil)
-		if argv.len > 0 {
-			p_args = &argv[0]
-		}
-
-		res := C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
-			args.len, p_args)
-		if res == -1 {
-			C.vphp_release_zval(retval)
-			return invalid_zval()
-		}
-		mut result := adopt_raw_with_ownership(retval, .owned_request)
-		if result.is_object() {
-			RequestScope.autorelease_forget(result.raw)
-		}
-		return result
-	}
+	return call_with_zval_args(args, .owned_request, fn [v] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
+			count, params)
+	})
 }
 
 pub fn (v ZVal) construct_owned_persistent(args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_string() {
 		return invalid_zval()
 	}
-	unsafe {
-		mut retval := C.vphp_new_zval()
-		mut argv := []&C.zval{cap: args.len}
-		for arg in args {
-			argv << arg.raw
-		}
-		mut p_args := &&C.zval(nil)
-		if argv.len > 0 {
-			p_args = &argv[0]
-		}
-		res := C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
-			args.len, p_args)
-		if res == -1 {
-			C.vphp_release_zval(retval)
-			return invalid_zval()
-		}
-		return adopt_raw_with_ownership(retval, .owned_persistent)
-	}
+	return call_with_zval_args(args, .owned_persistent, fn [v] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
+			count, params)
+	})
 }
 
 pub fn (v ZVal) static_method_owned_request(method string, args []ZVal) ZVal {
@@ -63,88 +30,56 @@ pub fn (v ZVal) static_method_owned_request(method string, args []ZVal) ZVal {
 		return invalid_zval()
 	}
 
-	unsafe {
-		mut retval := C.vphp_new_zval()
-		mut argv := []&C.zval{cap: args.len}
-		for arg in args {
-			argv << arg.raw
-		}
-		mut p_args := &&C.zval(nil)
-		if argv.len > 0 {
-			p_args = &argv[0]
-		}
-
-		res := C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-			&char(method.str), method.len, retval, args.len, p_args)
-		if res == -1 {
-			C.vphp_release_zval(retval)
-			return invalid_zval()
-		}
-		mut result := adopt_raw_with_ownership(retval, .owned_request)
-		if result.is_object() {
-			RequestScope.autorelease_forget(result.raw)
-		}
-		return result
-	}
+	return call_with_zval_args(args, .owned_request, fn [v, method] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+			&char(method.str), method.len, retval, count, params)
+	})
 }
 
 pub fn (v ZVal) static_method_owned_persistent(method string, args []ZVal) ZVal {
 	if v.raw == 0 || !v.is_string() {
 		return invalid_zval()
 	}
-	unsafe {
-		mut retval := C.vphp_new_zval()
-		mut argv := []&C.zval{cap: args.len}
-		for arg in args {
-			argv << arg.raw
-		}
-		mut p_args := &&C.zval(nil)
-		if argv.len > 0 {
-			p_args = &argv[0]
-		}
-		res := C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-			&char(method.str), method.len, retval, args.len, p_args)
-		if res == -1 {
-			C.vphp_release_zval(retval)
-			return invalid_zval()
-		}
-		return adopt_raw_with_ownership(retval, .owned_persistent)
-	}
+	return call_with_zval_args(args, .owned_persistent, fn [v, method] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+			&char(method.str), method.len, retval, count, params)
+	})
 }
 
 pub fn (v ZVal) static_method(method string, args []ZVal) ZVal {
 	return v.static_method_owned_request(method, args)
 }
 
-pub fn (v ZVal) static_prop_borrowed(name string) ZVal {
+fn (v ZVal) read_static_prop_with_ownership(name string, ownership OwnershipKind) ZVal {
 	if v.raw == 0 || !v.is_string() {
 		return invalid_zval()
 	}
-
 	rv := C.vphp_new_zval()
 	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
 		&char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .borrowed)
+	return adopt_read_result(rv, res, ownership)
+}
+
+fn (v ZVal) read_const_with_ownership(name string, ownership OwnershipKind) ZVal {
+	if v.raw == 0 || !v.is_string() {
+		return invalid_zval()
+	}
+	rv := C.vphp_new_zval()
+	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
+		&char(name.str), name.len, rv)
+	return adopt_read_result(rv, res, ownership)
+}
+
+pub fn (v ZVal) static_prop_borrowed(name string) ZVal {
+	return v.read_static_prop_with_ownership(name, .borrowed)
 }
 
 pub fn (v ZVal) static_prop_owned_request(name string) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .owned_request)
+	return v.read_static_prop_with_ownership(name, .owned_request)
 }
 
 pub fn (v ZVal) static_prop_owned_persistent(name string) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .owned_persistent)
+	return v.read_static_prop_with_ownership(name, .owned_persistent)
 }
 
 pub fn (v ZVal) static_prop(name string) ZVal {
@@ -152,34 +87,15 @@ pub fn (v ZVal) static_prop(name string) ZVal {
 }
 
 pub fn (v ZVal) const_borrowed(name string) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .borrowed)
+	return v.read_const_with_ownership(name, .borrowed)
 }
 
 pub fn (v ZVal) const_owned_request(name string) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .owned_request)
+	return v.read_const_with_ownership(name, .owned_request)
 }
 
 pub fn (v ZVal) const_owned_persistent(name string) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .owned_persistent)
+	return v.read_const_with_ownership(name, .owned_persistent)
 }
 
 pub fn (v ZVal) @const(name string) ZVal {

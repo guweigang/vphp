@@ -73,7 +73,7 @@ fn (binding ReturnBinding) render_function_lines(v_call_name string, call_args s
 		.value {
 			return [
 				'    res := ${v_call_name}(${call_args})',
-				'    ctx.return_val[${binding.return_type}](res)',
+				'    ctx.return().v[${binding.return_type}](res)',
 			]
 		}
 	}

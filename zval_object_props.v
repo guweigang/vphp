@@ -103,7 +103,7 @@ pub fn (v ZVal) get_prop_int(name string) int {
 	if prop.raw == 0 {
 		return 0
 	}
-	return int(C.vphp_get_int(prop.raw))
+	return int(prop.to_i64())
 }
 
 // 快捷方式：属性 → i64
@@ -112,7 +112,7 @@ pub fn (v ZVal) get_prop_i64(name string) i64 {
 	if prop.raw == 0 {
 		return 0
 	}
-	return i64(C.vphp_get_int(prop.raw))
+	return prop.to_i64()
 }
 
 // 快捷方式：属性 → f64
@@ -121,7 +121,7 @@ pub fn (v ZVal) get_prop_float(name string) f64 {
 	if prop.raw == 0 {
 		return 0.0
 	}
-	return C.vphp_get_double(prop.raw)
+	return prop.to_f64()
 }
 
 // 快捷方式：属性 → bool

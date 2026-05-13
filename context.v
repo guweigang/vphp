@@ -14,17 +14,28 @@ pub:
 
 // ======== 构造与基础状态 ========
 
-// 创建 Context 实例
-pub fn Context.new(ex voidptr, ret &C.zval) Context {
+pub fn Context.from_entry(ex &C.zend_execute_data, ret &C.zval) Context {
+	return Context{
+		ex:  ZExData.new(ex)
+		ret: PhpReturn.new(ret)
+	}
+}
+
+pub fn Context.from_raw(ex voidptr, ret &C.zval) Context {
 	return Context{
 		ex:  ZExData.from_voidptr(ex)
 		ret: PhpReturn.new(ret)
 	}
 }
 
+// 创建 Context 实例
+pub fn Context.new(ex voidptr, ret &C.zval) Context {
+	return Context.from_raw(ex, ret)
+}
+
 pub fn new_context(ex voidptr, ret &C.zval) Context {
-	// Backward-compat alias; prefer Context.new(...)
-	return Context.new(ex, ret)
+	// Backward-compat alias; prefer Context.from_raw(...) or Context.from_entry(...).
+	return Context.from_raw(ex, ret)
 }
 
 pub fn (ctx Context) arg_at(index int) PhpArg {
@@ -32,11 +43,11 @@ pub fn (ctx Context) arg_at(index int) PhpArg {
 }
 
 pub fn (ctx Context) arg_named(index int, name string) PhpArg {
-	return PhpArg.from_zval(index, name, ctx.arg_raw(index))
+	return ctx.ex.php_arg(index, name)
 }
 
 pub fn (ctx Context) arg_meta(meta PhpArgMeta) PhpArg {
-	return PhpArg.from_meta_zval(meta, ctx.arg_raw(meta.index))
+	return ctx.ex.php_arg_meta(meta)
 }
 
 pub fn (ctx Context) args() PhpArgs {

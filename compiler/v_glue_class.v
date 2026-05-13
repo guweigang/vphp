@@ -39,7 +39,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 	out << '}'
 
 	if uses_inherited_receiver {
-		out << 'fn ${lower_name}_load_from_php(obj &C.zend_object) ${r.name} {'
+		out << 'fn ${lower_name}_load_from_php(php_obj vphp.ZendObject) ${r.name} {'
 		zval_fields := r.properties.filter(!it.is_property_only && !it.is_static
 			&& is_internal_parent_zval_field(it.v_type))
 		if zval_fields.len == 0 {
@@ -51,7 +51,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			}
 			out << '    }'
 		}
-		out << '    if obj == 0 {'
+		out << '    if !php_obj.is_valid() {'
 		out << '        return recv'
 		out << '    }'
 		for prop in r.properties {
@@ -65,45 +65,30 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 				&& !is_internal_parent_zval_field(prop.v_type) {
 				continue
 			}
-			out << '    mut rv_${prop.name} := C.zval{}'
-			out << "    prop_${prop.name} := C.vphp_read_property_compat(obj, c'${prop.name}', '${prop.name}'.len, &rv_${prop.name})"
-			out << '    if prop_${prop.name} != 0 {'
-			out << '        value_${prop.name} := vphp.ZVal{ raw: prop_${prop.name} }'
 			match prop.v_type {
 				'string' {
-					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_string()'
-					out << '        }'
+					out << "    recv.${prop.v_field_name} = php_obj.prop_string_or('${prop.name}', recv.${prop.v_field_name})"
 				}
 				'int' {
-					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.v_field_name} = int(value_${prop.name}.to_i64())'
-					out << '        }'
+					out << "    recv.${prop.v_field_name} = int(php_obj.prop_i64_or('${prop.name}', i64(recv.${prop.v_field_name})))"
 				}
 				'i64' {
-					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_i64()'
-					out << '        }'
+					out << "    recv.${prop.v_field_name} = php_obj.prop_i64_or('${prop.name}', recv.${prop.v_field_name})"
 				}
 				'bool' {
-					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_bool()'
-					out << '        }'
+					out << "    recv.${prop.v_field_name} = php_obj.prop_bool_or('${prop.name}', recv.${prop.v_field_name})"
 				}
 				'f64' {
-					out << '        if !value_${prop.name}.is_null() && !value_${prop.name}.is_undef() {'
-					out << '            recv.${prop.v_field_name} = value_${prop.name}.to_f64()'
-					out << '        }'
+					out << "    recv.${prop.v_field_name} = php_obj.prop_f64_or('${prop.name}', recv.${prop.v_field_name})"
 				}
 				'vphp.ZVal', 'ZVal' {}
 				else {}
 			}
-			out << '    }'
 		}
 		out << '    return recv'
 		out << '}'
-		out << 'fn ${lower_name}_sync_to_php(obj &C.zend_object, recv ${r.name}) {'
-		out << '    if obj == 0 {'
+		out << 'fn ${lower_name}_sync_to_php(php_obj vphp.ZendObject, recv ${r.name}) {'
+		out << '    if !php_obj.is_valid() {'
 		out << '        return'
 		out << '    }'
 		for prop in r.properties {
@@ -119,19 +104,19 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			match prop.v_type {
 				'string' {
 					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_string(recv.${prop.v_field_name}).to_zval()'
-					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
+					out << "    php_obj.set_prop('${prop.name}', prop_${prop.name})"
 				}
 				'int', 'i64' {
 					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_int(i64(recv.${prop.v_field_name})).to_zval()'
-					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
+					out << "    php_obj.set_prop('${prop.name}', prop_${prop.name})"
 				}
 				'bool' {
 					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_bool(recv.${prop.v_field_name}).to_zval()'
-					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
+					out << "    php_obj.set_prop('${prop.name}', prop_${prop.name})"
 				}
 				'f64' {
 					out << '    mut prop_${prop.name} := vphp.RequestOwnedZBox.new_float(recv.${prop.v_field_name}).to_zval()'
-					out << "    C.vphp_write_property_compat(obj, c'${prop.name}', '${prop.name}'.len, prop_${prop.name}.raw)"
+					out << "    php_obj.set_prop('${prop.name}', prop_${prop.name})"
 				}
 				else {}
 			}
@@ -208,7 +193,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 		} else {
 			out << 'pub fn vphp_wrap_${lower_name}_${glue_name}(ptr voidptr, ctx vphp.Context) ${ret_decl} {'
 			if uses_inherited_receiver {
-				out << '    this_obj := unsafe { &C.zend_object(ptr) }'
+				out << '    this_obj := vphp.ZendObject.from_ptr(ptr)'
 				out << '    mut recv := ${lower_name}_load_from_php(this_obj)'
 			} else {
 				out << '    mut recv := unsafe { &${r.name}(ptr) }'
@@ -258,14 +243,14 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 	// F. Handlers 导出
 	out << "@[export: '${r.name}_handlers']"
 	out << 'pub fn ${lower_name}_handlers() voidptr {'
-	out << '    return unsafe { &C.vphp_class_handlers{'
-	out << '        prop_handler:  voidptr(${lower_name}_get_prop)'
-	out << '        write_handler: voidptr(${lower_name}_set_prop)'
-	out << '        sync_handler:  voidptr(${lower_name}_sync_props)'
-	out << '        new_raw:       voidptr(${lower_name}_new_raw)'
-	out << '        cleanup_raw:   voidptr(${lower_name}_cleanup_raw)'
-	out << '        free_raw:      voidptr(${lower_name}_free_raw)'
-	out << '    } }'
+	out << '    return vphp.ZendClassHandlers.new('
+	out << '        prop_handler: voidptr(${lower_name}_get_prop),'
+	out << '        write_handler: voidptr(${lower_name}_set_prop),'
+	out << '        sync_handler: voidptr(${lower_name}_sync_props),'
+	out << '        new_raw: voidptr(${lower_name}_new_raw),'
+	out << '        cleanup_raw: voidptr(${lower_name}_cleanup_raw),'
+	out << '        free_raw: voidptr(${lower_name}_free_raw)'
+	out << '    )'
 	out << '}'
 
 	return out

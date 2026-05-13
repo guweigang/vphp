@@ -9,15 +9,15 @@ pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval
 			if name == field.name {
 				val := obj.$(field.name)
 				$if field.typ is string {
-					return_val_raw(rv, val)
+					PhpReturn.new(rv).v[string](val)
 				} $else $if field.typ is int {
-					return_val_raw(rv, i64(val))
+					PhpReturn.new(rv).v[i64](i64(val))
 				} $else $if field.typ is i64 {
-					return_val_raw(rv, val)
+					PhpReturn.new(rv).v[i64](val)
 				} $else $if field.typ is bool {
-					return_val_raw(rv, val)
+					PhpReturn.new(rv).v[bool](val)
 				} $else $if field.typ is f64 {
-					return_val_raw(rv, val)
+					PhpReturn.new(rv).v[f64](val)
 				}
 				return
 			}
@@ -30,9 +30,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 	unsafe {
 		name := name_ptr.vstring_with_len(name_len).clone()
 		mut obj := &T(ptr)
-		arg := ZVal{
-			raw: value
-		}
+		arg := ZVal.from_raw(value)
 		$for field in T.fields {
 			if name == field.name {
 				$if field.typ is string {
@@ -44,7 +42,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 				} $else $if field.typ is bool {
 					obj.$(field.name) = arg.get_bool()
 				} $else $if field.typ is f64 {
-					obj.$(field.name) = C.vphp_get_double(value)
+					obj.$(field.name) = arg.to_f64()
 				}
 				return
 			}
@@ -56,9 +54,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 	unsafe {
 		obj := &T(ptr)
-		out := ZVal{
-			raw: zv
-		}
+		out := ZVal.from_raw(zv)
 		$for field in T.fields {
 			name := field.name
 			val := obj.$(field.name)

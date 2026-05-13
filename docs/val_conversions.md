@@ -97,7 +97,7 @@ out.from_v[map[string]f64]({
     'avg': 91.2
     'max': 120.5
 }) or {
-    ctx.return_null()
+    ctx.return().null()
     return
 }
 ```

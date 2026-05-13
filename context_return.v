@@ -77,21 +77,7 @@ pub fn (ctx Context) return_list[T](list []T) {
 }
 
 pub fn (ctx Context) return_map[T](m map[string]T) {
-	out := ZVal{
-		raw: ctx.ret.raw_zval()
-	}
-	out.array_init()
-	for k, v in m {
-		$if T is string {
-			out.add_assoc_string(k, v)
-		} $else $if T is int || T is i64 {
-			out.add_assoc_long(k, i64(v))
-		} $else $if T is f64 {
-			out.add_assoc_double(k, v)
-		} $else $if T is bool {
-			out.add_assoc_bool(k, v)
-		}
-	}
+	ctx.return().map_value[T](m)
 }
 
 pub fn (ctx Context) return_object(props map[string]string) {
@@ -103,12 +89,8 @@ pub fn (ctx Context) return_struct[T](s T) {
 }
 
 pub fn return_val_raw[T](ret &C.zval, val T) {
-	unsafe {
-		mut out := ZVal{
-			raw: ret
-		}
-		out.from_v[T](val) or { out.set_null() }
-	}
+	mut out := ZVal.from_raw(ret)
+	out.from_v[T](val) or { out.set_null() }
 }
 
 pub fn return_zval_raw(ret &C.zval, val ZVal) {

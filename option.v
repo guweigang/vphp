@@ -27,7 +27,7 @@ module vphp
 // none → 返回 PHP null
 pub fn call_or_null(f fn () ?, ctx Context) {
 	f() or {
-		ctx.return_null()
+		ctx.return().null()
 		return
 	}
 }
@@ -37,8 +37,8 @@ pub fn call_or_null(f fn () ?, ctx Context) {
 // none → 返回 PHP null
 pub fn call_or_null_val[T](f fn () ?T, ctx Context) {
 	res := f() or {
-		ctx.return_null()
+		ctx.return().null()
 		return
 	}
-	ctx.return_val[T](res)
+	ctx.return().v[T](res)
 }

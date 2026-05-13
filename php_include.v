@@ -16,42 +16,25 @@ pub fn (file PhpIncludeFile) path() string {
 	return file.path
 }
 
-pub fn (file PhpIncludeFile) load() ZVal {
+fn (file PhpIncludeFile) load_with_once_flag(once bool) ZVal {
 	unsafe {
-		mut retval := C.vphp_new_zval()
-		res := C.vphp_include_file(&char(file.path.str), file.path.len, retval, 0)
+		retval := C.vphp_new_zval()
+		once_flag := if once { 1 } else { 0 }
+		res := C.vphp_include_file(&char(file.path.str), file.path.len, retval, once_flag)
 		if res == -1 {
 			C.vphp_release_zval(retval)
-			return ZVal{
-				raw: 0
-			}
+			return invalid_zval()
 		}
-		mut out := ZVal{
-			raw:   retval
-			owned: true
-		}
-		RequestScope.autorelease_add(out.raw)
-		return out
+		return adopt_raw_with_ownership(retval, .owned_request)
 	}
 }
 
+pub fn (file PhpIncludeFile) load() ZVal {
+	return file.load_with_once_flag(false)
+}
+
 pub fn (file PhpIncludeFile) load_once() ZVal {
-	unsafe {
-		mut retval := C.vphp_new_zval()
-		res := C.vphp_include_file(&char(file.path.str), file.path.len, retval, 1)
-		if res == -1 {
-			C.vphp_release_zval(retval)
-			return ZVal{
-				raw: 0
-			}
-		}
-		mut out := ZVal{
-			raw:   retval
-			owned: true
-		}
-		RequestScope.autorelease_add(out.raw)
-		return out
-	}
+	return file.load_with_once_flag(true)
 }
 
 pub fn include(path string) ZVal {

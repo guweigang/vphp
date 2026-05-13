@@ -40,5 +40,5 @@ pub fn call_or_throw_val[T](f fn () !T, ctx Context) {
 		throw_exception(err.msg(), 0)
 		return
 	}
-	ctx.return_val[T](res)
+	ctx.return().v[T](res)
 }

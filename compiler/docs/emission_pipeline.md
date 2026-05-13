@@ -193,7 +193,7 @@ One subtle but important responsibility in `c_emitter.v` is deciding whether a
 `@[php_method]` return value should be emitted as:
 
 1. an object-return wrapper, or
-2. a plain value/container bridge using `ctx.return_val[...]`
+2. a plain value/container bridge using `ctx.return().v[...]`
 
 This classification must stay aligned with `v_glue.v`.
 

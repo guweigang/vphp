@@ -10,16 +10,16 @@ pub fn (ctx Context) get_args() []ZVal {
 // ======== 参数读取 ========
 
 pub fn (ctx Context) arg_raw(index int) ZVal {
-	return ctx.ex.arg_raw(index)
+	return ctx.ex.arg(index)
 }
 
 // Low-level borrowed view; prefer `arg_borrowed_zbox()` for ownership-facing
 pub fn (ctx Context) arg_borrowed_zbox(index int) RequestBorrowedZBox {
-	return ctx.arg_at(index).zbox()
+	return ctx.ex.arg_borrowed_zbox(index)
 }
 
 pub fn (ctx Context) arg_borrowed_zbox_opt(index int) ?RequestBorrowedZBox {
-	return ctx.arg_at(index).zbox_opt()
+	return ctx.ex.arg_borrowed_zbox_opt(index)
 }
 
 pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
@@ -27,7 +27,7 @@ pub fn (ctx Context) arg_any_zbox(index int) RequestBorrowedZBox {
 }
 
 pub fn (ctx Context) arg_value(index int) PhpValue {
-	return ctx.arg_at(index).value
+	return ctx.ex.arg_value(index)
 }
 
 pub fn (ctx Context) arg_null(index int) ?PhpNull {
@@ -103,15 +103,15 @@ pub fn (ctx Context) arg_owned_persistent_zbox(index int) PersistentOwnedZBox {
 }
 
 pub fn (ctx Context) arg[T](index int) T {
-	return ctx.arg_at(index).as_v[T]()
+	return ctx.ex.v_arg[T](index)
 }
 
 pub fn (ctx Context) arg_opt[T](index int) ?T {
-	return ctx.arg_at(index).as_v_opt[T]()
+	return ctx.ex.v_arg_opt[T](index)
 }
 
 pub fn (ctx Context) arg_val(index int) ZVal {
-	return ctx.arg_at(index).zval_or_null()
+	return ctx.ex.arg_or_null(index)
 }
 
 pub fn (ctx Context) arg_raw_obj(index int) voidptr {

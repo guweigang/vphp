@@ -16,6 +16,14 @@ pub mut:
 	is_persistent bool
 }
 
+pub fn ZVal.from_raw(raw &C.zval) ZVal {
+	return unsafe {
+		ZVal{
+			raw: raw
+		}
+	}
+}
+
 // Callable — semantic alias for ZVal used as a PHP callable parameter.
 // When used as a method parameter type, the compiler emits ZEND_ARG_CALLABLE_INFO
 // so PHP reflection sees the parameter as 'callable' typed.

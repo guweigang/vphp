@@ -27,11 +27,7 @@ pub fn (ret PhpReturn) bool_value(val bool) {
 }
 
 pub fn (ret PhpReturn) int_value(val i64) {
-	unsafe {
-		ZVal{
-			raw: ret.raw
-		}.set_int(val)
-	}
+	ZVal.from_raw(ret.raw).set_int(val)
 }
 
 pub fn (ret PhpReturn) double_value(val f64) {
@@ -39,11 +35,7 @@ pub fn (ret PhpReturn) double_value(val f64) {
 }
 
 pub fn (ret PhpReturn) string_value(val string) {
-	unsafe {
-		ZVal{
-			raw: ret.raw
-		}.set_string(val)
-	}
+	ZVal.from_raw(ret.raw).set_string(val)
 }
 
 pub fn (ret PhpReturn) resource(ptr voidptr, label string) {
@@ -180,9 +172,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 		ret.persistent_owned(val)
 		return
 	}
-	mut out := ZVal{
-		raw: ret.raw
-	}
+	mut out := ZVal.from_raw(ret.raw)
 	out.from_v[T](val) or {
 		$if T is $struct {
 			ret.struct_value(val)
@@ -193,9 +183,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 }
 
 pub fn (ret PhpReturn) list[T](list []T) {
-	out := ZVal{
-		raw: ret.raw
-	}
+	out := ZVal.from_raw(ret.raw)
 	out.array_init()
 	for item in list {
 		$if T is string {
@@ -206,9 +194,7 @@ pub fn (ret PhpReturn) list[T](list []T) {
 			out.push_long(i64(item))
 		} $else {
 			mut sub_raw := C.zval{}
-			mut sub := ZVal{
-				raw: &sub_raw
-			}
+			mut sub := ZVal.from_raw(&sub_raw)
 			sub.array_init()
 			$for field in T.fields {
 				key := field.name
@@ -228,9 +214,7 @@ pub fn (ret PhpReturn) list[T](list []T) {
 }
 
 pub fn (ret PhpReturn) map_value[T](m map[string]T) {
-	out := ZVal{
-		raw: ret.raw
-	}
+	out := ZVal.from_raw(ret.raw)
 	out.array_init()
 	for k, v in m {
 		$if T is string {
@@ -255,9 +239,7 @@ pub fn (ret PhpReturn) object_props(props map[string]string) {
 }
 
 pub fn (ret PhpReturn) struct_value[T](s T) {
-	out := ZVal{
-		raw: ret.raw
-	}
+	out := ZVal.from_raw(ret.raw)
 	out.array_init()
 	$for field in T.fields {
 		key := field.name

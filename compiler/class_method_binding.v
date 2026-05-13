@@ -83,7 +83,7 @@ fn (ctx ClassMethodGlueContext) render_return_lines() []string {
 			lines << ctx.render_inherited_sync_to_php_lines()
 			lines << ctx.render_static_sync_to_php_lines()
 			if !ctx.returns_object {
-				lines << '    ctx.return_val[${ctx.return_type}](res)'
+				lines << '    ctx.return().v[${ctx.return_type}](res)'
 			}
 			lines << ctx.render_object_return_lines()
 			return lines
