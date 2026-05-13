@@ -6,6 +6,14 @@ pub struct ZendObject {
 	raw &C.zend_object
 }
 
+pub fn ZendObject.invalid() ZendObject {
+	return unsafe {
+		ZendObject{
+			raw: nil
+		}
+	}
+}
+
 pub fn ZendObject.from_raw(raw &C.zend_object) ZendObject {
 	return unsafe {
 		ZendObject{
@@ -20,6 +28,13 @@ pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
 			raw: &C.zend_object(ptr)
 		}
 	}
+}
+
+pub fn ZendObject.from_zval(v ZVal) ZendObject {
+	if v.raw == 0 || !v.is_object() {
+		return ZendObject.invalid()
+	}
+	return ZendObject.from_raw(C.vphp_get_obj_from_zval(v.raw))
 }
 
 pub fn (obj ZendObject) is_valid() bool {
@@ -101,4 +116,25 @@ pub fn (obj ZendObject) set_prop(name string, value ZVal) {
 		return
 	}
 	C.vphp_write_property_compat(obj.raw, &char(name.str), name.len, value.raw)
+}
+
+pub fn (obj ZendObject) has_prop(name string) bool {
+	if !obj.is_valid() {
+		return false
+	}
+	return C.vphp_has_property_compat(obj.raw, &char(name.str), name.len) == 1
+}
+
+pub fn (obj ZendObject) isset_prop(name string) bool {
+	if !obj.is_valid() {
+		return false
+	}
+	return C.vphp_isset_property_compat(obj.raw, &char(name.str), name.len) == 1
+}
+
+pub fn (obj ZendObject) unset_prop(name string) {
+	if !obj.is_valid() {
+		return
+	}
+	C.vphp_unset_property_compat(obj.raw, &char(name.str), name.len)
 }

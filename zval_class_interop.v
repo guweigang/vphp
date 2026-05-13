@@ -4,46 +4,40 @@ pub fn (v ZVal) construct(args []ZVal) ZVal {
 	return v.construct_owned_request(args)
 }
 
-pub fn (v ZVal) construct_owned_request(args []ZVal) ZVal {
-	if v.raw == 0 || !v.is_string() {
+fn construct_zval(class_name ZVal, args []ZVal, ownership OwnershipKind) ZVal {
+	if class_name.raw == 0 || !class_name.is_string() {
 		return invalid_zval()
 	}
-
-	return call_with_zval_args(args, .owned_request, fn [v] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
-			count, params)
+	return call_with_zval_args(args, ownership, fn [class_name] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_new_instance(C.VPHP_Z_STRVAL(class_name.raw),
+			C.VPHP_Z_STRLEN(class_name.raw), retval, count, params)
 	})
+}
+
+fn call_static_method_zval(class_name ZVal, method string, args []ZVal, ownership OwnershipKind) ZVal {
+	if class_name.raw == 0 || !class_name.is_string() {
+		return invalid_zval()
+	}
+	return call_with_zval_args(args, ownership, fn [class_name, method] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_call_static_method(C.VPHP_Z_STRVAL(class_name.raw),
+			C.VPHP_Z_STRLEN(class_name.raw), &char(method.str), method.len, retval, count, params)
+	})
+}
+
+pub fn (v ZVal) construct_owned_request(args []ZVal) ZVal {
+	return construct_zval(v, args, .owned_request)
 }
 
 pub fn (v ZVal) construct_owned_persistent(args []ZVal) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-	return call_with_zval_args(args, .owned_persistent, fn [v] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_new_instance(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw), retval,
-			count, params)
-	})
+	return construct_zval(v, args, .owned_persistent)
 }
 
 pub fn (v ZVal) static_method_owned_request(method string, args []ZVal) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-
-	return call_with_zval_args(args, .owned_request, fn [v, method] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-			&char(method.str), method.len, retval, count, params)
-	})
+	return call_static_method_zval(v, method, args, .owned_request)
 }
 
 pub fn (v ZVal) static_method_owned_persistent(method string, args []ZVal) ZVal {
-	if v.raw == 0 || !v.is_string() {
-		return invalid_zval()
-	}
-	return call_with_zval_args(args, .owned_persistent, fn [v, method] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_static_method(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-			&char(method.str), method.len, retval, count, params)
-	})
+	return call_static_method_zval(v, method, args, .owned_persistent)
 }
 
 pub fn (v ZVal) static_method(method string, args []ZVal) ZVal {

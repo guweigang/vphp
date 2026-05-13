@@ -424,6 +424,72 @@ Non-goals for now:
 - hiding all Zend concepts from `builder/` and `c_emitter.v`
 - inventing new public runtime types only to make generated code look nicer
 
+## Deep-Water Checklist
+
+The next migration stage is risky because it touches both runtime ownership and
+compiler-generated glue. Before moving files or changing public names, keep
+these boundaries explicit.
+
+### What Can Move First
+
+These are good next targets because they can be improved without changing the
+extension author API:
+
+- `ZVal` object property helpers can delegate through `ZendObject`, so property
+  read/write semantics have one owner.
+- static property and class constant reads can keep sharing
+  ownership-parametrized private helpers.
+- call helpers can keep the current `call_with_zval_args(...)` shape while
+  progressively gaining clearer private names like `call_callable_zval(...)`,
+  `call_method_zval(...)`, and `construct_zval(...)`.
+- compiler-generated code should continue moving from raw return helpers toward
+  `Context.from_entry(...)`, `ctx.return()`, `ZExData`, `ZendObject`, and
+  semantic wrappers.
+
+### What Should Not Move Yet
+
+These areas should not be moved into submodules until the dependency direction
+is solved:
+
+- Layer 2 helpers that need `ZVal`, `OwnershipKind`, or `ZBox` cannot simply
+  move into `vphp/zend/` today, because `vphp.zend` is already imported by the
+  parent `vphp` module for C declarations. Importing parent runtime types back
+  from `vphp.zend` would create the wrong dependency direction.
+- generated Zend callback signatures still need raw `&C.zend_execute_data`,
+  `&C.zval`, `&C.zend_object`, and similar types at the ABI edge. The important
+  cleanup is to wrap them immediately inside the generated function body.
+- `raw_zval()`, `raw_ex()`, `from_raw(...)`, `return_*_raw(...)`, and object
+  binding raw helpers are escape hatches. They can be narrowed and documented,
+  but deleting them requires a separate compatibility pass.
+
+### Ownership-Sensitive Areas
+
+Treat these as high-risk until each change has a focused lifecycle test:
+
+- `adopt_read_result(rv, res, ownership)`, because Zend property reads may
+  return either the scratch `rv` or another zval pointer.
+- `prop_borrowed(...)`, because the name is easy to misuse if the returned value
+  escapes beyond the immediate read/copy path.
+- persistent/request conversion on `PhpValue`, `PhpArray`, `PhpObject`, and
+  `DynValue`.
+- closure binding and callable invocation, because a captured V function may
+  outlive the request frame that created the PHP callable wrapper.
+- object binding and retained object/callable roots, because those paths decide
+  who releases V-side payloads.
+
+### Test Gate For Deep Edits
+
+For code changes in the areas above, run at least:
+
+```text
+vphptest make build
+vphptest ./run_tests.sh
+LIBRARY_PATH=/opt/homebrew/opt/libsodium/lib make -C /Users/guweigang/Source/vphpx/vslim build
+```
+
+If ownership changes, also run the lifecycle/probe scripts under
+`vphptest/tests/` and any relevant VSlim request-loop probes before committing.
+
 ## Review Rules
 
 When reviewing new vphp code, ask:
@@ -472,7 +538,12 @@ incrementally.
 
 ### First: Call Paths
 
-Not implemented yet.
+Status: **partially started**.
+
+`ZVal` call, method, construct, and static-method paths now share
+`call_with_zval_args(...)`, so argv conversion, retval allocation, Zend call
+result handling, and ownership adoption are no longer repeated in every method.
+The remaining work is naming and layering, not inventing a new public concept.
 
 Start with:
 
@@ -483,8 +554,8 @@ Start with:
 
 Target:
 
-- remove repeated `argv/p_args` construction
-- remove repeated `retval/release/adopt` logic
+- keep repeated `argv/p_args` construction centralized
+- keep repeated `retval/release/adopt` logic centralized
 - keep public APIs unchanged
 - do not introduce public `ZendCallArgs` or `ZendCallResult`
 
@@ -501,7 +572,12 @@ PhpFunction.call(...)
 
 ### Second: Property And Class Reads
 
-Not implemented yet.
+Status: **partially started**.
+
+`ZendObject` now owns inherited object property reads for generated glue, and
+static property/class constant reads share ownership-parametrized private
+helpers. The remaining work is to make older `ZVal` object-property helpers
+delegate through `ZendObject` where that does not change ownership semantics.
 
 Then handle:
 
@@ -514,7 +590,11 @@ Be careful with `rv` and `res` ownership. Existing helper `adopt_read_result()` 
 
 ### Third: Compiler Output
 
-Not implemented yet.
+Status: **partially started**.
+
+Generated return glue now prefers `ctx.return()` / `PhpReturn`, and generated
+argument reads increasingly flow through `Context`, `ZExData`, `PhpArg`, and
+semantic wrappers. Direct C signatures still exist at Zend callback edges.
 
 Only after runtime helpers are stable should compiler output change.
 
@@ -591,3 +671,10 @@ Layer 4 semantic wrapper 直接调用 Layer 1/2 C boundary API。
 ```
 
 这通常说明缺一个 Layer 2 或 Layer 3 helper。
+
+深水区迁移时尤其要注意：
+
+- `ZVal` 对象属性读写可以继续收口到 `ZendObject`，这是低风险方向。
+- `call_with_zval_args(...)` 已经把调用路径里的 argv、retval、ownership adoption 集中了，下一步重点是命名和边界归属，而不是发明公开的 `ZendCallArgs`。
+- 需要 `ZVal`、`OwnershipKind`、`ZBox` 的 Layer 2 helper 现在不能直接搬进 `vphp/zend/` 子模块，因为 `vphp.zend` 已经是 parent module 的 C 声明依赖，反向引用 runtime 类型会制造依赖方向问题。
+- `prop_borrowed(...)`、`adopt_read_result(...)`、persistent/request 转换、closure binding、retained object/callable roots 都属于 ownership 敏感区，每次修改都要跑完整 vphptest 和相关生命周期探针。

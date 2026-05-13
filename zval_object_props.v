@@ -23,33 +23,15 @@ pub fn (v ZVal) get_prop(name string) ZVal {
 }
 
 pub fn (v ZVal) prop_borrowed(name string) ZVal {
-	if !v.is_object() {
-		return invalid_zval()
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .borrowed)
+	return ZendObject.from_zval(v).prop_borrowed(name)
 }
 
 pub fn (v ZVal) prop_owned_request(name string) ZVal {
-	if !v.is_object() {
-		return invalid_zval()
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .owned_request)
+	return ZendObject.from_zval(v).prop_owned_request(name)
 }
 
 pub fn (v ZVal) prop_owned_persistent(name string) ZVal {
-	if !v.is_object() {
-		return invalid_zval()
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	rv := C.vphp_new_zval()
-	res := C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
-	return adopt_read_result(rv, res, .owned_persistent)
+	return ZendObject.from_zval(v).prop_owned_persistent(name)
 }
 
 pub fn (v ZVal) prop(name string) ZVal {
@@ -57,35 +39,19 @@ pub fn (v ZVal) prop(name string) ZVal {
 }
 
 pub fn (v ZVal) set_prop(name string, value ZVal) {
-	if !v.is_object() || value.raw == 0 {
-		return
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	C.vphp_write_property_compat(obj, &char(name.str), name.len, value.raw)
+	ZendObject.from_zval(v).set_prop(name, value)
 }
 
 pub fn (v ZVal) has_prop(name string) bool {
-	if !v.is_object() {
-		return false
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	return C.vphp_has_property_compat(obj, &char(name.str), name.len) == 1
+	return ZendObject.from_zval(v).has_prop(name)
 }
 
 pub fn (v ZVal) isset_prop(name string) bool {
-	if !v.is_object() {
-		return false
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	return C.vphp_isset_property_compat(obj, &char(name.str), name.len) == 1
+	return ZendObject.from_zval(v).isset_prop(name)
 }
 
 pub fn (v ZVal) unset_prop(name string) {
-	if !v.is_object() {
-		return
-	}
-	obj := C.vphp_get_obj_from_zval(v.raw)
-	C.vphp_unset_property_compat(obj, &char(name.str), name.len)
+	ZendObject.from_zval(v).unset_prop(name)
 }
 
 // 快捷方式：属性 → string

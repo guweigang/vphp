@@ -20,23 +20,31 @@ fn call_with_zval_args(args []ZVal, ownership OwnershipKind, run fn (&C.zval, in
 	}
 }
 
-pub fn (v ZVal) method_owned_request(method string, args []ZVal) ZVal {
-	if v.raw == 0 || !v.is_object() {
+fn call_method_zval(receiver ZVal, method string, args []ZVal, ownership OwnershipKind) ZVal {
+	if receiver.raw == 0 || !receiver.is_object() {
 		return invalid_zval()
 	}
-
-	return call_with_zval_args(args, .owned_request, fn [v, method] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_method(v.raw, &char(method.str), method.len, retval, count, params)
+	return call_with_zval_args(args, ownership, fn [receiver, method] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_call_method(receiver.raw, &char(method.str), method.len, retval, count,
+			params)
 	})
 }
 
-pub fn (v ZVal) method_owned_persistent(method string, args []ZVal) ZVal {
-	if v.raw == 0 || !v.is_object() {
+fn call_callable_zval(callable ZVal, args []ZVal, ownership OwnershipKind) ZVal {
+	if callable.raw == 0 {
 		return invalid_zval()
 	}
-	return call_with_zval_args(args, .owned_persistent, fn [v, method] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_method(v.raw, &char(method.str), method.len, retval, count, params)
+	return call_with_zval_args(args, ownership, fn [callable] (retval &C.zval, count int, params &&C.zval) int {
+		return C.vphp_call_callable(callable.raw, retval, count, params)
 	})
+}
+
+pub fn (v ZVal) method_owned_request(method string, args []ZVal) ZVal {
+	return call_method_zval(v, method, args, .owned_request)
+}
+
+pub fn (v ZVal) method_owned_persistent(method string, args []ZVal) ZVal {
+	return call_method_zval(v, method, args, .owned_persistent)
 }
 
 pub fn (v ZVal) method(method string, args []ZVal) ZVal {
@@ -53,9 +61,7 @@ pub fn (v ZVal) call_owned_request(args []ZVal) ZVal {
 		framework_debug_log('zval.call_owned_request arg idx=${idx} raw=${usize(arg.raw)} valid=${arg.is_valid()} type=${arg.type_name()} class=${arg.class_name()}')
 	}
 
-	result := call_with_zval_args(args, .owned_request, fn [v] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_callable(v.raw, retval, count, params)
-	})
+	result := call_callable_zval(v, args, .owned_request)
 	if !result.is_valid() {
 		framework_debug_log('zval.call_owned_request failure raw=${usize(v.raw)}')
 		return invalid_zval()
@@ -65,12 +71,7 @@ pub fn (v ZVal) call_owned_request(args []ZVal) ZVal {
 }
 
 pub fn (v ZVal) call_owned_persistent(args []ZVal) ZVal {
-	if v.raw == 0 {
-		return invalid_zval()
-	}
-	return call_with_zval_args(args, .owned_persistent, fn [v] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_callable(v.raw, retval, count, params)
-	})
+	return call_callable_zval(v, args, .owned_persistent)
 }
 
 pub fn (v ZVal) call(args []ZVal) ZVal {
