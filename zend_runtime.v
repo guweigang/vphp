@@ -70,3 +70,23 @@ fn zend_request_startup() {
 fn zend_request_shutdown() {
 	C.vphp_request_shutdown()
 }
+
+fn zend_active_globals_ptr() voidptr {
+	return C.vphp_get_active_globals()
+}
+
+fn zend_autorelease_mark() int {
+	return C.vphp_autorelease_mark()
+}
+
+fn zend_autorelease_add(z &C.zval) {
+	C.vphp_autorelease_add(z)
+}
+
+fn zend_autorelease_forget(z &C.zval) {
+	C.vphp_autorelease_forget(z)
+}
+
+fn zend_autorelease_drain(mark int) {
+	C.vphp_autorelease_drain(mark)
+}

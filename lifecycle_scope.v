@@ -17,25 +17,25 @@ mut:
 }
 
 fn RequestScope.autorelease_mark() int {
-	return C.vphp_autorelease_mark()
+	return zend_autorelease_mark()
 }
 
 fn RequestScope.autorelease_add(z &C.zval) {
 	if z == 0 {
 		return
 	}
-	C.vphp_autorelease_add(z)
+	zend_autorelease_add(z)
 }
 
 fn RequestScope.autorelease_forget(z &C.zval) {
 	if z == 0 {
 		return
 	}
-	C.vphp_autorelease_forget(z)
+	zend_autorelease_forget(z)
 }
 
 fn RequestScope.autorelease_drain(mark int) {
-	C.vphp_autorelease_drain(mark)
+	zend_autorelease_drain(mark)
 }
 
 pub fn RequestScope.enter() int {
