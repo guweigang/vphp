@@ -43,18 +43,7 @@ pub fn PhpObject.current() ?PhpObject {
 }
 
 pub fn PhpObject.current_request_owned_zval() ZVal {
-	unsafe {
-		obj_raw := C.vphp_get_current_this_object()
-		if obj_raw == 0 {
-			return invalid_zval()
-		}
-		mut out := C.vphp_new_zval()
-		if out == 0 {
-			return invalid_zval()
-		}
-		C.vphp_wrap_existing_object(out, &C.zend_object(obj_raw))
-		return adopt_raw_with_ownership(out, .owned_request)
-	}
+	return ZendObject.current().to_request_owned_zval()
 }
 
 pub fn (o PhpObject) to_zval() ZVal {

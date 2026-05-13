@@ -30,6 +30,14 @@ pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
 	}
 }
 
+pub fn ZendObject.current() ZendObject {
+	obj_raw := C.vphp_get_current_this_object()
+	if obj_raw == 0 {
+		return ZendObject.invalid()
+	}
+	return ZendObject.from_ptr(obj_raw)
+}
+
 pub fn ZendObject.from_zval(v ZVal) ZendObject {
 	if v.raw == 0 || !v.is_object() {
 		return ZendObject.invalid()
@@ -39,6 +47,34 @@ pub fn ZendObject.from_zval(v ZVal) ZendObject {
 
 pub fn (obj ZendObject) is_valid() bool {
 	return obj.raw != 0
+}
+
+pub fn (obj ZendObject) add_ref() {
+	if !obj.is_valid() {
+		return
+	}
+	C.vphp_object_addref(obj.raw)
+}
+
+pub fn (obj ZendObject) release() {
+	if !obj.is_valid() {
+		return
+	}
+	C.vphp_object_release(obj.raw)
+}
+
+pub fn (obj ZendObject) to_request_owned_zval() ZVal {
+	if !obj.is_valid() {
+		return invalid_zval()
+	}
+	unsafe {
+		mut out := C.vphp_new_zval()
+		if out == 0 {
+			return invalid_zval()
+		}
+		C.vphp_wrap_existing_object(out, obj.raw)
+		return adopt_raw_with_ownership(out, .owned_request)
+	}
 }
 
 fn (obj ZendObject) read_property_with_ownership(name string, ownership OwnershipKind) ZVal {

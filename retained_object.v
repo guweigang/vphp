@@ -13,13 +13,13 @@ pub fn RetainedObject.from_zval(z ZVal) ?RetainedObject {
 	if !z.is_valid() || !z.is_object() {
 		return none
 	}
-	obj := C.vphp_get_obj_from_zval(z.raw)
-	if isnil(obj) {
+	obj := ZendObject.from_zval(z)
+	if !obj.is_valid() {
 		return none
 	}
-	C.vphp_object_addref(obj)
+	obj.add_ref()
 	return RetainedObject{
-		raw: obj
+		raw: obj.raw
 	}
 }
 
@@ -31,24 +31,14 @@ pub fn (r RetainedObject) clone() RetainedObject {
 	if r.raw == unsafe { nil } {
 		return RetainedObject.invalid()
 	}
-	C.vphp_object_addref(r.raw)
+	ZendObject.from_raw(r.raw).add_ref()
 	return RetainedObject{
 		raw: r.raw
 	}
 }
 
 pub fn (r RetainedObject) to_request_owned_zval() ZVal {
-	if r.raw == unsafe { nil } {
-		return invalid_zval()
-	}
-	unsafe {
-		mut out := C.vphp_new_zval()
-		if out == 0 {
-			return invalid_zval()
-		}
-		C.vphp_wrap_existing_object(out, r.raw)
-		return adopt_raw_with_ownership(out, .owned_request)
-	}
+	return ZendObject.from_raw(r.raw).to_request_owned_zval()
 }
 
 pub fn (r RetainedObject) with_request_zval[T](run fn (ZVal) T) T {
@@ -64,7 +54,7 @@ pub fn (r RetainedObject) with_request_zval[T](run fn (ZVal) T) T {
 }
 
 pub fn (r RetainedObject) with_request_value[T](run fn (PhpValue) T) T {
-	return r.with_request_zval[T](fn [run] [T] (z ZVal) T {
+	return r.with_request_zval[T](fn [run] [T](z ZVal) T {
 		return run(PhpValue.from_zval(z))
 	})
 }
@@ -86,6 +76,6 @@ pub fn (mut r RetainedObject) release() {
 	if r.raw == unsafe { nil } {
 		return
 	}
-	C.vphp_object_release(r.raw)
+	ZendObject.from_raw(r.raw).release()
 	r.raw = unsafe { nil }
 }
