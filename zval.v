@@ -62,6 +62,10 @@ fn zend_disown_zval(z &C.zval) {
 	C.vphp_disown_zval(z)
 }
 
+fn zend_copy_zval(dst &C.zval, src &C.zval) {
+	C.ZVAL_COPY(dst, src)
+}
+
 fn invalid_zval() ZVal {
 	return unsafe {
 		ZVal{
@@ -106,7 +110,7 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 		owned:         true
 		is_persistent: ownership == .owned_persistent
 	}
-	C.ZVAL_COPY(out.raw, src)
+	zend_copy_zval(out.raw, src)
 	if ownership == .owned_request {
 		RequestScope.autorelease_add(out.raw)
 		if out.is_object() {

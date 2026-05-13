@@ -10,7 +10,7 @@ pub fn (v ZVal) copy_from(value ZVal) {
 		v.set_null()
 		return
 	}
-	unsafe { C.ZVAL_COPY(v.raw, value.raw) }
+	zend_copy_zval(v.raw, value.raw)
 }
 
 // 将 V 类型写入 Zend Value

@@ -577,6 +577,8 @@ each public receiver method. ZVal reference, resource, and type/callable
 receiver methods follow the same pattern through private Zend helpers. ZVal
 factory and foreach helpers also route creation and iteration bridge calls
 through private helpers, leaving the callback wrappers as the explicit ABI edge.
+ZVal copy/adoption paths now use a private `zend_copy_zval(...)` helper instead
+of spelling `ZVAL_COPY` at each copy site.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
