@@ -536,7 +536,9 @@ methods over direct raw field construction where no ownership semantics change.
 Array/object write helpers such as associative zval insertion, next-value
 insertion, object initialization, and string property updates are also exposed as
 `ZVal` receiver methods, so semantic wrappers can avoid direct `C.vphp_array_*`
-and `C.vphp_object_*` calls for those paths.
+and `C.vphp_object_*` calls for those paths. Request-scope autorelease calls,
+active extension globals access, object metadata reads, and ZVal callable/class
+invocation bridge calls are now routed through private Zend wrapper helpers.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
@@ -547,7 +549,11 @@ Status: **partially started**.
 `ZVal` call, method, construct, and static-method paths now share
 `call_with_zval_args(...)`, so argv conversion, retval allocation, Zend call
 result handling, and ownership adoption are no longer repeated in every method.
-The remaining work is naming and layering, not inventing a new public concept.
+The direct `C.vphp_call_*`, `C.vphp_new_instance(...)`, and static
+property/class-constant bridge calls are routed through private Zend wrapper
+helpers. The remaining work is to move the helper file into the eventual
+`vphp/zend/` layout and, only if it proves stable, hide the internal
+`&C.zval`/`&&C.zval` callback signature used by `call_with_zval_args(...)`.
 
 Start with:
 
@@ -580,8 +586,10 @@ Status: **partially started**.
 
 `ZendObject` now owns inherited object property reads for generated glue, and
 static property/class constant reads share ownership-parametrized private
-helpers. The remaining work is to make older `ZVal` object-property helpers
-delegate through `ZendObject` where that does not change ownership semantics.
+helpers. ZVal object class-name, parent-class-name, and internal/user-class
+metadata reads now delegate to private Zend object helpers. The remaining work
+is to make older `ZVal` object-property helpers delegate through `ZendObject`
+where that does not change ownership semantics.
 
 Then handle:
 
@@ -598,7 +606,10 @@ Status: **partially started**.
 
 Generated return glue now prefers `ctx.return()` / `PhpReturn`, and generated
 argument reads increasingly flow through `Context`, `ZExData`, `PhpArg`, and
-semantic wrappers. Direct C signatures still exist at Zend callback edges.
+semantic wrappers. Direct C signatures still exist at Zend callback edges,
+especially exported function/method wrappers, closure bridges, and generated
+class property handlers. Those signatures are still necessary boundary points
+until a dedicated compiler-boundary abstraction exists.
 
 Only after runtime helpers are stable should compiler output change.
 
