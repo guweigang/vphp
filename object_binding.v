@@ -12,22 +12,6 @@ pub fn (z ZVal) bind_borrowed_object(handlers voidptr) {
 	z.bind_object(handlers, .borrowed)
 }
 
-pub fn (z ZVal) ensure_object_binding(handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
-	return ZendObject.from_zval(z).ensure_binding(handlers, ownership)
-}
-
-pub fn (z ZVal) ensure_owned_object_binding(handlers voidptr) &C.vphp_object_wrapper {
-	return z.ensure_object_binding(handlers, .owned_request)
-}
-
-pub fn (z ZVal) ensure_borrowed_object_binding(handlers voidptr) &C.vphp_object_wrapper {
-	return z.ensure_object_binding(handlers, .borrowed)
-}
-
-pub fn (z ZVal) init_owned_object(handlers voidptr) {
-	ZendObject.from_zval(z).init_owned_instance(handlers)
-}
-
 fn return_unbound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr) {
 	C.vphp_return_obj(ret.raw_zval(), v_ptr, ce)
 }

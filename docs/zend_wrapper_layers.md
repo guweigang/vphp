@@ -589,7 +589,9 @@ of `ZVal` receiver methods, and `ZendObject` receiver methods now delegate
 refcount, handler binding, wrapper lookup, and existing-object wrapping through
 private Zend object helpers. Runtime task entrypoints now write returns through
 `ctx.return()` / `PhpReturn` receiver methods instead of the older
-`ctx.return_*` convenience API.
+`ctx.return_*` convenience API. Unused receiver helpers that returned
+`&C.vphp_object_wrapper` were removed from `object_binding.v`; binding remains
+available through the higher-level `ZVal.bind_object(...)` receiver API.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
