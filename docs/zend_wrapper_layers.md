@@ -447,9 +447,9 @@ extension author API:
   read/write semantics have one owner.
 - static property and class constant reads can keep sharing
   ownership-parametrized private helpers.
-- call helpers can keep the current `call_with_zval_args(...)` shape while
-  progressively gaining clearer private names like `call_callable_zval(...)`,
-  `call_method_zval(...)`, and `construct_zval(...)`.
+- call helpers can keep the current `call_zval_target(...)` shape while
+  progressively gaining clearer private target wrappers like
+  `call_callable_zval(...)`, `call_method_zval(...)`, and `construct_zval(...)`.
 - compiler-generated code should continue moving from raw return helpers toward
   `Context.from_entry(...)`, `ctx.return()`, `ZExData`, `ZendObject`, and
   semantic wrappers.
@@ -530,9 +530,11 @@ generated body. Inherited property reads now use
 `C.zval{}` scratch values for that path. Generated class handler exports now
 use `ZendClassHandlers.new(...)` instead of constructing `C.vphp_class_handlers`
 directly in generated `bridge.v`. ZVal call/construct/static-method paths now
-share a private `call_with_zval_args(...)` helper, so retval allocation,
+share a private `call_zval_target(...)` helper, so retval allocation,
 argv conversion, Zend result handling, and ownership adoption live in one
-place. Inherited scalar property loading uses `ZendObject.prop_*_or(...)`
+place. Call intent is represented by a private `ZendCallTarget`, keeping raw
+`&C.zval` / `&&C.zval` argv details inside the innermost call boundary.
+Inherited scalar property loading uses `ZendObject.prop_*_or(...)`
 helpers that borrow only inside the wrapper and immediately copy into V scalar
 values; generated code no longer needs `prop_owned_request(...)` for that path.
 `PhpIncludeFile` now shares the same request-owned adoption path as other
@@ -600,13 +602,15 @@ incrementally.
 Status: **partially started**.
 
 `ZVal` call, method, construct, and static-method paths now share
-`call_with_zval_args(...)`, so argv conversion, retval allocation, Zend call
+`call_zval_target(...)`, so argv conversion, retval allocation, Zend call
 result handling, and ownership adoption are no longer repeated in every method.
+The previous raw callback shape has been replaced by a private
+`ZendCallTarget`, and `&C.zval` / `&&C.zval` argv details are confined to
+`call_zval_target(...)` and `zend_invoke_call_target(...)`.
 The direct `C.vphp_call_*`, `C.vphp_new_instance(...)`, and static
 property/class-constant bridge calls are routed through private Zend wrapper
 helpers. The remaining work is to move the helper file into the eventual
-`vphp/zend/` layout and, only if it proves stable, hide the internal
-`&C.zval`/`&&C.zval` callback signature used by `call_with_zval_args(...)`.
+`vphp/zend/` layout when dependency direction allows it.
 
 Start with:
 
@@ -619,6 +623,7 @@ Target:
 
 - keep repeated `argv/p_args` construction centralized
 - keep repeated `retval/release/adopt` logic centralized
+- keep `ZendCallTarget` private
 - keep public APIs unchanged
 - do not introduce public `ZendCallArgs` or `ZendCallResult`
 
@@ -629,7 +634,8 @@ PhpFunction.call(...)
   -> php_arg_inputs_to_zvals(...)
   -> ZVal.call_owned_request(...)
   -> call_function_zval(...)
-  -> private C-boundary helper
+  -> call_zval_target(...)
+  -> zend_invoke_call_target(...)
   -> C.vphp_call_php_func(...)
 ```
 
@@ -743,6 +749,6 @@ Layer 4 semantic wrapper 直接调用 Layer 1/2 C boundary API。
 深水区迁移时尤其要注意：
 
 - `ZVal` 对象属性读写可以继续收口到 `ZendObject`，这是低风险方向。
-- `call_with_zval_args(...)` 已经把调用路径里的 argv、retval、ownership adoption 集中了，下一步重点是命名和边界归属，而不是发明公开的 `ZendCallArgs`。
+- `call_zval_target(...)` 已经把调用路径里的 argv、retval、ownership adoption 集中了，调用意图由私有 `ZendCallTarget` 表达；下一步重点是边界归属，而不是发明公开的 `ZendCallArgs`。
 - 需要 `ZVal`、`OwnershipKind`、`ZBox` 的 Layer 2 helper 现在不能直接搬进 `vphp/zend/` 子模块，因为 `vphp.zend` 已经是 parent module 的 C 声明依赖，反向引用 runtime 类型会制造依赖方向问题。
 - `prop_borrowed(...)`、`adopt_read_result(...)`、persistent/request 转换、closure binding、retained object/callable roots 都属于 ownership 敏感区，每次修改都要跑完整 vphptest 和相关生命周期探针。

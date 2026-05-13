@@ -2,22 +2,48 @@ module vphp
 
 import vphp.zend as _
 
-fn zend_call_method(receiver ZVal, method string, retval &C.zval, count int, params &&C.zval) int {
-	return C.vphp_call_method(receiver.raw, &char(method.str), method.len, retval, count, params)
+struct ZendMethodCall {
+	receiver ZVal
+	method   string
 }
 
-fn zend_call_callable(callable ZVal, retval &C.zval, count int, params &&C.zval) int {
-	return C.vphp_call_callable(callable.raw, retval, count, params)
+struct ZendCallableCall {
+	callable ZVal
 }
 
-fn zend_new_instance(class_name ZVal, retval &C.zval, count int, params &&C.zval) int {
-	return C.vphp_new_instance(class_name.string_ptr(), class_name.string_len(), retval, count,
-		params)
+struct ZendConstructCall {
+	class_name ZVal
 }
 
-fn zend_call_static_method(class_name ZVal, method string, retval &C.zval, count int, params &&C.zval) int {
-	return C.vphp_call_static_method(class_name.string_ptr(), class_name.string_len(), &char(method.str),
-		method.len, retval, count, params)
+struct ZendStaticMethodCall {
+	class_name ZVal
+	method     string
+}
+
+type ZendCallTarget = ZendCallableCall
+	| ZendConstructCall
+	| ZendMethodCall
+	| ZendStaticMethodCall
+
+fn zend_invoke_call_target(target ZendCallTarget, retval &C.zval, count int, params &&C.zval) int {
+	return match target {
+		ZendMethodCall {
+			C.vphp_call_method(target.receiver.raw, &char(target.method.str), target.method.len,
+				retval, count, params)
+		}
+		ZendCallableCall {
+			C.vphp_call_callable(target.callable.raw, retval, count, params)
+		}
+		ZendConstructCall {
+			C.vphp_new_instance(target.class_name.string_ptr(), target.class_name.string_len(),
+				retval, count, params)
+		}
+		ZendStaticMethodCall {
+			C.vphp_call_static_method(target.class_name.string_ptr(),
+				target.class_name.string_len(), &char(target.method.str), target.method.len,
+				retval, count, params)
+		}
+	}
 }
 
 fn zend_read_static_property(class_name ZVal, name string, rv &C.zval) &C.zval {

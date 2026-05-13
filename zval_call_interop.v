@@ -1,6 +1,6 @@
 module vphp
 
-fn call_with_zval_args(args []ZVal, ownership OwnershipKind, run fn (&C.zval, int, &&C.zval) int) ZVal {
+fn call_zval_target(target ZendCallTarget, args []ZVal, ownership OwnershipKind) ZVal {
 	unsafe {
 		retval := zend_new_zval()
 		mut argv := []&C.zval{cap: args.len}
@@ -11,7 +11,7 @@ fn call_with_zval_args(args []ZVal, ownership OwnershipKind, run fn (&C.zval, in
 		if argv.len > 0 {
 			p_args = &argv[0]
 		}
-		res := run(retval, args.len, p_args)
+		res := zend_invoke_call_target(target, retval, args.len, p_args)
 		if res == -1 {
 			zend_release_zval(retval)
 			return invalid_zval()
@@ -24,18 +24,19 @@ fn call_method_zval(receiver ZVal, method string, args []ZVal, ownership Ownersh
 	if receiver.raw == 0 || !receiver.is_object() {
 		return invalid_zval()
 	}
-	return call_with_zval_args(args, ownership, fn [receiver, method] (retval &C.zval, count int, params &&C.zval) int {
-		return zend_call_method(receiver, method, retval, count, params)
-	})
+	return call_zval_target(ZendMethodCall{
+		receiver: receiver
+		method:   method
+	}, args, ownership)
 }
 
 fn call_callable_zval(callable ZVal, args []ZVal, ownership OwnershipKind) ZVal {
 	if callable.raw == 0 {
 		return invalid_zval()
 	}
-	return call_with_zval_args(args, ownership, fn [callable] (retval &C.zval, count int, params &&C.zval) int {
-		return zend_call_callable(callable, retval, count, params)
-	})
+	return call_zval_target(ZendCallableCall{
+		callable: callable
+	}, args, ownership)
 }
 
 pub fn (v ZVal) method_owned_request(method string, args []ZVal) ZVal {

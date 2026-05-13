@@ -8,18 +8,19 @@ fn construct_zval(class_name ZVal, args []ZVal, ownership OwnershipKind) ZVal {
 	if class_name.raw == 0 || !class_name.is_string() {
 		return invalid_zval()
 	}
-	return call_with_zval_args(args, ownership, fn [class_name] (retval &C.zval, count int, params &&C.zval) int {
-		return zend_new_instance(class_name, retval, count, params)
-	})
+	return call_zval_target(ZendConstructCall{
+		class_name: class_name
+	}, args, ownership)
 }
 
 fn call_static_method_zval(class_name ZVal, method string, args []ZVal, ownership OwnershipKind) ZVal {
 	if class_name.raw == 0 || !class_name.is_string() {
 		return invalid_zval()
 	}
-	return call_with_zval_args(args, ownership, fn [class_name, method] (retval &C.zval, count int, params &&C.zval) int {
-		return zend_call_static_method(class_name, method, retval, count, params)
-	})
+	return call_zval_target(ZendStaticMethodCall{
+		class_name: class_name
+		method:     method
+	}, args, ownership)
 }
 
 pub fn (v ZVal) construct_owned_request(args []ZVal) ZVal {
