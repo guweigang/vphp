@@ -64,13 +64,27 @@ pub fn (v ZVal) to_string() string {
 
 pub fn (v ZVal) get_string() string {
 	unsafe {
-		ptr := C.VPHP_Z_STRVAL(v.raw)
-		len := C.VPHP_Z_STRLEN(v.raw)
+		ptr := v.string_ptr()
+		len := v.string_len()
 		if ptr == 0 {
 			return ''
 		}
 		return ptr.vstring_with_len(len).clone()
 	}
+}
+
+fn (v ZVal) string_ptr() &char {
+	if !v.is_valid() {
+		return unsafe { nil }
+	}
+	return C.VPHP_Z_STRVAL(v.raw)
+}
+
+fn (v ZVal) string_len() int {
+	if !v.is_valid() {
+		return 0
+	}
+	return C.VPHP_Z_STRLEN(v.raw)
 }
 
 // ======== 写入 — 标量类型 ========

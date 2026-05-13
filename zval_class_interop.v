@@ -9,8 +9,8 @@ fn construct_zval(class_name ZVal, args []ZVal, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	return call_with_zval_args(args, ownership, fn [class_name] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_new_instance(C.VPHP_Z_STRVAL(class_name.raw),
-			C.VPHP_Z_STRLEN(class_name.raw), retval, count, params)
+		return C.vphp_new_instance(class_name.string_ptr(), class_name.string_len(), retval, count,
+			params)
 	})
 }
 
@@ -19,8 +19,8 @@ fn call_static_method_zval(class_name ZVal, method string, args []ZVal, ownershi
 		return invalid_zval()
 	}
 	return call_with_zval_args(args, ownership, fn [class_name, method] (retval &C.zval, count int, params &&C.zval) int {
-		return C.vphp_call_static_method(C.VPHP_Z_STRVAL(class_name.raw),
-			C.VPHP_Z_STRLEN(class_name.raw), &char(method.str), method.len, retval, count, params)
+		return C.vphp_call_static_method(class_name.string_ptr(), class_name.string_len(),
+			&char(method.str), method.len, retval, count, params)
 	})
 }
 
@@ -49,8 +49,8 @@ fn (v ZVal) read_static_prop_with_ownership(name string, ownership OwnershipKind
 		return invalid_zval()
 	}
 	rv := C.vphp_new_zval()
-	res := C.vphp_read_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
+	res := C.vphp_read_static_property_compat(v.string_ptr(), v.string_len(), &char(name.str),
+		name.len, rv)
 	return adopt_read_result(rv, res, ownership)
 }
 
@@ -59,8 +59,8 @@ fn (v ZVal) read_const_with_ownership(name string, ownership OwnershipKind) ZVal
 		return invalid_zval()
 	}
 	rv := C.vphp_new_zval()
-	res := C.vphp_read_class_constant_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, rv)
+	res := C.vphp_read_class_constant_compat(v.string_ptr(), v.string_len(), &char(name.str),
+		name.len, rv)
 	return adopt_read_result(rv, res, ownership)
 }
 
@@ -105,6 +105,6 @@ pub fn (v ZVal) set_static_prop(name string, value ZVal) {
 	if v.raw == 0 || !v.is_string() || value.raw == 0 {
 		return
 	}
-	C.vphp_write_static_property_compat(C.VPHP_Z_STRVAL(v.raw), C.VPHP_Z_STRLEN(v.raw),
-		&char(name.str), name.len, value.raw)
+	C.vphp_write_static_property_compat(v.string_ptr(), v.string_len(), &char(name.str), name.len,
+		value.raw)
 }
