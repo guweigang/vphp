@@ -5,7 +5,7 @@ import vphp.zend as _
 fn C.vphp_allocate_contiguous_object(ce voidptr, v_size usize) voidptr
 
 pub struct ZendObject {
-	raw &C.zend_object
+	raw &C.zend_object = unsafe { nil }
 }
 
 pub fn ZendObject.invalid() ZendObject {

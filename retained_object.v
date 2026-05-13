@@ -1,12 +1,14 @@
 module vphp
 
 pub struct RetainedObject {
-pub mut:
-	raw &C.zend_object = unsafe { nil }
+mut:
+	object ZendObject
 }
 
 pub fn RetainedObject.invalid() RetainedObject {
-	return RetainedObject{}
+	return RetainedObject{
+		object: ZendObject.invalid()
+	}
 }
 
 pub fn RetainedObject.from_zval(z ZVal) ?RetainedObject {
@@ -19,26 +21,26 @@ pub fn RetainedObject.from_zval(z ZVal) ?RetainedObject {
 	}
 	obj.add_ref()
 	return RetainedObject{
-		raw: obj.raw
+		object: obj
 	}
 }
 
 pub fn (r RetainedObject) is_valid() bool {
-	return r.raw != unsafe { nil }
+	return r.object.is_valid()
 }
 
 pub fn (r RetainedObject) clone() RetainedObject {
-	if r.raw == unsafe { nil } {
+	if !r.object.is_valid() {
 		return RetainedObject.invalid()
 	}
-	ZendObject.from_raw(r.raw).add_ref()
+	r.object.add_ref()
 	return RetainedObject{
-		raw: r.raw
+		object: r.object
 	}
 }
 
 pub fn (r RetainedObject) to_request_owned_zval() ZVal {
-	return ZendObject.from_raw(r.raw).to_request_owned_zval()
+	return r.object.to_request_owned_zval()
 }
 
 pub fn (r RetainedObject) with_request_zval[T](run fn (ZVal) T) T {
@@ -73,9 +75,9 @@ pub fn (r RetainedObject) with_request_object[T](run fn (PhpObject) T) ?T {
 }
 
 pub fn (mut r RetainedObject) release() {
-	if r.raw == unsafe { nil } {
+	if !r.object.is_valid() {
 		return
 	}
-	ZendObject.from_raw(r.raw).release()
-	r.raw = unsafe { nil }
+	r.object.release()
+	r.object = ZendObject.invalid()
 }
