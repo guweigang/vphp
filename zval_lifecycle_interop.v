@@ -24,6 +24,17 @@ pub fn (mut v ZVal) release() {
 	v.is_persistent = false
 }
 
+pub fn (mut v ZVal) disown() {
+	if v.raw == 0 {
+		return
+	}
+	RequestScope.autorelease_forget(v.raw)
+	C.vphp_disown_zval(v.raw)
+	v.raw = unsafe { nil }
+	v.owned = false
+	v.is_persistent = false
+}
+
 pub fn (v ZVal) dup_persistent() ZVal {
 	if v.raw == 0 {
 		return invalid_zval()

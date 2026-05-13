@@ -31,11 +31,11 @@ pub fn (c InteropErrorClass) str() string {
 pub struct PhpException {}
 
 pub fn PhpException.raise(msg string, code int) {
-	unsafe { C.vphp_throw(&char(msg.str), code) }
+	zend_throw_exception(msg, code)
 }
 
 pub fn PhpException.raise_class(class_name string, msg string, code int) {
-	unsafe { C.vphp_throw_class(&char(class_name.str), &char(msg.str), code) }
+	zend_throw_exception_class(class_name, msg, code)
 }
 
 pub fn PhpException.raise_object(mut exception ZVal) {
@@ -43,29 +43,21 @@ pub fn PhpException.raise_object(mut exception ZVal) {
 		PhpException.raise('exception object must be a valid object', 0)
 		return
 	}
-	unsafe {
-		C.vphp_disown_zval(exception.raw)
-		C.vphp_throw_object(exception.raw)
-	}
-	exception.raw = unsafe { nil }
-	exception.owned = false
+	raw := exception.raw
+	exception.disown()
+	zend_throw_exception_object(raw)
 }
 
 pub fn PhpException.has_current() bool {
-	return C.vphp_has_exception()
+	return zend_has_exception()
 }
 
 pub fn PhpException.current_message() string {
-	mut buffer := []u8{len: 2048}
-	written := unsafe { C.vphp_exception_message(&char(&buffer[0]), buffer.len) }
-	if written <= 0 {
-		return ''
-	}
-	return unsafe { (&char(&buffer[0])).vstring_with_len(written).clone() }
+	return zend_exception_message()
 }
 
 pub fn PhpException.clear() {
-	C.vphp_clear_exception()
+	zend_clear_exception()
 }
 
 pub fn PhpException.raise_interop(class InteropErrorClass, msg string, code int) {
@@ -77,9 +69,7 @@ pub fn PhpException.raise_from_error(class InteropErrorClass, err IError, code i
 }
 
 pub fn PhpException.report(level int, msg string) {
-	unsafe {
-		C.vphp_error(level, &char(msg.str))
-	}
+	zend_report_error(level, msg)
 }
 
 // 抛出 PHP 异常

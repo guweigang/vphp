@@ -8,9 +8,7 @@ pub fn PhpOutput.write(msg string) {
 	if msg.len == 0 {
 		return
 	}
-	unsafe {
-		C.vphp_output_write(&char(msg.str), msg.len)
-	}
+	zend_output_write(msg)
 }
 
 pub fn PhpOutput.line(msg string) {
