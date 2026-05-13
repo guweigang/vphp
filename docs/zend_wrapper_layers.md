@@ -539,6 +539,14 @@ insertion, object initialization, and string property updates are also exposed a
 and `C.vphp_object_*` calls for those paths. Request-scope autorelease calls,
 active extension globals access, object metadata reads, and ZVal callable/class
 invocation bridge calls are now routed through private Zend wrapper helpers.
+The previously declared-but-unimplemented
+`vphp_allocate_contiguous_object(...)` C bridge now has a real declaration and
+implementation, with V access routed through `zend_allocate_contiguous_object`.
+Direct PHP allocator usage for saved closures and task handles is now routed
+through private `zend_emalloc` / `zend_efree` helpers. ZVal release and disown
+paths now use private `zend_release_zval*` / `zend_disown_zval` helpers, so
+failure cleanup in include/call/read helpers no longer calls the release C API
+directly.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
