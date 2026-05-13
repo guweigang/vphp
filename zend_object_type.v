@@ -63,6 +63,52 @@ pub fn (obj ZendObject) release() {
 	C.vphp_object_release(obj.raw)
 }
 
+pub fn (obj ZendObject) bind_handlers(handlers voidptr, ownership OwnershipKind) {
+	if !obj.is_valid() {
+		return
+	}
+	match ownership {
+		.borrowed {
+			C.vphp_bind_borrowed_handlers(obj.raw, handlers)
+		}
+		.owned_request, .owned_persistent {
+			C.vphp_bind_owned_handlers(obj.raw, handlers)
+		}
+	}
+}
+
+pub fn (obj ZendObject) ensure_binding(handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
+	if !obj.is_valid() {
+		return unsafe { nil }
+	}
+	return match ownership {
+		.borrowed {
+			C.vphp_ensure_borrowed_instance_binding(obj.raw, handlers)
+		}
+		.owned_request, .owned_persistent {
+			C.vphp_ensure_owned_instance_binding(obj.raw, handlers)
+		}
+	}
+}
+
+pub fn (obj ZendObject) init_owned_instance(handlers voidptr) {
+	if !obj.is_valid() {
+		return
+	}
+	C.vphp_init_owned_instance(obj.raw, handlers)
+}
+
+pub fn (obj ZendObject) bound_v_ptr() voidptr {
+	if !obj.is_valid() {
+		return unsafe { nil }
+	}
+	wrapper := C.vphp_obj_from_obj(obj.raw)
+	if isnil(wrapper) {
+		return unsafe { nil }
+	}
+	return wrapper.v_ptr
+}
+
 pub fn (obj ZendObject) to_request_owned_zval() ZVal {
 	if !obj.is_valid() {
 		return invalid_zval()

@@ -224,12 +224,7 @@ pub fn (arg PhpArg) as_v_opt[T]() ?T {
 
 pub fn (arg PhpArg) raw_obj() voidptr {
 	val := arg.zval()
-	if !val.is_valid() || !val.is_object() {
-		return unsafe { nil }
-	}
-	obj := C.vphp_get_obj_from_zval(val.raw)
-	wrapper := C.vphp_obj_from_obj(obj)
-	return wrapper.v_ptr
+	return ZendObject.from_zval(val).bound_v_ptr()
 }
 
 pub fn PhpArgs.new(items []PhpArg) PhpArgs {
