@@ -124,7 +124,7 @@ pub fn (obj ZendObject) to_request_owned_zval() ZVal {
 		return invalid_zval()
 	}
 	unsafe {
-		mut out := C.vphp_new_zval()
+		mut out := zend_new_zval()
 		if out == 0 {
 			return invalid_zval()
 		}
@@ -137,7 +137,7 @@ fn (obj ZendObject) read_property_with_ownership(name string, ownership Ownershi
 	if !obj.is_valid() {
 		return invalid_zval()
 	}
-	rv := C.vphp_new_zval()
+	rv := zend_new_zval()
 	res := C.vphp_read_property_compat(obj.raw, &char(name.str), name.len, rv)
 	return adopt_read_result(rv, res, ownership)
 }

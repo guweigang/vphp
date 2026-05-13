@@ -2,7 +2,7 @@ module vphp
 
 fn call_with_zval_args(args []ZVal, ownership OwnershipKind, run fn (&C.zval, int, &&C.zval) int) ZVal {
 	unsafe {
-		retval := C.vphp_new_zval()
+		retval := zend_new_zval()
 		mut argv := []&C.zval{cap: args.len}
 		for arg in args {
 			argv << arg.raw

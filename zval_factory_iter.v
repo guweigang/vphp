@@ -5,7 +5,7 @@ module vphp
 // 创建一个 null ZVal
 pub fn ZVal.new_null() ZVal {
 	unsafe {
-		z := C.vphp_new_zval()
+		z := zend_new_zval()
 		C.vphp_set_null(z)
 		RequestScope.autorelease_add(z)
 		return ZVal{
@@ -18,7 +18,7 @@ pub fn ZVal.new_null() ZVal {
 // 创建一个 int ZVal
 pub fn ZVal.new_int(n i64) ZVal {
 	unsafe {
-		z := C.vphp_new_zval()
+		z := zend_new_zval()
 		C.vphp_set_lval(z, n)
 		RequestScope.autorelease_add(z)
 		return ZVal{
@@ -31,7 +31,7 @@ pub fn ZVal.new_int(n i64) ZVal {
 // 创建一个 float ZVal
 pub fn ZVal.new_float(f f64) ZVal {
 	unsafe {
-		z := C.vphp_new_zval()
+		z := zend_new_zval()
 		C.vphp_set_double(z, f)
 		RequestScope.autorelease_add(z)
 		return ZVal{
@@ -44,7 +44,7 @@ pub fn ZVal.new_float(f f64) ZVal {
 // 创建一个 bool ZVal
 pub fn ZVal.new_bool(b bool) ZVal {
 	unsafe {
-		z := C.vphp_new_zval()
+		z := zend_new_zval()
 		C.vphp_set_bool(z, b)
 		RequestScope.autorelease_add(z)
 		return ZVal{

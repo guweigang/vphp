@@ -42,6 +42,14 @@ fn C.vphp_release_zval(z &C.zval)
 fn C.vphp_release_zval_persistent(z &C.zval)
 fn C.vphp_disown_zval(z &C.zval)
 
+fn zend_new_zval() &C.zval {
+	return C.vphp_new_zval()
+}
+
+fn zend_new_persistent_zval() &C.zval {
+	return C.vphp_new_persistent_zval()
+}
+
 fn zend_release_zval(z &C.zval) {
 	C.vphp_release_zval(z)
 }
@@ -91,9 +99,9 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 	}
 	mut out := ZVal{
 		raw:           if ownership == .owned_persistent {
-			C.vphp_new_persistent_zval()
+			zend_new_persistent_zval()
 		} else {
-			C.vphp_new_zval()
+			zend_new_zval()
 		}
 		owned:         true
 		is_persistent: ownership == .owned_persistent

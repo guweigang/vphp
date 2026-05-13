@@ -147,7 +147,7 @@ pub fn (v ZVal) from_v[T](value T) ! {
 // 便捷工厂：从 V 类型直接创建 Zend Value 包装
 pub fn new_zval_from[T](value T) !ZVal {
 	mut out := ZVal{
-		raw:   C.vphp_new_zval()
+		raw:   zend_new_zval()
 		owned: true
 	}
 	RequestScope.autorelease_add(out.raw)

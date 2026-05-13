@@ -32,7 +32,7 @@ fn (v DynValue) is_persistent_safe() bool {
 
 fn (v DynValue) request_owned() RequestOwnedZBox {
 	mut out := ZVal{
-		raw:   C.vphp_new_zval()
+		raw:   zend_new_zval()
 		owned: true
 	}
 	v.to_zval(mut out) or {
