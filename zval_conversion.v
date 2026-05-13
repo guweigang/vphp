@@ -5,38 +5,30 @@ module vphp
 // Ownership-aware code should prefer `RequestBorrowedZBox`,
 // `RequestOwnedZBox`, and `PersistentOwnedZBox`.
 
+pub fn (v ZVal) copy_from(value ZVal) {
+	if !value.is_valid() {
+		v.set_null()
+		return
+	}
+	unsafe { C.ZVAL_COPY(v.raw, value.raw) }
+}
+
 // 将 V 类型写入 Zend Value
 pub fn (v ZVal) from_v[T](value T) ! {
 	$if T is ZVal {
-		if !value.is_valid() {
-			v.set_null()
-			return
-		}
-		unsafe { C.ZVAL_COPY(v.raw, value.raw) }
+		v.copy_from(value)
 		return
 	}
 	$if T is RequestBorrowedZBox {
-		if !value.is_valid() {
-			v.set_null()
-			return
-		}
-		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
+		v.copy_from(value.to_zval())
 		return
 	}
 	$if T is RequestOwnedZBox {
-		if !value.is_valid() {
-			v.set_null()
-			return
-		}
-		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
+		v.copy_from(value.to_zval())
 		return
 	}
 	$if T is PersistentOwnedZBox {
-		if !value.is_valid() {
-			v.set_null()
-			return
-		}
-		unsafe { C.ZVAL_COPY(v.raw, value.to_zval().raw) }
+		v.copy_from(value.to_zval())
 		return
 	}
 	$if T is bool {

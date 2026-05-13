@@ -94,9 +94,5 @@ pub fn return_val_raw[T](ret &C.zval, val T) {
 }
 
 pub fn return_zval_raw(ret &C.zval, val ZVal) {
-	if !val.is_valid() {
-		unsafe { C.vphp_set_null(ret) }
-		return
-	}
-	unsafe { C.ZVAL_COPY(ret, val.raw) }
+	ZVal.from_raw(ret).copy_from(val)
 }

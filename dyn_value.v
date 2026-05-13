@@ -717,7 +717,7 @@ fn (v DynValue) runtime_ref_to_zval(mut out ZVal) ! {
 			if !ref.is_valid() {
 				return error('runtime ref is no longer valid')
 			}
-			unsafe { C.ZVAL_COPY(out.raw, ref.to_zval().raw) }
+			out.copy_from(ref.to_zval())
 		}
 		.persistent {
 			mut temp := match v.type {
@@ -739,7 +739,7 @@ fn (v DynValue) runtime_ref_to_zval(mut out ZVal) ! {
 			defer {
 				temp.release()
 			}
-			unsafe { C.ZVAL_COPY(out.raw, temp.raw) }
+			out.copy_from(temp)
 		}
 		.detached {
 			return error('runtime ref is no longer valid')

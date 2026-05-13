@@ -19,11 +19,11 @@ pub fn (ret PhpReturn) raw_zval() &C.zval {
 }
 
 pub fn (ret PhpReturn) null() {
-	unsafe { C.vphp_set_null(ret.raw) }
+	ZVal.from_raw(ret.raw).set_null()
 }
 
 pub fn (ret PhpReturn) bool_value(val bool) {
-	unsafe { C.vphp_set_bool(ret.raw, val) }
+	ZVal.from_raw(ret.raw).set_bool(val)
 }
 
 pub fn (ret PhpReturn) int_value(val i64) {
@@ -31,7 +31,7 @@ pub fn (ret PhpReturn) int_value(val i64) {
 }
 
 pub fn (ret PhpReturn) double_value(val f64) {
-	unsafe { C.vphp_set_double(ret.raw, val) }
+	ZVal.from_raw(ret.raw).set_double(val)
 }
 
 pub fn (ret PhpReturn) string_value(val string) {
@@ -59,11 +59,7 @@ pub fn (ret PhpReturn) borrowed_object(v_ptr voidptr, ce voidptr, handlers voidp
 }
 
 pub fn (ret PhpReturn) zval(val ZVal) {
-	if !val.is_valid() {
-		ret.null()
-		return
-	}
-	unsafe { C.ZVAL_COPY(ret.raw, val.raw) }
+	ZVal.from_raw(ret.raw).copy_from(val)
 }
 
 pub fn (ret PhpReturn) value(value PhpValue) {
