@@ -2,11 +2,42 @@ module vphp
 
 // ======== 工厂方法 ========
 
+fn zend_new_null_zval() &C.zval {
+	z := zend_new_zval()
+	C.vphp_set_null(z)
+	return z
+}
+
+fn zend_new_int_zval(n i64) &C.zval {
+	z := zend_new_zval()
+	C.vphp_set_lval(z, n)
+	return z
+}
+
+fn zend_new_float_zval(f f64) &C.zval {
+	z := zend_new_zval()
+	C.vphp_set_double(z, f)
+	return z
+}
+
+fn zend_new_bool_zval(b bool) &C.zval {
+	z := zend_new_zval()
+	C.vphp_set_bool(z, b)
+	return z
+}
+
+fn zend_new_string_zval(s string) &C.zval {
+	return C.vphp_new_strl(&char(s.str), s.len)
+}
+
+fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
+	C.vphp_zval_foreach(v.raw, ctx, wrapper)
+}
+
 // 创建一个 null ZVal
 pub fn ZVal.new_null() ZVal {
 	unsafe {
-		z := zend_new_zval()
-		C.vphp_set_null(z)
+		z := zend_new_null_zval()
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -18,8 +49,7 @@ pub fn ZVal.new_null() ZVal {
 // 创建一个 int ZVal
 pub fn ZVal.new_int(n i64) ZVal {
 	unsafe {
-		z := zend_new_zval()
-		C.vphp_set_lval(z, n)
+		z := zend_new_int_zval(n)
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -31,8 +61,7 @@ pub fn ZVal.new_int(n i64) ZVal {
 // 创建一个 float ZVal
 pub fn ZVal.new_float(f f64) ZVal {
 	unsafe {
-		z := zend_new_zval()
-		C.vphp_set_double(z, f)
+		z := zend_new_float_zval(f)
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -44,8 +73,7 @@ pub fn ZVal.new_float(f f64) ZVal {
 // 创建一个 bool ZVal
 pub fn ZVal.new_bool(b bool) ZVal {
 	unsafe {
-		z := zend_new_zval()
-		C.vphp_set_bool(z, b)
+		z := zend_new_bool_zval(b)
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -57,7 +85,7 @@ pub fn ZVal.new_bool(b bool) ZVal {
 // 创建一个 string ZVal
 pub fn ZVal.new_string(s string) ZVal {
 	unsafe {
-		z := C.vphp_new_strl(&char(s.str), s.len)
+		z := zend_new_string_zval(s)
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -121,7 +149,7 @@ pub fn (v ZVal) foreach(cb ForeachCb) {
 	if !v.is_array() && !v.is_object() {
 		return
 	}
-	C.vphp_zval_foreach(v.raw, &cb, vphp_foreach_wrapper)
+	zend_foreach_zval(v, &cb, vphp_foreach_wrapper)
 }
 
 // 语义化别名：更贴近日常遍历语义
@@ -153,7 +181,7 @@ pub fn (v ZVal) foreach_with_ctx[T](ctx T, cb ForeachWithCtxCb[T]) T {
 		cb:  cb
 		ctx: ctx
 	}
-	C.vphp_zval_foreach(v.raw, &pack, vphp_foreach_with_ctx_wrapper[T])
+	zend_foreach_zval(v, &pack, vphp_foreach_with_ctx_wrapper[T])
 	return pack.ctx
 }
 

@@ -574,7 +574,9 @@ voidptr helpers have been removed. ZVal array and scalar receiver methods now
 delegate through private `zend_array_*` and `zend_zval_*` helpers, keeping
 bridge calls grouped inside the low-level wrapper files instead of spread across
 each public receiver method. ZVal reference, resource, and type/callable
-receiver methods follow the same pattern through private Zend helpers.
+receiver methods follow the same pattern through private Zend helpers. ZVal
+factory and foreach helpers also route creation and iteration bridge calls
+through private helpers, leaving the callback wrappers as the explicit ABI edge.
 The broader layer migration is still not implemented and should continue
 incrementally.
 
