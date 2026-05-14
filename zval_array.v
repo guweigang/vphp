@@ -52,16 +52,16 @@ fn zend_array_count(v ZVal) int {
 	return zval.array_count(zval.Handle.from_ptr(v.raw))
 }
 
-fn zend_array_get_index(v ZVal, index int) &C.zval {
-	return ZVal.from_handle(zval.array_get_index(zval.Handle.from_ptr(v.raw), index)).raw
+fn zend_array_get_index(v ZVal, index int) zval.Handle {
+	return zval.array_get_index(zval.Handle.from_ptr(v.raw), index)
 }
 
-fn zend_array_get_key(v ZVal, key string) &C.zval {
-	return ZVal.from_handle(zval.array_get_key(zval.Handle.from_ptr(v.raw), key)).raw
+fn zend_array_get_key(v ZVal, key string) zval.Handle {
+	return zval.array_get_key(zval.Handle.from_ptr(v.raw), key)
 }
 
-fn zend_zval_is_null_raw(raw &C.zval) bool {
-	return zval.is_null(zval.Handle.from_ptr(raw))
+fn zend_zval_is_null(handle zval.Handle) bool {
+	return zval.is_null(handle)
 }
 
 // 初始化为数组
@@ -147,9 +147,7 @@ pub fn (v ZVal) array_get(index int) ZVal {
 		}
 	}
 	res := zend_array_get_index(v, index)
-	return ZVal{
-		raw: res
-	}
+	return ZVal.from_handle(res)
 }
 
 pub fn (v ZVal) keys() ZVal {
@@ -202,22 +200,18 @@ pub fn (v ZVal) assoc_keys() []string {
 
 // 按字符串 key 取值（带错误处理）
 pub fn (v ZVal) get(key string) !ZVal {
-	if v.raw == 0 || zend_zval_is_null_raw(v.raw) {
+	if !v.is_valid() || zend_zval_is_null(zval.Handle.from_ptr(v.raw)) {
 		return error('invalid zval or not an array')
 	}
-	unsafe {
-		res := zend_array_get_key(v, key)
-		if res == 0 || zend_zval_is_null_raw(res) {
-			return error('key "${key}" not found')
-		}
-		return ZVal{
-			raw: res
-		}
+	res := zend_array_get_key(v, key)
+	if !res.is_valid() || zend_zval_is_null(res) {
+		return error('key "${key}" not found')
 	}
+	return ZVal.from_handle(res)
 }
 
 pub fn (v ZVal) get_key(key ZVal) !ZVal {
-	if v.raw == 0 || zend_zval_is_null_raw(v.raw) {
+	if !v.is_valid() || zend_zval_is_null(zval.Handle.from_ptr(v.raw)) {
 		return error('invalid zval or not an array')
 	}
 	if key.is_long() {
@@ -226,12 +220,10 @@ pub fn (v ZVal) get_key(key ZVal) !ZVal {
 			return error('negative array index ${index} is not supported')
 		}
 		res := zend_array_get_index(v, int(index))
-		if res == 0 || zend_zval_is_null_raw(res) {
+		if !res.is_valid() || zend_zval_is_null(res) {
 			return error('index ${index} not found')
 		}
-		return ZVal{
-			raw: res
-		}
+		return ZVal.from_handle(res)
 	}
 	if key.is_string() {
 		return v.get(key.to_string())
