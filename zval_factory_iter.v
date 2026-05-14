@@ -63,31 +63,6 @@ pub fn ZVal.new_string(s string) ZVal {
 	return request_owned_zval_from_handle(zend_new_string_zval(s))
 }
 
-// 兼容旧命名：建议改用 ZVal.new_null()
-pub fn new_val_null() ZVal {
-	return ZVal.new_null()
-}
-
-// 兼容旧命名：建议改用 ZVal.new_int()
-pub fn new_val_int(n i64) ZVal {
-	return ZVal.new_int(n)
-}
-
-// 兼容旧命名：建议改用 ZVal.new_float()
-pub fn new_val_float(f f64) ZVal {
-	return ZVal.new_float(f)
-}
-
-// 兼容旧命名：建议改用 ZVal.new_bool()
-pub fn new_val_bool(b bool) ZVal {
-	return ZVal.new_bool(b)
-}
-
-// 兼容旧命名：建议改用 ZVal.new_string()
-pub fn new_val_string(s string) ZVal {
-	return ZVal.new_string(s)
-}
-
 // ======== 高级：对象转换 ========
 
 // 将 zval 对象转化为具体的 V 结构体指针

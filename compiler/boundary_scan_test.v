@@ -23,6 +23,13 @@ fn assert_no_boundary_regressions(path string, source string) {
 		'ZendObject.from_raw(',
 		'ZendClassEntry.from_raw(',
 		'args_from_zvals(',
+		'new_val_null(',
+		'new_val_int(',
+		'new_val_float(',
+		'new_val_bool(',
+		'new_val_string(',
+		'new_val_from[',
+		'arg.as_int()',
 		'C.ZVAL_',
 		'C.zval{}',
 	]

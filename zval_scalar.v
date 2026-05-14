@@ -58,11 +58,6 @@ pub fn (v ZVal) to_i64() i64 {
 	return i64(zend_zval_get_int(v))
 }
 
-// 兼容旧 API
-pub fn (v ZVal) as_int() i64 {
-	return zend_zval_get_lval(v)
-}
-
 pub fn (v ZVal) get_int() i64 {
 	return zend_zval_get_long(v)
 }

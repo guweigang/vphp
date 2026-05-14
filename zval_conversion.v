@@ -182,8 +182,3 @@ pub fn new_zval_from[T](value T) !ZVal {
 pub fn ZVal.from[T](value T) !ZVal {
 	return new_zval_from[T](value)!
 }
-
-// 兼容旧命名：建议改用 new_zval_from[T]
-pub fn new_val_from[T](value T) !ZVal {
-	return new_zval_from[T](value)
-}
