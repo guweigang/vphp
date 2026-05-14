@@ -2,6 +2,7 @@ module zend
 
 pub fn C.emalloc(size usize) voidptr
 pub fn C.efree(ptr voidptr)
+fn C.builtin___v_free(ptr voidptr)
 
 pub fn emalloc(size usize) voidptr {
 	return C.emalloc(size)
@@ -9,6 +10,10 @@ pub fn emalloc(size usize) voidptr {
 
 pub fn efree(ptr voidptr) {
 	C.efree(ptr)
+}
+
+pub fn v_runtime_free(ptr voidptr) {
+	C.builtin___v_free(ptr)
 }
 
 pub fn throw_exception(msg string, code int) {

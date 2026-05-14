@@ -1,9 +1,9 @@
 module vphp
 
-fn C.builtin___v_free(ptr voidptr)
+import vphp.zend
 
 fn v_runtime_free(ptr voidptr) {
-	C.builtin___v_free(ptr)
+	zend.v_runtime_free(ptr)
 }
 
 // Preserve V default field initialization for generated PHP classes.
