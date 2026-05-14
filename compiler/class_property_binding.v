@@ -73,36 +73,37 @@ fn render_prop_getter_case(prop repr.PhpClassPropRepr) []string {
 	match prop.v_type {
 		'string' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.new(rv).v[string](obj.${prop.v_field_name})'
+			out << '            vphp.PhpReturn.from_ptr(rv).v[string](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		'int' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.new(rv).v[i64](i64(obj.${prop.v_field_name}))'
+			out << '            vphp.PhpReturn.from_ptr(rv).v[i64](i64(obj.${prop.v_field_name}))'
 			out << '            return'
 			out << '        }'
 		}
 		'i64' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.new(rv).v[i64](obj.${prop.v_field_name})'
+			out << '            vphp.PhpReturn.from_ptr(rv).v[i64](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		'bool' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.new(rv).v[bool](obj.${prop.v_field_name})'
+			out << '            vphp.PhpReturn.from_ptr(rv).v[bool](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		'f64' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.new(rv).v[f64](obj.${prop.v_field_name})'
+			out << '            vphp.PhpReturn.from_ptr(rv).v[f64](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		else {}
 	}
+
 	return out
 }
 
@@ -168,6 +169,7 @@ fn render_prop_setter_case(prop repr.PhpClassPropRepr) []string {
 		}
 		else {}
 	}
+
 	return out
 }
 
@@ -212,6 +214,7 @@ fn render_prop_sync_case(prop repr.PhpClassPropRepr) []string {
 		}
 		else {}
 	}
+
 	return out
 }
 

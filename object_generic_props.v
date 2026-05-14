@@ -9,15 +9,15 @@ pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval
 			if name == field.name {
 				val := obj.$(field.name)
 				$if field.typ is string {
-					PhpReturn.new(rv).v[string](val)
+					PhpReturn.from_ptr(rv).v[string](val)
 				} $else $if field.typ is int {
-					PhpReturn.new(rv).v[i64](i64(val))
+					PhpReturn.from_ptr(rv).v[i64](i64(val))
 				} $else $if field.typ is i64 {
-					PhpReturn.new(rv).v[i64](val)
+					PhpReturn.from_ptr(rv).v[i64](val)
 				} $else $if field.typ is bool {
-					PhpReturn.new(rv).v[bool](val)
+					PhpReturn.from_ptr(rv).v[bool](val)
 				} $else $if field.typ is f64 {
-					PhpReturn.new(rv).v[f64](val)
+					PhpReturn.from_ptr(rv).v[f64](val)
 				}
 				return
 			}

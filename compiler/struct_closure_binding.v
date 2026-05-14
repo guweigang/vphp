@@ -116,7 +116,7 @@ fn (binding StructClosureBinding) render_helper_lines() []string {
 	lines << ''
 	lines << 'fn ${binding.bridge}(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {'
 	lines << '    unsafe {'
-	lines << '        ctx := vphp.Context.from_entry(ex, ret)'
+	lines << '        ctx := vphp.Context.from_raw(ex, ret)'
 	lines << '        cb := *(&${binding.alias}(v_ptr))'
 	lines << '        args := ${binding.arg_type}{'
 	for i, field in binding.fields {
@@ -151,7 +151,7 @@ fn (binding StructClosureBinding) render_variadic_helper_lines() []string {
 	lines << ''
 	lines << 'fn ${binding.bridge}(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {'
 	lines << '    unsafe {'
-	lines << '        ctx := vphp.Context.from_entry(ex, ret)'
+	lines << '        ctx := vphp.Context.from_raw(ex, ret)'
 	lines << '        cb := *(&${binding.alias}(v_ptr))'
 	if binding.ret_type == 'void' {
 		lines << '        ctx.invoke_variadic_closure_void[${binding.alias}](cb)'
