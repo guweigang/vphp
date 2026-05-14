@@ -1,45 +1,41 @@
 module vphp
 
-import vphp.zend
+import vphp.execute
 
 pub struct ZExData {
-	raw &C.zend_execute_data
+	handle execute.Handle
 }
 
 pub fn ZExData.new(raw &C.zend_execute_data) ZExData {
-	return unsafe {
-		ZExData{
-			raw: raw
-		}
+	return ZExData{
+		handle: execute.Handle.from_ptr(raw)
 	}
 }
 
 pub fn ZExData.from_voidptr(raw voidptr) ZExData {
-	return unsafe {
-		ZExData{
-			raw: &C.zend_execute_data(raw)
-		}
+	return ZExData{
+		handle: execute.Handle.from_ptr(raw)
 	}
 }
 
 pub fn (ex ZExData) raw_ex() &C.zend_execute_data {
-	return ex.raw
+	return unsafe { &C.zend_execute_data(ex.handle.raw_ptr()) }
 }
 
 fn zend_execute_num_args(ex ZExData) int {
-	return zend.execute_num_args(ex.raw)
+	return ex.handle.num_args()
 }
 
 fn zend_execute_arg(ex ZExData, index int) &C.zval {
-	return zend.execute_arg(ex.raw, index)
+	return unsafe { &C.zval(ex.handle.arg_ptr(index)) }
 }
 
 fn zend_execute_active_class(ex ZExData) ZendClassEntry {
-	return ZendClassEntry.from_raw(zend.execute_active_class(ex.raw))
+	return ZendClassEntry.from_raw(ex.handle.active_class_ptr())
 }
 
 fn zend_execute_this_object(ex ZExData) ZendObject {
-	obj_raw := zend.execute_this_object(ex.raw)
+	obj_raw := ex.handle.this_object_ptr()
 	if obj_raw == 0 {
 		return ZendObject.invalid()
 	}
