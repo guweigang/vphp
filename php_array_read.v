@@ -84,3 +84,9 @@ pub fn (a PhpArray) callable_value(key string) !PhpCallable {
 pub fn (a PhpArray) fold[T](init T, cb ForeachWithCtxCb[T]) T {
 	return a.to_zval().foreach_with_ctx[T](init, cb)
 }
+
+pub fn (a PhpArray) items() []ZVal {
+	return a.fold[[]ZVal]([]ZVal{}, fn (_ ZVal, item ZVal, mut acc []ZVal) {
+		acc << item
+	})
+}
