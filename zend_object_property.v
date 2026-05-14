@@ -79,7 +79,7 @@ pub fn (obj ZendObject) set_prop(name string, value ZVal) {
 	if !obj.is_valid() || !value.is_valid() {
 		return
 	}
-	obj.handle.write_property_ptr(name, value.raw)
+	obj.handle.write_property_ptr(name, value.raw_ptr())
 }
 
 pub fn (obj ZendObject) has_prop(name string) bool {

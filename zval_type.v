@@ -13,13 +13,13 @@ fn zend_zval_is_callable(v ZVal) bool {
 }
 
 pub fn (v ZVal) is_valid() bool {
-	return v.raw != 0
+	return v.raw_ptr() != 0
 }
 
 // ======== 类型判断 ========
 
 pub fn (v ZVal) type_raw() int {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return int(PHPType.undef)
 	}
 	return zend_zval_type(v)
