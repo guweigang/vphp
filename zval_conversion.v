@@ -172,7 +172,7 @@ pub fn new_zval_from[T](value T) !ZVal {
 		raw:   zend_new_zval()
 		owned: true
 	}
-	RequestScope.autorelease_add(out.raw)
+	RequestScope.autorelease_add_handle(out.handle())
 	out.from_v[T](value)!
 	return out
 }

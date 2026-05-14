@@ -746,7 +746,7 @@ pub fn (v DynValue) new_zval() !ZVal {
 		raw:   zend_new_zval()
 		owned: true
 	}
-	RequestScope.autorelease_add(out.raw)
+	RequestScope.autorelease_add_handle(out.handle())
 	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw)}')
 	v.to_zval(mut out)!
 	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw)} valid=${out.is_valid()} type=${out.type_name()}')

@@ -33,6 +33,10 @@ pub fn ZVal.from_handle(handle zval.Handle) ZVal {
 	return unsafe { ZVal.from_raw(&C.zval(handle.raw_ptr())) }
 }
 
+pub fn (v ZVal) handle() zval.Handle {
+	return zval.Handle.from_ptr(v.raw)
+}
+
 // Callable — semantic alias for ZVal used as a PHP callable parameter.
 // When used as a method parameter type, the compiler emits ZEND_ARG_CALLABLE_INFO
 // so PHP reflection sees the parameter as 'callable' typed.
@@ -94,9 +98,9 @@ fn adopt_raw_with_ownership(raw &C.zval, ownership OwnershipKind) ZVal {
 		}
 	}
 	if ownership == .owned_request {
-		RequestScope.autorelease_add(out.raw)
+		RequestScope.autorelease_add_handle(out.handle())
 		if out.is_object() {
-			RequestScope.autorelease_forget(out.raw)
+			RequestScope.autorelease_forget_handle(out.handle())
 		}
 	}
 	return out
@@ -124,9 +128,9 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 	}
 	zend_copy_zval(out.raw, src)
 	if ownership == .owned_request {
-		RequestScope.autorelease_add(out.raw)
+		RequestScope.autorelease_add_handle(out.handle())
 		if out.is_object() {
-			RequestScope.autorelease_forget(out.raw)
+			RequestScope.autorelease_forget_handle(out.handle())
 		}
 	}
 	return out
