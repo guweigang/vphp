@@ -19,7 +19,7 @@ fn call_zval_target(target ZendCallTarget, args []vphp.ZVal, ownership Ownership
 }
 
 fn call_method_zval(receiver ZVal, method string, args []vphp.ZVal, ownership OwnershipKind) ZVal {
-	if receiver.raw == 0 || !receiver.is_object() {
+	if !receiver.is_valid() || !receiver.is_object() {
 		return invalid_zval()
 	}
 	return call_zval_target(ZendMethodCall{
@@ -29,7 +29,7 @@ fn call_method_zval(receiver ZVal, method string, args []vphp.ZVal, ownership Ow
 }
 
 fn call_callable_zval(callable ZVal, args []vphp.ZVal, ownership OwnershipKind) ZVal {
-	if callable.raw == 0 {
+	if !callable.is_valid() {
 		return invalid_zval()
 	}
 	return call_zval_target(ZendCallableCall{
@@ -50,7 +50,7 @@ pub fn (v ZVal) method(method string, args []vphp.ZVal) ZVal {
 }
 
 pub fn (v ZVal) call_owned_request(args []vphp.ZVal) ZVal {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		framework_debug_log('zval.call_owned_request skip raw=0 args=${args.len}')
 		return invalid_zval()
 	}

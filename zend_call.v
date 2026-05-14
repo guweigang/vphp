@@ -29,10 +29,10 @@ type ZendCallTarget = ZendCallableCall
 fn zend_invoke_call_target(target ZendCallTarget, retval voidptr, count int, params voidptr) int {
 	return match target {
 		ZendMethodCall {
-			zend.call_method_ptr(target.receiver.raw, target.method, retval, count, params)
+			zend.call_method_ptr(target.receiver.raw_ptr(), target.method, retval, count, params)
 		}
 		ZendCallableCall {
-			zend.call_callable_ptr(target.callable.raw, retval, count, params)
+			zend.call_callable_ptr(target.callable.raw_ptr(), retval, count, params)
 		}
 		ZendConstructCall {
 			class_name := target.class_name.get_string()
