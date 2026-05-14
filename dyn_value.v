@@ -28,7 +28,6 @@ pub union DynValueData {
 	b bool
 	i i64
 	f f64
-	s string
 }
 
 pub union DynRuntimeRefData {
@@ -44,6 +43,7 @@ pub struct DynValue {
 pub mut:
 	type              DynValueType
 	data              DynValueData
+	str               string
 	list              []DynValue
 	map               map[string]DynValue
 	runtime_lifecycle DynRuntimeLifecycle
@@ -86,23 +86,29 @@ pub fn DynValue.of_float(v f64) DynValue {
 pub fn DynValue.of_string(v string) DynValue {
 	return DynValue{
 		type: .string_
-		data: DynValueData{
-			s: v
-		}
+		str:  v.clone()
 	}
 }
 
 pub fn DynValue.of_list(v []DynValue) DynValue {
+	mut out := []DynValue{cap: v.len}
+	for item in v {
+		out << item.clone()
+	}
 	return DynValue{
 		type: .list_
-		list: v
+		list: out
 	}
 }
 
 pub fn DynValue.of_map(v map[string]DynValue) DynValue {
+	mut out := map[string]DynValue{}
+	for key, item in v {
+		out[key.clone()] = item.clone()
+	}
 	return DynValue{
 		type: .map_
-		map:  v
+		map:  out
 	}
 }
 
@@ -298,10 +304,8 @@ pub fn (mut v DynValue) release() {
 			v.list = []DynValue{}
 		}
 		.map_ {
-			for key, _ in v.map {
-				mut item := v.map[key] or { continue }
-				item.release()
-				v.map[key] = DynValue.null()
+			for _, item in v.map {
+				item.release_runtime_refs()
 			}
 			v.map = map[string]DynValue{}
 		}
@@ -321,6 +325,35 @@ pub fn (mut v DynValue) release() {
 	}
 
 	v.type = .null_
+	v.str = ''
+}
+
+fn (v DynValue) release_runtime_refs() {
+	match v.type {
+		.list_ {
+			for item in v.list {
+				item.release_runtime_refs()
+			}
+		}
+		.map_ {
+			for _, item in v.map {
+				item.release_runtime_refs()
+			}
+		}
+		.object_ref {
+			if v.runtime_lifecycle == .persistent {
+				mut retained := v.retained_object_ref()
+				retained.release()
+			}
+		}
+		.callable_ref {
+			if v.runtime_lifecycle == .persistent {
+				mut retained := v.retained_callable_ref()
+				retained.release()
+			}
+		}
+		else {}
+	}
 }
 
 pub fn (v DynValue) bool_value() bool {
@@ -336,7 +369,7 @@ pub fn (v DynValue) float_value() f64 {
 }
 
 pub fn (v DynValue) string_value() string {
-	return unsafe { v.data.s }
+	return v.str
 }
 
 pub fn (v DynValue) is_runtime_ref() bool {
@@ -669,9 +702,7 @@ pub fn (v DynValue) to_zval(mut out ZVal) ! {
 			}
 		}
 		.string_ {
-			unsafe {
-				out.set_string(v.data.s)
-			}
+			out.set_string(v.str)
 		}
 		.list_ {
 			out.array_init()

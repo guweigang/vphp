@@ -22,6 +22,8 @@ pub fn (ret PhpReturn) dyn_value(value DynValue) {
 
 pub fn (ret PhpReturn) request_owned(value RequestOwnedZBox) {
 	ret.zval(value.to_zval())
+	mut owned := value
+	owned.release()
 }
 
 pub fn (ret PhpReturn) request_borrowed(value RequestBorrowedZBox) {

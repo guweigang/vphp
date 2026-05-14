@@ -232,6 +232,7 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
 void vphp_return_bound_object(zval *return_value, void *v_ptr,
                               zend_class_entry *ce, vphp_class_handlers *h,
                               int owns_v_ptr) {
+  extern void vphp__ensure_vptr_root(void *ptr);
   char debug_buf[256];
   int debug_on = vphp_bridge_object_debug_enabled();
   if (debug_on) {
@@ -241,6 +242,9 @@ void vphp_return_bound_object(zval *return_value, void *v_ptr,
              ce && ce->name ? ZSTR_VAL(ce->name) : "(null)", (void *)h,
              owns_v_ptr);
     vphp_bridge_object_debug_log(debug_buf);
+  }
+  if (owns_v_ptr == VPHP_OWNS_VPTR && v_ptr != NULL) {
+    vphp__ensure_vptr_root(v_ptr);
   }
   vphp_return_obj(return_value, v_ptr, ce);
   if (Z_TYPE_P(return_value) == IS_OBJECT && h != NULL) {
