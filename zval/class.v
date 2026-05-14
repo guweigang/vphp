@@ -2,12 +2,6 @@ module zval
 
 import vphp.zend
 
-pub struct ReadResult {
-pub:
-	rv  Handle
-	res Handle
-}
-
 pub fn read_static_property(class_name string, name string) ReadResult {
 	rv := new_request()
 	if !rv.is_valid() {

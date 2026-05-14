@@ -6,25 +6,24 @@ fn (obj ZendObject) read_property_with_ownership(name string, ownership Ownershi
 	if !obj.is_valid() {
 		return invalid_zval()
 	}
-	rv := zend_new_zval()
-	res := unsafe { &C.zval(obj.handle.read_property_ptr(name, rv)) }
-	return adopt_read_result(rv, res, ownership)
+	return adopt_read_result_handles(obj.handle.read_property(name), ownership)
 }
 
 fn (obj ZendObject) with_scalar_prop(name string, run fn (ZVal)) bool {
 	if !obj.is_valid() {
 		return false
 	}
-	mut rv_box := RequestOwnedZBox.new_null()
-	defer {
-		rv_box.release()
-	}
-	rv := rv_box.to_zval()
-	res := obj.handle.read_property_ptr(name, rv.raw)
-	if res == 0 {
+	result := obj.handle.read_property(name)
+	if !result.rv.is_valid() {
 		return false
 	}
-	value := ZVal.from_handle(zval.Handle.from_ptr(res))
+	defer {
+		zval.release_request(result.rv)
+	}
+	if !result.res.is_valid() {
+		return false
+	}
+	value := ZVal.from_handle(result.res)
 	if value.is_null() || value.is_undef() {
 		return false
 	}
