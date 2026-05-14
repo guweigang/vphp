@@ -53,33 +53,25 @@ pub fn (v ZVal) interface_names() []string {
 	if class_name.len == 0 {
 		return []string{}
 	}
-	interfaces := php_fn('class_implements').call([ZVal.new_string(class_name)])
-	if !interfaces.is_array() {
-		return []string{}
-	}
-	mut out := []string{}
-	out = interfaces.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
-		acc << val.to_string()
-	})
-	out.sort()
-	return out
+	return PhpFunction.named('class_implements').with_result[PhpArray, []string](fn (interfaces PhpArray) []string {
+		return string_values_from_php_array(interfaces)
+	}, PhpString.of(class_name)) or { []string{} }
 }
 
 pub fn (v ZVal) is_instance_of(name string) bool {
 	if !v.is_valid() {
 		return false
 	}
-	res := php_fn('is_a').call([v, ZVal.new_string(name), ZVal.new_bool(true)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('is_a').result_bool(PhpValue.from_zval(v), PhpString.of(name),
+		PhpBool.of(true))
 }
 
 pub fn (v ZVal) is_subclass_of(name string) bool {
 	if !v.is_valid() {
 		return false
 	}
-	res := php_fn('is_subclass_of').call([v, ZVal.new_string(name),
-		ZVal.new_bool(true)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('is_subclass_of').result_bool(PhpValue.from_zval(v), PhpString.of(name),
+		PhpBool.of(true))
 }
 
 pub fn (v ZVal) implements_interface(name string) bool {
@@ -93,16 +85,14 @@ pub fn (v ZVal) method_exists(name string) bool {
 	if !v.is_valid() {
 		return false
 	}
-	res := php_fn('method_exists').call([v, ZVal.new_string(name)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('method_exists').result_bool(PhpValue.from_zval(v), PhpString.of(name))
 }
 
 pub fn (v ZVal) property_exists(name string) bool {
 	if !v.is_valid() {
 		return false
 	}
-	res := php_fn('property_exists').call([v, ZVal.new_string(name)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('property_exists').result_bool(PhpValue.from_zval(v), PhpString.of(name))
 }
 
 pub fn (v ZVal) method_names() []string {
@@ -110,18 +100,11 @@ pub fn (v ZVal) method_names() []string {
 	if class_name.len == 0 {
 		return []string{}
 	}
-	methods := php_class('ReflectionClass').construct([
-		ZVal.new_string(class_name),
-	]).method('getMethods', [])
-	if !methods.is_array() {
-		return []string{}
-	}
-	mut out := []string{}
-	out = methods.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
-		acc << val.method('getName', []).to_string()
-	})
-	out.sort()
-	return out
+	return PhpClass.named('ReflectionClass').with_object(fn (rc PhpObject) []string {
+		return rc.with_method_result[PhpArray, []string]('getMethods', fn (methods PhpArray) []string {
+			return reflection_member_names(methods)
+		}) or { []string{} }
+	}, PhpString.of(class_name)) or { []string{} }
 }
 
 pub fn (v ZVal) property_names() []string {
@@ -129,18 +112,11 @@ pub fn (v ZVal) property_names() []string {
 	if class_name.len == 0 {
 		return []string{}
 	}
-	props := php_class('ReflectionClass').construct([
-		ZVal.new_string(class_name),
-	]).method('getProperties', [])
-	if !props.is_array() {
-		return []string{}
-	}
-	mut out := []string{}
-	out = props.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
-		acc << val.method('getName', []).to_string()
-	})
-	out.sort()
-	return out
+	return PhpClass.named('ReflectionClass').with_object(fn (rc PhpObject) []string {
+		return rc.with_method_result[PhpArray, []string]('getProperties', fn (props PhpArray) []string {
+			return reflection_member_names(props)
+		}) or { []string{} }
+	}, PhpString.of(class_name)) or { []string{} }
 }
 
 pub fn (v ZVal) const_names() []string {
@@ -148,14 +124,15 @@ pub fn (v ZVal) const_names() []string {
 	if class_name.len == 0 {
 		return []string{}
 	}
-	consts := php_class('ReflectionClass').construct([
-		ZVal.new_string(class_name),
-	]).method('getConstants', [])
-	mut out := consts.foreach_with_ctx[[]string]([]string{}, fn (k ZVal, _ ZVal, mut acc []string) {
-		acc << k.to_string()
-	})
-	out.sort()
-	return out
+	return PhpClass.named('ReflectionClass').with_object(fn (rc PhpObject) []string {
+		return rc.with_method_result[PhpArray, []string]('getConstants', fn (consts PhpArray) []string {
+			mut out := consts.fold[[]string]([]string{}, fn (k ZVal, _ ZVal, mut acc []string) {
+				acc << k.to_string()
+			})
+			out.sort()
+			return out
+		}) or { []string{} }
+	}, PhpString.of(class_name)) or { []string{} }
 }
 
 pub fn (v ZVal) const_exists(name string) bool {
@@ -163,9 +140,31 @@ pub fn (v ZVal) const_exists(name string) bool {
 	if class_name.len == 0 {
 		return false
 	}
-	rc := php_class('ReflectionClass').construct([
-		ZVal.new_string(class_name),
-	])
-	res := rc.method('hasConstant', [ZVal.new_string(name)])
-	return res.is_valid() && res.to_bool()
+	return PhpClass.named('ReflectionClass').with_object(fn [name] (rc PhpObject) bool {
+		return rc.with_method_result[PhpBool, bool]('hasConstant', fn (res PhpBool) bool {
+			return res.value()
+		}, PhpString.of(name)) or { false }
+	}, PhpString.of(class_name)) or { false }
+}
+
+fn string_values_from_php_array(values PhpArray) []string {
+	mut out := values.fold[[]string]([]string{}, fn (_ ZVal, val ZVal, mut acc []string) {
+		acc << val.to_string()
+	})
+	out.sort()
+	return out
+}
+
+fn reflection_member_names(items PhpArray) []string {
+	mut out := items.fold[[]string]([]string{}, fn (_ ZVal, val ZVal, mut acc []string) {
+		obj := PhpObject.must_from_zval(val) or { return }
+		name := obj.with_method_result[PhpString, string]('getName', fn (name PhpString) string {
+			return name.value()
+		}) or { '' }
+		if name != '' {
+			acc << name
+		}
+	})
+	out.sort()
+	return out
 }
