@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 @[inline]
 fn zbox_view_state(z ZVal) ZValViewState {
 	return ZValViewState{
@@ -42,7 +44,7 @@ pub fn RequestBorrowedZBox.of(z ZVal) RequestBorrowedZBox {
 }
 
 pub fn RequestBorrowedZBox.from_raw_zval(z ZVal) RequestBorrowedZBox {
-	return borrowed_zbox_from_raw_zval(z)
+	return RequestBorrowedZBox.from_handle(z.handle())
 }
 
 pub fn RequestBorrowedZBox.from_raw(raw &C.zval) RequestBorrowedZBox {
@@ -50,12 +52,11 @@ pub fn RequestBorrowedZBox.from_raw(raw &C.zval) RequestBorrowedZBox {
 }
 
 pub fn RequestBorrowedZBox.from_ptr(raw voidptr) RequestBorrowedZBox {
-	return unsafe {
-		RequestBorrowedZBox.from_raw_zval(ZVal{
-			raw:   &C.zval(raw)
-			owned: false
-		})
-	}
+	return RequestBorrowedZBox.from_handle(zval.Handle.from_ptr(raw))
+}
+
+pub fn RequestBorrowedZBox.from_handle(handle zval.Handle) RequestBorrowedZBox {
+	return borrowed_zbox_from_raw_zval(ZVal.from_handle(handle))
 }
 
 // null borrowed helper for call-site ergonomics; lifetime is request-scoped.
@@ -76,16 +77,15 @@ pub fn RequestOwnedZBox.of(z ZVal) RequestOwnedZBox {
 }
 
 pub fn RequestOwnedZBox.from_raw_zval(z ZVal) RequestOwnedZBox {
-	return request_owned_zbox_from_adopted_zval(z.dup())
+	return RequestOwnedZBox.from_handle(z.handle())
 }
 
 pub fn RequestOwnedZBox.from_ptr(raw voidptr) RequestOwnedZBox {
-	return RequestOwnedZBox.from_raw_zval(unsafe {
-		ZVal{
-			raw:   &C.zval(raw)
-			owned: false
-		}
-	})
+	return RequestOwnedZBox.from_handle(zval.Handle.from_ptr(raw))
+}
+
+pub fn RequestOwnedZBox.from_handle(handle zval.Handle) RequestOwnedZBox {
+	return request_owned_zbox_from_adopted_zval(ZVal.from_handle(handle).dup())
 }
 
 pub fn RequestOwnedZBox.adopt_zval(z ZVal) RequestOwnedZBox {
