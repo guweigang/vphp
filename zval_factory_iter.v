@@ -106,6 +106,9 @@ pub fn (v ZVal) to_object[T]() ?&T {
 
 pub type ForeachCb = fn (key ZVal, val ZVal)
 
+// Zend foreach callback boundary.
+// Zend invokes this trampoline with raw zval pointers; keep raw types here and
+// wrap them immediately into ZVal before invoking user callbacks.
 fn vphp_foreach_wrapper(ctx voidptr, key &C.zval, val &C.zval) {
 	unsafe {
 		cb := *(&ForeachCb(ctx))
@@ -128,6 +131,7 @@ pub fn (v ZVal) each(cb ForeachCb) {
 
 pub type ForeachWithCtxCb[T] = fn (key ZVal, val ZVal, mut ctx T)
 
+// Generic version of the same Zend foreach callback boundary above.
 fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
 	unsafe {
 		mut pack := &ForeachPack[T](ctx)

@@ -27,16 +27,16 @@ Current migration checkpoint:
   root-level `ZExData` remains the compatibility facade because argument values
   still need root-level `ZVal`, `PhpArg`, and semantic wrappers.
 - `Context` now stores `ZExData` and `PhpReturn` wrappers instead of exposing raw
-  Zend fields. `Context.from_entry(...)` remains the ABI-facing constructor, and
-  `Context.from_raw(...)` is now a `voidptr`-based low-level escape hatch.
+  Zend fields. The ABI-facing constructor is `Context.from_ptr(ex, ret)`, and
+  generated closure glue uses that pointer-shaped entry directly.
 - `vphp/scope/` has started as a no-C low-level request scope wrapper area. It
   now contains request mark/enter/leave helpers and autorelease zval
   add/forget/drain helpers; root-level `RequestScope`, `FrameScope`, and
   `PhpScope` remain compatibility facades because frame values still depend on
   root-level ZBox and semantic wrapper types.
-- `RequestBorrowedZBox` and `RequestOwnedZBox` now have `from_ptr(...)` factory
-  helpers. Their legacy `from_raw(...)` entry remains as a compatibility facade,
-  but new low-level code should prefer pointer/handle-shaped constructors.
+- `RequestBorrowedZBox` and `RequestOwnedZBox` now have pointer/handle/zval
+  factory helpers. Legacy `from_raw(...)` / `from_raw_zval(...)` aliases have
+  been removed from the request ZBox layer.
 - `vphp/zval/` has started as a no-C low-level zval wrapper area. It now
   contains zval handle, request/persistent allocation lifecycle, copy/disown,
   runtime counter helpers, low-level array operation helpers, scalar/type
@@ -45,11 +45,12 @@ Current migration checkpoint:
   static class/superglobal helpers; root-level `ZVal` remains the compatibility facade
   because call result ownership and semantic wrapper methods still depend on
   the root-level `ZVal`/ZBox shape.
-- Root-level files still contain raw C pointer types where they are part of the
-  current ABI or low-level storage shape, such as `ZVal.raw`, `ZExData.raw`,
-  generic object handler callbacks, and adapter functions that pass `&C.zval`
-  through to `vphp/zend/`. `PhpReturn` now stores a zval handle internally and
-  exposes `raw_zval()` only as an ABI escape hatch.
+- Root-level files still contain raw C pointer types only where they are part of
+  the current ABI or low-level storage shape, such as `ZVal.raw`, generic object
+  handler callbacks, foreach callback trampolines, and adapter functions that
+  pass `&C.zval` through to `vphp/zend/`. `PhpReturn`, `ZExData`,
+  `ZendObject`, `ZendClassEntry`, and ZBox constructors now use pointer/handle
+  shaped facades instead of `from_raw(...)` / `raw_zval()` style public APIs.
 - `[]ZVal -> []zval.Handle -> &&C.zval` argument packing is now split between
   `vphp/zval/` and `vphp/zend/`. Root-level call helpers still own result
   adoption because `OwnershipKind` and `ZVal` remain root-level facades.
@@ -296,7 +297,7 @@ This layer can expose explicit escape hatches:
 ```v
 value.to_zval()
 obj.to_zval()
-ret.raw_zval()
+ret.raw_ptr()
 ```
 
 But normal code should not need those escape hatches.
@@ -305,9 +306,9 @@ But normal code should not need those escape hatches.
 `return_value` slot. It stores a zval handle internally, and normal callers
 should write through receiver methods such as `ret.string_value(...)`,
 `ret.value(...)`, `ret.zval(...)`, `ret.owned_object(...)`, or
-`ctx.return().v(result)`. `ret.raw_zval()` is only for bridge code that must pass
-the return slot to another Zend-facing helper, such as closure creation or
-object binding.
+`ctx.return().v(result)`. `ret.raw_ptr()` is only for bridge code that must pass
+the return slot to another Zend-facing helper. Normal code should not create
+`&C.zval` views of the return slot.
 
 ## Compiler Projection
 
@@ -418,7 +419,7 @@ Generated `bridge.v` should prefer no-C or semantic wrappers.
 Preferred generated forms:
 
 ```v
-ctx := vphp.Context.from_entry(ex, ret)
+ctx := vphp.Context.from_ptr(ex, ret)
 php_args := ctx.args_with_meta([...])
 name := php_args.at_named_or_index(0, 'name').string_value() or { ... }
 ctx.return().string_value(result)
@@ -506,8 +507,8 @@ extension author API:
   progressively gaining clearer private target wrappers like
   `call_callable_zval(...)`, `call_method_zval(...)`, and `construct_zval(...)`.
 - compiler-generated code should continue moving from raw return helpers toward
-  `Context.from_entry(...)`, `ctx.return()`, `ZExData`, `ZendObject`, and
-  semantic wrappers.
+  `Context.from_ptr(...)`, `ctx.return()`, `ZExData`, `ZendObject`,
+  `ZendClassEntry`, and semantic wrappers.
 
 ### What Should Not Move Yet
 
@@ -521,9 +522,29 @@ is solved:
 - generated Zend callback signatures still need raw `&C.zend_execute_data`,
   `&C.zval`, `&C.zend_object`, and similar types at the ABI edge. The important
   cleanup is to wrap them immediately inside the generated function body.
-- `raw_zval()`, `raw_ex()`, `from_raw(...)`, `return_*_raw(...)`, and object
-  binding raw helpers are escape hatches. They can be narrowed and documented,
-  but deleting them requires a separate compatibility pass.
+- The former `raw_zval()`, `raw_ex()`, `from_raw(...)`, `return_*_raw(...)`,
+  and object binding raw helper surface has been narrowed or removed. Do not
+  reintroduce public raw aliases unless the caller is an unavoidable ABI edge;
+  prefer `from_ptr(...)`, `from_handle(...)`, `raw_ptr()`, or semantic wrappers.
+
+### Allowed Raw Boundaries
+
+The remaining raw C types are intentional and should stay small and reviewable:
+
+- `ZVal.raw` and lifecycle helpers in `zval.v` / `zval_lifecycle_interop.v`,
+  because they own allocation, copy, release, disown, and adoption semantics.
+- `zval.Handle.raw_ptr()`, `object.Handle.raw_ptr()`, and
+  `execute.Handle.raw_ptr()`, because Layer 3 needs one narrow pointer exit to
+  call Layer 2.
+- Generated or generic Zend callback signatures, such as
+  `object_generic_props.v` and `zval_factory_iter.v`, because Zend calls into V
+  with `&C.zval`/callback context pointers. These functions should wrap raw
+  inputs immediately with `ZVal.from_ptr(...)`, `PhpReturn.from_ptr(...)`, or
+  handle wrappers.
+- `vphp/zend/**`, because it is the explicit C-boundary wrapper layer.
+
+Outside those areas, new raw `&C.zval`, `&C.zend_object`, `C.xxx`, or public
+`from_raw(...)` style APIs should be treated as a design smell.
 
 ### Ownership-Sensitive Areas
 
@@ -577,7 +598,7 @@ Status: **partially started**. The first low-risk compiler/runtime cleanup makes
 generated return glue prefer `ctx.return().*` / `PhpReturn` over older
 `Context.return_*` convenience calls. `ZExData` now owns the low-level argument
 read helpers that `Context` delegates to. Generated property glue now uses
-`PhpReturn` and `ZVal.from_raw(...)` instead of direct return/raw-zval helpers
+`PhpReturn` and `ZVal.from_ptr(...)` instead of direct return/raw-zval helpers
 inside the generated body, and inherited object property sync goes through
 `ZendObject` instead of direct `vphp_read/write_property_compat` calls in the
 generated body. Inherited property reads now use
@@ -595,8 +616,8 @@ values; generated code no longer needs `prop_owned_request(...)` for that path.
 `PhpIncludeFile` now shares the same request-owned adoption path as other
 retval-producing helpers, and static property/class constant reads share
 ownership-parametrized helpers. Generic property handlers use `PhpReturn` and
-`ZVal.from_raw(...)` instead of older raw helper forms. `PhpReturn` and object
-property convenience paths also prefer `ZVal.from_raw(...)` and scalar receiver
+`ZVal.from_ptr(...)` instead of older raw helper forms. `PhpReturn` and object
+property convenience paths also prefer `ZVal.from_ptr(...)` and scalar receiver
 methods over direct raw field construction where no ownership semantics change.
 Array/object write helpers such as associative zval insertion, next-value
 insertion, object initialization, and string property updates are also exposed as
@@ -622,7 +643,7 @@ calling `C.builtin___v_free(...)`. ZVal object initialization and scalar
 property insertion now delegate through private Zend object helpers instead of
 calling Zend property APIs directly from `zval_object_props.v`. Closure creation
 helpers now accept `PhpReturn`, so closure binding code no longer has to pass
-`ctx.return().raw_zval()` down manually. `ZExData` receiver methods now delegate
+raw return slots down manually. `ZExData` receiver methods now delegate
 through private Zend execute-data helpers for argument count, argument lookup,
 active class lookup, and `$this` object lookup. Compiler-generated static
 property sync now uses `ctx.active_class_entry()` and `ZendClassEntry` receiver
@@ -653,6 +674,11 @@ Runtime, include-file, and superglobal C-boundary implementations have started
 moving into `vphp/zend/`, with parent-module files kept as thin adapters where
 they still need `ZVal`, `ZBox`, or semantic wrapper types. The broader layer
 migration should continue incrementally.
+`Context.from_entry(...)`, `Context.from_raw(...)`, `ZExData.new(...)`,
+`ZExData.raw_ex()`, `PhpReturn.raw_zval()`, `ZVal.from_raw(...)`,
+`ZendObject.from_raw(...)`, `ZendClassEntry.from_raw(...)`, and request-ZBox
+`from_raw(...)` compatibility aliases have been removed; pointer and handle
+constructors are now the supported low-level shape.
 
 ### First: Call Paths
 
@@ -779,11 +805,11 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 - runtime、include、superglobals、call、closure、class entry、class handlers、object、array、execute data、zval value 分配/转换相关的直接 Zend bridge 调用已经迁入 `vphp/zend/`。
 - `vphp/object/` 已经作为 no-C low-level object wrapper 区域开始落地。目前包含 object handle、lifecycle、property read-result、vptr root 与 object return helper；根层 `object_binding.v` 和 generic lifecycle helper 已把低层 allocation、roots、runtime-free、return-object 操作委托给 `vphp/object/`；generated generic property helper 仍保留在根层，因为 property result 与 field cleanup 仍依赖根层 `ZVal`/ownership 和语义 wrapper 类型。
 - `vphp/execute/` 已经作为 no-C low-level execute-data wrapper 区域开始落地。目前包含 execute-data handle、argument access 与 active context helper；根层 `ZExData` 仍作为兼容 facade 保留，因为 argument value 仍需要根层 `ZVal`、`PhpArg` 与语义 wrapper。
-- `Context` 现在持有 `ZExData` 与 `PhpReturn` wrapper，不再暴露 raw Zend 字段。`Context.from_entry(...)` 仍是 ABI-facing constructor，`Context.from_raw(...)` 则变成 `voidptr` 形态的低层 escape hatch。
+- `Context` 现在持有 `ZExData` 与 `PhpReturn` wrapper，不再暴露 raw Zend 字段。ABI-facing constructor 是 `Context.from_ptr(ex, ret)`，generated closure glue 也直接使用这个 pointer 形态入口。
 - `vphp/scope/` 已经作为 no-C low-level request scope wrapper 区域开始落地。目前包含 request mark/enter/leave helper 与 autorelease zval add/forget/drain helper；根层 `RequestScope`、`FrameScope`、`PhpScope` 仍作为兼容 facade 保留，因为 frame value 仍依赖根层 ZBox 与语义 wrapper 类型。
-- `RequestBorrowedZBox` 与 `RequestOwnedZBox` 现在提供 `from_ptr(...)` factory helper。旧的 `from_raw(...)` 入口仍作为兼容 facade 保留，但新的低层代码应优先使用 pointer/handle 形态的构造入口。
+- `RequestBorrowedZBox` 与 `RequestOwnedZBox` 现在提供 pointer/handle/zval factory helper。旧的 `from_raw(...)` / `from_raw_zval(...)` alias 已从 request ZBox 层移除。
 - `vphp/zval/` 已经作为 no-C low-level zval wrapper 区域开始落地。目前包含 zval handle、request/persistent allocation lifecycle、copy/disown、runtime counter helper、低层 array operation helper、scalar/type read/write helper、reference/resource helper、call argument packing、scalar factory helper、低层 foreach dispatch、include-file result handling、static class helper 与 superglobal helper；根层 `ZVal` 仍作为兼容 facade 保留，因为 call result ownership 与语义 wrapper 方法仍依赖根层 `ZVal`/ZBox 形态。
-- 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。`PhpReturn` 现在内部持有 zval handle，只把 `raw_zval()` 作为 ABI escape hatch 暴露。
+- 根层文件仍会保留一部分 raw C pointer 类型，但只应出现在 ABI 或低层存储形态中，例如 `ZVal.raw`、generic object handler callback、foreach callback trampoline，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。`PhpReturn`、`ZExData`、`ZendObject`、`ZendClassEntry` 与 ZBox constructor 已统一走 pointer/handle 形态，不再提供 `from_raw(...)` / `raw_zval()` 风格的公开 API。
 - `[]ZVal -> []zval.Handle -> &&C.zval` 的参数打包现在已经拆到 `vphp/zval/` 与 `vphp/zend/` 之间。根层 call helper 仍负责 result adoption，因为 `OwnershipKind` 与 `ZVal` 仍是根层 facade。
 
 核心规则：
@@ -816,6 +842,15 @@ Layer 4 semantic wrapper 直接调用 Layer 1/2 C boundary API。
 ```
 
 这通常说明缺一个 Layer 2 或 Layer 3 helper。
+
+允许保留的 raw 边界要保持很小：
+
+- `zval.v` / `zval_lifecycle_interop.v` 里的 `ZVal.raw` 与生命周期 helper，因为它们负责 allocation、copy、release、disown、adoption 语义。
+- `zval.Handle.raw_ptr()`、`object.Handle.raw_ptr()`、`execute.Handle.raw_ptr()`，因为 Layer 3 需要一个窄出口调用 Layer 2。
+- Zend callback signature，例如 `object_generic_props.v` 与 `zval_factory_iter.v`，因为 Zend 调进 V 时天然传入 `&C.zval` / callback context pointer。这些函数体内必须立即包成 `ZVal.from_ptr(...)`、`PhpReturn.from_ptr(...)` 或 handle wrapper。
+- `vphp/zend/**`，因为它就是显式 C-boundary wrapper 层。
+
+这些区域之外，如果新增 `&C.zval`、`&C.zend_object`、`C.xxx` 或公开 `from_raw(...)` 风格 API，默认应视为设计坏味道。
 
 深水区迁移时尤其要注意：
 

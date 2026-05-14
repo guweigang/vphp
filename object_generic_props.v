@@ -2,6 +2,10 @@ module vphp
 
 import vphp.zval
 
+// Zend object handler boundary.
+// These exported callbacks must keep Zend's raw callback signature, then wrap
+// zval pointers immediately before touching normal vphp APIs.
+
 // Generic property reader used by generated PHP class handlers.
 pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
 	unsafe {

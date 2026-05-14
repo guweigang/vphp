@@ -552,8 +552,8 @@ pub:
 `PhpReturn` 是 return slot 的语义 wrapper。常规代码应该通过
 `ctx.arg_*()` / `ctx.args()` / `ctx.args_with_meta(...)` / `ctx.return()`
 操作参数和返回值；
-只有 bridge-level 代码才需要 `ctx.ex.raw_ex()` 或
-`ctx.return().raw_zval()`。
+只有 bridge-level 代码才需要 `Context.from_ptr(...)`、`ZVal.from_ptr(...)`
+或 `PhpReturn.raw_ptr()` 这类 pointer-shaped escape hatch。
 
 手动组装参数时，推荐统一使用：
 

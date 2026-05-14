@@ -92,14 +92,10 @@ Behavior:
 ### Example
 
 ```v
-mut out := ZVal{ raw: ctx.return().raw_zval() }
-out.from_v[map[string]f64]({
+ctx.return().map_value[f64]({
     'avg': 91.2
     'max': 120.5
-}) or {
-    ctx.return().null()
-    return
-}
+})
 ```
 
 ## 3. Create new `ZVal` from V (`new_zval_from[T]`)
