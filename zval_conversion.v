@@ -145,8 +145,11 @@ pub fn (v ZVal) from_v[T](value T) ! {
 }
 
 fn (v ZVal) push_struct[T](item T) {
-	mut sub_raw := C.zval{}
-	mut sub := ZVal.from_raw(&sub_raw)
+	mut temp := RequestOwnedZBox.new_null()
+	defer {
+		temp.release()
+	}
+	mut sub := temp.to_zval()
 	sub.array_init()
 	$for field in T.fields {
 		key := field.name

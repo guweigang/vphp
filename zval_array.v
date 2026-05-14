@@ -90,10 +90,11 @@ pub fn (v ZVal) add_assoc_zval(key string, val ZVal) {
 }
 
 fn (v ZVal) add_assoc_dyn_value(key string, val DynValue) ! {
-	mut sub_raw := C.zval{}
-	mut sub := ZVal{
-		raw: &sub_raw
+	mut temp := RequestOwnedZBox.new_null()
+	defer {
+		temp.release()
 	}
+	mut sub := temp.to_zval()
 	val.to_zval(mut sub)!
 	v.add_assoc_zval(key, sub)
 }
@@ -119,10 +120,11 @@ pub fn (v ZVal) add_next_val(val ZVal) {
 }
 
 fn (v ZVal) add_next_dyn_value(val DynValue) ! {
-	mut sub_raw := C.zval{}
-	mut sub := ZVal{
-		raw: &sub_raw
+	mut temp := RequestOwnedZBox.new_null()
+	defer {
+		temp.release()
 	}
+	mut sub := temp.to_zval()
 	val.to_zval(mut sub)!
 	v.add_next_val(sub)
 }
