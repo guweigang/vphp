@@ -26,8 +26,7 @@ pub fn (f PhpFunction) to_zval() ZVal {
 }
 
 pub fn (f PhpFunction) exists() bool {
-	res := ZVal.new_string('function_exists').call([ZVal.new_string(f.fn_name)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('function_exists').result_bool(PhpString.of(f.fn_name))
 }
 
 pub fn (f PhpFunction) call_zval(args []vphp.ZVal) ZVal {
@@ -68,11 +67,11 @@ pub fn (f PhpFunction) with_result[T, R](run fn (T) R, args ...PhpArgInput) !R {
 }
 
 pub fn (f PhpFunction) with_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
-	mut result := f.call_owned_request_zval(args)
+	mut result := f.request_owned_zval(args)
 	defer {
 		result.release()
 	}
-	return run(result)
+	return run(result.to_zval())
 }
 
 pub fn (f PhpFunction) result_string(args ...PhpArgInput) string {

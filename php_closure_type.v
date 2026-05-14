@@ -127,11 +127,11 @@ pub fn (c PhpClosure) with_result[T, R](run fn (T) R, args ...PhpArgInput) !R {
 }
 
 pub fn (c PhpClosure) with_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
-	mut result := c.call_owned_request_zval(args)
+	mut result := c.fn_request_owned_zval(args)
 	defer {
 		result.release()
 	}
-	return run(result)
+	return run(result.to_zval())
 }
 
 pub fn (c PhpClosure) kind_name() string {
@@ -149,11 +149,11 @@ pub fn (c PhpClosure) clone_request_owned() RequestOwnedZBox {
 }
 
 pub fn (c PhpClosure) with_fn_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
-	mut result := c.call_owned_request_zval(args)
+	mut result := c.fn_request_owned_zval(args)
 	defer {
 		result.release()
 	}
-	return run(result)
+	return run(result.to_zval())
 }
 
 pub fn (mut c PhpClosure) release() {

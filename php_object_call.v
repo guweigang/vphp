@@ -44,11 +44,11 @@ pub fn (o PhpObject) with_method_result[T, R](method string, run fn (T) R, args 
 }
 
 pub fn (o PhpObject) with_method_result_zval[T](method string, run fn (ZVal) T, args ...ZVal) T {
-	mut result := o.method_owned_request(method, args)
+	mut result := o.method_request_owned_zval(method, args)
 	defer {
 		result.release()
 	}
-	return run(result)
+	return run(result.to_zval())
 }
 
 pub fn (o PhpObject) method_v[T](method string, args []vphp.ZVal) !T {

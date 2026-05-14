@@ -147,9 +147,9 @@ pub fn (c PhpCallable) with_result[T, R](run fn (T) R, args ...PhpArgInput) !R {
 }
 
 pub fn (c PhpCallable) with_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
-	mut result := c.call_owned_request_zval(args)
+	mut result := c.fn_request_owned_zval(args)
 	defer {
 		result.release()
 	}
-	return run(result)
+	return run(result.to_zval())
 }
