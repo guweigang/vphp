@@ -103,7 +103,7 @@ pub fn PhpTaskHandle.null() PhpTaskHandle {
 	return PhpTaskHandle{}
 }
 
-pub fn (handle PhpTaskHandle) raw() voidptr {
+pub fn (handle PhpTaskHandle) ptr() voidptr {
 	return handle.ptr
 }
 
@@ -192,7 +192,7 @@ pub fn task_names() []string {
 }
 
 pub fn task_spawn_handle(task_name string, args []ZVal) !&AsyncResult {
-	return unsafe { &AsyncResult(PhpTask.named(task_name).spawn(args)!.raw()) }
+	return unsafe { &AsyncResult(PhpTask.named(task_name).spawn(args)!.ptr()) }
 }
 
 pub fn task_wait_result(ptr voidptr) !TaskResult {

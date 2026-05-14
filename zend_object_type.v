@@ -51,7 +51,3 @@ pub fn (obj ZendObject) is_valid() bool {
 pub fn (obj ZendObject) raw_ptr() voidptr {
 	return obj.handle.raw_ptr()
 }
-
-fn (obj ZendObject) raw_object() &C.zend_object {
-	return unsafe { &C.zend_object(obj.raw_ptr()) }
-}
