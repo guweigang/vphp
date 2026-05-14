@@ -1,13 +1,13 @@
 module vphp
 
-import vphp.zend
+import vphp.zval
 
 fn zend_make_resource(v ZVal, ptr voidptr, label string) {
-	zend.make_resource(v.raw, ptr, label)
+	zval.make_resource(zval.Handle.from_ptr(v.raw), ptr, label)
 }
 
 fn zend_fetch_resource(v ZVal) voidptr {
-	return zend.fetch_resource(v.raw)
+	return zval.resource_ptr(zval.Handle.from_ptr(v.raw))
 }
 
 pub fn (v ZVal) make_resource(ptr voidptr, label string) {

@@ -33,10 +33,10 @@ Current migration checkpoint:
   root-level ZBox and semantic wrapper types.
 - `vphp/zval/` has started as a no-C low-level zval wrapper area. It now
   contains zval handle, request/persistent allocation lifecycle, copy/disown,
-  runtime counter helpers, low-level array operation helpers, and scalar/type
-  read/write helpers; root-level `ZVal` remains the compatibility facade
-  because call, ownership, and semantic wrapper methods still depend on the
-  root-level `ZVal`/ZBox shape.
+  runtime counter helpers, low-level array operation helpers, scalar/type
+  read/write helpers, and reference/resource helpers; root-level `ZVal` remains
+  the compatibility facade because call, ownership, and semantic wrapper
+  methods still depend on the root-level `ZVal`/ZBox shape.
 - Root-level files still contain raw C pointer types where they are part of the
   current ABI or low-level storage shape, such as `ZVal.raw`, `PhpReturn.raw`,
   `ZExData.raw`, generic object handler callbacks, and adapter functions that
@@ -772,7 +772,7 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 - `vphp/object/` 已经作为 no-C low-level object wrapper 区域开始落地。目前包含 object handle、lifecycle、property、vptr root 与 object return helper；根层 `object_binding.v` 和 generic lifecycle helper 已把低层 allocation、roots、runtime-free、return-object 操作委托给 `vphp/object/`；generated generic property helper 仍保留在根层，因为 property result 与 field cleanup 仍依赖根层 `ZVal`/ownership 和语义 wrapper 类型。
 - `vphp/execute/` 已经作为 no-C low-level execute-data wrapper 区域开始落地。目前包含 execute-data handle、argument access 与 active context helper；根层 `ZExData` 仍作为兼容 facade 保留，因为 argument value 仍需要根层 `ZVal`、`PhpArg` 与语义 wrapper。
 - `vphp/scope/` 已经作为 no-C low-level request scope wrapper 区域开始落地。目前包含 request mark/enter/leave helper 与 autorelease zval add/forget/drain helper；根层 `RequestScope`、`FrameScope`、`PhpScope` 仍作为兼容 facade 保留，因为 frame value 仍依赖根层 ZBox 与语义 wrapper 类型。
-- `vphp/zval/` 已经作为 no-C low-level zval wrapper 区域开始落地。目前包含 zval handle、request/persistent allocation lifecycle、copy/disown、runtime counter helper、低层 array operation helper 与 scalar/type read/write helper；根层 `ZVal` 仍作为兼容 facade 保留，因为 call、ownership 与语义 wrapper 方法仍依赖根层 `ZVal`/ZBox 形态。
+- `vphp/zval/` 已经作为 no-C low-level zval wrapper 区域开始落地。目前包含 zval handle、request/persistent allocation lifecycle、copy/disown、runtime counter helper、低层 array operation helper、scalar/type read/write helper 与 reference/resource helper；根层 `ZVal` 仍作为兼容 facade 保留，因为 call、ownership 与语义 wrapper 方法仍依赖根层 `ZVal`/ZBox 形态。
 - 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
 - `[]ZVal -> &&C.zval` 的参数打包目前仍跟 `ZVal` 放在一起。要完全下沉到 `vphp/zend/`，需要先把 `ZVal`/ownership 这些类型迁到 no-C low-level 子模块，否则 `vphp.zend` 会反向依赖父模块并形成循环。
 

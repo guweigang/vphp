@@ -204,14 +204,30 @@ pub fn reference_value(v &C.zval) &C.zval {
 	return C.vphp_reference_value(v)
 }
 
+pub fn reference_value_ptr(v voidptr) voidptr {
+	return reference_value(unsafe { &C.zval(v) })
+}
+
 pub fn reference_set_zval(v &C.zval, value &C.zval) {
 	C.vphp_reference_set_zval(v, value)
+}
+
+pub fn reference_set_zval_ptr(v voidptr, value voidptr) {
+	reference_set_zval(unsafe { &C.zval(v) }, unsafe { &C.zval(value) })
 }
 
 pub fn make_resource(v &C.zval, ptr voidptr, label string) {
 	C.vphp_make_res(v, ptr, &char(label.str))
 }
 
+pub fn make_resource_ptr(v voidptr, ptr voidptr, label string) {
+	make_resource(unsafe { &C.zval(v) }, ptr, label)
+}
+
 pub fn fetch_resource(v &C.zval) voidptr {
 	return C.vphp_fetch_res(v)
+}
+
+pub fn fetch_resource_ptr(v voidptr) voidptr {
+	return fetch_resource(unsafe { &C.zval(v) })
 }
