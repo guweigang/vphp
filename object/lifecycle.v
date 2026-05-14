@@ -6,6 +6,10 @@ pub fn allocate_contiguous(ce voidptr, v_size usize) voidptr {
 	return zend.allocate_contiguous_object(ce, v_size)
 }
 
+pub fn runtime_free(ptr voidptr) {
+	zend.v_runtime_free(ptr)
+}
+
 pub fn (handle Handle) add_ref() {
 	zend.object_add_ref_ptr(handle.raw_ptr())
 }

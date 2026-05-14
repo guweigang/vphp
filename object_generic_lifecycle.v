@@ -1,16 +1,12 @@
 module vphp
 
-import vphp.zend
-
-fn v_runtime_free(ptr voidptr) {
-	zend.v_runtime_free(ptr)
-}
+import vphp.object
 
 // Preserve V default field initialization for generated PHP classes.
 pub fn generic_new_raw[T]() voidptr {
 	unsafe {
 		ptr := &T{}
-		register_vptr_root(ptr)
+		object.register_root(ptr)
 		return ptr
 	}
 }
@@ -20,7 +16,7 @@ pub fn generic_free_raw[T](ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
-	unregister_vptr_root(ptr)
+	object.unregister_root(ptr)
 	unsafe {
 		mut obj := &T(ptr)
 		$for field in T.fields {
@@ -107,11 +103,11 @@ pub fn generic_free_raw[T](ptr voidptr) {
 			}
 		}
 		$if nongc ? {
-			v_runtime_free(ptr)
+			object.runtime_free(ptr)
 		}
 	}
 }
 
 pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
-	return zend_allocate_contiguous_object(ce, sizeof(T))
+	return object.allocate_contiguous(ce, sizeof(T))
 }
