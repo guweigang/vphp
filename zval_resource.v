@@ -3,11 +3,11 @@ module vphp
 import vphp.zval
 
 fn zend_make_resource(v ZVal, ptr voidptr, label string) {
-	zval.make_resource(zval.Handle.from_ptr(v.raw), ptr, label)
+	zval.make_resource(v.handle(), ptr, label)
 }
 
 fn zend_fetch_resource(v ZVal) voidptr {
-	return zval.resource_ptr(zval.Handle.from_ptr(v.raw))
+	return zval.resource_ptr(v.handle())
 }
 
 pub fn (v ZVal) make_resource(ptr voidptr, label string) {

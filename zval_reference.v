@@ -3,11 +3,11 @@ module vphp
 import vphp.zval
 
 fn zend_reference_value(v ZVal) zval.Handle {
-	return zval.reference_value(zval.Handle.from_ptr(v.raw))
+	return zval.reference_value(v.handle())
 }
 
 fn zend_reference_set_zval(v ZVal, value ZVal) {
-	zval.set_reference_value(zval.Handle.from_ptr(v.raw), zval.Handle.from_ptr(value.raw))
+	zval.set_reference_value(v.handle(), value.handle())
 }
 
 pub fn (v ZVal) reference_value() ZVal {

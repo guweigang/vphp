@@ -5,39 +5,39 @@ import vphp.zval
 // ======== 读取 — 标量类型 ========
 
 fn zend_zval_get_long(v ZVal) i64 {
-	return zval.get_long(zval.Handle.from_ptr(v.raw))
+	return zval.get_long(v.handle())
 }
 
 fn zend_zval_get_int(v ZVal) i64 {
-	return zval.get_int(zval.Handle.from_ptr(v.raw))
+	return zval.get_int(v.handle())
 }
 
 fn zend_zval_get_lval(v ZVal) i64 {
-	return zval.get_lval(zval.Handle.from_ptr(v.raw))
+	return zval.get_lval(v.handle())
 }
 
 fn zend_zval_get_double(v ZVal) f64 {
-	return zval.get_double(zval.Handle.from_ptr(v.raw))
+	return zval.get_double(v.handle())
 }
 
 fn zend_zval_set_null(v ZVal) {
-	zval.set_null(zval.Handle.from_ptr(v.raw))
+	zval.set_null(v.handle())
 }
 
 fn zend_zval_set_bool(v ZVal, b bool) {
-	zval.set_bool(zval.Handle.from_ptr(v.raw), b)
+	zval.set_bool(v.handle(), b)
 }
 
 fn zend_zval_set_lval(v ZVal, val i64) {
-	zval.set_lval(zval.Handle.from_ptr(v.raw), val)
+	zval.set_lval(v.handle(), val)
 }
 
 fn zend_zval_set_double(v ZVal, val f64) {
-	zval.set_double(zval.Handle.from_ptr(v.raw), val)
+	zval.set_double(v.handle(), val)
 }
 
 fn zend_zval_set_string(v ZVal, s string) {
-	zval.set_string(zval.Handle.from_ptr(v.raw), s)
+	zval.set_string(v.handle(), s)
 }
 
 // bool
@@ -104,7 +104,7 @@ pub fn (v ZVal) get_string() string {
 	if !v.is_valid() {
 		return ''
 	}
-	return zval.string_value(zval.Handle.from_ptr(v.raw))
+	return zval.string_value(v.handle())
 }
 
 // ======== 写入 — 标量类型 ========

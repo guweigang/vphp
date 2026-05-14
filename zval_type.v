@@ -5,11 +5,11 @@ import vphp.zval
 // ======== 空值检查 ========
 
 fn zend_zval_type(v ZVal) int {
-	return zval.type_raw(zval.Handle.from_ptr(v.raw))
+	return zval.type_raw(v.handle())
 }
 
 fn zend_zval_is_callable(v ZVal) bool {
-	return zval.is_callable(zval.Handle.from_ptr(v.raw))
+	return zval.is_callable(v.handle())
 }
 
 pub fn (v ZVal) is_valid() bool {
