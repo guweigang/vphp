@@ -2,6 +2,7 @@ module vphp
 
 import vphp.object
 import vphp.zend
+import vphp.zval
 
 fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {
 	return object.allocate_contiguous(ce, v_size)
@@ -47,8 +48,8 @@ fn zend_object_wrapper(obj ZendObject) &C.vphp_object_wrapper {
 	return unsafe { &C.vphp_object_wrapper(obj.handle.wrapper_ptr()) }
 }
 
-fn zend_wrap_existing_object(out &C.zval, obj ZendObject) {
-	zend.wrap_existing_object(out, obj.raw_object())
+fn zend_wrap_existing_object(out zval.Handle, obj ZendObject) {
+	object.wrap_existing_zval(out, obj.handle)
 }
 
 pub fn (obj ZendObject) add_ref() {
@@ -101,12 +102,10 @@ pub fn (obj ZendObject) to_request_owned_zval() ZVal {
 	if !obj.is_valid() {
 		return invalid_zval()
 	}
-	unsafe {
-		mut out := zend_new_zval()
-		if out == 0 {
-			return invalid_zval()
-		}
-		zend_wrap_existing_object(out, obj)
-		return adopt_raw_with_ownership(out, .owned_request)
+	out := zval.new_request()
+	if !out.is_valid() {
+		return invalid_zval()
 	}
+	zend_wrap_existing_object(out, obj)
+	return adopt_handle_with_ownership(out, .owned_request)
 }

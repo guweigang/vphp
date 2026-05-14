@@ -72,6 +72,10 @@ pub fn wrap_existing_object(out &C.zval, obj &C.zend_object) {
 	C.vphp_wrap_existing_object(out, obj)
 }
 
+pub fn wrap_existing_object_ptr(out voidptr, obj voidptr) {
+	wrap_existing_object(unsafe { &C.zval(out) }, unsafe { &C.zend_object(obj) })
+}
+
 pub fn current_this_object() voidptr {
 	return C.vphp_get_current_this_object()
 }
