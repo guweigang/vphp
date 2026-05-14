@@ -25,7 +25,7 @@ fn zend_new_string_zval(s string) zval.Handle {
 }
 
 fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
-	zval.foreach(zval.Handle.from_ptr(v.raw), ctx, wrapper)
+	zval.foreach(v.handle(), ctx, wrapper)
 }
 
 fn request_owned_zval_from_handle(handle zval.Handle) ZVal {

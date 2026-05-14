@@ -57,5 +57,5 @@ fn zend_read_class_constant(class_name ZVal, name string) zval.ReadResult {
 
 fn zend_write_static_property(class_name ZVal, name string, value ZVal) {
 	class_name_text := class_name.get_string()
-	zval.write_static_property(class_name_text, name, zval.Handle.from_ptr(value.raw))
+	zval.write_static_property(class_name_text, name, value.handle())
 }

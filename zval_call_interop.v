@@ -5,7 +5,7 @@ import vphp.zval as zvalmod
 fn call_zval_target(target ZendCallTarget, args []vphp.ZVal, ownership OwnershipKind) ZVal {
 	mut handles := []zvalmod.Handle{cap: args.len}
 	for arg in args {
-		handles << zvalmod.Handle.from_ptr(arg.raw)
+		handles << arg.handle()
 	}
 	return zvalmod.with_call_args[ZVal](handles, fn [target, ownership] (count int, params voidptr) ZVal {
 		retval := zend_new_zval()
@@ -54,17 +54,17 @@ pub fn (v ZVal) call_owned_request(args []vphp.ZVal) ZVal {
 		framework_debug_log('zval.call_owned_request skip raw=0 args=${args.len}')
 		return invalid_zval()
 	}
-	framework_debug_log('zval.call_owned_request enter raw=${usize(v.raw)} valid=${v.is_valid()} type=${v.type_name()} class=${v.class_name()} args=${args.len}')
+	framework_debug_log('zval.call_owned_request enter raw=${usize(v.raw_ptr())} valid=${v.is_valid()} type=${v.type_name()} class=${v.class_name()} args=${args.len}')
 	for idx, arg in args {
-		framework_debug_log('zval.call_owned_request arg idx=${idx} raw=${usize(arg.raw)} valid=${arg.is_valid()} type=${arg.type_name()} class=${arg.class_name()}')
+		framework_debug_log('zval.call_owned_request arg idx=${idx} raw=${usize(arg.raw_ptr())} valid=${arg.is_valid()} type=${arg.type_name()} class=${arg.class_name()}')
 	}
 
 	result := call_callable_zval(v, args, .owned_request)
 	if !result.is_valid() {
-		framework_debug_log('zval.call_owned_request failure raw=${usize(v.raw)}')
+		framework_debug_log('zval.call_owned_request failure raw=${usize(v.raw_ptr())}')
 		return invalid_zval()
 	}
-	framework_debug_log('zval.call_owned_request exit raw=${usize(v.raw)} retval=${usize(result.raw)} valid=${result.is_valid()} type=${result.type_name()} class=${result.class_name()}')
+	framework_debug_log('zval.call_owned_request exit raw=${usize(v.raw_ptr())} retval=${usize(result.raw_ptr())} valid=${result.is_valid()} type=${result.type_name()} class=${result.class_name()}')
 	return result
 }
 
