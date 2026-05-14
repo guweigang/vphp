@@ -5,27 +5,19 @@ import vphp.zend
 // ======== 工厂方法 ========
 
 fn zend_new_null_zval() &C.zval {
-	z := zend_new_zval()
-	zend.zval_set_null(z)
-	return z
+	return zend.new_null_zval()
 }
 
 fn zend_new_int_zval(n i64) &C.zval {
-	z := zend_new_zval()
-	zend.zval_set_lval(z, n)
-	return z
+	return zend.new_int_zval(n)
 }
 
 fn zend_new_float_zval(f f64) &C.zval {
-	z := zend_new_zval()
-	zend.zval_set_double(z, f)
-	return z
+	return zend.new_float_zval(f)
 }
 
 fn zend_new_bool_zval(b bool) &C.zval {
-	z := zend_new_zval()
-	zend.zval_set_bool(z, b)
-	return z
+	return zend.new_bool_zval(b)
 }
 
 fn zend_new_string_zval(s string) &C.zval {

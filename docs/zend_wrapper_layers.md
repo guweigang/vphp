@@ -10,6 +10,20 @@ wrappers, such as runtime, include, and superglobal helpers. The broader
 `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, and `vphp/object/` layout is still a
 migration target and is not fully implemented yet.
 
+Current migration checkpoint:
+
+- Direct Zend bridge calls for runtime, include, superglobals, calls, closures,
+  class entries, class handlers, objects, arrays, execute data, and zval value
+  allocation/conversion helpers have been moved under `vphp/zend/`.
+- Root-level files still contain raw C pointer types where they are part of the
+  current ABI or low-level storage shape, such as `ZVal.raw`, `PhpReturn.raw`,
+  `ZExData.raw`, generic object handler callbacks, and adapter functions that
+  pass `&C.zval` through to `vphp/zend/`.
+- `[]ZVal -> &&C.zval` argument packing still lives beside `ZVal` today. Moving
+  it fully under `vphp/zend/` would require moving `ZVal`/ownership types into a
+  no-C low-level submodule first, otherwise `vphp.zend` would have to import the
+  parent module and create a dependency cycle.
+
 The rule of thumb:
 
 ```text
@@ -729,6 +743,12 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 状态：**迁移已开始 / 尚未完整实现**。
 
 当前代码已经有不少相关概念，`vphp/zend/` 也已经开始承载 C-boundary wrapper，例如 `runtime.v`、`include.v`、`superglobals.v`、`call.v`、`closure.v`、`class_entry.v`、`class_handlers.v`、`object.v`、`array.v`、`value.v`、`execute.v`。但 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/` 这些目标目录仍未完整落地。
+
+当前迁移检查点：
+
+- runtime、include、superglobals、call、closure、class entry、class handlers、object、array、execute data、zval value 分配/转换相关的直接 Zend bridge 调用已经迁入 `vphp/zend/`。
+- 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
+- `[]ZVal -> &&C.zval` 的参数打包目前仍跟 `ZVal` 放在一起。要完全下沉到 `vphp/zend/`，需要先把 `ZVal`/ownership 这些类型迁到 no-C low-level 子模块，否则 `vphp.zend` 会反向依赖父模块并形成循环。
 
 核心规则：
 
