@@ -122,7 +122,7 @@ fn (glue ClassPropertyGlue) render_setter_lines() []string {
 	out << '    unsafe {'
 	out << '        name := name_ptr.vstring_with_len(name_len).clone()'
 	out << '        mut obj := &${glue.class_name}(ptr)'
-	out << '        arg := vphp.ZVal.from_raw(value)'
+	out << '        arg := vphp.ZVal.from_ptr(value)'
 	for prop in glue.props {
 		out << render_prop_setter_case(prop)
 	}
@@ -185,7 +185,7 @@ fn (glue ClassPropertyGlue) render_sync_lines() []string {
 	}
 	out << '    unsafe {'
 	out << '        obj := &${glue.class_name}(ptr)'
-	out << '        out := vphp.ZVal.from_raw(zv)'
+	out << '        out := vphp.ZVal.from_ptr(zv)'
 	for prop in glue.props {
 		out << render_prop_sync_case(prop)
 	}

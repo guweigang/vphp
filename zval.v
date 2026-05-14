@@ -19,9 +19,13 @@ pub mut:
 }
 
 pub fn ZVal.from_raw(raw &C.zval) ZVal {
+	return ZVal.from_ptr(raw)
+}
+
+pub fn ZVal.from_ptr(raw voidptr) ZVal {
 	return unsafe {
 		ZVal{
-			raw: raw
+			raw: &C.zval(raw)
 		}
 	}
 }
@@ -30,7 +34,7 @@ pub fn ZVal.from_handle(handle zval.Handle) ZVal {
 	if !handle.is_valid() {
 		return invalid_zval()
 	}
-	return unsafe { ZVal.from_raw(&C.zval(handle.raw_ptr())) }
+	return ZVal.from_ptr(handle.raw_ptr())
 }
 
 pub fn (v ZVal) handle() zval.Handle {
