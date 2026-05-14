@@ -7,6 +7,10 @@ pub struct ZendClassEntry {
 }
 
 pub fn ZendClassEntry.from_raw(raw voidptr) ZendClassEntry {
+	return ZendClassEntry.from_ptr(raw)
+}
+
+pub fn ZendClassEntry.from_ptr(raw voidptr) ZendClassEntry {
 	return ZendClassEntry{
 		raw: raw
 	}

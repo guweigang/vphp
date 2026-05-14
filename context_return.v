@@ -28,19 +28,19 @@ pub fn (ctx Context) return_res(ptr voidptr, label string) {
 	ctx.return().resource(ptr, label)
 }
 
-pub fn (ctx Context) return_obj(v_ptr voidptr, ce voidptr) {
+pub fn (ctx Context) return_obj(v_ptr voidptr, ce ZendClassEntry) {
 	ctx.return().object(v_ptr, ce)
 }
 
-pub fn (ctx Context) return_bound_object(v_ptr voidptr, ce voidptr, handlers voidptr, ownership OwnershipKind) {
+pub fn (ctx Context) return_bound_object(v_ptr voidptr, ce ZendClassEntry, handlers voidptr, ownership OwnershipKind) {
 	ctx.return().bound_object(v_ptr, ce, handlers, ownership)
 }
 
-pub fn (ctx Context) return_owned_object(v_ptr voidptr, ce voidptr, handlers voidptr) {
+pub fn (ctx Context) return_owned_object(v_ptr voidptr, ce ZendClassEntry, handlers voidptr) {
 	ctx.return().owned_object(v_ptr, ce, handlers)
 }
 
-pub fn (ctx Context) return_borrowed_object(v_ptr voidptr, ce voidptr, handlers voidptr) {
+pub fn (ctx Context) return_borrowed_object(v_ptr voidptr, ce ZendClassEntry, handlers voidptr) {
 	ctx.return().borrowed_object(v_ptr, ce, handlers)
 }
 
