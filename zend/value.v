@@ -88,24 +88,48 @@ pub fn new_zval() &C.zval {
 	return C.vphp_new_zval()
 }
 
+pub fn new_zval_ptr() voidptr {
+	return new_zval()
+}
+
 pub fn new_persistent_zval() &C.zval {
 	return C.vphp_new_persistent_zval()
+}
+
+pub fn new_persistent_zval_ptr() voidptr {
+	return new_persistent_zval()
 }
 
 pub fn release_zval(z &C.zval) {
 	C.vphp_release_zval(z)
 }
 
+pub fn release_zval_ptr(z voidptr) {
+	release_zval(unsafe { &C.zval(z) })
+}
+
 pub fn release_persistent_zval(z &C.zval) {
 	C.vphp_release_persistent_zval(z)
+}
+
+pub fn release_persistent_zval_ptr(z voidptr) {
+	release_persistent_zval(unsafe { &C.zval(z) })
 }
 
 pub fn disown_zval(z &C.zval) {
 	C.vphp_disown_zval(z)
 }
 
+pub fn disown_zval_ptr(z voidptr) {
+	disown_zval(unsafe { &C.zval(z) })
+}
+
 pub fn copy_zval(dst &C.zval, src &C.zval) {
 	C.ZVAL_COPY(dst, src)
+}
+
+pub fn copy_zval_ptr(dst voidptr, src voidptr) {
+	copy_zval(unsafe { &C.zval(dst) }, unsafe { &C.zval(src) })
 }
 
 pub fn foreach_zval(v &C.zval, ctx voidptr, wrapper voidptr) {

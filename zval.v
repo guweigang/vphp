@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend
+import vphp.zval
 
 // ============================================
 // ZVal — low-level bridge wrapper around Zend zval
@@ -41,27 +41,27 @@ pub:
 }
 
 fn zend_new_zval() &C.zval {
-	return zend.new_zval()
+	return unsafe { &C.zval(zval.new_request().raw_ptr()) }
 }
 
 fn zend_new_persistent_zval() &C.zval {
-	return zend.new_persistent_zval()
+	return unsafe { &C.zval(zval.new_persistent().raw_ptr()) }
 }
 
 fn zend_release_zval(z &C.zval) {
-	zend.release_zval(z)
+	zval.release_request(zval.Handle.from_ptr(z))
 }
 
 fn zend_release_persistent_zval(z &C.zval) {
-	zend.release_persistent_zval(z)
+	zval.release_persistent(zval.Handle.from_ptr(z))
 }
 
 fn zend_disown_zval(z &C.zval) {
-	zend.disown_zval(z)
+	zval.disown(zval.Handle.from_ptr(z))
 }
 
 fn zend_copy_zval(dst &C.zval, src &C.zval) {
-	zend.copy_zval(dst, src)
+	zval.copy(zval.Handle.from_ptr(dst), zval.Handle.from_ptr(src))
 }
 
 fn invalid_zval() ZVal {
@@ -141,16 +141,12 @@ fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
 }
 
 pub fn runtime_counters() RuntimeCounters {
-	mut ar := 0
-	mut owned := 0
-	mut obj_reg := u32(0)
-	mut rev_reg := u32(0)
-	zend.runtime_counters(&ar, &owned, &obj_reg, &rev_reg)
+	state := zval.runtime_state()
 	return RuntimeCounters{
-		autorelease_len:              ar
-		owned_len:                    owned
-		obj_registry_len:             obj_reg
-		rev_registry_len:             rev_reg
+		autorelease_len:              state.autorelease_len
+		owned_len:                    state.owned_len
+		obj_registry_len:             state.obj_registry_len
+		rev_registry_len:             state.rev_registry_len
 		persistent_fallback_zval_len: persistent_fallback_zval_count()
 	}
 }
