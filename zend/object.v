@@ -8,64 +8,32 @@ pub fn object_add_ref(obj &C.zend_object) {
 	C.vphp_object_addref(obj)
 }
 
-pub fn object_add_ref_ptr(obj voidptr) {
-	object_add_ref(unsafe { &C.zend_object(obj) })
-}
-
 pub fn object_release(obj &C.zend_object) {
 	C.vphp_object_release(obj)
-}
-
-pub fn object_release_ptr(obj voidptr) {
-	object_release(unsafe { &C.zend_object(obj) })
 }
 
 pub fn bind_borrowed_handlers(obj &C.zend_object, handlers voidptr) {
 	C.vphp_bind_borrowed_handlers(obj, handlers)
 }
 
-pub fn bind_borrowed_handlers_ptr(obj voidptr, handlers voidptr) {
-	bind_borrowed_handlers(unsafe { &C.zend_object(obj) }, handlers)
-}
-
 pub fn bind_owned_handlers(obj &C.zend_object, handlers voidptr) {
 	C.vphp_bind_owned_handlers(obj, handlers)
-}
-
-pub fn bind_owned_handlers_ptr(obj voidptr, handlers voidptr) {
-	bind_owned_handlers(unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn ensure_borrowed_instance_binding(obj &C.zend_object, handlers voidptr) &C.vphp_object_wrapper {
 	return C.vphp_ensure_borrowed_instance_binding(obj, handlers)
 }
 
-pub fn ensure_borrowed_instance_binding_ptr(obj voidptr, handlers voidptr) voidptr {
-	return ensure_borrowed_instance_binding(unsafe { &C.zend_object(obj) }, handlers)
-}
-
 pub fn ensure_owned_instance_binding(obj &C.zend_object, handlers voidptr) &C.vphp_object_wrapper {
 	return C.vphp_ensure_owned_instance_binding(obj, handlers)
-}
-
-pub fn ensure_owned_instance_binding_ptr(obj voidptr, handlers voidptr) voidptr {
-	return ensure_owned_instance_binding(unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn init_owned_instance(obj &C.zend_object, handlers voidptr) {
 	C.vphp_init_owned_instance(obj, handlers)
 }
 
-pub fn init_owned_instance_ptr(obj voidptr, handlers voidptr) {
-	init_owned_instance(unsafe { &C.zend_object(obj) }, handlers)
-}
-
 pub fn object_wrapper(obj &C.zend_object) &C.vphp_object_wrapper {
 	return C.vphp_obj_from_obj(obj)
-}
-
-pub fn object_wrapper_ptr(obj voidptr) voidptr {
-	return object_wrapper(unsafe { &C.zend_object(obj) })
 }
 
 pub fn wrap_existing_object(out &C.zval, obj &C.zend_object) {
