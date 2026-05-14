@@ -1,67 +1,67 @@
 module vphp
 
-import vphp.zend
+import vphp.zval
 
 // ======== 数组操作 ========
 
 fn zend_array_init(v ZVal) {
-	zend.array_init(v.raw)
+	zval.array_init(zval.Handle.from_ptr(v.raw))
 }
 
 fn zend_array_add_assoc_string(v ZVal, key string, val string) {
-	zend.array_add_assoc_string(v.raw, key, val)
+	zval.array_add_assoc_string(zval.Handle.from_ptr(v.raw), key, val)
 }
 
 fn zend_array_add_assoc_long(v ZVal, key string, val i64) {
-	zend.array_add_assoc_long(v.raw, key, val)
+	zval.array_add_assoc_long(zval.Handle.from_ptr(v.raw), key, val)
 }
 
 fn zend_array_add_assoc_double(v ZVal, key string, val f64) {
-	zend.array_add_assoc_double(v.raw, key, val)
+	zval.array_add_assoc_double(zval.Handle.from_ptr(v.raw), key, val)
 }
 
 fn zend_array_add_assoc_bool(v ZVal, key string, val bool) {
-	zend.array_add_assoc_bool(v.raw, key, val)
+	zval.array_add_assoc_bool(zval.Handle.from_ptr(v.raw), key, val)
 }
 
 fn zend_array_add_assoc_zval(v ZVal, key string, val ZVal) {
-	zend.array_add_assoc_zval(v.raw, key, val.raw)
+	zval.array_add_assoc_zval(zval.Handle.from_ptr(v.raw), key, zval.Handle.from_ptr(val.raw))
 }
 
 fn zend_array_push_string(v ZVal, s string) {
-	zend.array_push_string(v.raw, s)
+	zval.array_push_string(zval.Handle.from_ptr(v.raw), s)
 }
 
 fn zend_array_push_long(v ZVal, val i64) {
-	zend.array_push_long(v.raw, val)
+	zval.array_push_long(zval.Handle.from_ptr(v.raw), val)
 }
 
 fn zend_array_push_double(v ZVal, val f64) {
-	zend.array_push_double(v.raw, val)
+	zval.array_push_double(zval.Handle.from_ptr(v.raw), val)
 }
 
 fn zend_array_push_bool(v ZVal, val bool) {
-	zend.array_push_bool(v.raw, val)
+	zval.array_push_bool(zval.Handle.from_ptr(v.raw), val)
 }
 
 fn zend_array_add_next_zval(v ZVal, val ZVal) {
-	zend.array_add_next_zval(v.raw, val.raw)
+	zval.array_add_next_zval(zval.Handle.from_ptr(v.raw), zval.Handle.from_ptr(val.raw))
 }
 
 fn zend_array_count(v ZVal) int {
-	return zend.array_count(v.raw)
+	return zval.array_count(zval.Handle.from_ptr(v.raw))
 }
 
 fn zend_array_get_index(v ZVal, index int) &C.zval {
-	return zend.array_get_index(v.raw, index)
+	return unsafe { &C.zval(zval.array_get_index(zval.Handle.from_ptr(v.raw), index).raw_ptr()) }
 }
 
 fn zend_array_get_key(v ZVal, key string) &C.zval {
-	return zend.array_get_key(v.raw, key)
+	return unsafe { &C.zval(zval.array_get_key(zval.Handle.from_ptr(v.raw), key).raw_ptr()) }
 }
 
 fn zend_zval_is_null_raw(raw &C.zval) bool {
-	return zend.zval_is_null(raw)
+	return zval.is_null(zval.Handle.from_ptr(raw))
 }
 
 // 初始化为数组

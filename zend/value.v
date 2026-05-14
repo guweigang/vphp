@@ -8,6 +8,10 @@ pub fn zval_is_null(v &C.zval) bool {
 	return C.vphp_is_null(v)
 }
 
+pub fn zval_is_null_ptr(v voidptr) bool {
+	return zval_is_null(unsafe { &C.zval(v) })
+}
+
 pub fn zval_is_callable(v &C.zval) bool {
 	return C.vphp_is_callable(v) == 1
 }
