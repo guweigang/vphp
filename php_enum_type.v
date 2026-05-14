@@ -16,7 +16,7 @@ pub fn PhpEnum.named(name string) PhpEnum {
 }
 
 pub fn PhpEnum.find(name string) ?PhpEnum {
-	if !php_fn('enum_exists').call([ZVal.new_string(name)]).to_bool() {
+	if !PhpFunction.named('enum_exists').result_bool(PhpString.of(name)) {
 		return none
 	}
 	return PhpEnum.named(name)
@@ -31,15 +31,14 @@ pub fn (e PhpEnum) to_class() PhpClass {
 }
 
 pub fn (e PhpEnum) exists() bool {
-	return php_fn('enum_exists').call([ZVal.new_string(e.name())]).to_bool()
+	return PhpFunction.named('enum_exists').result_bool(PhpString.of(e.name()))
 }
 
 pub fn (e PhpEnum) cases() PhpArray {
-	raw := e.class.static_method_zval('cases', [])
-	return PhpArray.must_from_zval(raw) or {
-		mut empty := ZVal.new_null()
-		empty.array_init()
-		PhpArray.must_from_zval(empty) or { panic(err) }
+	mut result := e.class.static_method_request_owned('cases')
+	return PhpArray.from_request_owned_zbox(result) or {
+		result.release()
+		PhpArray.empty()
 	}
 }
 

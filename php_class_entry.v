@@ -10,13 +10,9 @@ pub fn class_exists(name string) bool {
 }
 
 pub fn interface_exists(name string) bool {
-	res := PhpFunction.named('interface_exists').call_zval([ZVal.new_string(name),
-		ZVal.new_bool(true)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('interface_exists').result_bool(PhpString.of(name), PhpBool.of(true))
 }
 
 pub fn trait_exists(name string) bool {
-	res := PhpFunction.named('trait_exists').call_zval([ZVal.new_string(name),
-		ZVal.new_bool(true)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('trait_exists').result_bool(PhpString.of(name), PhpBool.of(true))
 }

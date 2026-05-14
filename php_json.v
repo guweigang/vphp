@@ -7,32 +7,20 @@ pub fn PhpJson.encode(value ZVal) string {
 }
 
 pub fn PhpJson.encode_with_flags(value ZVal, flags int) string {
-	res := PhpFunction.named('json_encode').call_zval([value, ZVal.new_int(flags)])
-	if !res.is_valid() || res.is_null() || res.is_undef() {
-		return ''
-	}
-	return res.to_string()
+	return PhpFunction.named('json_encode').result_string(PhpValue.from_zval(value), PhpInt.of(flags))
 }
 
 pub fn PhpJson.decode_assoc(raw string) ZVal {
-	return PhpFunction.named('json_decode').call_zval([ZVal.new_string(raw),
-		ZVal.new_bool(true)])
+	mut result := PhpFunction.named('json_decode').request_owned(PhpString.of(raw), PhpBool.of(true))
+	return result.take_zval()
 }
 
 pub fn PhpJson.last_error_code() int {
-	res := PhpFunction.named('json_last_error').call_zval([])
-	if !res.is_valid() || res.is_null() || res.is_undef() {
-		return 0
-	}
-	return int(res.to_i64())
+	return int(PhpFunction.named('json_last_error').result_i64())
 }
 
 pub fn PhpJson.last_error_message() string {
-	res := PhpFunction.named('json_last_error_msg').call_zval([])
-	if !res.is_valid() || res.is_null() || res.is_undef() {
-		return ''
-	}
-	return res.to_string()
+	return PhpFunction.named('json_last_error_msg').result_string()
 }
 
 pub fn json_encode(value ZVal) string {

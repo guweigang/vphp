@@ -23,12 +23,12 @@ pub fn (constant PhpConst) name() string {
 }
 
 pub fn (constant PhpConst) exists() bool {
-	res := PhpFunction.named('defined').call_zval([ZVal.new_string(constant.name)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('defined').result_bool(PhpString.of(constant.name))
 }
 
 pub fn (constant PhpConst) value() ZVal {
-	return PhpFunction.named('constant').call_zval([ZVal.new_string(constant.name)])
+	mut result := PhpFunction.named('constant').request_owned(PhpString.of(constant.name))
+	return result.take_zval()
 }
 
 pub fn (constant PhpConst) to_zval() ZVal {
