@@ -29,8 +29,8 @@ fn zend_current_this_object() voidptr {
 	return zend.current_this_object()
 }
 
-fn zend_object_from_zval(v ZVal) &C.zend_object {
-	return zend.object_from_zval(v.raw)
+fn zend_object_from_zval(v ZVal) object.Handle {
+	return object.from_zval(v.handle())
 }
 
 pub fn ZendObject.current() ZendObject {
@@ -45,7 +45,9 @@ pub fn ZendObject.from_zval(v ZVal) ZendObject {
 	if v.raw == 0 || !v.is_object() {
 		return ZendObject.invalid()
 	}
-	return ZendObject.from_raw(zend_object_from_zval(v))
+	return ZendObject{
+		handle: zend_object_from_zval(v)
+	}
 }
 
 pub fn (obj ZendObject) is_valid() bool {

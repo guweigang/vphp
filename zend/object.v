@@ -80,6 +80,10 @@ pub fn object_from_zval(v &C.zval) &C.zend_object {
 	return C.vphp_get_obj_from_zval(v)
 }
 
+pub fn object_from_zval_ptr(v voidptr) voidptr {
+	return object_from_zval(unsafe { &C.zval(v) })
+}
+
 pub fn return_unbound_object(ret &C.zval, v_ptr voidptr, ce voidptr) {
 	C.vphp_return_obj(ret, v_ptr, ce)
 }
