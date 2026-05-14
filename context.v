@@ -14,13 +14,9 @@ pub:
 
 // ======== 构造与基础状态 ========
 
-pub fn Context.from_entry(ex &C.zend_execute_data, ret &C.zval) Context {
-	return Context.from_raw(ex, ret)
-}
-
-pub fn Context.from_raw(ex voidptr, ret voidptr) Context {
+pub fn Context.from_ptr(ex voidptr, ret voidptr) Context {
 	return Context{
-		ex:  ZExData.from_voidptr(ex)
+		ex:  ZExData.from_ptr(ex)
 		ret: PhpReturn.from_ptr(ret)
 	}
 }
@@ -69,8 +65,4 @@ pub fn (ctx Context) num_args() int {
 
 pub fn (ctx Context) active_class_entry() ZendClassEntry {
 	return ctx.ex.active_class_entry()
-}
-
-pub fn (ctx Context) get_ce() voidptr {
-	return ctx.ex.active_ce()
 }

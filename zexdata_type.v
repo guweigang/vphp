@@ -7,20 +7,10 @@ pub struct ZExData {
 	handle execute.Handle
 }
 
-pub fn ZExData.new(raw &C.zend_execute_data) ZExData {
+pub fn ZExData.from_ptr(raw voidptr) ZExData {
 	return ZExData{
 		handle: execute.Handle.from_ptr(raw)
 	}
-}
-
-pub fn ZExData.from_voidptr(raw voidptr) ZExData {
-	return ZExData{
-		handle: execute.Handle.from_ptr(raw)
-	}
-}
-
-pub fn (ex ZExData) raw_ex() &C.zend_execute_data {
-	return unsafe { &C.zend_execute_data(ex.handle.raw_ptr()) }
 }
 
 fn zend_execute_num_args(ex ZExData) int {
@@ -32,7 +22,7 @@ fn zend_execute_arg(ex ZExData, index int) zval.Handle {
 }
 
 fn zend_execute_active_class(ex ZExData) ZendClassEntry {
-	return ZendClassEntry.from_raw(ex.handle.active_class_ptr())
+	return ZendClassEntry.from_ptr(ex.handle.active_class_ptr())
 }
 
 fn zend_execute_this_object(ex ZExData) ZendObject {
@@ -125,14 +115,6 @@ pub fn (ex ZExData) active_class_entry() ZendClassEntry {
 	return zend_execute_active_class(ex)
 }
 
-pub fn (ex ZExData) active_ce() voidptr {
-	return ex.active_class_entry().raw_ptr()
-}
-
 pub fn (ex ZExData) this_zend_object() ZendObject {
 	return zend_execute_this_object(ex)
-}
-
-pub fn (ex ZExData) this_object() voidptr {
-	return ex.this_zend_object().raw_ptr()
 }
