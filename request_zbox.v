@@ -1,19 +1,19 @@
 module vphp
 
 pub fn (v RequestBorrowedZBox) clone_request_owned() RequestOwnedZBox {
-	return RequestOwnedZBox.from_raw_zval(v.z)
+	return RequestOwnedZBox.from_handle(v.z.handle())
 }
 
 pub fn (v RequestBorrowedZBox) clone() PersistentOwnedZBox {
-	return PersistentOwnedZBox.from_raw_zval(v.z)
+	return PersistentOwnedZBox.from_handle(v.z.handle())
 }
 
 pub fn (v RequestOwnedZBox) borrowed() RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_raw_zval(v.z)
+	return RequestBorrowedZBox.from_handle(v.z.handle())
 }
 
 pub fn (v RequestOwnedZBox) clone() PersistentOwnedZBox {
-	return PersistentOwnedZBox.from_raw_zval(v.z)
+	return PersistentOwnedZBox.from_handle(v.z.handle())
 }
 
 pub fn (v RequestOwnedZBox) to_persistent_owned_zbox() PersistentOwnedZBox {
@@ -21,7 +21,7 @@ pub fn (v RequestOwnedZBox) to_persistent_owned_zbox() PersistentOwnedZBox {
 }
 
 pub fn (v RequestOwnedZBox) clone_request_owned() RequestOwnedZBox {
-	return RequestOwnedZBox.from_raw_zval(v.z)
+	return RequestOwnedZBox.from_handle(v.z.handle())
 }
 
 pub fn (v RequestOwnedZBox) with_zval[T](run fn (ZVal) T) T {

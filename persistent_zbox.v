@@ -6,7 +6,7 @@ pub fn (v PersistentOwnedZBox) borrowed() RequestBorrowedZBox {
 			return v.clone_request_owned().borrowed()
 		}
 		.fallback_zval {
-			return RequestBorrowedZBox.from_raw_zval(v.z)
+			return RequestBorrowedZBox.from_handle(v.z.handle())
 		}
 	}
 }
@@ -17,7 +17,7 @@ pub fn (v PersistentOwnedZBox) clone_request_owned() RequestOwnedZBox {
 			return v.dyn_data.request_owned()
 		}
 		.fallback_zval {
-			return RequestOwnedZBox.from_raw_zval(v.z)
+			return RequestOwnedZBox.from_handle(v.z.handle())
 		}
 	}
 }

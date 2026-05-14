@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 pub fn DynValue.persistent_owned_zbox[T](value T) PersistentOwnedZBox {
 	$if T is DynValue {
 		return PersistentOwnedZBox{
@@ -43,6 +45,11 @@ pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
 }
 
 pub fn PersistentOwnedZBox.from_raw_zval(z ZVal) PersistentOwnedZBox {
+	return PersistentOwnedZBox.from_handle(z.handle())
+}
+
+pub fn PersistentOwnedZBox.from_handle(handle zval.Handle) PersistentOwnedZBox {
+	z := ZVal.from_handle(handle)
 	if z.is_valid() && z.is_callable() {
 		if retained_callable := RetainedCallable.from_zval(z) {
 			return DynValue.persistent_owned_zbox(retained_callable)
@@ -96,7 +103,7 @@ pub fn own_persistent_dyn(value DynValue) PersistentOwnedZBox {
 }
 
 pub fn PersistentOwnedZBox.from_zval(z ZVal) PersistentOwnedZBox {
-	return PersistentOwnedZBox.from_raw_zval(z)
+	return PersistentOwnedZBox.from_handle(z.handle())
 }
 
 // from_persistent_zval keeps the original zval payload as a persistent duplicate
