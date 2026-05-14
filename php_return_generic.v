@@ -75,7 +75,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 		ret.persistent_owned(val)
 		return
 	}
-	mut out := ZVal.from_raw(ret.raw)
+	mut out := ret.to_zval()
 	out.from_v[T](val) or {
 		$if T is $struct {
 			ret.struct_value(val)

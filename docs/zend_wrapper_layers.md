@@ -39,9 +39,10 @@ Current migration checkpoint:
   because call result ownership and semantic wrapper methods still depend on
   the root-level `ZVal`/ZBox shape.
 - Root-level files still contain raw C pointer types where they are part of the
-  current ABI or low-level storage shape, such as `ZVal.raw`, `PhpReturn.raw`,
-  `ZExData.raw`, generic object handler callbacks, and adapter functions that
-  pass `&C.zval` through to `vphp/zend/`.
+  current ABI or low-level storage shape, such as `ZVal.raw`, `ZExData.raw`,
+  generic object handler callbacks, and adapter functions that pass `&C.zval`
+  through to `vphp/zend/`. `PhpReturn` now stores a zval handle internally and
+  exposes `raw_zval()` only as an ABI escape hatch.
 - `[]ZVal -> []zval.Handle -> &&C.zval` argument packing is now split between
   `vphp/zval/` and `vphp/zend/`. Root-level call helpers still own result
   adoption because `OwnershipKind` and `ZVal` remain root-level facades.
@@ -294,7 +295,7 @@ ret.raw_zval()
 But normal code should not need those escape hatches.
 
 `PhpReturn` is a special boundary wrapper: it represents Zend's callback
-`return_value` slot. It may store a raw `&C.zval` internally, but normal callers
+`return_value` slot. It stores a zval handle internally, and normal callers
 should write through receiver methods such as `ret.string_value(...)`,
 `ret.value(...)`, `ret.zval(...)`, `ret.owned_object(...)`, or
 `ctx.return().v(result)`. `ret.raw_zval()` is only for bridge code that must pass
@@ -773,7 +774,7 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 - `vphp/execute/` 已经作为 no-C low-level execute-data wrapper 区域开始落地。目前包含 execute-data handle、argument access 与 active context helper；根层 `ZExData` 仍作为兼容 facade 保留，因为 argument value 仍需要根层 `ZVal`、`PhpArg` 与语义 wrapper。
 - `vphp/scope/` 已经作为 no-C low-level request scope wrapper 区域开始落地。目前包含 request mark/enter/leave helper 与 autorelease zval add/forget/drain helper；根层 `RequestScope`、`FrameScope`、`PhpScope` 仍作为兼容 facade 保留，因为 frame value 仍依赖根层 ZBox 与语义 wrapper 类型。
 - `vphp/zval/` 已经作为 no-C low-level zval wrapper 区域开始落地。目前包含 zval handle、request/persistent allocation lifecycle、copy/disown、runtime counter helper、低层 array operation helper、scalar/type read/write helper、reference/resource helper、call argument packing 与 scalar factory helper；根层 `ZVal` 仍作为兼容 facade 保留，因为 call result ownership 与语义 wrapper 方法仍依赖根层 `ZVal`/ZBox 形态。
-- 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
+- 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。`PhpReturn` 现在内部持有 zval handle，只把 `raw_zval()` 作为 ABI escape hatch 暴露。
 - `[]ZVal -> []zval.Handle -> &&C.zval` 的参数打包现在已经拆到 `vphp/zval/` 与 `vphp/zend/` 之间。根层 call helper 仍负责 result adoption，因为 `OwnershipKind` 与 `ZVal` 仍是根层 facade。
 
 核心规则：

@@ -1,7 +1,7 @@
 module vphp
 
 pub fn (ret PhpReturn) list[T](list []T) {
-	out := ZVal.from_raw(ret.raw)
+	out := ret.to_zval()
 	out.array_init()
 	for item in list {
 		$if T is string {
@@ -17,7 +17,7 @@ pub fn (ret PhpReturn) list[T](list []T) {
 }
 
 pub fn (ret PhpReturn) map_value[T](m map[string]T) {
-	out := ZVal.from_raw(ret.raw)
+	out := ret.to_zval()
 	out.array_init()
 	for k, v in m {
 		$if T is string {
@@ -33,7 +33,7 @@ pub fn (ret PhpReturn) map_value[T](m map[string]T) {
 }
 
 pub fn (ret PhpReturn) object_props(props map[string]string) {
-	out := ZVal.from_raw(ret.raw)
+	out := ret.to_zval()
 	out.object_init()
 	for k, v in props {
 		out.update_property_string(k, v)
@@ -41,7 +41,7 @@ pub fn (ret PhpReturn) object_props(props map[string]string) {
 }
 
 pub fn (ret PhpReturn) struct_value[T](s T) {
-	out := ZVal.from_raw(ret.raw)
+	out := ret.to_zval()
 	out.array_init()
 	$for field in T.fields {
 		key := field.name

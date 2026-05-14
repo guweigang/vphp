@@ -1,7 +1,7 @@
 module vphp
 
 pub fn (ret PhpReturn) zval(val ZVal) {
-	ZVal.from_raw(ret.raw).copy_from(val)
+	ret.to_zval().copy_from(val)
 }
 
 pub fn (ret PhpReturn) value(value PhpValue) {

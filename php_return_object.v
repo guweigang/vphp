@@ -1,7 +1,7 @@
 module vphp
 
 pub fn (ret PhpReturn) resource(ptr voidptr, label string) {
-	ZVal.from_raw(ret.raw).make_resource(ptr, label)
+	ret.to_zval().make_resource(ptr, label)
 }
 
 pub fn (ret PhpReturn) object(v_ptr voidptr, ce voidptr) {
