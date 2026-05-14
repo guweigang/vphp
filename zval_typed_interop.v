@@ -15,18 +15,6 @@ pub fn (v ZVal) call_owned_persistent_v[T](args []ZVal) !T {
 	return v.call_owned_persistent(args).to_v[T]()
 }
 
-pub fn (v ZVal) invoke_v[T](args []ZVal) !T {
-	return v.invoke(args).to_v[T]()
-}
-
-pub fn (v ZVal) invoke_owned_request_v[T](args []ZVal) !T {
-	return v.call_owned_request_v[T](args)
-}
-
-pub fn (v ZVal) invoke_owned_persistent_v[T](args []ZVal) !T {
-	return v.call_owned_persistent_v[T](args)
-}
-
 pub fn (v ZVal) construct_v[T](args []ZVal) !T {
 	return v.construct(args).to_v[T]()
 }
@@ -177,21 +165,4 @@ pub fn (v ZVal) static_method_owned_request_object[T](method string, args []ZVal
 
 pub fn (v ZVal) static_method_owned_persistent_object[T](method string, args []ZVal) ?&T {
 	return v.static_method_owned_persistent(method, args).to_object[T]()
-}
-
-// 兼容旧命名：建议改用 `.const_v[T](...)`
-pub fn (v ZVal) constant_v[T](name string) !T {
-	return v.const_v[T](name)
-}
-
-// -------- Compatibility aliases --------
-
-// 兼容旧 API：对象方法调用
-pub fn (v ZVal) call_method(method string, args []ZVal) ZVal {
-	return v.method(method, args)
-}
-
-// 兼容旧 API：callable 调用
-pub fn (v ZVal) invoke(args []ZVal) ZVal {
-	return v.call(args)
 }

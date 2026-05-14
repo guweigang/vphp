@@ -89,11 +89,6 @@ pub fn (v ZVal) @const(name string) ZVal {
 	return v.const_owned_request(name)
 }
 
-// Compatibility alias. Prefer `.@const(...)` in new code.
-pub fn (v ZVal) constant(name string) ZVal {
-	return v.@const(name)
-}
-
 pub fn (v ZVal) set_static_prop(name string, value ZVal) {
 	if !v.is_valid() || !v.is_string() || !value.is_valid() {
 		return

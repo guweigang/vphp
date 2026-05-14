@@ -23,8 +23,3 @@ pub fn (v ZVal) resource_ptr() voidptr {
 	}
 	return zend_fetch_resource(v)
 }
-
-// Compatibility alias. Prefer `resource_ptr()` in new code.
-pub fn (v ZVal) to_res() voidptr {
-	return v.resource_ptr()
-}

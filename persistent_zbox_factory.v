@@ -143,23 +143,11 @@ pub fn PersistentOwnedZBox.from_mixed_zval(z ZVal) PersistentOwnedZBox {
 	return PersistentOwnedZBox.from_detached_zval(z) or { PersistentOwnedZBox.from_zval(z) }
 }
 
-// from_value_zval is kept as a narrow compatibility alias.
-// New code should prefer from_mixed_zval(...).
-pub fn PersistentOwnedZBox.from_value_zval(z ZVal) PersistentOwnedZBox {
-	return PersistentOwnedZBox.from_mixed_zval(z)
-}
-
 // of_mixed prefers detached long-lived data, then falls back to the general
 // long-lived route for mixed values. Use of_callable/of_object when the input
 // kind is already known, so mixed fallback stays a narrow compatibility path.
 pub fn PersistentOwnedZBox.of_mixed(z ZVal) PersistentOwnedZBox {
 	return PersistentOwnedZBox.from_mixed_zval(z)
-}
-
-// of_value is kept as a narrow compatibility alias.
-// New code should prefer of_mixed(...).
-pub fn PersistentOwnedZBox.of_value(z ZVal) PersistentOwnedZBox {
-	return PersistentOwnedZBox.of_mixed(z)
 }
 
 pub fn PersistentOwnedZBox.new_null() PersistentOwnedZBox {
