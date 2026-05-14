@@ -1,6 +1,7 @@
 module vphp
 
 import vphp.zend
+import vphp.zval
 
 struct ZendMethodCall {
 	receiver ZVal
@@ -44,17 +45,17 @@ fn zend_invoke_call_target(target ZendCallTarget, retval voidptr, count int, par
 	}
 }
 
-fn zend_read_static_property(class_name ZVal, name string, rv &C.zval) &C.zval {
+fn zend_read_static_property(class_name ZVal, name string) zval.ReadResult {
 	class_name_text := class_name.get_string()
-	return zend.read_static_property(&char(class_name_text.str), class_name_text.len, name, rv)
+	return zval.read_static_property(class_name_text, name)
 }
 
-fn zend_read_class_constant(class_name ZVal, name string, rv &C.zval) &C.zval {
+fn zend_read_class_constant(class_name ZVal, name string) zval.ReadResult {
 	class_name_text := class_name.get_string()
-	return zend.read_class_constant(&char(class_name_text.str), class_name_text.len, name, rv)
+	return zval.read_class_constant(class_name_text, name)
 }
 
 fn zend_write_static_property(class_name ZVal, name string, value ZVal) {
 	class_name_text := class_name.get_string()
-	zend.write_static_property(&char(class_name_text.str), class_name_text.len, name, value.raw)
+	zval.write_static_property(class_name_text, name, zval.Handle.from_ptr(value.raw))
 }

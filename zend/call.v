@@ -56,12 +56,24 @@ pub fn read_static_property(class_name &char, class_name_len int, name string, r
 		name.len, rv)
 }
 
+pub fn read_static_property_named(class_name string, name string, rv voidptr) voidptr {
+	return read_static_property(&char(class_name.str), class_name.len, name, unsafe { &C.zval(rv) })
+}
+
 pub fn read_class_constant(class_name &char, class_name_len int, name string, rv &C.zval) &C.zval {
 	return C.vphp_read_class_constant_compat(class_name, class_name_len, &char(name.str), name.len,
 		rv)
 }
 
+pub fn read_class_constant_named(class_name string, name string, rv voidptr) voidptr {
+	return read_class_constant(&char(class_name.str), class_name.len, name, unsafe { &C.zval(rv) })
+}
+
 pub fn write_static_property(class_name &char, class_name_len int, name string, value &C.zval) {
 	C.vphp_write_static_property_compat(class_name, class_name_len, &char(name.str), name.len,
 		value)
+}
+
+pub fn write_static_property_named(class_name string, name string, value voidptr) {
+	write_static_property(&char(class_name.str), class_name.len, name, unsafe { &C.zval(value) })
 }

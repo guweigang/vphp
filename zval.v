@@ -154,6 +154,14 @@ fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
 	return clone_raw_with_ownership(res, ownership)
 }
 
+fn adopt_read_result_handles(result zval.ReadResult, ownership OwnershipKind) ZVal {
+	if !result.rv.is_valid() {
+		return invalid_zval()
+	}
+	return adopt_read_result(ZVal.from_handle(result.rv).raw, ZVal.from_handle(result.res).raw,
+		ownership)
+}
+
 pub fn runtime_counters() RuntimeCounters {
 	state := zval.runtime_state()
 	return RuntimeCounters{

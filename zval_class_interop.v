@@ -47,18 +47,14 @@ fn (v ZVal) read_static_prop_with_ownership(name string, ownership OwnershipKind
 	if v.raw == 0 || !v.is_string() {
 		return invalid_zval()
 	}
-	rv := zend_new_zval()
-	res := zend_read_static_property(v, name, rv)
-	return adopt_read_result(rv, res, ownership)
+	return adopt_read_result_handles(zend_read_static_property(v, name), ownership)
 }
 
 fn (v ZVal) read_const_with_ownership(name string, ownership OwnershipKind) ZVal {
 	if v.raw == 0 || !v.is_string() {
 		return invalid_zval()
 	}
-	rv := zend_new_zval()
-	res := zend_read_class_constant(v, name, rv)
-	return adopt_read_result(rv, res, ownership)
+	return adopt_read_result_handles(zend_read_class_constant(v, name), ownership)
 }
 
 pub fn (v ZVal) static_prop_borrowed(name string) ZVal {
