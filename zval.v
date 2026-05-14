@@ -18,10 +18,6 @@ pub mut:
 	is_persistent bool
 }
 
-pub fn ZVal.from_raw(raw &C.zval) ZVal {
-	return ZVal.from_ptr(raw)
-}
-
 pub fn ZVal.from_ptr(raw voidptr) ZVal {
 	return unsafe {
 		ZVal{

@@ -7,10 +7,6 @@ pub struct PhpReturn {
 	handle zvalmod.Handle
 }
 
-pub fn PhpReturn.new(raw &C.zval) PhpReturn {
-	return PhpReturn.from_ptr(raw)
-}
-
 pub fn PhpReturn.from_ptr(raw voidptr) PhpReturn {
 	return PhpReturn{
 		handle: zvalmod.Handle.from_ptr(raw)

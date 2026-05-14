@@ -13,10 +13,6 @@ pub fn ZendObject.invalid() ZendObject {
 	}
 }
 
-pub fn ZendObject.from_raw(raw &C.zend_object) ZendObject {
-	return ZendObject.from_ptr(raw)
-}
-
 pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
 	return ZendObject{
 		handle: object.Handle.from_ptr(ptr)

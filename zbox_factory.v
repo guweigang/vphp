@@ -10,7 +10,7 @@ fn zbox_view_state(z ZVal) ZValViewState {
 }
 
 @[inline]
-fn borrowed_zbox_from_raw_zval(z ZVal) RequestBorrowedZBox {
+fn borrowed_zbox_from_zval(z ZVal) RequestBorrowedZBox {
 	return RequestBorrowedZBox{
 		ZValViewState: zbox_view_state(z)
 	}
@@ -31,24 +31,12 @@ pub fn own_request_zbox(z ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.of(z)
 }
 
-pub fn borrow_zbox_raw(z ZVal) RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_raw_zval(z)
-}
-
 pub fn RequestBorrowedZBox.from_zval(z ZVal) RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_raw_zval(z)
+	return RequestBorrowedZBox.from_handle(z.handle())
 }
 
 pub fn RequestBorrowedZBox.of(z ZVal) RequestBorrowedZBox {
 	return RequestBorrowedZBox.from_zval(z)
-}
-
-pub fn RequestBorrowedZBox.from_raw_zval(z ZVal) RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_handle(z.handle())
-}
-
-pub fn RequestBorrowedZBox.from_raw(raw &C.zval) RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_ptr(raw)
 }
 
 pub fn RequestBorrowedZBox.from_ptr(raw voidptr) RequestBorrowedZBox {
@@ -56,7 +44,7 @@ pub fn RequestBorrowedZBox.from_ptr(raw voidptr) RequestBorrowedZBox {
 }
 
 pub fn RequestBorrowedZBox.from_handle(handle zval.Handle) RequestBorrowedZBox {
-	return borrowed_zbox_from_raw_zval(ZVal.from_handle(handle))
+	return borrowed_zbox_from_zval(ZVal.from_handle(handle))
 }
 
 // null borrowed helper for call-site ergonomics; lifetime is request-scoped.
@@ -64,20 +52,12 @@ pub fn RequestBorrowedZBox.null() RequestBorrowedZBox {
 	return RequestOwnedZBox.new_null().borrowed()
 }
 
-pub fn own_request_zbox_raw(z ZVal) RequestOwnedZBox {
-	return RequestOwnedZBox.from_raw_zval(z)
-}
-
 pub fn RequestOwnedZBox.from_zval(z ZVal) RequestOwnedZBox {
-	return RequestOwnedZBox.from_raw_zval(z)
+	return RequestOwnedZBox.from_handle(z.handle())
 }
 
 pub fn RequestOwnedZBox.of(z ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.from_zval(z)
-}
-
-pub fn RequestOwnedZBox.from_raw_zval(z ZVal) RequestOwnedZBox {
-	return RequestOwnedZBox.from_handle(z.handle())
 }
 
 pub fn RequestOwnedZBox.from_ptr(raw voidptr) RequestOwnedZBox {
@@ -110,8 +90,4 @@ pub fn RequestOwnedZBox.new_bool(b bool) RequestOwnedZBox {
 
 pub fn RequestOwnedZBox.new_string(s string) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(ZVal.new_string(s))
-}
-
-pub fn borrowed_zbox_from_raw(raw &C.zval) RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_raw(raw)
 }

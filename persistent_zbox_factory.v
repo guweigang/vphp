@@ -40,14 +40,6 @@ pub fn own_persistent_zbox(z ZVal) PersistentOwnedZBox {
 	return PersistentOwnedZBox.of(z)
 }
 
-pub fn own_persistent_zbox_raw(z ZVal) PersistentOwnedZBox {
-	return PersistentOwnedZBox.from_raw_zval(z)
-}
-
-pub fn PersistentOwnedZBox.from_raw_zval(z ZVal) PersistentOwnedZBox {
-	return PersistentOwnedZBox.from_handle(z.handle())
-}
-
 pub fn PersistentOwnedZBox.from_handle(handle zval.Handle) PersistentOwnedZBox {
 	z := ZVal.from_handle(handle)
 	if z.is_valid() && z.is_callable() {
@@ -78,7 +70,7 @@ pub fn PersistentOwnedZBox.from_callable_zval(z ZVal) PersistentOwnedZBox {
 	if retained := RetainedObject.from_zval(z) {
 		return DynValue.persistent_owned_zbox(retained)
 	}
-	return PersistentOwnedZBox.from_raw_zval(z)
+	return PersistentOwnedZBox.from_zval(z)
 }
 
 pub fn PersistentOwnedZBox.of_callable(z ZVal) PersistentOwnedZBox {
@@ -91,7 +83,7 @@ pub fn PersistentOwnedZBox.from_object_zval(z ZVal) PersistentOwnedZBox {
 	if retained := RetainedObject.from_zval(z) {
 		return DynValue.persistent_owned_zbox(retained)
 	}
-	return PersistentOwnedZBox.from_raw_zval(z)
+	return PersistentOwnedZBox.from_zval(z)
 }
 
 pub fn PersistentOwnedZBox.of_object(z ZVal) PersistentOwnedZBox {
