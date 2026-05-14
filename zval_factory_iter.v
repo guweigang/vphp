@@ -1,37 +1,39 @@
 module vphp
 
+import vphp.zend
+
 // ======== 工厂方法 ========
 
 fn zend_new_null_zval() &C.zval {
 	z := zend_new_zval()
-	C.vphp_set_null(z)
+	zend.zval_set_null(z)
 	return z
 }
 
 fn zend_new_int_zval(n i64) &C.zval {
 	z := zend_new_zval()
-	C.vphp_set_lval(z, n)
+	zend.zval_set_lval(z, n)
 	return z
 }
 
 fn zend_new_float_zval(f f64) &C.zval {
 	z := zend_new_zval()
-	C.vphp_set_double(z, f)
+	zend.zval_set_double(z, f)
 	return z
 }
 
 fn zend_new_bool_zval(b bool) &C.zval {
 	z := zend_new_zval()
-	C.vphp_set_bool(z, b)
+	zend.zval_set_bool(z, b)
 	return z
 }
 
 fn zend_new_string_zval(s string) &C.zval {
-	return C.vphp_new_strl(&char(s.str), s.len)
+	return zend.new_string_zval(s)
 }
 
 fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
-	C.vphp_zval_foreach(v.raw, ctx, wrapper)
+	zend.foreach_zval(v.raw, ctx, wrapper)
 }
 
 // 创建一个 null ZVal

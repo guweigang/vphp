@@ -1,13 +1,15 @@
 module vphp
 
+import vphp.zend
+
 // ======== 空值检查 ========
 
 fn zend_zval_type(v ZVal) int {
-	return C.vphp_get_type(v.raw)
+	return zend.zval_type(v.raw)
 }
 
 fn zend_zval_is_callable(v ZVal) bool {
-	return C.vphp_is_callable(v.raw) == 1
+	return zend.zval_is_callable(v.raw)
 }
 
 pub fn (v ZVal) is_valid() bool {

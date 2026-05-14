@@ -1,67 +1,67 @@
 module vphp
 
+import vphp.zend
+
 // ======== 数组操作 ========
 
 fn zend_array_init(v ZVal) {
-	unsafe { C.vphp_return_array_start(v.raw) }
+	zend.array_init(v.raw)
 }
 
 fn zend_array_add_assoc_string(v ZVal, key string, val string) {
-	unsafe { C.vphp_array_add_assoc_string(v.raw, &char(key.str), &char(val.str)) }
+	zend.array_add_assoc_string(v.raw, key, val)
 }
 
 fn zend_array_add_assoc_long(v ZVal, key string, val i64) {
-	unsafe { C.vphp_array_add_assoc_long(v.raw, &char(key.str), val) }
+	zend.array_add_assoc_long(v.raw, key, val)
 }
 
 fn zend_array_add_assoc_double(v ZVal, key string, val f64) {
-	unsafe { C.vphp_array_add_assoc_double(v.raw, &char(key.str), val) }
+	zend.array_add_assoc_double(v.raw, key, val)
 }
 
 fn zend_array_add_assoc_bool(v ZVal, key string, val bool) {
-	b_val := if val { 1 } else { 0 }
-	unsafe { C.vphp_array_add_assoc_bool(v.raw, &char(key.str), b_val) }
+	zend.array_add_assoc_bool(v.raw, key, val)
 }
 
 fn zend_array_add_assoc_zval(v ZVal, key string, val ZVal) {
-	unsafe { C.vphp_array_add_assoc_zval(v.raw, &char(key.str), val.raw) }
+	zend.array_add_assoc_zval(v.raw, key, val.raw)
 }
 
 fn zend_array_push_string(v ZVal, s string) {
-	unsafe { C.vphp_array_push_stringl(v.raw, &char(s.str), s.len) }
+	zend.array_push_string(v.raw, s)
 }
 
 fn zend_array_push_long(v ZVal, val i64) {
-	unsafe { C.vphp_array_push_long(v.raw, val) }
+	zend.array_push_long(v.raw, val)
 }
 
 fn zend_array_push_double(v ZVal, val f64) {
-	unsafe { C.vphp_array_push_double(v.raw, val) }
+	zend.array_push_double(v.raw, val)
 }
 
 fn zend_array_push_bool(v ZVal, val bool) {
-	b_val := if val { 1 } else { 0 }
-	unsafe { C.vphp_array_push_long(v.raw, b_val) }
+	zend.array_push_bool(v.raw, val)
 }
 
 fn zend_array_add_next_zval(v ZVal, val ZVal) {
-	unsafe { C.vphp_array_add_next_zval(v.raw, val.raw) }
+	zend.array_add_next_zval(v.raw, val.raw)
 }
 
 fn zend_array_count(v ZVal) int {
-	return C.vphp_array_count(v.raw)
+	return zend.array_count(v.raw)
 }
 
 fn zend_array_get_index(v ZVal, index int) &C.zval {
-	return C.vphp_array_get_index(v.raw, u32(index))
+	return zend.array_get_index(v.raw, index)
 }
 
 fn zend_array_get_key(v ZVal, key string) &C.zval {
-	return C.vphp_array_get_key(v.raw, &char(key.str), key.len)
+	return zend.array_get_key(v.raw, key)
 }
 
 fn zend_zval_is_null_raw(raw &C.zval) bool {
-	return C.vphp_is_null(raw)
+	return zend.zval_is_null(raw)
 }
 
 // 初始化为数组

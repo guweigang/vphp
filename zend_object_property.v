@@ -1,13 +1,13 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 fn (obj ZendObject) read_property_with_ownership(name string, ownership OwnershipKind) ZVal {
 	if !obj.is_valid() {
 		return invalid_zval()
 	}
 	rv := zend_new_zval()
-	res := C.vphp_read_property_compat(obj.raw, &char(name.str), name.len, rv)
+	res := zend.read_property(obj.raw, name, rv)
 	return adopt_read_result(rv, res, ownership)
 }
 
@@ -16,7 +16,7 @@ fn (obj ZendObject) with_scalar_prop(name string, run fn (ZVal)) bool {
 		return false
 	}
 	mut rv := C.zval{}
-	res := C.vphp_read_property_compat(obj.raw, &char(name.str), name.len, &rv)
+	res := zend.read_property(obj.raw, name, &rv)
 	if res == 0 {
 		return false
 	}
@@ -76,26 +76,26 @@ pub fn (obj ZendObject) set_prop(name string, value ZVal) {
 	if !obj.is_valid() || !value.is_valid() {
 		return
 	}
-	C.vphp_write_property_compat(obj.raw, &char(name.str), name.len, value.raw)
+	zend.write_property(obj.raw, name, value.raw)
 }
 
 pub fn (obj ZendObject) has_prop(name string) bool {
 	if !obj.is_valid() {
 		return false
 	}
-	return C.vphp_has_property_compat(obj.raw, &char(name.str), name.len) == 1
+	return zend.has_property(obj.raw, name)
 }
 
 pub fn (obj ZendObject) isset_prop(name string) bool {
 	if !obj.is_valid() {
 		return false
 	}
-	return C.vphp_isset_property_compat(obj.raw, &char(name.str), name.len) == 1
+	return zend.isset_property(obj.raw, name)
 }
 
 pub fn (obj ZendObject) unset_prop(name string) {
 	if !obj.is_valid() {
 		return
 	}
-	C.vphp_unset_property_compat(obj.raw, &char(name.str), name.len)
+	zend.unset_property(obj.raw, name)
 }
