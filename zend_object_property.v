@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 fn (obj ZendObject) read_property_with_ownership(name string, ownership OwnershipKind) ZVal {
 	if !obj.is_valid() {
 		return invalid_zval()
@@ -13,12 +15,16 @@ fn (obj ZendObject) with_scalar_prop(name string, run fn (ZVal)) bool {
 	if !obj.is_valid() {
 		return false
 	}
-	mut rv := C.zval{}
-	res := unsafe { &C.zval(obj.handle.read_property_ptr(name, &rv)) }
+	mut rv_box := RequestOwnedZBox.new_null()
+	defer {
+		rv_box.release()
+	}
+	rv := rv_box.to_zval()
+	res := obj.handle.read_property_ptr(name, rv.raw)
 	if res == 0 {
 		return false
 	}
-	value := ZVal.from_raw(res)
+	value := ZVal.from_handle(zval.Handle.from_ptr(res))
 	if value.is_null() || value.is_undef() {
 		return false
 	}
