@@ -53,11 +53,11 @@ fn zend_array_count(v ZVal) int {
 }
 
 fn zend_array_get_index(v ZVal, index int) &C.zval {
-	return unsafe { &C.zval(zval.array_get_index(zval.Handle.from_ptr(v.raw), index).raw_ptr()) }
+	return ZVal.from_handle(zval.array_get_index(zval.Handle.from_ptr(v.raw), index)).raw
 }
 
 fn zend_array_get_key(v ZVal, key string) &C.zval {
-	return unsafe { &C.zval(zval.array_get_key(zval.Handle.from_ptr(v.raw), key).raw_ptr()) }
+	return ZVal.from_handle(zval.array_get_key(zval.Handle.from_ptr(v.raw), key)).raw
 }
 
 fn zend_zval_is_null_raw(raw &C.zval) bool {

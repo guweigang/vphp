@@ -18,7 +18,7 @@ pub fn (v ZVal) reference_value() ZVal {
 	if !handle.is_valid() {
 		return invalid_zval()
 	}
-	return unsafe { ZVal.from_raw(&C.zval(handle.raw_ptr())) }
+	return ZVal.from_handle(handle)
 }
 
 pub fn (v ZVal) set_reference_value(value ZVal) {

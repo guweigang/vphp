@@ -18,7 +18,7 @@ pub fn PhpReturn.from_ptr(raw voidptr) PhpReturn {
 }
 
 pub fn (ret PhpReturn) raw_zval() &C.zval {
-	return unsafe { &C.zval(ret.handle.raw_ptr()) }
+	return ret.to_zval().raw
 }
 
 pub fn (ret PhpReturn) raw_ptr() voidptr {
@@ -30,5 +30,5 @@ pub fn (ret PhpReturn) handle() zvalmod.Handle {
 }
 
 pub fn (ret PhpReturn) to_zval() ZVal {
-	return ZVal.from_raw(ret.raw_zval())
+	return ZVal.from_handle(ret.handle)
 }

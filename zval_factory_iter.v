@@ -33,7 +33,7 @@ fn request_owned_zval_from_handle(handle zval.Handle) ZVal {
 	RequestScope.autorelease_add_handle(handle)
 	return unsafe {
 		ZVal{
-			raw:   &C.zval(handle.raw_ptr())
+			raw:   ZVal.from_handle(handle).raw
 			owned: true
 		}
 	}

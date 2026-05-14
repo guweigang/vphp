@@ -26,6 +26,13 @@ pub fn ZVal.from_raw(raw &C.zval) ZVal {
 	}
 }
 
+pub fn ZVal.from_handle(handle zval.Handle) ZVal {
+	if !handle.is_valid() {
+		return invalid_zval()
+	}
+	return unsafe { ZVal.from_raw(&C.zval(handle.raw_ptr())) }
+}
+
 // Callable — semantic alias for ZVal used as a PHP callable parameter.
 // When used as a method parameter type, the compiler emits ZEND_ARG_CALLABLE_INFO
 // so PHP reflection sees the parameter as 'callable' typed.
@@ -41,11 +48,11 @@ pub:
 }
 
 fn zend_new_zval() &C.zval {
-	return unsafe { &C.zval(zval.new_request().raw_ptr()) }
+	return ZVal.from_handle(zval.new_request()).raw
 }
 
 fn zend_new_persistent_zval() &C.zval {
-	return unsafe { &C.zval(zval.new_persistent().raw_ptr()) }
+	return ZVal.from_handle(zval.new_persistent()).raw
 }
 
 fn zend_release_zval(z &C.zval) {
