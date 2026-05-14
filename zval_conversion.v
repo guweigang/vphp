@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 // ======== V -> Zend Value 转换 API ========
 //
 // Ownership-aware code should prefer `RequestBorrowedZBox`,
@@ -10,7 +12,7 @@ pub fn (v ZVal) copy_from(value ZVal) {
 		v.set_null()
 		return
 	}
-	zend_copy_zval(v.raw, value.raw)
+	zval.copy(v.handle(), value.handle())
 }
 
 // 将 V 类型写入 Zend Value

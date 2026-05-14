@@ -747,8 +747,8 @@ pub fn (v DynValue) new_zval() !ZVal {
 		owned: true
 	}
 	RequestScope.autorelease_add_handle(out.handle())
-	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw)}')
+	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw_ptr())}')
 	v.to_zval(mut out)!
-	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw)} valid=${out.is_valid()} type=${out.type_name()}')
+	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw_ptr())} valid=${out.is_valid()} type=${out.type_name()}')
 	return out
 }
