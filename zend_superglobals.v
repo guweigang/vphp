@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend
+import vphp.zval
 
 enum ZendSuperglobal {
 	env
@@ -13,30 +13,28 @@ enum ZendSuperglobal {
 }
 
 fn zend_superglobal_box(kind ZendSuperglobal) RequestBorrowedZBox {
-	return RequestBorrowedZBox.from_zval(ZVal{
-		raw: zend_superglobal_raw(kind)
-	})
+	return RequestBorrowedZBox.from_zval(ZVal.from_handle(zend_superglobal_handle(kind)))
 }
 
 fn zend_superglobal_array(kind ZendSuperglobal) PhpArray {
-	return PhpArray.must_from_zval(ZVal{
-		raw: zend_superglobal_raw(kind)
-	}) or { panic(err) }
+	return PhpArray.must_from_zval(ZVal.from_handle(zend_superglobal_handle(kind))) or {
+		panic(err)
+	}
 }
 
-fn zend_superglobal_raw(kind ZendSuperglobal) &C.zval {
-	return zend.superglobal_raw(zend_superglobal_kind(kind))
+fn zend_superglobal_handle(kind ZendSuperglobal) zval.Handle {
+	return zval.superglobal(zend_superglobal_kind(kind))
 }
 
-fn zend_superglobal_kind(kind ZendSuperglobal) zend.Superglobal {
+fn zend_superglobal_kind(kind ZendSuperglobal) zval.Superglobal {
 	return match kind {
-		.env { zend.Superglobal.env }
-		.server { zend.Superglobal.server }
-		.get { zend.Superglobal.get }
-		.post { zend.Superglobal.post }
-		.cookie { zend.Superglobal.cookie }
-		.files { zend.Superglobal.files }
-		.request { zend.Superglobal.request }
+		.env { zval.Superglobal.env }
+		.server { zval.Superglobal.server }
+		.get { zval.Superglobal.get }
+		.post { zval.Superglobal.post }
+		.cookie { zval.Superglobal.cookie }
+		.files { zval.Superglobal.files }
+		.request { zval.Superglobal.request }
 	}
 }
 
@@ -49,9 +47,9 @@ fn zend_set_server_superglobal_string(name string, value string) {
 }
 
 fn zend_set_env_superglobal_string_raw(name string, value string) {
-	zend.set_env_superglobal_string(name, value)
+	zval.set_env_superglobal_string(name, value)
 }
 
 fn zend_set_server_superglobal_string_raw(name string, value string) {
-	zend.set_server_superglobal_string(name, value)
+	zval.set_server_superglobal_string(name, value)
 }

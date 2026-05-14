@@ -22,6 +22,10 @@ pub fn superglobal_raw(kind Superglobal) &C.zval {
 	}
 }
 
+pub fn superglobal_ptr(kind Superglobal) voidptr {
+	return superglobal_raw(kind)
+}
+
 pub fn env_superglobal_raw() &C.zval {
 	return C.vphp_superglobal_get_env()
 }
