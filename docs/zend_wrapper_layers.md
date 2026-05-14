@@ -99,6 +99,8 @@ target:
   vphp/zend/include.v   -> C-boundary wrapper
   vphp/zend/superglobals.v -> C-boundary wrapper
   vphp/zend/call.v      -> C-boundary wrapper
+  vphp/zend/closure.v   -> C-boundary wrapper
+  vphp/zend/class_entry.v -> C-boundary wrapper
   vphp/zend/value.v     -> C-boundary wrapper
   vphp/zend/object.v    -> C-boundary wrapper
   vphp/zend/property.v  -> C-boundary wrapper
@@ -709,6 +711,8 @@ If a file intentionally owns the C boundary, name it plainly:
 
 ```text
 vphp/zend/call.v
+vphp/zend/closure.v
+vphp/zend/class_entry.v
 vphp/zend/object.v
 vphp/zend/property.v
 vphp/zend/array.v
@@ -720,9 +724,9 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 
 这份文档定义 `vphp` 如何隔离 Zend C 调用，并在其上逐层提供更适合 V 的 API。
 
-状态：**目标设计 / 尚未完整实现**。
+状态：**迁移已开始 / 尚未完整实现**。
 
-当前代码已经有不少相关概念，但这里描述的目录布局和 C 边界隔离仍然是迁移目标。尤其是 `vphp/zend/call.v`、`vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/` 这些目标目录并未完整落地。
+当前代码已经有不少相关概念，`vphp/zend/` 也已经开始承载 C-boundary wrapper，例如 `runtime.v`、`include.v`、`superglobals.v`、`call.v`、`closure.v`、`class_entry.v`。但 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/` 这些目标目录仍未完整落地。
 
 核心规则：
 

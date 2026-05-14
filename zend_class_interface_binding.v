@@ -1,11 +1,11 @@
 module vphp
 
+import vphp.zend
+
 fn zend_bind_class_interface(class_name string, iface_name string) bool {
-	return C.vphp_bind_class_interface(&char(class_name.str), class_name.len,
-		&char(iface_name.str), iface_name.len) != 0
+	return zend.bind_class_interface(class_name, iface_name)
 }
 
 fn zend_register_auto_interface_binding(class_name string, iface_name string) {
-	C.vphp_register_auto_interface_binding(&char(class_name.str), class_name.len,
-		&char(iface_name.str), iface_name.len)
+	zend.register_auto_interface_binding(class_name, iface_name)
 }

@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 pub struct ZendClassEntry {
 	raw voidptr
@@ -21,29 +21,27 @@ pub fn (ce ZendClassEntry) raw_ptr() voidptr {
 }
 
 fn zend_class_set_static_long(ce ZendClassEntry, name string, val i64) {
-	C.vphp_update_static_property_long(ce.raw, &char(name.str), int(name.len), val)
+	zend.set_static_long(ce.raw, name, val)
 }
 
 fn zend_class_set_static_string(ce ZendClassEntry, name string, val string) {
-	C.vphp_update_static_property_string(ce.raw, &char(name.str), int(name.len), &char(val.str),
-		int(val.len))
+	zend.set_static_string(ce.raw, name, val)
 }
 
 fn zend_class_set_static_bool(ce ZendClassEntry, name string, val bool) {
-	C.vphp_update_static_property_bool(ce.raw, &char(name.str), int(name.len), int(val))
+	zend.set_static_bool(ce.raw, name, val)
 }
 
 fn zend_class_static_long(ce ZendClassEntry, name string) i64 {
-	return C.vphp_get_static_property_long(ce.raw, &char(name.str), int(name.len))
+	return zend.static_long(ce.raw, name)
 }
 
 fn zend_class_static_string(ce ZendClassEntry, name string) string {
-	res := C.vphp_get_static_property_string(ce.raw, &char(name.str), int(name.len))
-	return unsafe { res.vstring() }
+	return zend.static_string(ce.raw, name)
 }
 
 fn zend_class_static_bool(ce ZendClassEntry, name string) bool {
-	return C.vphp_get_static_property_bool(ce.raw, &char(name.str), int(name.len)) != 0
+	return zend.static_bool(ce.raw, name)
 }
 
 pub fn (ce ZendClassEntry) set_static_prop[T](name string, val T) {
