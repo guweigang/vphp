@@ -120,10 +120,18 @@ pub fn new_string_zval(s string) &C.zval {
 	return C.vphp_new_strl(&char(s.str), s.len)
 }
 
+pub fn new_string_zval_ptr(s string) voidptr {
+	return new_string_zval(s)
+}
+
 pub fn new_null_zval() &C.zval {
 	z := new_zval()
 	zval_set_null(z)
 	return z
+}
+
+pub fn new_null_zval_ptr() voidptr {
+	return new_null_zval()
 }
 
 pub fn new_int_zval(n i64) &C.zval {
@@ -132,16 +140,28 @@ pub fn new_int_zval(n i64) &C.zval {
 	return z
 }
 
+pub fn new_int_zval_ptr(n i64) voidptr {
+	return new_int_zval(n)
+}
+
 pub fn new_float_zval(f f64) &C.zval {
 	z := new_zval()
 	zval_set_double(z, f)
 	return z
 }
 
+pub fn new_float_zval_ptr(f f64) voidptr {
+	return new_float_zval(f)
+}
+
 pub fn new_bool_zval(b bool) &C.zval {
 	z := new_zval()
 	zval_set_bool(z, b)
 	return z
+}
+
+pub fn new_bool_zval_ptr(b bool) voidptr {
+	return new_bool_zval(b)
 }
 
 pub fn new_zval() &C.zval {

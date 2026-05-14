@@ -1,27 +1,28 @@
 module vphp
 
 import vphp.zend
+import vphp.zval
 
 // ======== 工厂方法 ========
 
-fn zend_new_null_zval() &C.zval {
-	return zend.new_null_zval()
+fn zend_new_null_zval() zval.Handle {
+	return zval.new_null()
 }
 
-fn zend_new_int_zval(n i64) &C.zval {
-	return zend.new_int_zval(n)
+fn zend_new_int_zval(n i64) zval.Handle {
+	return zval.new_int(n)
 }
 
-fn zend_new_float_zval(f f64) &C.zval {
-	return zend.new_float_zval(f)
+fn zend_new_float_zval(f f64) zval.Handle {
+	return zval.new_float(f)
 }
 
-fn zend_new_bool_zval(b bool) &C.zval {
-	return zend.new_bool_zval(b)
+fn zend_new_bool_zval(b bool) zval.Handle {
+	return zval.new_bool(b)
 }
 
-fn zend_new_string_zval(s string) &C.zval {
-	return zend.new_string_zval(s)
+fn zend_new_string_zval(s string) zval.Handle {
+	return zval.new_string(s)
 }
 
 fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
@@ -31,7 +32,8 @@ fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
 // 创建一个 null ZVal
 pub fn ZVal.new_null() ZVal {
 	unsafe {
-		z := zend_new_null_zval()
+		handle := zend_new_null_zval()
+		z := &C.zval(handle.raw_ptr())
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -43,7 +45,8 @@ pub fn ZVal.new_null() ZVal {
 // 创建一个 int ZVal
 pub fn ZVal.new_int(n i64) ZVal {
 	unsafe {
-		z := zend_new_int_zval(n)
+		handle := zend_new_int_zval(n)
+		z := &C.zval(handle.raw_ptr())
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -55,7 +58,8 @@ pub fn ZVal.new_int(n i64) ZVal {
 // 创建一个 float ZVal
 pub fn ZVal.new_float(f f64) ZVal {
 	unsafe {
-		z := zend_new_float_zval(f)
+		handle := zend_new_float_zval(f)
+		z := &C.zval(handle.raw_ptr())
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -67,7 +71,8 @@ pub fn ZVal.new_float(f f64) ZVal {
 // 创建一个 bool ZVal
 pub fn ZVal.new_bool(b bool) ZVal {
 	unsafe {
-		z := zend_new_bool_zval(b)
+		handle := zend_new_bool_zval(b)
+		z := &C.zval(handle.raw_ptr())
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
@@ -79,7 +84,8 @@ pub fn ZVal.new_bool(b bool) ZVal {
 // 创建一个 string ZVal
 pub fn ZVal.new_string(s string) ZVal {
 	unsafe {
-		z := zend_new_string_zval(s)
+		handle := zend_new_string_zval(s)
+		z := &C.zval(handle.raw_ptr())
 		RequestScope.autorelease_add(z)
 		return ZVal{
 			raw:   z
