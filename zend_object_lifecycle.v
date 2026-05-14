@@ -7,45 +7,47 @@ fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {
 }
 
 fn zend_object_add_ref(obj ZendObject) {
-	zend.object_add_ref(obj.raw)
+	obj.data.add_ref()
 }
 
 fn zend_object_release(obj ZendObject) {
-	zend.object_release(obj.raw)
+	obj.data.release()
 }
 
 fn zend_object_bind_handlers(obj ZendObject, handlers voidptr, ownership OwnershipKind) {
 	match ownership {
 		.borrowed {
-			zend.bind_borrowed_handlers(obj.raw, handlers)
+			obj.data.bind_borrowed_handlers(handlers)
 		}
 		.owned_request, .owned_persistent {
-			zend.bind_owned_handlers(obj.raw, handlers)
+			obj.data.bind_owned_handlers(handlers)
 		}
 	}
 }
 
 fn zend_object_ensure_binding(obj ZendObject, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
-	return match ownership {
+	ptr := match ownership {
 		.borrowed {
-			zend.ensure_borrowed_instance_binding(obj.raw, handlers)
+			obj.data.ensure_borrowed_instance_binding_ptr(handlers)
 		}
 		.owned_request, .owned_persistent {
-			zend.ensure_owned_instance_binding(obj.raw, handlers)
+			obj.data.ensure_owned_instance_binding_ptr(handlers)
 		}
 	}
+
+	return unsafe { &C.vphp_object_wrapper(ptr) }
 }
 
 fn zend_object_init_owned_instance(obj ZendObject, handlers voidptr) {
-	zend.init_owned_instance(obj.raw, handlers)
+	obj.data.init_owned_instance(handlers)
 }
 
 fn zend_object_wrapper(obj ZendObject) &C.vphp_object_wrapper {
-	return zend.object_wrapper(obj.raw)
+	return unsafe { &C.vphp_object_wrapper(obj.data.wrapper_ptr()) }
 }
 
 fn zend_wrap_existing_object(out &C.zval, obj ZendObject) {
-	zend.wrap_existing_object(out, obj.raw)
+	zend.wrap_existing_object(out, obj.raw_object())
 }
 
 pub fn (obj ZendObject) add_ref() {

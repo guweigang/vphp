@@ -15,10 +15,14 @@ Current migration checkpoint:
 - Direct Zend bridge calls for runtime, include, superglobals, calls, closures,
   class entries, class handlers, objects, arrays, execute data, and zval value
   allocation/conversion helpers have been moved under `vphp/zend/`.
+- `vphp/execute/` and `vphp/object/` have started as no-C low-level submodules.
+  The public `vphp.ZExData` and `vphp.ZendObject` names remain root-level
+  facades for compatibility while raw execute-data and object lifecycle
+  operations delegate to `execute.Data` and `object.Data`.
 - Root-level files still contain raw C pointer types where they are part of the
   current ABI or low-level storage shape, such as `ZVal.raw`, `PhpReturn.raw`,
-  `ZExData.raw`, generic object handler callbacks, and adapter functions that
-  pass `&C.zval` through to `vphp/zend/`.
+  `PhpReturn.new(&C.zval)`, generic object handler callbacks, and adapter
+  functions that pass `&C.zval` through to `vphp/zend/`.
 - `[]ZVal -> &&C.zval` argument packing still lives beside `ZVal` today. Moving
   it fully under `vphp/zend/` would require moving `ZVal`/ownership types into a
   no-C low-level submodule first, otherwise `vphp.zend` would have to import the
@@ -44,7 +48,7 @@ The goal is not to hide Zend completely. The goal is to keep `C.xxx`, raw `&C.zv
 | C implementation | C code, Zend macros, PHP headers | V APIs | `vphp/bridge/*.inc.c`, `vphp/v_bridge.c`, `vphp/v_bridge.h` | `vphp_call_method(...)` |
 | 1. Zend C declarations | `C.zval`, `C.zend_object`, `C.vphp_call_*`, `C.ZVAL_COPY` declarations | V semantic objects | `vphp/zend/types.v`, `vphp/zend/bridge_api.v`, `vphp/zend/native_api.v`, `vphp/zend/constants.v` | `pub fn C.vphp_call_method(...)` |
 | 2. Low-level C-boundary wrapper | Direct `C.xxx`, `&C.zval`, `&&C.zval`, retval allocation/release/adopt | Public semantic APIs | Target: `vphp/zend/call.v`, `vphp/zend/value.v`, `vphp/zend/object.v`, `vphp/zend/property.v`, `vphp/zend/array.v` | `call_function_zval(...)`, `raw_read_property(...)` |
-| 3. No-C low-level V wrapper | `ZVal`, `ZExData`, `ZendObject`, `OwnershipKind`, `RequestScope`, `*ZBox` | Direct `C.xxx` in signatures or normal call paths | Target: `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, `vphp/object/` | `ZVal.method_owned_request(...)` |
+| 3. No-C low-level V wrapper | `ZVal`, `ZExData`, `ZendObject`, `OwnershipKind`, `RequestScope`, `*ZBox` | Direct `C.xxx` in signatures or normal call paths | Target: `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, `vphp/object/`, `vphp/execute/` | `ZVal.method_owned_request(...)` |
 | 4. Abstract V semantic wrapper | `PhpValue`, `PhpInt`, `PhpString`, `PhpArray`, `PhpObject`, `PhpFunction`, `PhpArgInput`, `PhpArg`, `PhpReturn` | Raw Zend types except explicit escape hatches | `php_*_type.v` | `PhpFunction.named(...).call[T](...)` |
 
 ## C Implementation: bridge/
@@ -747,7 +751,8 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 当前迁移检查点：
 
 - runtime、include、superglobals、call、closure、class entry、class handlers、object、array、execute data、zval value 分配/转换相关的直接 Zend bridge 调用已经迁入 `vphp/zend/`。
-- 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
+- `vphp/execute/` 和 `vphp/object/` 已经作为 no-C low-level 子模块开始落地。公开的 `vphp.ZExData` 与 `vphp.ZendObject` 名字仍作为根层兼容 facade 保留，但底层 execute-data 与 object lifecycle 操作已经分别委托给 `execute.Data` 和 `object.Data`。
+- 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`PhpReturn.new(&C.zval)`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
 - `[]ZVal -> &&C.zval` 的参数打包目前仍跟 `ZVal` 放在一起。要完全下沉到 `vphp/zend/`，需要先把 `ZVal`/ownership 这些类型迁到 no-C low-level 子模块，否则 `vphp.zend` 会反向依赖父模块并形成循环。
 
 核心规则：
@@ -766,7 +771,7 @@ bridge/*.inc.c + v_bridge.c/h
 - C implementation：`vphp/bridge/` 和 `v_bridge.c/h`，负责 C bridge 实现碎片，不属于 V wrapper 层。
 - Layer 1：`vphp/zend/` 里的 C 声明文件，如 `types.v`、`bridge_api.v`、`native_api.v`、`constants.v`。
 - Layer 2：同样位于 `vphp/zend/`，但文件是 wrapper，如 `call.v`、`object.v`、`property.v`、`array.v`。这是唯一集中接触 `C.xxx` 的 V 实现层。
-- Layer 3：按领域拆成 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/`，不在签名和常规调用路径里暴露 `C.xxx`。
+- Layer 3：按领域拆成 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/`、`vphp/execute/`，不在签名和常规调用路径里暴露 `C.xxx`。
 - Layer 4：扩展作者优先使用的语义层，即 `PhpValue`、`PhpString`、`PhpArray`、`PhpObject`、`PhpFunction`、`PhpArgInput`、`PhpArg`、`PhpReturn` 等。
 
 review 时最重要的问题是：

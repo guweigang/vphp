@@ -1,32 +1,27 @@
 module vphp
 
+import vphp.object
 import vphp.zend
 
 pub struct ZendObject {
-	raw &C.zend_object = unsafe { nil }
+	data object.Data
 }
 
 pub fn ZendObject.invalid() ZendObject {
-	return unsafe {
-		ZendObject{
-			raw: nil
-		}
+	return ZendObject{
+		data: object.Data.invalid()
 	}
 }
 
 pub fn ZendObject.from_raw(raw &C.zend_object) ZendObject {
-	return unsafe {
-		ZendObject{
-			raw: raw
-		}
+	return ZendObject{
+		data: object.Data.from_ptr(raw)
 	}
 }
 
 pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
-	return unsafe {
-		ZendObject{
-			raw: &C.zend_object(ptr)
-		}
+	return ZendObject{
+		data: object.Data.from_ptr(ptr)
 	}
 }
 
@@ -54,9 +49,13 @@ pub fn ZendObject.from_zval(v ZVal) ZendObject {
 }
 
 pub fn (obj ZendObject) is_valid() bool {
-	return obj.raw != 0
+	return obj.data.is_valid()
 }
 
 pub fn (obj ZendObject) raw_ptr() voidptr {
-	return obj.raw
+	return obj.data.raw_ptr()
+}
+
+fn (obj ZendObject) raw_object() &C.zend_object {
+	return unsafe { &C.zend_object(obj.raw_ptr()) }
 }

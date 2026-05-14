@@ -7,7 +7,7 @@ fn (obj ZendObject) read_property_with_ownership(name string, ownership Ownershi
 		return invalid_zval()
 	}
 	rv := zend_new_zval()
-	res := zend.read_property(obj.raw, name, rv)
+	res := zend.read_property(obj.raw_object(), name, rv)
 	return adopt_read_result(rv, res, ownership)
 }
 
@@ -16,7 +16,7 @@ fn (obj ZendObject) with_scalar_prop(name string, run fn (ZVal)) bool {
 		return false
 	}
 	mut rv := C.zval{}
-	res := zend.read_property(obj.raw, name, &rv)
+	res := zend.read_property(obj.raw_object(), name, &rv)
 	if res == 0 {
 		return false
 	}
@@ -76,26 +76,26 @@ pub fn (obj ZendObject) set_prop(name string, value ZVal) {
 	if !obj.is_valid() || !value.is_valid() {
 		return
 	}
-	zend.write_property(obj.raw, name, value.raw)
+	zend.write_property(obj.raw_object(), name, value.raw)
 }
 
 pub fn (obj ZendObject) has_prop(name string) bool {
 	if !obj.is_valid() {
 		return false
 	}
-	return zend.has_property(obj.raw, name)
+	return zend.has_property(obj.raw_object(), name)
 }
 
 pub fn (obj ZendObject) isset_prop(name string) bool {
 	if !obj.is_valid() {
 		return false
 	}
-	return zend.isset_property(obj.raw, name)
+	return zend.isset_property(obj.raw_object(), name)
 }
 
 pub fn (obj ZendObject) unset_prop(name string) {
 	if !obj.is_valid() {
 		return
 	}
-	zend.unset_property(obj.raw, name)
+	zend.unset_property(obj.raw_object(), name)
 }
