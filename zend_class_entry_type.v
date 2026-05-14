@@ -17,7 +17,7 @@ pub fn ZendClassEntry.from_ptr(raw voidptr) ZendClassEntry {
 }
 
 pub fn (ce ZendClassEntry) is_valid() bool {
-	return ce.raw != 0
+	return ce.raw_ptr() != 0
 }
 
 pub fn (ce ZendClassEntry) raw_ptr() voidptr {
@@ -25,27 +25,27 @@ pub fn (ce ZendClassEntry) raw_ptr() voidptr {
 }
 
 fn zend_class_set_static_long(ce ZendClassEntry, name string, val i64) {
-	zend.set_static_long(ce.raw, name, val)
+	zend.set_static_long(ce.raw_ptr(), name, val)
 }
 
 fn zend_class_set_static_string(ce ZendClassEntry, name string, val string) {
-	zend.set_static_string(ce.raw, name, val)
+	zend.set_static_string(ce.raw_ptr(), name, val)
 }
 
 fn zend_class_set_static_bool(ce ZendClassEntry, name string, val bool) {
-	zend.set_static_bool(ce.raw, name, val)
+	zend.set_static_bool(ce.raw_ptr(), name, val)
 }
 
 fn zend_class_static_long(ce ZendClassEntry, name string) i64 {
-	return zend.static_long(ce.raw, name)
+	return zend.static_long(ce.raw_ptr(), name)
 }
 
 fn zend_class_static_string(ce ZendClassEntry, name string) string {
-	return zend.static_string(ce.raw, name)
+	return zend.static_string(ce.raw_ptr(), name)
 }
 
 fn zend_class_static_bool(ce ZendClassEntry, name string) bool {
-	return zend.static_bool(ce.raw, name)
+	return zend.static_bool(ce.raw_ptr(), name)
 }
 
 pub fn (ce ZendClassEntry) set_static_prop[T](name string, val T) {
