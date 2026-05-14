@@ -15,16 +15,13 @@ pub:
 // ======== 构造与基础状态 ========
 
 pub fn Context.from_entry(ex &C.zend_execute_data, ret &C.zval) Context {
-	return Context{
-		ex:  ZExData.new(ex)
-		ret: PhpReturn.new(ret)
-	}
+	return Context.from_raw(ex, ret)
 }
 
-pub fn Context.from_raw(ex voidptr, ret &C.zval) Context {
+pub fn Context.from_raw(ex voidptr, ret voidptr) Context {
 	return Context{
 		ex:  ZExData.from_voidptr(ex)
-		ret: PhpReturn.new(ret)
+		ret: PhpReturn.from_ptr(ret)
 	}
 }
 

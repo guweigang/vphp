@@ -46,9 +46,13 @@ pub fn RequestBorrowedZBox.from_raw_zval(z ZVal) RequestBorrowedZBox {
 }
 
 pub fn RequestBorrowedZBox.from_raw(raw &C.zval) RequestBorrowedZBox {
+	return RequestBorrowedZBox.from_ptr(raw)
+}
+
+pub fn RequestBorrowedZBox.from_ptr(raw voidptr) RequestBorrowedZBox {
 	return unsafe {
 		RequestBorrowedZBox.from_raw_zval(ZVal{
-			raw:   raw
+			raw:   &C.zval(raw)
 			owned: false
 		})
 	}
@@ -73,6 +77,15 @@ pub fn RequestOwnedZBox.of(z ZVal) RequestOwnedZBox {
 
 pub fn RequestOwnedZBox.from_raw_zval(z ZVal) RequestOwnedZBox {
 	return request_owned_zbox_from_adopted_zval(z.dup())
+}
+
+pub fn RequestOwnedZBox.from_ptr(raw voidptr) RequestOwnedZBox {
+	return RequestOwnedZBox.from_raw_zval(unsafe {
+		ZVal{
+			raw:   &C.zval(raw)
+			owned: false
+		}
+	})
 }
 
 pub fn RequestOwnedZBox.adopt_zval(z ZVal) RequestOwnedZBox {

@@ -26,11 +26,17 @@ Current migration checkpoint:
   now contains execute-data handle, argument access, and active context helpers;
   root-level `ZExData` remains the compatibility facade because argument values
   still need root-level `ZVal`, `PhpArg`, and semantic wrappers.
+- `Context` now stores `ZExData` and `PhpReturn` wrappers instead of exposing raw
+  Zend fields. `Context.from_entry(...)` remains the ABI-facing constructor, and
+  `Context.from_raw(...)` is now a `voidptr`-based low-level escape hatch.
 - `vphp/scope/` has started as a no-C low-level request scope wrapper area. It
   now contains request mark/enter/leave helpers and autorelease zval
   add/forget/drain helpers; root-level `RequestScope`, `FrameScope`, and
   `PhpScope` remain compatibility facades because frame values still depend on
   root-level ZBox and semantic wrapper types.
+- `RequestBorrowedZBox` and `RequestOwnedZBox` now have `from_ptr(...)` factory
+  helpers. Their legacy `from_raw(...)` entry remains as a compatibility facade,
+  but new low-level code should prefer pointer/handle-shaped constructors.
 - `vphp/zval/` has started as a no-C low-level zval wrapper area. It now
   contains zval handle, request/persistent allocation lifecycle, copy/disown,
   runtime counter helpers, low-level array operation helpers, scalar/type
@@ -772,7 +778,9 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 - runtime、include、superglobals、call、closure、class entry、class handlers、object、array、execute data、zval value 分配/转换相关的直接 Zend bridge 调用已经迁入 `vphp/zend/`。
 - `vphp/object/` 已经作为 no-C low-level object wrapper 区域开始落地。目前包含 object handle、lifecycle、property、vptr root 与 object return helper；根层 `object_binding.v` 和 generic lifecycle helper 已把低层 allocation、roots、runtime-free、return-object 操作委托给 `vphp/object/`；generated generic property helper 仍保留在根层，因为 property result 与 field cleanup 仍依赖根层 `ZVal`/ownership 和语义 wrapper 类型。
 - `vphp/execute/` 已经作为 no-C low-level execute-data wrapper 区域开始落地。目前包含 execute-data handle、argument access 与 active context helper；根层 `ZExData` 仍作为兼容 facade 保留，因为 argument value 仍需要根层 `ZVal`、`PhpArg` 与语义 wrapper。
+- `Context` 现在持有 `ZExData` 与 `PhpReturn` wrapper，不再暴露 raw Zend 字段。`Context.from_entry(...)` 仍是 ABI-facing constructor，`Context.from_raw(...)` 则变成 `voidptr` 形态的低层 escape hatch。
 - `vphp/scope/` 已经作为 no-C low-level request scope wrapper 区域开始落地。目前包含 request mark/enter/leave helper 与 autorelease zval add/forget/drain helper；根层 `RequestScope`、`FrameScope`、`PhpScope` 仍作为兼容 facade 保留，因为 frame value 仍依赖根层 ZBox 与语义 wrapper 类型。
+- `RequestBorrowedZBox` 与 `RequestOwnedZBox` 现在提供 `from_ptr(...)` factory helper。旧的 `from_raw(...)` 入口仍作为兼容 facade 保留，但新的低层代码应优先使用 pointer/handle 形态的构造入口。
 - `vphp/zval/` 已经作为 no-C low-level zval wrapper 区域开始落地。目前包含 zval handle、request/persistent allocation lifecycle、copy/disown、runtime counter helper、低层 array operation helper、scalar/type read/write helper、reference/resource helper、call argument packing 与 scalar factory helper；根层 `ZVal` 仍作为兼容 facade 保留，因为 call result ownership 与语义 wrapper 方法仍依赖根层 `ZVal`/ZBox 形态。
 - 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。`PhpReturn` 现在内部持有 zval handle，只把 `raw_zval()` 作为 ABI escape hatch 暴露。
 - `[]ZVal -> []zval.Handle -> &&C.zval` 的参数打包现在已经拆到 `vphp/zval/` 与 `vphp/zend/` 之间。根层 call helper 仍负责 result adoption，因为 `OwnershipKind` 与 `ZVal` 仍是根层 facade。
