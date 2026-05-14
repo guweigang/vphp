@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 // Generic property reader used by generated PHP class handlers.
 pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
 	unsafe {
@@ -30,7 +32,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 	unsafe {
 		name := name_ptr.vstring_with_len(name_len).clone()
 		mut obj := &T(ptr)
-		arg := ZVal.from_raw(value)
+		arg := ZVal.from_handle(zval.Handle.from_ptr(value))
 		$for field in T.fields {
 			if name == field.name {
 				$if field.typ is string {
@@ -54,7 +56,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 	unsafe {
 		obj := &T(ptr)
-		out := ZVal.from_raw(zv)
+		out := ZVal.from_handle(zval.Handle.from_ptr(zv))
 		$for field in T.fields {
 			name := field.name
 			val := obj.$(field.name)

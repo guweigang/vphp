@@ -109,7 +109,7 @@ pub type ForeachCb = fn (key ZVal, val ZVal)
 fn vphp_foreach_wrapper(ctx voidptr, key &C.zval, val &C.zval) {
 	unsafe {
 		cb := *(&ForeachCb(ctx))
-		cb(ZVal.from_raw(key), ZVal.from_raw(val))
+		cb(ZVal.from_handle(zval.Handle.from_ptr(key)), ZVal.from_handle(zval.Handle.from_ptr(val)))
 	}
 }
 
@@ -132,7 +132,8 @@ fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
 	unsafe {
 		mut pack := &ForeachPack[T](ctx)
 		cb := pack.cb
-		cb(ZVal.from_raw(key), ZVal.from_raw(val), mut pack.ctx)
+		cb(ZVal.from_handle(zval.Handle.from_ptr(key)),
+			ZVal.from_handle(zval.Handle.from_ptr(val)), mut pack.ctx)
 	}
 }
 
