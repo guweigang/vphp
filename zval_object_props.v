@@ -65,7 +65,7 @@ pub fn (v ZVal) unset_prop(name string) {
 // 快捷方式：属性 → string
 pub fn (v ZVal) get_prop_string(name string) string {
 	prop := v.get_prop(name)
-	if prop.raw == 0 || prop.is_null() {
+	if !prop.is_valid() || prop.is_null() {
 		return ''
 	}
 	return prop.to_string()
@@ -74,7 +74,7 @@ pub fn (v ZVal) get_prop_string(name string) string {
 // 快捷方式：属性 → int
 pub fn (v ZVal) get_prop_int(name string) int {
 	prop := v.get_prop(name)
-	if prop.raw == 0 {
+	if !prop.is_valid() {
 		return 0
 	}
 	return int(prop.to_i64())
@@ -83,7 +83,7 @@ pub fn (v ZVal) get_prop_int(name string) int {
 // 快捷方式：属性 → i64
 pub fn (v ZVal) get_prop_i64(name string) i64 {
 	prop := v.get_prop(name)
-	if prop.raw == 0 {
+	if !prop.is_valid() {
 		return 0
 	}
 	return prop.to_i64()
@@ -92,7 +92,7 @@ pub fn (v ZVal) get_prop_i64(name string) i64 {
 // 快捷方式：属性 → f64
 pub fn (v ZVal) get_prop_float(name string) f64 {
 	prop := v.get_prop(name)
-	if prop.raw == 0 {
+	if !prop.is_valid() {
 		return 0.0
 	}
 	return prop.to_f64()
@@ -101,7 +101,7 @@ pub fn (v ZVal) get_prop_float(name string) f64 {
 // 快捷方式：属性 → bool
 pub fn (v ZVal) get_prop_bool(name string) bool {
 	prop := v.get_prop(name)
-	if prop.raw == 0 {
+	if !prop.is_valid() {
 		return false
 	}
 	return prop.to_bool()

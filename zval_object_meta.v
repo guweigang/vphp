@@ -2,7 +2,7 @@ module vphp
 
 // -------- 类元信息 / introspection --------
 pub fn (v ZVal) class_name() string {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return ''
 	}
 	if v.is_string() {
@@ -31,14 +31,14 @@ pub fn (v ZVal) short_name() string {
 }
 
 pub fn (v ZVal) parent_class_name() string {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return ''
 	}
 	return zend_object_parent_class_name(v)
 }
 
 pub fn (v ZVal) is_internal_class() bool {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return false
 	}
 	return zend_object_class_is_internal(v)
@@ -66,7 +66,7 @@ pub fn (v ZVal) interface_names() []string {
 }
 
 pub fn (v ZVal) is_instance_of(name string) bool {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return false
 	}
 	res := php_fn('is_a').call([v, ZVal.new_string(name), ZVal.new_bool(true)])
@@ -74,7 +74,7 @@ pub fn (v ZVal) is_instance_of(name string) bool {
 }
 
 pub fn (v ZVal) is_subclass_of(name string) bool {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return false
 	}
 	res := php_fn('is_subclass_of').call([v, ZVal.new_string(name),
@@ -90,7 +90,7 @@ pub fn (v ZVal) implements_interface(name string) bool {
 }
 
 pub fn (v ZVal) method_exists(name string) bool {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return false
 	}
 	res := php_fn('method_exists').call([v, ZVal.new_string(name)])
@@ -98,7 +98,7 @@ pub fn (v ZVal) method_exists(name string) bool {
 }
 
 pub fn (v ZVal) property_exists(name string) bool {
-	if v.raw == 0 {
+	if !v.is_valid() {
 		return false
 	}
 	res := php_fn('property_exists').call([v, ZVal.new_string(name)])

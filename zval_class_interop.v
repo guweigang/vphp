@@ -5,7 +5,7 @@ pub fn (v ZVal) construct(args []ZVal) ZVal {
 }
 
 fn construct_zval(class_name ZVal, args []ZVal, ownership OwnershipKind) ZVal {
-	if class_name.raw == 0 || !class_name.is_string() {
+	if !class_name.is_valid() || !class_name.is_string() {
 		return invalid_zval()
 	}
 	return call_zval_target(ZendConstructCall{
@@ -14,7 +14,7 @@ fn construct_zval(class_name ZVal, args []ZVal, ownership OwnershipKind) ZVal {
 }
 
 fn call_static_method_zval(class_name ZVal, method string, args []ZVal, ownership OwnershipKind) ZVal {
-	if class_name.raw == 0 || !class_name.is_string() {
+	if !class_name.is_valid() || !class_name.is_string() {
 		return invalid_zval()
 	}
 	return call_zval_target(ZendStaticMethodCall{
@@ -44,14 +44,14 @@ pub fn (v ZVal) static_method(method string, args []ZVal) ZVal {
 }
 
 fn (v ZVal) read_static_prop_with_ownership(name string, ownership OwnershipKind) ZVal {
-	if v.raw == 0 || !v.is_string() {
+	if !v.is_valid() || !v.is_string() {
 		return invalid_zval()
 	}
 	return adopt_read_result_handles(zend_read_static_property(v, name), ownership)
 }
 
 fn (v ZVal) read_const_with_ownership(name string, ownership OwnershipKind) ZVal {
-	if v.raw == 0 || !v.is_string() {
+	if !v.is_valid() || !v.is_string() {
 		return invalid_zval()
 	}
 	return adopt_read_result_handles(zend_read_class_constant(v, name), ownership)
@@ -95,7 +95,7 @@ pub fn (v ZVal) constant(name string) ZVal {
 }
 
 pub fn (v ZVal) set_static_prop(name string, value ZVal) {
-	if v.raw == 0 || !v.is_string() || value.raw == 0 {
+	if !v.is_valid() || !v.is_string() || !value.is_valid() {
 		return
 	}
 	zend_write_static_property(v, name, value)
