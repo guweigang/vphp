@@ -1,19 +1,11 @@
 module vphp
 
-import vphp.zend
-
-fn zend_include_file_raw(path string, retval &C.zval, once bool) int {
-	return zend.include_file_raw(path, retval, once)
-}
+import vphp.zval
 
 fn zend_include_file(path string, once bool) ZVal {
-	unsafe {
-		retval := zend_new_zval()
-		res := zend_include_file_raw(path, retval, once)
-		if res == -1 {
-			zend_release_zval(retval)
-			return invalid_zval()
-		}
-		return adopt_raw_with_ownership(retval, .owned_request)
+	retval := zval.include_file(path, once)
+	if !retval.is_valid() {
+		return invalid_zval()
 	}
+	return adopt_handle_with_ownership(retval, .owned_request)
 }

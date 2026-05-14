@@ -102,6 +102,13 @@ fn adopt_raw_with_ownership(raw &C.zval, ownership OwnershipKind) ZVal {
 	return out
 }
 
+fn adopt_handle_with_ownership(handle zval.Handle, ownership OwnershipKind) ZVal {
+	if !handle.is_valid() {
+		return invalid_zval()
+	}
+	return adopt_raw_with_ownership(ZVal.from_handle(handle).raw, ownership)
+}
+
 fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 	if src == 0 {
 		return invalid_zval()
