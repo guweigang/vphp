@@ -216,6 +216,10 @@ pub fn foreach_zval(v &C.zval, ctx voidptr, wrapper voidptr) {
 	C.vphp_zval_foreach(v, ctx, wrapper)
 }
 
+pub fn foreach_zval_ptr(v voidptr, ctx voidptr, wrapper voidptr) {
+	foreach_zval(unsafe { &C.zval(v) }, ctx, wrapper)
+}
+
 pub fn runtime_counters(autorelease_len &int, owned_len &int, obj_registry_len &u32, rev_registry_len &u32) {
 	C.vphp_runtime_counters(autorelease_len, owned_len, obj_registry_len, rev_registry_len)
 }
