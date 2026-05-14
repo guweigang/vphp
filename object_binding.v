@@ -15,15 +15,15 @@ pub fn (z ZVal) bind_borrowed_object(handlers voidptr) {
 }
 
 fn zend_return_unbound_object(ret PhpReturn, v_ptr voidptr, ce voidptr) {
-	object.return_unbound(ret.raw_zval(), v_ptr, ce)
+	object.return_unbound(ret.raw_ptr(), v_ptr, ce)
 }
 
 fn zend_return_borrowed_object(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	object.return_bound(ret.raw_zval(), v_ptr, ce, handlers, .borrowed)
+	object.return_bound(ret.raw_ptr(), v_ptr, ce, handlers, .borrowed)
 }
 
 fn zend_return_owned_object(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	object.return_bound(ret.raw_zval(), v_ptr, ce, handlers, .owned)
+	object.return_bound(ret.raw_ptr(), v_ptr, ce, handlers, .owned)
 }
 
 fn return_unbound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr) {
