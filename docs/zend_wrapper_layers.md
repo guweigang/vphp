@@ -23,6 +23,11 @@ Current migration checkpoint:
   now contains execute-data handle, argument access, and active context helpers;
   root-level `ZExData` remains the compatibility facade because argument values
   still need root-level `ZVal`, `PhpArg`, and semantic wrappers.
+- `vphp/scope/` has started as a no-C low-level request scope wrapper area. It
+  now contains request mark/enter/leave helpers and autorelease zval
+  add/forget/drain helpers; root-level `RequestScope`, `FrameScope`, and
+  `PhpScope` remain compatibility facades because frame values still depend on
+  root-level ZBox and semantic wrapper types.
 - Root-level files still contain raw C pointer types where they are part of the
   current ABI or low-level storage shape, such as `ZVal.raw`, `PhpReturn.raw`,
   `ZExData.raw`, generic object handler callbacks, and adapter functions that
@@ -757,6 +762,7 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 - runtime、include、superglobals、call、closure、class entry、class handlers、object、array、execute data、zval value 分配/转换相关的直接 Zend bridge 调用已经迁入 `vphp/zend/`。
 - `vphp/object/` 已经作为 no-C low-level object wrapper 区域开始落地。目前包含 object handle、lifecycle 与 property helper；根层 `ZendObject` 仍作为兼容 facade 保留，因为 property result、zval conversion、binding 仍依赖根层 `ZVal`/ownership 类型。
 - `vphp/execute/` 已经作为 no-C low-level execute-data wrapper 区域开始落地。目前包含 execute-data handle、argument access 与 active context helper；根层 `ZExData` 仍作为兼容 facade 保留，因为 argument value 仍需要根层 `ZVal`、`PhpArg` 与语义 wrapper。
+- `vphp/scope/` 已经作为 no-C low-level request scope wrapper 区域开始落地。目前包含 request mark/enter/leave helper 与 autorelease zval add/forget/drain helper；根层 `RequestScope`、`FrameScope`、`PhpScope` 仍作为兼容 facade 保留，因为 frame value 仍依赖根层 ZBox 与语义 wrapper 类型。
 - 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
 - `[]ZVal -> &&C.zval` 的参数打包目前仍跟 `ZVal` 放在一起。要完全下沉到 `vphp/zend/`，需要先把 `ZVal`/ownership 这些类型迁到 no-C low-level 子模块，否则 `vphp.zend` 会反向依赖父模块并形成循环。
 

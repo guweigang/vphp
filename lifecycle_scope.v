@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.scope
+
 pub struct PhpScope {}
 
 // RequestScope gives a structured, nestable request arena on top of
@@ -17,33 +19,27 @@ mut:
 }
 
 fn RequestScope.autorelease_mark() int {
-	return zend_autorelease_mark()
+	return scope.request_mark()
 }
 
 fn RequestScope.autorelease_add(z &C.zval) {
-	if z == 0 {
-		return
-	}
-	zend_autorelease_add(z)
+	scope.autorelease_add_ptr(z)
 }
 
 fn RequestScope.autorelease_forget(z &C.zval) {
-	if z == 0 {
-		return
-	}
-	zend_autorelease_forget(z)
+	scope.autorelease_forget_ptr(z)
 }
 
 fn RequestScope.autorelease_drain(mark int) {
-	zend_autorelease_drain(mark)
+	scope.autorelease_drain(mark)
 }
 
 pub fn RequestScope.enter() int {
-	return RequestScope.autorelease_mark()
+	return scope.request_enter()
 }
 
 pub fn RequestScope.leave(mark int) {
-	RequestScope.autorelease_drain(mark)
+	scope.request_leave(mark)
 }
 
 pub fn RequestScope.open() RequestScope {

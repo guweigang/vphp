@@ -97,8 +97,16 @@ pub fn autorelease_add(z &C.zval) {
 	C.vphp_autorelease_add(z)
 }
 
+pub fn autorelease_add_ptr(z voidptr) {
+	autorelease_add(unsafe { &C.zval(z) })
+}
+
 pub fn autorelease_forget(z &C.zval) {
 	C.vphp_autorelease_forget(z)
+}
+
+pub fn autorelease_forget_ptr(z voidptr) {
+	autorelease_forget(unsafe { &C.zval(z) })
 }
 
 pub fn autorelease_drain(mark int) {
