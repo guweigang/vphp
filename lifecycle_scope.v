@@ -1,6 +1,7 @@
 module vphp
 
 import vphp.scope
+import vphp.zval as zvalmod
 
 pub struct PhpScope {}
 
@@ -26,8 +27,16 @@ fn RequestScope.autorelease_add(z &C.zval) {
 	scope.autorelease_add_ptr(z)
 }
 
+fn RequestScope.autorelease_add_handle(handle zvalmod.Handle) {
+	scope.autorelease_add_ptr(handle.raw_ptr())
+}
+
 fn RequestScope.autorelease_forget(z &C.zval) {
 	scope.autorelease_forget_ptr(z)
+}
+
+fn RequestScope.autorelease_forget_handle(handle zvalmod.Handle) {
+	scope.autorelease_forget_ptr(handle.raw_ptr())
 }
 
 fn RequestScope.autorelease_drain(mark int) {

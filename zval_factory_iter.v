@@ -29,69 +29,39 @@ fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
 	zend.foreach_zval(v.raw, ctx, wrapper)
 }
 
-// 创建一个 null ZVal
-pub fn ZVal.new_null() ZVal {
-	unsafe {
-		handle := zend_new_null_zval()
-		z := &C.zval(handle.raw_ptr())
-		RequestScope.autorelease_add(z)
-		return ZVal{
-			raw:   z
+fn request_owned_zval_from_handle(handle zval.Handle) ZVal {
+	RequestScope.autorelease_add_handle(handle)
+	return unsafe {
+		ZVal{
+			raw:   &C.zval(handle.raw_ptr())
 			owned: true
 		}
 	}
+}
+
+// 创建一个 null ZVal
+pub fn ZVal.new_null() ZVal {
+	return request_owned_zval_from_handle(zend_new_null_zval())
 }
 
 // 创建一个 int ZVal
 pub fn ZVal.new_int(n i64) ZVal {
-	unsafe {
-		handle := zend_new_int_zval(n)
-		z := &C.zval(handle.raw_ptr())
-		RequestScope.autorelease_add(z)
-		return ZVal{
-			raw:   z
-			owned: true
-		}
-	}
+	return request_owned_zval_from_handle(zend_new_int_zval(n))
 }
 
 // 创建一个 float ZVal
 pub fn ZVal.new_float(f f64) ZVal {
-	unsafe {
-		handle := zend_new_float_zval(f)
-		z := &C.zval(handle.raw_ptr())
-		RequestScope.autorelease_add(z)
-		return ZVal{
-			raw:   z
-			owned: true
-		}
-	}
+	return request_owned_zval_from_handle(zend_new_float_zval(f))
 }
 
 // 创建一个 bool ZVal
 pub fn ZVal.new_bool(b bool) ZVal {
-	unsafe {
-		handle := zend_new_bool_zval(b)
-		z := &C.zval(handle.raw_ptr())
-		RequestScope.autorelease_add(z)
-		return ZVal{
-			raw:   z
-			owned: true
-		}
-	}
+	return request_owned_zval_from_handle(zend_new_bool_zval(b))
 }
 
 // 创建一个 string ZVal
 pub fn ZVal.new_string(s string) ZVal {
-	unsafe {
-		handle := zend_new_string_zval(s)
-		z := &C.zval(handle.raw_ptr())
-		RequestScope.autorelease_add(z)
-		return ZVal{
-			raw:   z
-			owned: true
-		}
-	}
+	return request_owned_zval_from_handle(zend_new_string_zval(s))
 }
 
 // 兼容旧命名：建议改用 ZVal.new_null()
