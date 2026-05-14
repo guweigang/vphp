@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend
+import vphp.object
 
 pub fn (z ZVal) bind_object(handlers voidptr, ownership OwnershipKind) {
 	ZendObject.from_zval(z).bind_handlers(handlers, ownership)
@@ -15,15 +15,15 @@ pub fn (z ZVal) bind_borrowed_object(handlers voidptr) {
 }
 
 fn zend_return_unbound_object(ret PhpReturn, v_ptr voidptr, ce voidptr) {
-	zend.return_unbound_object(ret.raw_zval(), v_ptr, ce)
+	object.return_unbound(ret.raw_zval(), v_ptr, ce)
 }
 
 fn zend_return_borrowed_object(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	zend.return_borrowed_object(ret.raw_zval(), v_ptr, ce, handlers)
+	object.return_bound(ret.raw_zval(), v_ptr, ce, handlers, .borrowed)
 }
 
 fn zend_return_owned_object(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	zend.return_owned_object(ret.raw_zval(), v_ptr, ce, handlers)
+	object.return_bound(ret.raw_zval(), v_ptr, ce, handlers, .owned)
 }
 
 fn return_unbound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr) {
@@ -36,7 +36,6 @@ fn return_bound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voi
 			zend_return_borrowed_object(ret, v_ptr, ce, handlers)
 		}
 		.owned_request, .owned_persistent {
-			register_vptr_root(v_ptr)
 			zend_return_owned_object(ret, v_ptr, ce, handlers)
 		}
 	}

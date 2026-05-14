@@ -84,12 +84,24 @@ pub fn return_unbound_object(ret &C.zval, v_ptr voidptr, ce voidptr) {
 	C.vphp_return_obj(ret, v_ptr, ce)
 }
 
+pub fn return_unbound_object_ptr(ret voidptr, v_ptr voidptr, ce voidptr) {
+	return_unbound_object(unsafe { &C.zval(ret) }, v_ptr, ce)
+}
+
 pub fn return_borrowed_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
 	C.vphp_return_borrowed_object(ret, v_ptr, ce, handlers)
 }
 
+pub fn return_borrowed_object_ptr(ret voidptr, v_ptr voidptr, ce voidptr, handlers voidptr) {
+	return_borrowed_object(unsafe { &C.zval(ret) }, v_ptr, ce, handlers)
+}
+
 pub fn return_owned_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
 	C.vphp_return_owned_object(ret, v_ptr, ce, handlers)
+}
+
+pub fn return_owned_object_ptr(ret voidptr, v_ptr voidptr, ce voidptr, handlers voidptr) {
+	return_owned_object(unsafe { &C.zval(ret) }, v_ptr, ce, handlers)
 }
 
 pub fn read_property(obj &C.zend_object, name string, rv &C.zval) &C.zval {
