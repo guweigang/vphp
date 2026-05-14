@@ -14,9 +14,7 @@ pub fn ZendObject.invalid() ZendObject {
 }
 
 pub fn ZendObject.from_raw(raw &C.zend_object) ZendObject {
-	return ZendObject{
-		handle: object.Handle.from_ptr(raw)
-	}
+	return ZendObject.from_ptr(raw)
 }
 
 pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
@@ -42,7 +40,7 @@ pub fn ZendObject.current() ZendObject {
 }
 
 pub fn ZendObject.from_zval(v ZVal) ZendObject {
-	if v.raw == 0 || !v.is_object() {
+	if !v.is_valid() || !v.is_object() {
 		return ZendObject.invalid()
 	}
 	return ZendObject{
