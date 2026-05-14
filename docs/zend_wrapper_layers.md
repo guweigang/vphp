@@ -16,9 +16,9 @@ Current migration checkpoint:
   class entries, class handlers, objects, arrays, execute data, and zval value
   allocation/conversion helpers have been moved under `vphp/zend/`.
 - `vphp/object/` has started as a no-C low-level object wrapper area. It now
-  contains object handle and lifecycle helpers; root-level `ZendObject` remains
-  the compatibility facade because property access, zval conversion, and binding
-  still depend on root-level `ZVal`/ownership types.
+  contains object handle, lifecycle, and property helpers; root-level
+  `ZendObject` remains the compatibility facade because property results, zval
+  conversion, and binding still depend on root-level `ZVal`/ownership types.
 - Root-level files still contain raw C pointer types where they are part of the
   current ABI or low-level storage shape, such as `ZVal.raw`, `PhpReturn.raw`,
   `ZExData.raw`, generic object handler callbacks, and adapter functions that
@@ -751,7 +751,7 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 当前迁移检查点：
 
 - runtime、include、superglobals、call、closure、class entry、class handlers、object、array、execute data、zval value 分配/转换相关的直接 Zend bridge 调用已经迁入 `vphp/zend/`。
-- `vphp/object/` 已经作为 no-C low-level object wrapper 区域开始落地。目前包含 object handle 与 lifecycle helper；根层 `ZendObject` 仍作为兼容 facade 保留，因为 property access、zval conversion、binding 仍依赖根层 `ZVal`/ownership 类型。
+- `vphp/object/` 已经作为 no-C low-level object wrapper 区域开始落地。目前包含 object handle、lifecycle 与 property helper；根层 `ZendObject` 仍作为兼容 facade 保留，因为 property result、zval conversion、binding 仍依赖根层 `ZVal`/ownership 类型。
 - 根层文件仍会保留一部分 raw C pointer 类型，主要是现有 ABI 或低层存储形态的一部分，例如 `ZVal.raw`、`PhpReturn.raw`、`ZExData.raw`、generic object handler callback，以及透传 `&C.zval` 到 `vphp/zend/` 的 adapter。
 - `[]ZVal -> &&C.zval` 的参数打包目前仍跟 `ZVal` 放在一起。要完全下沉到 `vphp/zend/`，需要先把 `ZVal`/ownership 这些类型迁到 no-C low-level 子模块，否则 `vphp.zend` 会反向依赖父模块并形成循环。
 

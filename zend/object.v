@@ -96,20 +96,40 @@ pub fn read_property(obj &C.zend_object, name string, rv &C.zval) &C.zval {
 	return C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
 }
 
+pub fn read_property_ptr(obj voidptr, name string, rv voidptr) voidptr {
+	return read_property(unsafe { &C.zend_object(obj) }, name, unsafe { &C.zval(rv) })
+}
+
 pub fn write_property(obj &C.zend_object, name string, value &C.zval) {
 	C.vphp_write_property_compat(obj, &char(name.str), name.len, value)
+}
+
+pub fn write_property_ptr(obj voidptr, name string, value voidptr) {
+	write_property(unsafe { &C.zend_object(obj) }, name, unsafe { &C.zval(value) })
 }
 
 pub fn has_property(obj &C.zend_object, name string) bool {
 	return C.vphp_has_property_compat(obj, &char(name.str), name.len) == 1
 }
 
+pub fn has_property_ptr(obj voidptr, name string) bool {
+	return has_property(unsafe { &C.zend_object(obj) }, name)
+}
+
 pub fn isset_property(obj &C.zend_object, name string) bool {
 	return C.vphp_isset_property_compat(obj, &char(name.str), name.len) == 1
 }
 
+pub fn isset_property_ptr(obj voidptr, name string) bool {
+	return isset_property(unsafe { &C.zend_object(obj) }, name)
+}
+
 pub fn unset_property(obj &C.zend_object, name string) {
 	C.vphp_unset_property_compat(obj, &char(name.str), name.len)
+}
+
+pub fn unset_property_ptr(obj voidptr, name string) {
+	unset_property(unsafe { &C.zend_object(obj) }, name)
 }
 
 pub fn init_object_zval(v &C.zval) {
