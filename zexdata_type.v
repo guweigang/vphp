@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 pub struct ZExData {
 	raw &C.zend_execute_data
@@ -27,19 +27,19 @@ pub fn (ex ZExData) raw_ex() &C.zend_execute_data {
 }
 
 fn zend_execute_num_args(ex ZExData) int {
-	return int(C.vphp_get_num_args(ex.raw))
+	return zend.execute_num_args(ex.raw)
 }
 
 fn zend_execute_arg(ex ZExData, index int) &C.zval {
-	return C.vphp_get_arg_ptr(ex.raw, u32(index + 1))
+	return zend.execute_arg(ex.raw, index)
 }
 
 fn zend_execute_active_class(ex ZExData) ZendClassEntry {
-	return ZendClassEntry.from_raw(C.vphp_get_active_ce(ex.raw))
+	return ZendClassEntry.from_raw(zend.execute_active_class(ex.raw))
 }
 
 fn zend_execute_this_object(ex ZExData) ZendObject {
-	obj_raw := C.vphp_get_this_object(ex.raw)
+	obj_raw := zend.execute_this_object(ex.raw)
 	if obj_raw == 0 {
 		return ZendObject.invalid()
 	}

@@ -1,11 +1,13 @@
 module vphp
 
+import vphp.zend
+
 fn zend_reference_value(v ZVal) &C.zval {
-	return C.vphp_reference_value(v.raw)
+	return zend.reference_value(v.raw)
 }
 
 fn zend_reference_set_zval(v ZVal, value ZVal) {
-	C.vphp_reference_set_zval(v.raw, value.raw)
+	zend.reference_set_zval(v.raw, value.raw)
 }
 
 pub fn (v ZVal) reference_value() ZVal {

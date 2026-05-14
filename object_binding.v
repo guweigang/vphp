@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zend
+
 pub fn (z ZVal) bind_object(handlers voidptr, ownership OwnershipKind) {
 	ZendObject.from_zval(z).bind_handlers(handlers, ownership)
 }
@@ -13,15 +15,15 @@ pub fn (z ZVal) bind_borrowed_object(handlers voidptr) {
 }
 
 fn zend_return_unbound_object(ret PhpReturn, v_ptr voidptr, ce voidptr) {
-	C.vphp_return_obj(ret.raw_zval(), v_ptr, ce)
+	zend.return_unbound_object(ret.raw_zval(), v_ptr, ce)
 }
 
 fn zend_return_borrowed_object(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	C.vphp_return_borrowed_object(ret.raw_zval(), v_ptr, ce, handlers)
+	zend.return_borrowed_object(ret.raw_zval(), v_ptr, ce, handlers)
 }
 
 fn zend_return_owned_object(ret PhpReturn, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	C.vphp_return_owned_object(ret.raw_zval(), v_ptr, ce, handlers)
+	zend.return_owned_object(ret.raw_zval(), v_ptr, ce, handlers)
 }
 
 fn return_unbound_object_to(ret PhpReturn, v_ptr voidptr, ce voidptr) {

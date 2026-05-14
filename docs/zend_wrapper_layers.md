@@ -104,6 +104,7 @@ target:
   vphp/zend/value.v     -> C-boundary wrapper
   vphp/zend/object.v    -> C-boundary wrapper
   vphp/zend/array.v     -> C-boundary wrapper
+  vphp/zend/execute.v   -> C-boundary wrapper
   vphp/zend/property.v  -> C-boundary wrapper target
 ```
 
@@ -726,7 +727,7 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 
 状态：**迁移已开始 / 尚未完整实现**。
 
-当前代码已经有不少相关概念，`vphp/zend/` 也已经开始承载 C-boundary wrapper，例如 `runtime.v`、`include.v`、`superglobals.v`、`call.v`、`closure.v`、`class_entry.v`、`object.v`、`array.v`、`value.v`。但 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/` 这些目标目录仍未完整落地。
+当前代码已经有不少相关概念，`vphp/zend/` 也已经开始承载 C-boundary wrapper，例如 `runtime.v`、`include.v`、`superglobals.v`、`call.v`、`closure.v`、`class_entry.v`、`object.v`、`array.v`、`value.v`、`execute.v`。但 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/` 这些目标目录仍未完整落地。
 
 核心规则：
 

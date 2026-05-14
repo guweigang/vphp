@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 pub struct ZendObject {
 	raw &C.zend_object = unsafe { nil }
@@ -31,11 +31,11 @@ pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
 }
 
 fn zend_current_this_object() voidptr {
-	return C.vphp_get_current_this_object()
+	return zend.current_this_object()
 }
 
 fn zend_object_from_zval(v ZVal) &C.zend_object {
-	return C.vphp_get_obj_from_zval(v.raw)
+	return zend.object_from_zval(v.raw)
 }
 
 pub fn ZendObject.current() ZendObject {

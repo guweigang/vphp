@@ -40,6 +40,26 @@ pub fn wrap_existing_object(out &C.zval, obj &C.zend_object) {
 	C.vphp_wrap_existing_object(out, obj)
 }
 
+pub fn current_this_object() voidptr {
+	return C.vphp_get_current_this_object()
+}
+
+pub fn object_from_zval(v &C.zval) &C.zend_object {
+	return C.vphp_get_obj_from_zval(v)
+}
+
+pub fn return_unbound_object(ret &C.zval, v_ptr voidptr, ce voidptr) {
+	C.vphp_return_obj(ret, v_ptr, ce)
+}
+
+pub fn return_borrowed_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
+	C.vphp_return_borrowed_object(ret, v_ptr, ce, handlers)
+}
+
+pub fn return_owned_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
+	C.vphp_return_owned_object(ret, v_ptr, ce, handlers)
+}
+
 pub fn read_property(obj &C.zend_object, name string, rv &C.zval) &C.zval {
 	return C.vphp_read_property_compat(obj, &char(name.str), name.len, rv)
 }

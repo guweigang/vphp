@@ -60,6 +60,50 @@ pub fn new_string_zval(s string) &C.zval {
 	return C.vphp_new_strl(&char(s.str), s.len)
 }
 
+pub fn new_zval() &C.zval {
+	return C.vphp_new_zval()
+}
+
+pub fn new_persistent_zval() &C.zval {
+	return C.vphp_new_persistent_zval()
+}
+
+pub fn release_zval(z &C.zval) {
+	C.vphp_release_zval(z)
+}
+
+pub fn release_persistent_zval(z &C.zval) {
+	C.vphp_release_persistent_zval(z)
+}
+
+pub fn disown_zval(z &C.zval) {
+	C.vphp_disown_zval(z)
+}
+
+pub fn copy_zval(dst &C.zval, src &C.zval) {
+	C.ZVAL_COPY(dst, src)
+}
+
 pub fn foreach_zval(v &C.zval, ctx voidptr, wrapper voidptr) {
 	C.vphp_zval_foreach(v, ctx, wrapper)
+}
+
+pub fn runtime_counters(autorelease_len &int, owned_len &int, obj_registry_len &u32, rev_registry_len &u32) {
+	C.vphp_runtime_counters(autorelease_len, owned_len, obj_registry_len, rev_registry_len)
+}
+
+pub fn reference_value(v &C.zval) &C.zval {
+	return C.vphp_reference_value(v)
+}
+
+pub fn reference_set_zval(v &C.zval, value &C.zval) {
+	C.vphp_reference_set_zval(v, value)
+}
+
+pub fn make_resource(v &C.zval, ptr voidptr, label string) {
+	C.vphp_make_res(v, ptr, &char(label.str))
+}
+
+pub fn fetch_resource(v &C.zval) voidptr {
+	return C.vphp_fetch_res(v)
 }

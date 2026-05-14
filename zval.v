@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zend
+
 // ============================================
 // ZVal — low-level bridge wrapper around Zend zval
 // NOTE:
@@ -38,32 +40,28 @@ pub:
 	persistent_fallback_zval_len int
 }
 
-fn C.vphp_release_zval(z &C.zval)
-fn C.vphp_release_zval_persistent(z &C.zval)
-fn C.vphp_disown_zval(z &C.zval)
-
 fn zend_new_zval() &C.zval {
-	return C.vphp_new_zval()
+	return zend.new_zval()
 }
 
 fn zend_new_persistent_zval() &C.zval {
-	return C.vphp_new_persistent_zval()
+	return zend.new_persistent_zval()
 }
 
 fn zend_release_zval(z &C.zval) {
-	C.vphp_release_zval(z)
+	zend.release_zval(z)
 }
 
 fn zend_release_persistent_zval(z &C.zval) {
-	C.vphp_release_zval_persistent(z)
+	zend.release_persistent_zval(z)
 }
 
 fn zend_disown_zval(z &C.zval) {
-	C.vphp_disown_zval(z)
+	zend.disown_zval(z)
 }
 
 fn zend_copy_zval(dst &C.zval, src &C.zval) {
-	C.ZVAL_COPY(dst, src)
+	zend.copy_zval(dst, src)
 }
 
 fn invalid_zval() ZVal {
@@ -147,7 +145,7 @@ pub fn runtime_counters() RuntimeCounters {
 	mut owned := 0
 	mut obj_reg := u32(0)
 	mut rev_reg := u32(0)
-	C.vphp_runtime_counters(&ar, &owned, &obj_reg, &rev_reg)
+	zend.runtime_counters(&ar, &owned, &obj_reg, &rev_reg)
 	return RuntimeCounters{
 		autorelease_len:              ar
 		owned_len:                    owned
