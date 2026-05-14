@@ -169,7 +169,8 @@ These are relatively good next steps:
 3. Continue migrating direct PHP function/object interactions in VSlim to
    `PhpFunction`, `PhpObject`, `PhpCallable`, `PhpClass`, and semantic
    `Php*` wrappers.
-4. Add tests before moving any persistent/request conversion code.
+4. Add tests before moving any persistent/request conversion code. The
+   `vphptest` suite now includes a `PhpValueZBox` conversion counter probe.
 5. Keep generated `bridge.v` style aligned with
    `vphp/compiler/boundary_scan_test.v`.
 

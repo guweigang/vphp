@@ -44,11 +44,13 @@ pub fn (v PhpValue) to_zval() ZVal {
 }
 
 pub fn (v PhpValue) to_json() string {
-	return PhpJson.encode(v.to_zval())
+	return v.to_json_with_flags(0)
 }
 
 pub fn (v PhpValue) to_json_with_flags(flags int) string {
-	return PhpJson.encode_with_flags(v.to_zval(), flags)
+	return v.value.with_request_zval[string](fn [flags] (z ZVal) string {
+		return PhpJson.encode_with_flags(z, flags)
+	})
 }
 
 pub fn (v PhpValue) borrowed() PhpValue {
