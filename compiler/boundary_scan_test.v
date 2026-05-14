@@ -22,6 +22,7 @@ fn assert_no_boundary_regressions(path string, source string) {
 		'ZVal.from_raw(',
 		'ZendObject.from_raw(',
 		'ZendClassEntry.from_raw(',
+		'args_from_zvals(',
 		'C.ZVAL_',
 		'C.zval{}',
 	]
