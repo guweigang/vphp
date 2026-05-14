@@ -45,9 +45,7 @@ pub fn (c PhpClass) to_zval() ZVal {
 }
 
 pub fn (c PhpClass) exists() bool {
-	res := PhpFunction.named('class_exists').call_zval([ZVal.new_string(c.name()),
-		ZVal.new_bool(true)])
-	return res.is_valid() && res.to_bool()
+	return PhpFunction.named('class_exists').result_bool(PhpString.of(c.name()), PhpBool.of(true))
 }
 
 pub fn (c PhpClass) namespace_name() string {
@@ -135,16 +133,16 @@ pub fn (c PhpClass) construct_request_owned_zval(args []ZVal) RequestOwnedZBox {
 }
 
 pub fn (c PhpClass) construct(args ...PhpArgInput) !PhpObject {
-	result := c.construct_owned_request_zval(php_arg_inputs_to_zvals(args))
-	return PhpObject.must_from_zval(result)
+	result := c.construct_request_owned_zval(php_arg_inputs_to_zvals(args))
+	return PhpObject.from_request_owned_zbox(result) or { error('constructed value is not object') }
 }
 
 pub fn (c PhpClass) with_object[R](run fn (PhpObject) R, args ...PhpArgInput) !R {
-	mut result := c.construct_owned_request_zval(php_arg_inputs_to_zvals(args))
+	mut result := c.construct_request_owned_zval(php_arg_inputs_to_zvals(args))
 	defer {
 		result.release()
 	}
-	obj := PhpObject.must_from_zval(result)!
+	obj := PhpObject.must_from_zval(result.to_zval())!
 	return run(obj)
 }
 
@@ -166,19 +164,19 @@ pub fn (c PhpClass) static_method_request_owned(method string, args ...PhpArgInp
 }
 
 pub fn (c PhpClass) static_method[T](method string, args ...PhpArgInput) !T {
-	mut result := c.static_method_owned_request_zval(method, php_arg_inputs_to_zvals(args))
+	mut result := c.static_method_request_owned(method, args)
 	defer {
 		result.release()
 	}
-	return php_call_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result.to_zval())
 }
 
 pub fn (c PhpClass) with_static_method_result[T, R](method string, run fn (T) R, args ...PhpArgInput) !R {
-	mut result := c.static_method_owned_request_zval(method, php_arg_inputs_to_zvals(args))
+	mut result := c.static_method_request_owned(method, args)
 	defer {
 		result.release()
 	}
-	value := php_call_result_as[T](result)!
+	value := php_call_result_as[T](result.to_zval())!
 	return run(value)
 }
 

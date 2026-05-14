@@ -27,19 +27,19 @@ pub fn (o PhpObject) method_request_owned(method string, args ...PhpArgInput) Re
 }
 
 pub fn (o PhpObject) method[T](method string, args ...PhpArgInput) !T {
-	mut result := o.method_owned_request(method, php_arg_inputs_to_zvals(args))
+	mut result := o.method_request_owned(method, args)
 	defer {
 		result.release()
 	}
-	return php_call_copied_result_as[T](result)
+	return php_call_copied_result_as[T](result.to_zval())
 }
 
 pub fn (o PhpObject) with_method_result[T, R](method string, run fn (T) R, args ...PhpArgInput) !R {
-	mut result := o.method_owned_request(method, php_arg_inputs_to_zvals(args))
+	mut result := o.method_request_owned(method, args)
 	defer {
 		result.release()
 	}
-	value := php_call_result_as[T](result)!
+	value := php_call_result_as[T](result.to_zval())!
 	return run(value)
 }
 

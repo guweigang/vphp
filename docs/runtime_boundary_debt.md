@@ -163,8 +163,9 @@ These are relatively good next steps:
 
 1. Add focused semantic helpers where callers repeatedly convert `ZVal` into
    `PhpValue` only to call one obvious operation.
-2. Reduce `[]ZVal{}` as "no args" inside vphp runtime APIs by preferring
-   variadic `PhpArgInput` entrypoints.
+2. Continue reducing `[]ZVal{}` as "no args" inside vphp runtime APIs by
+   preferring variadic `PhpArgInput` entrypoints. The semantic call wrappers
+   now route through their owned result entrypoints first.
 3. Continue migrating direct PHP function/object interactions in VSlim to
    `PhpFunction`, `PhpObject`, `PhpCallable`, `PhpClass`, and semantic
    `Php*` wrappers.
@@ -183,4 +184,3 @@ Do not use the next pass to:
 - refactor PSR-7 persistent storage without lifecycle probes
 
 Those changes would be too broad and too likely to disturb ownership.
-
