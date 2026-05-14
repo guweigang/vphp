@@ -13,6 +13,7 @@
 
 - [value_layers.md](value_layers.md)
 - [zend_wrapper_layers.md](zend_wrapper_layers.md)
+- [runtime_boundary_debt.md](runtime_boundary_debt.md)
 - [interop.md](interop.md)
 - [lifecycle_model.md](lifecycle_model.md)
 - [val_conversions.md](val_conversions.md)

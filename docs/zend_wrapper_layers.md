@@ -4,6 +4,9 @@ This document defines how `vphp` should isolate direct Zend C calls and expose p
 
 Status: **migration started / not fully implemented**.
 
+For the current remaining debt and "do not blindly migrate" list, see
+[runtime_boundary_debt.md](runtime_boundary_debt.md).
+
 The current codebase already has many of these concepts. The `vphp/zend/`
 directory now contains both C declarations and the first migrated C-boundary
 wrappers, such as runtime, include, and superglobal helpers. The broader

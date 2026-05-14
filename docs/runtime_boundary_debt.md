@@ -1,0 +1,186 @@
+# Runtime Boundary Debt
+
+Status: **checkpoint / do not blindly migrate**.
+
+This document records the remaining runtime boundary debt after the first
+`zend_wrapper_layer` cleanup pass. It is intentionally conservative: the goal is
+to keep future work focused, not to force every `ZVal` or `ZBox` occurrence into
+a semantic wrapper.
+
+## Current Guardrails
+
+The old raw runtime API surface is now guarded by tests:
+
+- `vphp/compiler/boundary_scan_test.v`
+  - checks generated `vphptest/bridge.v`
+  - checks compiler files that emit V glue
+  - blocks stale entries such as `Context.from_raw(...)`, `raw_zval()`,
+    `ZVal.from_raw(...)`, direct generated `C.vphp_*`, and manual `C.zval{}`
+- `vslim/tests/boundary_scan_test.v`
+  - checks handwritten `vslim/src/*.v`, excluding generated `bridge.v`
+  - blocks stale entries such as `Context.from_raw(...)`,
+    `call_owned_request_zval(...)`, `method_owned_request(...)`, direct
+    `C.vphp_*`, and manual `C.zval{}`
+
+These tests do not ban `ZVal`, `RequestBorrowedZBox`, `RequestOwnedZBox`, or
+`PersistentOwnedZBox`. Those types still express real ownership and bridge
+boundaries.
+
+## Snapshot
+
+The current rough scan shape is:
+
+- `vphp`: many files still mention `ZVal`; this is expected because `ZVal` is
+  the Layer 3 facade over Zend values.
+- `vphp`: direct `C.xxx` appears mainly in:
+  - `vphp/zend/**`
+  - generated-code emitters / boundary scan tests
+  - generic Zend callback boundaries such as `object_generic_props.v` and
+    `zval_factory_iter.v`
+  - a few root-level lifecycle adapters that still need `ZVal` or
+    `OwnershipKind`
+- `vslim/src`: handwritten sources still use:
+  - `ZVal` in data decoding, PSR bridge, routing, view/template, stream,
+    task/job, and bootstrap internals
+  - `RequestBorrowedZBox` for PHP-facing borrowed parameters
+  - `RequestOwnedZBox` for request-scope computed values
+  - `PersistentOwnedZBox` for app-level handlers, services, routes, cached
+    PSR state, and cross-request storage
+- `vslim/src`: direct `C.xxx` is limited to:
+  - generated class-entry globals such as `C.vslim__app_ce`
+  - object wrapping through `ZendClassEntry.from_ptr(...)`
+  - explicit external C dependencies such as MySQL thread helpers and allocator
+    helpers
+
+## Allowed Boundaries
+
+### Zend C Boundary
+
+Allowed:
+
+- `vphp/zend/**`
+- C declarations and direct `C.xxx` wrappers
+- `&C.zval`, `&&C.zval`, `&C.zend_object`, `&C.zend_execute_data`
+- Zend callback ABI signatures
+
+Rule:
+
+`vphp/zend/**` is where Zend details belong. Do not pull semantic `Php*` types
+down into this layer.
+
+### No-C Runtime Boundary
+
+Allowed:
+
+- `vphp/zval/**`
+- `vphp/object/**`
+- `vphp/execute/**`
+- `ZVal`, `ZExData`, `ZendObject`, `ZendClassEntry`
+- `RequestScope`, `FrameScope`
+- `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox`
+- `OwnershipKind`
+
+Rule:
+
+This layer may expose low-level V wrappers, but should avoid normal public APIs
+that expose raw C pointers. Pointer exits should stay narrow, such as
+`raw_ptr()` on handle wrappers.
+
+### Generated ABI Glue
+
+Allowed:
+
+```v
+fn generated_bridge(ex &C.zend_execute_data, ret &C.zval) {
+    ctx := vphp.Context.from_ptr(ex, ret)
+    ...
+}
+
+fn generated_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    ret := vphp.PhpReturn.from_ptr(rv)
+    ...
+}
+```
+
+Rule:
+
+Raw C pointer shapes are allowed at exported Zend callback signatures. The
+generated body should immediately wrap them into `Context`, `PhpReturn`,
+`ZVal`, `ZendObject`, or `ZendClassEntry`.
+
+### VSlim Handwritten Runtime
+
+Allowed:
+
+- `RequestBorrowedZBox` as PHP-facing borrowed input
+- `RequestOwnedZBox` as request-scope return or intermediate storage
+- `PersistentOwnedZBox` for app-level retained state
+- `ZVal` for low-level PHP data decoding, PSR bridge normalization, iterable
+  folding, and special object restoration
+- `C.vslim__*_ce` class-entry globals when wrapping V structs as PHP objects
+
+Rule:
+
+Prefer semantic wrappers for PHP function/object interaction:
+
+```v
+vphp.PhpFunction.named('array_values').request_owned(value)
+vphp.PhpObject.borrowed(obj).method_request_owned('getBody')
+vphp.PhpCallable.borrowed(callable).fn_request_owned(args...)
+```
+
+Avoid handwritten VSlim code that falls back to:
+
+```v
+call_owned_request_zval(...)
+method_owned_request(...)
+[]vphp.ZVal{} // only to express "no args"
+```
+
+The `vslim/tests/boundary_scan_test.v` guard currently enforces that.
+
+## Do Not Migrate Blindly
+
+These areas are lifecycle-sensitive and should only move with focused tests:
+
+- `PhpValueZBox` conversions between borrowed, request-owned, and
+  persistent-owned storage
+- `DynValue` persistent/request conversion
+- `RetainedObject` and `RetainedCallable`
+- PSR-7 server request attributes, uploaded files, parsed body, and stream body
+  storage
+- VSlim route/middleware dispatch payloads
+- app-level registries that store callable/object state across requests
+- closure binding and saved closure storage
+- `ZVal.raw` and `zval_lifecycle_interop.v`
+
+In these areas, a semantic-looking wrapper can still be wrong if it changes
+who owns the underlying Zend value.
+
+## Good Next Targets
+
+These are relatively good next steps:
+
+1. Add focused semantic helpers where callers repeatedly convert `ZVal` into
+   `PhpValue` only to call one obvious operation.
+2. Reduce `[]ZVal{}` as "no args" inside vphp runtime APIs by preferring
+   variadic `PhpArgInput` entrypoints.
+3. Continue migrating direct PHP function/object interactions in VSlim to
+   `PhpFunction`, `PhpObject`, `PhpCallable`, `PhpClass`, and semantic
+   `Php*` wrappers.
+4. Add tests before moving any persistent/request conversion code.
+5. Keep generated `bridge.v` style aligned with
+   `vphp/compiler/boundary_scan_test.v`.
+
+## Non-Goals For The Next Pass
+
+Do not use the next pass to:
+
+- remove all `ZVal` usage
+- remove all `RequestBorrowedZBox` or `RequestOwnedZBox` usage
+- hide every class-entry `C.vslim__*_ce` use
+- move every root-level runtime file into subdirectories
+- refactor PSR-7 persistent storage without lifecycle probes
+
+Those changes would be too broad and too likely to disturb ownership.
+
