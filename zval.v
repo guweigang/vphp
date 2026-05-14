@@ -37,6 +37,10 @@ pub fn (v ZVal) handle() zval.Handle {
 	return zval.Handle.from_ptr(v.raw)
 }
 
+pub fn (v ZVal) raw_ptr() voidptr {
+	return v.handle().raw_ptr()
+}
+
 // Callable — semantic alias for ZVal used as a PHP callable parameter.
 // When used as a method parameter type, the compiler emits ZEND_ARG_CALLABLE_INFO
 // so PHP reflection sees the parameter as 'callable' typed.

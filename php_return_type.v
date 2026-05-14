@@ -17,6 +17,12 @@ pub fn PhpReturn.from_ptr(raw voidptr) PhpReturn {
 	}
 }
 
+pub fn PhpReturn.from_zval(z ZVal) PhpReturn {
+	return PhpReturn{
+		handle: z.handle()
+	}
+}
+
 pub fn (ret PhpReturn) raw_zval() &C.zval {
 	return ret.to_zval().raw
 }
