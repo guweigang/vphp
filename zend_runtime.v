@@ -1,6 +1,7 @@
 module vphp
 
 import vphp.zend
+import vphp.zval
 
 fn zend_emalloc(size usize) voidptr {
 	return zend.emalloc(size)
@@ -18,8 +19,8 @@ fn zend_throw_exception_class(class_name string, msg string, code int) {
 	zend.throw_exception_class(class_name, msg, code)
 }
 
-fn zend_throw_exception_object(exception &C.zval) {
-	zend.throw_exception_object(exception)
+fn zend_throw_exception_object(exception zval.Handle) {
+	zend.throw_exception_object_ptr(exception.raw_ptr())
 }
 
 fn zend_has_exception() bool {
@@ -72,14 +73,6 @@ fn zend_active_globals_ptr() voidptr {
 
 fn zend_autorelease_mark() int {
 	return zend.autorelease_mark()
-}
-
-fn zend_autorelease_add(z &C.zval) {
-	zend.autorelease_add(z)
-}
-
-fn zend_autorelease_forget(z &C.zval) {
-	zend.autorelease_forget(z)
 }
 
 fn zend_autorelease_drain(mark int) {

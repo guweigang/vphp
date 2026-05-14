@@ -28,6 +28,10 @@ pub fn throw_exception_object(exception &C.zval) {
 	C.vphp_throw_object(exception)
 }
 
+pub fn throw_exception_object_ptr(exception voidptr) {
+	throw_exception_object(unsafe { &C.zval(exception) })
+}
+
 pub fn has_exception() bool {
 	return C.vphp_has_exception()
 }

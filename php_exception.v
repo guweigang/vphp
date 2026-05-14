@@ -43,9 +43,9 @@ pub fn PhpException.raise_object(mut exception ZVal) {
 		PhpException.raise('exception object must be a valid object', 0)
 		return
 	}
-	raw := exception.raw
+	handle := exception.handle()
 	exception.disown()
-	zend_throw_exception_object(raw)
+	zend_throw_exception_object(handle)
 }
 
 pub fn PhpException.has_current() bool {
