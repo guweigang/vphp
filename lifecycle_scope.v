@@ -23,16 +23,8 @@ fn RequestScope.autorelease_mark() int {
 	return scope.request_mark()
 }
 
-fn RequestScope.autorelease_add(z &C.zval) {
-	scope.autorelease_add_ptr(z)
-}
-
 fn RequestScope.autorelease_add_handle(handle zvalmod.Handle) {
 	scope.autorelease_add_ptr(handle.raw_ptr())
-}
-
-fn RequestScope.autorelease_forget(z &C.zval) {
-	scope.autorelease_forget_ptr(z)
 }
 
 fn RequestScope.autorelease_forget_handle(handle zvalmod.Handle) {
