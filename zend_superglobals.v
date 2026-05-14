@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 enum ZendSuperglobal {
 	env
@@ -25,43 +25,19 @@ fn zend_superglobal_array(kind ZendSuperglobal) PhpArray {
 }
 
 fn zend_superglobal_raw(kind ZendSuperglobal) &C.zval {
+	return zend.superglobal_raw(zend_superglobal_kind(kind))
+}
+
+fn zend_superglobal_kind(kind ZendSuperglobal) zend.Superglobal {
 	return match kind {
-		.env { zend_env_superglobal_raw() }
-		.server { zend_server_superglobal_raw() }
-		.get { zend_get_superglobal_raw() }
-		.post { zend_post_superglobal_raw() }
-		.cookie { zend_cookie_superglobal_raw() }
-		.files { zend_files_superglobal_raw() }
-		.request { zend_request_superglobal_raw() }
+		.env { zend.Superglobal.env }
+		.server { zend.Superglobal.server }
+		.get { zend.Superglobal.get }
+		.post { zend.Superglobal.post }
+		.cookie { zend.Superglobal.cookie }
+		.files { zend.Superglobal.files }
+		.request { zend.Superglobal.request }
 	}
-}
-
-fn zend_env_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_env()
-}
-
-fn zend_server_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_server()
-}
-
-fn zend_get_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_get()
-}
-
-fn zend_post_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_post()
-}
-
-fn zend_cookie_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_cookie()
-}
-
-fn zend_files_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_files()
-}
-
-fn zend_request_superglobal_raw() &C.zval {
-	return C.vphp_superglobal_get_request()
 }
 
 fn zend_set_env_superglobal_string(name string, value string) {
@@ -73,9 +49,9 @@ fn zend_set_server_superglobal_string(name string, value string) {
 }
 
 fn zend_set_env_superglobal_string_raw(name string, value string) {
-	C.vphp_superglobal_set_env_string(&char(name.str), &char(value.str))
+	zend.set_env_superglobal_string(name, value)
 }
 
 fn zend_set_server_superglobal_string_raw(name string, value string) {
-	C.vphp_superglobal_set_server_string(&char(name.str), &char(value.str))
+	zend.set_server_superglobal_string(name, value)
 }

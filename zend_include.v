@@ -1,10 +1,9 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 fn zend_include_file_raw(path string, retval &C.zval, once bool) int {
-	once_flag := if once { 1 } else { 0 }
-	return C.vphp_include_file(&char(path.str), path.len, retval, once_flag)
+	return zend.include_file_raw(path, retval, once)
 }
 
 fn zend_include_file(path string, once bool) ZVal {

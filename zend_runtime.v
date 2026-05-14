@@ -1,103 +1,87 @@
 module vphp
 
-import vphp.zend as _
-
-fn C.emalloc(size usize) voidptr
-fn C.efree(ptr voidptr)
+import vphp.zend
 
 fn zend_emalloc(size usize) voidptr {
-	return C.emalloc(size)
+	return zend.emalloc(size)
 }
 
 fn zend_efree(ptr voidptr) {
-	C.efree(ptr)
+	zend.efree(ptr)
 }
 
 fn zend_throw_exception(msg string, code int) {
-	unsafe { C.vphp_throw(&char(msg.str), code) }
+	zend.throw_exception(msg, code)
 }
 
 fn zend_throw_exception_class(class_name string, msg string, code int) {
-	unsafe { C.vphp_throw_class(&char(class_name.str), &char(msg.str), code) }
+	zend.throw_exception_class(class_name, msg, code)
 }
 
 fn zend_throw_exception_object(exception &C.zval) {
-	C.vphp_throw_object(exception)
+	zend.throw_exception_object(exception)
 }
 
 fn zend_has_exception() bool {
-	return C.vphp_has_exception()
+	return zend.has_exception()
 }
 
 fn zend_exception_message() string {
-	mut buffer := []u8{len: 2048}
-	written := unsafe { C.vphp_exception_message(&char(&buffer[0]), buffer.len) }
-	if written <= 0 {
-		return ''
-	}
-	return unsafe { (&char(&buffer[0])).vstring_with_len(written).clone() }
+	return zend.exception_message()
 }
 
 fn zend_clear_exception() {
-	C.vphp_clear_exception()
+	zend.clear_exception()
 }
 
 fn zend_report_error(level int, msg string) {
-	unsafe {
-		C.vphp_error(level, &char(msg.str))
-	}
+	zend.report_error(level, msg)
 }
 
 fn zend_output_write(msg string) {
-	unsafe {
-		C.vphp_output_write(&char(msg.str), msg.len)
-	}
+	zend.output_write(msg)
 }
 
 fn zend_framework_init(module_number int) {
-	unsafe {
-		C.vphp_init_registry()
-		C.vphp_init_resource_system(module_number)
-		C.vphp_install_runtime_binding_hooks()
-	}
+	zend.framework_init(module_number)
 }
 
 fn zend_uninstall_runtime_binding_hooks() {
-	C.vphp_uninstall_runtime_binding_hooks()
+	zend.uninstall_runtime_binding_hooks()
 }
 
 fn zend_autorelease_shutdown() {
-	C.vphp_autorelease_shutdown()
+	zend.autorelease_shutdown()
 }
 
 fn zend_shutdown_registry() {
-	C.vphp_shutdown_registry()
+	zend.shutdown_registry()
 }
 
 fn zend_request_startup() {
-	C.vphp_request_startup()
+	zend.request_startup()
 }
 
 fn zend_request_shutdown() {
-	C.vphp_request_shutdown()
+	zend.request_shutdown()
 }
 
 fn zend_active_globals_ptr() voidptr {
-	return C.vphp_get_active_globals()
+	return zend.active_globals_ptr()
 }
 
 fn zend_autorelease_mark() int {
-	return C.vphp_autorelease_mark()
+	return zend.autorelease_mark()
 }
 
 fn zend_autorelease_add(z &C.zval) {
-	C.vphp_autorelease_add(z)
+	zend.autorelease_add(z)
 }
 
 fn zend_autorelease_forget(z &C.zval) {
-	C.vphp_autorelease_forget(z)
+	zend.autorelease_forget(z)
 }
 
 fn zend_autorelease_drain(mark int) {
-	C.vphp_autorelease_drain(mark)
+	zend.autorelease_drain(mark)
 }

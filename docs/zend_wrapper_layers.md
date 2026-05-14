@@ -2,9 +2,13 @@
 
 This document defines how `vphp` should isolate direct Zend C calls and expose progressively nicer V APIs above them.
 
-Status: **design target / not fully implemented**.
+Status: **migration started / not fully implemented**.
 
-The current codebase already has many of these concepts, but the directory layout and C-boundary isolation described here are migration targets. In particular, the proposed `vphp/zend/call.v`, `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, and `vphp/object/` layout is not fully implemented yet.
+The current codebase already has many of these concepts. The `vphp/zend/`
+directory now contains both C declarations and the first migrated C-boundary
+wrappers, such as runtime, include, and superglobal helpers. The broader
+`vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, and `vphp/object/` layout is still a
+migration target and is not fully implemented yet.
 
 The rule of thumb:
 
@@ -91,6 +95,9 @@ vphp/zend/native_api.v  -> declarations
 vphp/zend/constants.v   -> declarations
 
 target:
+  vphp/zend/runtime.v   -> C-boundary wrapper
+  vphp/zend/include.v   -> C-boundary wrapper
+  vphp/zend/superglobals.v -> C-boundary wrapper
   vphp/zend/call.v      -> C-boundary wrapper
   vphp/zend/value.v     -> C-boundary wrapper
   vphp/zend/object.v    -> C-boundary wrapper
@@ -594,8 +601,10 @@ private Zend object helpers. Runtime task entrypoints now write returns through
 `ctx.return_*` convenience API. Unused receiver helpers that returned
 `&C.vphp_object_wrapper` were removed from `object_binding.v`; binding remains
 available through the higher-level `ZVal.bind_object(...)` receiver API.
-The broader layer migration is still not implemented and should continue
-incrementally.
+Runtime, include-file, and superglobal C-boundary implementations have started
+moving into `vphp/zend/`, with parent-module files kept as thin adapters where
+they still need `ZVal`, `ZBox`, or semantic wrapper types. The broader layer
+migration should continue incrementally.
 
 ### First: Call Paths
 
