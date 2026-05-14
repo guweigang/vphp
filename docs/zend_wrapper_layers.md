@@ -425,6 +425,21 @@ name := php_args.at_named_or_index(0, 'name').string_value() or { ... }
 ctx.return().string_value(result)
 ```
 
+For Zend ABI callbacks, raw C pointer types are acceptable only at the exported
+signature boundary. The generated body should immediately create wrapper values:
+
+```v
+fn generated_bridge(ex &C.zend_execute_data, ret &C.zval) {
+    ctx := vphp.Context.from_ptr(ex, ret)
+    ...
+}
+
+fn generated_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    ret := vphp.PhpReturn.from_ptr(rv)
+    ...
+}
+```
+
 Acceptable low-level forms:
 
 ```v

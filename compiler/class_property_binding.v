@@ -54,6 +54,7 @@ fn (glue ClassPropertyGlue) render_getter_lines() []string {
 		out << '}'
 		return out
 	}
+	out << '    ret := vphp.PhpReturn.from_ptr(rv)'
 	out << '    unsafe {'
 	out << '        name := name_ptr.vstring_with_len(name_len).clone()'
 	out << '        obj := &${glue.class_name}(ptr)'
@@ -73,31 +74,31 @@ fn render_prop_getter_case(prop repr.PhpClassPropRepr) []string {
 	match prop.v_type {
 		'string' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.from_ptr(rv).v[string](obj.${prop.v_field_name})'
+			out << '            ret.v[string](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		'int' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.from_ptr(rv).v[i64](i64(obj.${prop.v_field_name}))'
+			out << '            ret.v[i64](i64(obj.${prop.v_field_name}))'
 			out << '            return'
 			out << '        }'
 		}
 		'i64' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.from_ptr(rv).v[i64](obj.${prop.v_field_name})'
+			out << '            ret.v[i64](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		'bool' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.from_ptr(rv).v[bool](obj.${prop.v_field_name})'
+			out << '            ret.v[bool](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
 		'f64' {
 			out << "        if name == '${prop.name}' {"
-			out << '            vphp.PhpReturn.from_ptr(rv).v[f64](obj.${prop.v_field_name})'
+			out << '            ret.v[f64](obj.${prop.v_field_name})'
 			out << '            return'
 			out << '        }'
 		}
@@ -119,10 +120,10 @@ fn (glue ClassPropertyGlue) render_setter_lines() []string {
 		out << '}'
 		return out
 	}
+	out << '    arg := vphp.ZVal.from_ptr(value)'
 	out << '    unsafe {'
 	out << '        name := name_ptr.vstring_with_len(name_len).clone()'
 	out << '        mut obj := &${glue.class_name}(ptr)'
-	out << '        arg := vphp.ZVal.from_ptr(value)'
 	for prop in glue.props {
 		out << render_prop_setter_case(prop)
 	}
@@ -183,9 +184,9 @@ fn (glue ClassPropertyGlue) render_sync_lines() []string {
 		out << '}'
 		return out
 	}
+	out << '    out := vphp.ZVal.from_ptr(zv)'
 	out << '    unsafe {'
 	out << '        obj := &${glue.class_name}(ptr)'
-	out << '        out := vphp.ZVal.from_ptr(zv)'
 	for prop in glue.props {
 		out << render_prop_sync_case(prop)
 	}

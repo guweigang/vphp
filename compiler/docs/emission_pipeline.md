@@ -150,6 +150,33 @@ This file is healthiest when it mostly:
 
 If logic here starts deciding method wrapper templates or parsing meaning from reprs, the boundaries are drifting.
 
+## V Glue Boundary Rule
+
+`bridge.v` is allowed to expose Zend ABI shapes at exported callback entry
+points, because Zend calls those functions with raw pointers:
+
+```v
+fn bridge_name(ex &C.zend_execute_data, ret &C.zval) {
+    ctx := vphp.Context.from_ptr(ex, ret)
+    ...
+}
+```
+
+Object handler glue follows the same rule:
+
+```v
+fn class_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+    ret := vphp.PhpReturn.from_ptr(rv)
+    ...
+}
+```
+
+The raw pointer should not spread past that boundary line. Generated V glue
+should prefer `Context`, `PhpReturn`, `ZVal`, `ZendObject`, `ZendClassEntry`,
+and semantic `Php*` wrappers. New generated uses of `Context.from_raw(...)`,
+`raw_zval()`, `raw_ex()`, `ZVal.from_raw(...)`, direct `C.vphp_*`, or manual
+`C.zval{}` construction should be treated as migration regressions.
+
 ## `c_emitter.v` in Detail
 
 ### Main responsibilities
