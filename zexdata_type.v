@@ -1,6 +1,7 @@
 module vphp
 
 import vphp.execute
+import vphp.zval
 
 pub struct ZExData {
 	handle execute.Handle
@@ -26,8 +27,8 @@ fn zend_execute_num_args(ex ZExData) int {
 	return ex.handle.num_args()
 }
 
-fn zend_execute_arg(ex ZExData, index int) &C.zval {
-	return unsafe { &C.zval(ex.handle.arg_ptr(index)) }
+fn zend_execute_arg(ex ZExData, index int) zval.Handle {
+	return ex.handle.arg_handle(index)
 }
 
 fn zend_execute_active_class(ex ZExData) ZendClassEntry {
@@ -54,13 +55,7 @@ pub fn (ex ZExData) arg_raw(index int) ZVal {
 	if index < 0 || index >= ex.num_args() {
 		return invalid_zval()
 	}
-	raw := zend_execute_arg(ex, index)
-	if raw == 0 {
-		return invalid_zval()
-	}
-	return ZVal{
-		raw: raw
-	}
+	return ZVal.from_handle(zend_execute_arg(ex, index))
 }
 
 pub fn (ex ZExData) arg_or_null(index int) ZVal {
