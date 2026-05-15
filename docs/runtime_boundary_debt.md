@@ -14,6 +14,8 @@ The old raw runtime API surface is now guarded by tests:
 - `vphp/compiler/boundary_scan_test.v`
   - checks generated `vphptest/bridge.v`
   - checks compiler files that emit V glue
+  - checks that `Context` stores `ZExData` and `PhpReturn`, not raw Zend
+    pointers
   - blocks stale entries such as `Context.from_raw(...)`, `raw_zval()`,
     `ZVal.from_raw(...)`, direct generated `C.vphp_*`, and manual `C.zval{}`
 - `vslim/tests/boundary_scan_test.v`
