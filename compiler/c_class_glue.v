@@ -2,11 +2,23 @@ module compiler
 
 import compiler.repr
 
+struct ClassMethodCGluePlan {
+	method_name             string
+	is_static               bool
+	has_export              bool
+	method_return_type      string
+	return_info             RuntimeReturnInfo
+	uses_inherited_receiver bool
+	uses_context_arg        bool
+	vars                    map[string]string
+}
+
 fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	mut c := []string{}
 	c_class := r.c_name() // C macro safe: VPhp_Task
 	has_init := r.methods.any(is_constructor_method(it.name))
 	class_builder := g.build_class_type(r, has_init)
+	uses_inherited_receiver := class_uses_inherited_receiver(r)
 
 	c << class_builder.render_impl_prelude()
 
@@ -15,118 +27,11 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 		if m.is_abstract {
 			continue
 		}
-		php_name := php_method_name(m.name)
-		glue_name := if m.v_name != '' { m.v_name } else { m.name }
-
-		v_c_func := if m.has_export { m.v_c_func } else { 'vphp_wrap_${r.name}_${glue_name}' }
-
-		method_return_type := m.return_spec.effective_v_type()
-		return_info := method_runtime_return_info(r.name, m.name, m.is_static, method_return_type,
-			m.borrowed_return)
-		uses_inherited_receiver := class_uses_inherited_receiver(r)
-		uses_context_arg := method_uses_context_arg(m)
-
-		vars := {
-			'CLASS':         c_class
-			'CLASS_CE':      g.ce_var_for_type(r.name)
-			'HANDLER_CLASS': r.name
-			'PHP_METHOD':    php_name
-			'V_FUNC':        v_c_func
-			'C_TYPE':        return_info.tm.c_type
-			'PHP_RETURN':    return_info.tm.php_return
-		}
-
-		if m.has_export {
-			if m.is_static {
-				c << render_tpl(tpl_static_manual_ctx, vars)
-			} else if uses_inherited_receiver {
-				c << render_tpl(tpl_inherited_instance_method, vars)
-			} else {
-				c << render_tpl(tpl_instance_method, vars)
-			}
-			continue
-		}
-
-		if is_constructor_method(m.name) {
-			if class_uses_inherited_receiver(r) {
-				continue
-			}
-			if uses_context_arg {
-				c << render_tpl(tpl_construct_context, vars)
-			} else {
-				c << render_tpl(tpl_construct, vars)
-			}
-		} else if m.is_static {
-			if uses_context_arg {
-				c << render_tpl(tpl_static_context, vars)
-			} else if return_info.kind == .static_factory {
-				c << render_tpl(tpl_static_factory, vars)
-			} else if return_info.kind == .static_object {
-				mut obj_vars := vars.clone()
-				obj_vars['RET_CLASS'] = return_info.class_key
-				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(return_info.class_key)
-				obj_vars['RET_OWNS_VPTR'] = return_info.owns_vptr
-				c << render_tpl(tpl_static_object, obj_vars)
-			} else if return_info.kind in [.result, .option] {
-				// Result/Option 类型在 V glue 侧处理 or{}，C 侧等同 void 调用
-				payload_return := method_return_type[1..]
-				if payload_return == '' || payload_return == 'void' {
-					c << render_tpl(tpl_static_void, vars)
-				} else {
-					c << render_tpl(tpl_static_scalar, vars)
-				}
-			} else if return_info.kind == .void_ {
-				c << render_tpl(tpl_static_void, vars)
-			} else {
-				c << render_tpl(tpl_static_scalar, vars)
-			}
-		} else {
-			if uses_context_arg {
-				if uses_inherited_receiver {
-					c << render_tpl(tpl_inherited_instance_context, vars)
-				} else {
-					c << render_tpl(tpl_instance_context, vars)
-				}
-			} else if return_info.kind == .instance_object {
-				mut obj_vars := vars.clone()
-				obj_vars['RET_CLASS'] = return_info.class_key
-				obj_vars['RET_CLASS_CE'] = g.ce_var_for_type(return_info.class_key)
-				obj_vars['RET_OWNS_VPTR'] = return_info.owns_vptr
-				if uses_inherited_receiver {
-					c << render_tpl(tpl_inherited_instance_object, obj_vars)
-				} else {
-					c << render_tpl(tpl_instance_object, obj_vars)
-				}
-			} else if return_info.kind == .result {
-				if uses_inherited_receiver {
-					c << render_tpl(tpl_inherited_instance_result, vars)
-				} else {
-					c << render_tpl(tpl_instance_result, vars)
-				}
-			} else if return_info.kind == .option {
-				// Option 类型在 V glue 侧处理 or{}，C 侧等同 result 调用模式
-				if uses_inherited_receiver {
-					c << render_tpl(tpl_inherited_instance_result, vars)
-				} else {
-					c << render_tpl(tpl_instance_result, vars)
-				}
-			} else if return_info.kind == .void_ {
-				if uses_inherited_receiver {
-					c << render_tpl(tpl_inherited_instance_void, vars)
-				} else {
-					c << render_tpl(tpl_instance_void, vars)
-				}
-			} else {
-				if uses_inherited_receiver {
-					c << render_tpl(tpl_inherited_instance_method, vars)
-				} else {
-					c << render_tpl(tpl_instance_method, vars)
-				}
-			}
-		}
+		plan := g.build_class_method_c_glue_plan(r, m, c_class, uses_inherited_receiver)
+		c << g.render_class_method_c(plan)
 	}
 
-	if !has_init && !class_uses_inherited_receiver(r) {
+	if !has_init && !uses_inherited_receiver {
 		vars := {
 			'CLASS':         c_class
 			'HANDLER_CLASS': r.name
@@ -138,4 +43,131 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 	c << class_builder.render_impl_postlude()
 
 	return c
+}
+
+fn (g CGenerator) build_class_method_c_glue_plan(r &repr.PhpClassRepr, m repr.PhpMethodRepr, c_class string, uses_inherited_receiver bool) ClassMethodCGluePlan {
+	php_name := php_method_name(m.name)
+	glue_name := if m.v_name != '' { m.v_name } else { m.name }
+	v_c_func := if m.has_export { m.v_c_func } else { 'vphp_wrap_${r.name}_${glue_name}' }
+	method_return_type := m.return_spec.effective_v_type()
+	return_info := method_runtime_return_info(r.name, m.name, m.is_static, method_return_type,
+		m.borrowed_return)
+	uses_context_arg := method_uses_context_arg(m)
+	vars := {
+		'CLASS':         c_class
+		'CLASS_CE':      g.ce_var_for_type(r.name)
+		'HANDLER_CLASS': r.name
+		'PHP_METHOD':    php_name
+		'V_FUNC':        v_c_func
+		'C_TYPE':        return_info.tm.c_type
+		'PHP_RETURN':    return_info.tm.php_return
+	}
+	return ClassMethodCGluePlan{
+		method_name:             m.name
+		is_static:               m.is_static
+		has_export:              m.has_export
+		method_return_type:      method_return_type
+		return_info:             return_info
+		uses_inherited_receiver: uses_inherited_receiver
+		uses_context_arg:        uses_context_arg
+		vars:                    vars
+	}
+}
+
+fn (g CGenerator) render_class_method_c(plan ClassMethodCGluePlan) []string {
+	if plan.has_export {
+		return g.render_exported_class_method_c(plan)
+	}
+	if is_constructor_method(plan.method_name) {
+		return g.render_constructor_method_c(plan)
+	}
+	if plan.is_static {
+		return g.render_static_method_c(plan)
+	}
+	return g.render_instance_method_c(plan)
+}
+
+fn (g CGenerator) render_exported_class_method_c(plan ClassMethodCGluePlan) []string {
+	if plan.is_static {
+		return [render_tpl(tpl_static_manual_ctx, plan.vars)]
+	}
+	if plan.uses_inherited_receiver {
+		return [render_tpl(tpl_inherited_instance_method, plan.vars)]
+	}
+	return [render_tpl(tpl_instance_method, plan.vars)]
+}
+
+fn (g CGenerator) render_constructor_method_c(plan ClassMethodCGluePlan) []string {
+	if plan.uses_inherited_receiver {
+		return []
+	}
+	if plan.uses_context_arg {
+		return [render_tpl(tpl_construct_context, plan.vars)]
+	}
+	return [render_tpl(tpl_construct, plan.vars)]
+}
+
+fn (g CGenerator) render_static_method_c(plan ClassMethodCGluePlan) []string {
+	if plan.uses_context_arg {
+		return [render_tpl(tpl_static_context, plan.vars)]
+	}
+	if plan.return_info.kind == .static_factory {
+		return [render_tpl(tpl_static_factory, plan.vars)]
+	}
+	if plan.return_info.kind == .static_object {
+		return [render_tpl(tpl_static_object, g.vars_with_return_object(plan))]
+	}
+	if plan.return_info.kind in [.result, .option] {
+		// Result/Option 类型在 V glue 侧处理 or{}，C 侧等同 void 调用
+		payload_return := plan.method_return_type[1..]
+		if payload_return == '' || payload_return == 'void' {
+			return [render_tpl(tpl_static_void, plan.vars)]
+		}
+		return [render_tpl(tpl_static_scalar, plan.vars)]
+	}
+	if plan.return_info.kind == .void_ {
+		return [render_tpl(tpl_static_void, plan.vars)]
+	}
+	return [render_tpl(tpl_static_scalar, plan.vars)]
+}
+
+fn (g CGenerator) render_instance_method_c(plan ClassMethodCGluePlan) []string {
+	if plan.uses_context_arg {
+		if plan.uses_inherited_receiver {
+			return [render_tpl(tpl_inherited_instance_context, plan.vars)]
+		}
+		return [render_tpl(tpl_instance_context, plan.vars)]
+	}
+	if plan.return_info.kind == .instance_object {
+		vars := g.vars_with_return_object(plan)
+		if plan.uses_inherited_receiver {
+			return [render_tpl(tpl_inherited_instance_object, vars)]
+		}
+		return [render_tpl(tpl_instance_object, vars)]
+	}
+	if plan.return_info.kind in [.result, .option] {
+		// Option 类型在 V glue 侧处理 or{}，C 侧等同 result 调用模式
+		if plan.uses_inherited_receiver {
+			return [render_tpl(tpl_inherited_instance_result, plan.vars)]
+		}
+		return [render_tpl(tpl_instance_result, plan.vars)]
+	}
+	if plan.return_info.kind == .void_ {
+		if plan.uses_inherited_receiver {
+			return [render_tpl(tpl_inherited_instance_void, plan.vars)]
+		}
+		return [render_tpl(tpl_instance_void, plan.vars)]
+	}
+	if plan.uses_inherited_receiver {
+		return [render_tpl(tpl_inherited_instance_method, plan.vars)]
+	}
+	return [render_tpl(tpl_instance_method, plan.vars)]
+}
+
+fn (g CGenerator) vars_with_return_object(plan ClassMethodCGluePlan) map[string]string {
+	mut vars := plan.vars.clone()
+	vars['RET_CLASS'] = plan.return_info.class_key
+	vars['RET_CLASS_CE'] = g.ce_var_for_type(plan.return_info.class_key)
+	vars['RET_OWNS_VPTR'] = plan.return_info.owns_vptr
+	return vars
 }
