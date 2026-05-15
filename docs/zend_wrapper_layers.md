@@ -438,7 +438,8 @@ fn generated_bridge(ex &C.zend_execute_data, ret &C.zval) {
 }
 
 fn generated_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
-    ret := vphp.PhpReturn.from_ptr(rv)
+    ret := vphp.PhpObjectPropertyHandler.return_from_ptr(rv)
+    name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
     ...
 }
 ```
@@ -464,7 +465,7 @@ direct `C.xxx`, that usually means one of these wrappers is missing:
 
 - `ZExData`
 - `PhpReturn`
-- `ZendObject` / object property helper
+- `ZendObject` / `PhpObjectPropertyHandler`
 - class/object lifecycle helper
 - `ZVal`/`ZBox` conversion helper
 
@@ -557,7 +558,7 @@ The remaining raw C types are intentional and should stay small and reviewable:
 - Generated or generic Zend callback signatures, such as
   `object_generic_props.v` and `zval_factory_iter.v`, because Zend calls into V
   with `&C.zval`/callback context pointers. These functions should wrap raw
-  inputs immediately with `ZVal.from_ptr(...)`, `PhpReturn.from_ptr(...)`, or
+  inputs immediately with `PhpObjectPropertyHandler`, `ZVal.from_ptr(...)`, or
   handle wrappers.
 - `vphp/zend/**`, because it is the explicit C-boundary wrapper layer.
 

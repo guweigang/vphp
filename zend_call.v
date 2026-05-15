@@ -1,7 +1,6 @@
 module vphp
 
 import vphp.zend
-import vphp.zval
 
 struct ZendMethodCall {
 	receiver ZVal

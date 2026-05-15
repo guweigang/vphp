@@ -1,7 +1,5 @@
 module vphp
 
-import vphp.zval
-
 // Zend object handler boundary.
 // These exported callbacks must keep Zend's raw callback signature, then wrap
 // zval pointers immediately before touching normal vphp APIs.
@@ -9,21 +7,22 @@ import vphp.zval
 // Generic property reader used by generated PHP class handlers.
 pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
 	unsafe {
-		name := name_ptr.vstring_with_len(name_len).clone()
+		name := PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
+		ret := PhpObjectPropertyHandler.return_from_ptr(rv)
 		obj := &T(ptr)
 		$for field in T.fields {
 			if name == field.name {
 				val := obj.$(field.name)
 				$if field.typ is string {
-					PhpReturn.from_ptr(rv).v[string](val)
+					ret.v[string](val)
 				} $else $if field.typ is int {
-					PhpReturn.from_ptr(rv).v[i64](i64(val))
+					ret.v[i64](i64(val))
 				} $else $if field.typ is i64 {
-					PhpReturn.from_ptr(rv).v[i64](val)
+					ret.v[i64](val)
 				} $else $if field.typ is bool {
-					PhpReturn.from_ptr(rv).v[bool](val)
+					ret.v[bool](val)
 				} $else $if field.typ is f64 {
-					PhpReturn.from_ptr(rv).v[f64](val)
+					ret.v[f64](val)
 				}
 				return
 			}
@@ -34,9 +33,9 @@ pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval
 // Generic property writer used by generated PHP class handlers.
 pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
 	unsafe {
-		name := name_ptr.vstring_with_len(name_len).clone()
+		name := PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
 		mut obj := &T(ptr)
-		arg := ZVal.from_handle(zval.Handle.from_ptr(value))
+		arg := PhpObjectPropertyHandler.value_from_ptr(value)
 		$for field in T.fields {
 			if name == field.name {
 				$if field.typ is string {
@@ -60,7 +59,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
 	unsafe {
 		obj := &T(ptr)
-		out := ZVal.from_handle(zval.Handle.from_ptr(zv))
+		out := PhpObjectPropertyHandler.value_from_ptr(zv)
 		$for field in T.fields {
 			name := field.name
 			val := obj.$(field.name)

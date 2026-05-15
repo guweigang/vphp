@@ -98,7 +98,8 @@ fn generated_bridge(ex &C.zend_execute_data, ret &C.zval) {
 }
 
 fn generated_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
-    ret := vphp.PhpReturn.from_ptr(rv)
+    ret := vphp.PhpObjectPropertyHandler.return_from_ptr(rv)
+    name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
     ...
 }
 ```
@@ -106,8 +107,9 @@ fn generated_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
 Rule:
 
 Raw C pointer shapes are allowed at exported Zend callback signatures. The
-generated body should immediately wrap them into `Context`, `PhpReturn`,
-`ZVal`, `ZendObject`, or `ZendClassEntry`.
+generated body should immediately wrap them into `Context`,
+`PhpObjectPropertyHandler`, `PhpReturn`, `ZVal`, `ZendObject`, or
+`ZendClassEntry`.
 
 ### VSlim Handwritten Runtime
 

@@ -166,16 +166,18 @@ Object handler glue follows the same rule:
 
 ```v
 fn class_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
-    ret := vphp.PhpReturn.from_ptr(rv)
+    ret := vphp.PhpObjectPropertyHandler.return_from_ptr(rv)
+    name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
     ...
 }
 ```
 
 The raw pointer should not spread past that boundary line. Generated V glue
-should prefer `Context`, `PhpReturn`, `ZVal`, `ZendObject`, `ZendClassEntry`,
-and semantic `Php*` wrappers. New generated uses of `Context.from_raw(...)`,
-`raw_zval()`, `raw_ex()`, `ZVal.from_raw(...)`, direct `C.vphp_*`, or manual
-`C.zval{}` construction should be treated as migration regressions.
+should prefer `Context`, `PhpReturn`, `PhpObjectPropertyHandler`, `ZVal`,
+`ZendObject`, `ZendClassEntry`, and semantic `Php*` wrappers. New generated
+uses of `Context.from_raw(...)`, `raw_zval()`, `raw_ex()`, `ZVal.from_raw(...)`,
+direct `C.vphp_*`, or manual `C.zval{}` construction should be treated as
+migration regressions.
 
 ## `c_emitter.v` in Detail
 

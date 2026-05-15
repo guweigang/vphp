@@ -1,7 +1,6 @@
 module vphp
 
 import vphp.object
-import vphp.zend
 import vphp.zval
 
 fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {

@@ -210,8 +210,9 @@ Zend boundary rule:
 - generated Zend ABI signatures may contain raw C pointer shapes such as
   `ex &C.zend_execute_data`, `ret &C.zval`, `rv &C.zval`, or `value &C.zval`
 - the generated function body should wrap those values at the top of the
-  function with `vphp.Context.from_ptr(...)`, `vphp.PhpReturn.from_ptr(...)`,
-  `vphp.ZVal.from_ptr(...)`, or `vphp.ZendObject.from_ptr(...)`
+  function with `vphp.Context.from_ptr(...)`,
+  `vphp.PhpObjectPropertyHandler`, `vphp.ZVal.from_ptr(...)`, or
+  `vphp.ZendObject.from_ptr(...)`
 - after that entry wrapping, generated V glue should use runtime wrappers
   instead of spelling direct `C.vphp_*`, old `from_raw(...)`, `raw_zval()`, or
   manual `C.zval{}` patterns
