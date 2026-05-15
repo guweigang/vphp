@@ -268,6 +268,8 @@ Progress:
 - compiler property callback raw ABI signatures are centralized in
   `class_property_binding.v` helper functions and guarded by
   `boundary_scan_test.v`
+- compiler closure bridge raw ABI signatures are centralized in
+  `struct_closure_binding.v` and guarded by `boundary_scan_test.v`
 - generated struct-param closure bridges now delegate callback invocation and
   return writing through `Context.invoke_struct_closure*`
 - `ReturnBinding` owns value-return write emission for function and class method
