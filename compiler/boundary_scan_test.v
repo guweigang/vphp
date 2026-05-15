@@ -54,6 +54,9 @@ fn test_generated_bridge_keeps_raw_only_at_known_boundaries() {
 	closure_sig_count := source.count('ex &C.zend_execute_data, ret &C.zval')
 	assert closure_sig_count > 0
 	assert closure_sig_count == source.count('vphp.Context.from_ptr(ex, ret)')
+	assert !source.contains('res := cb(args)')
+	assert source.contains('ctx.invoke_struct_closure[')
+	assert source.contains('ctx.invoke_variadic_closure[')
 }
 
 fn test_compiler_does_not_emit_stale_raw_runtime_entries() {

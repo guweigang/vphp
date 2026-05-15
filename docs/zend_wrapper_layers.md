@@ -767,10 +767,13 @@ Status: **partially started**.
 
 Generated return glue now prefers `ctx.return()` / `PhpReturn`, and generated
 argument reads increasingly flow through `Context`, `ZExData`, `PhpArg`, and
-semantic wrappers. Direct C signatures still exist at Zend callback edges,
-especially exported function/method wrappers, closure bridges, and generated
-class property handlers. Those signatures are still necessary boundary points
-until a dedicated compiler-boundary abstraction exists.
+semantic wrappers. Generated property glue now wraps property-handler raw
+inputs through `PhpObjectPropertyHandler`, and struct-param closure bridges
+delegate callback invocation and return writing through
+`Context.invoke_struct_closure*`. Direct C signatures still exist at Zend
+callback edges, especially exported function/method wrappers, closure bridges,
+and generated class property handlers. Those signatures are still necessary
+boundary points until a dedicated compiler-boundary abstraction exists.
 
 Only after runtime helpers are stable should compiler output change.
 
