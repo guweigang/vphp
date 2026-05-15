@@ -774,7 +774,7 @@ pub fn (v DynValue) new_zval() !ZVal {
 		return error('DynValue.new_zval only supports detached data')
 	}
 	mut out := ZVal{
-		raw:   zend_new_zval()
+		raw:   request_raw_zval()
 		owned: true
 	}
 	RequestScope.autorelease_add_handle(out.handle())

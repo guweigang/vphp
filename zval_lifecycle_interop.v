@@ -13,9 +13,9 @@ pub fn (mut v ZVal) release() {
 	}
 	RequestScope.autorelease_forget_handle(v.handle())
 	if v.is_persistent {
-		zend_release_persistent_zval(v.raw)
+		release_persistent_raw_zval(v.raw)
 	} else {
-		zend_release_zval(v.raw)
+		release_request_raw_zval(v.raw)
 	}
 	v.raw = unsafe { nil }
 	v.owned = false
@@ -27,7 +27,7 @@ pub fn (mut v ZVal) disown() {
 		return
 	}
 	RequestScope.autorelease_forget_handle(v.handle())
-	zend_disown_zval(v.raw)
+	disown_raw_zval(v.raw)
 	v.raw = unsafe { nil }
 	v.owned = false
 	v.is_persistent = false

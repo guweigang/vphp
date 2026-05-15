@@ -241,6 +241,9 @@ Progress:
 - removed stale forwarding helpers from scalar, array, type, reference,
   resource, factory, execute-data, class-entry, interface-binding,
   superglobal, and object-zval paths
+- renamed root-level private `ZVal` allocation/release/copy helpers away from
+  `zend_*` so they read as raw `ZVal` lifecycle internals instead of Zend
+  boundary wrappers
 - added VSlim boundary scan checks to block common semantic-to-zval roundtrip
   regressions in handwritten VSlim code
 - remaining root-level `zend_*` helpers are explicit runtime/request hooks,

@@ -116,14 +116,6 @@ fn test_context_keeps_execute_and_return_wrappers() {
 
 fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 	allowed := {
-		'vphp/zval.v':                  [
-			'fn zend_new_zval() &C.zval {',
-			'fn zend_new_persistent_zval() &C.zval {',
-			'fn zend_release_zval(z &C.zval) {',
-			'fn zend_release_persistent_zval(z &C.zval) {',
-			'fn zend_disown_zval(z &C.zval) {',
-			'fn zend_copy_zval(dst &C.zval, src &C.zval) {',
-		]
 		'vphp/zend_object_lifecycle.v': [
 			'fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {',
 			'fn zend_object_add_ref(obj ZendObject) {',

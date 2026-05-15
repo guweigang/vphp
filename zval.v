@@ -55,27 +55,27 @@ pub:
 	persistent_fallback_zval_len int
 }
 
-fn zend_new_zval() &C.zval {
+fn request_raw_zval() &C.zval {
 	return ZVal.from_handle(zval.new_request()).raw
 }
 
-fn zend_new_persistent_zval() &C.zval {
+fn persistent_raw_zval() &C.zval {
 	return ZVal.from_handle(zval.new_persistent()).raw
 }
 
-fn zend_release_zval(z &C.zval) {
+fn release_request_raw_zval(z &C.zval) {
 	zval.release_request(zval.Handle.from_ptr(z))
 }
 
-fn zend_release_persistent_zval(z &C.zval) {
+fn release_persistent_raw_zval(z &C.zval) {
 	zval.release_persistent(zval.Handle.from_ptr(z))
 }
 
-fn zend_disown_zval(z &C.zval) {
+fn disown_raw_zval(z &C.zval) {
 	zval.disown(zval.Handle.from_ptr(z))
 }
 
-fn zend_copy_zval(dst &C.zval, src &C.zval) {
+fn copy_raw_zval(dst &C.zval, src &C.zval) {
 	zval.copy(zval.Handle.from_ptr(dst), zval.Handle.from_ptr(src))
 }
 
@@ -123,14 +123,14 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 	}
 	mut out := ZVal{
 		raw:           if ownership == .owned_persistent {
-			zend_new_persistent_zval()
+			persistent_raw_zval()
 		} else {
-			zend_new_zval()
+			request_raw_zval()
 		}
 		owned:         true
 		is_persistent: ownership == .owned_persistent
 	}
-	zend_copy_zval(out.raw, src)
+	copy_raw_zval(out.raw, src)
 	if ownership == .owned_request {
 		RequestScope.autorelease_add_handle(out.handle())
 		if out.is_object() {
@@ -145,13 +145,13 @@ fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	if res == 0 {
-		zend_release_zval(rv)
+		release_request_raw_zval(rv)
 		return invalid_zval()
 	}
 	if usize(res) == usize(rv) {
 		return adopt_raw_with_ownership(rv, ownership)
 	}
-	zend_release_zval(rv)
+	release_request_raw_zval(rv)
 	if ownership == .borrowed {
 		return unsafe {
 			ZVal{
