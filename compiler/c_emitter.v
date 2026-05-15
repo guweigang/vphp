@@ -1,7 +1,6 @@
 module compiler
 
 import compiler.builder
-import compiler.php_types
 import compiler.repr
 
 pub struct CGenerator {
@@ -34,37 +33,4 @@ fn (g CGenerator) build_class_export(r &repr.PhpClassRepr) builder.ExportFragmen
 	mut fragments := g.build_class_type(r, has_init).export_fragments()
 	fragments.implementations = g.gen_class_c(r)
 	return fragments
-}
-
-// 模板变量替换
-fn render_tpl(tpl string, vars map[string]string) string {
-	mut out := tpl
-	for k, v in vars {
-		out = out.replace('{{${k}}}', v)
-	}
-	return out
-}
-
-// 将 V 字符串中的 \ 转义为 C 字符串字面量的 \\
-fn c_string_escape(s string) string {
-	return s.replace('\\', '\\\\')
-}
-
-fn (g CGenerator) ce_var_for_type(v_type string) string {
-	key := php_types.normalize_export_type_key(v_type)
-	if key in g.class_ce_by_type {
-		return g.class_ce_by_type[key]
-	}
-	if key.contains('\\') {
-		return '${key.replace('\\', '_').to_lower()}_ce'
-	}
-	return '${key.to_lower()}_ce'
-}
-
-fn (g CGenerator) php_name_for_type(v_type string) string {
-	key := php_types.normalize_export_type_key(v_type)
-	if key in g.class_php_by_type {
-		return g.class_php_by_type[key]
-	}
-	return ''
 }

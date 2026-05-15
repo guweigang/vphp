@@ -21,6 +21,8 @@ vphp/compiler/
   c_function_glue.v # global PHP_FUNCTION wrapper emission
   c_class_glue.v # class PHP_METHOD wrapper emission
   c_type_glue.v  # interface/enum C implementation emission
+  c_name_binding.v # C symbol / PHP name lookup helpers
+  c_template.v   # small C template helpers
   v_glue.v       # V-side bridge/glue emission
   function_binding.v # function wrapper glue planning
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
@@ -246,6 +248,20 @@ Purpose:
 - Emit concrete C implementation fragments for PHP interfaces and native enums
 - Keep simple type implementation bodies separate from the top-level C export
   assembly
+
+### 6.9. C Helper Files
+
+Files:
+
+- `vphp/compiler/c_name_binding.v`
+- `vphp/compiler/c_template.v`
+
+Purpose:
+
+- Keep C symbol/PHP name lookup helpers and small template helpers out of the
+  top-level C export assembly
+- Share these helpers between function/class/type C glue files without making
+  `c_emitter.v` grow again
 
 ### 7. `v_glue`
 
