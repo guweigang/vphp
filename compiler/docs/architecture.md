@@ -19,6 +19,7 @@ vphp/compiler/
   c_emitter.v    # C-side wrapper and glue emission
   c_builder_binding.v # repr -> C builder mapping
   c_function_glue.v # global PHP_FUNCTION wrapper emission
+  c_class_glue.v # class PHP_METHOD wrapper emission
   v_glue.v       # V-side bridge/glue emission
   function_binding.v # function wrapper glue planning
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
@@ -222,6 +223,18 @@ Purpose:
 
 This layer is intentionally small because global function glue has a much
 smaller decision surface than class method glue.
+
+### 6.7. `c_class_glue`
+
+File: `vphp/compiler/c_class_glue.v`
+
+Purpose:
+
+- Emit concrete class `PHP_METHOD(...)` wrapper bodies
+- Own class method template selection for constructors, static methods,
+  instance methods, inherited receivers, context-aware methods, and object
+  returns
+- Keep the large class wrapper decision tree out of the top-level C emitter
 
 ### 7. `v_glue`
 
