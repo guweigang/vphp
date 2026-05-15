@@ -1,9 +1,11 @@
 module vphp
 
+import vphp.zval
+
 pub struct PhpSuperglobals {}
 
 pub fn PhpSuperglobals.env_box() RequestBorrowedZBox {
-	return zend_superglobal_box(.env)
+	return php_superglobal_box(.env)
 }
 
 pub fn PhpSuperglobals.env() PhpArray {
@@ -11,7 +13,7 @@ pub fn PhpSuperglobals.env() PhpArray {
 }
 
 pub fn PhpSuperglobals.set_env(name string, value string) {
-	zend_set_env_superglobal_string(name, value)
+	zval.set_env_superglobal_string(name, value)
 }
 
 pub fn PhpSuperglobals.env_value(name string) ?RequestBorrowedZBox {
@@ -20,7 +22,7 @@ pub fn PhpSuperglobals.env_value(name string) ?RequestBorrowedZBox {
 }
 
 pub fn PhpSuperglobals.server_box() RequestBorrowedZBox {
-	return zend_superglobal_box(.server)
+	return php_superglobal_box(.server)
 }
 
 pub fn PhpSuperglobals.server() PhpArray {
@@ -28,7 +30,7 @@ pub fn PhpSuperglobals.server() PhpArray {
 }
 
 pub fn PhpSuperglobals.set_server(name string, value string) {
-	zend_set_server_superglobal_string(name, value)
+	zval.set_server_superglobal_string(name, value)
 }
 
 pub fn PhpSuperglobals.server_value(name string) ?RequestBorrowedZBox {
@@ -37,23 +39,31 @@ pub fn PhpSuperglobals.server_value(name string) ?RequestBorrowedZBox {
 }
 
 pub fn PhpSuperglobals.get() PhpArray {
-	return zend_superglobal_array(.get)
+	return php_superglobal_array(.get)
 }
 
 pub fn PhpSuperglobals.post() PhpArray {
-	return zend_superglobal_array(.post)
+	return php_superglobal_array(.post)
 }
 
 pub fn PhpSuperglobals.cookie() PhpArray {
-	return zend_superglobal_array(.cookie)
+	return php_superglobal_array(.cookie)
 }
 
 pub fn PhpSuperglobals.files() PhpArray {
-	return zend_superglobal_array(.files)
+	return php_superglobal_array(.files)
 }
 
 pub fn PhpSuperglobals.request() PhpArray {
-	return zend_superglobal_array(.request)
+	return php_superglobal_array(.request)
+}
+
+fn php_superglobal_box(kind zval.Superglobal) RequestBorrowedZBox {
+	return RequestBorrowedZBox.from_zval(ZVal.from_handle(zval.superglobal(kind)))
+}
+
+fn php_superglobal_array(kind zval.Superglobal) PhpArray {
+	return PhpArray.must_from_zval(ZVal.from_handle(zval.superglobal(kind))) or { panic(err) }
 }
 
 pub fn get_env_superglobal() RequestBorrowedZBox {
