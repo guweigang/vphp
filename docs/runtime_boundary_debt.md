@@ -269,6 +269,8 @@ Progress:
   return writing through `Context.invoke_struct_closure*`
 - `ReturnBinding` owns value-return write emission for function and class method
   glue
+- `arg_binding` and `params_struct_binding` share argument presence/read
+  expression helpers while preserving their separate default-value semantics
 - boundary scan guards now block the old property-handler wrapping shape and
   struct closure bridges that hand-write `res := cb(args)`
 
