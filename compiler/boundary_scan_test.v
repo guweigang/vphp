@@ -129,3 +129,25 @@ fn test_root_files_do_not_reintroduce_zend_prefixed_helpers() {
 		}
 	}
 }
+
+fn test_root_files_do_not_reintroduce_raw_zval_lifecycle_helpers() {
+	vphp_root := os.join_path(repo_root(), 'vphp')
+	banned := [
+		'request_raw_zval',
+		'persistent_raw_zval',
+		'release_request_raw_zval',
+		'release_persistent_raw_zval',
+		'disown_raw_zval',
+		'copy_raw_zval',
+	]
+	for file in os.walk_ext(vphp_root, '.v') {
+		path := file.all_after(repo_root() + os.path_separator)
+		if path == 'vphp/compiler/boundary_scan_test.v' {
+			continue
+		}
+		source := read_repo_file(path)
+		for pattern in banned {
+			assert !source.contains(pattern), '${path} should use ZVal/zval.Handle lifecycle helpers instead of ${pattern}'
+		}
+	}
+}
