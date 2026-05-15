@@ -18,45 +18,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 	out << ClassPropertyGlue.new(r.name, lower_name, r.properties).render_lines()
 
 	// F. 影子访问器
-	if r.shadow_const_name != '' {
-		ret_type := if r.shadow_const_type != '' { r.shadow_const_type } else { 'voidptr' }
-		out << 'pub fn ${r.name}.consts() ${ret_type} {'
-		out << '    return ${r.shadow_const_name}'
-		out << '}'
-	}
-	if r.shadow_static_name != '' {
-		type_name := if r.shadow_static_type != '' {
-			r.shadow_static_type
-		} else {
-			r.shadow_static_name.title()
-		}
-		out << 'pub fn ${r.name}.statics() &${type_name} {'
-		out << '    return &${r.shadow_static_name}'
-		out << '}'
-
-		// 生成同步器：利用 ctx 自动识别 CE
-
-		out << 'pub fn ${r.name}.sync_statics_to_php(ctx vphp.Context) {'
-		out << '    ce := ctx.active_class_entry()'
-		out << '    if !ce.is_valid() { return }'
-		for prop in r.properties {
-			if prop.is_static {
-				out << '    ce.set_static_prop("${prop.name}", ${r.shadow_static_name}.${prop.name})'
-			}
-		}
-		out << '}'
-
-		out << 'pub fn ${r.name}.sync_statics_from_php(ctx vphp.Context) {'
-		out << '    ce := ctx.active_class_entry()'
-		out << '    if !ce.is_valid() { return }'
-		out << '    mut s := ${r.name}.statics()'
-		for prop in r.properties {
-			if prop.is_static {
-				out << '    s.${prop.name} = ce.static_prop[${prop.v_type}]("${prop.name}")'
-			}
-		}
-		out << '}'
-	}
+	out << ClassShadowGlue.new(r).render_lines()
 
 	// G. 方法的胶水包装
 	for m in r.methods {
@@ -115,17 +77,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 	}
 
 	// F. Handlers 导出
-	out << "@[export: '${r.name}_handlers']"
-	out << 'pub fn ${lower_name}_handlers() voidptr {'
-	out << '    return vphp.ZendClassHandlers.new('
-	out << '        prop_handler: voidptr(${lower_name}_get_prop),'
-	out << '        write_handler: voidptr(${lower_name}_set_prop),'
-	out << '        sync_handler: voidptr(${lower_name}_sync_props),'
-	out << '        new_raw: voidptr(${lower_name}_new_raw),'
-	out << '        cleanup_raw: voidptr(${lower_name}_cleanup_raw),'
-	out << '        free_raw: voidptr(${lower_name}_free_raw)'
-	out << '    )'
-	out << '}'
+	out << ClassHandlersGlue.new(r.name, lower_name).render_lines()
 
 	return out
 }

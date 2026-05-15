@@ -22,8 +22,10 @@ vphp/compiler/
   params_struct_binding.v # @[params] struct argument construction
   return_binding.v # PhpReturnRepr -> V glue return handling
   class_lifecycle_binding.v # class raw allocation / cleanup glue
+  class_shadow_binding.v # class shadow const/static accessors
   class_method_binding.v # class method call / sync / return composition
   class_property_binding.v # class property get / set / sync glue
+  class_handlers_binding.v # class handler table glue
   inherited_receiver_binding.v # inherited receiver load / sync glue
   php_types/     # shared PHP-facing type/spec mapping
   repr/          # compiler representations
@@ -353,7 +355,40 @@ object properties?"
 emission. The class-level glue only decides which handler function is being
 rendered.
 
-### 7.11. `inherited_receiver_binding`
+### 7.11. `class_shadow_binding`
+
+File: `vphp/compiler/class_shadow_binding.v`
+
+Purpose:
+
+- Generate class shadow const/static accessors
+- Keep PHP static-property synchronization helpers out of the main class glue
+  loop
+
+Key types:
+
+- `ClassShadowGlue`
+
+This layer answers "how does generated V code access and synchronize a class'
+shadow const/static state?"
+
+### 7.12. `class_handlers_binding`
+
+File: `vphp/compiler/class_handlers_binding.v`
+
+Purpose:
+
+- Generate the class handler table factory used by the C bridge
+- Keep handler pointer wiring out of the main class glue loop
+
+Key types:
+
+- `ClassHandlersGlue`
+
+This layer answers "which generated V functions are wired into
+`ZendClassHandlers` for this class?"
+
+### 7.13. `inherited_receiver_binding`
 
 File: `vphp/compiler/inherited_receiver_binding.v`
 
