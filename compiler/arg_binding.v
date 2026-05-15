@@ -126,6 +126,36 @@ fn (binding PhpSingleArgBinding) has_arg_expr() string {
 	return 'php_args.has_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)})'
 }
 
+fn php_arg_direct_read_expr(arg_expr string, v_type string) ?string {
+	return match v_type {
+		'vphp.ZVal', 'ZVal', 'Callable', 'vphp.Callable' {
+			'${arg_expr}.zval()'
+		}
+		'RequestBorrowedZBox', 'vphp.RequestBorrowedZBox' {
+			'${arg_expr}.zbox()'
+		}
+		'RequestOwnedZBox', 'vphp.RequestOwnedZBox' {
+			'${arg_expr}.request_owned_zbox()'
+		}
+		'PersistentOwnedZBox', 'vphp.PersistentOwnedZBox' {
+			'${arg_expr}.persistent_owned_zbox()'
+		}
+		'?RequestBorrowedZBox', '?vphp.RequestBorrowedZBox' {
+			'${arg_expr}.zbox_opt()'
+		}
+		else {
+			none
+		}
+	}
+}
+
+fn php_arg_v_read_expr(arg_expr string, v_type string) string {
+	if v_type.starts_with('?') {
+		return '${arg_expr}.as_v_opt[${v_type[1..]}]()'
+	}
+	return '${arg_expr}.as_v[${v_type}]()'
+}
+
 fn (binding PhpSingleArgBinding) with_default(expr string) string {
 	default_value := PhpArgDefaultValue.from_arg(binding.arg) or { return expr }
 	default_expr := default_value.arg_expr() or { return expr }
@@ -335,42 +365,24 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 	if is_context_arg_type(arg.v_type) {
 		return ['    ${binding.var_name} := ctx']
 	}
-	if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {
-		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.zval()')}',
-		]
-	}
-	if arg.v_type == 'Callable' || arg.v_type == 'vphp.Callable' {
-		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.zval()')}',
-		]
-	}
-	if arg.v_type == 'RequestBorrowedZBox' || arg.v_type == 'vphp.RequestBorrowedZBox' {
-		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.zbox()')}',
-		]
-	}
-	if arg.v_type == 'RequestOwnedZBox' || arg.v_type == 'vphp.RequestOwnedZBox' {
-		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.request_owned_zbox()')}',
-		]
-	}
-	if arg.v_type == 'PersistentOwnedZBox' || arg.v_type == 'vphp.PersistentOwnedZBox' {
-		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.persistent_owned_zbox()')}',
-		]
+	if direct_read_expr := php_arg_direct_read_expr(binding.arg_expr(), arg.v_type) {
+		if !arg.v_type.starts_with('?') {
+			return [
+				'    ${binding.var_name} := ${binding.with_default(direct_read_expr)}',
+			]
+		}
 	}
 	if semantic_arg_lines := binding.render_semantic_lines(returns_voidptr) {
 		return semantic_arg_lines
 	}
-	if arg.v_type == '?RequestBorrowedZBox' || arg.v_type == '?vphp.RequestBorrowedZBox' {
+	if direct_read_expr := php_arg_direct_read_expr(binding.arg_expr(), arg.v_type) {
 		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.zbox_opt()')}',
+			'    ${binding.var_name} := ${binding.with_default(direct_read_expr)}',
 		]
 	}
 	if arg.v_type.starts_with('?') {
 		return [
-			'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.as_v_opt[${arg.v_type[1..]}]()')}',
+			'    ${binding.var_name} := ${binding.with_default(php_arg_v_read_expr(binding.arg_expr(), arg.v_type))}',
 		]
 	}
 	if binding.allow_raw_object {
@@ -388,6 +400,6 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 		]
 	}
 	return [
-		'    ${binding.var_name} := ${binding.with_default('${binding.arg_expr()}.as_v[${arg.v_type}]()')}',
+		'    ${binding.var_name} := ${binding.with_default(php_arg_v_read_expr(binding.arg_expr(), arg.v_type))}',
 	]
 }

@@ -97,22 +97,8 @@ fn (binding ParamsStructFieldBinding) has_arg_expr() string {
 
 fn (binding ParamsStructFieldBinding) value_expr() string {
 	arg_expr := binding.arg_expr()
-	if binding.arg.v_type == 'vphp.ZVal' || binding.arg.v_type == 'ZVal' {
-		return '${arg_expr}.zval()'
+	if direct_read_expr := php_arg_direct_read_expr(arg_expr, binding.arg.v_type) {
+		return direct_read_expr
 	}
-	if binding.arg.v_type == 'RequestBorrowedZBox'
-		|| binding.arg.v_type == 'vphp.RequestBorrowedZBox' {
-		return '${arg_expr}.zbox()'
-	}
-	if binding.arg.v_type == 'RequestOwnedZBox' || binding.arg.v_type == 'vphp.RequestOwnedZBox' {
-		return '${arg_expr}.request_owned_zbox()'
-	}
-	if binding.arg.v_type == '?RequestBorrowedZBox'
-		|| binding.arg.v_type == '?vphp.RequestBorrowedZBox' {
-		return '${arg_expr}.zbox_opt()'
-	}
-	if binding.arg.v_type.starts_with('?') {
-		return '${arg_expr}.as_v_opt[${binding.arg.v_type[1..]}]()'
-	}
-	return '${arg_expr}.as_v[${binding.arg.v_type}]()'
+	return php_arg_v_read_expr(arg_expr, binding.arg.v_type)
 }
