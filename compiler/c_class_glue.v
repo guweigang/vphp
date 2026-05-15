@@ -91,10 +91,8 @@ fn (g CGenerator) render_exported_class_method_c(plan ClassMethodCGluePlan) []st
 	if plan.is_static {
 		return [render_tpl(tpl_static_manual_ctx, plan.vars)]
 	}
-	if plan.uses_inherited_receiver {
-		return [render_tpl(tpl_inherited_instance_method, plan.vars)]
-	}
-	return [render_tpl(tpl_instance_method, plan.vars)]
+	return render_instance_template_c(plan, tpl_instance_method, tpl_inherited_instance_method,
+		plan.vars)
 }
 
 fn (g CGenerator) render_constructor_method_c(plan ClassMethodCGluePlan) []string {
@@ -118,12 +116,7 @@ fn (g CGenerator) render_static_method_c(plan ClassMethodCGluePlan) []string {
 		return [render_tpl(tpl_static_object, g.vars_with_return_object(plan))]
 	}
 	if plan.return_info.kind in [.result, .option] {
-		// Result/Option 类型在 V glue 侧处理 or{}，C 侧等同 void 调用
-		payload_return := plan.method_return_type[1..]
-		if payload_return == '' || payload_return == 'void' {
-			return [render_tpl(tpl_static_void, plan.vars)]
-		}
-		return [render_tpl(tpl_static_scalar, plan.vars)]
+		return render_static_result_method_c(plan)
 	}
 	if plan.return_info.kind == .void_ {
 		return [render_tpl(tpl_static_void, plan.vars)]
@@ -133,35 +126,41 @@ fn (g CGenerator) render_static_method_c(plan ClassMethodCGluePlan) []string {
 
 fn (g CGenerator) render_instance_method_c(plan ClassMethodCGluePlan) []string {
 	if plan.uses_context_arg {
-		if plan.uses_inherited_receiver {
-			return [render_tpl(tpl_inherited_instance_context, plan.vars)]
-		}
-		return [render_tpl(tpl_instance_context, plan.vars)]
+		return render_instance_template_c(plan, tpl_instance_context,
+			tpl_inherited_instance_context, plan.vars)
 	}
 	if plan.return_info.kind == .instance_object {
 		vars := g.vars_with_return_object(plan)
-		if plan.uses_inherited_receiver {
-			return [render_tpl(tpl_inherited_instance_object, vars)]
-		}
-		return [render_tpl(tpl_instance_object, vars)]
+		return render_instance_template_c(plan, tpl_instance_object, tpl_inherited_instance_object,
+			vars)
 	}
 	if plan.return_info.kind in [.result, .option] {
 		// Option 类型在 V glue 侧处理 or{}，C 侧等同 result 调用模式
-		if plan.uses_inherited_receiver {
-			return [render_tpl(tpl_inherited_instance_result, plan.vars)]
-		}
-		return [render_tpl(tpl_instance_result, plan.vars)]
+		return render_instance_template_c(plan, tpl_instance_result, tpl_inherited_instance_result,
+			plan.vars)
 	}
 	if plan.return_info.kind == .void_ {
-		if plan.uses_inherited_receiver {
-			return [render_tpl(tpl_inherited_instance_void, plan.vars)]
-		}
-		return [render_tpl(tpl_instance_void, plan.vars)]
+		return render_instance_template_c(plan, tpl_instance_void, tpl_inherited_instance_void,
+			plan.vars)
 	}
+	return render_instance_template_c(plan, tpl_instance_method, tpl_inherited_instance_method,
+		plan.vars)
+}
+
+fn render_static_result_method_c(plan ClassMethodCGluePlan) []string {
+	// Result/Option 类型在 V glue 侧处理 or{}，C 侧等同 void 调用
+	payload_return := plan.method_return_type[1..]
+	if payload_return == '' || payload_return == 'void' {
+		return [render_tpl(tpl_static_void, plan.vars)]
+	}
+	return [render_tpl(tpl_static_scalar, plan.vars)]
+}
+
+fn render_instance_template_c(plan ClassMethodCGluePlan, tpl string, inherited_tpl string, vars map[string]string) []string {
 	if plan.uses_inherited_receiver {
-		return [render_tpl(tpl_inherited_instance_method, plan.vars)]
+		return [render_tpl(inherited_tpl, vars)]
 	}
-	return [render_tpl(tpl_instance_method, plan.vars)]
+	return [render_tpl(tpl, vars)]
 }
 
 fn (g CGenerator) vars_with_return_object(plan ClassMethodCGluePlan) map[string]string {
