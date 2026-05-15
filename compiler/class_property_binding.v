@@ -8,6 +8,10 @@ struct ClassPropertyGlue {
 	props      []repr.PhpClassPropRepr
 }
 
+struct ClassPropertyFieldBinding {
+	prop repr.PhpClassPropRepr
+}
+
 fn ClassPropertyGlue.new(class_name string, lower_name string, props []repr.PhpClassPropRepr) ClassPropertyGlue {
 	return ClassPropertyGlue{
 		class_name: class_name
@@ -26,7 +30,7 @@ fn (glue ClassPropertyGlue) render_lines() []string {
 
 fn (glue ClassPropertyGlue) has_readable_props() bool {
 	for prop in glue.props {
-		if is_public_instance_sync_prop(prop) {
+		if ClassPropertyFieldBinding.new(prop).is_readable() {
 			return true
 		}
 	}
@@ -35,7 +39,7 @@ fn (glue ClassPropertyGlue) has_readable_props() bool {
 
 fn (glue ClassPropertyGlue) has_writable_props() bool {
 	for prop in glue.props {
-		if is_public_instance_sync_prop(prop) && prop.is_mut {
+		if ClassPropertyFieldBinding.new(prop).is_writable() {
 			return true
 		}
 	}
@@ -59,17 +63,40 @@ fn (glue ClassPropertyGlue) render_getter_lines() []string {
 	out << '        name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)'
 	out << '        obj := &${glue.class_name}(ptr)'
 	for prop in glue.props {
-		out << render_prop_getter_case(prop)
+		out << ClassPropertyFieldBinding.new(prop).getter_lines()
 	}
 	out << '    }'
 	out << '}'
 	return out
 }
 
-fn render_prop_getter_case(prop repr.PhpClassPropRepr) []string {
-	if !is_public_instance_sync_prop(prop) {
+fn ClassPropertyFieldBinding.new(prop repr.PhpClassPropRepr) ClassPropertyFieldBinding {
+	return ClassPropertyFieldBinding{
+		prop: prop
+	}
+}
+
+fn (field ClassPropertyFieldBinding) is_readable() bool {
+	return field.is_syncable()
+}
+
+fn (field ClassPropertyFieldBinding) is_writable() bool {
+	return field.is_syncable() && field.prop.is_mut
+}
+
+fn (field ClassPropertyFieldBinding) is_syncable() bool {
+	prop := field.prop
+	if prop.is_static || prop.visibility != 'public' || prop.is_property_only {
+		return false
+	}
+	return prop.v_type in ['string', 'int', 'i64', 'bool', 'f64']
+}
+
+fn (field ClassPropertyFieldBinding) getter_lines() []string {
+	if !field.is_readable() {
 		return []
 	}
+	prop := field.prop
 	mut out := []string{}
 	match prop.v_type {
 		'string' {
@@ -125,17 +152,18 @@ fn (glue ClassPropertyGlue) render_setter_lines() []string {
 	out << '        name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)'
 	out << '        mut obj := &${glue.class_name}(ptr)'
 	for prop in glue.props {
-		out << render_prop_setter_case(prop)
+		out << ClassPropertyFieldBinding.new(prop).setter_lines()
 	}
 	out << '    }'
 	out << '}'
 	return out
 }
 
-fn render_prop_setter_case(prop repr.PhpClassPropRepr) []string {
-	if !is_public_instance_sync_prop(prop) || !prop.is_mut {
+fn (field ClassPropertyFieldBinding) setter_lines() []string {
+	if !field.is_writable() {
 		return []
 	}
+	prop := field.prop
 	mut out := []string{}
 	match prop.v_type {
 		'string' {
@@ -188,17 +216,18 @@ fn (glue ClassPropertyGlue) render_sync_lines() []string {
 	out << '    unsafe {'
 	out << '        obj := &${glue.class_name}(ptr)'
 	for prop in glue.props {
-		out << render_prop_sync_case(prop)
+		out << ClassPropertyFieldBinding.new(prop).sync_lines()
 	}
 	out << '    }'
 	out << '}'
 	return out
 }
 
-fn render_prop_sync_case(prop repr.PhpClassPropRepr) []string {
-	if !is_public_instance_sync_prop(prop) {
+fn (field ClassPropertyFieldBinding) sync_lines() []string {
+	if !field.is_readable() {
 		return []
 	}
+	prop := field.prop
 	mut out := []string{}
 	match prop.v_type {
 		'string' {
@@ -217,11 +246,4 @@ fn render_prop_sync_case(prop repr.PhpClassPropRepr) []string {
 	}
 
 	return out
-}
-
-fn is_public_instance_sync_prop(prop repr.PhpClassPropRepr) bool {
-	if prop.is_static || prop.visibility != 'public' || prop.is_property_only {
-		return false
-	}
-	return prop.v_type in ['string', 'int', 'i64', 'bool', 'f64']
 }

@@ -325,9 +325,14 @@ Purpose:
 Key types:
 
 - `ClassPropertyGlue`
+- `ClassPropertyFieldBinding`
 
 This layer answers "how are V struct fields exposed and synchronized as PHP
 object properties?"
+
+`ClassPropertyFieldBinding` owns the per-field filter and scalar read/write/sync
+emission. The class-level glue only decides which handler function is being
+rendered.
 
 ## Compile Pipeline
 
