@@ -76,9 +76,26 @@ fn test_compiler_does_not_emit_stale_raw_runtime_entries() {
 	}
 }
 
+fn test_compiler_keeps_property_callback_abi_signatures_centralized() {
+	source := read_repo_file('vphp/compiler/class_property_binding.v')
+	allowed := [
+		"return 'pub fn \${lower_name}_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {'",
+		"return 'pub fn \${lower_name}_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {'",
+		"return 'pub fn \${lower_name}_sync_props(ptr voidptr, zv &C.zval) {'",
+	]
+	for expected in allowed {
+		assert source.contains(expected), 'class_property_binding.v lost centralized property ABI helper ${expected}'
+	}
+	for line in source.split_into_lines() {
+		if line.contains('&C.zval') || line.contains('name_ptr &char') {
+			assert line.trim_space() in allowed, 'class_property_binding.v introduced raw property ABI outside helpers: ${line.trim_space()}'
+		}
+	}
+}
+
 fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 	allowed := {
-		'vphp/zval.v': [
+		'vphp/zval.v':                  [
 			'fn zend_new_zval() &C.zval {',
 			'fn zend_new_persistent_zval() &C.zval {',
 			'fn zend_release_zval(z &C.zval) {',
@@ -96,7 +113,7 @@ fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 			'fn zend_object_wrapper(obj ZendObject) &C.vphp_object_wrapper {',
 			'fn zend_wrap_existing_object(out zval.Handle, obj ZendObject) {',
 		]
-		'vphp/zend_runtime.v': [
+		'vphp/zend_runtime.v':          [
 			'fn zend_emalloc(size usize) voidptr {',
 			'fn zend_efree(ptr voidptr) {',
 			'fn zend_throw_exception(msg string, code int) {',
@@ -117,7 +134,7 @@ fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 			'fn zend_autorelease_mark() int {',
 			'fn zend_autorelease_drain(mark int) {',
 		]
-		'vphp/zval/superglobals.v': [
+		'vphp/zval/superglobals.v':     [
 			'fn zend_superglobal(kind Superglobal) zend.Superglobal {',
 		]
 	}

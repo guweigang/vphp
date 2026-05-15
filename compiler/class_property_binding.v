@@ -53,7 +53,7 @@ fn (glue ClassPropertyGlue) writable_fields() []ClassPropertyFieldBinding {
 fn (glue ClassPropertyGlue) render_getter_lines() []string {
 	mut out := []string{}
 	out << "@[export: '${glue.class_name}_get_prop']"
-	out << 'pub fn ${glue.lower_name}_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {'
+	out << property_getter_signature(glue.lower_name)
 	readable_fields := glue.readable_fields()
 	if readable_fields.len == 0 {
 		out << unused_arg_lines(['ptr', 'name_ptr', 'name_len', 'rv'])
@@ -118,7 +118,7 @@ fn (field ClassPropertyFieldBinding) getter_expr() ?string {
 fn (glue ClassPropertyGlue) render_setter_lines() []string {
 	mut out := []string{}
 	out << "@[export: '${glue.class_name}_set_prop']"
-	out << 'pub fn ${glue.lower_name}_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {'
+	out << property_setter_signature(glue.lower_name)
 	writable_fields := glue.writable_fields()
 	if writable_fields.len == 0 {
 		out << unused_arg_lines(['ptr', 'name_ptr', 'name_len', 'value'])
@@ -161,7 +161,7 @@ fn (field ClassPropertyFieldBinding) setter_expr() ?string {
 fn (glue ClassPropertyGlue) render_sync_lines() []string {
 	mut out := []string{}
 	out << "@[export: '${glue.class_name}_sync_props']"
-	out << 'pub fn ${glue.lower_name}_sync_props(ptr voidptr, zv &C.zval) {'
+	out << property_sync_signature(glue.lower_name)
 	readable_fields := glue.readable_fields()
 	if readable_fields.len == 0 {
 		out << unused_arg_lines(['ptr', 'zv'])
@@ -177,6 +177,18 @@ fn (glue ClassPropertyGlue) render_sync_lines() []string {
 	out << '    }'
 	out << '}'
 	return out
+}
+
+fn property_getter_signature(lower_name string) string {
+	return 'pub fn ${lower_name}_get_prop(ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {'
+}
+
+fn property_setter_signature(lower_name string) string {
+	return 'pub fn ${lower_name}_set_prop(ptr voidptr, name_ptr &char, name_len int, value &C.zval) {'
+}
+
+fn property_sync_signature(lower_name string) string {
+	return 'pub fn ${lower_name}_sync_props(ptr voidptr, zv &C.zval) {'
 }
 
 fn unused_arg_lines(names []string) []string {
