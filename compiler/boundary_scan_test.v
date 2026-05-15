@@ -151,3 +151,45 @@ fn test_root_files_do_not_reintroduce_raw_zval_lifecycle_helpers() {
 		}
 	}
 }
+
+fn test_compiler_emits_compat_wrapped_raw_fentry() {
+	vphp_compiler := os.join_path(repo_root(), 'vphp', 'compiler')
+	for file in os.walk_ext(vphp_compiler, '.v') {
+		path := file.all_after(repo_root() + os.path_separator)
+		if path == 'vphp/compiler/boundary_scan_test.v' {
+			continue
+		}
+		source := read_repo_file(path)
+		for line in source.split_into_lines() {
+			trimmed := line.trim_space()
+			if trimmed.contains('ZEND_RAW_FENTRY(') && !trimmed.contains('VPHP_ZEND_RAW_FENTRY(') {
+				assert false, '${path} should emit VPHP_ZEND_RAW_FENTRY through compat.h: ${trimmed}'
+			}
+		}
+	}
+
+	compat := read_repo_file('vphp/bridge/compat.h')
+	assert compat.contains('VPHP_ZEND_RAW_FENTRY'), 'compat.h should keep the PHP-version-aware raw fentry wrapper'
+}
+
+fn test_semantic_php_wrappers_do_not_touch_c_boundary_directly() {
+	vphp_root := os.join_path(repo_root(), 'vphp')
+	for file in os.walk_ext(vphp_root, '.v') {
+		path := file.all_after(repo_root() + os.path_separator)
+		base := os.base(path)
+		if !base.starts_with('php_') {
+			continue
+		}
+		if base in ['php_wrapper_interface.v'] {
+			continue
+		}
+		source := read_repo_file(path)
+		for line in source.split_into_lines() {
+			trimmed := line.trim_space()
+			assert !trimmed.contains('C.'), '${path} semantic wrapper should not use C boundary directly: ${trimmed}'
+			assert !trimmed.contains('&C.'), '${path} semantic wrapper should not expose C pointers: ${trimmed}'
+			assert !trimmed.contains('ZEND_'), '${path} semantic wrapper should not use Zend macros directly: ${trimmed}'
+			assert !trimmed.contains('zend_'), '${path} semantic wrapper should not call Zend APIs directly: ${trimmed}'
+		}
+	}
+}
