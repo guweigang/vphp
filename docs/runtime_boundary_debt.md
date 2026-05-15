@@ -37,8 +37,9 @@ The current rough scan shape is:
   - generated-code emitters / boundary scan tests
   - generic Zend callback boundaries such as `object_generic_props.v` and
     `zval_factory_iter.v`
-  - a few root-level lifecycle adapters that still need `ZVal` or
-    `OwnershipKind`
+  - root-level runtime/lifecycle adapters that still intentionally bridge
+    `ZVal`, `PhpReturn`, `ZendObject`, `OwnershipKind`, closure thunks, and
+    Zend request/runtime hooks
 - `vslim/src`: handwritten sources still use:
   - `ZVal` in data decoding, PSR bridge, routing, view/template, stream,
     task/job, and bootstrap internals
@@ -221,6 +222,8 @@ Goal:
 - keep `zval_stream.v`, `zval_scalar.v`, and similar Layer 3 helpers tidy
 - make internal helper names and call paths more object-like without changing
   ownership semantics
+- avoid adding root-level `zend_*` forwarding helpers when the call can go
+  straight to `vphp.zval`, `vphp.object`, `vphp.execute`, or `vphp.zend`
 
 Scope:
 
@@ -228,6 +231,16 @@ Scope:
 - small private helper refactors
 
 Risk: medium.
+
+Progress:
+
+- removed stale forwarding helpers from scalar, array, type, reference,
+  resource, factory, execute-data, class-entry, interface-binding,
+  superglobal, and object-zval paths
+- added VSlim boundary scan checks to block common semantic-to-zval roundtrip
+  regressions in handwritten VSlim code
+- remaining root-level `zend_*` helpers are mostly explicit runtime,
+  lifecycle, call, include, closure, and raw `ZVal` ownership boundaries
 
 ### Phase 4: Compiler Glue Refinement
 
