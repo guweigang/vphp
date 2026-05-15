@@ -21,6 +21,7 @@ vphp/compiler/
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
   params_struct_binding.v # @[params] struct argument construction
   return_binding.v # PhpReturnRepr -> V glue return handling
+  class_lifecycle_binding.v # class raw allocation / cleanup glue
   class_method_binding.v # class method call / sync / return composition
   class_property_binding.v # class property get / set / sync glue
   inherited_receiver_binding.v # inherited receiver load / sync glue
@@ -314,7 +315,23 @@ Key types:
 This layer answers "after a generated class method call runs, what extra PHP
 runtime state must be written back, and how is the result returned?"
 
-### 7.9. `class_property_binding`
+### 7.9. `class_lifecycle_binding`
+
+File: `vphp/compiler/class_lifecycle_binding.v`
+
+Purpose:
+
+- Generate raw V object allocation, cleanup, and free glue for PHP class handlers
+- Keep generated lifecycle helper shape out of the main class glue loop
+
+Key types:
+
+- `ClassLifecycleGlue`
+
+This layer answers "which raw lifecycle helper functions must be emitted for a
+class, and how do optional `cleanup()` / `free()` hooks run?"
+
+### 7.10. `class_property_binding`
 
 File: `vphp/compiler/class_property_binding.v`
 
@@ -336,7 +353,7 @@ object properties?"
 emission. The class-level glue only decides which handler function is being
 rendered.
 
-### 7.10. `inherited_receiver_binding`
+### 7.11. `inherited_receiver_binding`
 
 File: `vphp/compiler/inherited_receiver_binding.v`
 

@@ -9,34 +9,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 	uses_inherited_receiver := class_uses_inherited_receiver(r)
 
 	// A. 堆分配器
-	out << "@[export: '${r.name}_new_raw']"
-	out << 'pub fn ${lower_name}_new_raw() voidptr {'
-	out << '    return vphp.generic_new_raw[${r.name}]()'
-	out << '}'
-	out << "@[export: '${r.name}_free_raw']"
-	out << 'pub fn ${lower_name}_free_raw(ptr voidptr) {'
-	out << '    if ptr == 0 {'
-	out << '        return'
-	out << '    }'
-	out << '    vphp.generic_free_raw[${r.name}](ptr)'
-	out << '}'
-	out << "@[export: '${r.name}_cleanup_raw']"
-	out << 'pub fn ${lower_name}_cleanup_raw(ptr voidptr) {'
-	out << '    if ptr == 0 {'
-	out << '        return'
-	out << '    }'
-	if r.has_cleanup_method || r.has_free_method {
-		out << '    unsafe {'
-		out << '        mut obj := &${r.name}(ptr)'
-		if r.has_cleanup_method {
-			out << '        obj.cleanup()'
-		}
-		if r.has_free_method {
-			out << '        obj.free()'
-		}
-		out << '    }'
-	}
-	out << '}'
+	out << ClassLifecycleGlue.new(r.name, lower_name, r).render_lines()
 
 	if uses_inherited_receiver {
 		out << InheritedReceiverGlue.new(r.name, lower_name, r.properties).render_lines()
