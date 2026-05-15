@@ -265,6 +265,9 @@ Progress:
 - generated object property glue now wraps handler callback inputs through
   `PhpObjectPropertyHandler` instead of spelling `PhpReturn.from_ptr(rv)`,
   `ZVal.from_ptr(value)`, or `name_ptr.vstring_with_len(name_len)` directly
+- compiler property callback raw ABI signatures are centralized in
+  `class_property_binding.v` helper functions and guarded by
+  `boundary_scan_test.v`
 - generated struct-param closure bridges now delegate callback invocation and
   return writing through `Context.invoke_struct_closure*`
 - `ReturnBinding` owns value-return write emission for function and class method
