@@ -113,3 +113,35 @@ fn php_arg_v_read_expr(arg_expr string, v_type string) string {
 	}
 	return '${arg_expr}.as_v[${v_type}]()'
 }
+
+fn php_context_arg_expr(v_type string, index int) string {
+	return match v_type {
+		'string' {
+			'ctx.arg[string](${index})'
+		}
+		'int' {
+			'ctx.arg[int](${index})'
+		}
+		'i64' {
+			'ctx.arg[i64](${index})'
+		}
+		'bool' {
+			'ctx.arg[bool](${index})'
+		}
+		'f64' {
+			'ctx.arg[f64](${index})'
+		}
+		'ZVal', 'vphp.ZVal' {
+			'ctx.arg_val(${index})'
+		}
+		'RequestBorrowedZBox', 'vphp.RequestBorrowedZBox' {
+			'ctx.arg_borrowed_zbox(${index})'
+		}
+		'PhpValue', 'vphp.PhpValue' {
+			'ctx.arg_value(${index})'
+		}
+		else {
+			'ctx.arg[${v_type}](${index})'
+		}
+	}
+}

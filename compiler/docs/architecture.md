@@ -251,6 +251,10 @@ Implementation files:
 - `arg_read.v`: read / presence / semantic wrapper expressions
 - `arg_default.v`: optional default literal conversion
 
+`arg_read.v` also contains the positional `Context` argument expression helper
+used by generated struct closure bridges, so closure bridge fields and ordinary
+argument glue do not maintain separate type-to-read switch tables.
+
 PHP-facing argument names are resolved before this layer. Direct V parameters
 and `@[params]` struct fields both default from `snake_case` to `camelCase`,
 unless `@[php_arg_name]` provides an explicit override.

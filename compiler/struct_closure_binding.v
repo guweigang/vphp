@@ -167,33 +167,5 @@ fn (binding StructClosureBinding) render_variadic_helper_lines() []string {
 }
 
 fn (binding StructClosureBinding) field_arg_expr(field repr.PhpParamsField, index int) string {
-	match field.v_type {
-		'string' {
-			return 'ctx.arg[string](${index})'
-		}
-		'int' {
-			return 'ctx.arg[int](${index})'
-		}
-		'i64' {
-			return 'ctx.arg[i64](${index})'
-		}
-		'bool' {
-			return 'ctx.arg[bool](${index})'
-		}
-		'f64' {
-			return 'ctx.arg[f64](${index})'
-		}
-		'ZVal', 'vphp.ZVal' {
-			return 'ctx.arg_val(${index})'
-		}
-		'RequestBorrowedZBox', 'vphp.RequestBorrowedZBox' {
-			return 'ctx.arg_borrowed_zbox(${index})'
-		}
-		'PhpValue', 'vphp.PhpValue' {
-			return 'ctx.arg_value(${index})'
-		}
-		else {
-			return 'ctx.arg[${field.v_type}](${index})'
-		}
-	}
+	return php_context_arg_expr(field.v_type, index)
 }
