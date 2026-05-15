@@ -93,6 +93,17 @@ fn test_compiler_keeps_property_callback_abi_signatures_centralized() {
 	}
 }
 
+fn test_compiler_keeps_closure_bridge_abi_signature_centralized() {
+	source := read_repo_file('vphp/compiler/struct_closure_binding.v')
+	expected := "return 'fn \${binding.bridge}(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {'"
+	assert source.contains(expected), 'struct_closure_binding.v lost centralized closure bridge ABI helper'
+	for line in source.split_into_lines() {
+		if line.contains('&C.zend_execute_data') || line.contains('&C.zval') {
+			assert line.trim_space() == expected, 'struct_closure_binding.v introduced raw closure ABI outside helper: ${line.trim_space()}'
+		}
+	}
+}
+
 fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 	allowed := {
 		'vphp/zval.v':                  [

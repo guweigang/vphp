@@ -114,7 +114,7 @@ fn (binding StructClosureBinding) render_helper_lines() []string {
 	}
 	lines << 'pub type ${binding.alias} = ${struct_signature}'
 	lines << ''
-	lines << 'fn ${binding.bridge}(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {'
+	lines << binding.bridge_signature()
 	lines << '    unsafe {'
 	lines << '        ctx := vphp.Context.from_ptr(ex, ret)'
 	lines << '        cb := *(&${binding.alias}(v_ptr))'
@@ -147,7 +147,7 @@ fn (binding StructClosureBinding) render_variadic_helper_lines() []string {
 	}
 	lines << 'pub type ${binding.alias} = ${variadic_signature}'
 	lines << ''
-	lines << 'fn ${binding.bridge}(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {'
+	lines << binding.bridge_signature()
 	lines << '    unsafe {'
 	lines << '        ctx := vphp.Context.from_ptr(ex, ret)'
 	lines << '        cb := *(&${binding.alias}(v_ptr))'
@@ -164,6 +164,10 @@ fn (binding StructClosureBinding) render_variadic_helper_lines() []string {
 	lines << '}'
 	lines << ''
 	return lines
+}
+
+fn (binding StructClosureBinding) bridge_signature() string {
+	return 'fn ${binding.bridge}(v_ptr voidptr, ex &C.zend_execute_data, ret &C.zval) {'
 }
 
 fn (binding StructClosureBinding) field_arg_expr(field repr.PhpParamsField, index int) string {
