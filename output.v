@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 pub struct PhpOutput {}
 
@@ -8,7 +8,7 @@ pub fn PhpOutput.write(msg string) {
 	if msg.len == 0 {
 		return
 	}
-	zend_output_write(msg)
+	zend.output_write(msg)
 }
 
 pub fn PhpOutput.line(msg string) {

@@ -114,38 +114,7 @@ fn test_context_keeps_execute_and_return_wrappers() {
 	}
 }
 
-fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
-	allowed := {
-		'vphp/zend_runtime.v': [
-			'fn zend_emalloc(size usize) voidptr {',
-			'fn zend_efree(ptr voidptr) {',
-			'fn zend_throw_exception(msg string, code int) {',
-			'fn zend_throw_exception_class(class_name string, msg string, code int) {',
-			'fn zend_throw_exception_object(exception zval.Handle) {',
-			'fn zend_has_exception() bool {',
-			'fn zend_exception_message() string {',
-			'fn zend_clear_exception() {',
-			'fn zend_report_error(level int, msg string) {',
-			'fn zend_output_write(msg string) {',
-			'fn zend_framework_init(module_number int) {',
-			'fn zend_uninstall_runtime_binding_hooks() {',
-			'fn zend_autorelease_shutdown() {',
-			'fn zend_shutdown_registry() {',
-			'fn zend_request_startup() {',
-			'fn zend_request_shutdown() {',
-			'fn zend_active_globals_ptr() voidptr {',
-			'fn zend_autorelease_mark() int {',
-			'fn zend_autorelease_drain(mark int) {',
-		]
-	}
-
-	for path, expected_lines in allowed {
-		source := read_repo_file(path)
-		for expected in expected_lines {
-			assert source.contains(expected), '${path} lost expected boundary helper ${expected}'
-		}
-	}
-
+fn test_root_files_do_not_reintroduce_zend_prefixed_helpers() {
 	vphp_root := os.join_path(repo_root(), 'vphp')
 	for file in os.walk_ext(vphp_root, '.v') {
 		path := file.all_after(repo_root() + os.path_separator)
@@ -153,10 +122,9 @@ fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 			continue
 		}
 		source := read_repo_file(path)
-		expected_lines := allowed[path] or { []string{} }
 		for line in source.split_into_lines() {
 			if line.starts_with('fn zend_') {
-				assert line in expected_lines, '${path} introduced unclassified root Zend helper ${line}'
+				assert false, '${path} introduced root Zend-prefixed helper ${line}'
 			}
 		}
 	}

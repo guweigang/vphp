@@ -6,7 +6,7 @@ import vphp.zend
 
 @[inline]
 fn save_closure_value[T](v_cb T) voidptr {
-	mut saved_cb := unsafe { &T(zend_emalloc(usize(sizeof(T)))) }
+	mut saved_cb := unsafe { &T(zend.emalloc(usize(sizeof(T)))) }
 	unsafe {
 		*saved_cb = v_cb
 	}
@@ -14,13 +14,12 @@ fn save_closure_value[T](v_cb T) voidptr {
 }
 
 pub fn (ctx Context) create_saved_closure[T](v_cb T, bridge voidptr, arity int) {
-	zend.create_closure_with_arity_ptr(ctx.return().raw_ptr(), save_closure_value[T](v_cb),
-		bridge, arity, arity)
+	zend.create_closure_with_arity_ptr(ctx.return().raw_ptr(), save_closure_value[T](v_cb), bridge,
+		arity, arity)
 }
 
 pub fn (ctx Context) create_saved_variadic_closure[T](v_cb T, bridge voidptr) {
-	zend.create_variadic_closure_ptr(ctx.return().raw_ptr(), save_closure_value[T](v_cb),
-		bridge)
+	zend.create_variadic_closure_ptr(ctx.return().raw_ptr(), save_closure_value[T](v_cb), bridge)
 }
 
 pub fn (ctx Context) invoke_struct_closure[T, A, R](cb T, args A) {
@@ -49,22 +48,22 @@ pub fn (ctx Context) invoke_struct_closure_void[T, A](cb T, args A) {
 
 pub fn (ctx Context) invoke_variadic_closure[T, R](cb T) {
 	$match T {
-		fn (...vphp.ZVal) R {
+		fn (...ZVal) R {
 			args := ctx.variadic_zval_args()
 			res := cb(...args)
 			ctx.return().v[R](res)
 		}
-		fn (...vphp.PhpValue) R {
+		fn (...PhpValue) R {
 			args := ctx.variadic_php_value_args()
 			res := cb(...args)
 			ctx.return().v[R](res)
 		}
-		fn (...vphp.RequestBorrowedZBox) R {
+		fn (...RequestBorrowedZBox) R {
 			args := ctx.variadic_borrowed_zbox_args()
 			res := cb(...args)
 			ctx.return().v[R](res)
 		}
-		fn (...vphp.VScalarValue) R {
+		fn (...VScalarValue) R {
 			args := ctx.variadic_v_scalar_args() or {
 				throw_exception(err.msg(), 0)
 				return
@@ -80,22 +79,22 @@ pub fn (ctx Context) invoke_variadic_closure[T, R](cb T) {
 
 pub fn (ctx Context) invoke_variadic_closure_void[T](cb T) {
 	$match T {
-		fn (...vphp.ZVal) {
+		fn (...ZVal) {
 			args := ctx.variadic_zval_args()
 			cb(...args)
 			ctx.return().null()
 		}
-		fn (...vphp.PhpValue) {
+		fn (...PhpValue) {
 			args := ctx.variadic_php_value_args()
 			cb(...args)
 			ctx.return().null()
 		}
-		fn (...vphp.RequestBorrowedZBox) {
+		fn (...RequestBorrowedZBox) {
 			args := ctx.variadic_borrowed_zbox_args()
 			cb(...args)
 			ctx.return().null()
 		}
-		fn (...vphp.VScalarValue) {
+		fn (...VScalarValue) {
 			args := ctx.variadic_v_scalar_args() or {
 				throw_exception(err.msg(), 0)
 				return
@@ -110,7 +109,7 @@ pub fn (ctx Context) invoke_variadic_closure_void[T](cb T) {
 }
 
 fn (ctx Context) variadic_zval_args() []vphp.ZVal {
-	mut args := []vphp.ZVal{cap: ctx.num_args()}
+	mut args := []ZVal{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_val(i)
 	}
@@ -118,7 +117,7 @@ fn (ctx Context) variadic_zval_args() []vphp.ZVal {
 }
 
 fn (ctx Context) variadic_php_value_args() []vphp.PhpValue {
-	mut args := []vphp.PhpValue{cap: ctx.num_args()}
+	mut args := []PhpValue{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_value(i)
 	}
@@ -126,7 +125,7 @@ fn (ctx Context) variadic_php_value_args() []vphp.PhpValue {
 }
 
 fn (ctx Context) variadic_borrowed_zbox_args() []vphp.RequestBorrowedZBox {
-	mut args := []vphp.RequestBorrowedZBox{cap: ctx.num_args()}
+	mut args := []RequestBorrowedZBox{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_borrowed_zbox(i)
 	}
@@ -134,7 +133,7 @@ fn (ctx Context) variadic_borrowed_zbox_args() []vphp.RequestBorrowedZBox {
 }
 
 fn (ctx Context) variadic_v_scalar_args() ![]vphp.VScalarValue {
-	mut args := []vphp.VScalarValue{cap: ctx.num_args()}
+	mut args := []VScalarValue{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_v_scalar(i)!
 	}

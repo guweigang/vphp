@@ -1,6 +1,7 @@
 module vphp
 
 import os
+import vphp.zend
 
 #include <php.h>
 #include "v_bridge.h" // 统一在这里 include，确保全局可见
@@ -25,7 +26,7 @@ pub fn vphp_framework_init(module_number int) {
 }
 
 pub fn init_framework(module_number int) {
-	zend_framework_init(module_number)
+	zend.framework_init(module_number)
 }
 
 fn framework_debug_enabled() bool {
@@ -56,23 +57,23 @@ fn framework_debug_log(message string) {
 pub fn vphp_framework_shutdown() {
 	framework_debug_log('framework_shutdown enter')
 	framework_debug_log('framework_shutdown uninstall_runtime_hooks begin')
-	zend_uninstall_runtime_binding_hooks()
+	zend.uninstall_runtime_binding_hooks()
 	framework_debug_log('framework_shutdown uninstall_runtime_hooks done')
 	framework_debug_log('framework_shutdown autorelease_shutdown begin')
-	zend_autorelease_shutdown()
+	zend.autorelease_shutdown()
 	framework_debug_log('framework_shutdown autorelease_shutdown done')
 	framework_debug_log('framework_shutdown shutdown_registry begin')
-	zend_shutdown_registry()
+	zend.shutdown_registry()
 	framework_debug_log('framework_shutdown shutdown_registry done')
 	framework_debug_log('framework_shutdown exit')
 }
 
 @[export: 'vphp_framework_request_startup']
 pub fn vphp_framework_request_startup() {
-	zend_request_startup()
+	zend.request_startup()
 }
 
 @[export: 'vphp_framework_request_shutdown']
 pub fn vphp_framework_request_shutdown() {
-	zend_request_shutdown()
+	zend.request_shutdown()
 }

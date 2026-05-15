@@ -1,6 +1,6 @@
 module vphp
 
-import vphp.zend as _
+import vphp.zend
 
 // 任务可能的返回结果，定义为 Sum Type（代数数据类型）
 pub type TaskResult = string | int | i64 | f64 | bool | []string | []int | []i64 | []f64
@@ -91,7 +91,7 @@ pub fn (task PhpTask) spawn(args []ZVal) !PhpTaskHandle {
 	t := spawn task_inst.run()
 
 	unsafe {
-		mut res := &AsyncResult(zend_emalloc(usize(sizeof(AsyncResult))))
+		mut res := &AsyncResult(zend.emalloc(usize(sizeof(AsyncResult))))
 		res.handle = t
 		return PhpTaskHandle{
 			ptr: res
@@ -126,7 +126,7 @@ pub fn (handle PhpTaskHandle) release() {
 	if handle.ptr == 0 {
 		return
 	}
-	zend_efree(handle.ptr)
+	zend.efree(handle.ptr)
 }
 
 pub fn (handle PhpTaskHandle) wait_box() RequestOwnedZBox {

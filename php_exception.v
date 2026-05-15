@@ -31,11 +31,11 @@ pub fn (c InteropErrorClass) str() string {
 pub struct PhpException {}
 
 pub fn PhpException.raise(msg string, code int) {
-	zend_throw_exception(msg, code)
+	zend.throw_exception(msg, code)
 }
 
 pub fn PhpException.raise_class(class_name string, msg string, code int) {
-	zend_throw_exception_class(class_name, msg, code)
+	zend.throw_exception_class(class_name, msg, code)
 }
 
 pub fn PhpException.raise_object(mut exception ZVal) {
@@ -45,19 +45,19 @@ pub fn PhpException.raise_object(mut exception ZVal) {
 	}
 	handle := exception.handle()
 	exception.disown()
-	zend_throw_exception_object(handle)
+	zend.throw_exception_object_ptr(handle.raw_ptr())
 }
 
 pub fn PhpException.has_current() bool {
-	return zend_has_exception()
+	return zend.has_exception()
 }
 
 pub fn PhpException.current_message() string {
-	return zend_exception_message()
+	return zend.exception_message()
 }
 
 pub fn PhpException.clear() {
-	zend_clear_exception()
+	zend.clear_exception()
 }
 
 pub fn PhpException.raise_interop(class InteropErrorClass, msg string, code int) {
@@ -69,7 +69,7 @@ pub fn PhpException.raise_from_error(class InteropErrorClass, err IError, code i
 }
 
 pub fn PhpException.report(level int, msg string) {
-	zend_report_error(level, msg)
+	zend.report_error(level, msg)
 }
 
 // 抛出 PHP 异常

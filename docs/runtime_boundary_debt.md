@@ -246,11 +246,14 @@ Progress:
   boundary wrappers
 - removed root-level private `zend_object_*` forwarding helpers; `ZendObject`
   receiver methods now call the object handle layer directly
+- removed the root-level `zend_runtime.v` forwarding layer; semantic facades
+  such as `PhpException`, `PhpOutput`, extension lifecycle hooks, task storage,
+  and closure storage now call the `vphp.zend` boundary module directly
 - added VSlim boundary scan checks to block common semantic-to-zval roundtrip
   regressions in handwritten VSlim code
-- remaining root-level `zend_*` helpers are explicit runtime/request hooks,
-  object lifecycle adapters, superglobal enum conversion, and raw `ZVal`
-  ownership boundaries
+- root-level `fn zend_*` helpers are now blocked; direct Zend calls should live
+  in `vphp/zend/**` or be made explicitly from a semantic facade when crossing
+  that boundary is the point
 
 ### Phase 4: Compiler Glue Refinement
 
