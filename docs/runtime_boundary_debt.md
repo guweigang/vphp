@@ -174,6 +174,100 @@ These are relatively good next steps:
 5. Keep generated `bridge.v` style aligned with
    `vphp/compiler/boundary_scan_test.v`.
 
+## Execution Plan
+
+Status: **incremental / small batches only**.
+
+The next work should be split into five small phases. Each phase should be
+individually reviewable and verifiable before moving on.
+
+### Phase 1: Boundary Inventory
+
+Goal:
+
+- classify the remaining `C.xxx`, `&C.zval`, `php_fn`, `php_class`, and
+  `[]ZVal` usages
+- separate true ABI/lower-layer boundaries from places that should be
+  semantic wrappers
+
+Scope:
+
+- docs
+- boundary scan rules
+
+Risk: low.
+
+### Phase 2: Low-Risk Semantic Call Sites
+
+Goal:
+
+- keep migrating day-to-day VSlim and vphptest call sites to semantic wrappers
+- prefer `PhpFunction`, `PhpClass`, `PhpObject`, `PhpCallable`, `PhpReturn`,
+  and `PhpArgInput` where the call site does not need raw low-level arrays
+
+Scope:
+
+- handwritten `vslim/src/*.v`
+- selected `vphptest/*.v`
+
+Risk: low to medium.
+
+Do not force low-level test fixtures or internal interop probes into this phase.
+
+### Phase 3: Layer 3 Helper Cleanup
+
+Goal:
+
+- keep `zval_stream.v`, `zval_scalar.v`, and similar Layer 3 helpers tidy
+- make internal helper names and call paths more object-like without changing
+  ownership semantics
+
+Scope:
+
+- `vphp/zval/**`
+- small private helper refactors
+
+Risk: medium.
+
+### Phase 4: Compiler Glue Refinement
+
+Goal:
+
+- reduce repeated low-level patterns in generated glue
+- keep ABI signatures raw, but move generated bodies toward `Context`,
+  `PhpReturn`, `ZendObject`, and `php_types`
+
+Scope:
+
+- compiler emitters
+- generated `bridge.v` shape
+
+Risk: medium to high.
+
+### Phase 5: Ownership Deep Water
+
+Goal:
+
+- touch lifecycle-sensitive code only with probes and focused tests
+- treat `PhpValueZBox`, `DynValue`, `PersistentOwnedZBox`, `RetainedObject`,
+  `RetainedCallable`, closure binding, and PSR state storage as separate
+  mini-projects
+
+Scope:
+
+- one concern at a time
+- one probe/test batch at a time
+
+Risk: high.
+
+### Priority Order
+
+1. Phase 1 inventory and guardrails
+2. Phase 2 semantic call-site cleanup
+3. Phase 3 Layer 3 helper cleanup
+4. Phase 4 compiler glue refinement
+5. Phase 5 ownership deep water
+
 ## Non-Goals For The Next Pass
 
 Do not use the next pass to:
