@@ -12,6 +12,22 @@
 # error "vphp requires PHP 8.2 or newer"
 #endif
 
+#if PHP_VERSION_ID >= 80400
+# define VPHP_ZEND_RAW_FENTRY(name, handler, arg_info, flags) \
+  ZEND_RAW_FENTRY(name, handler, arg_info, flags, NULL, NULL)
+#else
+# define VPHP_ZEND_RAW_FENTRY(name, handler, arg_info, flags) \
+  ZEND_RAW_FENTRY(name, handler, arg_info, flags)
+#endif
+
+#ifndef ZEND_TYPE_HAS_LITERAL_NAME
+# define ZEND_TYPE_HAS_LITERAL_NAME(type) (0)
+#endif
+
+#ifndef ZEND_TYPE_LITERAL_NAME
+# define ZEND_TYPE_LITERAL_NAME(type) NULL
+#endif
+
 /*
  * Keep direct Zend API touch-points centralized here so future PHP version
  * compatibility work stays in one place instead of leaking across the whole
@@ -207,9 +223,19 @@ static inline zval *vphp_zend_get_class_constant(zend_string *class_name,
 
 static inline void
 vphp_zend_readonly_property_modification_error(zend_object *object,
-                                               zend_string *member) {
+                                               zend_string *member,
+                                               zend_property_info *prop_info) {
+#if PHP_VERSION_ID >= 80400
   zend_readonly_property_modification_error_ex(ZSTR_VAL(object->ce->name),
                                                ZSTR_VAL(member));
+#else
+  if (prop_info != NULL && prop_info != ZEND_WRONG_PROPERTY_INFO) {
+    zend_readonly_property_modification_error(prop_info);
+    return;
+  }
+  zend_throw_error(NULL, "Cannot modify readonly property %s::$%s",
+                   ZSTR_VAL(object->ce->name), ZSTR_VAL(member));
+#endif
 }
 
 #endif

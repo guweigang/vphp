@@ -513,7 +513,7 @@ pub fn (b &ClassBuilder) render_methods_array() string {
 	res << 'static const zend_function_entry ${lower_name}_methods[] = {'
 	for m in b.methods {
 		if m.is_abstract {
-			res << '    ZEND_RAW_FENTRY("${m.php_name}", NULL, arginfo_${m.c_func}, ${m.flags}, NULL, NULL)'
+			res << '    VPHP_ZEND_RAW_FENTRY("${m.php_name}", NULL, arginfo_${m.c_func}, ${m.flags})'
 		} else {
 			res << '    PHP_ME(${b.c_name}, ${m.php_name}, arginfo_${m.c_func}, ${m.flags})'
 		}

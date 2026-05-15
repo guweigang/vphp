@@ -713,7 +713,7 @@ zval *vphp_write_property(zend_object *object, zend_string *member, zval *value,
       zend_get_property_info(object->ce, member, /* silent */ true);
   if (prop_info && prop_info != ZEND_WRONG_PROPERTY_INFO &&
       (prop_info->flags & ZEND_ACC_READONLY)) {
-    vphp_zend_readonly_property_modification_error(object, member);
+    vphp_zend_readonly_property_modification_error(object, member, prop_info);
     return &EG(error_zval);
   }
   if (wrapper->v_ptr && wrapper->write_handler) {
