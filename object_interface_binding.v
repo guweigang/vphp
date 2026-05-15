@@ -1,11 +1,13 @@
 module vphp
 
+import vphp.zend
+
 pub fn (c PhpClass) bind_interface(iface_name string) bool {
-	return zend_bind_class_interface(c.name(), iface_name)
+	return zend.bind_class_interface(c.name(), iface_name)
 }
 
 pub fn (c PhpClass) register_auto_interface(iface_name string) {
-	zend_register_auto_interface_binding(c.name(), iface_name)
+	zend.register_auto_interface_binding(c.name(), iface_name)
 }
 
 pub fn bind_class_interface(class_name string, iface_name string) bool {
