@@ -4,89 +4,29 @@ import vphp.zval
 
 // ======== 数组操作 ========
 
-fn zend_array_init(v ZVal) {
+// 初始化为数组
+pub fn (v ZVal) array_init() {
 	zval.array_init(v.handle())
 }
 
-fn zend_array_add_assoc_string(v ZVal, key string, val string) {
+pub fn (v ZVal) add_assoc_string(key string, val string) {
 	zval.array_add_assoc_string(v.handle(), key, val)
 }
 
-fn zend_array_add_assoc_long(v ZVal, key string, val i64) {
+pub fn (v ZVal) add_assoc_long(key string, val i64) {
 	zval.array_add_assoc_long(v.handle(), key, val)
 }
 
-fn zend_array_add_assoc_double(v ZVal, key string, val f64) {
+pub fn (v ZVal) add_assoc_double(key string, val f64) {
 	zval.array_add_assoc_double(v.handle(), key, val)
 }
 
-fn zend_array_add_assoc_bool(v ZVal, key string, val bool) {
+pub fn (v ZVal) add_assoc_bool(key string, val bool) {
 	zval.array_add_assoc_bool(v.handle(), key, val)
 }
 
-fn zend_array_add_assoc_zval(v ZVal, key string, val ZVal) {
-	zval.array_add_assoc_zval(v.handle(), key, val.handle())
-}
-
-fn zend_array_push_string(v ZVal, s string) {
-	zval.array_push_string(v.handle(), s)
-}
-
-fn zend_array_push_long(v ZVal, val i64) {
-	zval.array_push_long(v.handle(), val)
-}
-
-fn zend_array_push_double(v ZVal, val f64) {
-	zval.array_push_double(v.handle(), val)
-}
-
-fn zend_array_push_bool(v ZVal, val bool) {
-	zval.array_push_bool(v.handle(), val)
-}
-
-fn zend_array_add_next_zval(v ZVal, val ZVal) {
-	zval.array_add_next_zval(v.handle(), val.handle())
-}
-
-fn zend_array_count(v ZVal) int {
-	return zval.array_count(v.handle())
-}
-
-fn zend_array_get_index(v ZVal, index int) zval.Handle {
-	return zval.array_get_index(v.handle(), index)
-}
-
-fn zend_array_get_key(v ZVal, key string) zval.Handle {
-	return zval.array_get_key(v.handle(), key)
-}
-
-fn zend_zval_is_null(handle zval.Handle) bool {
-	return zval.is_null(handle)
-}
-
-// 初始化为数组
-pub fn (v ZVal) array_init() {
-	zend_array_init(v)
-}
-
-pub fn (v ZVal) add_assoc_string(key string, val string) {
-	zend_array_add_assoc_string(v, key, val)
-}
-
-pub fn (v ZVal) add_assoc_long(key string, val i64) {
-	zend_array_add_assoc_long(v, key, val)
-}
-
-pub fn (v ZVal) add_assoc_double(key string, val f64) {
-	zend_array_add_assoc_double(v, key, val)
-}
-
-pub fn (v ZVal) add_assoc_bool(key string, val bool) {
-	zend_array_add_assoc_bool(v, key, val)
-}
-
 pub fn (v ZVal) add_assoc_zval(key string, val ZVal) {
-	zend_array_add_assoc_zval(v, key, val)
+	zval.array_add_assoc_zval(v.handle(), key, val.handle())
 }
 
 fn (v ZVal) add_assoc_dyn_value(key string, val DynValue) ! {
@@ -100,23 +40,23 @@ fn (v ZVal) add_assoc_dyn_value(key string, val DynValue) ! {
 }
 
 pub fn (v ZVal) push_string(s string) {
-	zend_array_push_string(v, s)
+	zval.array_push_string(v.handle(), s)
 }
 
 pub fn (v ZVal) push_long(val i64) {
-	zend_array_push_long(v, val)
+	zval.array_push_long(v.handle(), val)
 }
 
 pub fn (v ZVal) push_double(val f64) {
-	zend_array_push_double(v, val)
+	zval.array_push_double(v.handle(), val)
 }
 
 pub fn (v ZVal) push_bool(val bool) {
-	zend_array_push_bool(v, val)
+	zval.array_push_bool(v.handle(), val)
 }
 
 pub fn (v ZVal) add_next_val(val ZVal) {
-	zend_array_add_next_zval(v, val)
+	zval.array_add_next_zval(v.handle(), val.handle())
 }
 
 fn (v ZVal) add_next_dyn_value(val DynValue) ! {
@@ -134,7 +74,7 @@ pub fn (v ZVal) array_count() int {
 	if !v.is_array() {
 		return 0
 	}
-	return zend_array_count(v)
+	return zval.array_count(v.handle())
 }
 
 // 按数字索引取值
@@ -146,7 +86,7 @@ pub fn (v ZVal) array_get(index int) ZVal {
 			}
 		}
 	}
-	res := zend_array_get_index(v, index)
+	res := zval.array_get_index(v.handle(), index)
 	return ZVal.from_handle(res)
 }
 
@@ -200,18 +140,18 @@ pub fn (v ZVal) assoc_keys() []string {
 
 // 按字符串 key 取值（带错误处理）
 pub fn (v ZVal) get(key string) !ZVal {
-	if !v.is_valid() || zend_zval_is_null(v.handle()) {
+	if !v.is_valid() || zval.is_null(v.handle()) {
 		return error('invalid zval or not an array')
 	}
-	res := zend_array_get_key(v, key)
-	if !res.is_valid() || zend_zval_is_null(res) {
+	res := zval.array_get_key(v.handle(), key)
+	if !res.is_valid() || zval.is_null(res) {
 		return error('key "${key}" not found')
 	}
 	return ZVal.from_handle(res)
 }
 
 pub fn (v ZVal) get_key(key ZVal) !ZVal {
-	if !v.is_valid() || zend_zval_is_null(v.handle()) {
+	if !v.is_valid() || zval.is_null(v.handle()) {
 		return error('invalid zval or not an array')
 	}
 	if key.is_long() {
@@ -219,8 +159,8 @@ pub fn (v ZVal) get_key(key ZVal) !ZVal {
 		if index < 0 {
 			return error('negative array index ${index} is not supported')
 		}
-		res := zend_array_get_index(v, int(index))
-		if !res.is_valid() || zend_zval_is_null(res) {
+		res := zval.array_get_index(v.handle(), int(index))
+		if !res.is_valid() || zval.is_null(res) {
 			return error('index ${index} not found')
 		}
 		return ZVal.from_handle(res)
