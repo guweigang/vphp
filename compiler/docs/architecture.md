@@ -18,6 +18,7 @@ vphp/compiler/
   export.v       # export assembly and final file emission
   c_emitter.v    # C-side wrapper and glue emission
   c_builder_binding.v # repr -> C builder mapping
+  c_function_glue.v # global PHP_FUNCTION wrapper emission
   v_glue.v       # V-side bridge/glue emission
   function_binding.v # function wrapper glue planning
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
@@ -208,6 +209,19 @@ Key responsibilities:
 
 This layer answers "what builder model should represent this compiler repr?"
 `c_emitter.v` still owns concrete C wrapper bodies and template selection.
+
+### 6.6. `c_function_glue`
+
+File: `vphp/compiler/c_function_glue.v`
+
+Purpose:
+
+- Emit concrete global `PHP_FUNCTION(...)` wrapper bodies
+- Keep function entry forwarding separate from class method template selection
+- Reuse `build_func(...)` for arginfo while owning the C-side call/return checks
+
+This layer is intentionally small because global function glue has a much
+smaller decision surface than class method glue.
 
 ### 7. `v_glue`
 
