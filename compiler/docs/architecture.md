@@ -20,6 +20,7 @@ vphp/compiler/
   c_builder_binding.v # repr -> C builder mapping
   c_function_glue.v # global PHP_FUNCTION wrapper emission
   c_class_glue.v # class PHP_METHOD wrapper emission
+  c_type_glue.v  # interface/enum C implementation emission
   v_glue.v       # V-side bridge/glue emission
   function_binding.v # function wrapper glue planning
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
@@ -235,6 +236,16 @@ Purpose:
   instance methods, inherited receivers, context-aware methods, and object
   returns
 - Keep the large class wrapper decision tree out of the top-level C emitter
+
+### 6.8. `c_type_glue`
+
+File: `vphp/compiler/c_type_glue.v`
+
+Purpose:
+
+- Emit concrete C implementation fragments for PHP interfaces and native enums
+- Keep simple type implementation bodies separate from the top-level C export
+  assembly
 
 ### 7. `v_glue`
 
