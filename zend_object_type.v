@@ -19,16 +19,8 @@ pub fn ZendObject.from_ptr(ptr voidptr) ZendObject {
 	}
 }
 
-fn zend_current_this_object() voidptr {
-	return zend.current_this_object()
-}
-
-fn zend_object_from_zval(v ZVal) object.Handle {
-	return object.from_zval(v.handle())
-}
-
 pub fn ZendObject.current() ZendObject {
-	obj_raw := zend_current_this_object()
+	obj_raw := zend.current_this_object()
 	if obj_raw == 0 {
 		return ZendObject.invalid()
 	}
@@ -40,7 +32,7 @@ pub fn ZendObject.from_zval(v ZVal) ZendObject {
 		return ZendObject.invalid()
 	}
 	return ZendObject{
-		handle: zend_object_from_zval(v)
+		handle: object.from_zval(v.handle())
 	}
 }
 
