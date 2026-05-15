@@ -124,11 +124,9 @@ fn (binding StructClosureBinding) render_helper_lines() []string {
 	}
 	lines << '        }'
 	if binding.ret_type == 'void' {
-		lines << '        cb(args)'
-		lines << '        ctx.return().null()'
+		lines << '        ctx.invoke_struct_closure_void[${binding.alias}, ${binding.arg_type}](cb, args)'
 	} else {
-		lines << '        res := cb(args)'
-		lines << '        ctx.return().v[${binding.ret_type}](res)'
+		lines << '        ctx.invoke_struct_closure[${binding.alias}, ${binding.arg_type}, ${binding.ret_type}](cb, args)'
 	}
 	lines << '    }'
 	lines << '}'

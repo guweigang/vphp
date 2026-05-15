@@ -23,6 +23,30 @@ pub fn (ctx Context) create_saved_variadic_closure[T](v_cb T, bridge voidptr) {
 		bridge)
 }
 
+pub fn (ctx Context) invoke_struct_closure[T, A, R](cb T, args A) {
+	$match T {
+		fn (A) R {
+			res := cb(args)
+			ctx.return().v[R](res)
+		}
+		$else {
+			throw_exception('unsupported struct closure type', 0)
+		}
+	}
+}
+
+pub fn (ctx Context) invoke_struct_closure_void[T, A](cb T, args A) {
+	$match T {
+		fn (A) {
+			cb(args)
+			ctx.return().null()
+		}
+		$else {
+			throw_exception('unsupported struct closure type', 0)
+		}
+	}
+}
+
 pub fn (ctx Context) invoke_variadic_closure[T, R](cb T) {
 	$match T {
 		fn (...vphp.ZVal) R {
