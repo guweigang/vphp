@@ -4,12 +4,12 @@ import vphp.zval
 
 // ======== 工厂方法 ========
 
-fn request_owned_zval_from_handle(handle zval.Handle) ZVal {
+fn request_autoreleased_zval_from_handle(handle zval.Handle) ZVal {
 	RequestScope.autorelease_add_handle(handle)
-	return request_owned_zval_slot_from_handle(handle)
+	return request_owned_zval_from_handle(handle)
 }
 
-fn request_owned_zval_slot_from_handle(handle zval.Handle) ZVal {
+fn request_owned_zval_from_handle(handle zval.Handle) ZVal {
 	return unsafe {
 		ZVal{
 			raw:   ZVal.from_handle(handle).raw
@@ -30,27 +30,27 @@ fn persistent_owned_zval_from_handle(handle zval.Handle) ZVal {
 
 // 创建一个 null ZVal
 pub fn ZVal.new_null() ZVal {
-	return request_owned_zval_from_handle(zval.new_null())
+	return request_autoreleased_zval_from_handle(zval.new_null())
 }
 
 // 创建一个 int ZVal
 pub fn ZVal.new_int(n i64) ZVal {
-	return request_owned_zval_from_handle(zval.new_int(n))
+	return request_autoreleased_zval_from_handle(zval.new_int(n))
 }
 
 // 创建一个 float ZVal
 pub fn ZVal.new_float(f f64) ZVal {
-	return request_owned_zval_from_handle(zval.new_float(f))
+	return request_autoreleased_zval_from_handle(zval.new_float(f))
 }
 
 // 创建一个 bool ZVal
 pub fn ZVal.new_bool(b bool) ZVal {
-	return request_owned_zval_from_handle(zval.new_bool(b))
+	return request_autoreleased_zval_from_handle(zval.new_bool(b))
 }
 
 // 创建一个 string ZVal
 pub fn ZVal.new_string(s string) ZVal {
-	return request_owned_zval_from_handle(zval.new_string(s))
+	return request_autoreleased_zval_from_handle(zval.new_string(s))
 }
 
 // ======== 高级：对象转换 ========

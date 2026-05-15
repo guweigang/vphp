@@ -8,7 +8,7 @@ fn call_zval_target(target ZendCallTarget, args []vphp.ZVal, ownership Ownership
 		handles << arg.handle()
 	}
 	return zvalmod.with_call_args[ZVal](handles, fn [target, ownership] (count int, params voidptr) ZVal {
-		retval := ZVal.new_request_slot()
+		retval := ZVal.new_request()
 		res := invoke_zval_call_target(target, retval.raw, count, params)
 		if res == -1 {
 			mut failed := retval

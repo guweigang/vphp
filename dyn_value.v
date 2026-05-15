@@ -773,7 +773,7 @@ pub fn (v DynValue) new_zval() !ZVal {
 	if !v.can_new_zval() {
 		return error('DynValue.new_zval only supports detached data')
 	}
-	mut out := ZVal.new_request_slot()
+	mut out := ZVal.new_request()
 	RequestScope.autorelease_add_handle(out.handle())
 	framework_debug_log('dyn_value.new_zval allocated raw=${usize(out.raw_ptr())}')
 	v.to_zval(mut out)!

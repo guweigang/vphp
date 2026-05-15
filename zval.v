@@ -55,11 +55,11 @@ pub:
 	persistent_fallback_zval_len int
 }
 
-fn ZVal.new_request_slot() ZVal {
-	return request_owned_zval_slot_from_handle(zval.new_request())
+fn ZVal.new_request() ZVal {
+	return request_owned_zval_from_handle(zval.new_request())
 }
 
-fn ZVal.new_persistent_slot() ZVal {
+fn ZVal.new_persistent() ZVal {
 	return persistent_owned_zval_from_handle(zval.new_persistent())
 }
 
@@ -106,9 +106,9 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	mut out := if ownership == .owned_persistent {
-		ZVal.new_persistent_slot()
+		ZVal.new_persistent()
 	} else {
-		ZVal.new_request_slot()
+		ZVal.new_request()
 	}
 	zval.copy(out.handle(), zval.Handle.from_ptr(src))
 	if ownership == .owned_request {

@@ -170,7 +170,7 @@ fn (v ZVal) push_struct[T](item T) {
 
 // 便捷工厂：从 V 类型直接创建 Zend Value 包装
 pub fn new_zval_from[T](value T) !ZVal {
-	mut out := ZVal.new_request_slot()
+	mut out := ZVal.new_request()
 	RequestScope.autorelease_add_handle(out.handle())
 	out.from_v[T](value)!
 	return out
