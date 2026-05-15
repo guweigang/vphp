@@ -232,11 +232,24 @@ Key types:
 
 - `PhpArgBinding`
 - `PhpArgBindingKind`
+- `PhpArgRead`
 - `PhpArgSetup`
 
 This layer answers "how does this exported parameter become a V call argument?"
 The caller-facing glue files should consume `PhpArgSetup` instead of
 reimplementing argument indexing or wrapper decoding.
+
+`PhpArgRead` is the shared internal read expression for both ordinary
+parameters and flattened `@[params]` struct fields. It owns the generated
+`php_args.at_named_or_index(...)`, `php_args.has_named_or_index(...)`, default
+fallback, and semantic wrapper decoding expressions so those rules do not drift
+between the two binding paths.
+
+Implementation files:
+
+- `arg_binding.v`: top-level parameter binding plan
+- `arg_read.v`: read / presence / semantic wrapper expressions
+- `arg_default.v`: optional default literal conversion
 
 PHP-facing argument names are resolved before this layer. Direct V parameters
 and `@[params]` struct fields both default from `snake_case` to `camelCase`,

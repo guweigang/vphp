@@ -28,11 +28,6 @@ struct PhpSingleArgBinding {
 	allow_raw_object bool
 }
 
-struct PhpArgDefaultValue {
-	raw    string
-	v_type string
-}
-
 fn v_single_quote(s string) string {
 	return "'" + s.replace('\\', '\\\\').replace("'", "\\'") + "'"
 }
@@ -118,173 +113,12 @@ fn PhpSingleArgBinding.new(arg repr.PhpArgRepr, var_name string, index int, allo
 	}
 }
 
-fn (binding PhpSingleArgBinding) arg_expr() string {
-	return 'php_args.at_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)})'
-}
-
-fn (binding PhpSingleArgBinding) has_arg_expr() string {
-	return 'php_args.has_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)})'
-}
-
-fn php_arg_direct_read_expr(arg_expr string, v_type string) ?string {
-	return match v_type {
-		'vphp.ZVal', 'ZVal', 'Callable', 'vphp.Callable' {
-			'${arg_expr}.zval()'
-		}
-		'RequestBorrowedZBox', 'vphp.RequestBorrowedZBox' {
-			'${arg_expr}.zbox()'
-		}
-		'RequestOwnedZBox', 'vphp.RequestOwnedZBox' {
-			'${arg_expr}.request_owned_zbox()'
-		}
-		'PersistentOwnedZBox', 'vphp.PersistentOwnedZBox' {
-			'${arg_expr}.persistent_owned_zbox()'
-		}
-		'?RequestBorrowedZBox', '?vphp.RequestBorrowedZBox' {
-			'${arg_expr}.zbox_opt()'
-		}
-		else {
-			none
-		}
-	}
-}
-
-fn php_arg_v_read_expr(arg_expr string, v_type string) string {
-	if v_type.starts_with('?') {
-		return '${arg_expr}.as_v_opt[${v_type[1..]}]()'
-	}
-	return '${arg_expr}.as_v[${v_type}]()'
-}
-
-fn (binding PhpSingleArgBinding) with_default(expr string) string {
-	default_value := PhpArgDefaultValue.from_arg(binding.arg) or { return expr }
-	default_expr := default_value.arg_expr() or { return expr }
-	return 'if ${binding.has_arg_expr()} { ${expr} } else { ${default_expr} }'
+fn (binding PhpSingleArgBinding) read() PhpArgRead {
+	return PhpArgRead.new(binding.arg, binding.index)
 }
 
 fn (binding PhpSingleArgBinding) render_semantic_lines(returns_voidptr bool) ?[]string {
-	v_type := binding.arg.v_type
-	if v_type.starts_with('?') {
-		inner := v_type[1..]
-		spec := php_types.PhpTypeSpec.semantic_wrapper_for(inner) or { return none }
-		if spec.is_total_arg {
-			return [
-				'    ${binding.var_name} := if ${binding.has_arg_expr()} { ?${inner}(${binding.arg_expr()}.value) } else { none }',
-			]
-		}
-		return [
-			'    ${binding.var_name} := ${binding.arg_expr()}.${spec.arg_method}()',
-		]
-	}
-	spec := php_types.PhpTypeSpec.semantic_wrapper_for(v_type) or { return none }
-	if spec.is_total_arg {
-		return ['    ${binding.var_name} := ${binding.arg_expr()}.value']
-	}
-	return [
-		'    ${binding.var_name} := ${binding.arg_expr()}.${spec.arg_method}() or {',
-		"        vphp.throw_exception('argument ${binding.index} must be ${spec.arg_label}', 0)",
-		'        ${arg_return_stmt(returns_voidptr)}',
-		'    }',
-	]
-}
-
-fn PhpArgDefaultValue.from_arg(arg repr.PhpArgRepr) ?PhpArgDefaultValue {
-	if !arg.is_optional || arg.php_default == '' {
-		return none
-	}
-	return PhpArgDefaultValue{
-		raw:    arg.php_default.trim_space()
-		v_type: arg.v_type
-	}
-}
-
-fn (default_value PhpArgDefaultValue) string_value() string {
-	trimmed := default_value.raw
-	if trimmed.len >= 2 {
-		if trimmed[0] == `"` && trimmed[trimmed.len - 1] == `"` {
-			return trimmed[1..trimmed.len - 1]
-		}
-		if trimmed[0] == `'` && trimmed[trimmed.len - 1] == `'` {
-			return trimmed[1..trimmed.len - 1]
-		}
-	}
-	return trimmed
-}
-
-fn (default_value PhpArgDefaultValue) is_numeric_literal() bool {
-	if default_value.raw == '' {
-		return false
-	}
-	first := default_value.raw[0]
-	return (first >= `0` && first <= `9`) || first == `-`
-}
-
-fn (default_value PhpArgDefaultValue) zval_expr() ?string {
-	if default_value.raw == '' {
-		return none
-	}
-	return match default_value.raw {
-		'null' {
-			'vphp.ZVal.new_null()'
-		}
-		'true' {
-			'vphp.ZVal.new_bool(true)'
-		}
-		'false' {
-			'vphp.ZVal.new_bool(false)'
-		}
-		'[]' {
-			'vphp.PhpArray.empty().to_zval()'
-		}
-		else {
-			if (default_value.raw.starts_with('"') && default_value.raw.ends_with('"'))
-				|| (default_value.raw.starts_with("'") && default_value.raw.ends_with("'")) {
-				return 'vphp.ZVal.new_string(${v_single_quote(default_value.string_value())})'
-			}
-			if default_value.raw.contains('.') {
-				return 'vphp.ZVal.new_float(${default_value.raw})'
-			}
-			if default_value.is_numeric_literal() {
-				return 'vphp.ZVal.new_int(i64(${default_value.raw}))'
-			}
-			return 'vphp.php_const(${v_single_quote(default_value.raw)})'
-		}
-	}
-}
-
-fn (default_value PhpArgDefaultValue) arg_expr() ?string {
-	clean := php_types.normalize_export_type_key(default_value.v_type)
-	if default_value.v_type.starts_with('?') {
-		if default_value.raw == 'null' {
-			return 'none'
-		}
-	}
-	return match clean {
-		'RequestBorrowedZBox' {
-			zexpr := default_value.zval_expr() or { return none }
-			'vphp.RequestBorrowedZBox.from_zval(${zexpr})'
-		}
-		'RequestOwnedZBox' {
-			zexpr := default_value.zval_expr() or { return none }
-			'vphp.RequestOwnedZBox.from_zval(${zexpr})'
-		}
-		'PersistentOwnedZBox' {
-			zexpr := default_value.zval_expr() or { return none }
-			'vphp.PersistentOwnedZBox.from_zval(${zexpr})'
-		}
-		'ZVal' {
-			default_value.zval_expr() or { return none }
-		}
-		'string' {
-			v_single_quote(default_value.string_value())
-		}
-		'int', 'i64', 'f64', 'bool' {
-			default_value.raw
-		}
-		else {
-			none
-		}
-	}
+	return binding.read().semantic_lines(binding.var_name, returns_voidptr)
 }
 
 fn build_php_arg_bindings(args []repr.PhpArgRepr) []PhpArgBinding {
@@ -365,24 +199,25 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 	if is_context_arg_type(arg.v_type) {
 		return ['    ${binding.var_name} := ctx']
 	}
-	if direct_read_expr := php_arg_direct_read_expr(binding.arg_expr(), arg.v_type) {
+	read := binding.read()
+	if direct_read_expr := read.direct_expr() {
 		if !arg.v_type.starts_with('?') {
 			return [
-				'    ${binding.var_name} := ${binding.with_default(direct_read_expr)}',
+				'    ${binding.var_name} := ${read.with_default(direct_read_expr)}',
 			]
 		}
 	}
 	if semantic_arg_lines := binding.render_semantic_lines(returns_voidptr) {
 		return semantic_arg_lines
 	}
-	if direct_read_expr := php_arg_direct_read_expr(binding.arg_expr(), arg.v_type) {
+	if direct_read_expr := read.direct_expr() {
 		return [
-			'    ${binding.var_name} := ${binding.with_default(direct_read_expr)}',
+			'    ${binding.var_name} := ${read.with_default(direct_read_expr)}',
 		]
 	}
 	if arg.v_type.starts_with('?') {
 		return [
-			'    ${binding.var_name} := ${binding.with_default(php_arg_v_read_expr(binding.arg_expr(), arg.v_type))}',
+			'    ${binding.var_name} := ${read.with_default(read.v_expr())}',
 		]
 	}
 	if binding.allow_raw_object {
@@ -390,16 +225,16 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 		if tm.c_type == 'void*' {
 			v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }
 			return [
-				'    ${binding.var_name} := ${binding.with_default('unsafe { ${v_type}(${binding.arg_expr()}.raw_obj()) }')}',
+				'    ${binding.var_name} := ${read.with_default('unsafe { ${v_type}(${read.arg_expr()}.raw_obj()) }')}',
 			]
 		}
 	}
 	if arg.v_type.starts_with('&') {
 		return [
-			'    ${binding.var_name} := ${binding.with_default('unsafe { ${arg.v_type}(${binding.arg_expr()}.raw_obj()) }')}',
+			'    ${binding.var_name} := ${read.with_default('unsafe { ${arg.v_type}(${read.arg_expr()}.raw_obj()) }')}',
 		]
 	}
 	return [
-		'    ${binding.var_name} := ${binding.with_default(php_arg_v_read_expr(binding.arg_expr(), arg.v_type))}',
+		'    ${binding.var_name} := ${read.with_default(read.v_expr())}',
 	]
 }
