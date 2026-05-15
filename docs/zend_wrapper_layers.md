@@ -62,6 +62,7 @@ The rule of thumb:
 
 ```text
 bridge/*.inc.c + v_bridge.c/h
+  -> bridge/compat.h PHP/Zend version shim
   -> Zend boundary in V
   -> no-C low-level V wrapper
   -> abstract V semantic wrapper
@@ -69,17 +70,76 @@ bridge/*.inc.c + v_bridge.c/h
 
 The goal is not to hide Zend completely. The goal is to keep `C.xxx`, raw `&C.zval`, `&&C.zval`, `&C.zend_object`, and similar details inside a small, reviewable boundary.
 
-`vphp/bridge/` is the C implementation side. It contains C fragments included by `v_bridge.c`. It is not a V wrapper layer.
+`vphp/bridge/` is the C implementation side. It contains C fragments included by `v_bridge.c`. It is not a V wrapper layer, but `vphp/bridge/compat.h` is the Layer 0 PHP/Zend compatibility shim that keeps `PHP_VERSION_ID` checks out of generated glue and V runtime wrappers.
 
 ## Layer Map
 
 | Layer | Allows | Avoids | Typical files | Typical API |
 | --- | --- | --- | --- | --- |
-| C implementation | C code, Zend macros, PHP headers | V APIs | `vphp/bridge/*.inc.c`, `vphp/v_bridge.c`, `vphp/v_bridge.h` | `vphp_call_method(...)` |
+| 0. PHP/Zend compatibility shim | C code, Zend macros, PHP headers, `PHP_VERSION_ID` checks | V APIs, generated glue, semantic wrappers | `vphp/bridge/compat.h` | `vphp_zend_register_constant_compat(...)` |
+| C implementation | C code, Zend macros, PHP headers | V APIs, scattered PHP version checks | `vphp/bridge/*.inc.c`, `vphp/v_bridge.c`, `vphp/v_bridge.h` | `vphp_call_method(...)` |
 | 1. Zend C declarations | `C.zval`, `C.zend_object`, `C.vphp_call_*`, `C.ZVAL_COPY` declarations | V semantic objects | `vphp/zend/types.v`, `vphp/zend/bridge_api.v`, `vphp/zend/native_api.v`, `vphp/zend/constants.v` | `pub fn C.vphp_call_method(...)` |
 | 2. Low-level C-boundary wrapper | Direct `C.xxx`, `&C.zval`, `&&C.zval`, retval allocation/release/adopt | Public semantic APIs | Target: `vphp/zend/call.v`, `vphp/zend/value.v`, `vphp/zend/object.v`, `vphp/zend/property.v`, `vphp/zend/array.v` | `call_function_zval(...)`, `raw_read_property(...)` |
 | 3. No-C low-level V wrapper | `ZVal`, `ZExData`, `ZendObject`, `OwnershipKind`, `RequestScope`, `*ZBox` | Direct `C.xxx` in signatures or normal call paths | Target: `vphp/zval/`, `vphp/zbox/`, `vphp/scope/`, `vphp/object/`, `vphp/execute/` | `ZVal.method_owned_request(...)` |
 | 4. Abstract V semantic wrapper | `PhpValue`, `PhpInt`, `PhpString`, `PhpArray`, `PhpObject`, `PhpFunction`, `PhpArgInput`, `PhpArg`, `PhpReturn` | Raw Zend types except explicit escape hatches | `php_*_type.v` | `PhpFunction.named(...).call[T](...)` |
+
+## Layer 0: PHP/Zend Compatibility Shim
+
+Layer 0 absorbs PHP minor-version differences in the C API.
+
+VPHP targets PHP 8.2 and newer:
+
+```c
+#if PHP_VERSION_ID < 80200
+# error "vphp requires PHP 8.2 or newer"
+#endif
+```
+
+Allowed here:
+
+- `PHP_VERSION_ID` checks
+- Zend API return-value differences
+- Zend function signature differences
+- Zend struct field or handler-signature compatibility helpers
+- small inline functions or macros that normalize Zend C behavior for the rest
+  of the bridge
+
+Do not let PHP version branches leak into generated `php_bridge.c`, generated
+`bridge.v`, `vphp/zend/*.v`, `ZVal`, ZBox, or semantic wrappers.
+
+For example:
+
+```c
+static inline bool vphp_zend_register_constant_compat(zend_constant *constant) {
+#if PHP_VERSION_ID >= 80500
+  return zend_register_constant(constant) != NULL;
+#else
+  return zend_register_constant(constant) == SUCCESS;
+#endif
+}
+```
+
+Call sites should only see the normalized helper:
+
+```c
+if (!vphp_zend_register_constant_compat(&constant)) {
+  return FAILURE;
+}
+```
+
+## Supported PHP Versions
+
+The intended support matrix is:
+
+```text
+supported:   PHP 8.2, 8.3, 8.4, 8.5
+unsupported: PHP 8.0, 8.1
+minimum:     PHP_VERSION_ID >= 80200
+```
+
+Each supported minor should be covered by CI build/test jobs when possible.
+Compatibility helpers may branch by `PHP_VERSION_ID`, but the V API should stay
+stable across supported PHP 8 minors.
 
 ## C Implementation: bridge/
 
@@ -95,10 +155,15 @@ Current homes:
 - `vphp/v_bridge.c`
 - `vphp/v_bridge.h`
 
+`compat.h` has special ownership: it is the only intended home for PHP/Zend
+minor-version shims. Other bridge fragments should call compat helpers instead
+of spelling out `#if PHP_VERSION_ID ...` directly.
+
 The relationship is:
 
 ```text
 bridge/*.inc.c
+  -> uses bridge/compat.h for PHP/Zend minor-version differences
   -> compiled into v_bridge.c / v_bridge.h
   -> declared to V in vphp/zend/
   -> wrapped by V helpers in vphp/zend/
@@ -838,6 +903,7 @@ The name should make it obvious that direct `C.xxx` is expected inside that file
 
 ```text
 bridge/*.inc.c + v_bridge.c/h
+  -> bridge/compat.h PHP/Zend version shim
   -> V 侧 Zend boundary
   -> no-C low-level V wrapper
   -> abstract V semantic wrapper
@@ -845,13 +911,44 @@ bridge/*.inc.c + v_bridge.c/h
 
 目标不是完全隐藏 Zend，而是让 `C.xxx`、`&C.zval`、`&&C.zval`、`&C.zend_object` 这些细节只出现在少数可审计的边界文件里。
 
-四层含义：
+层次含义：
 
-- C implementation：`vphp/bridge/` 和 `v_bridge.c/h`，负责 C bridge 实现碎片，不属于 V wrapper 层。
+- Layer 0：`vphp/bridge/compat.h`，PHP/Zend C API 版本兼容层。这里允许 `PHP_VERSION_ID` 判断，用来吸收 PHP 8 小版本之间的 Zend API 差异。
+- C implementation：`vphp/bridge/` 和 `v_bridge.c/h`，负责 C bridge 实现碎片；普通 bridge fragment 不属于 V wrapper 层，也不应该散写 PHP 版本判断。
 - Layer 1：`vphp/zend/` 里的 C 声明文件，如 `types.v`、`bridge_api.v`、`native_api.v`、`constants.v`。
 - Layer 2：同样位于 `vphp/zend/`，但文件是 wrapper，如 `call.v`、`object.v`、`property.v`、`array.v`。这是唯一集中接触 `C.xxx` 的 V 实现层。
 - Layer 3：按领域拆成 `vphp/zval/`、`vphp/zbox/`、`vphp/scope/`、`vphp/object/`、`vphp/execute/`，不在签名和常规调用路径里暴露 `C.xxx`。
 - Layer 4：扩展作者优先使用的语义层，即 `PhpValue`、`PhpString`、`PhpArray`、`PhpObject`、`PhpFunction`、`PhpArgInput`、`PhpArg`、`PhpReturn` 等。
+
+PHP 版本策略：
+
+```text
+支持：PHP 8.2、8.3、8.4、8.5
+不支持：PHP 8.0、8.1
+最低版本：PHP_VERSION_ID >= 80200
+```
+
+原则是：`#if PHP_VERSION_ID ...` 只能集中在 Layer 0。generated `php_bridge.c`、generated `bridge.v`、`vphp/zend/*.v`、ZVal/ZBox 与语义 wrapper 都不应该感知 PHP 小版本差异。
+
+例如 `zend_register_constant` 这种返回值变化，应该在 `compat.h` 里收口成稳定 helper：
+
+```c
+static inline bool vphp_zend_register_constant_compat(zend_constant *constant) {
+#if PHP_VERSION_ID >= 80500
+  return zend_register_constant(constant) != NULL;
+#else
+  return zend_register_constant(constant) == SUCCESS;
+#endif
+}
+```
+
+调用点只使用稳定语义：
+
+```c
+if (!vphp_zend_register_constant_compat(&constant)) {
+  return FAILURE;
+}
+```
 
 review 时最重要的问题是：
 
