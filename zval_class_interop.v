@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 pub fn (v ZVal) construct(args []ZVal) ZVal {
 	return v.construct_owned_request(args)
 }
@@ -47,14 +49,14 @@ fn (v ZVal) read_static_prop_with_ownership(name string, ownership OwnershipKind
 	if !v.is_valid() || !v.is_string() {
 		return invalid_zval()
 	}
-	return adopt_read_result_handles(zend_read_static_property(v, name), ownership)
+	return adopt_read_result_handles(zval.read_static_property(v.get_string(), name), ownership)
 }
 
 fn (v ZVal) read_const_with_ownership(name string, ownership OwnershipKind) ZVal {
 	if !v.is_valid() || !v.is_string() {
 		return invalid_zval()
 	}
-	return adopt_read_result_handles(zend_read_class_constant(v, name), ownership)
+	return adopt_read_result_handles(zval.read_class_constant(v.get_string(), name), ownership)
 }
 
 pub fn (v ZVal) static_prop_borrowed(name string) ZVal {
@@ -93,5 +95,5 @@ pub fn (v ZVal) set_static_prop(name string, value ZVal) {
 	if !v.is_valid() || !v.is_string() || !value.is_valid() {
 		return
 	}
-	zend_write_static_property(v, name, value)
+	zval.write_static_property(v.get_string(), name, value.handle())
 }

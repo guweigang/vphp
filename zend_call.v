@@ -44,18 +44,3 @@ fn zend_invoke_call_target(target ZendCallTarget, retval voidptr, count int, par
 		}
 	}
 }
-
-fn zend_read_static_property(class_name ZVal, name string) zval.ReadResult {
-	class_name_text := class_name.get_string()
-	return zval.read_static_property(class_name_text, name)
-}
-
-fn zend_read_class_constant(class_name ZVal, name string) zval.ReadResult {
-	class_name_text := class_name.get_string()
-	return zval.read_class_constant(class_name_text, name)
-}
-
-fn zend_write_static_property(class_name ZVal, name string, value ZVal) {
-	class_name_text := class_name.get_string()
-	zval.write_static_property(class_name_text, name, value.handle())
-}
