@@ -104,10 +104,16 @@ Allowed here:
 - small inline functions or macros that normalize Zend C behavior for the rest
   of the bridge
 
+Prefer PHP/Zend's public extension macros when they already provide a stable
+extension-facing API. Examples include `REGISTER_*_CONSTANT`, `PHP_FUNCTION`,
+`PHP_MINIT_FUNCTION`, and `ZEND_BEGIN_ARG_*`. Do not replace those macros just
+to make every call look like a vphp compat helper.
+
 Do not let PHP version branches leak into generated `php_bridge.c`, generated
 `bridge.v`, `vphp/zend/*.v`, `ZVal`, ZBox, or semantic wrappers.
 
-For example:
+Add a compat helper only when vphp calls a lower-level Zend function directly
+and that function changes across supported PHP 8 minors. For example:
 
 ```c
 static inline bool vphp_zend_register_constant_compat(zend_constant *constant) {
@@ -930,7 +936,9 @@ PHP 版本策略：
 
 原则是：`#if PHP_VERSION_ID ...` 只能集中在 Layer 0。generated `php_bridge.c`、generated `bridge.v`、`vphp/zend/*.v`、ZVal/ZBox 与语义 wrapper 都不应该感知 PHP 小版本差异。
 
-例如 `zend_register_constant` 这种返回值变化，应该在 `compat.h` 里收口成稳定 helper：
+如果 PHP/Zend 已经提供了稳定的 extension-facing 宏，优先使用官方宏，例如 `REGISTER_*_CONSTANT`、`PHP_FUNCTION`、`PHP_MINIT_FUNCTION`、`ZEND_BEGIN_ARG_*`。不要为了“统一”把这些官方宏替换成 vphp 自己的 compat helper。
+
+只有当 vphp 直接调用底层 Zend 函数，且这个函数在支持的 PHP 8 小版本之间发生签名或返回值变化时，才在 `compat.h` 里收口成稳定 helper。例如直接调用 `zend_register_constant` 时：
 
 ```c
 static inline bool vphp_zend_register_constant_compat(zend_constant *constant) {

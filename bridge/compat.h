@@ -3,10 +3,20 @@
 
 #include <php.h>
 
+#if PHP_VERSION_ID < 80200
+# error "vphp requires PHP 8.2 or newer"
+#endif
+
 /*
  * Keep direct Zend API touch-points centralized here so future PHP version
  * compatibility work stays in one place instead of leaking across the whole
  * bridge implementation.
+ *
+ * Prefer PHP/Zend's public extension macros where they already provide a
+ * stable extension-facing API, for example REGISTER_*_CONSTANT and
+ * ZEND_BEGIN_ARG_* macros. Add compat helpers here when vphp calls lower-level
+ * Zend C functions directly and their signatures or return values differ
+ * across supported PHP 8 minors.
  */
 static inline zend_class_entry *
 vphp_zend_get_called_scope(zend_execute_data *execute_data) {
