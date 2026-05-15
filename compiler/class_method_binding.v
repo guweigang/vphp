@@ -28,7 +28,8 @@ fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_r
 	}
 	glue_name := if method.v_name != '' { method.v_name } else { method.name }
 	return_type := method.return_spec.effective_v_type()
-	struct_closure := StructClosureBinding.new('${r.name}_${glue_name}', return_type, params_structs)
+	struct_closure := StructClosureBinding.new('${r.name}_${glue_name}', return_type,
+		params_structs)
 	mut helper_lines := []string{}
 	if closure_binding := struct_closure {
 		helper_lines << closure_binding.render_helper_lines()
@@ -149,6 +150,17 @@ fn (ctx ClassMethodGlueContext) render_inherited_sync_to_php_lines() []string {
 	return ['    ${ctx.lower_name}_sync_to_php(this_obj, recv)']
 }
 
+fn (ctx ClassMethodGlueContext) render_result_sync_lines() []string {
+	return ctx.render_static_sync_to_php_lines()
+}
+
+fn (ctx ClassMethodGlueContext) render_direct_call_sync_lines() []string {
+	mut lines := []string{}
+	lines << ctx.render_inherited_sync_to_php_lines()
+	lines << ctx.render_static_sync_to_php_lines()
+	return lines
+}
+
 fn (ctx ClassMethodGlueContext) render_object_return_lines() []string {
 	if !ctx.returns_object {
 		return []
@@ -168,34 +180,33 @@ fn (ctx ClassMethodGlueContext) render_object_return_lines() []string {
 fn (ctx ClassMethodGlueContext) render_return_lines() []string {
 	match ctx.return_binding.kind {
 		.result {
-			mut lines := ctx.return_binding.render_result_call_lines(ctx.call_expr, ctx.capture_list())
-			lines << ctx.render_static_sync_to_php_lines()
+			mut lines := ctx.return_binding.render_result_call_lines(ctx.call_expr,
+				ctx.capture_list())
+			lines << ctx.render_result_sync_lines()
 			return lines
 		}
 		.option {
-			mut lines := ctx.return_binding.render_option_call_lines(ctx.call_expr, ctx.capture_list())
-			lines << ctx.render_static_sync_to_php_lines()
+			mut lines := ctx.return_binding.render_option_call_lines(ctx.call_expr,
+				ctx.capture_list())
+			lines << ctx.render_result_sync_lines()
 			return lines
 		}
 		.void_ {
 			mut lines := ['    ${ctx.call_expr}']
-			lines << ctx.render_inherited_sync_to_php_lines()
-			lines << ctx.render_static_sync_to_php_lines()
+			lines << ctx.render_direct_call_sync_lines()
 			lines << ctx.render_object_return_lines()
 			return lines
 		}
 		.closure {
 			mut lines := ['    res := ${ctx.call_expr}']
-			lines << ctx.render_inherited_sync_to_php_lines()
-			lines << ctx.render_static_sync_to_php_lines()
+			lines << ctx.render_direct_call_sync_lines()
 			lines << ctx.return_binding.render_closure_value_lines(true)
 			lines << ctx.render_object_return_lines()
 			return lines
 		}
 		.value {
 			mut lines := ['    res := ${ctx.call_expr}']
-			lines << ctx.render_inherited_sync_to_php_lines()
-			lines << ctx.render_static_sync_to_php_lines()
+			lines << ctx.render_direct_call_sync_lines()
 			if !ctx.returns_object {
 				lines << ctx.return_binding.render_value_result_line('res')
 			}
