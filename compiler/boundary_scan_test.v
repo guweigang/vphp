@@ -116,17 +116,7 @@ fn test_context_keeps_execute_and_return_wrappers() {
 
 fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 	allowed := {
-		'vphp/zend_object_lifecycle.v': [
-			'fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {',
-			'fn zend_object_add_ref(obj ZendObject) {',
-			'fn zend_object_release(obj ZendObject) {',
-			'fn zend_object_bind_handlers(obj ZendObject, handlers voidptr, ownership OwnershipKind) {',
-			'fn zend_object_ensure_binding(obj ZendObject, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {',
-			'fn zend_object_init_owned_instance(obj ZendObject, handlers voidptr) {',
-			'fn zend_object_wrapper(obj ZendObject) &C.vphp_object_wrapper {',
-			'fn zend_wrap_existing_object(out zval.Handle, obj ZendObject) {',
-		]
-		'vphp/zend_runtime.v':          [
+		'vphp/zend_runtime.v': [
 			'fn zend_emalloc(size usize) voidptr {',
 			'fn zend_efree(ptr voidptr) {',
 			'fn zend_throw_exception(msg string, code int) {',

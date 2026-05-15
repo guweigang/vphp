@@ -244,6 +244,8 @@ Progress:
 - renamed root-level private `ZVal` allocation/release/copy helpers away from
   `zend_*` so they read as raw `ZVal` lifecycle internals instead of Zend
   boundary wrappers
+- removed root-level private `zend_object_*` forwarding helpers; `ZendObject`
+  receiver methods now call the object handle layer directly
 - added VSlim boundary scan checks to block common semantic-to-zval roundtrip
   regressions in handwritten VSlim code
 - remaining root-level `zend_*` helpers are explicit runtime/request hooks,
