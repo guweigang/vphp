@@ -38,7 +38,7 @@ The current rough scan shape is:
   - generic Zend callback boundaries such as `object_generic_props.v` and
     `zval_factory_iter.v`
   - root-level runtime/lifecycle adapters that still intentionally bridge
-    `ZVal`, `PhpReturn`, `ZendObject`, `OwnershipKind`, closure thunks, and
+    `ZVal`, `ZendObject`, `OwnershipKind`, superglobal enum conversion, and
     Zend request/runtime hooks
 - `vslim/src`: handwritten sources still use:
   - `ZVal` in data decoding, PSR bridge, routing, view/template, stream,
@@ -239,8 +239,9 @@ Progress:
   superglobal, and object-zval paths
 - added VSlim boundary scan checks to block common semantic-to-zval roundtrip
   regressions in handwritten VSlim code
-- remaining root-level `zend_*` helpers are mostly explicit runtime,
-  lifecycle, call, include, closure, and raw `ZVal` ownership boundaries
+- remaining root-level `zend_*` helpers are explicit runtime/request hooks,
+  object lifecycle adapters, superglobal enum conversion, and raw `ZVal`
+  ownership boundaries
 
 ### Phase 4: Compiler Glue Refinement
 
