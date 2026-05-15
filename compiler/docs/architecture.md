@@ -18,6 +18,7 @@ vphp/compiler/
   export.v       # export assembly and final file emission
   c_emitter.v    # C-side wrapper and glue emission
   v_glue.v       # V-side bridge/glue emission
+  function_binding.v # function wrapper glue planning
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
   params_struct_binding.v # @[params] struct argument construction
   return_binding.v # PhpReturnRepr -> V glue return handling
@@ -263,7 +264,24 @@ PHP-facing argument names are resolved before this layer. Direct V parameters
 and `@[params]` struct fields both default from `snake_case` to `camelCase`,
 unless `@[php_arg_name]` provides an explicit override.
 
-### 7.6. `params_struct_binding`
+### 7.6. `function_binding`
+
+File: `vphp/compiler/function_binding.v`
+
+Purpose:
+
+- Build and render plain function wrapper glue from `repr.PhpFuncRepr`
+- Keep struct-closure helper emission, argument setup, keyword-safe call names,
+  request frame scope, and `ReturnBinding` behavior out of `v_glue_func.v`
+
+Key types:
+
+- `FunctionGlue`
+
+This layer answers "how does an exported V function become a generated
+`vphp_wrap_*` function?"
+
+### 7.7. `params_struct_binding`
 
 File: `vphp/compiler/params_struct_binding.v`
 
@@ -280,7 +298,7 @@ Key types:
 This layer answers "how do these PHP arguments become this V `@[params]`
 struct literal?"
 
-### 7.7. `return_binding`
+### 7.8. `return_binding`
 
 File: `vphp/compiler/return_binding.v`
 
@@ -299,7 +317,7 @@ This layer answers "how does this V call result get written back to PHP?" Glue
 files should consume `ReturnBinding` instead of reimplementing result / option /
 closure branches.
 
-### 7.8. `class_method_binding`
+### 7.9. `class_method_binding`
 
 File: `vphp/compiler/class_method_binding.v`
 
@@ -323,7 +341,7 @@ the glue name, struct-closure helper, argument setup, call expression, and retur
 context. `ClassMethodGlueContext` owns the wrapper body details once that plan is
 known.
 
-### 7.9. `class_lifecycle_binding`
+### 7.10. `class_lifecycle_binding`
 
 File: `vphp/compiler/class_lifecycle_binding.v`
 
@@ -339,7 +357,7 @@ Key types:
 This layer answers "which raw lifecycle helper functions must be emitted for a
 class, and how do optional `cleanup()` / `free()` hooks run?"
 
-### 7.10. `class_property_binding`
+### 7.11. `class_property_binding`
 
 File: `vphp/compiler/class_property_binding.v`
 
@@ -361,7 +379,7 @@ object properties?"
 emission. The class-level glue only decides which handler function is being
 rendered.
 
-### 7.11. `class_shadow_binding`
+### 7.12. `class_shadow_binding`
 
 File: `vphp/compiler/class_shadow_binding.v`
 
@@ -378,7 +396,7 @@ Key types:
 This layer answers "how does generated V code access and synchronize a class'
 shadow const/static state?"
 
-### 7.12. `class_handlers_binding`
+### 7.13. `class_handlers_binding`
 
 File: `vphp/compiler/class_handlers_binding.v`
 
@@ -394,7 +412,7 @@ Key types:
 This layer answers "which generated V functions are wired into
 `ZendClassHandlers` for this class?"
 
-### 7.13. `inherited_receiver_binding`
+### 7.14. `inherited_receiver_binding`
 
 File: `vphp/compiler/inherited_receiver_binding.v`
 

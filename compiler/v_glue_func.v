@@ -4,31 +4,5 @@ import compiler.repr
 
 // ---- Func V Glue ----
 fn (g VGenerator) gen_func_glue(f &repr.PhpFuncRepr) []string {
-	mut out := []string{}
-	return_type := f.return_spec.effective_v_type()
-	struct_closure := StructClosureBinding.new(f.name, return_type, g.params_structs)
-	if closure_binding := struct_closure {
-		out << closure_binding.render_helper_lines()
-	}
-
-	// 基础包装器
-	out << "@[export: 'vphp_wrap_${f.name}']"
-	out << 'fn vphp_wrap_${f.name}(ctx vphp.Context) {'
-	out << '    mut vphp_scope := vphp.PhpScope.once()'
-	out << '    defer { vphp_scope.close() }'
-
-	arg_setup := build_php_arg_setup(f.args, false, false)
-	out << arg_setup.lines
-	arg_names := arg_setup.names
-
-	call_args := arg_names.join(', ')
-	// 注意：如果是导出到 PHP 的函数，其原始名可能由 r.name (符号名) 或 r.original_name (V 名) 提供
-	// 这里统一使用原始 V 名来调用
-	v_func_name := if f.original_name != '' { f.original_name } else { f.name }
-	v_call_name := if is_v_keyword(v_func_name) { '@' + v_func_name } else { v_func_name }
-	return_binding := ReturnBinding.new_with_struct_closure(return_type, struct_closure)
-	out << return_binding.render_function_lines(v_call_name, call_args, arg_names)
-	out << '}'
-
-	return out
+	return FunctionGlue.new(f, g.params_structs).render_lines()
 }
