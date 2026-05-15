@@ -4,71 +4,35 @@ import vphp.zval
 
 // ======== 读取 — 标量类型 ========
 
-fn zend_zval_get_long(v ZVal) i64 {
-	return zval.get_long(v.handle())
-}
-
-fn zend_zval_get_int(v ZVal) i64 {
-	return zval.get_int(v.handle())
-}
-
-fn zend_zval_get_lval(v ZVal) i64 {
-	return zval.get_lval(v.handle())
-}
-
-fn zend_zval_get_double(v ZVal) f64 {
-	return zval.get_double(v.handle())
-}
-
-fn zend_zval_set_null(v ZVal) {
-	zval.set_null(v.handle())
-}
-
-fn zend_zval_set_bool(v ZVal, b bool) {
-	zval.set_bool(v.handle(), b)
-}
-
-fn zend_zval_set_lval(v ZVal, val i64) {
-	zval.set_lval(v.handle(), val)
-}
-
-fn zend_zval_set_double(v ZVal, val f64) {
-	zval.set_double(v.handle(), val)
-}
-
-fn zend_zval_set_string(v ZVal, s string) {
-	zval.set_string(v.handle(), s)
-}
-
 // bool
 pub fn (v ZVal) to_bool() bool {
 	return v.type_id() == .true_
 }
 
 pub fn (v ZVal) get_bool() bool {
-	return zend_zval_get_long(v) != 0
+	return zval.get_long(v.handle()) != 0
 }
 
 // int / i64
 pub fn (v ZVal) to_int() int {
-	return int(zend_zval_get_int(v))
+	return int(zval.get_int(v.handle()))
 }
 
 pub fn (v ZVal) to_i64() i64 {
-	return i64(zend_zval_get_int(v))
+	return i64(zval.get_int(v.handle()))
 }
 
 pub fn (v ZVal) get_int() i64 {
-	return zend_zval_get_long(v)
+	return zval.get_long(v.handle())
 }
 
 // float / f64
 pub fn (v ZVal) to_f64() f64 {
-	return zend_zval_get_double(v)
+	return zval.get_double(v.handle())
 }
 
 pub fn (v ZVal) to_float() f64 {
-	return zend_zval_get_double(v)
+	return zval.get_double(v.handle())
 }
 
 // string
@@ -105,25 +69,25 @@ pub fn (v ZVal) get_string() string {
 // ======== 写入 — 标量类型 ========
 
 pub fn (v ZVal) set_null() {
-	zend_zval_set_null(v)
+	zval.set_null(v.handle())
 }
 
 pub fn (v ZVal) set_bool(b bool) {
-	zend_zval_set_bool(v, b)
+	zval.set_bool(v.handle(), b)
 }
 
 pub fn (v ZVal) set_int(val i64) {
-	zend_zval_set_lval(v, val)
+	zval.set_lval(v.handle(), val)
 }
 
 pub fn (v ZVal) set_double(val f64) {
-	zend_zval_set_double(v, val)
+	zval.set_double(v.handle(), val)
 }
 
 pub fn (v ZVal) set_float(val f64) {
-	zend_zval_set_double(v, val)
+	zval.set_double(v.handle(), val)
 }
 
 pub fn (v ZVal) set_string(s string) {
-	zend_zval_set_string(v, s)
+	zval.set_string(v.handle(), s)
 }
