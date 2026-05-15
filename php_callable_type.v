@@ -20,9 +20,24 @@ pub fn PhpCallable.borrowed(z ZVal) PhpCallable {
 	}
 }
 
+pub fn PhpCallable.borrowed_zbox(value RequestBorrowedZBox) PhpCallable {
+	return PhpCallable{
+		callable: PhpValueZBox.borrowed(value)
+	}
+}
+
 pub fn PhpCallable.must_from_zval(z ZVal) !PhpCallable {
 	callable := PhpCallable.from_zval(z) or { return error('zval is not callable') }
 	return callable
+}
+
+pub fn PhpCallable.from_request_borrowed_zbox(value RequestBorrowedZBox) ?PhpCallable {
+	if !value.is_callable() {
+		return none
+	}
+	return PhpCallable{
+		callable: PhpValueZBox.borrowed(value)
+	}
 }
 
 pub fn PhpCallable.from_request_owned_zbox(value RequestOwnedZBox) ?PhpCallable {

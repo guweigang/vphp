@@ -19,6 +19,15 @@ pub fn PhpClosure.must_from_zval(z ZVal) !PhpClosure {
 	return closure
 }
 
+pub fn PhpClosure.from_request_borrowed_zbox(value RequestBorrowedZBox) ?PhpClosure {
+	if !value.is_callable() {
+		return none
+	}
+	return PhpClosure{
+		callable: PhpValueZBox.borrowed(value)
+	}
+}
+
 pub fn PhpClosure.from_request_owned_zbox(value RequestOwnedZBox) ?PhpClosure {
 	if !value.is_callable() {
 		return none

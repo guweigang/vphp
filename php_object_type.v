@@ -20,9 +20,24 @@ pub fn PhpObject.borrowed(z ZVal) PhpObject {
 	}
 }
 
+pub fn PhpObject.borrowed_zbox(value RequestBorrowedZBox) PhpObject {
+	return PhpObject{
+		value: PhpValueZBox.borrowed(value)
+	}
+}
+
 pub fn PhpObject.must_from_zval(z ZVal) !PhpObject {
 	obj := PhpObject.from_zval(z) or { return error('zval is not object') }
 	return obj
+}
+
+pub fn PhpObject.from_request_borrowed_zbox(value RequestBorrowedZBox) ?PhpObject {
+	if !value.is_object() {
+		return none
+	}
+	return PhpObject{
+		value: PhpValueZBox.borrowed(value)
+	}
 }
 
 pub fn PhpObject.from_request_owned_zbox(value RequestOwnedZBox) ?PhpObject {
