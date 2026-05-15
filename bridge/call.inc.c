@@ -178,8 +178,8 @@ int vphp_include_file(const char *filename, int filename_len, zval *retval,
     file_handle.opened_path = resolved_path;
   }
   ZVAL_UNDEF(retval);
-  return zend_execute_scripts(once ? ZEND_INCLUDE_ONCE : ZEND_INCLUDE, retval, 1,
-                              &file_handle);
+  return vphp_zend_execute_scripts(once ? ZEND_INCLUDE_ONCE : ZEND_INCLUDE,
+                                   retval, 1, &file_handle);
 }
 
 int vphp_call_method(zval *obj, const char *method, int method_len,
@@ -240,7 +240,7 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
   vphp_bridge_call_debug_log(debug_buf);
   vphp_bridge_call_debug_log_zval("vphp_call_callable callable_state", callable);
   ZVAL_UNDEF(retval);
-  if (zend_fcall_info_init(callable, 0, &fci, &fcc, NULL, &error) != SUCCESS) {
+  if (vphp_zend_fcall_info_init(callable, &fci, &fcc, &error) != SUCCESS) {
     snprintf(debug_buf, sizeof(debug_buf),
              "vphp_call_callable init_fail callable=%p error=%s", (void *)callable,
              error != NULL ? error : "(null)");
@@ -287,7 +287,7 @@ int vphp_call_callable(zval *callable, zval *retval, int param_count,
            "vphp_call_callable before_zend_call callable=%p retval=%p", (void *)callable,
            (void *)retval);
   vphp_bridge_call_debug_log(debug_buf);
-  int result = zend_call_function(&fci, &fcc);
+  int result = vphp_zend_call_function(&fci, &fcc);
   snprintf(debug_buf, sizeof(debug_buf),
            "vphp_call_callable after_zend_call callable=%p result=%d retval_type=%d exception=%p",
            (void *)callable, result, retval != NULL ? Z_TYPE_P(retval) : -1,
@@ -379,7 +379,7 @@ void vphp_create_closure_FULL_AUTO_V2(zval *zv, void *v_thunk,
   zf->reserved[0] = v_thunk;
   zf->reserved[1] = bridge_ptr;
 
-  zend_create_closure(zv, (zend_function *)zf, NULL, NULL, NULL);
+  vphp_zend_create_closure(zv, (zend_function *)zf);
 }
 
 void vphp_create_closure_with_arity(zval *zv, void *v_thunk, void *bridge_ptr,
@@ -396,7 +396,7 @@ void vphp_create_closure_with_arity(zval *zv, void *v_thunk, void *bridge_ptr,
   zf->reserved[0] = v_thunk;
   zf->reserved[1] = bridge_ptr;
 
-  zend_create_closure(zv, (zend_function *)zf, NULL, NULL, NULL);
+  vphp_zend_create_closure(zv, (zend_function *)zf);
 }
 
 static const zend_internal_arg_info vphp_variadic_closure_arginfo[] = {
@@ -417,5 +417,5 @@ void vphp_create_variadic_closure(zval *zv, void *v_thunk, void *bridge_ptr) {
   zf->reserved[0] = v_thunk;
   zf->reserved[1] = bridge_ptr;
 
-  zend_create_closure(zv, (zend_function *)zf, NULL, NULL, NULL);
+  vphp_zend_create_closure(zv, (zend_function *)zf);
 }

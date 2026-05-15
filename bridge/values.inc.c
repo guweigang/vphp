@@ -520,7 +520,7 @@ void vphp_res_dtor(zend_resource *res) {
 }
 
 void vphp_init_resource_system(int module_number) {
-  le_vphp_res = zend_register_list_destructors_ex(
+  le_vphp_res = vphp_zend_register_list_destructors_ex(
       vphp_res_dtor, NULL, "VPHP Generic Resource", module_number);
 }
 
@@ -532,11 +532,11 @@ void vphp_make_res(zval *return_value, void *ptr, const char *label) {
   vphp_res_t *wrapper = emalloc(sizeof(vphp_res_t));
   wrapper->ptr = ptr;
   wrapper->label = estrdup(label != NULL ? label : "");
-  RETVAL_RES(zend_register_resource(wrapper, le_vphp_res));
+  RETVAL_RES(vphp_zend_register_resource(wrapper, le_vphp_res));
 }
 
 void *vphp_fetch_res(zval *z) {
-  vphp_res_t *wrapper = (vphp_res_t *)zend_fetch_resource(
+  vphp_res_t *wrapper = (vphp_res_t *)vphp_zend_fetch_resource(
       Z_RES_P(z), "VPHP Generic Resource", le_vphp_res);
   return wrapper ? wrapper->ptr : NULL;
 }

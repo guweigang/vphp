@@ -2,6 +2,11 @@ module object
 
 import vphp.zend
 
+pub enum BindingOwnership {
+	borrowed
+	owned
+}
+
 pub fn allocate_contiguous(ce voidptr, v_size usize) voidptr {
 	return zend.allocate_contiguous_object(ce, v_size)
 }
@@ -26,6 +31,17 @@ pub fn (handle Handle) bind_owned_handlers(handlers voidptr) {
 	zend.bind_owned_handlers_ptr(handle.raw_ptr(), handlers)
 }
 
+pub fn (handle Handle) ensure_binding_ptr(handlers voidptr, ownership BindingOwnership) voidptr {
+	return match ownership {
+		.borrowed {
+			handle.ensure_borrowed_instance_binding_ptr(handlers)
+		}
+		.owned {
+			handle.ensure_owned_instance_binding_ptr(handlers)
+		}
+	}
+}
+
 pub fn (handle Handle) ensure_borrowed_instance_binding_ptr(handlers voidptr) voidptr {
 	return zend.ensure_borrowed_instance_binding_ptr(handle.raw_ptr(), handlers)
 }
@@ -40,4 +56,12 @@ pub fn (handle Handle) init_owned_instance(handlers voidptr) {
 
 pub fn (handle Handle) wrapper_ptr() voidptr {
 	return zend.object_wrapper_ptr(handle.raw_ptr())
+}
+
+pub fn (handle Handle) bound_v_ptr() voidptr {
+	wrapper := unsafe { &C.vphp_object_wrapper(handle.wrapper_ptr()) }
+	if isnil(wrapper) {
+		return unsafe { nil }
+	}
+	return wrapper.v_ptr
 }

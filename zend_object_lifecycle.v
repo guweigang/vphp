@@ -3,21 +3,15 @@ module vphp
 import vphp.object
 import vphp.zval
 
-fn object_binding_wrapper(obj ZendObject, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
-	ptr := match ownership {
+fn object_binding_ownership(ownership OwnershipKind) object.BindingOwnership {
+	return match ownership {
 		.borrowed {
-			obj.handle.ensure_borrowed_instance_binding_ptr(handlers)
+			.borrowed
 		}
 		.owned_request, .owned_persistent {
-			obj.handle.ensure_owned_instance_binding_ptr(handlers)
+			.owned
 		}
 	}
-
-	return unsafe { &C.vphp_object_wrapper(ptr) }
-}
-
-fn object_wrapper(obj ZendObject) &C.vphp_object_wrapper {
-	return unsafe { &C.vphp_object_wrapper(obj.handle.wrapper_ptr()) }
 }
 
 fn wrap_existing_object(out zval.Handle, obj ZendObject) {
@@ -52,11 +46,11 @@ pub fn (obj ZendObject) bind_handlers(handlers voidptr, ownership OwnershipKind)
 	}
 }
 
-pub fn (obj ZendObject) ensure_binding(handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {
+pub fn (obj ZendObject) ensure_binding_ptr(handlers voidptr, ownership OwnershipKind) voidptr {
 	if !obj.is_valid() {
 		return unsafe { nil }
 	}
-	return object_binding_wrapper(obj, handlers, ownership)
+	return obj.handle.ensure_binding_ptr(handlers, object_binding_ownership(ownership))
 }
 
 pub fn (obj ZendObject) init_owned_instance(handlers voidptr) {
@@ -70,11 +64,7 @@ pub fn (obj ZendObject) bound_v_ptr() voidptr {
 	if !obj.is_valid() {
 		return unsafe { nil }
 	}
-	wrapper := object_wrapper(obj)
-	if isnil(wrapper) {
-		return unsafe { nil }
-	}
-	return wrapper.v_ptr
+	return obj.handle.bound_v_ptr()
 }
 
 pub fn (obj ZendObject) to_request_owned_zval() ZVal {

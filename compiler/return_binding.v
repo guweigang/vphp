@@ -95,15 +95,15 @@ fn (binding ReturnBinding) render_result_lines(v_call_name string, call_args str
 fn (binding ReturnBinding) render_result_call_lines(call_expr string, capture_list string) []string {
 	if binding.effective_return == '' || binding.effective_return == 'void' {
 		return [
-			'    vphp.call_or_throw(fn [${capture_list}] () ! {',
+			'    ctx.return().from_result_void(fn [${capture_list}] () ! {',
 			'        ${call_expr}!',
 			'    })',
 		]
 	}
 	return [
-		'    vphp.call_or_throw_val[${binding.effective_return}](fn [${capture_list}] () !${binding.effective_return} {',
+		'    ctx.return().from_result[${binding.effective_return}](fn [${capture_list}] () !${binding.effective_return} {',
 		'        return ${call_expr}!',
-		'    }, ctx)',
+		'    })',
 	]
 }
 
@@ -115,15 +115,15 @@ fn (binding ReturnBinding) render_option_lines(v_call_name string, call_args str
 fn (binding ReturnBinding) render_option_call_lines(call_expr string, capture_list string) []string {
 	if binding.effective_return == '' || binding.effective_return == 'void' {
 		return [
-			'    vphp.call_or_null(fn [${capture_list}] () ? {',
+			'    ctx.return().from_option_void(fn [${capture_list}] () ? {',
 			'        ${call_expr}',
-			'    }, ctx)',
+			'    })',
 		]
 	}
 	return [
-		'    vphp.call_or_null_val[${binding.effective_return}](fn [${capture_list}] () ?${binding.effective_return} {',
+		'    ctx.return().from_option[${binding.effective_return}](fn [${capture_list}] () ?${binding.effective_return} {',
 		'        return ${call_expr}',
-		'    }, ctx)',
+		'    })',
 	]
 }
 

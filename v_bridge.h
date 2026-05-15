@@ -4,6 +4,8 @@
 #include <php.h>
 #include <stdbool.h>
 
+#include "bridge/compat.h"
+
 // 对象包装器
 typedef struct {
   uint32_t magic;

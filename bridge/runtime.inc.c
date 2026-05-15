@@ -147,7 +147,7 @@ static bool vphp_value_matches_named_type(zend_execute_data *execute_data,
     result = vphp_call_php_func("is_a", 4, &retval, 2, params);
     zval_ptr_dtor(&expected_zv);
     if (result == SUCCESS) {
-      bool matched = zend_is_true(&retval) != 0;
+      bool matched = vphp_zend_is_true(&retval);
       zval_ptr_dtor(&retval);
       if (matched) {
         if (release_expected_name) {
@@ -396,7 +396,7 @@ zval *vphp_get_arg_ptr(zend_execute_data *ex, uint32_t index) {
 }
 
 void vphp_throw(char *msg, int code) {
-  zend_throw_exception(NULL, msg, (zend_long)code);
+  vphp_zend_throw_exception(NULL, msg, (zend_long)code);
 }
 
 void vphp_throw_class(char *class_name, char *msg, int code) {
@@ -410,17 +410,17 @@ void vphp_throw_class(char *class_name, char *msg, int code) {
     }
     zend_string_release(cls);
   }
-  zend_throw_exception(ce, msg, (zend_long)code);
+  vphp_zend_throw_exception(ce, msg, (zend_long)code);
 }
 
 void vphp_throw_object(zval *exception) {
   zval copy;
   if (exception == NULL || Z_TYPE_P(exception) != IS_OBJECT) {
-    zend_throw_exception(NULL, "exception object must be a valid object", 0);
+    vphp_zend_throw_exception(NULL, "exception object must be a valid object", 0);
     return;
   }
   ZVAL_COPY(&copy, exception);
-  zend_throw_exception_object(&copy);
+  vphp_zend_throw_exception_object(&copy);
 }
 
 void vphp_error(int level, char *msg) { php_error(level, "%s", msg); }
@@ -444,8 +444,9 @@ int vphp_exception_message(char *buffer, int buffer_len) {
   }
 
   zval rv;
-  zval *message = zend_read_property(EG(exception)->ce, EG(exception), "message",
-                                     sizeof("message") - 1, 1, &rv);
+  zval *message = vphp_zend_read_property(EG(exception)->ce, EG(exception),
+                                          "message", sizeof("message") - 1,
+                                          true, &rv);
   if (message == NULL || Z_TYPE_P(message) == IS_UNDEF || Z_TYPE_P(message) == IS_NULL) {
     return 0;
   }
@@ -464,7 +465,7 @@ int vphp_exception_message(char *buffer, int buffer_len) {
 
 void vphp_clear_exception() {
   if (EG(exception) != NULL) {
-    zend_clear_exception();
+    vphp_zend_clear_exception();
   }
 }
 
@@ -1152,7 +1153,7 @@ static int vphp_runtime_bool_arg(zend_execute_data *execute_data, uint32_t index
   if (!arg) {
     return default_value;
   }
-  return zend_is_true(arg) ? 1 : 0;
+  return vphp_zend_is_true(arg) ? 1 : 0;
 }
 
 static void
@@ -1315,7 +1316,7 @@ static int vphp_implement_interface_for_class(zend_class_entry *class_ce,
   }
 
   if (!vphp_zend_class_implements_interface(class_ce, iface_ce)) {
-    zend_do_implement_interface(class_ce, iface_ce);
+    vphp_zend_do_implement_interface(class_ce, iface_ce);
   }
   result = vphp_zend_class_implements_interface(class_ce, iface_ce) ? 1 : 0;
 
