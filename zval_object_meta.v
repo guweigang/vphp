@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zend
+
 // -------- 类元信息 / introspection --------
 pub fn (v ZVal) class_name() string {
 	if !v.is_valid() {
@@ -11,7 +13,7 @@ pub fn (v ZVal) class_name() string {
 	if !v.is_object() {
 		return ''
 	}
-	return zend_object_class_name(v)
+	return zend.object_class_name(v.raw_ptr())
 }
 
 pub fn (v ZVal) namespace_name() string {
@@ -34,14 +36,14 @@ pub fn (v ZVal) parent_class_name() string {
 	if !v.is_valid() {
 		return ''
 	}
-	return zend_object_parent_class_name(v)
+	return zend.object_parent_class_name(v.raw_ptr())
 }
 
 pub fn (v ZVal) is_internal_class() bool {
 	if !v.is_valid() {
 		return false
 	}
-	return zend_object_class_is_internal(v)
+	return zend.object_class_is_internal(v.raw_ptr())
 }
 
 pub fn (v ZVal) is_user_class() bool {

@@ -1,28 +1,30 @@
 module vphp
 
+import vphp.zend
+
 // -------- 对象属性操作 --------
 pub fn (v ZVal) object_init() {
-	zend_init_object_zval(v)
+	zend.init_object_zval(v.raw_ptr())
 }
 
 pub fn (v ZVal) add_property_string(key string, val string) {
-	zend_add_property_string(v, key, val)
+	zend.add_property_string(v.raw_ptr(), key, val)
 }
 
 pub fn (v ZVal) update_property_string(key string, val string) {
-	zend_update_property_string(v, key, val)
+	zend.update_property_string(v.raw_ptr(), key, val)
 }
 
 pub fn (v ZVal) add_property_long(key string, val i64) {
-	zend_add_property_long(v, key, val)
+	zend.add_property_long(v.raw_ptr(), key, val)
 }
 
 pub fn (v ZVal) add_property_double(key string, val f64) {
-	zend_add_property_double(v, key, val)
+	zend.add_property_double(v.raw_ptr(), key, val)
 }
 
 pub fn (v ZVal) add_property_bool(key string, val bool) {
-	zend_add_property_bool(v, key, val)
+	zend.add_property_bool(v.raw_ptr(), key, val)
 }
 
 // 通用属性获取：返回一个新的 ZVal
