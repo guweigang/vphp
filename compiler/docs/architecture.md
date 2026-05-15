@@ -312,10 +312,16 @@ Purpose:
 
 Key types:
 
+- `ClassMethodGlue`
 - `ClassMethodGlueContext`
 
 This layer answers "after a generated class method call runs, what extra PHP
 runtime state must be written back, and how is the result returned?"
+
+`ClassMethodGlue` builds the method wrapper plan from `PhpMethodRepr`, including
+the glue name, struct-closure helper, argument setup, call expression, and return
+context. `ClassMethodGlueContext` owns the wrapper body details once that plan is
+known.
 
 ### 7.9. `class_lifecycle_binding`
 

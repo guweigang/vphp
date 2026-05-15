@@ -1,5 +1,14 @@
 module compiler
 
+import compiler.repr
+
+struct ClassMethodGlue {
+	glue_name    string
+	helper_lines []string
+	arg_setup    PhpArgSetup
+	context      ClassMethodGlueContext
+}
+
 struct ClassMethodGlueContext {
 	class_name              string
 	lower_name              string
@@ -11,6 +20,68 @@ struct ClassMethodGlueContext {
 	call_expr               string
 	arg_names               []string
 	return_binding          ReturnBinding
+}
+
+fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_receiver bool, method repr.PhpMethodRepr, params_structs map[string]repr.PhpParamsStruct) ?ClassMethodGlue {
+	if method.has_export {
+		return none
+	}
+	glue_name := if method.v_name != '' { method.v_name } else { method.name }
+	return_type := method.return_spec.effective_v_type()
+	struct_closure := StructClosureBinding.new('${r.name}_${glue_name}', return_type, params_structs)
+	mut helper_lines := []string{}
+	if closure_binding := struct_closure {
+		helper_lines << closure_binding.render_helper_lines()
+	}
+	return_info := method_runtime_return_info(r.name, method.name, method.is_static, return_type,
+		method.borrowed_return)
+	return_binding := ReturnBinding.new_with_struct_closure(return_type, struct_closure)
+	returns_object := return_info.kind in [.static_factory, .static_object, .instance_object]
+	arg_setup := build_php_arg_setup(method.args, returns_object, true)
+	arg_names := arg_setup.names
+	call_expr := class_method_call_expr(r.name, method, uses_inherited_receiver, arg_names)
+	return ClassMethodGlue{
+		glue_name:    glue_name
+		helper_lines: helper_lines
+		arg_setup:    arg_setup
+		context:      ClassMethodGlueContext{
+			class_name:              r.name
+			lower_name:              lower_name
+			shadow_static_name:      r.shadow_static_name
+			is_static:               method.is_static
+			uses_inherited_receiver: uses_inherited_receiver
+			returns_object:          returns_object
+			return_type:             return_type
+			call_expr:               call_expr
+			arg_names:               arg_names
+			return_binding:          return_binding
+		}
+	}
+}
+
+fn class_method_call_expr(class_name string, method repr.PhpMethodRepr, uses_inherited_receiver bool, arg_names []string) string {
+	call_args := arg_names.join(', ')
+	v_name := if method.v_name != '' { method.v_name } else { method.name }
+	v_call_name := if is_v_keyword(v_name) { '@' + v_name } else { v_name }
+	if method.is_static {
+		return '${class_name}.${v_call_name}(${call_args})'
+	}
+	if uses_inherited_receiver {
+		return 'recv.${v_call_name}(${call_args})'
+	}
+	return 'recv.${v_call_name}(${call_args})'
+}
+
+fn (glue ClassMethodGlue) render_lines() []string {
+	mut lines := []string{}
+	lines << glue.helper_lines
+	lines << glue.context.render_wrapper_start_lines(glue.glue_name)
+	lines << glue.context.render_scope_lines()
+	lines << glue.arg_setup.lines
+	lines << glue.context.render_static_sync_from_php_lines()
+	lines << glue.context.render_return_lines()
+	lines << '}'
+	return lines
 }
 
 fn (ctx ClassMethodGlueContext) capture_list() string {
