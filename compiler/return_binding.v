@@ -71,12 +71,20 @@ fn (binding ReturnBinding) render_function_lines(v_call_name string, call_args s
 			return binding.render_closure_lines('${v_call_name}(${call_args})', false)
 		}
 		.value {
-			return [
-				'    res := ${v_call_name}(${call_args})',
-				'    ctx.return().v[${binding.return_type}](res)',
-			]
+			return binding.render_value_call_lines('${v_call_name}(${call_args})')
 		}
 	}
+}
+
+fn (binding ReturnBinding) render_value_call_lines(call_expr string) []string {
+	mut lines := []string{}
+	lines << '    res := ${call_expr}'
+	lines << binding.render_value_result_line('res')
+	return lines
+}
+
+fn (binding ReturnBinding) render_value_result_line(result_name string) string {
+	return '    ctx.return().v[${binding.effective_return}](${result_name})'
 }
 
 fn (binding ReturnBinding) render_result_lines(v_call_name string, call_args string, arg_names []string) []string {
