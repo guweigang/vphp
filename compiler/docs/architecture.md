@@ -17,6 +17,7 @@ vphp/compiler/
   entry.v        # Compiler entry and compile pipeline
   export.v       # export assembly and final file emission
   c_emitter.v    # C-side wrapper and glue emission
+  c_builder_binding.v # repr -> C builder mapping
   v_glue.v       # V-side bridge/glue emission
   function_binding.v # function wrapper glue planning
   arg_binding.v  # PhpArgRepr -> V glue argument bindings
@@ -186,6 +187,27 @@ Typical examples:
 - `PHP_METHOD(...)` wrappers
 - object construction wrappers
 - instance/static method bridge templates
+
+### 6.5. `c_builder_binding`
+
+File: `vphp/compiler/c_builder_binding.v`
+
+Purpose:
+
+- Convert `repr` objects into `builder` objects used for arginfo, type
+  declarations, method tables, constants, interfaces, enums, and class metadata
+- Keep `repr -> builder` mapping out of concrete C wrapper body emission
+
+Key responsibilities:
+
+- `build_func(...)`
+- `build_class_type(...)`
+- `build_interface_type(...)`
+- `build_enum_type(...)`
+- shared visibility, argument, attribute, and return-spec mapping helpers
+
+This layer answers "what builder model should represent this compiler repr?"
+`c_emitter.v` still owns concrete C wrapper bodies and template selection.
 
 ### 7. `v_glue`
 
