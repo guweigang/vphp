@@ -74,9 +74,13 @@ fn php_attributes_literal(attrs []repr.PhpAttributeRepr) string {
 	return '[' + attrs.map(php_attribute_literal(it)).join(', ') + ']'
 }
 
+fn is_context_arg_type(v_type string) bool {
+	return v_type == 'Context' || v_type == 'vphp.Context'
+}
+
 fn needs_php_args(args []repr.PhpArgRepr) bool {
 	for arg in args {
-		if arg.v_type != 'Context' && arg.v_type != 'vphp.Context' {
+		if !is_context_arg_type(arg.v_type) {
 			return true
 		}
 	}
@@ -91,7 +95,7 @@ fn gen_php_args_lines(args []repr.PhpArgRepr) []string {
 	lines << '    php_args := ctx.args_with_meta(['
 	mut php_index := 0
 	for arg in args {
-		if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
+		if is_context_arg_type(arg.v_type) {
 			continue
 		}
 		lines << '        vphp.PhpArgMeta{ index: ${php_index}, name: ${v_single_quote(arg.name)}, attributes: ${php_attributes_literal(arg.attributes)} },'
@@ -118,10 +122,14 @@ fn (binding PhpSingleArgBinding) arg_expr() string {
 	return 'php_args.at_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)})'
 }
 
+fn (binding PhpSingleArgBinding) has_arg_expr() string {
+	return 'php_args.has_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)})'
+}
+
 fn (binding PhpSingleArgBinding) with_default(expr string) string {
 	default_value := PhpArgDefaultValue.from_arg(binding.arg) or { return expr }
 	default_expr := default_value.arg_expr() or { return expr }
-	return 'if php_args.has_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)}) { ${expr} } else { ${default_expr} }'
+	return 'if ${binding.has_arg_expr()} { ${expr} } else { ${default_expr} }'
 }
 
 fn (binding PhpSingleArgBinding) render_semantic_lines(returns_voidptr bool) ?[]string {
@@ -131,7 +139,7 @@ fn (binding PhpSingleArgBinding) render_semantic_lines(returns_voidptr bool) ?[]
 		spec := php_types.PhpTypeSpec.semantic_wrapper_for(inner) or { return none }
 		if spec.is_total_arg {
 			return [
-				'    ${binding.var_name} := if php_args.has_named_or_index(${binding.index}, ${v_single_quote(binding.arg.name)}) { ?${inner}(${binding.arg_expr()}.value) } else { none }',
+				'    ${binding.var_name} := if ${binding.has_arg_expr()} { ?${inner}(${binding.arg_expr()}.value) } else { none }',
 			]
 		}
 		return [
@@ -282,7 +290,7 @@ fn build_php_arg_bindings(args []repr.PhpArgRepr) []PhpArgBinding {
 			arg:       arg
 			php_index: php_index
 		}
-		if arg.v_type != 'Context' && arg.v_type != 'vphp.Context' {
+		if !is_context_arg_type(arg.v_type) {
 			php_index++
 		}
 		i++
@@ -324,7 +332,7 @@ fn (binding PhpArgBinding) render_lines(returns_voidptr bool, allow_raw_object b
 
 fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 	arg := binding.arg
-	if arg.v_type == 'Context' || arg.v_type == 'vphp.Context' {
+	if is_context_arg_type(arg.v_type) {
 		return ['    ${binding.var_name} := ctx']
 	}
 	if arg.v_type == 'vphp.ZVal' || arg.v_type == 'ZVal' {

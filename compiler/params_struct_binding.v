@@ -62,7 +62,7 @@ fn (binding ParamsStructFieldBinding) render_lines(returns_voidptr bool) []strin
 		return semantic_lines
 	}
 	return [
-		'    ${binding.var_name} := if php_args.has_named_or_index(${binding.index}, ${binding.arg_name_literal()}) { ${value_expr} } else { ${default_expr} }',
+		'    ${binding.var_name} := if ${binding.has_arg_expr()} { ${value_expr} } else { ${default_expr} }',
 	]
 }
 
@@ -72,7 +72,7 @@ fn (binding ParamsStructFieldBinding) render_semantic_lines(default_expr string,
 		return none
 	}
 	mut lines := []string{}
-	lines << '    ${binding.var_name} := if php_args.has_named_or_index(${binding.index}, ${binding.arg_name_literal()}) {'
+	lines << '    ${binding.var_name} := if ${binding.has_arg_expr()} {'
 	lines << '        ${binding.arg_expr()}.${spec.arg_method}() or {'
 	lines << "            vphp.throw_exception('argument ${binding.index} must be ${spec.arg_label}', 0)"
 	lines << '            ${arg_return_stmt(returns_voidptr)}'
@@ -89,6 +89,10 @@ fn (binding ParamsStructFieldBinding) arg_name_literal() string {
 
 fn (binding ParamsStructFieldBinding) arg_expr() string {
 	return 'php_args.at_named_or_index(${binding.index}, ${binding.arg_name_literal()})'
+}
+
+fn (binding ParamsStructFieldBinding) has_arg_expr() string {
+	return 'php_args.has_named_or_index(${binding.index}, ${binding.arg_name_literal()})'
 }
 
 fn (binding ParamsStructFieldBinding) value_expr() string {
