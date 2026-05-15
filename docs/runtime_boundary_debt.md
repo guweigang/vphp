@@ -260,6 +260,18 @@ Scope:
 
 Risk: medium to high.
 
+Progress:
+
+- generated object property glue now wraps handler callback inputs through
+  `PhpObjectPropertyHandler` instead of spelling `PhpReturn.from_ptr(rv)`,
+  `ZVal.from_ptr(value)`, or `name_ptr.vstring_with_len(name_len)` directly
+- generated struct-param closure bridges now delegate callback invocation and
+  return writing through `Context.invoke_struct_closure*`
+- `ReturnBinding` owns value-return write emission for function and class method
+  glue
+- boundary scan guards now block the old property-handler wrapping shape and
+  struct closure bridges that hand-write `res := cb(args)`
+
 ### Phase 5: Ownership Deep Water
 
 Goal:
