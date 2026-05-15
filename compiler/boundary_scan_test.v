@@ -68,3 +68,72 @@ fn test_compiler_does_not_emit_stale_raw_runtime_entries() {
 		assert_no_boundary_regressions(file, read_repo_file(file))
 	}
 }
+
+fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
+	allowed := {
+		'vphp/zval.v': [
+			'fn zend_new_zval() &C.zval {',
+			'fn zend_new_persistent_zval() &C.zval {',
+			'fn zend_release_zval(z &C.zval) {',
+			'fn zend_release_persistent_zval(z &C.zval) {',
+			'fn zend_disown_zval(z &C.zval) {',
+			'fn zend_copy_zval(dst &C.zval, src &C.zval) {',
+		]
+		'vphp/zend_object_lifecycle.v': [
+			'fn zend_allocate_contiguous_object(ce voidptr, v_size usize) voidptr {',
+			'fn zend_object_add_ref(obj ZendObject) {',
+			'fn zend_object_release(obj ZendObject) {',
+			'fn zend_object_bind_handlers(obj ZendObject, handlers voidptr, ownership OwnershipKind) {',
+			'fn zend_object_ensure_binding(obj ZendObject, handlers voidptr, ownership OwnershipKind) &C.vphp_object_wrapper {',
+			'fn zend_object_init_owned_instance(obj ZendObject, handlers voidptr) {',
+			'fn zend_object_wrapper(obj ZendObject) &C.vphp_object_wrapper {',
+			'fn zend_wrap_existing_object(out zval.Handle, obj ZendObject) {',
+		]
+		'vphp/zend_runtime.v': [
+			'fn zend_emalloc(size usize) voidptr {',
+			'fn zend_efree(ptr voidptr) {',
+			'fn zend_throw_exception(msg string, code int) {',
+			'fn zend_throw_exception_class(class_name string, msg string, code int) {',
+			'fn zend_throw_exception_object(exception zval.Handle) {',
+			'fn zend_has_exception() bool {',
+			'fn zend_exception_message() string {',
+			'fn zend_clear_exception() {',
+			'fn zend_report_error(level int, msg string) {',
+			'fn zend_output_write(msg string) {',
+			'fn zend_framework_init(module_number int) {',
+			'fn zend_uninstall_runtime_binding_hooks() {',
+			'fn zend_autorelease_shutdown() {',
+			'fn zend_shutdown_registry() {',
+			'fn zend_request_startup() {',
+			'fn zend_request_shutdown() {',
+			'fn zend_active_globals_ptr() voidptr {',
+			'fn zend_autorelease_mark() int {',
+			'fn zend_autorelease_drain(mark int) {',
+		]
+		'vphp/zval/superglobals.v': [
+			'fn zend_superglobal(kind Superglobal) zend.Superglobal {',
+		]
+	}
+
+	for path, expected_lines in allowed {
+		source := read_repo_file(path)
+		for expected in expected_lines {
+			assert source.contains(expected), '${path} lost expected boundary helper ${expected}'
+		}
+	}
+
+	vphp_root := os.join_path(repo_root(), 'vphp')
+	for file in os.walk_ext(vphp_root, '.v') {
+		path := file.all_after(repo_root() + os.path_separator)
+		if path.starts_with('vphp/zend/') {
+			continue
+		}
+		source := read_repo_file(path)
+		expected_lines := allowed[path] or { []string{} }
+		for line in source.split_into_lines() {
+			if line.starts_with('fn zend_') {
+				assert line in expected_lines, '${path} introduced unclassified root Zend helper ${line}'
+			}
+		}
+	}
+}
