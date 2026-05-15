@@ -107,7 +107,3 @@ pub fn generic_free_raw[T](ptr voidptr) {
 		}
 	}
 }
-
-pub fn allocate_contiguous_object[T](ce voidptr) voidptr {
-	return object.allocate_contiguous(ce, sizeof(T))
-}
