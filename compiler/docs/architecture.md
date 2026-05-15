@@ -302,8 +302,9 @@ File: `vphp/compiler/class_method_binding.v`
 Purpose:
 
 - Compose class method call results with class-specific side effects
-- Keep inherited receiver sync, static-property sync, object returns, and
-  `ReturnBinding` behavior out of the main class glue loop
+- Keep wrapper signature, inherited receiver loading, request frame scope,
+  static-property sync, object returns, and `ReturnBinding` behavior out of the
+  main class glue loop
 
 Key types:
 

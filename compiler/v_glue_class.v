@@ -185,25 +185,8 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			m.borrowed_return)
 		return_binding := ReturnBinding.new_with_struct_closure(return_type, struct_closure)
 		returns_object := return_info.kind in [.static_factory, .static_object, .instance_object]
-		ret_decl := if returns_object { 'voidptr' } else { '' }
-
-		out << "@[export: 'vphp_wrap_${r.name}_${glue_name}']"
-		if m.is_static {
-			out << 'pub fn vphp_wrap_${lower_name}_${glue_name}(ctx vphp.Context) ${ret_decl} {'
-		} else {
-			out << 'pub fn vphp_wrap_${lower_name}_${glue_name}(ptr voidptr, ctx vphp.Context) ${ret_decl} {'
-			if uses_inherited_receiver {
-				out << '    this_obj := vphp.ZendObject.from_ptr(ptr)'
-				out << '    mut recv := ${lower_name}_load_from_php(this_obj)'
-			} else {
-				out << '    mut recv := unsafe { &${r.name}(ptr) }'
-			}
-		}
-		out << '    mut vphp_scope := vphp.PhpScope.once()'
-		out << '    defer { vphp_scope.close() }'
 
 		arg_setup := build_php_arg_setup(m.args, returns_object, true)
-		out << arg_setup.lines
 		arg_names := arg_setup.names
 
 		call_args := arg_names.join(', ')
@@ -220,10 +203,6 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			}
 		}
 
-		if r.shadow_static_name != '' {
-			out << '    ${r.name}.sync_statics_from_php(ctx)'
-		}
-
 		method_ctx := ClassMethodGlueContext{
 			class_name:              r.name
 			lower_name:              lower_name
@@ -236,6 +215,10 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 			arg_names:               arg_names
 			return_binding:          return_binding
 		}
+		out << method_ctx.render_wrapper_start_lines(glue_name)
+		out << method_ctx.render_scope_lines()
+		out << arg_setup.lines
+		out << method_ctx.render_static_sync_from_php_lines()
 		out << method_ctx.render_return_lines()
 		out << '}'
 	}
