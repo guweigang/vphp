@@ -23,6 +23,7 @@ vphp/compiler/
   return_binding.v # PhpReturnRepr -> V glue return handling
   class_method_binding.v # class method call / sync / return composition
   class_property_binding.v # class property get / set / sync glue
+  inherited_receiver_binding.v # inherited receiver load / sync glue
   php_types/     # shared PHP-facing type/spec mapping
   repr/          # compiler representations
   parser/        # AST -> repr
@@ -334,6 +335,25 @@ object properties?"
 `ClassPropertyFieldBinding` owns the per-field filter and scalar read/write/sync
 emission. The class-level glue only decides which handler function is being
 rendered.
+
+### 7.10. `inherited_receiver_binding`
+
+File: `vphp/compiler/inherited_receiver_binding.v`
+
+Purpose:
+
+- Generate inherited receiver load/sync helpers for V classes backed by PHP
+  parent objects
+- Keep per-field scalar / ZVal load and scalar write-back expressions out of the
+  main class glue loop
+
+Key types:
+
+- `InheritedReceiverGlue`
+- `InheritedReceiverFieldBinding`
+
+This layer answers "when a V receiver is reconstructed from a PHP object, which
+fields are read from the object and which scalar fields are synchronized back?"
 
 ## Compile Pipeline
 
