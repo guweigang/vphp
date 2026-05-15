@@ -26,7 +26,7 @@ type ZendCallTarget = ZendCallableCall
 	| ZendMethodCall
 	| ZendStaticMethodCall
 
-fn zend_invoke_call_target(target ZendCallTarget, retval voidptr, count int, params voidptr) int {
+fn invoke_zval_call_target(target ZendCallTarget, retval voidptr, count int, params voidptr) int {
 	return match target {
 		ZendMethodCall {
 			zend.call_method_ptr(target.receiver.raw_ptr(), target.method, retval, count, params)

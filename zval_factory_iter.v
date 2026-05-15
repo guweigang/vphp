@@ -4,10 +4,6 @@ import vphp.zval
 
 // ======== 工厂方法 ========
 
-fn zend_foreach_zval(v ZVal, ctx voidptr, wrapper voidptr) {
-	zval.foreach(v.handle(), ctx, wrapper)
-}
-
 fn request_owned_zval_from_handle(handle zval.Handle) ZVal {
 	RequestScope.autorelease_add_handle(handle)
 	return unsafe {
@@ -76,7 +72,7 @@ pub fn (v ZVal) foreach(cb ForeachCb) {
 	if !v.is_array() && !v.is_object() {
 		return
 	}
-	zend_foreach_zval(v, &cb, vphp_foreach_wrapper)
+	zval.foreach(v.handle(), &cb, vphp_foreach_wrapper)
 }
 
 // 语义化别名：更贴近日常遍历语义
@@ -110,7 +106,7 @@ pub fn (v ZVal) foreach_with_ctx[T](ctx T, cb ForeachWithCtxCb[T]) T {
 		cb:  cb
 		ctx: ctx
 	}
-	zend_foreach_zval(v, &pack, vphp_foreach_with_ctx_wrapper[T])
+	zval.foreach(v.handle(), &pack, vphp_foreach_with_ctx_wrapper[T])
 	return pack.ctx
 }
 

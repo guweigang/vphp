@@ -707,7 +707,7 @@ Status: **partially started**.
 result handling, and ownership adoption are no longer repeated in every method.
 The previous raw callback shape has been replaced by a private
 `ZendCallTarget`, and `&C.zval` / `&&C.zval` argv details are confined to
-`call_zval_target(...)` and `zend_invoke_call_target(...)`.
+`call_zval_target(...)` and `invoke_zval_call_target(...)`.
 The direct `C.vphp_call_*`, `C.vphp_new_instance(...)`, and static
 property/class-constant bridge calls are routed through private Zend wrapper
 helpers. The remaining work is to move the helper file into the eventual
@@ -736,7 +736,7 @@ PhpFunction.call(...)
   -> ZVal.call_owned_request(...)
   -> call_function_zval(...)
   -> call_zval_target(...)
-  -> zend_invoke_call_target(...)
+  -> invoke_zval_call_target(...)
   -> C.vphp_call_php_func(...)
 ```
 
