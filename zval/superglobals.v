@@ -13,7 +13,7 @@ pub enum Superglobal {
 }
 
 pub fn superglobal(kind Superglobal) Handle {
-	return Handle.from_ptr(zend.superglobal_ptr(zend_superglobal(kind)))
+	return Handle.from_ptr(zend.superglobal_ptr(to_zend_superglobal(kind)))
 }
 
 pub fn set_env_superglobal_string(name string, value string) {
@@ -24,7 +24,7 @@ pub fn set_server_superglobal_string(name string, value string) {
 	zend.set_server_superglobal_string(name, value)
 }
 
-fn zend_superglobal(kind Superglobal) zend.Superglobal {
+fn to_zend_superglobal(kind Superglobal) zend.Superglobal {
 	return match kind {
 		.env { zend.Superglobal.env }
 		.server { zend.Superglobal.server }

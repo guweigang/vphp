@@ -147,9 +147,6 @@ fn test_root_zend_helpers_stay_on_known_runtime_boundaries() {
 			'fn zend_autorelease_mark() int {',
 			'fn zend_autorelease_drain(mark int) {',
 		]
-		'vphp/zval/superglobals.v':     [
-			'fn zend_superglobal(kind Superglobal) zend.Superglobal {',
-		]
 	}
 
 	for path, expected_lines in allowed {
