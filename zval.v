@@ -55,28 +55,12 @@ pub:
 	persistent_fallback_zval_len int
 }
 
-fn request_raw_zval() &C.zval {
-	return ZVal.from_handle(zval.new_request()).raw
+fn ZVal.new_request_slot() ZVal {
+	return request_owned_zval_slot_from_handle(zval.new_request())
 }
 
-fn persistent_raw_zval() &C.zval {
-	return ZVal.from_handle(zval.new_persistent()).raw
-}
-
-fn release_request_raw_zval(z &C.zval) {
-	zval.release_request(zval.Handle.from_ptr(z))
-}
-
-fn release_persistent_raw_zval(z &C.zval) {
-	zval.release_persistent(zval.Handle.from_ptr(z))
-}
-
-fn disown_raw_zval(z &C.zval) {
-	zval.disown(zval.Handle.from_ptr(z))
-}
-
-fn copy_raw_zval(dst &C.zval, src &C.zval) {
-	zval.copy(zval.Handle.from_ptr(dst), zval.Handle.from_ptr(src))
+fn ZVal.new_persistent_slot() ZVal {
+	return persistent_owned_zval_from_handle(zval.new_persistent())
 }
 
 fn invalid_zval() ZVal {
@@ -121,16 +105,12 @@ fn clone_raw_with_ownership(src &C.zval, ownership OwnershipKind) ZVal {
 	if src == 0 {
 		return invalid_zval()
 	}
-	mut out := ZVal{
-		raw:           if ownership == .owned_persistent {
-			persistent_raw_zval()
-		} else {
-			request_raw_zval()
-		}
-		owned:         true
-		is_persistent: ownership == .owned_persistent
+	mut out := if ownership == .owned_persistent {
+		ZVal.new_persistent_slot()
+	} else {
+		ZVal.new_request_slot()
 	}
-	copy_raw_zval(out.raw, src)
+	zval.copy(out.handle(), zval.Handle.from_ptr(src))
 	if ownership == .owned_request {
 		RequestScope.autorelease_add_handle(out.handle())
 		if out.is_object() {
@@ -145,13 +125,13 @@ fn adopt_read_result(rv &C.zval, res &C.zval, ownership OwnershipKind) ZVal {
 		return invalid_zval()
 	}
 	if res == 0 {
-		release_request_raw_zval(rv)
+		zval.release_request(zval.Handle.from_ptr(rv))
 		return invalid_zval()
 	}
 	if usize(res) == usize(rv) {
 		return adopt_raw_with_ownership(rv, ownership)
 	}
-	release_request_raw_zval(rv)
+	zval.release_request(zval.Handle.from_ptr(rv))
 	if ownership == .borrowed {
 		return unsafe {
 			ZVal{

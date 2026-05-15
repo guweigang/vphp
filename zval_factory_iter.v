@@ -6,10 +6,24 @@ import vphp.zval
 
 fn request_owned_zval_from_handle(handle zval.Handle) ZVal {
 	RequestScope.autorelease_add_handle(handle)
+	return request_owned_zval_slot_from_handle(handle)
+}
+
+fn request_owned_zval_slot_from_handle(handle zval.Handle) ZVal {
 	return unsafe {
 		ZVal{
 			raw:   ZVal.from_handle(handle).raw
 			owned: true
+		}
+	}
+}
+
+fn persistent_owned_zval_from_handle(handle zval.Handle) ZVal {
+	return unsafe {
+		ZVal{
+			raw:           ZVal.from_handle(handle).raw
+			owned:         true
+			is_persistent: true
 		}
 	}
 }

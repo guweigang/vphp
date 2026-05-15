@@ -8,13 +8,14 @@ fn call_zval_target(target ZendCallTarget, args []vphp.ZVal, ownership Ownership
 		handles << arg.handle()
 	}
 	return zvalmod.with_call_args[ZVal](handles, fn [target, ownership] (count int, params voidptr) ZVal {
-		retval := request_raw_zval()
-		res := invoke_zval_call_target(target, retval, count, params)
+		retval := ZVal.new_request_slot()
+		res := invoke_zval_call_target(target, retval.raw, count, params)
 		if res == -1 {
-			release_request_raw_zval(retval)
+			mut failed := retval
+			failed.release()
 			return invalid_zval()
 		}
-		return adopt_raw_with_ownership(retval, ownership)
+		return adopt_raw_with_ownership(retval.raw, ownership)
 	})
 }
 

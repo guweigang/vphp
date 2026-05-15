@@ -1,5 +1,7 @@
 module vphp
 
+import vphp.zval
+
 pub fn (v ZVal) dup() ZVal {
 	if v.raw == 0 {
 		return invalid_zval()
@@ -13,9 +15,9 @@ pub fn (mut v ZVal) release() {
 	}
 	RequestScope.autorelease_forget_handle(v.handle())
 	if v.is_persistent {
-		release_persistent_raw_zval(v.raw)
+		zval.release_persistent(v.handle())
 	} else {
-		release_request_raw_zval(v.raw)
+		zval.release_request(v.handle())
 	}
 	v.raw = unsafe { nil }
 	v.owned = false
@@ -27,7 +29,7 @@ pub fn (mut v ZVal) disown() {
 		return
 	}
 	RequestScope.autorelease_forget_handle(v.handle())
-	disown_raw_zval(v.raw)
+	zval.disown(v.handle())
 	v.raw = unsafe { nil }
 	v.owned = false
 	v.is_persistent = false
