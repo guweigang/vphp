@@ -189,3 +189,7 @@ pub fn PersistentOwnedZBox.new_bool(b bool) PersistentOwnedZBox {
 pub fn PersistentOwnedZBox.new_string(s string) PersistentOwnedZBox {
 	return PersistentOwnedZBox.from_dyn(DynValue.of_string(s))
 }
+
+pub fn PersistentOwnedZBox.new_array() PersistentOwnedZBox {
+	return PersistentOwnedZBox.from_dyn(DynValue.of_list([]DynValue{}))
+}

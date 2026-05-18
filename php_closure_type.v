@@ -56,6 +56,14 @@ pub fn (c PhpClosure) to_persistent_owned() PhpClosure {
 	}
 }
 
+pub fn (c PhpClosure) retain() PhpClosure {
+	return c.to_persistent_owned()
+}
+
+pub fn (c PhpClosure) retained() PhpClosure {
+	return c.to_persistent_owned()
+}
+
 pub fn (c PhpClosure) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return PersistentOwnedZBox.of_callable(c.callable.to_zval())
 }
@@ -66,6 +74,14 @@ pub fn (c PhpClosure) to_borrowed() PhpClosure {
 	}
 }
 
+pub fn (c PhpClosure) borrowed() PhpClosure {
+	return c.to_borrowed()
+}
+
+pub fn (c PhpClosure) borrow() PhpClosure {
+	return c.to_borrowed()
+}
+
 pub fn (c PhpClosure) to_borrowed_zbox() RequestBorrowedZBox {
 	return c.callable.to_borrowed_zbox()
 }
@@ -74,6 +90,10 @@ pub fn (c PhpClosure) to_request_owned() PhpClosure {
 	return PhpClosure.from_request_owned_zbox(c.callable.to_request_owned_zbox()) or {
 		c.to_borrowed()
 	}
+}
+
+pub fn (c PhpClosure) owned() PhpClosure {
+	return c.to_request_owned()
 }
 
 pub fn (c PhpClosure) to_request_owned_zbox() RequestOwnedZBox {
@@ -110,16 +130,21 @@ pub fn (c PhpClosure) call_owned_persistent_zval(args []vphp.ZVal) ZVal {
 	}) or { invalid_zval() }
 }
 
-pub fn (c PhpClosure) fn_request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
+fn (c PhpClosure) request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.call_owned_request_zval(args))
 }
 
-pub fn (c PhpClosure) fn_request_owned(args ...PhpArgInput) RequestOwnedZBox {
-	return c.fn_request_owned_zval(php_arg_inputs_to_zvals(args))
+fn (c PhpClosure) request_owned(args ...PhpArgInput) RequestOwnedZBox {
+	return c.request_owned_zval(php_arg_inputs_to_zvals(args))
+}
+
+pub fn (c PhpClosure) invoke(args ...PhpArgInput) PhpValue {
+	mut result := c.request_owned(args)
+	return result.take_value()
 }
 
 pub fn (c PhpClosure) call[T](args ...PhpArgInput) !T {
-	mut result := c.fn_request_owned(args)
+	mut result := c.request_owned(args)
 	defer {
 		result.release()
 	}
@@ -127,7 +152,7 @@ pub fn (c PhpClosure) call[T](args ...PhpArgInput) !T {
 }
 
 pub fn (c PhpClosure) with_result[T, R](run fn (T) R, args ...PhpArgInput) !R {
-	mut result := c.fn_request_owned(args)
+	mut result := c.request_owned(args)
 	defer {
 		result.release()
 	}
@@ -136,7 +161,7 @@ pub fn (c PhpClosure) with_result[T, R](run fn (T) R, args ...PhpArgInput) !R {
 }
 
 pub fn (c PhpClosure) with_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
-	mut result := c.fn_request_owned_zval(args)
+	mut result := c.request_owned_zval(args)
 	defer {
 		result.release()
 	}
@@ -145,6 +170,18 @@ pub fn (c PhpClosure) with_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
 
 pub fn (c PhpClosure) kind_name() string {
 	return c.callable.kind_name()
+}
+
+pub fn (c PhpClosure) is_borrowed() bool {
+	return c.callable.is_borrowed()
+}
+
+pub fn (c PhpClosure) is_owned() bool {
+	return c.callable.is_request_owned()
+}
+
+pub fn (c PhpClosure) is_retained() bool {
+	return c.callable.is_retained()
 }
 
 pub fn (c PhpClosure) clone() PhpClosure {
@@ -158,7 +195,7 @@ pub fn (c PhpClosure) clone_request_owned() RequestOwnedZBox {
 }
 
 pub fn (c PhpClosure) with_fn_result_zval[T](run fn (ZVal) T, args ...ZVal) T {
-	mut result := c.fn_request_owned_zval(args)
+	mut result := c.request_owned_zval(args)
 	defer {
 		result.release()
 	}

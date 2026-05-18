@@ -56,6 +56,14 @@ pub fn (v PhpScalar) to_borrowed() PhpScalar {
 	return PhpScalar.from_zval(v.value.to_borrowed_zbox().to_zval()) or { v }
 }
 
+pub fn (v PhpScalar) borrowed() PhpScalar {
+	return v.to_borrowed()
+}
+
+pub fn (v PhpScalar) borrow() PhpScalar {
+	return v.to_borrowed()
+}
+
 pub fn (v PhpScalar) to_borrowed_zbox() RequestBorrowedZBox {
 	return v.value.to_borrowed_zbox()
 }
@@ -64,6 +72,10 @@ pub fn (v PhpScalar) to_request_owned() PhpScalar {
 	return PhpScalar.from_request_owned_zbox(v.value.to_request_owned_zbox()) or {
 		PhpScalar.from_zval(ZVal.new_null()) or { panic('null is scalar') }
 	}
+}
+
+pub fn (v PhpScalar) owned() PhpScalar {
+	return v.to_request_owned()
 }
 
 pub fn (v PhpScalar) to_request_owned_zbox() RequestOwnedZBox {
@@ -84,8 +96,28 @@ pub fn (v PhpScalar) to_persistent_owned() PhpScalar {
 	}
 }
 
+pub fn (v PhpScalar) retain() PhpScalar {
+	return v.to_persistent_owned()
+}
+
+pub fn (v PhpScalar) retained() PhpScalar {
+	return v.to_persistent_owned()
+}
+
 pub fn (v PhpScalar) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return v.value.to_persistent_owned_zbox()
+}
+
+pub fn (v PhpScalar) is_borrowed() bool {
+	return v.value.is_borrowed()
+}
+
+pub fn (v PhpScalar) is_owned() bool {
+	return v.value.is_request_owned()
+}
+
+pub fn (v PhpScalar) is_retained() bool {
+	return v.value.is_retained()
 }
 
 pub fn (v PhpScalar) type_name() string {

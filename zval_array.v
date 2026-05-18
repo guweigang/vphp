@@ -99,7 +99,7 @@ pub fn (v ZVal) keys() ZVal {
 	mut out := ZVal.new_null()
 	out.array_init()
 	v.foreach_with_ctx[ZVal](out, fn (key ZVal, _ ZVal, mut acc ZVal) {
-		acc.add_next_val(key)
+		acc.add_next_val(key.dup())
 	})
 	return out
 }
@@ -113,7 +113,7 @@ pub fn (v ZVal) values() ZVal {
 	mut out := ZVal.new_null()
 	out.array_init()
 	v.foreach_with_ctx[ZVal](out, fn (_ ZVal, val ZVal, mut acc ZVal) {
-		acc.add_next_val(val)
+		acc.add_next_val(val.dup())
 	})
 	return out
 }
@@ -150,6 +150,50 @@ pub fn (v ZVal) get(key string) !ZVal {
 	return ZVal.from_handle(res)
 }
 
+// value_at returns the value for a string array key, or a request-owned null
+// value when the key is absent. Use get() when absence should remain explicit.
+pub fn (v ZVal) value_at(key string) ZVal {
+	return v.get(key) or { ZVal.new_null() }
+}
+
+pub fn (v ZVal) [] (key string) ZVal {
+	return v.value_at(key)
+}
+
+pub fn (v ZVal) string_at(key string, default_value string) string {
+	raw := v.get(key) or { return default_value }
+	text := raw.to_string().trim_space()
+	return if text == '' { default_value } else { text }
+}
+
+pub fn (v ZVal) raw_string_at(key string, default_value string) string {
+	raw := v.get(key) or { return default_value }
+	return raw.to_string()
+}
+
+pub fn (v ZVal) int_at(key string, default_value int) int {
+	raw := v.get(key) or { return default_value }
+	if raw.is_string() {
+		text := raw.to_string().trim_space()
+		return if text == '' { default_value } else { text.int() }
+	}
+	return int(raw.to_i64())
+}
+
+pub fn (v ZVal) bool_at(key string, default_value bool) bool {
+	raw := v.get(key) or { return default_value }
+	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
+		return default_value
+	}
+	if raw.is_bool() {
+		return raw.to_bool()
+	}
+	if raw.is_long() {
+		return raw.to_i64() != 0
+	}
+	return raw.to_string().trim_space().to_lower() in ['1', 'true', 'yes', 'on']
+}
+
 pub fn (v ZVal) get_key(key ZVal) !ZVal {
 	if !v.is_valid() || zval.is_null(v.handle()) {
 		return error('invalid zval or not an array')
@@ -175,26 +219,4 @@ pub fn (v ZVal) get_key(key ZVal) !ZVal {
 pub fn (v ZVal) get_or(key string, default_val string) string {
 	val := v.get(key) or { return default_val }
 	return val.to_string()
-}
-
-fn zval_string_key_or(input ZVal, key string, default_value string) string {
-	raw := input.get(key) or { return default_value }
-	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
-		return default_value
-	}
-	return raw.to_string()
-}
-
-fn zval_bool_key_or(input ZVal, key string, default_value bool) bool {
-	raw := input.get(key) or { return default_value }
-	if !raw.is_valid() || raw.is_null() || raw.is_undef() {
-		return default_value
-	}
-	if raw.is_bool() {
-		return raw.to_bool()
-	}
-	if raw.is_long() {
-		return raw.to_i64() != 0
-	}
-	return raw.to_string().trim_space().to_lower() in ['1', 'true', 'yes', 'on']
 }

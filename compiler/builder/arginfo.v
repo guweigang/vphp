@@ -121,10 +121,11 @@ fn render_arginfo_arg_line(arg_name string, raw_type string, default_value strin
 		return '{ "${arg_name}", ${render_class_type_init_literal(raw_type)}, ${default_literal} },'
 	}
 	if arg_info.code == 'IS_CALLABLE' {
+		allow_null := if arg_info.allow_null { '1' } else { '0' }
 		if default_value != '' {
-			return '{ "${arg_name}", ZEND_TYPE_INIT_CODE(IS_CALLABLE, 0, _ZEND_ARG_INFO_FLAGS(0, 0, 0)), ${default_literal} },'
+			return '{ "${arg_name}", ZEND_TYPE_INIT_CODE(IS_CALLABLE, ${allow_null}, _ZEND_ARG_INFO_FLAGS(0, 0, 0)), ${default_literal} },'
 		}
-		return 'ZEND_ARG_CALLABLE_INFO(0, ${arg_name}, 0)'
+		return 'ZEND_ARG_CALLABLE_INFO(0, ${arg_name}, ${allow_null})'
 	}
 	if arg_info.mask_obj_class != '' {
 		mut mask := arg_info.mask

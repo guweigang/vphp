@@ -86,6 +86,10 @@ pub fn (ctx Context) arg_iterable(index int) ?PhpIterable {
 	return ctx.arg_at(index).iterable()
 }
 
+pub fn (ctx Context) arg_iterator(index int) ?PhpIterator {
+	return ctx.arg_at(index).iterator()
+}
+
 pub fn (ctx Context) arg_throwable(index int) ?PhpThrowable {
 	return ctx.arg_at(index).throwable()
 }

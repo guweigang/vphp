@@ -62,8 +62,26 @@ pub fn (v PhpInt) to_zval() ZVal {
 	return v.value.to_zval()
 }
 
+pub fn (v PhpInt) to_value() PhpValue {
+	return PhpValue{
+		value: v.value.clone()
+	}
+}
+
+pub fn (mut v PhpInt) take_value() PhpValue {
+	return PhpValue.adopt_zval(v.take_zval())
+}
+
 pub fn (v PhpInt) to_borrowed() PhpInt {
 	return PhpInt.from_zval(v.value.to_borrowed_zbox().to_zval()) or { v }
+}
+
+pub fn (v PhpInt) borrowed() PhpInt {
+	return v.to_borrowed()
+}
+
+pub fn (v PhpInt) borrow() PhpInt {
+	return v.to_borrowed()
 }
 
 pub fn (v PhpInt) to_borrowed_zbox() RequestBorrowedZBox {
@@ -72,6 +90,10 @@ pub fn (v PhpInt) to_borrowed_zbox() RequestBorrowedZBox {
 
 pub fn (v PhpInt) to_request_owned() PhpInt {
 	return PhpInt.from_request_owned_zbox(v.value.to_request_owned_zbox()) or { PhpInt.zero() }
+}
+
+pub fn (v PhpInt) owned() PhpInt {
+	return v.to_request_owned()
 }
 
 pub fn (v PhpInt) to_request_owned_zbox() RequestOwnedZBox {
@@ -92,8 +114,28 @@ pub fn (v PhpInt) to_persistent_owned() PhpInt {
 	}
 }
 
+pub fn (v PhpInt) retain() PhpInt {
+	return v.to_persistent_owned()
+}
+
+pub fn (v PhpInt) retained() PhpInt {
+	return v.to_persistent_owned()
+}
+
 pub fn (v PhpInt) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return v.value.to_persistent_owned_zbox()
+}
+
+pub fn (v PhpInt) is_borrowed() bool {
+	return v.value.is_borrowed()
+}
+
+pub fn (v PhpInt) is_owned() bool {
+	return v.value.is_request_owned()
+}
+
+pub fn (v PhpInt) is_retained() bool {
+	return v.value.is_retained()
 }
 
 pub fn (v PhpInt) value() i64 {

@@ -34,6 +34,8 @@ pub fn generic_free_raw[T](ptr voidptr) {
 				obj.$(field.name).release()
 			} $else $if field.typ is PhpIterable {
 				obj.$(field.name).release()
+			} $else $if field.typ is PhpIterator {
+				obj.$(field.name).release()
 			} $else $if field.typ is PhpResource {
 				obj.$(field.name).release()
 			} $else $if field.typ is PhpReference {
@@ -65,7 +67,28 @@ pub fn generic_free_raw[T](ptr voidptr) {
 				$if nongc ? {
 					obj.$(field.name).free()
 				}
+			} $else $if field.typ is []PhpValue {
+				for mut box in obj.$(field.name) {
+					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
+			} $else $if field.typ is []PhpObject {
+				for mut box in obj.$(field.name) {
+					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
 			} $else $if field.typ is map[string]PersistentOwnedZBox {
+				for _, mut box in obj.$(field.name) {
+					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
+			} $else $if field.typ is map[string]PhpValue {
 				for _, mut box in obj.$(field.name) {
 					box.release()
 				}
@@ -86,6 +109,13 @@ pub fn generic_free_raw[T](ptr voidptr) {
 				$if nongc ? {
 					obj.$(field.name).free()
 				}
+			} $else $if field.typ is map[string]PhpObject {
+				for _, mut box in obj.$(field.name) {
+					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
 			} $else $if field.typ is []RetainedCallable {
 				for mut box in obj.$(field.name) {
 					box.release()
@@ -94,6 +124,13 @@ pub fn generic_free_raw[T](ptr voidptr) {
 					obj.$(field.name).free()
 				}
 			} $else $if field.typ is map[string]RetainedCallable {
+				for _, mut box in obj.$(field.name) {
+					box.release()
+				}
+				$if nongc ? {
+					obj.$(field.name).free()
+				}
+			} $else $if field.typ is map[string]PhpCallable {
 				for _, mut box in obj.$(field.name) {
 					box.release()
 				}

@@ -91,3 +91,9 @@ pub fn RequestOwnedZBox.new_bool(b bool) RequestOwnedZBox {
 pub fn RequestOwnedZBox.new_string(s string) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(ZVal.new_string(s))
 }
+
+pub fn RequestOwnedZBox.new_array() RequestOwnedZBox {
+	mut value := RequestOwnedZBox.new_null()
+	value.to_zval().array_init()
+	return value
+}

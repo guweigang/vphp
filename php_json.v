@@ -15,6 +15,10 @@ pub fn PhpJson.decode_assoc(raw string) ZVal {
 	return result.take_zval()
 }
 
+pub fn PhpJson.decode_assoc_value(raw string) PhpValue {
+	return PhpValue.adopt_zval(PhpJson.decode_assoc(raw))
+}
+
 pub fn PhpJson.last_error_code() int {
 	return int(PhpFunction.named('json_last_error').result_i64())
 }
@@ -33,6 +37,10 @@ pub fn json_encode_with_flags(value ZVal, flags int) string {
 
 pub fn json_decode_assoc(raw string) ZVal {
 	return PhpJson.decode_assoc(raw)
+}
+
+pub fn json_decode_assoc_value(raw string) PhpValue {
+	return PhpJson.decode_assoc_value(raw)
 }
 
 pub fn json_last_error_code() int {

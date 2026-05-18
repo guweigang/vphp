@@ -34,6 +34,10 @@ pub fn (mut v RequestOwnedZBox) take_zval() ZVal {
 	return out
 }
 
+pub fn (mut v RequestOwnedZBox) take_value() PhpValue {
+	return PhpValue.adopt_zval(v.take_zval())
+}
+
 pub fn (mut v RequestOwnedZBox) release() {
 	v.z.release()
 }

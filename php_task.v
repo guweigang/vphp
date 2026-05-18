@@ -183,6 +183,10 @@ pub fn (handle PhpTaskHandle) wait_box() RequestOwnedZBox {
 	}
 }
 
+pub fn (handle PhpTaskHandle) wait_value() PhpValue {
+	return PhpValue.from_request_owned_zbox(handle.wait_box())
+}
+
 pub fn task_exists(name string) bool {
 	return PhpTask.named(name).exists()
 }

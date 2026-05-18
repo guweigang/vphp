@@ -49,6 +49,14 @@ pub fn (r PhpReference) to_borrowed() PhpReference {
 	return PhpReference.from_zval(r.value.to_borrowed_zbox().to_zval()) or { r }
 }
 
+pub fn (r PhpReference) borrowed() PhpReference {
+	return r.to_borrowed()
+}
+
+pub fn (r PhpReference) borrow() PhpReference {
+	return r.to_borrowed()
+}
+
 pub fn (r PhpReference) to_borrowed_zbox() RequestBorrowedZBox {
 	return r.value.to_borrowed_zbox()
 }
@@ -57,6 +65,10 @@ pub fn (r PhpReference) to_request_owned() PhpReference {
 	return PhpReference.from_request_owned_zbox(r.value.to_request_owned_zbox()) or {
 		r.to_borrowed()
 	}
+}
+
+pub fn (r PhpReference) owned() PhpReference {
+	return r.to_request_owned()
 }
 
 pub fn (r PhpReference) to_request_owned_zbox() RequestOwnedZBox {
@@ -69,8 +81,28 @@ pub fn (r PhpReference) to_persistent_owned() PhpReference {
 	}
 }
 
+pub fn (r PhpReference) retain() PhpReference {
+	return r.to_persistent_owned()
+}
+
+pub fn (r PhpReference) retained() PhpReference {
+	return r.to_persistent_owned()
+}
+
 pub fn (r PhpReference) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return r.value.to_persistent_owned_zbox()
+}
+
+pub fn (r PhpReference) is_borrowed() bool {
+	return r.value.is_borrowed()
+}
+
+pub fn (r PhpReference) is_owned() bool {
+	return r.value.is_request_owned()
+}
+
+pub fn (r PhpReference) is_retained() bool {
+	return r.value.is_retained()
 }
 
 pub fn (mut r PhpReference) take_zval() ZVal {

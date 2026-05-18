@@ -41,12 +41,17 @@ pub fn (f PhpFunction) call_owned_persistent_zval(args []vphp.ZVal) ZVal {
 	return f.to_zval().call_owned_persistent(args)
 }
 
-pub fn (f PhpFunction) request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
+fn (f PhpFunction) request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(f.call_owned_request_zval(args))
 }
 
-pub fn (f PhpFunction) request_owned(args ...PhpArgInput) RequestOwnedZBox {
+fn (f PhpFunction) request_owned(args ...PhpArgInput) RequestOwnedZBox {
 	return f.request_owned_zval(php_arg_inputs_to_zvals(args))
+}
+
+pub fn (f PhpFunction) invoke(args ...PhpArgInput) PhpValue {
+	mut result := f.request_owned(args)
+	return result.take_value()
 }
 
 pub fn (f PhpFunction) call[T](args ...PhpArgInput) !T {

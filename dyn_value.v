@@ -780,3 +780,7 @@ pub fn (v DynValue) new_zval() !ZVal {
 	framework_debug_log('dyn_value.new_zval exit raw=${usize(out.raw_ptr())} valid=${out.is_valid()} type=${out.type_name()}')
 	return out
 }
+
+pub fn (v DynValue) to_value() !PhpValue {
+	return PhpValue.adopt_zval(v.new_zval()!)
+}

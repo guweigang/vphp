@@ -436,11 +436,12 @@ void vphp_zval_foreach(zval *z, void *ctx,
     ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, val) {
       zval key_zv;
       if (key) {
-        ZVAL_STR(&key_zv, key);
+        ZVAL_STR_COPY(&key_zv, key);
       } else {
         ZVAL_LONG(&key_zv, index);
       }
       callback(ctx, &key_zv, val);
+      zval_ptr_dtor(&key_zv);
     }
     ZEND_HASH_FOREACH_END();
     return;
@@ -479,11 +480,12 @@ void vphp_zval_foreach(zval *z, void *ctx,
     ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, val) {
       zval key_zv;
       if (key) {
-        ZVAL_STR(&key_zv, key);
+        ZVAL_STR_COPY(&key_zv, key);
       } else {
         ZVAL_LONG(&key_zv, index);
       }
       callback(ctx, &key_zv, val);
+      zval_ptr_dtor(&key_zv);
     }
     ZEND_HASH_FOREACH_END();
   }

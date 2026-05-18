@@ -5,12 +5,27 @@ mut:
 	value PhpValueZBox
 }
 
+pub fn PhpObject.invalid() PhpObject {
+	return PhpObject{
+		value: PhpValueZBox.from_zval(invalid_zval())
+	}
+}
+
 pub fn PhpObject.from_zval(z ZVal) ?PhpObject {
 	if !z.is_object() {
 		return none
 	}
 	return PhpObject{
 		value: PhpValueZBox.from_zval(z)
+	}
+}
+
+pub fn PhpObject.adopt_zval(z ZVal) ?PhpObject {
+	if !z.is_object() {
+		return none
+	}
+	return PhpObject{
+		value: PhpValueZBox.adopt_zval(z)
 	}
 }
 
@@ -65,7 +80,21 @@ pub fn (o PhpObject) to_zval() ZVal {
 	return o.value.to_zval()
 }
 
+pub fn (o PhpObject) to_value() PhpValue {
+	return PhpValue{
+		value: o.value.clone()
+	}
+}
+
 pub fn (o PhpObject) borrowed_view() PhpObject {
+	return o.to_borrowed()
+}
+
+pub fn (o PhpObject) borrowed() PhpObject {
+	return o.to_borrowed()
+}
+
+pub fn (o PhpObject) borrow() PhpObject {
 	return o.to_borrowed()
 }
 
@@ -83,12 +112,20 @@ pub fn (o PhpObject) to_request_owned() PhpObject {
 	return PhpObject.from_request_owned_zbox(o.value.to_request_owned_zbox()) or { o.to_borrowed() }
 }
 
+pub fn (o PhpObject) owned() PhpObject {
+	return o.to_request_owned()
+}
+
 pub fn (o PhpObject) to_request_owned_zbox() RequestOwnedZBox {
 	return o.value.to_request_owned_zbox()
 }
 
 pub fn (mut o PhpObject) take_zval() ZVal {
 	return o.value.take_zval()
+}
+
+pub fn (mut o PhpObject) take_value() PhpValue {
+	return PhpValue.adopt_zval(o.take_zval())
 }
 
 pub fn PhpObject.from_persistent_owned_zbox(value PersistentOwnedZBox) ?PhpObject {
@@ -110,8 +147,28 @@ pub fn (o PhpObject) to_persistent_owned() PhpObject {
 	}
 }
 
+pub fn (o PhpObject) retain() PhpObject {
+	return o.to_persistent_owned()
+}
+
+pub fn (o PhpObject) retained() PhpObject {
+	return o.to_persistent_owned()
+}
+
 pub fn (o PhpObject) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return o.value.to_persistent_owned_zbox()
+}
+
+pub fn (o PhpObject) is_borrowed() bool {
+	return o.value.is_borrowed()
+}
+
+pub fn (o PhpObject) is_owned() bool {
+	return o.value.is_request_owned()
+}
+
+pub fn (o PhpObject) is_retained() bool {
+	return o.value.is_retained()
 }
 
 pub fn (o PhpObject) kind_name() string {
@@ -141,6 +198,10 @@ pub fn (o PhpObject) with_object[T](run fn (PhpObject) T) T {
 		value: PhpValueZBox.borrowed(temp.borrowed())
 	}
 	return run(obj)
+}
+
+pub fn (o PhpObject) to_v_object[T]() ?&T {
+	return o.to_zval().to_object[T]()
 }
 
 pub fn (mut o PhpObject) release() {

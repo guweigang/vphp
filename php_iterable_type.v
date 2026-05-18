@@ -47,8 +47,43 @@ pub fn (i PhpIterable) to_zval() ZVal {
 	return i.value.to_zval()
 }
 
+pub fn (i PhpIterable) to_value() PhpValue {
+	return PhpValue{
+		value: i.value.clone()
+	}
+}
+
+pub fn (i PhpIterable) to_array() !PhpArray {
+	if arr := i.to_value().as_array() {
+		return arr
+	}
+	if !i.is_traversable() {
+		return error('value is not iterable')
+	}
+	mut out := PhpArray.new()
+	i.fold[[]int]([]int{}, fn [out] (key ZVal, value ZVal, mut _ []int) {
+		item := PhpValue.from_zval(value)
+		if key.is_string() {
+			out.set_value(key.to_string(), item)
+			return
+		}
+		if key.is_long() {
+			out.push_value(item)
+		}
+	})
+	return out
+}
+
 pub fn (i PhpIterable) to_borrowed() PhpIterable {
 	return PhpIterable.from_zval(i.value.to_borrowed_zbox().to_zval()) or { i }
+}
+
+pub fn (i PhpIterable) borrowed() PhpIterable {
+	return i.to_borrowed()
+}
+
+pub fn (i PhpIterable) borrow() PhpIterable {
+	return i.to_borrowed()
 }
 
 pub fn (i PhpIterable) to_borrowed_zbox() RequestBorrowedZBox {
@@ -56,7 +91,13 @@ pub fn (i PhpIterable) to_borrowed_zbox() RequestBorrowedZBox {
 }
 
 pub fn (i PhpIterable) to_request_owned() PhpIterable {
-	return PhpIterable.from_request_owned_zbox(i.value.to_request_owned_zbox()) or { i.to_borrowed() }
+	return PhpIterable.from_request_owned_zbox(i.value.to_request_owned_zbox()) or {
+		i.to_borrowed()
+	}
+}
+
+pub fn (i PhpIterable) owned() PhpIterable {
+	return i.to_request_owned()
 }
 
 pub fn (i PhpIterable) to_request_owned_zbox() RequestOwnedZBox {
@@ -69,8 +110,28 @@ pub fn (i PhpIterable) to_persistent_owned() PhpIterable {
 	}
 }
 
+pub fn (i PhpIterable) retain() PhpIterable {
+	return i.to_persistent_owned()
+}
+
+pub fn (i PhpIterable) retained() PhpIterable {
+	return i.to_persistent_owned()
+}
+
 pub fn (i PhpIterable) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return i.value.to_persistent_owned_zbox()
+}
+
+pub fn (i PhpIterable) is_borrowed() bool {
+	return i.value.is_borrowed()
+}
+
+pub fn (i PhpIterable) is_owned() bool {
+	return i.value.is_request_owned()
+}
+
+pub fn (i PhpIterable) is_retained() bool {
+	return i.value.is_retained()
 }
 
 pub fn (mut i PhpIterable) take_zval() ZVal {

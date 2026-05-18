@@ -129,9 +129,9 @@ Rule:
 Prefer semantic wrappers for PHP function/object interaction:
 
 ```v
-vphp.PhpFunction.named('array_values').request_owned(value)
-vphp.PhpObject.borrowed(obj).method_request_owned('getBody')
-vphp.PhpCallable.borrowed(callable).fn_request_owned(args...)
+vphp.PhpFunction.named('array_values').invoke(value)
+vphp.PhpObject.borrowed(obj).call_method('getBody')
+vphp.PhpCallable.borrowed(callable).invoke(args...)
 ```
 
 Avoid handwritten VSlim code that falls back to:
@@ -209,12 +209,12 @@ entrypoints in the right column.
 
 | Current API | Prefer | Notes |
 | --- | --- | --- |
-| `PhpFunction.call_zval(args []ZVal)` | `PhpFunction.request_owned(args ...PhpArgInput)` or `with_result*` | Keep `call_zval` for low-level callers; do not use it in normal examples. |
-| `PhpCallable.call_zval(args []ZVal)` | `PhpCallable.fn_request_owned(args ...PhpArgInput)` | Naming now distinguishes callable-as-function from object method calls. |
-| `PhpClosure.call_zval(args []ZVal)` | `PhpClosure.fn_request_owned(args ...PhpArgInput)` | Same policy as `PhpCallable`. |
-| `PhpObject.method_zval(method, args []ZVal)` | `PhpObject.method_request_owned(method, args ...PhpArgInput)` | Keep direct zval method calls for special interop and probes. |
-| `PhpClass.construct_zval(args []ZVal)` | `PhpClass.construct(args ...PhpArgInput)` / `construct_request_owned(...)` | No-arg calls should use the variadic overload, not `[]ZVal{}`. |
-| `PhpClass.static_method_zval(...)` | `PhpClass.static_method_request_owned(...)` | Same no-arg/semantic-call policy. |
+| `PhpFunction.call_zval(args []ZVal)` | `PhpFunction.invoke(args ...PhpArgInput)` or `with_result*` | Keep `call_zval` for low-level callers; do not use it in normal examples. |
+| `PhpCallable.call_zval(args []ZVal)` | `PhpCallable.invoke(args ...PhpArgInput)` | Callable results should surface as `PhpValue`. |
+| `PhpClosure.call_zval(args []ZVal)` | `PhpClosure.invoke(args ...PhpArgInput)` | Same policy as `PhpCallable`. |
+| `PhpObject.method_zval(method, args []ZVal)` | `PhpObject.call_method(method, args ...PhpArgInput)` | Keep direct zval method calls for special interop and probes. |
+| `PhpClass.construct_zval(args []ZVal)` | `PhpClass.construct(args ...PhpArgInput)` | No-arg calls should use the variadic overload, not `[]ZVal{}`. |
+| `PhpClass.static_method_zval(...)` | `PhpClass.call_static(...)` | Static method results should surface as `PhpValue`. |
 | `PhpClass.static_prop_*` / `const_*` returning `ZVal` | typed semantic accessors where available | Property/constant reads are still a likely next API polish target. |
 | `PhpArray.items() []ZVal` | future `items_value()` / iterator wrapper | Useful today, but it leaks raw item representation into semantic array code. |
 | `PhpObject.prop*` returning `ZVal` | future `prop_value()` / typed prop helpers | High-value cleanup target because object properties are common in app code. |
@@ -356,6 +356,38 @@ Progress:
   expression helpers while preserving their separate default-value semantics
 - boundary scan guards now block the old property-handler wrapping shape and
   struct closure bridges that hand-write `res := cb(args)`
+- VSlim PSR-17 `ResponseFactory::createResponse` is now tracked as the first
+  end-to-end Phase 4 scenario: `@[params]` struct fields become generated
+  `bridge.v` argument reads, C arginfo exposes the semantic PHP signature, and
+  generated stubs/tests assert `int $status = 200, string $reasonPhrase = ''`
+  instead of stale low-level `mixed/default*` names
+- VSlim PSR-17 `StreamFactory::createStream` now uses a real params struct and
+  native V `string` input instead of `RequestBorrowedZBox` plus manual
+  `php_arg_*` attributes; generated PHP reflection/stubs expose
+  `string $content = ''`
+- VSlim PSR-17 `UploadedFileFactory::createUploadedFile` now covers a more
+  complex Phase 4 shape: required semantic `PhpObject` stream argument plus a
+  trailing `@[params]` struct for nullable/defaulted `size`, `error`,
+  `clientFilename`, and `clientMediaType`
+- VSlim PSR-17 `RequestFactory::createRequest`,
+  `ServerRequestFactory::createServerRequest`,
+  `StreamFactory::createStreamFromFile`, and `UriFactory::createUri` now keep
+  public signatures on V scalars, `PhpValue`, `PhpArray`, and params structs
+  while leaving zval conversion at the PSR object construction boundary
+- VSlim migration rule: VSlim should consume vphp runtime abstractions, not
+  reimplement them. When handwritten VSlim helpers manipulate PHP values,
+  arguments, returns, object/function calls, attributes, or lifecycle in a way
+  that would be useful to extensions generally, add the capability to vphp
+  first, then simplify VSlim.
+- VSlim logger APIs now use semantic public signatures for context/message
+  handling: native logger context parameters are `PhpArray`, PSR-3 logger
+  context is a params struct-backed `array $context = []`, and PSR messages use
+  `PhpValue` instead of borrowed zboxes. The old low-level `ZVal -> string`
+  helper remains available for PSR HTTP internals.
+- `PhpArray` now exposes `to_string_map()`, `to_scalar_string_map()`, and
+  `to_string_list()` so VSlim request setters can consume semantic arrays
+  directly. `VSlim\\VHttpd\\Request` array-shaped setters now expose `array`
+  signatures instead of `mixed`/borrowed zbox internals.
 
 ### Phase 5: Ownership Deep Water
 

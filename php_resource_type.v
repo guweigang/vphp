@@ -49,6 +49,14 @@ pub fn (r PhpResource) to_borrowed() PhpResource {
 	return PhpResource.from_zval(r.value.to_borrowed_zbox().to_zval()) or { r }
 }
 
+pub fn (r PhpResource) borrowed() PhpResource {
+	return r.to_borrowed()
+}
+
+pub fn (r PhpResource) borrow() PhpResource {
+	return r.to_borrowed()
+}
+
 pub fn (r PhpResource) to_borrowed_zbox() RequestBorrowedZBox {
 	return r.value.to_borrowed_zbox()
 }
@@ -57,6 +65,10 @@ pub fn (r PhpResource) to_request_owned() PhpResource {
 	return PhpResource.from_request_owned_zbox(r.value.to_request_owned_zbox()) or {
 		r.to_borrowed()
 	}
+}
+
+pub fn (r PhpResource) owned() PhpResource {
+	return r.to_request_owned()
 }
 
 pub fn (r PhpResource) to_request_owned_zbox() RequestOwnedZBox {
@@ -69,8 +81,28 @@ pub fn (r PhpResource) to_persistent_owned() PhpResource {
 	}
 }
 
+pub fn (r PhpResource) retain() PhpResource {
+	return r.to_persistent_owned()
+}
+
+pub fn (r PhpResource) retained() PhpResource {
+	return r.to_persistent_owned()
+}
+
 pub fn (r PhpResource) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return r.value.to_persistent_owned_zbox()
+}
+
+pub fn (r PhpResource) is_borrowed() bool {
+	return r.value.is_borrowed()
+}
+
+pub fn (r PhpResource) is_owned() bool {
+	return r.value.is_request_owned()
+}
+
+pub fn (r PhpResource) is_retained() bool {
+	return r.value.is_retained()
 }
 
 pub fn (mut r PhpResource) take_zval() ZVal {

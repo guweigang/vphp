@@ -116,13 +116,13 @@ payload_kind := obj.with_method_result[vphp.PhpValue, string]('payload',
 ### 示例：需要长期保存时升级生命周期
 
 ```v
-mut owned := vphp.PhpFunction.named('make_handler').request_owned()
+mut handler := vphp.PhpFunction.named('make_handler').invoke()
 defer {
-	owned.release()
+	handler.release()
 }
 
-mut stored := owned.clone()
-// stored 是 PersistentOwnedZBox，适合放进长期结构；持有者负责 release。
+mut stored := handler.retain()
+// stored 仍是 PhpValue，但已经具备 persistent / retained 语义；持有者负责 release。
 ```
 
 长期保存是生命周期问题，不是类型语义问题。即使值在 PHP 语义上是 `PhpObject` 或 `PhpCallable`，保存时也必须有 persistent / retained 语义。
@@ -284,11 +284,12 @@ version := vphp.PhpFunction.named('phpversion').with_result[vphp.PhpString, stri
 })!
 ```
 
-如果结果要交给后续逻辑继续持有，推荐接收 request-owned box：
+如果结果要交给后续逻辑继续持有，推荐先接收语义 wrapper，再按需要 retain：
 
 ```v
-mut version := vphp.PhpFunction.named('phpversion').request_owned()
+mut version := vphp.PhpFunction.named('phpversion').invoke()
 defer { version.release() }
+mut stored := version.retain()
 ```
 
 如果只要标量结果，可以用更直接的命名：
@@ -311,6 +312,7 @@ res := vphp.php_fn('phpversion').call([])
 | `PhpFunction.named(name)` | 获取语义化 PHP 函数 wrapper |
 | `function_exists(name)` | 判断 PHP 全局函数是否存在 |
 | `PhpFunction.named(name).call[T](args)` | 调用 PHP 全局函数，并返回可复制的 PHP 语义标量 wrapper |
+| `PhpFunction.named(name).invoke(args...)` | 调用 PHP 全局函数，并接收语义化 `PhpValue` 返回值 |
 | `PhpFunction.named(name).with_result[T, R](run, args...)` | 调用 PHP 全局函数，并在 callback 内借用 PHP 语义 wrapper |
 | `PhpFunction.named(name).call_zval(args)` | 底层 ZVal 调用入口 |
 | `PhpFunction.named(name).with_result_zval(run, args...)` | 底层 ZVal callback 入口 |
@@ -318,7 +320,6 @@ res := vphp.php_fn('phpversion').call([])
 | `PhpFunction.named(name).result_bool(args)` | 调用 PHP 全局函数，并返回 bool |
 | `PhpFunction.named(name).result_i64(args)` | 调用 PHP 全局函数，并返回 i64 |
 | `PhpFunction.named(name).result_double(args)` | 调用 PHP 全局函数，并返回 f64 |
-| `PhpFunction.named(name).request_owned(args...)` | 调用 PHP 全局函数，并接收 request-owned 返回值 |
 | `php_fn(name)` | 底层 callable ZVal 函数引用 |
 | `z.call(args)` | 调用 callable（request-owned） |
 | `z.call_owned_request(args)` | 显式 request-owned |
@@ -360,8 +361,8 @@ article := article_z.to_object[Article]() or { return }
 | `cls.construct(args...)` | 语义参数构造 PHP 对象，并返回 `PhpObject` |
 | `cls.construct_zval(args)` | raw `ZVal` 构造入口 |
 | `cls.static_method[T](name, args)` | 调用静态方法，并返回可复制的 PHP 语义标量 wrapper |
+| `cls.call_static(name, args...)` | 调用静态方法，并接收语义化 `PhpValue` 返回值 |
 | `cls.with_static_method_result[T, R](name, run, args...)` | 静态方法 callback 入口，可借用复杂 PHP 语义 wrapper |
-| `cls.static_method_request_owned(name, args...)` | 语义参数 + request-owned 生命周期入口 |
 | `cls.static_method_zval(name, args)` | raw `ZVal` 静态方法入口 |
 | `cls.static_prop[T](name)` | 读取静态属性，并返回可复制的 PHP 语义标量 wrapper |
 | `cls.with_static_prop_result[T, R](name, run)` | 静态属性 callback 入口 |
@@ -437,8 +438,10 @@ vphp.include_once('/path/to/file.php')
 | --- | --- |
 | `php_const(name)` | 读取 PHP 全局常量 |
 | `global_const_exists(name)` | 判断 PHP 全局常量是否存在 |
-| `include(path)` | 对齐 PHP `include` |
-| `include_once(path)` | 对齐 PHP `include_once` |
+| `include(path)` | 对齐 PHP `include`，返回 `PhpValue` |
+| `include_once(path)` | 对齐 PHP `include_once`，返回 `PhpValue` |
+| `include_zval(path)` | 低层边界 API，返回 `ZVal` |
+| `include_once_zval(path)` | 低层边界 API，返回 `ZVal` |
 
 例子：
 

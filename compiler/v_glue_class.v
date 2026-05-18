@@ -29,6 +29,9 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 
 	// F. Handlers 导出
 	out << ClassHandlersGlue.new(r.name, lower_name).render_lines()
+	if !r.is_trait {
+		out << ClassObjectBindingGlue.new(r.name, r.c_name(), lower_name).render_lines()
+	}
 
 	return out
 }

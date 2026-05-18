@@ -9,6 +9,7 @@ pub type PhpArgInput = PhpArray
 	| PhpEnumCase
 	| PhpInt
 	| PhpIterable
+	| PhpIterator
 	| PhpNull
 	| PhpObject
 	| PhpReference
@@ -29,6 +30,7 @@ pub fn (arg PhpArgInput) to_zval() ZVal {
 		PhpEnumCase { arg.to_zval() }
 		PhpInt { arg.to_zval() }
 		PhpIterable { arg.to_zval() }
+		PhpIterator { arg.to_zval() }
 		PhpNull { arg.to_zval() }
 		PhpObject { arg.to_zval() }
 		PhpReference { arg.to_zval() }
@@ -38,6 +40,14 @@ pub fn (arg PhpArgInput) to_zval() ZVal {
 		PhpThrowable { arg.to_zval() }
 		PhpValue { arg.to_zval() }
 	}
+}
+
+pub fn (arg PhpArgInput) to_value() PhpValue {
+	return PhpValue.from_zval(arg.to_zval())
+}
+
+pub fn (arg PhpArgInput) value_at(key string) PhpValue {
+	return PhpValue.from_zval(arg.to_zval().value_at(key))
 }
 
 pub fn php_arg_inputs_to_zvals(args []PhpArgInput) []ZVal {
@@ -75,6 +85,8 @@ fn php_call_result_as[T](z ZVal) !T {
 		return PhpResource.must_from_zval(z)!
 	} $else $if T is PhpIterable {
 		return PhpIterable.must_from_zval(z)!
+	} $else $if T is PhpIterator {
+		return PhpIterator.must_from_zval(z)!
 	} $else $if T is PhpReference {
 		return PhpReference.must_from_zval(z)!
 	} $else $if T is PhpThrowable {

@@ -13,6 +13,11 @@ pub fn (a PhpArray) set(key string, value PhpArgInput) {
 	a.assoc(key, value)
 }
 
+pub fn (a PhpArray) set_value(key string, value PhpValue) {
+	mut owned := value.owned()
+	a.assoc_zval(key, owned.take_zval())
+}
+
 pub fn (a PhpArray) set_zval(key string, value ZVal) {
 	a.assoc_zval(key, value)
 }
@@ -53,6 +58,11 @@ pub fn (a PhpArray) next_zval(value ZVal) {
 
 pub fn (a PhpArray) push(value PhpArgInput) {
 	a.next(value)
+}
+
+pub fn (a PhpArray) push_value(value PhpValue) {
+	mut owned := value.owned()
+	a.next_zval(owned.take_zval())
 }
 
 pub fn (a PhpArray) push_zval(value ZVal) {

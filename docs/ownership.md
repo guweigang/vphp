@@ -103,13 +103,13 @@ summary := vphp.PhpFunction.named('array_filter').with_result[vphp.PhpArray, str
 	return 'count=${filtered.count()}'
 }, items)!
 
-// Store a long-lived value by upgrading the lifecycle, not by keeping a
-// request-borrowed semantic wrapper.
-mut result := vphp.PhpFunction.named('factory').request_owned()
+// Store a long-lived value by upgrading the semantic wrapper lifecycle, not by
+// keeping a request-borrowed wrapper.
+mut result := vphp.PhpFunction.named('factory').invoke()
 defer {
 	result.release()
 }
-mut stored := result.clone()
+mut stored := result.retain()
 ```
 
 ## Two Independent Axes
@@ -240,10 +240,12 @@ Choose in this order:
   `PersistentOwnedZBox.of(...)`
 - Pure data: `PersistentOwnedZBox.new_*()`, `of_data(...)`,
   `try_of_detached(...)`, `of_mixed(...)`
-- PHP object: `RetainedObject`, or object-routing through
-  `PersistentOwnedZBox.from_object_zval(...)` / `of_object(...)`
-- PHP callable: `PersistentOwnedZBox.from_callable_zval(...)` /
-  `PersistentOwnedZBox.of_callable(...)`
+- PHP object: `PhpObject.retain()` when you want to keep object semantics, or
+  `PersistentOwnedZBox.from_object_zval(...)` / `of_object(...)` at lower-level
+  storage boundaries
+- PHP callable: `PhpCallable.retain()` when you want to keep callable
+  semantics, or `PersistentOwnedZBox.from_callable_zval(...)` /
+  `PersistentOwnedZBox.of_callable(...)` at lower-level storage boundaries
 
 ## Quick Decision Table
 
@@ -254,24 +256,29 @@ Choose in this order:
 | Call PHP and return/hand off the temporary result | `RequestOwnedZBox.adopt_zval(...)`, `take_zval()` |
 | Store a long-lived value when the type is not known in advance | `PersistentOwnedZBox.of(...)` |
 | Store long-lived scalar / string / list / map data | `PersistentOwnedZBox.new_*()`, `of_data(...)`, `try_of_detached(...)`, `of_mixed(...)` |
-| Store a long-lived PHP object | `RetainedObject` or `PersistentOwnedZBox.from_object_zval(...)` / `of_object(...)` |
-| Store a long-lived PHP callable | `PersistentOwnedZBox.from_callable_zval(...)` / `of_callable(...)` |
+| Store a long-lived PHP object | `PhpObject.retain()` |
+| Store a long-lived PHP callable | `PhpCallable.retain()` |
 
 In practice:
 
-- prefer `RequestBorrowedZBox` / `RequestOwnedZBox` / `PersistentOwnedZBox`
-  while computing or storing values
+- prefer `PhpValue`, `PhpObject`, `PhpCallable`, and the typed semantic
+  wrappers in extension-facing code; drop to `*ZBox` only at lifecycle/storage
+  boundaries
+- prefer `.retain()` as the semantic facade for long-lived storage; use
+  `to_persistent_owned()` only when you are deliberately working at the
+  lifecycle layer
 
 ## Practical Rules Of Thumb
 
-- Function parameters should default to borrowed wrappers.
-- PHP call results should default to request-owned wrappers.
+- Function parameters should default to semantic wrappers such as `PhpValue`,
+  `PhpObject`, `PhpCallable`, `PhpArray`, or scalar wrappers.
+- PHP call results should default to semantic wrappers such as `PhpValue`.
 - Global PHP function calls should prefer `PhpFunction.call[T](...)`,
-  `PhpFunction.with_result(...)`, or `PhpFunction.request_owned(...)` over
+  `PhpFunction.with_result(...)`, or `PhpFunction.invoke(...)` over
   carrying a bare `ZVal`.
-- PHP object method calls should prefer `PhpObject.method[T](...)` for copied
-  scalar wrapper results, or `PhpObject.with_method_result(...)` for borrowed
-  wrapper results.
+- PHP object method calls should prefer `PhpObject.call_method(...)`,
+  `PhpObject.method[T](...)`, or `PhpObject.with_method_result(...)` over
+  carrying lifecycle boxes through extension code.
 - Long-lived struct fields should default to persistent wrappers or retained handles.
 - The scope that creates an owned request value should also release it, unless
   it explicitly transfers ownership onward.

@@ -128,7 +128,7 @@ pub fn (c PhpClass) construct_owned_persistent_zval(args []ZVal) ZVal {
 	return c.to_zval().construct_owned_persistent(args)
 }
 
-pub fn (c PhpClass) construct_request_owned_zval(args []ZVal) RequestOwnedZBox {
+fn (c PhpClass) construct_request_owned_zval(args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.construct_owned_request_zval(args))
 }
 
@@ -158,9 +158,14 @@ pub fn (c PhpClass) static_method_owned_persistent_zval(method string, args []ZV
 	return c.to_zval().static_method_owned_persistent(method, args)
 }
 
-pub fn (c PhpClass) static_method_request_owned(method string, args ...PhpArgInput) RequestOwnedZBox {
+fn (c PhpClass) static_method_request_owned(method string, args ...PhpArgInput) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.static_method_owned_request_zval(method,
 		php_arg_inputs_to_zvals(args)))
+}
+
+pub fn (c PhpClass) call_static(method string, args ...PhpArgInput) PhpValue {
+	mut result := c.static_method_request_owned(method, args)
+	return result.take_value()
 }
 
 pub fn (c PhpClass) static_method[T](method string, args ...PhpArgInput) !T {

@@ -38,12 +38,12 @@ pub fn (v ZVal) stream_metadata() ?StreamMetadata {
 		return none
 	}
 	return StreamMetadata{
-		mode:      zval_string_key_or(meta, 'mode', '')
-		uri:       zval_string_key_or(meta, 'uri', '')
-		seekable:  zval_bool_key_or(meta, 'seekable', false)
-		timed_out: zval_bool_key_or(meta, 'timed_out', false)
-		blocked:   zval_bool_key_or(meta, 'blocked', false)
-		eof:       zval_bool_key_or(meta, 'eof', false)
+		mode:      meta.string_at('mode', '')
+		uri:       meta.string_at('uri', '')
+		seekable:  meta.bool_at('seekable', false)
+		timed_out: meta.bool_at('timed_out', false)
+		blocked:   meta.bool_at('blocked', false)
+		eof:       meta.bool_at('eof', false)
 	}
 }
 

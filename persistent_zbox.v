@@ -54,23 +54,23 @@ pub fn (v PersistentOwnedZBox) with_request_object[T](run fn (PhpObject) T) ?T {
 	return run(obj)
 }
 
-pub fn (v PersistentOwnedZBox) fn_request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
+fn (v PersistentOwnedZBox) fn_request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
 	return v.with_request_zval(fn [args] (callable ZVal) RequestOwnedZBox {
 		return RequestOwnedZBox.adopt_zval(callable.call_owned_request(args))
 	})
 }
 
-pub fn (v PersistentOwnedZBox) fn_request_owned(args ...PhpArgInput) RequestOwnedZBox {
+fn (v PersistentOwnedZBox) fn_request_owned(args ...PhpArgInput) RequestOwnedZBox {
 	return v.fn_request_owned_zval(php_arg_inputs_to_zvals(args))
 }
 
-pub fn (v PersistentOwnedZBox) method_request_owned_zval(method string, args []vphp.ZVal) RequestOwnedZBox {
+fn (v PersistentOwnedZBox) method_request_owned_zval(method string, args []vphp.ZVal) RequestOwnedZBox {
 	return v.with_request_zval(fn [method, args] (receiver ZVal) RequestOwnedZBox {
 		return RequestOwnedZBox.adopt_zval(receiver.method_owned_request(method, args))
 	})
 }
 
-pub fn (v PersistentOwnedZBox) method_request_owned(method string, args ...PhpArgInput) RequestOwnedZBox {
+fn (v PersistentOwnedZBox) method_request_owned(method string, args ...PhpArgInput) RequestOwnedZBox {
 	return v.method_request_owned_zval(method, php_arg_inputs_to_zvals(args))
 }
 

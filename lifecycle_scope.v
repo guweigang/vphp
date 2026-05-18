@@ -117,6 +117,10 @@ pub fn (mut s FrameScope) adopt_zval(value ZVal) PhpValue {
 	return PhpValue.from_zval(s.push_box(RequestOwnedZBox.adopt_zval(value)))
 }
 
+pub fn (mut s FrameScope) adopt_value(mut value PhpValue) PhpValue {
+	return s.adopt_zval(value.take_zval())
+}
+
 pub fn (mut s FrameScope) args_from_persistent_owned(values []PersistentOwnedZBox) []PhpArgInput {
 	mut out := []PhpArgInput{cap: values.len}
 	for value in values {

@@ -145,6 +145,15 @@ pub fn PhpTypeSpec.from_v_type(v_type string) ?PhpTypeSpec {
 				arg_label:      'iterable'
 			}
 		}
+		'PhpIterator' {
+			PhpTypeSpec{
+				v_key:          clean
+				php_mask:       '0'
+				mask_obj_class: 'Traversable'
+				arg_method:     'iterator'
+				arg_label:      'iterator'
+			}
+		}
 		'PhpThrowable' {
 			PhpTypeSpec{
 				v_key:      clean

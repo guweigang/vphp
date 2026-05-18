@@ -82,6 +82,14 @@ pub fn (obj ZendObject) set_prop(name string, value ZVal) {
 	obj.handle.write_property_ptr(name, value.raw_ptr())
 }
 
+pub fn (obj ZendObject) set_prop_value(name string, value PhpValue) {
+	obj.set_prop(name, value.to_zval())
+}
+
+pub fn (obj ZendObject) set_prop_input(name string, value PhpArgInput) {
+	obj.set_prop(name, value.to_zval())
+}
+
 pub fn (obj ZendObject) has_prop(name string) bool {
 	if !obj.is_valid() {
 		return false

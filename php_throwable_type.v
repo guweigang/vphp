@@ -57,12 +57,26 @@ pub fn (t PhpThrowable) to_borrowed() PhpThrowable {
 	}
 }
 
+pub fn (t PhpThrowable) borrowed() PhpThrowable {
+	return t.to_borrowed()
+}
+
+pub fn (t PhpThrowable) borrow() PhpThrowable {
+	return t.to_borrowed()
+}
+
 pub fn (t PhpThrowable) to_borrowed_zbox() RequestBorrowedZBox {
 	return t.object.to_borrowed_zbox()
 }
 
 pub fn (t PhpThrowable) to_request_owned() PhpThrowable {
-	return PhpThrowable.from_request_owned_zbox(t.object.to_request_owned_zbox()) or { t.to_borrowed() }
+	return PhpThrowable.from_request_owned_zbox(t.object.to_request_owned_zbox()) or {
+		t.to_borrowed()
+	}
+}
+
+pub fn (t PhpThrowable) owned() PhpThrowable {
+	return t.to_request_owned()
 }
 
 pub fn (t PhpThrowable) to_request_owned_zbox() RequestOwnedZBox {
@@ -75,8 +89,28 @@ pub fn (t PhpThrowable) to_persistent_owned() PhpThrowable {
 	}
 }
 
+pub fn (t PhpThrowable) retain() PhpThrowable {
+	return t.to_persistent_owned()
+}
+
+pub fn (t PhpThrowable) retained() PhpThrowable {
+	return t.to_persistent_owned()
+}
+
 pub fn (t PhpThrowable) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return t.object.to_persistent_owned_zbox()
+}
+
+pub fn (t PhpThrowable) is_borrowed() bool {
+	return t.object.is_borrowed()
+}
+
+pub fn (t PhpThrowable) is_owned() bool {
+	return t.object.is_owned()
+}
+
+pub fn (t PhpThrowable) is_retained() bool {
+	return t.object.is_retained()
 }
 
 pub fn (mut t PhpThrowable) release() {

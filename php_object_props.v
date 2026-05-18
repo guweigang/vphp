@@ -12,6 +12,10 @@ pub fn (o PhpObject) prop_owned_request(name string) ZVal {
 	return o.to_zval().prop_owned_request(name)
 }
 
+pub fn (o PhpObject) prop_value(name string) PhpValue {
+	return PhpValue.adopt_zval(o.prop_owned_request(name))
+}
+
 pub fn (o PhpObject) prop_owned_persistent(name string) ZVal {
 	return o.to_zval().prop_owned_persistent(name)
 }

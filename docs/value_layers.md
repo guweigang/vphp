@@ -103,11 +103,16 @@ When the input kind is known, prefer the explicit persistent constructor:
 
 ```v
 stored_data := vphp.PersistentOwnedZBox.of_data(dyn)
-stored_object := vphp.PersistentOwnedZBox.of_object(obj.to_zval())
-stored_callable := vphp.PersistentOwnedZBox.of_callable(callable.to_zval())
+stored_object := obj.retain()
+stored_callable := callable.retain()
 ```
 
-For `DynValue`, retained object, or retained callable data, use:
+In extension-facing and framework-facing code, prefer `value.retain()` when the
+intent is "keep this PHP value beyond the current request frame". Lower-level
+`to_persistent_owned()` / `PersistentOwnedZBox.*` APIs remain lifecycle storage
+tools for vphp internals and ownership-sensitive boundaries.
+
+For detached runtime storage data, use:
 
 ```v
 stored := vphp.DynValue.persistent_owned_zbox(value)
@@ -116,8 +121,8 @@ stored := vphp.DynValue.persistent_owned_zbox(value)
 `value` may be:
 
 - `DynValue`
-- `RetainedObject`
-- `RetainedCallable`
+- `RetainedObject` for internal object-retention plumbing
+- `RetainedCallable` for internal callable-retention plumbing
 
 ## PHP Semantic Wrappers
 
@@ -131,7 +136,10 @@ Semantic wrappers describe PHP type intent.
 | `PhpObject` | PHP object |
 | `PhpCallable`, `PhpClosure` | callable / closure semantics |
 | `PhpResource` | PHP resource |
-| `PhpIterable`, `PhpReference`, `PhpThrowable`, `PhpEnumCase` | specialized PHP semantics |
+| `PhpIterator`, `PhpIterable`, `PhpReference`, `PhpThrowable`, `PhpEnumCase` | specialized PHP semantics |
+
+`PhpIterator` means a PHP object that implements `Traversable`; `PhpIterable`
+means the PHP iterable shape: `PhpArray | PhpIterator`.
 
 These wrappers are built on top of `PhpValueZBox`, so they can carry borrowed,
 request-owned, or persistent-owned storage while presenting a PHP type API.
@@ -252,6 +260,7 @@ pub type PhpArgInput = PhpArray
 	| PhpEnumCase
 	| PhpInt
 	| PhpIterable
+	| PhpIterator
 	| PhpNull
 	| PhpObject
 	| PhpReference
@@ -317,7 +326,7 @@ args := [
 	frame.int(42),
 ]
 
-result := vphp.PhpFunction.named('handler').request_owned(...args)
+mut result := vphp.PhpFunction.named('handler').invoke(...args)
 ```
 
 Use `FrameScope.args_from_persistent_owned(...)` when long-lived stored values
@@ -330,7 +339,7 @@ defer {
 }
 
 args := frame.args_from_persistent_owned(stored_args)
-result := handler.fn_request_owned(...args)
+mut result := handler.invoke(...args)
 ```
 
 `FrameScope` is not persistent storage. It is a short-lived conversion and
@@ -394,8 +403,8 @@ point of the code.
 flowchart LR
     NOW["Request-time value"] --> CHECK["Known kind?"]
     CHECK --> DATA["Detached data<br/>DynValue"]
-    CHECK --> OBJ["RetainedObject"]
-    CHECK --> CALL["RetainedCallable"]
+    CHECK --> OBJ["PhpObject.retain()"]
+    CHECK --> CALL["PhpCallable.retain()"]
     DATA --> PZ["PersistentOwnedZBox"]
     OBJ --> PZ
     CALL --> PZ
@@ -404,16 +413,18 @@ flowchart LR
 Use:
 
 ```v
-stored := vphp.PersistentOwnedZBox.of(value.to_zval())
+stored := value.retain()
 ```
 
-or, when the retained / dynamic type is already known:
+or, at a lower-level lifecycle boundary where detached runtime storage is the
+actual target:
 
 ```v
 stored := vphp.DynValue.persistent_owned_zbox(ref.clone())
 ```
 
-The owner of a `PersistentOwnedZBox` must have a matching `release()` path.
+The owner of a retained semantic value or `PersistentOwnedZBox` must have a
+matching `release()` path.
 
 ## Naming Rules
 
@@ -430,7 +441,7 @@ Current naming direction:
 | `zbox()` | Borrow a PHP input argument as `RequestBorrowedZBox` |
 | `to_request_owned()` | Materialize an owned request box |
 | `persistent_owned_zbox(...)` | Produce `PersistentOwnedZBox` |
-| `request_owned(...)` | PHP call result owned by current request |
+| `invoke(...)` / `call_method(...)` / `call_static(...)` | PHP call result as a semantic `PhpValue` |
 | `with_result(...)` | Borrow a result inside a callback |
 | `_zval` suffix | Low-level escape hatch |
 

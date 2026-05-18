@@ -48,6 +48,11 @@ pub fn PhpException.raise_object(mut exception ZVal) {
 	zend.throw_exception_object_ptr(handle.raw_ptr())
 }
 
+pub fn PhpException.raise_php_object(mut exception PhpObject) {
+	mut z := exception.take_zval()
+	PhpException.raise_object(mut z)
+}
+
 pub fn PhpException.has_current() bool {
 	return zend.has_exception()
 }

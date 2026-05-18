@@ -59,6 +59,10 @@ pub fn (v PhpValueZBox) is_request_owned() bool {
 	return v.kind == .request_owned
 }
 
+pub fn (v PhpValueZBox) is_retained() bool {
+	return v.kind == .persistent_owned
+}
+
 pub fn (v PhpValueZBox) is_persistent_owned() bool {
 	return v.kind == .persistent_owned
 }

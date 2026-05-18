@@ -50,6 +50,9 @@ pub fn (ret PhpReturn) v[T](val T) {
 	} $else $if T is PhpIterable {
 		ret.zval(val.to_zval())
 		return
+	} $else $if T is PhpIterator {
+		ret.zval(val.to_zval())
+		return
 	} $else $if T is PhpThrowable {
 		ret.zval(val.to_zval())
 		return

@@ -115,7 +115,7 @@ A simplified view:
 The current `vphp` runtime and compiler include:
 
 - low-level `ZVal` interop for raw Zend values
-- semantic value wrappers: `PhpValue`, `PhpNull`, `PhpBool`, `PhpInt`, `PhpDouble`, `PhpString`, `PhpArray`, `PhpObject`, `PhpCallable`, `PhpClosure`, `PhpResource`, `PhpReference`, `PhpIterable`, `PhpThrowable`
+- semantic value wrappers: `PhpValue`, `PhpNull`, `PhpBool`, `PhpInt`, `PhpDouble`, `PhpString`, `PhpArray`, `PhpObject`, `PhpCallable`, `PhpClosure`, `PhpResource`, `PhpReference`, `PhpIterator`, `PhpIterable`, `PhpThrowable`
 - explicit ownership wrappers: `RequestBorrowedZBox`, `RequestOwnedZBox`, `PersistentOwnedZBox`
 - unified value lifecycle storage through `PhpValueZBox`
 - request/frame scope helpers for temporary request-owned values
@@ -354,7 +354,7 @@ php -d extension=./hello_vphp.so -r 'echo hello_from_v("PHP"), PHP_EOL;'
 当前 `vphp` 已具备：
 
 - 底层 `ZVal` interop
-- 语义值 wrapper：`PhpValue`、`PhpNull`、`PhpBool`、`PhpInt`、`PhpDouble`、`PhpString`、`PhpArray`、`PhpObject`、`PhpCallable`、`PhpClosure`、`PhpResource`、`PhpReference`、`PhpIterable`、`PhpThrowable`
+- 语义值 wrapper：`PhpValue`、`PhpNull`、`PhpBool`、`PhpInt`、`PhpDouble`、`PhpString`、`PhpArray`、`PhpObject`、`PhpCallable`、`PhpClosure`、`PhpResource`、`PhpReference`、`PhpIterator`、`PhpIterable`、`PhpThrowable`
 - ownership wrapper：`RequestBorrowedZBox`、`RequestOwnedZBox`、`PersistentOwnedZBox`
 - 统一值生命周期存储：`PhpValueZBox`
 - request/frame scope helper，用于 request-owned 临时值

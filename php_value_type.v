@@ -5,6 +5,10 @@ mut:
 	value PhpValueZBox
 }
 
+pub fn PhpValue.invalid() PhpValue {
+	return PhpValue.from_zval(invalid_zval())
+}
+
 pub fn PhpValue.from_zval(z ZVal) PhpValue {
 	return PhpValue{
 		value: PhpValueZBox.from_zval(z)
@@ -15,6 +19,45 @@ pub fn PhpValue.of(z ZVal) PhpValue {
 	return PhpValue{
 		value: PhpValueZBox.request_owned(RequestOwnedZBox.of(z))
 	}
+}
+
+pub fn PhpValue.from_v[T](value T) !PhpValue {
+	return PhpValue.adopt_zval(new_zval_from[T](value)!)
+}
+
+pub fn PhpValue.adopt_zval(z ZVal) PhpValue {
+	return PhpValue{
+		value: PhpValueZBox.adopt_zval(z)
+	}
+}
+
+pub fn PhpValue.empty_array() PhpValue {
+	mut arr := PhpArray.empty()
+	return arr.take_value()
+}
+
+pub fn PhpValue.null() PhpValue {
+	return PhpValue.adopt_zval(ZVal.new_null())
+}
+
+pub fn PhpValue.bool(value bool) PhpValue {
+	return PhpValue.from_request_owned_zbox(RequestOwnedZBox.new_bool(value))
+}
+
+pub fn PhpValue.int(value i64) PhpValue {
+	return PhpValue.from_request_owned_zbox(RequestOwnedZBox.new_int(value))
+}
+
+pub fn PhpValue.double(value f64) PhpValue {
+	return PhpValue.from_request_owned_zbox(RequestOwnedZBox.new_float(value))
+}
+
+pub fn PhpValue.string(value string) PhpValue {
+	return PhpValue.from_request_owned_zbox(RequestOwnedZBox.new_string(value))
+}
+
+pub fn PhpValue.persistent_null() PhpValue {
+	return PhpValue.from_persistent_owned_zbox(PersistentOwnedZBox.new_null())
 }
 
 pub fn PhpValue.from_request_borrowed_zbox(value RequestBorrowedZBox) PhpValue {
@@ -57,6 +100,10 @@ pub fn (v PhpValue) borrowed() PhpValue {
 	return v.to_borrowed()
 }
 
+pub fn (v PhpValue) borrow() PhpValue {
+	return v.to_borrowed()
+}
+
 pub fn (v PhpValue) to_borrowed() PhpValue {
 	return PhpValue{
 		value: v.value.borrowed()
@@ -73,6 +120,10 @@ pub fn (v PhpValue) to_request_owned() PhpValue {
 	}
 }
 
+pub fn (v PhpValue) owned() PhpValue {
+	return v.to_request_owned()
+}
+
 pub fn (v PhpValue) to_request_owned_zbox() RequestOwnedZBox {
 	return v.value.to_request_owned_zbox()
 }
@@ -87,8 +138,28 @@ pub fn (v PhpValue) to_persistent_owned() PhpValue {
 	}
 }
 
+pub fn (v PhpValue) retain() PhpValue {
+	return v.to_persistent_owned()
+}
+
+pub fn (v PhpValue) retained() PhpValue {
+	return v.to_persistent_owned()
+}
+
 pub fn (v PhpValue) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return v.value.to_persistent_owned_zbox()
+}
+
+pub fn (v PhpValue) is_borrowed() bool {
+	return v.value.is_borrowed()
+}
+
+pub fn (v PhpValue) is_owned() bool {
+	return v.value.is_request_owned()
+}
+
+pub fn (v PhpValue) is_retained() bool {
+	return v.value.is_retained()
 }
 
 pub fn (v PhpValue) kind_name() string {
@@ -153,6 +224,28 @@ pub fn (v PhpValue) with_object[T](run fn (PhpObject) T) ?T {
 	return v.value.with_request_object[T](fn [run] [T](obj PhpObject) T {
 		return run(obj)
 	})
+}
+
+pub fn (v PhpValue) method_exists(name string) bool {
+	return v.with_object[bool](fn [name] (obj PhpObject) bool {
+		return obj.method_exists(name)
+	}) or { false }
+}
+
+pub fn (v PhpValue) is_instance_of(class_name string) bool {
+	return v.with_object[bool](fn [class_name] (obj PhpObject) bool {
+		return obj.is_instance_of(class_name)
+	}) or { false }
+}
+
+pub fn (v PhpValue) class_name() string {
+	return v.with_object[string](fn (obj PhpObject) string {
+		return obj.class_name()
+	}) or { '' }
+}
+
+pub fn (v PhpValue) resource_type() ?string {
+	return v.to_zval().resource_type()
 }
 
 pub fn (v PhpValue) with_callable[T](run fn (PhpCallable) T) ?T {

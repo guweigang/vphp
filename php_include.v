@@ -24,18 +24,34 @@ fn (file PhpIncludeFile) load_with_once_flag(once bool) ZVal {
 	return adopt_handle_with_ownership(retval, .owned_request)
 }
 
-pub fn (file PhpIncludeFile) load() ZVal {
+pub fn (file PhpIncludeFile) load_zval() ZVal {
 	return file.load_with_once_flag(false)
 }
 
-pub fn (file PhpIncludeFile) load_once() ZVal {
+pub fn (file PhpIncludeFile) load_once_zval() ZVal {
 	return file.load_with_once_flag(true)
 }
 
-pub fn include(path string) ZVal {
+pub fn (file PhpIncludeFile) load() PhpValue {
+	return PhpValue.adopt_zval(file.load_zval())
+}
+
+pub fn (file PhpIncludeFile) load_once() PhpValue {
+	return PhpValue.adopt_zval(file.load_once_zval())
+}
+
+pub fn include_zval(path string) ZVal {
+	return PhpIncludeFile.at(path).load_zval()
+}
+
+pub fn include_once_zval(path string) ZVal {
+	return PhpIncludeFile.at(path).load_once_zval()
+}
+
+pub fn include(path string) PhpValue {
 	return PhpIncludeFile.at(path).load()
 }
 
-pub fn include_once(path string) ZVal {
+pub fn include_once(path string) PhpValue {
 	return PhpIncludeFile.at(path).load_once()
 }

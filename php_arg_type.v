@@ -181,6 +181,10 @@ pub fn (arg PhpArg) iterable() ?PhpIterable {
 	return PhpIterable.from_zval(arg.zval())
 }
 
+pub fn (arg PhpArg) iterator() ?PhpIterator {
+	return PhpIterator.from_zval(arg.zval())
+}
+
 pub fn (arg PhpArg) throwable() ?PhpThrowable {
 	return PhpThrowable.from_zval(arg.zval())
 }

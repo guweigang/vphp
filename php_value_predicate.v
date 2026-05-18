@@ -78,6 +78,13 @@ pub fn (v PhpValue) is_array() bool {
 	})
 }
 
+pub fn (v PhpValue) is_list() bool {
+	if arr := v.as_array() {
+		return arr.is_list()
+	}
+	return false
+}
+
 pub fn (v PhpValue) is_object() bool {
 	return v.value.with_request_zval[bool](fn (z ZVal) bool {
 		return z.is_object()

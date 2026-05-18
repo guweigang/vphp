@@ -98,12 +98,26 @@ pub fn (c PhpEnumCase) to_borrowed() PhpEnumCase {
 	}
 }
 
+pub fn (c PhpEnumCase) borrowed() PhpEnumCase {
+	return c.to_borrowed()
+}
+
+pub fn (c PhpEnumCase) borrow() PhpEnumCase {
+	return c.to_borrowed()
+}
+
 pub fn (c PhpEnumCase) to_borrowed_zbox() RequestBorrowedZBox {
 	return c.object.to_borrowed_zbox()
 }
 
 pub fn (c PhpEnumCase) to_request_owned() PhpEnumCase {
-	return PhpEnumCase.from_request_owned_zbox(c.object.to_request_owned_zbox()) or { c.to_borrowed() }
+	return PhpEnumCase.from_request_owned_zbox(c.object.to_request_owned_zbox()) or {
+		c.to_borrowed()
+	}
+}
+
+pub fn (c PhpEnumCase) owned() PhpEnumCase {
+	return c.to_request_owned()
 }
 
 pub fn (c PhpEnumCase) to_request_owned_zbox() RequestOwnedZBox {
@@ -116,8 +130,28 @@ pub fn (c PhpEnumCase) to_persistent_owned() PhpEnumCase {
 	}
 }
 
+pub fn (c PhpEnumCase) retain() PhpEnumCase {
+	return c.to_persistent_owned()
+}
+
+pub fn (c PhpEnumCase) retained() PhpEnumCase {
+	return c.to_persistent_owned()
+}
+
 pub fn (c PhpEnumCase) to_persistent_owned_zbox() PersistentOwnedZBox {
 	return c.object.to_persistent_owned_zbox()
+}
+
+pub fn (c PhpEnumCase) is_borrowed() bool {
+	return c.object.is_borrowed()
+}
+
+pub fn (c PhpEnumCase) is_owned() bool {
+	return c.object.is_owned()
+}
+
+pub fn (c PhpEnumCase) is_retained() bool {
+	return c.object.is_retained()
 }
 
 pub fn (mut c PhpEnumCase) release() {
