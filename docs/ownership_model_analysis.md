@@ -49,28 +49,28 @@ graph TD
 ### 1. `Controller::app()` 缺口
 - **根因**: Controller 在新 request scope 里调用时，`app_ref` 指向的 App 可能不是当前 dispatch 中的 App（尤其 singleton controller 场景）
 - **修法**: 引入 `effective_controller_app()` → 优先用 `current_runtime_dispatch_app()`
-- **文件**: [controller.v:5-11](file:///Users/guweigang/Source/vphpx/vslim/src/controller.v#L5-L11)
+- **文件**: [controller.v:5-11](vslim/src/controller.v#L5-L11)
 
 ### 2. PSR-7 clone 深拷贝问题
 - **根因**: `VSlimPsr7ServerRequest` 内部的 `PersistentOwnedZBox` 字段（server_params, cookie_params 等）在 clone/snapshot 时共享底层指针
 - **修法**: 所有 `clone_*` / `snapshot_*` 路径加 `clone_assoc_payload_ref()` 深拷贝
-- **文件**: [app_psr_bridge.v](file:///Users/guweigang/Source/vphpx/vslim/src/app_psr_bridge.v) 全文
+- **文件**: [app_psr_bridge.v](vslim/src/app_psr_bridge.v) 全文
 
 ### 3. `PersistentOwnedZBox.borrowed()` 危险用法清理
 - **根因**: 对 `.dyn_data` 类型调用 `.borrowed()` 会产生一个临时 `RequestOwnedZBox` 然后立即 borrow，但那个 owned box 无人持有 → 可能被提前 drain
-- **修法**: [lifecycle.v:763-778](file:///Users/guweigang/Source/vphpx/vphp/lifecycle.v#L763-L778) — 所有非 fallback 路径改为 `clone_request_owned().borrowed()`
+- **修法**: [lifecycle.v:763-778](vphp/lifecycle.v#L763-L778) — 所有非 fallback 路径改为 `clone_request_owned().borrowed()`
 
 ### 4. `vphp_get_type(NULL)` 真 bug
 - **根因**: C 层 `vphp_get_type()` 没有做 NULL 检查，直接 `Z_TYPE_P(z)` 对 NULL pointer → SIGSEGV
-- **修法**: [values.inc.c](file:///Users/guweigang/Source/vphpx/vphp/bridge/values.inc.c) — 所有三个函数加 `z ? ... : 默认值`
+- **修法**: [values.inc.c](vphp/bridge/values.inc.c) — 所有三个函数加 `z ? ... : 默认值`
 
 ### 5. `from_callable_zval()` / `from_object_zval()` 设计修正
 - **根因**: 之前 persistent 路径粗暴 `dup_persistent(raw zval)` 对 object 做持久化 → 跨 request 时 GC 已经回收底层 object
-- **修法**: [lifecycle.v:326-351](file:///Users/guweigang/Source/vphpx/vphp/lifecycle.v#L326-L351) — 优先走 `RetainedCallable.from_zval()` / `RetainedObject.from_zval()` + addref
+- **修法**: [lifecycle.v:326-351](vphp/lifecycle.v#L326-L351) — 优先走 `RetainedCallable.from_zval()` / `RetainedObject.from_zval()` + addref
 
 ### 6. `call.inc.c` 方法调用统一化
 - **根因**: `zend_call_method_with_N_params` 系列宏在某些 PHP 版本/edge case 下对参数数组处理不一致
-- **修法**: [call.inc.c diff](file:///Users/guweigang/Source/vphpx/vphp/bridge/call.inc.c) — 统一走 `call_user_function()` 路径
+- **修法**: [call.inc.c diff](vphp/bridge/call.inc.c) — 统一走 `call_user_function()` 路径
 
 ---
 

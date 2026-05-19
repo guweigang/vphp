@@ -660,7 +660,7 @@ For code changes in the areas above, run at least:
 ```text
 vphptest make build
 vphptest ./run_tests.sh
-LIBRARY_PATH=/opt/homebrew/opt/libsodium/lib make -C /Users/guweigang/Source/vphpx/vslim build
+LIBRARY_PATH=/opt/homebrew/opt/libsodium/lib make -C vslim build
 ```
 
 If ownership changes, also run the lifecycle/probe scripts under

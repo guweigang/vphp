@@ -509,7 +509,7 @@ fields are read from the object and which scalar fields are synchronized back?"
 
 ## Compile Pipeline
 
-The current pipeline in [entry.v](/Users/guweigang/Source/vphpx/vphp/compiler/entry.v) is:
+The current pipeline in [entry.v](vphp/compiler/entry.v) is:
 
 ```mermaid
 flowchart TD
@@ -566,7 +566,7 @@ This step mutates class reprs to append derived PHP-visible properties/constants
 
 ## Export Pipeline
 
-After `compile()` succeeds, generation is driven from [export.v](/Users/guweigang/Source/vphpx/vphp/compiler/export.v).
+After `compile()` succeeds, generation is driven from [export.v](vphp/compiler/export.v).
 
 There are two main fragment collections:
 

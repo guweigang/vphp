@@ -48,7 +48,7 @@ If a builder needs to understand raw AST, something is in the wrong layer.
 
 ### `ClassBuilder`
 
-Defined in [class.v](/Users/guweigang/Source/vphpx/vphp/compiler/builder/class.v).
+Defined in [class.v](vphp/compiler/builder/class.v).
 
 This is the central type export builder.
 
@@ -158,7 +158,7 @@ Implementations are still partly supplied later by `c_emitter.v`, because wrappe
 
 ## `FuncBuilder`
 
-Defined in [function.v](/Users/guweigang/Source/vphpx/vphp/compiler/builder/function.v).
+Defined in [function.v](vphp/compiler/builder/function.v).
 
 Purpose:
 
@@ -185,7 +185,7 @@ Those are still completed in `c_emitter.v`.
 
 ## `ConstantBuilder`
 
-Defined in [constant.v](/Users/guweigang/Source/vphpx/vphp/compiler/builder/constant.v).
+Defined in [constant.v](vphp/compiler/builder/constant.v).
 
 Purpose:
 
@@ -209,7 +209,7 @@ This builder is intentionally small and focused.
 
 ## `ModuleBuilder`
 
-Defined in [module.v](/Users/guweigang/Source/vphpx/vphp/compiler/builder/module.v).
+Defined in [module.v](vphp/compiler/builder/module.v).
 
 Purpose:
 
@@ -250,7 +250,7 @@ So `ModuleBuilder` is downstream from the symbol builders.
 
 ## `ExportFragments`
 
-Defined in [fragments.v](/Users/guweigang/Source/vphpx/vphp/compiler/builder/fragments.v).
+Defined in [fragments.v](vphp/compiler/builder/fragments.v).
 
 This is the transport object for the builder layer.
 

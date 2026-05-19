@@ -60,7 +60,7 @@ Linked result:
 
 ## Current Linker Entry
 
-Implemented in [class.v](/Users/guweigang/Source/vphpx/vphp/compiler/linker/class.v).
+Implemented in [class.v](vphp/compiler/linker/class.v).
 
 Entry point:
 
@@ -186,7 +186,7 @@ Linking is only the compile-time half.
 
 For shadow statics, runtime behavior still requires bridge glue.
 
-That happens later in [v_glue.v](/Users/guweigang/Source/vphpx/vphp/compiler/v_glue.v), where class glue emits:
+That happens later in [v_glue.v](vphp/compiler/v_glue.v), where class glue emits:
 
 - `Class.statics()`
 - `sync_statics_from_php(ctx)`

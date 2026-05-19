@@ -4,9 +4,9 @@
 
 This document explains how these three files collaborate:
 
-- [export.v](/Users/guweigang/Source/vphpx/vphp/compiler/export.v)
-- [c_emitter.v](/Users/guweigang/Source/vphpx/vphp/compiler/c_emitter.v)
-- [v_glue.v](/Users/guweigang/Source/vphpx/vphp/compiler/v_glue.v)
+- [export.v](vphp/compiler/export.v)
+- [c_emitter.v](vphp/compiler/c_emitter.v)
+- [v_glue.v](vphp/compiler/v_glue.v)
 
 They all participate in code generation, but they do not have the same job.
 

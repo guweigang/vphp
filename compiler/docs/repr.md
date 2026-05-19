@@ -32,7 +32,7 @@ vphp/compiler/repr/
 
 ### `PhpRepr`
 
-Defined in [common.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/common.v).
+Defined in [common.v](vphp/compiler/repr/common.v).
 
 This is the common sum-like umbrella interface used by the compiler pipeline:
 
@@ -46,7 +46,7 @@ Its value is only in allowing heterogeneous compiler elements to be stored in on
 
 ## Class Repr
 
-Defined in [class.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/class.v).
+Defined in [class.v](vphp/compiler/repr/class.v).
 
 ### `PhpClassRepr`
 
@@ -225,7 +225,7 @@ Fields:
 
 ## Function Repr
 
-Defined in [function.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/function.v).
+Defined in [function.v](vphp/compiler/repr/function.v).
 
 ### `PhpFuncRepr`
 
@@ -258,7 +258,7 @@ Notes:
 
 ## Interface Repr
 
-Defined in [interface.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/interface.v).
+Defined in [interface.v](vphp/compiler/repr/interface.v).
 
 ### `PhpInterfaceRepr`
 
@@ -282,7 +282,7 @@ Notes:
 
 ## Enum Repr
 
-Defined in [enum.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/enum.v).
+Defined in [enum.v](vphp/compiler/repr/enum.v).
 
 ### `PhpEnumRepr`
 
@@ -315,7 +315,7 @@ Fields:
 
 ## Function Repr
 
-Defined in [function.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/function.v).
+Defined in [function.v](vphp/compiler/repr/function.v).
 
 ### `PhpFuncRepr`
 
@@ -345,7 +345,7 @@ Fields:
 
 ## Constant Repr
 
-Defined in [constant.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/constant.v).
+Defined in [constant.v](vphp/compiler/repr/constant.v).
 
 ### `PhpConstRepr`
 
@@ -389,7 +389,7 @@ Important nuance:
 
 ## Globals Repr
 
-Defined in [globals.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/globals.v).
+Defined in [globals.v](vphp/compiler/repr/globals.v).
 
 ### `PhpGlobalsRepr`
 
@@ -415,7 +415,7 @@ Fields:
 
 ## Task Repr
 
-Defined in [task.v](/Users/guweigang/Source/vphpx/vphp/compiler/repr/task.v).
+Defined in [task.v](vphp/compiler/repr/task.v).
 
 ### `PhpTaskRepr`
 
