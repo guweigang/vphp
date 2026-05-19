@@ -68,6 +68,14 @@ pub fn object_wrapper_ptr(obj voidptr) voidptr {
 	return object_wrapper(unsafe { &C.zend_object(obj) })
 }
 
+pub fn object_wrapper_v_ptr(wrapper_ptr voidptr) voidptr {
+	wrapper := unsafe { &C.vphp_object_wrapper(wrapper_ptr) }
+	if isnil(wrapper) {
+		return unsafe { nil }
+	}
+	return wrapper.v_ptr
+}
+
 pub fn wrap_existing_object(out &C.zval, obj &C.zend_object) {
 	C.vphp_wrap_existing_object(out, obj)
 }

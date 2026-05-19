@@ -59,9 +59,5 @@ pub fn (handle Handle) wrapper_ptr() voidptr {
 }
 
 pub fn (handle Handle) bound_v_ptr() voidptr {
-	wrapper := unsafe { &C.vphp_object_wrapper(handle.wrapper_ptr()) }
-	if isnil(wrapper) {
-		return unsafe { nil }
-	}
-	return wrapper.v_ptr
+	return zend.object_wrapper_v_ptr(handle.wrapper_ptr())
 }

@@ -41,7 +41,12 @@ fn assert_no_boundary_regressions(path string, source string) {
 		assert !source.contains(pattern), '${path} should not contain ${pattern}'
 	}
 	for line in source.split_into_lines() {
-		if line.contains('C.vphp_') && !line.starts_with('__global C.') {
+		trimmed := line.trim_space()
+		is_generated_class_entry_ref :=
+			trimmed.starts_with('return vphp.ZendClassEntry.from_ptr(C.')
+			&& trimmed.ends_with('_ce)')
+		if line.contains('C.vphp_') && !line.starts_with('__global C.')
+			&& !is_generated_class_entry_ref {
 			assert false, '${path} should not call ${line.trim_space()}'
 		}
 	}
@@ -190,6 +195,21 @@ fn test_semantic_php_wrappers_do_not_touch_c_boundary_directly() {
 			assert !trimmed.contains('&C.'), '${path} semantic wrapper should not expose C pointers: ${trimmed}'
 			assert !trimmed.contains('ZEND_'), '${path} semantic wrapper should not use Zend macros directly: ${trimmed}'
 			assert !trimmed.contains('zend_'), '${path} semantic wrapper should not call Zend APIs directly: ${trimmed}'
+		}
+	}
+}
+
+fn test_no_c_low_level_wrapper_dirs_do_not_touch_c_boundary_directly() {
+	for dir in ['vphp/zval', 'vphp/object', 'vphp/execute', 'vphp/scope'] {
+		for file in os.walk_ext(os.join_path(repo_root(), dir), '.v') {
+			path := file.all_after(repo_root() + os.path_separator)
+			source := read_repo_file(path)
+			for line in source.split_into_lines() {
+				trimmed := line.trim_space()
+				assert !trimmed.contains('C.'), '${path} no-C wrapper should delegate C boundary work to vphp/zend: ${trimmed}'
+				assert !trimmed.contains('&C.'), '${path} no-C wrapper should not expose raw C pointers: ${trimmed}'
+				assert !trimmed.contains('ZEND_'), '${path} no-C wrapper should not use Zend macros directly: ${trimmed}'
+			}
 		}
 	}
 }
