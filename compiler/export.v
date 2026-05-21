@@ -203,39 +203,61 @@ fn (c Compiler) module_dirs() map[string]string {
 fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
 	module_dirs := c.module_dirs()
 	mut classes_by_module := map[string][]repr.PhpClassRepr{}
+	mut funcs_by_module := map[string][]repr.PhpFuncRepr{}
 	for el in c.elements {
 		if el is repr.PhpClassRepr {
 			if el.is_trait || el.module_name == '' || el.module_name == 'main' {
 				continue
 			}
 			classes_by_module[el.module_name] << el
+		} else if el is repr.PhpFuncRepr {
+			if el.module_name == '' || el.module_name == 'main' {
+				continue
+			}
+			funcs_by_module[el.module_name] << el
 		}
 	}
-	for module_name, classes in classes_by_module {
+	// 合并所有需要生成 glue 的模块
+	mut all_modules := map[string]bool{}
+	for m, _ in classes_by_module {
+		all_modules[m] = true
+	}
+	for m, _ in funcs_by_module {
+		all_modules[m] = true
+	}
+	for module_name, _ in all_modules {
+		classes := classes_by_module[module_name] or { []repr.PhpClassRepr{} }
+		funcs := funcs_by_module[module_name] or { []repr.PhpFuncRepr{} }
 		module_dir := module_dirs[module_name] or { continue }
 		mut out := strings.new_builder(1024)
 		out.write_string('module ${module_name}\n\n')
 		out.write_string('import vphp\n\n')
-		for imported in module_glue_imports(classes, module_name, module_dirs) {
+		for imported in module_glue_imports(classes, funcs, module_name, module_dirs) {
 			out.write_string('import ${imported}\n')
 		}
-		if module_glue_imports(classes, module_name, module_dirs).len > 0 {
+		if module_glue_imports(classes, funcs, module_name, module_dirs).len > 0 {
 			out.write_string('\n')
 		}
 		out.write_string('#include "php_bridge.h"\n\n')
 		for class in classes {
 			out.write_string('__global C.${class.c_name().to_lower()}_ce &C.zend_class_entry\n')
 		}
-		out.write_string('\n')
+		if classes.len > 0 {
+			out.write_string('\n')
+		}
 		for class in classes {
 			out.write_string(v_glue.gen_class_glue_for_module(class, module_name).join('\n'))
+			out.write_string('\n\n')
+		}
+		for func in funcs {
+			out.write_string(v_glue.gen_func_glue_for_module(func, module_name).join('\n'))
 			out.write_string('\n\n')
 		}
 		os.write_file(os.join_path(module_dir, 'vphp_bridge.v'), out.str())!
 	}
 }
 
-fn module_glue_imports(classes []repr.PhpClassRepr, current_module string, module_dirs map[string]string) []string {
+fn module_glue_imports(classes []repr.PhpClassRepr, funcs []repr.PhpFuncRepr, current_module string, module_dirs map[string]string) []string {
 	mut imports := []string{}
 	for class in classes {
 		for prop in class.properties {
@@ -250,6 +272,17 @@ fn module_glue_imports(classes []repr.PhpClassRepr, current_module string, modul
 					imports << modules_in_type_ref(arg.source.params_type, current_module,
 						module_dirs)
 				}
+			}
+		}
+	}
+	for func in funcs {
+		imports << modules_in_type_ref(func.return_spec.effective_v_type(), current_module,
+			module_dirs)
+		for arg in func.args {
+			imports << modules_in_type_ref(arg.v_type, current_module, module_dirs)
+			if arg.source.params_type != '' {
+				imports << modules_in_type_ref(arg.source.params_type, current_module,
+					module_dirs)
 			}
 		}
 	}

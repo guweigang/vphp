@@ -72,7 +72,9 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 		if mut el is repr.PhpFuncRepr {
 			// Closure returns are wrapped through compiler-generated concrete
 			// bridges so the runtime only keeps the low-level closure storage API.
-			plan.glue_blocks << g.gen_func_glue(el).join('\n')
+			if el.module_name == '' || el.module_name == 'main' {
+				plan.glue_blocks << g.gen_func_glue(el).join('\n')
+			}
 		} else if mut el is repr.PhpClassRepr {
 			if el.is_trait {
 				continue
