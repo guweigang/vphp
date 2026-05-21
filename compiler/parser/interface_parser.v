@@ -16,7 +16,7 @@ pub fn parse_interface_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpInterface
 		return none
 	}
 
-	iface.name = interface_decl.name.all_after('.')
+	iface.name = interface_decl.name.all_after_last('.')
 	if attr := interface_decl.attrs.find_first('php_interface') {
 		iface.php_name = if attr.arg != '' { attr.arg } else { iface.name }
 	} else {
@@ -52,8 +52,7 @@ pub fn parse_interface_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpInterface
 			v_name:      method.name
 			v_c_func:    ''
 			is_static:   false
-			return_spec: repr.new_return_repr(strip_module(table.type_to_str(method.return_type)),
-				'')
+			return_spec: repr.new_return_repr(strip_module(table.type_to_str(method.return_type)), '')
 			args:        args
 			has_export:  false
 			visibility:  'public'

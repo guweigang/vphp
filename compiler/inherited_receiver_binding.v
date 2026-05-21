@@ -4,6 +4,7 @@ import compiler.repr
 
 struct InheritedReceiverGlue {
 	class_name string
+	type_ref   string
 	lower_name string
 	props      []repr.PhpClassPropRepr
 }
@@ -12,9 +13,10 @@ struct InheritedReceiverFieldBinding {
 	prop repr.PhpClassPropRepr
 }
 
-fn InheritedReceiverGlue.new(class_name string, lower_name string, props []repr.PhpClassPropRepr) InheritedReceiverGlue {
+fn InheritedReceiverGlue.new(class_name string, type_ref string, lower_name string, props []repr.PhpClassPropRepr) InheritedReceiverGlue {
 	return InheritedReceiverGlue{
 		class_name: class_name
+		type_ref:   type_ref
 		lower_name: lower_name
 		props:      props
 	}
@@ -28,17 +30,18 @@ fn (glue InheritedReceiverGlue) render_lines() []string {
 }
 
 fn (glue InheritedReceiverGlue) zval_fields() []repr.PhpClassPropRepr {
-	return glue.props.filter(!it.is_property_only && !it.is_static && is_internal_parent_zval_field(it.v_type))
+	return glue.props.filter(!it.is_property_only && !it.is_static
+		&& is_internal_parent_zval_field(it.v_type))
 }
 
 fn (glue InheritedReceiverGlue) render_load_lines() []string {
 	mut out := []string{}
-	out << 'fn ${glue.lower_name}_load_from_php(php_obj vphp.ZendObject) ${glue.class_name} {'
+	out << 'fn ${glue.lower_name}_load_from_php(php_obj vphp.ZendObject) ${glue.type_ref} {'
 	zval_fields := glue.zval_fields()
 	if zval_fields.len == 0 {
-		out << '    mut recv := ${glue.class_name}{}'
+		out << '    mut recv := ${glue.type_ref}{}'
 	} else {
-		out << '    mut recv := ${glue.class_name}{'
+		out << '    mut recv := ${glue.type_ref}{'
 		for prop in zval_fields {
 			out << '        ${prop.v_field_name}: vphp.ZVal.new_null()'
 		}
@@ -57,7 +60,7 @@ fn (glue InheritedReceiverGlue) render_load_lines() []string {
 
 fn (glue InheritedReceiverGlue) render_sync_lines() []string {
 	mut out := []string{}
-	out << 'fn ${glue.lower_name}_sync_to_php(php_obj vphp.ZendObject, recv ${glue.class_name}) {'
+	out << 'fn ${glue.lower_name}_sync_to_php(php_obj vphp.ZendObject, recv ${glue.type_ref}) {'
 	out << '    if !php_obj.is_valid() {'
 	out << '        return'
 	out << '    }'
@@ -79,7 +82,8 @@ fn (field InheritedReceiverFieldBinding) can_load() bool {
 	if prop.is_static || prop.is_property_only {
 		return false
 	}
-	return is_internal_parent_scalar_field(prop.v_type) || is_internal_parent_zval_field(prop.v_type)
+	return is_internal_parent_scalar_field(prop.v_type)
+		|| is_internal_parent_zval_field(prop.v_type)
 }
 
 fn (field InheritedReceiverFieldBinding) can_sync() bool {
@@ -114,6 +118,7 @@ fn (field InheritedReceiverFieldBinding) load_lines() []string {
 		}
 		else {}
 	}
+
 	return out
 }
 
@@ -142,5 +147,6 @@ fn (field InheritedReceiverFieldBinding) sync_lines() []string {
 		}
 		else {}
 	}
+
 	return out
 }

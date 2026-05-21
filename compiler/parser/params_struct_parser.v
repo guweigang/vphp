@@ -4,7 +4,7 @@ import v.ast
 import compiler.php_types
 import compiler.repr
 
-pub fn collect_params_structs(stmts []ast.Stmt, table &ast.Table) map[string]repr.PhpParamsStruct {
+pub fn collect_params_structs(stmts []ast.Stmt, table &ast.Table, decl_modules map[string]string) map[string]repr.PhpParamsStruct {
 	mut out := map[string]repr.PhpParamsStruct{}
 	for stmt in stmts {
 		if stmt !is ast.StructDecl {
@@ -15,8 +15,10 @@ pub fn collect_params_structs(stmts []ast.Stmt, table &ast.Table) map[string]rep
 			continue
 		}
 		struct_name := strip_module(struct_decl.name)
+		module_name := decl_modules['struct:${struct_decl.name}'] or { 'main' }
 		mut params_struct := repr.PhpParamsStruct{
-			name: struct_name
+			name:        struct_name
+			module_name: module_name
 		}
 		for field in struct_decl.fields {
 			field_type := strip_module(table.type_to_str(field.typ))
@@ -59,5 +61,6 @@ fn v_default_literal(expr ast.Expr, default_spec php_types.PhpDefaultSpec) strin
 		}
 		else {}
 	}
+
 	return default_spec.v_expr
 }

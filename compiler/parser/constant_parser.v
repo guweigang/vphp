@@ -19,7 +19,7 @@ pub fn parse_constant_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpConstRepr 
 			continue
 		}
 
-		raw_name := field.name.all_after('.')
+		raw_name := field.name.all_after_last('.')
 		con.name = raw_name.to_upper()
 
 		if field.expr is ast.StringLiteral {
@@ -40,7 +40,7 @@ pub fn parse_constant_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpConstRepr 
 			con.name = raw_name
 			mut v_type := table.get_type_name(expr.typ)
 			if v_type.contains('.') {
-				v_type = v_type.all_after('.')
+				v_type = v_type.all_after_last('.')
 			}
 			con.v_type = v_type
 

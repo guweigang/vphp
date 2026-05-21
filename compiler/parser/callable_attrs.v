@@ -234,7 +234,7 @@ fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides
 						source:      repr.PhpArgSource{
 							kind:             .params_field
 							params_arg_name:  param.name
-							params_type:      v_type
+							params_type:      params_struct.type_ref()
 							params_field:     field.name
 							params_v_default: field.v_default
 						}

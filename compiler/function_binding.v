@@ -17,7 +17,7 @@ fn FunctionGlue.new(f &repr.PhpFuncRepr, params_structs map[string]repr.PhpParam
 	if closure_binding := struct_closure {
 		helper_lines << closure_binding.render_helper_lines()
 	}
-	v_func_name := if f.original_name != '' { f.original_name } else { f.name }
+	v_func_name := f.qualified_original_name()
 	v_call_name := if is_v_keyword(v_func_name) { '@' + v_func_name } else { v_func_name }
 	return FunctionGlue{
 		name:           f.name

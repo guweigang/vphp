@@ -268,7 +268,7 @@ fn parse_php_attr(raw string) ?repr.PhpAttributeRepr {
 	}
 }
 
-pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
+pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table, module_name string) ?&repr.PhpClassRepr {
 	if stmt !is ast.StructDecl {
 		return none
 	}
@@ -282,7 +282,8 @@ pub fn parse_class_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpClassRepr {
 	}
 	cls.is_trait = struct_decl.attrs.any(it.name == 'php_trait')
 
-	cls.name = struct_decl.name.all_after('.')
+	cls.name = struct_decl.name.all_after_last('.')
+	cls.module_name = module_name
 	if attr := struct_decl.attrs.find_first(if cls.is_trait { 'php_trait' } else { 'php_class' }) {
 		cls.php_name = if attr.arg != '' { attr.arg } else { cls.name }
 	} else {

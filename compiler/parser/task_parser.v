@@ -16,7 +16,7 @@ pub fn parse_task_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpTaskRepr {
 		return none
 	}
 
-	task.v_name = struct_decl.name.all_after('.')
+	task.v_name = struct_decl.name.all_after_last('.')
 	if attr := struct_decl.attrs.find_first('php_task') {
 		task.task_name = if attr.arg != '' { attr.arg } else { task.v_name }
 	}
@@ -24,10 +24,10 @@ pub fn parse_task_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpTaskRepr {
 	for field in struct_decl.fields {
 		mut type_name := table.get_type_name(field.typ)
 		if type_name.contains('.') {
-			type_name = type_name.all_after('.')
+			type_name = type_name.all_after_last('.')
 		}
 		task.parameters << repr.PhpTaskArg{
-			name: field.name
+			name:   field.name
 			v_type: type_name
 		}
 	}

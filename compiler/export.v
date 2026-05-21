@@ -8,8 +8,8 @@ import compiler.repr
 fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 	mut fragments := builder.ExportFragments{}
 	c_emitter := CGenerator{
-		ext_name: c.ext_name
-		class_ce_by_type: c.class_ce_map()
+		ext_name:          c.ext_name
+		class_ce_by_type:  c.class_ce_map()
 		class_php_by_type: c.class_php_map()
 	}
 
@@ -29,8 +29,8 @@ fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	mut fragments := builder.ExportFragments{}
 	c_emitter := CGenerator{
-		ext_name: c.ext_name
-		class_ce_by_type: c.class_ce_map()
+		ext_name:          c.ext_name
+		class_ce_by_type:  c.class_ce_map()
 		class_php_by_type: c.class_php_map()
 	}
 
@@ -80,9 +80,9 @@ fn (c Compiler) class_php_map() map[string]string {
 // 1. 总入口：由外部 build.v 调用
 // ==========================================
 pub fn (mut c Compiler) generate_all() ! {
-    c.generate_h()!
-    c.generate_c()!
-    c.generate_v_glue()!
+	c.generate_h()!
+	c.generate_c()!
+	c.generate_v_glue()!
 }
 
 // ==========================================
@@ -102,7 +102,6 @@ fn (mut c Compiler) generate_c() ! {
 		mod_builder.add_ini_entry(k, v)
 	}
 	mod_builder.globals = c.globals_repr
-
 
 	res.write_string(mod_builder.render_declarations())
 
@@ -160,17 +159,115 @@ fn (mut c Compiler) generate_v_glue() ! {
 	}
 	v_code := v_glue.generate(mut c.elements)
 	os.write_file(c.bridge_output_path(), v_code)!
+	c.generate_module_glue_files(v_glue)!
 }
 
 fn (c Compiler) bridge_output_path() string {
 	if c.target_files.len == 0 {
 		return 'bridge.v'
 	}
-	target_dir := os.dir(c.target_files[0])
+	mut target_dir := os.dir(c.target_files[0])
+	for file in c.target_files[1..] {
+		dir := os.dir(file)
+		if dir.len < target_dir.len {
+			target_dir = dir
+		}
+	}
 	if target_dir == '' {
 		return 'bridge.v'
 	}
 	return os.join_path(target_dir, 'bridge.v')
+}
+
+fn (c Compiler) module_dirs() map[string]string {
+	mut dirs := map[string]string{}
+	for file in c.target_files {
+		source := os.read_file(file) or { continue }
+		for line in source.split_into_lines() {
+			trimmed := line.trim_space()
+			if trimmed == '' || trimmed.starts_with('//') {
+				continue
+			}
+			if trimmed.starts_with('module ') {
+				module_name := trimmed['module '.len..].trim_space()
+				if module_name != '' && module_name !in dirs {
+					dirs[module_name] = os.dir(file)
+				}
+			}
+			break
+		}
+	}
+	return dirs
+}
+
+fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
+	module_dirs := c.module_dirs()
+	mut classes_by_module := map[string][]repr.PhpClassRepr{}
+	for el in c.elements {
+		if el is repr.PhpClassRepr {
+			if el.is_trait || el.module_name == '' || el.module_name == 'main' {
+				continue
+			}
+			classes_by_module[el.module_name] << el
+		}
+	}
+	for module_name, classes in classes_by_module {
+		module_dir := module_dirs[module_name] or { continue }
+		mut out := strings.new_builder(1024)
+		out.write_string('module ${module_name}\n\n')
+		out.write_string('import vphp\n\n')
+		for imported in module_glue_imports(classes, module_name, module_dirs) {
+			out.write_string('import ${imported}\n')
+		}
+		if module_glue_imports(classes, module_name, module_dirs).len > 0 {
+			out.write_string('\n')
+		}
+		out.write_string('#include "php_bridge.h"\n\n')
+		for class in classes {
+			out.write_string('__global C.${class.c_name().to_lower()}_ce &C.zend_class_entry\n')
+		}
+		out.write_string('\n')
+		for class in classes {
+			out.write_string(v_glue.gen_class_glue_for_module(class, module_name).join('\n'))
+			out.write_string('\n\n')
+		}
+		os.write_file(os.join_path(module_dir, 'vphp_bridge.v'), out.str())!
+	}
+}
+
+fn module_glue_imports(classes []repr.PhpClassRepr, current_module string, module_dirs map[string]string) []string {
+	mut imports := []string{}
+	for class in classes {
+		for prop in class.properties {
+			imports << modules_in_type_ref(prop.v_type, current_module, module_dirs)
+		}
+		for method in class.methods {
+			imports << modules_in_type_ref(method.return_spec.effective_v_type(), current_module,
+				module_dirs)
+			for arg in method.args {
+				imports << modules_in_type_ref(arg.v_type, current_module, module_dirs)
+				if arg.source.params_type != '' {
+					imports << modules_in_type_ref(arg.source.params_type, current_module,
+						module_dirs)
+				}
+			}
+		}
+	}
+	imports.sort()
+	return uniq_lines(imports)
+}
+
+fn modules_in_type_ref(type_ref string, current_module string, module_dirs map[string]string) []string {
+	mut imports := []string{}
+	for module_name, _ in module_dirs {
+		if module_name == '' || module_name == 'main' || module_name == current_module {
+			continue
+		}
+		if type_ref.contains('${module_name}.') {
+			imports << module_name
+		}
+	}
+	return imports
 }
 
 // ==========================================
@@ -209,9 +306,7 @@ fn (mut c Compiler) generate_h() ! {
 	res.write_string('#endif\n')
 
 	// 7. 物理写入文件
-	os.write_file('php_bridge.h', res.str()) or {
-		return error('无法写入 php_bridge.h: $err')
-	}
+	os.write_file('php_bridge.h', res.str()) or { return error('无法写入 php_bridge.h: $err') }
 
 	println('  - [Generator] 已生成 php_bridge.h')
 }

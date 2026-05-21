@@ -11,6 +11,7 @@ struct ClassMethodGlue {
 
 struct ClassMethodGlueContext {
 	class_name              string
+	type_ref                string
 	lower_name              string
 	shadow_static_name      string
 	is_static               bool
@@ -22,7 +23,7 @@ struct ClassMethodGlueContext {
 	return_binding          ReturnBinding
 }
 
-fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_receiver bool, method repr.PhpMethodRepr, params_structs map[string]repr.PhpParamsStruct) ?ClassMethodGlue {
+fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_receiver bool, method repr.PhpMethodRepr, params_structs map[string]repr.PhpParamsStruct, type_ref string) ?ClassMethodGlue {
 	if method.has_export {
 		return none
 	}
@@ -40,13 +41,14 @@ fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_r
 	returns_object := return_info.kind in [.static_factory, .static_object, .instance_object]
 	arg_setup := build_php_arg_setup(method.args, returns_object, true)
 	arg_names := arg_setup.names
-	call_expr := class_method_call_expr(r.name, method, uses_inherited_receiver, arg_names)
+	call_expr := class_method_call_expr(type_ref, method, uses_inherited_receiver, arg_names)
 	return ClassMethodGlue{
 		glue_name:    glue_name
 		helper_lines: helper_lines
 		arg_setup:    arg_setup
 		context:      ClassMethodGlueContext{
 			class_name:              r.name
+			type_ref:                type_ref
 			lower_name:              lower_name
 			shadow_static_name:      r.shadow_static_name
 			is_static:               method.is_static
@@ -60,12 +62,12 @@ fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_r
 	}
 }
 
-fn class_method_call_expr(class_name string, method repr.PhpMethodRepr, uses_inherited_receiver bool, arg_names []string) string {
+fn class_method_call_expr(type_ref string, method repr.PhpMethodRepr, uses_inherited_receiver bool, arg_names []string) string {
 	call_args := arg_names.join(', ')
 	v_name := if method.v_name != '' { method.v_name } else { method.name }
 	v_call_name := if is_v_keyword(v_name) { '@' + v_name } else { v_name }
 	if method.is_static {
-		return '${class_name}.${v_call_name}(${call_args})'
+		return '${type_ref}.${v_call_name}(${call_args})'
 	}
 	if uses_inherited_receiver {
 		return 'recv.${v_call_name}(${call_args})'
@@ -119,7 +121,7 @@ fn (ctx ClassMethodGlueContext) render_receiver_lines() []string {
 			'    mut recv := ${ctx.lower_name}_load_from_php(this_obj)',
 		]
 	}
-	return ['    mut recv := unsafe { &${ctx.class_name}(ptr) }']
+	return ['    mut recv := unsafe { &${ctx.type_ref}(ptr) }']
 }
 
 fn (ctx ClassMethodGlueContext) render_scope_lines() []string {

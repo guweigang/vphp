@@ -16,7 +16,7 @@ pub fn parse_enum_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpEnumRepr {
 		return none
 	}
 
-	enum_repr.name = enum_decl.name.all_after('.')
+	enum_repr.name = enum_decl.name.all_after_last('.')
 	if attr := enum_decl.attrs.find_first('php_enum') {
 		enum_repr.php_name = if attr.arg != '' { attr.arg } else { enum_repr.name }
 	} else {
@@ -33,7 +33,7 @@ pub fn parse_enum_decl(stmt ast.Stmt, table &ast.Table) ?&repr.PhpEnumRepr {
 			next_value = explicit
 		}
 		enum_repr.cases << repr.PhpEnumCaseRepr{
-			name: field.name
+			name:  field.name
 			value: next_value.str()
 		}
 		next_value++

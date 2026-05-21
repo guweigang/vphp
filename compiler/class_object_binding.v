@@ -2,19 +2,24 @@ module compiler
 
 struct ClassObjectBindingGlue {
 	class_name string
+	type_ref   string
 	c_name     string
 	lower_name string
 }
 
-fn ClassObjectBindingGlue.new(class_name string, c_name string, lower_name string) ClassObjectBindingGlue {
+fn ClassObjectBindingGlue.new(class_name string, type_ref string, c_name string, lower_name string) ClassObjectBindingGlue {
 	return ClassObjectBindingGlue{
 		class_name: class_name
+		type_ref:   type_ref
 		c_name:     c_name
 		lower_name: lower_name
 	}
 }
 
 fn (glue ClassObjectBindingGlue) render_lines() []string {
+	if glue.type_ref != glue.class_name {
+		return []
+	}
 	return [
 		'pub fn ${glue.class_name}.php_class_entry() vphp.ZendClassEntry {',
 		'    return vphp.ZendClassEntry.from_ptr(C.${glue.c_name.to_lower()}_ce)',
@@ -25,29 +30,23 @@ fn (glue ClassObjectBindingGlue) render_lines() []string {
 		'}',
 		'',
 		'pub fn ${glue.class_name}.php_object_zval(v_ptr voidptr, ownership vphp.OwnershipKind) vphp.ZVal {',
-		'    mut value := vphp.PhpValue.null()',
-		'    binding := vphp.PhpObjectBinding.new[${glue.class_name}]()',
-		'    if v_ptr == 0 || !binding.is_valid() {',
-		'        return value.take_zval()',
-		'    }',
-		'    vphp.PhpReturn.from_zval(value.to_zval()).bound_object(v_ptr, binding.class_entry, binding.handlers, ownership)',
-		'    return value.take_zval()',
+		'    return vphp.bind_object_zval[${glue.class_name}](v_ptr, ownership)',
 		'}',
 		'',
 		'pub fn (obj &${glue.class_name}) bind_php_object() vphp.ZVal {',
-		'    return ${glue.class_name}.php_object_zval(obj, .borrowed)',
+		'    return vphp.bind_borrowed_object_zval[${glue.class_name}](obj)',
 		'}',
 		'',
 		'pub fn (obj &${glue.class_name}) bind_php_object_value() vphp.PhpValue {',
-		'    return vphp.PhpValue.adopt_zval(obj.bind_php_object())',
+		'    return vphp.bind_borrowed_object_value[${glue.class_name}](obj)',
 		'}',
 		'',
 		'pub fn (obj &${glue.class_name}) bind_owned_php_object() vphp.ZVal {',
-		'    return ${glue.class_name}.php_object_zval(obj, .owned_request)',
+		'    return vphp.bind_owned_object_zval[${glue.class_name}](obj)',
 		'}',
 		'',
 		'pub fn (obj &${glue.class_name}) bind_owned_php_object_value() vphp.PhpValue {',
-		'    return vphp.PhpValue.adopt_zval(obj.bind_owned_php_object())',
+		'    return vphp.bind_owned_object_value[${glue.class_name}](obj)',
 		'}',
 	]
 }

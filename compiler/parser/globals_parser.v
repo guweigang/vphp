@@ -16,11 +16,11 @@ pub fn parse_globals_decl(stmt ast.Stmt, table &ast.Table) ?repr.PhpGlobalsRepr 
 		return none
 	}
 
-	globals_repr.name = struct_decl.name.all_after('.')
+	globals_repr.name = struct_decl.name.all_after_last('.')
 	for field in struct_decl.fields {
 		type_name := table.get_type_name(field.typ)
 		globals_repr.fields << repr.PhpGlobalField{
-			name: field.name
+			name:   field.name
 			v_type: type_name
 		}
 	}

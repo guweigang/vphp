@@ -3,6 +3,7 @@ module repr
 pub struct PhpClassRepr {
 pub mut:
 	name                    string // V struct 名 (如 VPhpTask)
+	module_name             string // V module 名，如 main 或 src.http
 	php_name                string // PHP 侧类名 (如 VPhp\Task)，可含命名空间
 	parent                  string // 继承关系
 	direct_internal_parent  bool
@@ -26,6 +27,13 @@ pub mut:
 	properties              []PhpClassPropRepr
 	methods                 []PhpMethodRepr
 	attributes              []PhpAttributeRepr
+}
+
+pub fn (r PhpClassRepr) type_ref() string {
+	if r.module_name == '' || r.module_name == 'main' {
+		return r.name
+	}
+	return '${r.module_name.all_after_last('.')}.${r.name}'
 }
 
 // C 宏安全名称：将 \ 替换为 _
@@ -96,8 +104,17 @@ pub mut:
 
 pub struct PhpParamsStruct {
 pub mut:
-	name   string
-	fields []PhpParamsField
+	name        string
+	module_name string
+	fields      []PhpParamsField
+}
+
+pub fn (r PhpParamsStruct) type_ref() string {
+	name := r.name.all_after_last('.')
+	if r.module_name == '' || r.module_name == 'main' {
+		return name
+	}
+	return '${r.module_name.all_after_last('.')}.${name}'
 }
 
 pub struct PhpParamsField {

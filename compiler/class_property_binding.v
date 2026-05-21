@@ -4,6 +4,7 @@ import compiler.repr
 
 struct ClassPropertyGlue {
 	class_name string
+	type_ref   string
 	lower_name string
 	props      []repr.PhpClassPropRepr
 }
@@ -12,9 +13,10 @@ struct ClassPropertyFieldBinding {
 	prop repr.PhpClassPropRepr
 }
 
-fn ClassPropertyGlue.new(class_name string, lower_name string, props []repr.PhpClassPropRepr) ClassPropertyGlue {
+fn ClassPropertyGlue.new(class_name string, type_ref string, lower_name string, props []repr.PhpClassPropRepr) ClassPropertyGlue {
 	return ClassPropertyGlue{
 		class_name: class_name
+		type_ref:   type_ref
 		lower_name: lower_name
 		props:      props
 	}
@@ -63,7 +65,7 @@ fn (glue ClassPropertyGlue) render_getter_lines() []string {
 	out << '    ret := vphp.PhpObjectPropertyHandler.return_from_ptr(rv)'
 	out << '    unsafe {'
 	out << '        name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)'
-	out << '        obj := &${glue.class_name}(ptr)'
+	out << '        obj := &${glue.type_ref}(ptr)'
 	for field in readable_fields {
 		out << field.getter_lines()
 	}
@@ -128,7 +130,7 @@ fn (glue ClassPropertyGlue) render_setter_lines() []string {
 	out << '    arg := vphp.PhpObjectPropertyHandler.value_from_ptr(value)'
 	out << '    unsafe {'
 	out << '        name := vphp.PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)'
-	out << '        mut obj := &${glue.class_name}(ptr)'
+	out << '        mut obj := &${glue.type_ref}(ptr)'
 	for field in writable_fields {
 		out << field.setter_lines()
 	}
@@ -170,7 +172,7 @@ fn (glue ClassPropertyGlue) render_sync_lines() []string {
 	}
 	out << '    out := vphp.PhpObjectPropertyHandler.value_from_ptr(zv)'
 	out << '    unsafe {'
-	out << '        obj := &${glue.class_name}(ptr)'
+	out << '        obj := &${glue.type_ref}(ptr)'
 	for field in readable_fields {
 		out << field.sync_lines()
 	}

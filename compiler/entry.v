@@ -20,8 +20,9 @@ pub mut:
 	elements        []repr.PhpRepr
 	params_structs  map[string]repr.PhpParamsStruct
 mut:
-	table    &ast.Table
-	pref_set &pref.Preferences
+	table        &ast.Table
+	pref_set     &pref.Preferences
+	decl_modules map[string]string
 	// 辅助 Map：通过类名快速找到 elements 里的索引，方便追加方法
 	class_index map[string]int
 }
@@ -46,6 +47,7 @@ pub fn (mut c Compiler) compile() !string {
 		if c.ext_name == '' {
 			c.set_extension_meta(file_ast)
 		}
+		c.remember_decl_modules(file_ast.stmts, file_ast.mod.name)
 		all_stmts << file_ast.stmts
 	}
 
@@ -54,7 +56,7 @@ pub fn (mut c Compiler) compile() !string {
 	}
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
 	field_types := collect_struct_field_types(all_stmts, c.table)
-	params_structs := cparser.collect_params_structs(all_stmts, c.table)
+	params_structs := cparser.collect_params_structs(all_stmts, c.table, c.decl_modules)
 	c.params_structs = params_structs.clone()
 	method_profiles := collect_method_borrow_profiles(all_stmts, c.table, field_types)
 	resolved_borrowed := resolve_method_borrowed_returns(method_profiles)
@@ -80,16 +82,18 @@ pub fn (mut c Compiler) compile() !string {
 		}
 
 		if stmt is ast.StructDecl {
-			// A. 探测是否是 Zend Globals 定义
-			if c.globals_repr.name == '' {
-				if globals_repr := cparser.parse_globals_decl(stmt, c.table) {
-					c.globals_repr = globals_repr
-					continue
+			// A. 探测是否是 Zend Globals 定义。Globals 是 extension-level metadata，
+			// 可以声明在任意 V module，但一个扩展只能有一个 globals struct。
+			if globals_repr := cparser.parse_globals_decl(stmt, c.table) {
+				if c.globals_repr.name != '' {
+					return error('multiple @[php_globals] declarations are not supported: ${c.globals_repr.name} and ${globals_repr.name}')
 				}
+				c.globals_repr = globals_repr
+				continue
 			}
 
 			// B. 或者是普通类定义
-			if cls := cparser.parse_class_decl(stmt, c.table) {
+			if cls := cparser.parse_class_decl(stmt, c.table, c.module_for_stmt(stmt)) {
 				// 记录该类在 elements 数组中的位置
 				c.class_index[cls.name] = c.elements.len
 				c.elements << cls
@@ -103,14 +107,14 @@ pub fn (mut c Compiler) compile() !string {
 			// 1. 检查是否是类方法 (Method)
 			if stmt.is_method {
 				// 获取接收者的类型名 (例如 "User")
-				receiver_type := c.table.get_type_name(stmt.receiver.typ).all_after('.')
+				receiver_type := c.table.get_type_name(stmt.receiver.typ).all_after_last('.')
 
 				if receiver_type in c.class_index {
 					idx := c.class_index[receiver_type]
 					mut el := c.elements[idx]
 					if mut el is repr.PhpClassRepr {
-						cparser.add_class_method(mut el, stmt, c.table, field_types, resolved_borrowed,
-							method_return_types, params_structs)
+						cparser.add_class_method(mut el, stmt, c.table, field_types,
+							resolved_borrowed, method_return_types, params_structs)
 						c.elements[idx] = el // 重要：写回修改后的对象！
 					}
 					continue
@@ -124,7 +128,7 @@ pub fn (mut c Compiler) compile() !string {
 					// 获取类名：如果是 main.Article，取 Article
 					raw_class := parts[0]
 					class_name := if raw_class.contains('.') {
-						raw_class.all_after('.')
+						raw_class.all_after_last('.')
 					} else {
 						raw_class
 					}
@@ -143,7 +147,9 @@ pub fn (mut c Compiler) compile() !string {
 			}
 
 			// 3. 否则，作为普通全局函数处理
-			if func := cparser.parse_function_decl(stmt, c.table, params_structs) {
+			if func := cparser.parse_function_decl(stmt, c.table, c.module_for_stmt(stmt),
+				params_structs)
+			{
 				c.elements << func
 				continue
 			}
@@ -172,6 +178,48 @@ pub fn (mut c Compiler) compile() !string {
 	linker.link_class_interfaces(mut c.elements)!
 
 	return c.ext_name
+}
+
+fn (c &Compiler) module_for_stmt(stmt ast.Stmt) string {
+	key := decl_key(stmt)
+	if module_name := c.decl_modules[key] {
+		return module_name
+	}
+	short_key := decl_short_key(stmt)
+	return c.decl_modules[short_key] or { 'main' }
+}
+
+fn (mut c Compiler) remember_decl_modules(stmts []ast.Stmt, module_name string) {
+	for stmt in stmts {
+		key := decl_key(stmt)
+		if key != '' {
+			c.decl_modules[key] = module_name
+		}
+		short_key := decl_short_key(stmt)
+		if short_key != '' {
+			c.decl_modules[short_key] = module_name
+		}
+	}
+}
+
+fn decl_key(stmt ast.Stmt) string {
+	match stmt {
+		ast.StructDecl { return 'struct:${stmt.name}' }
+		ast.FnDecl { return 'fn:${stmt.name}' }
+		ast.InterfaceDecl { return 'interface:${stmt.name}' }
+		ast.EnumDecl { return 'enum:${stmt.name}' }
+		else { return '' }
+	}
+}
+
+fn decl_short_key(stmt ast.Stmt) string {
+	match stmt {
+		ast.StructDecl { return 'struct:${stmt.name.all_after_last('.')}' }
+		ast.FnDecl { return 'fn:${stmt.name.all_after_last('.')}' }
+		ast.InterfaceDecl { return 'interface:${stmt.name.all_after_last('.')}' }
+		ast.EnumDecl { return 'enum:${stmt.name.all_after_last('.')}' }
+		else { return '' }
+	}
 }
 
 fn (mut c Compiler) set_extension_meta(file_ast &ast.File) {

@@ -20,7 +20,11 @@ mut:
 
 fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
 	mut out := strings.new_builder(2048)
-	out.write_string('module main\n\nimport vphp\n\n')
+	out.write_string('module main\n\nimport vphp\n')
+	for module_name in g.import_modules(elements) {
+		out.write_string('import ${module_name}\n')
+	}
+	out.write_string('\n')
 	out.write_string('#include "php_bridge.h"\n\n')
 	plan := g.build_emission_plan(mut elements)
 	if plan.c_global_lines.len > 0 {
@@ -43,6 +47,23 @@ fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
 	return out.str()
 }
 
+fn (g VGenerator) import_modules(elements []repr.PhpRepr) []string {
+	mut modules := []string{}
+	for el in elements {
+		if el is repr.PhpFuncRepr {
+			if el.module_name != '' && el.module_name != 'main' {
+				modules << el.module_name
+			}
+		} else if el is repr.PhpClassRepr {
+			if el.module_name != '' && el.module_name != 'main' {
+				modules << el.module_name
+			}
+		}
+	}
+	modules.sort()
+	return uniq_lines(modules)
+}
+
 fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmissionPlan {
 	mut plan := VGlueEmissionPlan{
 		c_global_lines: g.c_global_lines(elements)
@@ -56,7 +77,9 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 			if el.is_trait {
 				continue
 			}
-			plan.glue_blocks << g.gen_class_glue(el).join('\n')
+			if el.module_name == '' || el.module_name == 'main' {
+				plan.glue_blocks << g.gen_class_glue(el).join('\n')
+			}
 			plan.startup_lines << g.gen_class_startup(el)
 		} else if mut el is repr.PhpTaskRepr {
 			plan.task_registrations << g.gen_task_registration(el)
@@ -79,7 +102,7 @@ fn (g VGenerator) c_global_lines(elements []repr.PhpRepr) []string {
 	mut lines := []string{}
 	for el in elements {
 		if el is repr.PhpClassRepr {
-			if el.is_trait {
+			if el.is_trait || (el.module_name != '' && el.module_name != 'main') {
 				continue
 			}
 			lines << '__global C.${el.c_name().to_lower()}_ce &C.zend_class_entry'
