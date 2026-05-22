@@ -16,7 +16,7 @@ fn assert_no_boundary_regressions(path string, source string) {
 	banned := [
 		'Context.from_entry(',
 		'Context.from_raw(',
-		'ZExData.new(',
+		'ZendExecuteData.new(',
 		'PhpReturn.from_ptr(rv)',
 		'.raw_ex()',
 		'.raw_zval()',
@@ -111,7 +111,7 @@ fn test_compiler_keeps_closure_bridge_abi_signature_centralized() {
 
 fn test_context_keeps_execute_and_return_wrappers() {
 	source := read_repo_file('vphp/context.v')
-	assert source.contains('ex  ZExData'), 'Context.ex should stay wrapped as ZExData'
+	assert source.contains('ex  ZendExecuteData'), 'Context.ex should stay wrapped as ZendExecuteData'
 	assert source.contains('ret PhpReturn'), 'Context.ret should stay wrapped as PhpReturn'
 	for line in source.split_into_lines() {
 		assert !line.contains('&C.zend_execute_data'), 'Context should not store raw execute data: ${line.trim_space()}'

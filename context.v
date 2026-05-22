@@ -8,7 +8,7 @@ import vphp.zend as _
 
 pub struct Context {
 pub:
-	ex  ZExData
+	ex  ZendExecuteData
 	ret PhpReturn
 }
 
@@ -16,7 +16,7 @@ pub:
 
 pub fn Context.from_ptr(ex voidptr, ret voidptr) Context {
 	return Context{
-		ex:  ZExData.from_ptr(ex)
+		ex:  ZendExecuteData.from_ptr(ex)
 		ret: PhpReturn.from_ptr(ret)
 	}
 }
