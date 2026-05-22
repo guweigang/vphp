@@ -164,7 +164,7 @@ fn (mut c Compiler) generate_v_glue() ! {
 
 fn (c Compiler) bridge_output_path() string {
 	if c.target_files.len == 0 {
-		return 'bridge.v'
+		return 'vphp_bridge.v'
 	}
 	mut target_dir := os.dir(c.target_files[0])
 	for file in c.target_files[1..] {
@@ -174,10 +174,11 @@ fn (c Compiler) bridge_output_path() string {
 		}
 	}
 	if target_dir == '' {
-		return 'bridge.v'
+		return 'vphp_bridge.v'
 	}
-	return os.join_path(target_dir, 'bridge.v')
+	return os.join_path(target_dir, 'vphp_bridge.v')
 }
+
 
 fn (c Compiler) module_dirs() map[string]string {
 	mut dirs := map[string]string{}

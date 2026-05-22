@@ -53,8 +53,8 @@ fn assert_no_boundary_regressions(path string, source string) {
 }
 
 fn test_generated_bridge_keeps_raw_only_at_known_boundaries() {
-	source := read_repo_file('vphptest/bridge.v')
-	assert_no_boundary_regressions('vphptest/bridge.v', source)
+	source := read_repo_file('vphptest/vphp_bridge.v')
+	assert_no_boundary_regressions('vphptest/vphp_bridge.v', source)
 
 	closure_sig_count := source.count('ex &C.zend_execute_data, ret &C.zval')
 	assert closure_sig_count > 0
