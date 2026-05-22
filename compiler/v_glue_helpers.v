@@ -126,3 +126,43 @@ fn task_zero_value_literal(v_type string) string {
 		}
 	}
 }
+
+pub fn to_snake_case(s string) string {
+	if s.starts_with('VSlim') {
+		tail := s['VSlim'.len..]
+		if tail == '' {
+			return 'vslim'
+		}
+		return 'vslim_' + to_snake_case_impl(tail)
+	}
+	return to_snake_case_impl(s)
+}
+
+fn to_snake_case_impl(s string) string {
+	mut res := []rune{}
+	runes := s.runes()
+	for i, ch in runes {
+		is_upper := ch >= `A` && ch <= `Z`
+		if is_upper {
+			if i > 0 {
+				prev := runes[i - 1]
+				prev_is_lower := prev >= `a` && prev <= `z`
+				prev_is_digit := prev >= `0` && prev <= `9`
+				if prev_is_lower || prev_is_digit {
+					res << `_`
+				} else if i + 1 < runes.len {
+					next := runes[i + 1]
+					next_is_lower := next >= `a` && next <= `z`
+					if next_is_lower {
+						res << `_`
+					}
+				}
+			}
+			res << ch - `A` + `a`
+		} else {
+			res << ch
+		}
+	}
+	return res.string()
+}
+

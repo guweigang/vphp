@@ -54,7 +54,7 @@ fn (glue ClassPropertyGlue) writable_fields() []ClassPropertyFieldBinding {
 
 fn (glue ClassPropertyGlue) render_getter_lines() []string {
 	mut out := []string{}
-	out << "@[export: '${glue.class_name}_get_prop']"
+	out << "@[export: '${glue.lower_name}_get_prop']"
 	out << property_getter_signature(glue.lower_name)
 	readable_fields := glue.readable_fields()
 	if readable_fields.len == 0 {
@@ -119,7 +119,7 @@ fn (field ClassPropertyFieldBinding) getter_expr() ?string {
 
 fn (glue ClassPropertyGlue) render_setter_lines() []string {
 	mut out := []string{}
-	out << "@[export: '${glue.class_name}_set_prop']"
+	out << "@[export: '${glue.lower_name}_set_prop']"
 	out << property_setter_signature(glue.lower_name)
 	writable_fields := glue.writable_fields()
 	if writable_fields.len == 0 {
@@ -162,7 +162,7 @@ fn (field ClassPropertyFieldBinding) setter_expr() ?string {
 
 fn (glue ClassPropertyGlue) render_sync_lines() []string {
 	mut out := []string{}
-	out << "@[export: '${glue.class_name}_sync_props']"
+	out << "@[export: '${glue.lower_name}_sync_props']"
 	out << property_sync_signature(glue.lower_name)
 	readable_fields := glue.readable_fields()
 	if readable_fields.len == 0 {

@@ -9,7 +9,7 @@ fn (g VGenerator) gen_class_glue(r &repr.PhpClassRepr) []string {
 
 fn (g VGenerator) gen_class_glue_for_module(r &repr.PhpClassRepr, module_name string) []string {
 	mut out := []string{}
-	lower_name := r.name.to_lower()
+	lower_name := to_snake_case(r.name)
 	type_ref := if module_name == r.module_name { r.name } else { r.type_ref() }
 	uses_inherited_receiver := class_uses_inherited_receiver(r)
 

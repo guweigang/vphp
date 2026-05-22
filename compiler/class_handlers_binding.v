@@ -14,7 +14,7 @@ fn ClassHandlersGlue.new(class_name string, lower_name string) ClassHandlersGlue
 
 fn (glue ClassHandlersGlue) render_lines() []string {
 	return [
-		"@[export: '${glue.class_name}_handlers']",
+		"@[export: '${glue.lower_name}_handlers']",
 		'pub fn ${glue.lower_name}_handlers() voidptr {',
 		'    return vphp.ZendClassHandlers.new(',
 		'        prop_handler: voidptr(${glue.lower_name}_get_prop),',

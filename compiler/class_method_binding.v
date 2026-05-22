@@ -101,7 +101,7 @@ fn (ctx ClassMethodGlueContext) return_decl() string {
 
 fn (ctx ClassMethodGlueContext) render_wrapper_start_lines(glue_name string) []string {
 	mut lines := []string{}
-	lines << "@[export: 'vphp_wrap_${ctx.class_name}_${glue_name}']"
+	lines << "@[export: 'vphp_wrap_${ctx.lower_name}_${glue_name}']"
 	if ctx.is_static {
 		lines << 'pub fn vphp_wrap_${ctx.lower_name}_${glue_name}(ctx vphp.Context) ${ctx.return_decl()} {'
 	} else {

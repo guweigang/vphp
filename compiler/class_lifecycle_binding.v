@@ -30,7 +30,7 @@ fn (glue ClassLifecycleGlue) render_lines() []string {
 
 fn (glue ClassLifecycleGlue) render_new_raw_lines() []string {
 	return [
-		"@[export: '${glue.class_name}_new_raw']",
+		"@[export: '${glue.lower_name}_new_raw']",
 		'pub fn ${glue.lower_name}_new_raw() voidptr {',
 		'    return vphp.generic_new_raw[${glue.type_ref}]()',
 		'}',
@@ -39,7 +39,7 @@ fn (glue ClassLifecycleGlue) render_new_raw_lines() []string {
 
 fn (glue ClassLifecycleGlue) render_free_raw_lines() []string {
 	return [
-		"@[export: '${glue.class_name}_free_raw']",
+		"@[export: '${glue.lower_name}_free_raw']",
 		'pub fn ${glue.lower_name}_free_raw(ptr voidptr) {',
 		'    if ptr == 0 {',
 		'        return',
@@ -51,7 +51,7 @@ fn (glue ClassLifecycleGlue) render_free_raw_lines() []string {
 
 fn (glue ClassLifecycleGlue) render_cleanup_raw_lines() []string {
 	mut out := []string{}
-	out << "@[export: '${glue.class_name}_cleanup_raw']"
+	out << "@[export: '${glue.lower_name}_cleanup_raw']"
 	out << 'pub fn ${glue.lower_name}_cleanup_raw(ptr voidptr) {'
 	out << '    if ptr == 0 {'
 	out << '        return'
