@@ -292,21 +292,7 @@ fn (b &ClassBuilder) render_registration_function() string {
 	}
 	if b.type != .interface_ {
 		for con in b.constants {
-			match con.type_ {
-				'string' {
-					res << '        zend_declare_class_constant_string(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, "${con.value}");'
-				}
-				'double' {
-					res << '        zend_declare_class_constant_double(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, ${con.value});'
-				}
-				'long', 'int' {
-					res << '        zend_declare_class_constant_long(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, ${con.value});'
-				}
-				'bool' {
-					res << '        zend_declare_class_constant_bool(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, ${con.value});'
-				}
-				else {}
-			}
+			res << b.render_typed_class_constant(ce_ptr, con)
 		}
 		for prop in b.properties {
 			match prop.type_ {
@@ -578,3 +564,49 @@ pub fn (b &ClassBuilder) export_fragments() ExportFragments {
 		minit_lines:  [b.render_minit()]
 	}
 }
+
+fn (b &ClassBuilder) render_typed_class_constant(ce_ptr string, con ClassConstant) []string {
+	mut res := []string{}
+	c_type_code := match con.type_ {
+		'string' { 'IS_STRING' }
+		'double' { 'IS_DOUBLE' }
+		'long', 'int' { 'IS_LONG' }
+		'bool' { '_IS_BOOL' }
+		else { '' }
+	}
+	if c_type_code == '' {
+		return res
+	}
+
+	zval_init := match con.type_ {
+		'string' { 'ZVAL_STR(&val, zend_string_init("${con.value}", sizeof("${con.value}")-1, 1));' }
+		'double' { 'ZVAL_DOUBLE(&val, ${con.value});' }
+		'long', 'int' { 'ZVAL_LONG(&val, ${con.value});' }
+		'bool' { 'ZVAL_BOOL(&val, ${con.value});' }
+		else { '' }
+	}
+
+	legacy_fn := match con.type_ {
+		'string' { 'zend_declare_class_constant_string(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, "${con.value}");' }
+		'double' { 'zend_declare_class_constant_double(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, ${con.value});' }
+		'long', 'int' { 'zend_declare_class_constant_long(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, ${con.value});' }
+		'bool' { 'zend_declare_class_constant_bool(${ce_ptr}, "${con.name}", sizeof("${con.name}")-1, ${con.value});' }
+		else { '' }
+	}
+
+	res << '#if PHP_VERSION_ID >= 80300'
+	res << '        {'
+	res << '            zval val;'
+	res << '            ${zval_init}'
+	res << '            zend_string *const_name = zend_string_init("${con.name}", sizeof("${con.name}")-1, 1);'
+	res << '            zend_declare_typed_class_constant(${ce_ptr}, const_name, &val, ZEND_ACC_PUBLIC, NULL, (zend_type) ZEND_TYPE_INIT_CODE(${c_type_code}, 0, 0));'
+	res << '            zend_string_release(const_name);'
+	res << '            zval_ptr_dtor(&val);'
+	res << '        }'
+	res << '#else'
+	res << '        ${legacy_fn}'
+	res << '#endif'
+
+	return res
+}
+

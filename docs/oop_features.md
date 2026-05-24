@@ -198,6 +198,76 @@ Design note:
 - this model is stable and simple
 - it is not the same as exporting arbitrary V `const` inside a class body
 
+### PHP 8.3 Typed Class Constants
+
+When targeting PHP 8.3+, `vphp` automatically promotes class constants to **typed class constants**
+using `zend_declare_typed_class_constant`. The type is inferred from the V field type in the shadow
+constant struct.
+
+**Type mapping table:**
+
+| V field type   | PHP constant type | Zend type code  |
+|----------------|-------------------|-----------------|
+| `string`       | `string`          | `IS_STRING`     |
+| `int`          | `int`             | `IS_LONG`       |
+| `f64` / `double` | `float`         | `IS_DOUBLE`     |
+| `bool`         | `bool`            | `_IS_BOOL`      |
+
+**V-side definition (extension developer):**
+
+```v
+// 1. 定义常量 shadow struct，字段类型即为 PHP 常量类型
+struct MyClassConsts {
+    max_limit int    = 100
+    version   string = '1.0.0'
+    is_active bool   = true
+    ratio     f64    = 0.85
+}
+
+// 2. 声明 shadow const 实例
+const my_class_consts = MyClassConsts{}
+
+// 3. 挂载到目标 PHP 类
+@[php_class: 'MyNamespace\\MyClass']
+@[php_const: my_class_consts]
+pub struct MyClass {}
+```
+
+**PHP-side result (PHP 8.3+):**
+
+```php
+namespace MyNamespace {
+    class MyClass {
+        public const int MAX_LIMIT = 100;
+        public const string VERSION = '1.0.0';
+        public const bool IS_ACTIVE = true;
+        public const float RATIO = 0.85;
+    }
+}
+```
+
+**Backward compatibility:**
+
+- On PHP < 8.3, the compiler falls back to the classic `zend_declare_class_constant_*` family of
+  functions. Constants remain accessible with their correct values but carry no runtime type
+  declaration.
+- The fallback is generated via a `#if PHP_VERSION_ID >= 80300` / `#else` / `#endif` block in the
+  compiled C bridge, so the same V source tree compiles against any supported PHP version.
+
+**IDE stubs:**
+
+The stub generator (`generate_stubs.php`) uses `ReflectionClassConstant::hasType()` and
+`ReflectionClassConstant::getType()` (available on PHP 8.3+) to detect the registered type and emit
+typed constant signatures in the generated stub file:
+
+```php
+// generated stub excerpt
+public const string VERSION = '1.0.0';
+public const int MAX_LIMIT = 100;
+```
+
+On older PHP versions the stub generator omits the type prefix and emits plain constant stubs.
+
 ## Class Static Properties via `@[php_static: shadow_static]`
 
 Static properties are currently implemented through a shadow singleton plus generated sync helpers.

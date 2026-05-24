@@ -72,6 +72,86 @@
   * V 语言的 `pub mut` 字段则翻译为 PHP 的普通 `public` 属性。
   这能实现两国字段访问控制（Access Control）的完美对称。
 
+### E. PHP 8.3 强类型类常量（Typed Class Constants）
+
+* **PHP 8.3 新增**：类常量现在可以携带类型声明，如 `const string VERSION = '1.0';`，在运行时和反射中均强制类型检查。
+* **vphp 实现现状**：已在 `vphp/compiler/builder/class.v` 中实现自动的强类型常量注册，并同步更新了 stub 生成器。
+
+#### 实现原理
+
+编译器通过 `render_typed_class_constant` 方法，根据 V 侧 shadow struct 字段的类型，生成带 `#if PHP_VERSION_ID >= 80300` 条件编译守卫的 C 代码：
+
+```c
+// PHP 8.3+ 路径：使用 zend_declare_typed_class_constant
+#if PHP_VERSION_ID >= 80300
+{
+    zval val;
+    ZVAL_STRINGL(&val, "1.0.0", sizeof("1.0.0")-1);
+    zend_string *const_name = zend_string_init("VERSION", sizeof("VERSION")-1, 1);
+    zend_declare_typed_class_constant(ce, const_name, &val, ZEND_ACC_PUBLIC, NULL,
+        (zend_type) ZEND_TYPE_INIT_CODE(IS_STRING, 0, 0));
+    zend_string_release(const_name);
+    zval_ptr_dtor(&val);
+}
+#else
+// PHP < 8.3 路径：回退到无类型常量注册
+zend_declare_class_constant_string(ce, "VERSION", sizeof("VERSION")-1, "1.0.0");
+#endif
+```
+
+#### 扩展开发者写法
+
+在 V 侧，开发者只需正确声明 shadow struct 的字段类型，编译器会自动生成对应的强类型 C 注册代码：
+
+```v
+// Step 1: 定义常量 shadow struct
+struct MyClassConsts {
+    version   string = '1.0.0'  // -> PHP: public const string VERSION = '1.0.0';
+    max_limit int    = 100       // -> PHP: public const int MAX_LIMIT = 100;
+    is_active bool   = true      // -> PHP: public const bool IS_ACTIVE = true;
+    ratio     f64    = 0.85      // -> PHP: public const float RATIO = 0.85;
+}
+
+// Step 2: 声明常量实例（persistent，在 MINIT 中使用）
+const my_class_consts = MyClassConsts{}
+
+// Step 3: 挂载到目标 PHP 类
+@[php_class: 'MyNamespace\\MyClass']
+@[php_const: my_class_consts]
+pub struct MyClass {}
+```
+
+**PHP 8.3+ 运行效果：**
+
+```php
+namespace MyNamespace {
+    class MyClass {
+        public const string VERSION = '1.0.0';
+        public const int MAX_LIMIT = 100;
+        public const bool IS_ACTIVE = true;
+        public const float RATIO = 0.85;
+    }
+}
+
+// 反射可以读取到类型信息
+$rc = new ReflectionClassConstant(MyClass::class, 'VERSION');
+echo $rc->getType()->getName(); // 输出: string
+```
+
+#### 类型映射一览
+
+| V 字段类型     | PHP 常量类型 | Zend API 类型码 |
+|----------------|------------|----------------|
+| `string`       | `string`   | `IS_STRING`    |
+| `int`          | `int`      | `IS_LONG`      |
+| `f64`          | `float`    | `IS_DOUBLE`    |
+| `bool`         | `bool`     | `_IS_BOOL`     |
+
+#### 向后兼容
+
+- 同一份 V 源码可以无修改地在 PHP 8.0–8.2 上编译——常量值完整保留，仅在低版本 PHP 上不携带类型声明。
+- `generate_stubs.php` 在 PHP 8.3+ 运行时使用 `ReflectionClassConstant::hasType()` / `getType()` 感知类型，生成带类型前缀的 IDE stub；在低版本 PHP 上自动降级为普通 const stub。
+
 ---
 
 ## 3. 演进路线规划
