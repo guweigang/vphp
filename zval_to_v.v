@@ -171,5 +171,84 @@ pub fn (v ZVal) to_v[T]() !T {
 		})
 		return out
 	}
+	$if T is $sumtype {
+		$for variant in T.variants {
+			$if variant.typ is bool {
+				if v.is_bool() {
+					return T(v.to_bool())
+				}
+			}
+			$if variant.typ is int {
+				if v.is_numeric() {
+					return T(v.to_int())
+				}
+			}
+			$if variant.typ is i64 {
+				if v.is_numeric() {
+					return T(v.to_i64())
+				}
+			}
+			$if variant.typ is f64 {
+				if v.is_numeric() {
+					return T(v.to_f64())
+				}
+			}
+			$if variant.typ is string {
+				if v.is_string() {
+					return T(v.to_string())
+				}
+			}
+			$if variant.typ is []string {
+				if v.is_array() {
+					if list := v.to_v[[]string]() {
+						return T(list)
+					}
+				}
+			}
+			$if variant.typ is []int {
+				if v.is_array() {
+					if list := v.to_v[[]int]() {
+						return T(list)
+					}
+				}
+			}
+			$if variant.typ is []i64 {
+				if v.is_array() {
+					if list := v.to_v[[]i64]() {
+						return T(list)
+					}
+				}
+			}
+			$if variant.typ is []f64 {
+				if v.is_array() {
+					if list := v.to_v[[]f64]() {
+						return T(list)
+					}
+				}
+			}
+			$if variant.typ is []bool {
+				if v.is_array() {
+					if list := v.to_v[[]bool]() {
+						return T(list)
+					}
+				}
+			}
+			$if variant.typ is PhpValue {
+				return T(PhpValue.from_zval(v))
+			}
+			$if variant.typ is PhpObject {
+				if obj := PhpObject.from_zval(v) {
+					return T(obj)
+				}
+			}
+			$if variant.typ is PhpArray {
+				if arr := PhpArray.from_zval(v) {
+					return T(arr)
+				}
+			}
+		}
+		return error('no matching variant found in sumtype ${typeof[T]().name} for zval of type ${v.type_name()}')
+	}
 	return error('unsupported to_v conversion for requested type')
 }
+

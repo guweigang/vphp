@@ -1,5 +1,6 @@
 module compiler
 
+import v.ast
 import compiler.repr
 
 struct ClassMethodGlue {
@@ -23,7 +24,7 @@ struct ClassMethodGlueContext {
 	return_binding          ReturnBinding
 }
 
-fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_receiver bool, method repr.PhpMethodRepr, params_structs map[string]repr.PhpParamsStruct, type_ref string) ?ClassMethodGlue {
+fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_receiver bool, method repr.PhpMethodRepr, params_structs map[string]repr.PhpParamsStruct, type_ref string, table &ast.Table) ?ClassMethodGlue {
 	if method.has_export {
 		return none
 	}
@@ -39,7 +40,7 @@ fn ClassMethodGlue.new(r &repr.PhpClassRepr, lower_name string, uses_inherited_r
 		method.borrowed_return)
 	return_binding := ReturnBinding.new_with_struct_closure(return_type, struct_closure)
 	returns_object := return_info.kind in [.static_factory, .static_object, .instance_object]
-	arg_setup := build_php_arg_setup(method.args, returns_object, true)
+	arg_setup := build_php_arg_setup(method.args, returns_object, true, table)
 	arg_names := arg_setup.names
 	call_expr := class_method_call_expr(type_ref, method, uses_inherited_receiver, arg_names)
 	return ClassMethodGlue{

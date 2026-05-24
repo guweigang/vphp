@@ -1,6 +1,7 @@
 module compiler
 
 import strings
+import v.ast
 import compiler.repr
 
 pub struct VGenerator {
@@ -8,6 +9,7 @@ pub:
 	ext_name       string
 	globals_repr   repr.PhpGlobalsRepr
 	params_structs map[string]repr.PhpParamsStruct
+	table          &ast.Table = unsafe { nil }
 }
 
 struct VGlueEmissionPlan {

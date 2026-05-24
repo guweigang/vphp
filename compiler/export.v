@@ -11,6 +11,7 @@ fn (c Compiler) collect_non_type_fragments() builder.ExportFragments {
 		ext_name:          c.ext_name
 		class_ce_by_type:  c.class_ce_map()
 		class_php_by_type: c.class_php_map()
+		table:             c.table
 	}
 
 	for el in c.elements {
@@ -32,6 +33,7 @@ fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 		ext_name:          c.ext_name
 		class_ce_by_type:  c.class_ce_map()
 		class_php_by_type: c.class_php_map()
+		table:             c.table
 	}
 
 	for el in c.elements {
@@ -156,6 +158,7 @@ fn (mut c Compiler) generate_v_glue() ! {
 		ext_name:       c.ext_name
 		globals_repr:   c.globals_repr
 		params_structs: c.params_structs
+		table:          c.table
 	}
 	v_code := v_glue.generate(mut c.elements)
 	os.write_file(c.bridge_output_path(), v_code)!

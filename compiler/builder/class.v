@@ -1,5 +1,6 @@
 module builder
 
+import v.ast
 import compiler.php_types
 
 pub enum ClassType {
@@ -70,6 +71,7 @@ pub mut:
 	constants             []ClassConstant
 	methods               []ClassMethod
 	attributes            []ClassAttribute
+	table                 &ast.Table = unsafe { nil }
 }
 
 fn new_builder(type_ ClassType, php_name string, c_name string) &ClassBuilder {
@@ -364,10 +366,54 @@ pub fn (b &ClassBuilder) render_impl_postlude() string {
 	return '${b.render_methods_array()}\n${b.render_registration_function()}'
 }
 
-fn arg_type_info(v_type string) ArgTypeInfo {
+fn arg_type_info(v_type string, table &ast.Table) ArgTypeInfo {
 	decl := parse_php_type_decl(v_type)
 	clean := decl.clean
 	allow_null := decl.allow_null
+	if table != unsafe { nil } {
+		if sym := table.find_sym(clean) {
+			if sym.kind == .sum_type {
+				mut masks := []string{}
+				mut resolved_allow_null := allow_null
+				if sym.info is ast.SumType {
+					for variant in sym.info.variants {
+						name := table.get_type_name(variant)
+						if name == 'none' {
+							resolved_allow_null = true
+							continue
+						}
+						if builtin := php_builtin_type_info(name) {
+							if builtin.mask != '' {
+								masks << builtin.mask
+							} else if builtin.code == 'IS_STRING' {
+								masks << 'MAY_BE_STRING'
+							} else if builtin.code == 'IS_LONG' {
+								masks << 'MAY_BE_LONG'
+							} else if builtin.code == '_IS_BOOL' {
+								masks << 'MAY_BE_BOOL'
+							} else if builtin.code == 'IS_DOUBLE' {
+								masks << 'MAY_BE_DOUBLE'
+							} else if builtin.code == 'IS_ARRAY' {
+								masks << 'MAY_BE_ARRAY'
+							} else if builtin.code == 'IS_OBJECT' {
+								masks << 'MAY_BE_OBJECT'
+							}
+						} else {
+							masks << 'MAY_BE_OBJECT'
+						}
+					}
+				}
+				if masks.len > 0 {
+					return ArgTypeInfo{
+						code:           ''
+						mask:           masks.join('|')
+						mask_obj_class: ''
+						allow_null:     resolved_allow_null
+					}
+				}
+			}
+		}
+	}
 	if builtin := php_builtin_type_info(v_type) {
 		return ArgTypeInfo{
 			code:           builtin.code
@@ -411,9 +457,9 @@ fn method_has_literal_class_arg(m ClassMethod) bool {
 	return false
 }
 
-fn method_arginfo_header(m ClassMethod) string {
+fn method_arginfo_header(m ClassMethod, table &ast.Table) string {
 	resolved_return_type := m.return_spec.resolved_type()
-	type_info := arg_type_info(resolved_return_type)
+	type_info := arg_type_info(resolved_return_type, table)
 	return render_method_arginfo_header(m.c_func, m.php_name, method_required_args(m),
 		resolved_return_type, m.return_spec.arginfo_obj_type(), type_info,
 		method_has_literal_class_arg(m))
@@ -496,11 +542,11 @@ pub fn (b &ClassBuilder) render_arginfo_defs() string {
 			res << 'ZEND_END_ARG_INFO()'
 			continue
 		}
-		res << method_arginfo_header(m)
+		res << method_arginfo_header(m, b.table)
 		for arg in m.args {
 			raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 			validate_php_arg_type_or_panic(raw_type, arg.name, m.php_name)
-			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default)
+			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, b.table)
 		}
 		res << 'ZEND_END_ARG_INFO()'
 	}

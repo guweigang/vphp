@@ -1,5 +1,6 @@
 module compiler
 
+import v.ast
 import compiler.repr
 
 struct FunctionGlue {
@@ -10,7 +11,7 @@ struct FunctionGlue {
 	return_binding ReturnBinding
 }
 
-fn FunctionGlue.new(f &repr.PhpFuncRepr, params_structs map[string]repr.PhpParamsStruct) FunctionGlue {
+fn FunctionGlue.new(f &repr.PhpFuncRepr, params_structs map[string]repr.PhpParamsStruct, table &ast.Table) FunctionGlue {
 	return_type := f.return_spec.effective_v_type()
 	struct_closure := StructClosureBinding.new(f.name, return_type, params_structs)
 	mut helper_lines := []string{}
@@ -23,7 +24,7 @@ fn FunctionGlue.new(f &repr.PhpFuncRepr, params_structs map[string]repr.PhpParam
 		name:           f.name
 		v_call_name:    v_call_name
 		helper_lines:   helper_lines
-		arg_setup:      build_php_arg_setup(f.args, false, false)
+		arg_setup:      build_php_arg_setup(f.args, false, false, table)
 		return_binding: ReturnBinding.new_with_struct_closure(return_type, struct_closure)
 	}
 }
@@ -43,7 +44,7 @@ fn (glue FunctionGlue) render_lines() []string {
 	return lines
 }
 
-fn FunctionGlue.new_for_module(f &repr.PhpFuncRepr, params_structs map[string]repr.PhpParamsStruct, module_name string) FunctionGlue {
+fn FunctionGlue.new_for_module(f &repr.PhpFuncRepr, params_structs map[string]repr.PhpParamsStruct, module_name string, table &ast.Table) FunctionGlue {
 	return_type := f.return_spec.effective_v_type()
 	struct_closure := StructClosureBinding.new(f.name, return_type, params_structs)
 	mut helper_lines := []string{}
@@ -62,7 +63,7 @@ fn FunctionGlue.new_for_module(f &repr.PhpFuncRepr, params_structs map[string]re
 		name:           f.name
 		v_call_name:    v_call_name
 		helper_lines:   helper_lines
-		arg_setup:      build_php_arg_setup(f.args, false, false)
+		arg_setup:      build_php_arg_setup(f.args, false, false, table)
 		return_binding: ReturnBinding.new_with_struct_closure(return_type, struct_closure)
 	}
 }

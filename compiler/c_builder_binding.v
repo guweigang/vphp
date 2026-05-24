@@ -32,7 +32,9 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 		}
 	}
 	spec := g.build_func_return_spec(f)
-	return *builder.new_func_builder_with_args(f.name, f.name, spec, args, f.uses_context)
+	mut func_builder := builder.new_func_builder_with_args(f.name, f.name, spec, args, f.uses_context)
+	func_builder.table = g.table
+	return *func_builder
 }
 
 fn (g CGenerator) build_global_constant(c &repr.PhpConstRepr) builder.ConstantBuilder {
@@ -151,6 +153,7 @@ fn php_attributes_to_builder(attrs []repr.PhpAttributeRepr) []builder.ClassAttri
 
 fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_interface_builder(r.php_name, r.c_name())
+	class_builder.table = g.table
 	for iface in r.extends {
 		class_builder.add_interface(iface)
 	}
@@ -172,6 +175,7 @@ fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassB
 
 fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_enum_builder(r.php_name, r.c_name())
+	class_builder.table = g.table
 	// PHP 8.1 native enum: no ZEND_ACC_FINAL, no __construct, no class constants.
 	// Cases are added via zend_enum_add_case_cstr() in MINIT (see builder render_minit).
 	// We store cases as constants in the builder so render_minit can iterate them.
@@ -183,6 +187,7 @@ fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &builder.ClassBuilder {
 
 fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder.ClassBuilder {
 	mut class_builder := builder.new_class_builder(r.php_name, r.c_name())
+	class_builder.table = g.table
 	needs_inherited_wrapper := class_needs_inherited_object_wrapper(r, has_init)
 	class_builder.set_parent(r.parent)
 	class_builder.set_uses_inherited_object(needs_inherited_wrapper)

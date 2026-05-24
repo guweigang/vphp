@@ -1,5 +1,7 @@
 module builder
 
+import v.ast
+
 pub struct FuncBuilder {
 pub mut:
 	php_name     string
@@ -7,6 +9,7 @@ pub mut:
 	return_spec  ReturnSpec
 	args         []ClassMethodArg // reuse ClassMethodArg for function args
 	uses_context bool
+	table        &ast.Table = unsafe { nil }
 }
 
 pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {
@@ -42,14 +45,14 @@ pub fn (b &FuncBuilder) render_arginfo() string {
 	mut res := []string{}
 	resolved_return_type := b.return_spec.resolved_type()
 	validate_php_return_type_or_panic(resolved_return_type, b.php_name)
-	type_info := arg_type_info(resolved_return_type)
+	type_info := arg_type_info(resolved_return_type, b.table)
 	required_args := function_required_args(b.args)
 	res << render_standard_arginfo_header(b.c_func, required_args, resolved_return_type,
 		b.return_spec.arginfo_obj_type(), type_info)
 	for arg in b.args {
 		raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 		validate_php_arg_type_or_panic(raw_type, arg.name, b.php_name)
-		res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default)
+		res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, b.table)
 	}
 	res << 'ZEND_END_ARG_INFO()'
 	return res.join('\n')

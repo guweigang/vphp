@@ -1,5 +1,7 @@
 module builder
 
+import v.ast
+
 struct ArgTypeInfo {
 	code           string
 	mask           string
@@ -114,8 +116,8 @@ fn render_php_default_value_literal(default_value string) string {
 	return '"${c_string_escape(default_value)}"'
 }
 
-fn render_arginfo_arg_line(arg_name string, raw_type string, default_value string) string {
-	arg_info := arg_type_info(raw_type)
+fn render_arginfo_arg_line(arg_name string, raw_type string, default_value string, table &ast.Table) string {
+	arg_info := arg_type_info(raw_type, table)
 	default_literal := render_php_default_value_literal(default_value)
 	if is_class_literal_type(raw_type) {
 		return '{ "${arg_name}", ${render_class_type_init_literal(raw_type)}, ${default_literal} },'

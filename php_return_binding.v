@@ -287,6 +287,99 @@ pub fn (ret PhpReturn) v[T](val T) {
 	} $else $if T is PersistentOwnedZBox {
 		ret.persistent_owned(val)
 		return
+	} $else $if T is $sumtype {
+		$for variant in T.variants {
+			$if variant.typ is bool {
+				if val is bool {
+					ret.zval(ZVal.new_bool(val))
+					return
+				}
+			}
+			$if variant.typ is int {
+				if val is int {
+					ret.zval(ZVal.new_int(val))
+					return
+				}
+			}
+			$if variant.typ is i64 {
+				if val is i64 {
+					ret.zval(ZVal.new_int(val))
+					return
+				}
+			}
+			$if variant.typ is f64 {
+				if val is f64 {
+					ret.zval(ZVal.new_float(val))
+					return
+				}
+			}
+			$if variant.typ is string {
+				if val is string {
+					ret.zval(ZVal.new_string(val))
+					return
+				}
+			}
+			$if variant.typ is []string {
+				if val is []string {
+					mut z := ZVal.new_array()
+					z.from_v[[]string](val) or {}
+					ret.zval(z)
+					return
+				}
+			}
+			$if variant.typ is []int {
+				if val is []int {
+					mut z := ZVal.new_array()
+					z.from_v[[]int](val) or {}
+					ret.zval(z)
+					return
+				}
+			}
+			$if variant.typ is []i64 {
+				if val is []i64 {
+					mut z := ZVal.new_array()
+					z.from_v[[]i64](val) or {}
+					ret.zval(z)
+					return
+				}
+			}
+			$if variant.typ is []f64 {
+				if val is []f64 {
+					mut z := ZVal.new_array()
+					z.from_v[[]f64](val) or {}
+					ret.zval(z)
+					return
+				}
+			}
+			$if variant.typ is []bool {
+				if val is []bool {
+					mut z := ZVal.new_array()
+					z.from_v[[]bool](val) or {}
+					ret.zval(z)
+					return
+				}
+			}
+			$if variant.typ is PhpValue {
+				if val is PhpValue {
+					ret.value(val)
+					return
+				}
+			}
+			$if variant.typ is PhpObject {
+				if val is PhpObject {
+					ret.zval(val.to_zval())
+					return
+				}
+			}
+			$if variant.typ is PhpArray {
+				if val is PhpArray {
+					ret.zval(val.to_zval())
+					return
+				}
+			}
+		}
+		ret.null()
+		return
 	}
 	mut out := ret.to_zval()
 	out.from_v[T](val) or {

@@ -1,5 +1,6 @@
 module compiler
 
+import v.ast
 import compiler.php_types
 import compiler.repr
 
@@ -121,11 +122,11 @@ fn build_php_arg_bindings(args []repr.PhpArgRepr) []PhpArgBinding {
 	return bindings
 }
 
-fn build_php_arg_setup(args []repr.PhpArgRepr, returns_voidptr bool, allow_raw_object bool) PhpArgSetup {
+fn build_php_arg_setup(args []repr.PhpArgRepr, returns_voidptr bool, allow_raw_object bool, table &ast.Table) PhpArgSetup {
 	mut lines := gen_php_args_lines(args)
 	mut names := []string{}
 	for binding in build_php_arg_bindings(args) {
-		lines << binding.render_lines(returns_voidptr, allow_raw_object)
+		lines << binding.render_lines(returns_voidptr, allow_raw_object, table)
 		names << binding.call_name()
 	}
 	return PhpArgSetup{
@@ -141,11 +142,11 @@ fn (binding PhpArgBinding) call_name() string {
 	}
 }
 
-fn (binding PhpArgBinding) render_lines(returns_voidptr bool, allow_raw_object bool) []string {
+fn (binding PhpArgBinding) render_lines(returns_voidptr bool, allow_raw_object bool, table &ast.Table) []string {
 	return match binding.kind {
 		.single {
 			PhpSingleArgBinding.new(binding.arg, binding.var_name, binding.php_index,
-				allow_raw_object).render_lines(returns_voidptr)
+				allow_raw_object).render_lines(returns_voidptr, table)
 		}
 		.params_struct {
 			binding.params_struct.render_lines(returns_voidptr)
@@ -153,7 +154,7 @@ fn (binding PhpArgBinding) render_lines(returns_voidptr bool, allow_raw_object b
 	}
 }
 
-fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
+fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool, table &ast.Table) []string {
 	arg := binding.arg
 	if is_context_arg_type(arg.v_type) {
 		return ['    ${binding.var_name} := ctx']
@@ -170,11 +171,25 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool) []string {
 	if lines := binding.render_optional_lines() {
 		return lines
 	}
-	if lines := binding.render_raw_object_lines() {
-		return lines
+
+	clean_type := arg.v_type.trim_left('?&')
+	is_sumtype := if table != unsafe { nil } {
+		if sym := table.find_sym(clean_type) {
+			sym.kind == .sum_type
+		} else {
+			false
+		}
+	} else {
+		false
 	}
-	if lines := binding.render_ref_object_lines() {
-		return lines
+
+	if !is_sumtype {
+		if lines := binding.render_raw_object_lines() {
+			return lines
+		}
+		if lines := binding.render_ref_object_lines() {
+			return lines
+		}
 	}
 	return binding.render_v_value_lines()
 }

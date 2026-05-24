@@ -28,7 +28,7 @@ fn (g VGenerator) gen_class_glue_for_module(r &repr.PhpClassRepr, module_name st
 	// G. 方法的胶水包装
 	for m in r.methods {
 		method_glue := ClassMethodGlue.new(r, lower_name, uses_inherited_receiver, m,
-			g.params_structs, type_ref) or { continue }
+			g.params_structs, type_ref, g.table) or { continue }
 		out << method_glue.render_lines()
 	}
 

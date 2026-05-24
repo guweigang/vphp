@@ -1,5 +1,6 @@
 module compiler
 
+import v.ast
 import compiler.builder
 import compiler.repr
 
@@ -8,6 +9,7 @@ pub:
 	ext_name          string
 	class_ce_by_type  map[string]string
 	class_php_by_type map[string]string
+	table             &ast.Table = unsafe { nil }
 }
 
 fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments {
