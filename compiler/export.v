@@ -324,6 +324,9 @@ fn (mut c Compiler) generate_h() ! {
 	res.write_string('#include <Zend/zend_attributes.h>\n')
 	res.write_string('#include <Zend/zend_enum.h>\n')
 	res.write_string('#include <ext/standard/info.h>\n\n')
+	res.write_string('#ifndef ZEND_ACC_READONLY_CLASS\n')
+	res.write_string('#define ZEND_ACC_READONLY_CLASS 0\n')
+	res.write_string('#endif\n\n')
 
 	// 3. 写入扩展模块入口声明
 	res.write_string('extern zend_module_entry ${c.ext_name}_module_entry;\n')

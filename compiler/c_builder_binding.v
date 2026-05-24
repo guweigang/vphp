@@ -197,6 +197,21 @@ fn (g CGenerator) build_class_type(r &repr.PhpClassRepr, has_init bool) &builder
 	if r.is_abstract {
 		class_builder.add_class_flag('ZEND_ACC_EXPLICIT_ABSTRACT_CLASS')
 	}
+	mut has_non_static := false
+	mut all_readonly := true
+	for prop in r.properties {
+		if prop.is_static {
+			continue
+		}
+		has_non_static = true
+		if prop.is_mut {
+			all_readonly = false
+			break
+		}
+	}
+	if has_non_static && all_readonly {
+		class_builder.add_class_flag('ZEND_ACC_READONLY_CLASS')
+	}
 	for iface in r.internal_implements {
 		class_builder.add_interface(iface)
 	}
