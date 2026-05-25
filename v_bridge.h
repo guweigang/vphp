@@ -6,6 +6,10 @@
 
 #include "bridge/compat.h"
 
+#if PHP_VERSION_ID >= 80100
+#include <Zend/zend_enum.h>
+#endif
+
 // 对象包装器
 typedef struct {
   uint32_t magic;
@@ -251,5 +255,8 @@ zval *vphp_read_class_constant_compat(const char *class_name, int class_name_len
 void vphp_return_array_start(zval *return_value);
 void vphp_zval_foreach(zval *z, void *ctx,
                        void (*callback)(void *, zval *, zval *));
+
+void *vphp_zend_enum_get_case(void *ce, const char *name, int name_len);
+void vphp_zval_set_object_copy(void *z, void *zo);
 
 #endif

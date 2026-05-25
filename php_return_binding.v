@@ -386,6 +386,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 		$if T is $struct {
 			ret.struct_value(val)
 		} $else {
+			throw_exception(err.msg(), 0)
 			ret.null()
 		}
 	}

@@ -1562,3 +1562,21 @@ void vphp_uninstall_runtime_binding_hooks(void) {
   vphp_prev_execute_ex = NULL;
   vphp_prev_execute_internal = NULL;
 }
+
+void *vphp_zend_enum_get_case(void *ce, const char *name, int name_len) {
+#if PHP_VERSION_ID >= 80100
+  zend_string *zs = zend_string_init(name, name_len, 0);
+  zend_object *zo = zend_enum_get_case((zend_class_entry *)ce, zs);
+  zend_string_release(zs);
+  return (void *)zo;
+#else
+  return NULL;
+#endif
+}
+
+void vphp_zval_set_object_copy(void *z, void *zo) {
+  if (z && zo) {
+    ZVAL_OBJ_COPY((zval *)z, (zend_object *)zo);
+  }
+}
+

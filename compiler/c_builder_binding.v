@@ -175,6 +175,7 @@ fn (g CGenerator) build_interface_type(r &repr.PhpInterfaceRepr) &builder.ClassB
 
 fn (g CGenerator) build_enum_type(r &repr.PhpEnumRepr) &builder.ClassBuilder {
 	mut class_builder := builder.new_enum_builder(r.php_name, r.c_name())
+	class_builder.set_v_name(r.name)
 	class_builder.table = g.table
 	// PHP 8.1 native enum: no ZEND_ACC_FINAL, no __construct, no class constants.
 	// Cases are added via zend_enum_add_case_cstr() in MINIT (see builder render_minit).

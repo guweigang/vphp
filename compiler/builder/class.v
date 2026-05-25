@@ -72,6 +72,7 @@ pub mut:
 	methods               []ClassMethod
 	attributes            []ClassAttribute
 	table                 &ast.Table = unsafe { nil }
+	v_name                string
 }
 
 fn new_builder(type_ ClassType, php_name string, c_name string) &ClassBuilder {
@@ -97,6 +98,12 @@ pub fn new_enum_builder(php_name string, c_name string) &ClassBuilder {
 	b.create_object = false
 	return b
 }
+
+pub fn (mut b ClassBuilder) set_v_name(v_name string) &ClassBuilder {
+	b.v_name = v_name
+	return b
+}
+
 
 pub fn (mut b ClassBuilder) set_parent(parent_name string) &ClassBuilder {
 	b.parent = parent_name

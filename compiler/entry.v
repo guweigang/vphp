@@ -72,10 +72,11 @@ pub fn (mut c Compiler) compile() !string {
 		}
 
 		if stmt is ast.EnumDecl {
-			if enum_repr := cparser.parse_enum_decl(stmt, c.table) {
+			if mut enum_repr := cparser.parse_enum_decl(stmt, c.table) {
 				if enum_repr.parse_err != '' {
 					return error(enum_repr.parse_err)
 				}
+				enum_repr.module_name = c.decl_modules['enum:${stmt.name}']
 				c.elements << enum_repr
 				continue
 			}

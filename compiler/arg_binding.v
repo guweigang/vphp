@@ -173,9 +173,9 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool, table &ast.T
 	}
 
 	clean_type := arg.v_type.trim_left('?&')
-	is_sumtype := if table != unsafe { nil } {
+	is_sumtype_or_enum := if table != unsafe { nil } {
 		if sym := table.find_sym(clean_type) {
-			sym.kind == .sum_type
+			sym.kind == .sum_type || sym.kind == .enum
 		} else {
 			false
 		}
@@ -183,7 +183,7 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool, table &ast.T
 		false
 	}
 
-	if !is_sumtype {
+	if !is_sumtype_or_enum {
 		if lines := binding.render_raw_object_lines() {
 			return lines
 		}

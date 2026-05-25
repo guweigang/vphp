@@ -2,10 +2,11 @@ module repr
 
 pub struct PhpEnumRepr {
 pub mut:
-	name      string
-	php_name  string
-	cases     []PhpEnumCaseRepr
-	parse_err string
+	name        string
+	php_name    string
+	module_name string
+	cases       []PhpEnumCaseRepr
+	parse_err   string
 }
 
 pub struct PhpEnumCaseRepr {

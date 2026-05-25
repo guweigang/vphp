@@ -24,6 +24,22 @@ pub fn (v ZVal) to_string_list() []string {
 
 // 将 Zend Value 转换为明确的 V 类型（严格校验类型）
 pub fn (v ZVal) to_v[T]() !T {
+	$if T is $enum {
+		if v.is_numeric() {
+			return unsafe { T(v.to_int()) }
+		}
+		if v.is_object() {
+			obj := PhpObject.from_zval(v) or {
+				return error('expected enum object, failed to cast')
+			}
+			val_prop := obj.prop('value')
+			if val_prop.is_numeric() {
+				return unsafe { T(val_prop.to_int()) }
+			}
+			return error('expected BackedEnum with integer value, got non-numeric value')
+		}
+		return error('type mismatch: expected enum (int or BackedEnum), got ${v.type_name()}')
+	}
 	$if T is ZVal {
 		return v
 	}

@@ -87,6 +87,15 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 			plan.startup_lines << g.gen_class_startup(el)
 		} else if mut el is repr.PhpTaskRepr {
 			plan.task_registrations << g.gen_task_registration(el)
+		} else if mut el is repr.PhpEnumRepr {
+			if el.module_name != '' && el.module_name != 'main' {
+				continue
+			}
+			mut block := []string{}
+			block << 'pub fn (val ${el.name}) php_class_name() string {'
+			block << '    return \'${el.php_name.replace("\'", "\\\'")}\''
+			block << '}'
+			plan.glue_blocks << block.join('\n')
 		} else if mut el is repr.PhpGlobalsRepr {
 			// Already handled by standalone logic above for now, but good to mark as handled
 		}

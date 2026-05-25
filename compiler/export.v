@@ -208,6 +208,7 @@ fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
 	module_dirs := c.module_dirs()
 	mut classes_by_module := map[string][]repr.PhpClassRepr{}
 	mut funcs_by_module := map[string][]repr.PhpFuncRepr{}
+	mut enums_by_module := map[string][]repr.PhpEnumRepr{}
 	for el in c.elements {
 		if el is repr.PhpClassRepr {
 			if el.is_trait || el.module_name == '' || el.module_name == 'main' {
@@ -219,6 +220,11 @@ fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
 				continue
 			}
 			funcs_by_module[el.module_name] << el
+		} else if el is repr.PhpEnumRepr {
+			if el.module_name == '' || el.module_name == 'main' {
+				continue
+			}
+			enums_by_module[el.module_name] << el
 		}
 	}
 	// 合并所有需要生成 glue 的模块
@@ -229,9 +235,13 @@ fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
 	for m, _ in funcs_by_module {
 		all_modules[m] = true
 	}
+	for m, _ in enums_by_module {
+		all_modules[m] = true
+	}
 	for module_name, _ in all_modules {
 		classes := classes_by_module[module_name] or { []repr.PhpClassRepr{} }
 		funcs := funcs_by_module[module_name] or { []repr.PhpFuncRepr{} }
+		enums := enums_by_module[module_name] or { []repr.PhpEnumRepr{} }
 		module_dir := module_dirs[module_name] or { continue }
 		mut out := strings.new_builder(1024)
 		out.write_string('module ${module_name}\n\n')
@@ -256,6 +266,11 @@ fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
 		for func in funcs {
 			out.write_string(v_glue.gen_func_glue_for_module(func, module_name).join('\n'))
 			out.write_string('\n\n')
+		}
+		for enum_el in enums {
+			out.write_string('pub fn (val ${enum_el.name}) php_class_name() string {\n')
+			out.write_string('    return \'${enum_el.php_name.replace("\'", "\\\'")}\'\n')
+			out.write_string('}\n\n')
 		}
 		os.write_file(os.join_path(module_dir, 'vphp_bridge.v'), out.str())!
 	}
