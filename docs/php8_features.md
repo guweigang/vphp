@@ -154,6 +154,68 @@ echo $rc->getType()->getName(); // 输出: string
 
 ---
 
+### F. PHP 8.0 强类型属性（Typed Properties）
+
+* **PHP 8.0 新增**：类属性可以携带类型声明，如 `public string $name;`，运行时和反射均强制类型检查。
+* **PHP 8.1 的 `readonly` 约束**：`readonly` 属性**必须**有类型声明。
+* **vphp 实现现状**：已在 `vphp/compiler/builder/class.v` 中实现自动的强类型属性注册。
+
+#### 实现原理
+
+编译器通过 `render_typed_property` 方法，按以下优先级解析 V 字段类型到 PHP 类型：
+
+1. **原始 V 标量**：`php_builtin_type_info()` 覆盖 `string/int/i64/bool/f64/f32`
+2. **PHP 语义包装类型**：`PhpTypeSpec.from_v_type()` 覆盖 `PhpString/PhpInt/PhpArray/PhpBool` 等
+3. **无法映射 / IS_MIXED**：回落到 `zend_declare_property_null`（无类型属性）
+
+```c
+// 可映射类型：使用 zend_declare_typed_property
+{
+    zval default_val;
+    ZVAL_EMPTY_STRING(&default_val);
+    zend_declare_typed_property(ce, zend_string_init_interned("title", sizeof("title")-1, 1),
+        &default_val, ZEND_ACC_PUBLIC | ZEND_ACC_READONLY, NULL,
+        (zend_type) ZEND_TYPE_INIT_CODE(IS_STRING, 0, 0));
+}
+
+// 无法映射类型（PhpValue 等）：保持无类型注册
+zend_declare_property_null(ce, "data", sizeof("data")-1, ZEND_ACC_PUBLIC);
+```
+
+#### 类型映射一览
+
+| V 字段类型 | PHP 属性类型 | 输出类型声明？ |
+|-----------|------------|:---:|
+| `string`  | `string` | ✅ |
+| `int` / `i64` | `int` | ✅ |
+| `f64` / `f32` | `float` | ✅ |
+| `bool`    | `bool` | ✅ |
+| `PhpString` | `string` | ✅ |
+| `PhpInt`  | `int` | ✅ |
+| `PhpArray` | `array` | ✅ |
+| `PhpBool` | `bool` | ✅ |
+| `PhpObject` | `object` | ✅ |
+| `[]string` / `map[string]string` 等 | `array` | ✅ |
+| `PhpValue` / `ZVal` / 其他 | （无类型） | ❌ |
+
+#### 扩展开发者写法
+
+开发者无需任何额外注解，V struct 字段的类型会自动映射为 PHP 属性类型：
+
+```v
+@[php_class: 'MyNamespace\\Article']
+pub struct Article {
+pub:
+    title string = 'untitled'   // -> public readonly string $title;
+    views int                   // -> public readonly int $views;
+pub mut:
+    body  string                // -> public string $body;
+    draft bool                  // -> public bool $draft;
+}
+```
+
+
+
 ## 3. 演进路线规划
 
 未来我们在推进 `vphp` 核心库开发时，将逐步按以下优先级接入这些现代 PHP 8.x 特性：

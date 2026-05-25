@@ -295,23 +295,7 @@ fn (b &ClassBuilder) render_registration_function() string {
 			res << b.render_typed_class_constant(ce_ptr, con)
 		}
 		for prop in b.properties {
-			match prop.type_ {
-				'long', 'int' {
-					res << '        zend_declare_property_long(${ce_ptr}, "${prop.name}", sizeof("${prop.name}")-1, 0, ${prop.flags});'
-				}
-				'double', 'f64' {
-					res << '        zend_declare_property_double(${ce_ptr}, "${prop.name}", sizeof("${prop.name}")-1, 0.0, ${prop.flags});'
-				}
-				'bool' {
-					res << '        zend_declare_property_bool(${ce_ptr}, "${prop.name}", sizeof("${prop.name}")-1, 0, ${prop.flags});'
-				}
-				'string' {
-					res << '        zend_declare_property_string(${ce_ptr}, "${prop.name}", sizeof("${prop.name}")-1, "", ${prop.flags});'
-				}
-				else {
-					res << '        zend_declare_property_null(${ce_ptr}, "${prop.name}", sizeof("${prop.name}")-1, ${prop.flags});'
-				}
-			}
+			res << b.render_typed_property(ce_ptr, prop)
 		}
 		for i, attr in b.attributes {
 			attr_var := 'attribute_${lower_name}_${i}'
@@ -607,6 +591,42 @@ fn (b &ClassBuilder) render_typed_class_constant(ce_ptr string, con ClassConstan
 	res << '        ${legacy_fn}'
 	res << '#endif'
 
+	return res
+}
+
+fn (b &ClassBuilder) render_typed_property(ce_ptr string, prop ClassProperty) []string {
+	mut res := []string{}
+	// 先查原始 V 标量类型（string/int/i64/bool/f64/f32）
+	mut php_code := ''
+	if builtin := php_builtin_type_info(prop.type_) {
+		php_code = builtin.code
+	}
+	// 再查包装类型（PhpString/PhpInt/PhpArray 等）
+	if php_code == '' {
+		if spec := php_types.PhpTypeSpec.from_v_type(prop.type_) {
+			if spec.php_mask == '' {
+				php_code = spec.php_code
+			}
+		}
+	}
+	// IS_MIXED / 空 code → 无类型属性
+	if php_code == '' || php_code == 'IS_MIXED' {
+		res << '        zend_declare_property_null(${ce_ptr}, "${prop.name}", sizeof("${prop.name}")-1, ${prop.flags});'
+		return res
+	}
+	default_init := match php_code {
+		'IS_STRING' { 'ZVAL_EMPTY_STRING(&default_val);' }
+		'IS_LONG' { 'ZVAL_LONG(&default_val, 0);' }
+		'IS_DOUBLE' { 'ZVAL_DOUBLE(&default_val, 0.0);' }
+		'_IS_BOOL', 'IS_FALSE' { 'ZVAL_FALSE(&default_val);' }
+		'IS_TRUE' { 'ZVAL_TRUE(&default_val);' }
+		else { 'ZVAL_NULL(&default_val);' }
+	}
+	res << '        {'
+	res << '            zval default_val;'
+	res << '            ${default_init}'
+	res << '            zend_declare_typed_property(${ce_ptr}, zend_string_init_interned("${prop.name}", sizeof("${prop.name}")-1, 1), &default_val, ${prop.flags}, NULL, (zend_type) ZEND_TYPE_INIT_CODE(${php_code}, 0, 0));'
+	res << '        }'
 	return res
 }
 
