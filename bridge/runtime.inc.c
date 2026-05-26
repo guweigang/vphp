@@ -300,8 +300,7 @@ bool vphp_validate_internal_call(zend_execute_data *execute_data) {
   arg_count = ZEND_CALL_NUM_ARGS(execute_data);
   min_args = func->common.required_num_args;
   max_args = func->common.num_args;
-  variadic = max_args > 0 &&
-             ZEND_ARG_IS_VARIADIC(&func->common.arg_info[max_args - 1]);
+  variadic = (func->common.fn_flags & ZEND_ACC_VARIADIC) != 0;
 
   if (arg_count < min_args || (!variadic && arg_count > max_args)) {
     vphp_zend_wrong_parameters_count_error(min_args,

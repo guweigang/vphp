@@ -82,6 +82,7 @@ pub mut:
 	v_type      string
 	php_type    string
 	is_optional bool
+	is_variadic bool
 	php_default string
 	source      PhpArgSource
 	attributes  []PhpAttributeRepr

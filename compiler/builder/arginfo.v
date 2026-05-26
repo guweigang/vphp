@@ -116,9 +116,50 @@ fn render_php_default_value_literal(default_value string) string {
 	return '"${c_string_escape(default_value)}"'
 }
 
-fn render_arginfo_arg_line(arg_name string, raw_type string, default_value string, table &ast.Table) string {
-	arg_info := arg_type_info(raw_type, table)
+fn render_arginfo_arg_line(arg_name string, raw_type string, default_value string, is_variadic bool, table &ast.Table) string {
+	mut actual_type := raw_type
+	if is_variadic && actual_type.starts_with('[]') {
+		actual_type = actual_type[2..]
+	}
+	arg_info := arg_type_info(actual_type, table)
 	default_literal := render_php_default_value_literal(default_value)
+
+	if is_variadic {
+		if is_class_literal_type(actual_type) {
+			mut classname := actual_type
+			mut allow_null := '0'
+			if classname.starts_with('?') {
+				classname = classname[1..]
+				allow_null = '1'
+			}
+			escaped := c_string_escape(normalize_php_type_literal(classname))
+			return 'ZEND_ARG_VARIADIC_OBJ_INFO(0, ${arg_name}, ${escaped}, ${allow_null})'
+		}
+		if arg_info.code == 'IS_CALLABLE' {
+			allow_null := if arg_info.allow_null { '1' } else { '0' }
+			return '{ "${arg_name}", ZEND_TYPE_INIT_CODE(IS_CALLABLE, ${allow_null}, _ZEND_ARG_INFO_FLAGS(0, 1, 0)), NULL },'
+		}
+		if arg_info.mask_obj_class != '' {
+			mut mask := arg_info.mask
+			if arg_info.allow_null {
+				mask += '|MAY_BE_NULL'
+			}
+			return 'ZEND_ARG_VARIADIC_OBJ_TYPE_MASK(0, ${arg_name}, ${arg_info.mask_obj_class}, ${mask})'
+		}
+		if arg_info.mask != '' {
+			mut mask := arg_info.mask
+			if arg_info.allow_null {
+				mask += '|MAY_BE_NULL'
+			}
+			return '{ "${arg_name}", ZEND_TYPE_INIT_MASK(${mask} | _ZEND_ARG_INFO_FLAGS(0, 1, 0)), NULL },'
+		}
+		if arg_info.code != '' {
+			allow_null := if arg_info.allow_null { '1' } else { '0' }
+			return 'ZEND_ARG_VARIADIC_TYPE_INFO(0, ${arg_name}, ${arg_info.code}, ${allow_null})'
+		}
+		return 'ZEND_ARG_VARIADIC_INFO(0, ${arg_name})'
+	}
+
 	if is_class_literal_type(raw_type) {
 		return '{ "${arg_name}", ${render_class_type_init_literal(raw_type)}, ${default_literal} },'
 	}

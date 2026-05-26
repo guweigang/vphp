@@ -28,20 +28,36 @@ fn (read PhpArgRead) has_arg_expr() string {
 }
 
 fn (read PhpArgRead) direct_expr() ?string {
+	if read.arg.is_variadic {
+		return none
+	}
 	return php_arg_direct_read_expr(read.arg_expr(), read.arg.v_type)
 }
 
 fn (read PhpArgRead) v_expr() string {
+	if read.arg.is_variadic {
+		mut inner_type := read.arg.v_type
+		if inner_type.starts_with('[]') {
+			inner_type = inner_type[2..]
+		}
+		return 'php_args.as_variadic_v[${inner_type}](${read.index})'
+	}
 	return php_arg_v_read_expr(read.arg_expr(), read.arg.v_type)
 }
 
 fn (read PhpArgRead) with_default(expr string) string {
+	if read.arg.is_variadic {
+		return expr
+	}
 	default_value := PhpArgDefaultValue.from_arg(read.arg) or { return expr }
 	default_expr := default_value.arg_expr() or { return expr }
 	return 'if ${read.has_arg_expr()} { ${expr} } else { ${default_expr} }'
 }
 
 fn (read PhpArgRead) semantic_lines(var_name string, returns_voidptr bool) ?[]string {
+	if read.arg.is_variadic {
+		return none
+	}
 	v_type := read.arg.v_type
 	if v_type.starts_with('?') {
 		inner := v_type[1..]
@@ -68,6 +84,9 @@ fn (read PhpArgRead) semantic_lines(var_name string, returns_voidptr bool) ?[]st
 }
 
 fn (read PhpArgRead) semantic_or_default_lines(var_name string, default_expr string, returns_voidptr bool) ?[]string {
+	if read.arg.is_variadic {
+		return none
+	}
 	spec := php_types.PhpTypeSpec.semantic_wrapper_for(read.arg.v_type) or { return none }
 	if spec.is_total_arg {
 		return none

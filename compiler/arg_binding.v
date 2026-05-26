@@ -137,7 +137,13 @@ fn build_php_arg_setup(args []repr.PhpArgRepr, returns_voidptr bool, allow_raw_o
 
 fn (binding PhpArgBinding) call_name() string {
 	return match binding.kind {
-		.single { binding.var_name }
+		.single {
+			if binding.arg.is_variadic {
+				'...${binding.var_name}'
+			} else {
+				binding.var_name
+			}
+		}
 		.params_struct { binding.params_struct.call_name() }
 	}
 }
@@ -156,6 +162,9 @@ fn (binding PhpArgBinding) render_lines(returns_voidptr bool, allow_raw_object b
 
 fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool, table &ast.Table) []string {
 	arg := binding.arg
+	if arg.is_variadic {
+		return binding.render_v_value_lines()
+	}
 	if is_context_arg_type(arg.v_type) {
 		return ['    ${binding.var_name} := ctx']
 	}

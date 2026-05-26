@@ -27,6 +27,7 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 			type_:       arg.v_type
 			php_type:    arg.php_type
 			is_optional: arg.is_optional
+			is_variadic: arg.is_variadic
 			php_default: arg.php_default
 			attributes:  php_attributes_to_builder(arg.attributes)
 		}
@@ -92,6 +93,7 @@ fn method_args_to_builder(args []repr.PhpArgRepr) []builder.ClassMethodArg {
 			type_:       arg.v_type
 			php_type:    php_type
 			is_optional: arg.is_optional
+			is_variadic: arg.is_variadic
 			php_default: arg.php_default
 			attributes:  php_attributes_to_builder(arg.attributes)
 		}
@@ -125,6 +127,7 @@ fn interface_method_args_to_builder(_iface &repr.PhpInterfaceRepr, args []repr.P
 			type_:       arg.v_type
 			php_type:    arg.php_type
 			is_optional: arg.is_optional
+			is_variadic: arg.is_variadic
 			php_default: arg.php_default
 			attributes:  php_attributes_to_builder(arg.attributes)
 		}

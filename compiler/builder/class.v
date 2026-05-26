@@ -40,6 +40,7 @@ pub:
 	type_       string
 	php_type    string
 	is_optional bool
+	is_variadic bool
 	php_default string
 	attributes  []ClassAttribute
 }
@@ -446,7 +447,7 @@ fn method_required_args(m ClassMethod) int {
 	mut required := m.args.len
 	for required > 0 {
 		last := m.args[required - 1]
-		if last.is_optional {
+		if last.is_optional || last.is_variadic {
 			required--
 			continue
 		}
@@ -523,7 +524,7 @@ pub fn (b &ClassBuilder) render_arginfo_defs() string {
 		for arg in m.args {
 			raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 			validate_php_arg_type_or_panic(raw_type, arg.name, m.php_name)
-			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, b.table)
+			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, arg.is_variadic, b.table)
 		}
 		res << 'ZEND_END_ARG_INFO()'
 	}

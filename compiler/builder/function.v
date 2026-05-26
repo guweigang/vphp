@@ -52,7 +52,7 @@ pub fn (b &FuncBuilder) render_arginfo() string {
 	for arg in b.args {
 		raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 		validate_php_arg_type_or_panic(raw_type, arg.name, b.php_name)
-		res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, b.table)
+		res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, arg.is_variadic, b.table)
 	}
 	res << 'ZEND_END_ARG_INFO()'
 	return res.join('\n')
@@ -81,7 +81,7 @@ pub fn (b FuncBuilder) render_parameter_attribute_minit_lines() []string {
 fn function_required_args(args []ClassMethodArg) int {
 	mut required := args.len
 	for required > 0 {
-		if args[required - 1].is_optional {
+		if args[required - 1].is_optional || args[required - 1].is_variadic {
 			required--
 			continue
 		}

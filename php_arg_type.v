@@ -282,3 +282,14 @@ pub fn (args PhpArgs) at_named_or_index(index int, name string) PhpArg {
 	}
 	return args.at(index)
 }
+
+pub fn (args PhpArgs) as_variadic_v[T](start_index int) []T {
+	if start_index < 0 || start_index >= args.items.len {
+		return []T{}
+	}
+	mut res := []T{cap: args.items.len - start_index}
+	for i := start_index; i < args.items.len; i++ {
+		res << args.items[i].as_v[T]()
+	}
+	return res
+}

@@ -216,7 +216,7 @@ fn parse_php_arg_name_values(raw string) map[string]string {
 	return out
 }
 
-fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides map[string]string, names map[string]string, optional map[string]bool, defaults map[string]string, param_attrs map[string][]repr.PhpAttributeRepr, params_structs map[string]repr.PhpParamsStruct) []repr.PhpArgRepr {
+fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, is_fn_variadic bool, overrides map[string]string, names map[string]string, optional map[string]bool, defaults map[string]string, param_attrs map[string][]repr.PhpAttributeRepr, params_structs map[string]repr.PhpParamsStruct) []repr.PhpArgRepr {
 	mut args := []repr.PhpArgRepr{}
 	for i := start_idx; i < params.len; i++ {
 		param := params[i]
@@ -249,6 +249,7 @@ fn build_php_args(params []ast.Param, table &ast.Table, start_idx int, overrides
 			v_type:      v_type
 			php_type:    overrides[param.name] or { '' }
 			is_optional: param.name in optional || inferred_optional
+			is_variadic: is_fn_variadic && i == params.len - 1
 			php_default: defaults[param.name] or {
 				if inferred_optional { 'null' } else { '' }
 			}
