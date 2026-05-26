@@ -122,10 +122,9 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<string>, got ${v.type_name()}')
 		}
 		mut out := []string{}
-		for i in 0 .. v.array_count() {
-			item := v.array_get(i)
-			out << item.to_v[string]()!
-		}
+		out = v.foreach_with_ctx[[]string](out, fn (_ ZVal, val ZVal, mut acc []string) {
+			acc << val.to_string()
+		})
 		return out
 	}
 	$if T is []int {
@@ -133,10 +132,9 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<int>, got ${v.type_name()}')
 		}
 		mut out := []int{}
-		for i in 0 .. v.array_count() {
-			item := v.array_get(i)
-			out << item.to_v[int]()!
-		}
+		out = v.foreach_with_ctx[[]int](out, fn (_ ZVal, val ZVal, mut acc []int) {
+			acc << val.to_int()
+		})
 		return out
 	}
 	$if T is []i64 {
@@ -144,10 +142,9 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<i64>, got ${v.type_name()}')
 		}
 		mut out := []i64{}
-		for i in 0 .. v.array_count() {
-			item := v.array_get(i)
-			out << item.to_v[i64]()!
-		}
+		out = v.foreach_with_ctx[[]i64](out, fn (_ ZVal, val ZVal, mut acc []i64) {
+			acc << val.to_i64()
+		})
 		return out
 	}
 	$if T is []f64 {
@@ -155,10 +152,9 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<f64>, got ${v.type_name()}')
 		}
 		mut out := []f64{}
-		for i in 0 .. v.array_count() {
-			item := v.array_get(i)
-			out << item.to_v[f64]()!
-		}
+		out = v.foreach_with_ctx[[]f64](out, fn (_ ZVal, val ZVal, mut acc []f64) {
+			acc << val.to_f64()
+		})
 		return out
 	}
 	$if T is []bool {
@@ -166,10 +162,9 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<bool>, got ${v.type_name()}')
 		}
 		mut out := []bool{}
-		for i in 0 .. v.array_count() {
-			item := v.array_get(i)
-			out << item.to_v[bool]()!
-		}
+		out = v.foreach_with_ctx[[]bool](out, fn (_ ZVal, val ZVal, mut acc []bool) {
+			acc << val.to_bool()
+		})
 		return out
 	}
 	$if T is []ZVal {
@@ -177,9 +172,9 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<ZVal>, got ${v.type_name()}')
 		}
 		mut out := []ZVal{}
-		for i in 0 .. v.array_count() {
-			out << v.array_get(i)
-		}
+		out = v.foreach_with_ctx[[]ZVal](out, fn (_ ZVal, val ZVal, mut acc []ZVal) {
+			acc << val
+		})
 		return out
 	}
 	$if T is map[string]string {
