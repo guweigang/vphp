@@ -1,6 +1,7 @@
 module vphp
 
 fn C.vphp_object_ce_equals(obj voidptr, ce voidptr) bool
+fn C.vphp_object_is_instance_of(obj voidptr, ce voidptr) bool
 
 type GetClassEntryFn = fn (string) voidptr
 
@@ -68,9 +69,19 @@ pub fn (v ZVal) to_v[T]() !T {
 	}
 	$if T is $struct {
 		if v.is_object() {
-			ptr := ZendObject.from_zval(v).bound_v_ptr()
-			if ptr != unsafe { nil } {
-				return unsafe { *(&T(ptr)) }
+			mut v_name := $typeof(T).name
+			if v_name.contains('.') {
+				v_name = v_name.all_after_last('.')
+			}
+			ce := unsafe { vphp_get_class_entry_fn(v_name) }
+			if ce != unsafe { nil } {
+				zend_obj := ZendObject.from_zval(v)
+				if C.vphp_object_is_instance_of(zend_obj.raw_ptr(), ce) {
+					ptr := zend_obj.bound_v_ptr()
+					if ptr != unsafe { nil } {
+						return unsafe { *(&T(ptr)) }
+					}
+				}
 			}
 		}
 		return error('type mismatch: expected object bound to struct ${typeof[T]().name}')
@@ -301,7 +312,7 @@ pub fn (v ZVal) to_v[T]() !T {
 					ce := unsafe { vphp_get_class_entry_fn(v_name) }
 					if ce != unsafe { nil } {
 						zend_obj := ZendObject.from_zval(v)
-						eq := C.vphp_object_ce_equals(zend_obj.raw_ptr(), ce)
+						eq := C.vphp_object_is_instance_of(zend_obj.raw_ptr(), ce)
 						if eq {
 							ptr := zend_obj.bound_v_ptr()
 							if ptr != unsafe { nil } {

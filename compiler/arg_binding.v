@@ -196,7 +196,7 @@ fn (binding PhpSingleArgBinding) render_lines(returns_voidptr bool, table &ast.T
 		if lines := binding.render_raw_object_lines() {
 			return lines
 		}
-		if lines := binding.render_ref_object_lines() {
+		if lines := binding.render_ref_object_lines(returns_voidptr) {
 			return lines
 		}
 	}
@@ -233,22 +233,30 @@ fn (binding PhpSingleArgBinding) render_raw_object_lines() ?[]string {
 	if binding.allow_raw_object {
 		tm := php_types.TypeMap.get_type(arg.v_type)
 		if tm.c_type == 'void*' {
-			v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }
-			read := binding.read()
-			return [
-				'    ${binding.var_name} := ${read.with_default('unsafe { ${v_type}(${read.arg_expr()}.raw_obj()) }')}',
-			]
+			clean := arg.v_type.trim_left('?&')
+			if clean == 'voidptr' || clean.starts_with('C.') {
+				v_type := if arg.v_type.starts_with('&') { arg.v_type } else { '&' + arg.v_type }
+				read := binding.read()
+				return [
+					'    ${binding.var_name} := ${read.with_default('unsafe { ${v_type}(${read.arg_expr()}.raw_obj()) }')}',
+				]
+			}
 		}
 	}
 	return none
 }
 
-fn (binding PhpSingleArgBinding) render_ref_object_lines() ?[]string {
+fn (binding PhpSingleArgBinding) render_ref_object_lines(returns_voidptr bool) ?[]string {
 	arg := binding.arg
 	if arg.v_type.starts_with('&') {
+		clean_type := arg.v_type[1..]
 		read := binding.read()
 		return [
-			'    ${binding.var_name} := ${read.with_default('unsafe { ${arg.v_type}(${read.arg_expr()}.raw_obj()) }')}',
+			'    ${binding.var_name}_ptr := ${read.arg_expr()}.to_v_ptr[${clean_type}]() or {',
+			"        vphp.throw_exception('argument ${binding.index} must be object bound to ${clean_type}, got \' + ${read.arg_expr()}.zval().type_name(), 0)",
+			'        ${arg_return_stmt(returns_voidptr)}',
+			'    }',
+			'    ${binding.var_name} := unsafe { &${clean_type}(${binding.var_name}_ptr) }',
 		]
 	}
 	return none

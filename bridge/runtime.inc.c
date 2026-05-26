@@ -1584,3 +1584,9 @@ bool vphp_object_ce_equals(void *obj, void *ce) {
   return ((zend_object *)obj)->ce == (zend_class_entry *)ce;
 }
 
+bool vphp_object_is_instance_of(void *obj, void *ce) {
+  if (!obj || !ce) return false;
+  return instanceof_function(((zend_object *)obj)->ce, (zend_class_entry *)ce) != 0;
+}
+
+

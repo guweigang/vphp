@@ -226,6 +226,33 @@ pub fn (arg PhpArg) as_v_opt[T]() ?T {
 	return none
 }
 
+pub fn (arg PhpArg) to_v_ptr[T]() !voidptr {
+	val := arg.zval()
+	if !val.is_object() {
+		return error('expected object')
+	}
+	mut v_name := typeof[T]().name
+	if v_name.starts_with('&') {
+		v_name = v_name[1..]
+	}
+	if v_name.contains('.') {
+		v_name = v_name.all_after_last('.')
+	}
+	ce := unsafe { vphp_get_class_entry_fn(v_name) }
+	if ce == unsafe { nil } {
+		return error('no class entry found for ${v_name}')
+	}
+	zend_obj := ZendObject.from_zval(val)
+	if !C.vphp_object_is_instance_of(zend_obj.raw_ptr(), ce) {
+		return error('type mismatch: object is not an instance of ${v_name}')
+	}
+	ptr := zend_obj.bound_v_ptr()
+	if ptr == unsafe { nil } {
+		return error('object not bound to V pointer')
+	}
+	return ptr
+}
+
 pub fn (arg PhpArg) raw_obj() voidptr {
 	val := arg.zval()
 	return ZendObject.from_zval(val).bound_v_ptr()
