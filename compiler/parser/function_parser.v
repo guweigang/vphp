@@ -38,7 +38,11 @@ pub fn parse_function_decl(stmt ast.Stmt, table &ast.Table, module_name string, 
 	} else {
 		ret_type
 	}
-	func.return_spec = repr.new_return_repr(v_return_type, attrs.php_return_type)
+	mut php_return_type := attrs.php_return_type
+	if fn_decl.is_noreturn && php_return_type == '' {
+		php_return_type = 'never'
+	}
+	func.return_spec = repr.new_return_repr(v_return_type, php_return_type)
 	func.has_export = attrs.has_export
 
 	return func
