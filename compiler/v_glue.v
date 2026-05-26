@@ -83,6 +83,11 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 			}
 			if el.module_name == '' || el.module_name == 'main' {
 				plan.glue_blocks << g.gen_class_glue(el).join('\n')
+				mut block := []string{}
+				block << 'pub fn (val ${el.name}) php_class_name() string {'
+				block << '    return \'${el.php_name.replace("\'", "\\\'")}\''
+				block << '}'
+				plan.glue_blocks << block.join('\n')
 			}
 			plan.startup_lines << g.gen_class_startup(el)
 		} else if mut el is repr.PhpTaskRepr {
@@ -100,6 +105,40 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 			// Already handled by standalone logic above for now, but good to mark as handled
 		}
 	}
+
+	mut lookup_keys := []string{}
+	mut lookup_items := map[string]string{}
+	for el in elements {
+		if el is repr.PhpClassRepr {
+			if !el.is_trait {
+				if el.name !in lookup_items {
+					lookup_keys << el.name
+				}
+				lookup_items[el.name] = el.c_name().to_lower()
+			}
+		} else if el is repr.PhpEnumRepr {
+			if el.name !in lookup_items {
+				lookup_keys << el.name
+			}
+			lookup_items[el.name] = el.c_name().to_lower()
+		}
+	}
+	if lookup_keys.len > 0 {
+		mut lookup_block := []string{}
+		lookup_block << 'fn vphp_get_class_entry_by_v_name(v_name string) voidptr {'
+		lookup_block << '    return match v_name {'
+		for name in lookup_keys {
+			c_name := lookup_items[name]
+			lookup_block << '        \'${name}\' { C.${c_name}_ce }'
+		}
+		lookup_block << '        else { unsafe { nil } }'
+		lookup_block << '    }'
+		lookup_block << '}'
+		plan.glue_blocks << lookup_block.join('\n')
+
+		plan.startup_lines << '    vphp.register_class_entry_lookup(vphp_get_class_entry_by_v_name)'
+	}
+
 	return plan
 }
 

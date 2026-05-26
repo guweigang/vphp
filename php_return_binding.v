@@ -4,6 +4,9 @@ import vphp.object
 import vphp.zend as _
 import vphp.zval as zvalmod
 
+fn C.vphp_zend_enum_get_case(ce voidptr, name &char, len int) voidptr
+fn C.vphp_zval_set_object_copy(z voidptr, zo voidptr)
+
 // --- From php_return_type.v ---
 pub struct PhpReturn {
 	handle zvalmod.Handle
@@ -375,6 +378,50 @@ pub fn (ret PhpReturn) v[T](val T) {
 				if val is PhpArray {
 					ret.zval(val.to_zval())
 					return
+				}
+			}
+			$if variant.typ is $struct {
+				match val {
+					variant.typ {
+						mut v_name := $typeof(variant.typ).name
+						if v_name.contains('.') {
+							v_name = v_name.all_after_last('.')
+						}
+						ce := unsafe { vphp_get_class_entry_fn(v_name) }
+						if ce != unsafe { nil } {
+							mut layout := SumTypeLayout{}
+							unsafe {
+								C.memcpy(&layout, &val, sizeof(SumTypeLayout))
+							}
+							ret.object(layout.ptr, ZendClassEntry.from_ptr(ce))
+							return
+						}
+					}
+					else {}
+				}
+			}
+			$if variant.typ is $enum {
+				match val {
+					variant.typ {
+						$for enum_case in variant.typ.values {
+							if val == T(enum_case.value) {
+								mut v_name := $typeof(variant.typ).name
+								if v_name.contains('.') {
+									v_name = v_name.all_after_last('.')
+								}
+								ce := unsafe { vphp_get_class_entry_fn(v_name) }
+								if ce != unsafe { nil } {
+									case_zo := C.vphp_zend_enum_get_case(ce, &char(enum_case.name.str), enum_case.name.len)
+									if case_zo != unsafe { nil } {
+										mut out := ret.to_zval()
+										C.vphp_zval_set_object_copy(out.raw_ptr(), case_zo)
+										return
+									}
+								}
+							}
+						}
+					}
+					else {}
 				}
 			}
 		}

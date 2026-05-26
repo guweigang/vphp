@@ -258,5 +258,6 @@ void vphp_zval_foreach(zval *z, void *ctx,
 
 void *vphp_zend_enum_get_case(void *ce, const char *name, int name_len);
 void vphp_zval_set_object_copy(void *z, void *zo);
+bool vphp_object_ce_equals(void *obj, void *ce);
 
 #endif

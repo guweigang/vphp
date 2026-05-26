@@ -1580,3 +1580,8 @@ void vphp_zval_set_object_copy(void *z, void *zo) {
   }
 }
 
+bool vphp_object_ce_equals(void *obj, void *ce) {
+  if (!obj || !ce) return false;
+  return ((zend_object *)obj)->ce == (zend_class_entry *)ce;
+}
+

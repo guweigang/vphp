@@ -1,5 +1,31 @@
 module vphp
 
+fn C.vphp_object_ce_equals(obj voidptr, ce voidptr) bool
+
+type GetClassEntryFn = fn (string) voidptr
+
+struct SumTypeLayout {
+mut:
+	ptr voidptr
+	typ int
+}
+
+__global (
+	vphp_get_class_entry_fn GetClassEntryFn
+)
+
+fn init() {
+	unsafe {
+		vphp_get_class_entry_fn = nil
+	}
+}
+
+pub fn register_class_entry_lookup(f GetClassEntryFn) {
+	unsafe {
+		vphp_get_class_entry_fn = f
+	}
+}
+
 // ======== Zend Value -> V 转换 API ========
 
 // 便捷转换：array => map<string,string>（无效/null/undef 返回空 map）
@@ -39,6 +65,15 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('expected BackedEnum with integer value, got non-numeric value')
 		}
 		return error('type mismatch: expected enum (int or BackedEnum), got ${v.type_name()}')
+	}
+	$if T is $struct {
+		if v.is_object() {
+			ptr := ZendObject.from_zval(v).bound_v_ptr()
+			if ptr != unsafe { nil } {
+				return unsafe { *(&T(ptr)) }
+			}
+		}
+		return error('type mismatch: expected object bound to struct ${typeof[T]().name}')
 	}
 	$if T is ZVal {
 		return v
@@ -260,6 +295,56 @@ pub fn (v ZVal) to_v[T]() !T {
 			$if variant.typ is PhpArray {
 				if arr := PhpArray.from_zval(v) {
 					return T(arr)
+				}
+			}
+			$if variant.typ is $struct {
+				if v.is_object() {
+					mut v_name := $typeof(variant.typ).name
+					if v_name.contains('.') {
+						v_name = v_name.all_after_last('.')
+					}
+					ce := unsafe { vphp_get_class_entry_fn(v_name) }
+					if ce != unsafe { nil } {
+						zend_obj := ZendObject.from_zval(v)
+						eq := C.vphp_object_ce_equals(zend_obj.raw_ptr(), ce)
+						if eq {
+							ptr := zend_obj.bound_v_ptr()
+							if ptr != unsafe { nil } {
+								mut layout := SumTypeLayout{
+									typ: variant.typ
+									ptr: ptr
+								}
+								mut res := T{}
+								unsafe {
+									C.memcpy(&res, &layout, sizeof(T))
+								}
+								return res
+							}
+						}
+					}
+				}
+			}
+			$if variant.typ is $enum {
+				mut enum_val_int := 0
+				mut has_val := false
+				if v.is_numeric() {
+					enum_val_int = v.to_int()
+					has_val = true
+				} else if v.is_object() {
+					if obj := PhpObject.from_zval(v) {
+						val_prop := obj.prop('value')
+						if val_prop.is_numeric() {
+							enum_val_int = val_prop.to_int()
+							has_val = true
+						}
+					}
+				}
+				if has_val {
+					$for enum_case in variant.typ.values {
+						if int(enum_case.value) == enum_val_int {
+							return T(enum_case.value)
+						}
+					}
 				}
 			}
 		}

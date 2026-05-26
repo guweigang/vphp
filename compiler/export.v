@@ -262,6 +262,9 @@ fn (c Compiler) generate_module_glue_files(v_glue VGenerator) ! {
 		for class in classes {
 			out.write_string(v_glue.gen_class_glue_for_module(class, module_name).join('\n'))
 			out.write_string('\n\n')
+			out.write_string('pub fn (val ${class.name}) php_class_name() string {\n')
+			out.write_string('    return \'${class.php_name.replace("\'", "\\\'")}\'\n')
+			out.write_string('}\n\n')
 		}
 		for func in funcs {
 			out.write_string(v_glue.gen_func_glue_for_module(func, module_name).join('\n'))
