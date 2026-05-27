@@ -1,9 +1,8 @@
 module parser
 
 import v.ast
-import compiler.repr
 
-pub fn parse_extension_meta(file_ast &ast.File, table &ast.Table) ?repr.PhpExtensionMeta {
+pub fn parse_extension_meta(file_ast &ast.File, table &ast.Table) ?(string, string, string, map[string]string) {
 	for stmt in file_ast.stmts {
 		if stmt is ast.ConstDecl {
 			for field in stmt.fields {
@@ -37,12 +36,7 @@ pub fn parse_extension_meta(file_ast &ast.File, table &ast.Table) ?repr.PhpExten
 						}
 					}
 					if name != '' {
-						return repr.PhpExtensionMeta{
-							name:        name
-							version:     version
-							description: description
-							ini_entries: ini_entries
-						}
+						return name, version, description, ini_entries
 					}
 				}
 			}

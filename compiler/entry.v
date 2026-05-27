@@ -45,11 +45,11 @@ pub fn (mut c Compiler) compile() !string {
 			return error('AST 解析失败: ${file_ast.errors[0].message} in ${file}')
 		}
 		if c.ext_name == '' {
-			if meta := cparser.parse_extension_meta(file_ast, c.table) {
-				c.ext_name = meta.name
-				c.ext_version = meta.version
-				c.ext_description = meta.description
-				c.ini_entries = meta.ini_entries.clone()
+			if name, version, description, ini_entries := cparser.parse_extension_meta(file_ast, c.table) {
+				c.ext_name = name
+				c.ext_version = version
+				c.ext_description = description
+				c.ini_entries = ini_entries.clone()
 			}
 		}
 		c.remember_decl_modules(file_ast.stmts, file_ast.mod.name)

@@ -1,11 +1,5 @@
 module vphp
 
-import os
-import vphp.zend
-
-#include <php.h>
-#include "v_bridge.h" // 统一在这里 include，确保全局可见
-
 // 这里可以放 ExtensionConfig 等定义
 pub struct ExtensionConfig {
 pub:
@@ -13,67 +7,4 @@ pub:
 	version     string
 	description string
 	ini_entries map[string]string
-}
-
-// 框架核心入口
-@[export: 'vphp_framework_init']
-pub fn vphp_framework_init(module_number int) {
-	// ... 目前占位
-	// 自动初始化资源系统
-	init_framework(module_number)
-	// 这里的并发任务注册逻辑也可以放在这里
-	// println('VPHP Framework initialized.')
-}
-
-pub fn init_framework(module_number int) {
-	zend.framework_init(module_number)
-}
-
-fn framework_debug_enabled() bool {
-	return os.getenv('VSLIM_CLI_DEBUG') != '' || os.getenv('VSLIM_CLI_DEBUG_FILE') != ''
-}
-
-fn framework_debug_log(message string) {
-	if !framework_debug_enabled() {
-		return
-	}
-	debug_file := os.getenv('VSLIM_CLI_DEBUG_FILE').trim_space()
-	if debug_file != '' {
-		line := '[vphp-framework-debug] ' + message + '\n'
-		mut file := os.open_append(debug_file) or {
-			mut created := os.create(debug_file) or { return }
-			created.write_string(line) or {}
-			created.close()
-			return
-		}
-		file.write_string(line) or {}
-		file.close()
-		return
-	}
-	eprintln('[vphp-framework-debug] ${message}')
-}
-
-@[export: 'vphp_framework_shutdown']
-pub fn vphp_framework_shutdown() {
-	framework_debug_log('framework_shutdown enter')
-	framework_debug_log('framework_shutdown uninstall_runtime_hooks begin')
-	zend.uninstall_runtime_binding_hooks()
-	framework_debug_log('framework_shutdown uninstall_runtime_hooks done')
-	framework_debug_log('framework_shutdown autorelease_shutdown begin')
-	zend.autorelease_shutdown()
-	framework_debug_log('framework_shutdown autorelease_shutdown done')
-	framework_debug_log('framework_shutdown shutdown_registry begin')
-	zend.shutdown_registry()
-	framework_debug_log('framework_shutdown shutdown_registry done')
-	framework_debug_log('framework_shutdown exit')
-}
-
-@[export: 'vphp_framework_request_startup']
-pub fn vphp_framework_request_startup() {
-	zend.request_startup()
-}
-
-@[export: 'vphp_framework_request_shutdown']
-pub fn vphp_framework_request_shutdown() {
-	zend.request_shutdown()
 }
