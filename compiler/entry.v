@@ -45,7 +45,12 @@ pub fn (mut c Compiler) compile() !string {
 			return error('AST 解析失败: ${file_ast.errors[0].message} in ${file}')
 		}
 		if c.ext_name == '' {
-			c.set_extension_meta(file_ast)
+			if meta := cparser.parse_extension_meta(file_ast, c.table) {
+				c.ext_name = meta.name
+				c.ext_version = meta.version
+				c.ext_description = meta.description
+				c.ini_entries = meta.ini_entries.clone()
+			}
 		}
 		c.remember_decl_modules(file_ast.stmts, file_ast.mod.name)
 		all_stmts << file_ast.stmts
@@ -55,12 +60,11 @@ pub fn (mut c Compiler) compile() !string {
 		return error('无法在输入的文件中找到 ext_config 配置，请确保定义了 ExtensionConfig')
 	}
 	println('  - [Compiler] 识别到扩展名: ${c.ext_name}')
-	field_types := collect_struct_field_types(all_stmts, c.table)
+	field_types := cparser.collect_struct_field_types(all_stmts, c.table)
 	params_structs := cparser.collect_params_structs(all_stmts, c.table, c.decl_modules)
 	c.params_structs = params_structs.clone()
-	method_profiles := collect_method_borrow_profiles(all_stmts, c.table, field_types)
-	resolved_borrowed := resolve_method_borrowed_returns(method_profiles)
-	method_return_types := collect_method_return_types(method_profiles)
+	resolved_borrowed := linker.resolve_borrowed_methods(all_stmts, c.table, field_types)
+	method_return_types := linker.collect_method_return_types(all_stmts, c.table, field_types)
 
 	// --- 第一阶段：扫描所有 Struct 定义 ---
 	for stmt in all_stmts {
@@ -83,8 +87,6 @@ pub fn (mut c Compiler) compile() !string {
 		}
 
 		if stmt is ast.StructDecl {
-			// A. 探测是否是 Zend Globals 定义。Globals 是 extension-level metadata，
-			// 可以声明在任意 V module，但一个扩展只能有一个 globals struct。
 			if globals_repr := cparser.parse_globals_decl(stmt, c.table) {
 				if c.globals_repr.name != '' {
 					return error('multiple @[php_globals] declarations are not supported: ${c.globals_repr.name} and ${globals_repr.name}')
@@ -93,9 +95,7 @@ pub fn (mut c Compiler) compile() !string {
 				continue
 			}
 
-			// B. 或者是普通类定义
 			if cls := cparser.parse_class_decl(stmt, c.table, c.module_for_stmt(stmt)) {
-				// 记录该类在 elements 数组中的位置
 				c.class_index[cls.name] = c.elements.len
 				c.elements << cls
 			}
@@ -105,11 +105,8 @@ pub fn (mut c Compiler) compile() !string {
 	// --- 第二阶段：扫描所有 Fn 定义 ---
 	for stmt in all_stmts {
 		if stmt is ast.FnDecl {
-			// 1. 检查是否是类方法 (Method)
 			if stmt.is_method {
-				// 获取接收者的类型名 (例如 "User")
 				receiver_type := c.table.get_type_name(stmt.receiver.typ).all_after_last('.')
-
 				if receiver_type in c.class_index {
 					idx := c.class_index[receiver_type]
 					mut el := c.elements[idx]
@@ -122,11 +119,9 @@ pub fn (mut c Compiler) compile() !string {
 				}
 			}
 
-			// 2. 核心修正：处理静态方法 (fn Article.create() ...)
 			if stmt.name.contains('__static__') {
 				parts := stmt.name.split('__static__')
 				if parts.len == 2 {
-					// 获取类名：如果是 main.Article，取 Article
 					raw_class := parts[0]
 					class_name := if raw_class.contains('.') {
 						raw_class.all_after_last('.')
@@ -147,7 +142,6 @@ pub fn (mut c Compiler) compile() !string {
 				}
 			}
 
-			// 3. 否则，作为普通全局函数处理
 			if func := cparser.parse_function_decl(stmt, c.table, c.module_for_stmt(stmt),
 				params_structs)
 			{
@@ -156,13 +150,11 @@ pub fn (mut c Compiler) compile() !string {
 			}
 		}
 
-		// 2. 尝试作为常量解析
 		if con := cparser.parse_constant_decl(stmt, c.table) {
 			c.elements << con
 			continue
 		}
 
-		// 3. 任务识别逻辑
 		if task := cparser.parse_task_decl(stmt, c.table) {
 			c.elements << task
 			continue
@@ -170,7 +162,7 @@ pub fn (mut c Compiler) compile() !string {
 	}
 
 	linker.link_class_shadows(mut c.elements, c.table)
-	apply_resolved_borrowed_returns(mut c.elements, resolved_borrowed)
+	linker.resolve_and_apply_borrow_returns(mut c.elements, all_stmts, c.table, field_types)
 	linker.link_class_traits(mut c.elements)!
 	linker.link_class_embeds(mut c.elements)!
 	linker.link_class_parents(mut c.elements)!
@@ -182,170 +174,23 @@ pub fn (mut c Compiler) compile() !string {
 }
 
 fn (c &Compiler) module_for_stmt(stmt ast.Stmt) string {
-	key := decl_key(stmt)
+	key := cparser.decl_key(stmt)
 	if module_name := c.decl_modules[key] {
 		return module_name
 	}
-	short_key := decl_short_key(stmt)
+	short_key := cparser.decl_short_key(stmt)
 	return c.decl_modules[short_key] or { 'main' }
 }
 
 fn (mut c Compiler) remember_decl_modules(stmts []ast.Stmt, module_name string) {
 	for stmt in stmts {
-		key := decl_key(stmt)
+		key := cparser.decl_key(stmt)
 		if key != '' {
 			c.decl_modules[key] = module_name
 		}
-		short_key := decl_short_key(stmt)
+		short_key := cparser.decl_short_key(stmt)
 		if short_key != '' {
 			c.decl_modules[short_key] = module_name
-		}
-	}
-}
-
-fn decl_key(stmt ast.Stmt) string {
-	match stmt {
-		ast.StructDecl { return 'struct:${stmt.name}' }
-		ast.FnDecl { return 'fn:${stmt.name}' }
-		ast.InterfaceDecl { return 'interface:${stmt.name}' }
-		ast.EnumDecl { return 'enum:${stmt.name}' }
-		else { return '' }
-	}
-}
-
-fn decl_short_key(stmt ast.Stmt) string {
-	match stmt {
-		ast.StructDecl { return 'struct:${stmt.name.all_after_last('.')}' }
-		ast.FnDecl { return 'fn:${stmt.name.all_after_last('.')}' }
-		ast.InterfaceDecl { return 'interface:${stmt.name.all_after_last('.')}' }
-		ast.EnumDecl { return 'enum:${stmt.name.all_after_last('.')}' }
-		else { return '' }
-	}
-}
-
-fn (mut c Compiler) set_extension_meta(file_ast &ast.File) {
-	for stmt in file_ast.stmts {
-		if stmt is ast.ConstDecl {
-			for field in stmt.fields {
-				if field.name.ends_with('ext_config') && field.expr is ast.StructInit {
-					expr := field.expr as ast.StructInit
-					v_type := c.table.get_type_name(expr.typ)
-					if !v_type.ends_with('ExtensionConfig') {
-						continue
-					}
-					for f in expr.init_fields {
-						if f.name == 'name' && f.expr is ast.StringLiteral {
-							c.ext_name = (f.expr as ast.StringLiteral).val
-						} else if f.name == 'version' && f.expr is ast.StringLiteral {
-							c.ext_version = (f.expr as ast.StringLiteral).val
-						} else if f.name == 'description' && f.expr is ast.StringLiteral {
-							c.ext_description = (f.expr as ast.StringLiteral).val
-						} else if f.name == 'ini_entries' && f.expr is ast.MapInit {
-							m_expr := f.expr as ast.MapInit
-							for i, key in m_expr.keys {
-								val := m_expr.vals[i]
-								if key is ast.StringLiteral && val is ast.StringLiteral {
-									k := (key as ast.StringLiteral).val
-									v := (val as ast.StringLiteral).val
-									c.ini_entries[k] = v
-								}
-							}
-						}
-					}
-					if c.ext_name != '' {
-						return
-					}
-				}
-			}
-		}
-	}
-}
-
-fn collect_struct_field_types(stmts []ast.Stmt, table &ast.Table) map[string]string {
-	mut field_types := map[string]string{}
-	for stmt in stmts {
-		if stmt !is ast.StructDecl {
-			continue
-		}
-		struct_decl := stmt as ast.StructDecl
-		struct_name := if struct_decl.name.contains('.') {
-			struct_decl.name.all_after_last('.')
-		} else {
-			struct_decl.name
-		}
-		for field in struct_decl.fields {
-			field_type := cparser.normalize_delegated_target_type(table.get_type_name(field.typ))
-			if field_type != '' {
-				field_types['${struct_name}::${field.name}'] = field_type
-			}
-		}
-	}
-	return field_types
-}
-
-fn collect_method_borrow_profiles(stmts []ast.Stmt, table &ast.Table, field_types map[string]string) []cparser.MethodBorrowProfile {
-	mut profiles := []cparser.MethodBorrowProfile{}
-	for stmt in stmts {
-		if stmt is ast.FnDecl {
-			if profile := cparser.build_method_borrow_profile(stmt, table, field_types) {
-				profiles << profile
-			}
-		}
-	}
-	return profiles
-}
-
-fn collect_method_return_types(profiles []cparser.MethodBorrowProfile) map[string]string {
-	mut out := map[string]string{}
-	for profile in profiles {
-		key := '${profile.receiver_type}::${profile.method_name}'
-		out[key] = profile.return_type
-	}
-	return out
-}
-
-fn resolve_method_borrowed_returns(profiles []cparser.MethodBorrowProfile) map[string]bool {
-	mut borrowed_methods := map[string]bool{}
-	mut delegated_targets := map[string]string{}
-	for profile in profiles {
-		key := '${profile.receiver_type}::${profile.method_name}'
-		borrowed_methods[key] = profile.direct_borrowed
-		if profile.delegated_target_type != '' && profile.delegated_target_method != '' {
-			delegated_targets[key] = '${profile.delegated_target_type}::${profile.delegated_target_method}'
-		}
-	}
-	for {
-		mut changed := false
-		for method_key, target_key in delegated_targets {
-			if borrowed_methods[method_key] or { false } {
-				continue
-			}
-			if borrowed_methods[target_key] or { false } {
-				borrowed_methods[method_key] = true
-				changed = true
-			}
-		}
-		if !changed {
-			break
-		}
-	}
-	return borrowed_methods
-}
-
-fn apply_resolved_borrowed_returns(mut elements []repr.PhpRepr, resolved_borrowed map[string]bool) {
-	for i in 0 .. elements.len {
-		mut el := elements[i]
-		if mut el is repr.PhpClassRepr {
-			for mi, method in el.methods {
-				if method.v_name == '' {
-					continue
-				}
-				key := '${el.name}::${method.v_name}'
-				if resolved_borrowed[key] or { false } {
-					el.methods[mi].borrowed_return = true
-				}
-			}
-			elements[i] = el
 		}
 	}
 }
