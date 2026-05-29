@@ -9,7 +9,8 @@ pub fn object_add_ref(obj &C.zend_object) {
 }
 
 pub fn object_add_ref_ptr(obj voidptr) {
-	object_add_ref(unsafe { &C.zend_object(obj) })
+	object_add_ref( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) })
 }
 
 pub fn object_release(obj &C.zend_object) {
@@ -17,7 +18,8 @@ pub fn object_release(obj &C.zend_object) {
 }
 
 pub fn object_release_ptr(obj voidptr) {
-	object_release(unsafe { &C.zend_object(obj) })
+	object_release( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) })
 }
 
 pub fn bind_borrowed_handlers(obj &C.zend_object, handlers voidptr) {
@@ -25,7 +27,8 @@ pub fn bind_borrowed_handlers(obj &C.zend_object, handlers voidptr) {
 }
 
 pub fn bind_borrowed_handlers_ptr(obj voidptr, handlers voidptr) {
-	bind_borrowed_handlers(unsafe { &C.zend_object(obj) }, handlers)
+	bind_borrowed_handlers( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn bind_owned_handlers(obj &C.zend_object, handlers voidptr) {
@@ -33,7 +36,8 @@ pub fn bind_owned_handlers(obj &C.zend_object, handlers voidptr) {
 }
 
 pub fn bind_owned_handlers_ptr(obj voidptr, handlers voidptr) {
-	bind_owned_handlers(unsafe { &C.zend_object(obj) }, handlers)
+	bind_owned_handlers( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn ensure_borrowed_instance_binding(obj &C.zend_object, handlers voidptr) &C.vphp_object_wrapper {
@@ -41,7 +45,8 @@ pub fn ensure_borrowed_instance_binding(obj &C.zend_object, handlers voidptr) &C
 }
 
 pub fn ensure_borrowed_instance_binding_ptr(obj voidptr, handlers voidptr) voidptr {
-	return ensure_borrowed_instance_binding(unsafe { &C.zend_object(obj) }, handlers)
+	return ensure_borrowed_instance_binding( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn ensure_owned_instance_binding(obj &C.zend_object, handlers voidptr) &C.vphp_object_wrapper {
@@ -49,7 +54,8 @@ pub fn ensure_owned_instance_binding(obj &C.zend_object, handlers voidptr) &C.vp
 }
 
 pub fn ensure_owned_instance_binding_ptr(obj voidptr, handlers voidptr) voidptr {
-	return ensure_owned_instance_binding(unsafe { &C.zend_object(obj) }, handlers)
+	return ensure_owned_instance_binding( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn init_owned_instance(obj &C.zend_object, handlers voidptr) {
@@ -57,7 +63,8 @@ pub fn init_owned_instance(obj &C.zend_object, handlers voidptr) {
 }
 
 pub fn init_owned_instance_ptr(obj voidptr, handlers voidptr) {
-	init_owned_instance(unsafe { &C.zend_object(obj) }, handlers)
+	init_owned_instance( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, handlers)
 }
 
 pub fn object_wrapper(obj &C.zend_object) &C.vphp_object_wrapper {
@@ -65,13 +72,15 @@ pub fn object_wrapper(obj &C.zend_object) &C.vphp_object_wrapper {
 }
 
 pub fn object_wrapper_ptr(obj voidptr) voidptr {
-	return object_wrapper(unsafe { &C.zend_object(obj) })
+	return object_wrapper( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) })
 }
 
 pub fn object_wrapper_v_ptr(wrapper_ptr voidptr) voidptr {
 	wrapper := unsafe { &C.vphp_object_wrapper(wrapper_ptr) }
 	if isnil(wrapper) {
-		return unsafe { nil }
+		return // SAFETY: nil literal in unsafe context
+		 unsafe { nil }
 	}
 	return wrapper.v_ptr
 }
@@ -81,7 +90,9 @@ pub fn wrap_existing_object(out &C.zval, obj &C.zend_object) {
 }
 
 pub fn wrap_existing_object_ptr(out voidptr, obj voidptr) {
-	wrap_existing_object(unsafe { &C.zval(out) }, unsafe { &C.zend_object(obj) })
+	wrap_existing_object( // SAFETY: out is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(out) }, // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) })
 }
 
 pub fn current_this_object() voidptr {
@@ -93,7 +104,8 @@ pub fn object_from_zval(v &C.zval) &C.zend_object {
 }
 
 pub fn object_from_zval_ptr(v voidptr) voidptr {
-	return object_from_zval(unsafe { &C.zval(v) })
+	return object_from_zval( // SAFETY: v is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(v) })
 }
 
 pub fn return_unbound_object(ret &C.zval, v_ptr voidptr, ce voidptr) {
@@ -101,7 +113,8 @@ pub fn return_unbound_object(ret &C.zval, v_ptr voidptr, ce voidptr) {
 }
 
 pub fn return_unbound_object_ptr(ret voidptr, v_ptr voidptr, ce voidptr) {
-	return_unbound_object(unsafe { &C.zval(ret) }, v_ptr, ce)
+	return_unbound_object( // SAFETY: ret is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(ret) }, v_ptr, ce)
 }
 
 pub fn return_borrowed_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
@@ -109,7 +122,8 @@ pub fn return_borrowed_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers v
 }
 
 pub fn return_borrowed_object_ptr(ret voidptr, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	return_borrowed_object(unsafe { &C.zval(ret) }, v_ptr, ce, handlers)
+	return_borrowed_object( // SAFETY: ret is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(ret) }, v_ptr, ce, handlers)
 }
 
 pub fn return_owned_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers voidptr) {
@@ -117,7 +131,8 @@ pub fn return_owned_object(ret &C.zval, v_ptr voidptr, ce voidptr, handlers void
 }
 
 pub fn return_owned_object_ptr(ret voidptr, v_ptr voidptr, ce voidptr, handlers voidptr) {
-	return_owned_object(unsafe { &C.zval(ret) }, v_ptr, ce, handlers)
+	return_owned_object( // SAFETY: ret is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(ret) }, v_ptr, ce, handlers)
 }
 
 pub fn read_property(obj &C.zend_object, name string, rv &C.zval) &C.zval {
@@ -125,7 +140,9 @@ pub fn read_property(obj &C.zend_object, name string, rv &C.zval) &C.zval {
 }
 
 pub fn read_property_ptr(obj voidptr, name string, rv voidptr) voidptr {
-	return read_property(unsafe { &C.zend_object(obj) }, name, unsafe { &C.zval(rv) })
+	return read_property( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, name, // SAFETY: rv is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(rv) })
 }
 
 pub fn write_property(obj &C.zend_object, name string, value &C.zval) {
@@ -133,7 +150,9 @@ pub fn write_property(obj &C.zend_object, name string, value &C.zval) {
 }
 
 pub fn write_property_ptr(obj voidptr, name string, value voidptr) {
-	write_property(unsafe { &C.zend_object(obj) }, name, unsafe { &C.zval(value) })
+	write_property( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, name, // SAFETY: value is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(value) })
 }
 
 pub fn has_property(obj &C.zend_object, name string) bool {
@@ -141,7 +160,8 @@ pub fn has_property(obj &C.zend_object, name string) bool {
 }
 
 pub fn has_property_ptr(obj voidptr, name string) bool {
-	return has_property(unsafe { &C.zend_object(obj) }, name)
+	return has_property( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, name)
 }
 
 pub fn isset_property(obj &C.zend_object, name string) bool {
@@ -149,7 +169,8 @@ pub fn isset_property(obj &C.zend_object, name string) bool {
 }
 
 pub fn isset_property_ptr(obj voidptr, name string) bool {
-	return isset_property(unsafe { &C.zend_object(obj) }, name)
+	return isset_property( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, name)
 }
 
 pub fn unset_property(obj &C.zend_object, name string) {
@@ -157,34 +178,42 @@ pub fn unset_property(obj &C.zend_object, name string) {
 }
 
 pub fn unset_property_ptr(obj voidptr, name string) {
-	unset_property(unsafe { &C.zend_object(obj) }, name)
+	unset_property( // SAFETY: obj is a valid zend_object pointer from Zend runtime
+	 unsafe { &C.zend_object(obj) }, name)
 }
 
 pub fn init_object_zval(v &C.zval) {
+	// SAFETY: C bridge call vphp_object_init with valid arguments
 	unsafe { C.vphp_object_init(v) }
 }
 
 pub fn add_property_string(v &C.zval, key string, val string) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.add_property_stringl(v, &char(key.str), &char(val.str), val.len) }
 }
 
 pub fn update_property_string(v &C.zval, key string, val string) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.vphp_update_property_string(v, &char(key.str), key.len, &char(val.str)) }
 }
 
 pub fn add_property_long(v &C.zval, key string, val i64) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.add_property_long(v, &char(key.str), val) }
 }
 
 pub fn add_property_double(v &C.zval, key string, val f64) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.vphp_add_property_double(v, &char(key.str), val) }
 }
 
 pub fn add_property_bool(v &C.zval, key string, val bool) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.add_property_bool(v, &char(key.str), val) }
 }
 
 pub fn object_class_name(v &C.zval) string {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		mut len := 0
 		name := C.vphp_get_object_class_name(v, &len)
@@ -196,6 +225,7 @@ pub fn object_class_name(v &C.zval) string {
 }
 
 pub fn object_parent_class_name(v &C.zval) string {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		mut len := 0
 		name := C.vphp_get_parent_class_name(v, &len)

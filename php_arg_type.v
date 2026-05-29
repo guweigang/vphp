@@ -239,7 +239,8 @@ pub fn (arg PhpArg) to_v_ptr[T]() !voidptr {
 		v_name = v_name.all_after_last('.')
 	}
 	ce := unsafe { vphp_get_class_entry_fn(v_name) }
-	if ce == unsafe { nil } {
+	if ce == unsafe { nil } // SAFETY: nil literal in unsafe context
+	  {
 		return error('no class entry found for ${v_name}')
 	}
 	zend_obj := ZendObject.from_zval(val)
@@ -247,7 +248,8 @@ pub fn (arg PhpArg) to_v_ptr[T]() !voidptr {
 		return error('type mismatch: object is not an instance of ${v_name}')
 	}
 	ptr := zend_obj.bound_v_ptr()
-	if ptr == unsafe { nil } {
+	if ptr == unsafe { nil } // SAFETY: nil literal in unsafe context
+	  {
 		return error('object not bound to V pointer')
 	}
 	return ptr

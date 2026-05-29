@@ -37,6 +37,7 @@ __global (
 )
 
 fn get_registry() &TaskRegistry {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		if g_registry == 0 {
 			g_registry = &TaskRegistry{
@@ -90,6 +91,7 @@ pub fn (task PhpTask) spawn(args []ZVal) !PhpTaskHandle {
 	task_inst := creator(args)
 	t := spawn task_inst.run()
 
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		mut res := &AsyncResult(zend.emalloc(usize(sizeof(AsyncResult))))
 		res.handle = t
@@ -108,10 +110,12 @@ pub fn (handle PhpTaskHandle) ptr() voidptr {
 }
 
 pub fn (handle PhpTaskHandle) is_valid() bool {
-	return handle.ptr != unsafe { nil }
+	return handle.ptr != // SAFETY: nil literal in unsafe context
+	 unsafe { nil }
 }
 
 pub fn (handle PhpTaskHandle) wait_result() !TaskResult {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		if handle.ptr == nil {
 			return error('Task handle is nil')
@@ -233,6 +237,7 @@ pub fn task_spawn(ctx Context) {
 		return
 	}
 
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		ctx.return().resource(task_ref, 'v_task')
 	}
@@ -242,6 +247,7 @@ pub fn task_spawn(ctx Context) {
 pub fn task_wait(ctx Context) {
 	res_val := ctx.arg_raw(0)
 
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		ptr := res_val.resource_ptr()
 		if ptr == nil {

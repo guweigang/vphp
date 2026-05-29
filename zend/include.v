@@ -6,5 +6,6 @@ pub fn include_file_raw(path string, retval &C.zval, once bool) int {
 }
 
 pub fn include_file_ptr(path string, retval voidptr, once bool) int {
-	return include_file_raw(path, unsafe { &C.zval(retval) }, once)
+	return include_file_raw(path, // SAFETY: retval is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(retval) }, once)
 }

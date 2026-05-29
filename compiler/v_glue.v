@@ -9,7 +9,7 @@ pub:
 	ext_name       string
 	globals_repr   repr.PhpGlobalsRepr
 	params_structs map[string]repr.PhpParamsStruct
-	table          &ast.Table = unsafe { nil }
+	table          &ast.Table = unsafe { nil } // SAFETY: nil literal in unsafe context
 }
 
 struct VGlueEmissionPlan {
@@ -131,7 +131,8 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 			c_name := lookup_items[name]
 			lookup_block << '        \'${name}\' { C.${c_name}_ce }'
 		}
-		lookup_block << '        else { unsafe { nil } }'
+		lookup_block << '        else { // SAFETY: nil literal in unsafe context
+	unsafe { nil } }'
 		lookup_block << '    }'
 		lookup_block << '}'
 		plan.glue_blocks << lookup_block.join('\n')

@@ -4,6 +4,7 @@ import vphp.object
 
 // Preserve V default field initialization for generated PHP classes.
 pub fn generic_new_raw[T]() voidptr {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		ptr := &T{}
 		object.register_root(ptr)
@@ -17,6 +18,7 @@ pub fn generic_free_raw[T](ptr voidptr) {
 		return
 	}
 	object.unregister_root(ptr)
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		mut obj := &T(ptr)
 		$for field in T.fields {

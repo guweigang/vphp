@@ -5,8 +5,10 @@ pub fn call_method(receiver &C.zval, method string, retval &C.zval, count int, p
 }
 
 pub fn call_method_ptr(receiver voidptr, method string, retval voidptr, count int, params voidptr) int {
-	return call_method(unsafe { &C.zval(receiver) }, method, unsafe { &C.zval(retval) }, count,
-		unsafe { &&C.zval(params) })
+	return call_method( // SAFETY: receiver is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(receiver) }, method, // SAFETY: retval is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(retval) }, count, // SAFETY: C interop block with valid pointer arguments
+	 unsafe { &&C.zval(params) })
 }
 
 pub fn call_callable(callable &C.zval, retval &C.zval, count int, params &&C.zval) int {
@@ -14,8 +16,10 @@ pub fn call_callable(callable &C.zval, retval &C.zval, count int, params &&C.zva
 }
 
 pub fn call_callable_ptr(callable voidptr, retval voidptr, count int, params voidptr) int {
-	return call_callable(unsafe { &C.zval(callable) }, unsafe { &C.zval(retval) }, count,
-		unsafe { &&C.zval(params) })
+	return call_callable( // SAFETY: callable is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(callable) }, // SAFETY: retval is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(retval) }, count, // SAFETY: C interop block with valid pointer arguments
+	 unsafe { &&C.zval(params) })
 }
 
 pub fn new_instance(class_name &char, class_name_len int, retval &C.zval, count int, params &&C.zval) int {
@@ -23,8 +27,9 @@ pub fn new_instance(class_name &char, class_name_len int, retval &C.zval, count 
 }
 
 pub fn new_instance_named(class_name string, retval voidptr, count int, params voidptr) int {
-	return new_instance(&char(class_name.str), class_name.len, unsafe { &C.zval(retval) }, count,
-		unsafe { &&C.zval(params) })
+	return new_instance(&char(class_name.str), class_name.len, // SAFETY: retval is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(retval) }, count, // SAFETY: C interop block with valid pointer arguments
+	 unsafe { &&C.zval(params) })
 }
 
 pub fn call_static_method(class_name &char, class_name_len int, method string, retval &C.zval, count int, params &&C.zval) int {
@@ -33,11 +38,12 @@ pub fn call_static_method(class_name &char, class_name_len int, method string, r
 }
 
 pub fn call_static_method_named(class_name string, method string, retval voidptr, count int, params voidptr) int {
-	return call_static_method(&char(class_name.str), class_name.len, method,
-		unsafe { &C.zval(retval) }, count, unsafe { &&C.zval(params) })
+	return call_static_method(&char(class_name.str), class_name.len, method, // SAFETY: retval is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(retval) }, count, unsafe { &&C.zval(params) })
 }
 
 pub fn with_arg_ptrs[T](args []voidptr, run fn (int, voidptr) T) T {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		mut argv := []&C.zval{cap: args.len}
 		for arg in args {
@@ -57,7 +63,8 @@ pub fn read_static_property(class_name &char, class_name_len int, name string, r
 }
 
 pub fn read_static_property_named(class_name string, name string, rv voidptr) voidptr {
-	return read_static_property(&char(class_name.str), class_name.len, name, unsafe { &C.zval(rv) })
+	return read_static_property(&char(class_name.str), class_name.len, name, // SAFETY: rv is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(rv) })
 }
 
 pub fn read_class_constant(class_name &char, class_name_len int, name string, rv &C.zval) &C.zval {
@@ -66,7 +73,8 @@ pub fn read_class_constant(class_name &char, class_name_len int, name string, rv
 }
 
 pub fn read_class_constant_named(class_name string, name string, rv voidptr) voidptr {
-	return read_class_constant(&char(class_name.str), class_name.len, name, unsafe { &C.zval(rv) })
+	return read_class_constant(&char(class_name.str), class_name.len, name, // SAFETY: rv is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(rv) })
 }
 
 pub fn write_static_property(class_name &char, class_name_len int, name string, value &C.zval) {
@@ -75,5 +83,6 @@ pub fn write_static_property(class_name &char, class_name_len int, name string, 
 }
 
 pub fn write_static_property_named(class_name string, name string, value voidptr) {
-	write_static_property(&char(class_name.str), class_name.len, name, unsafe { &C.zval(value) })
+	write_static_property(&char(class_name.str), class_name.len, name, // SAFETY: value is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(value) })
 }

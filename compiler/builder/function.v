@@ -9,7 +9,7 @@ pub mut:
 	return_spec  ReturnSpec
 	args         []ClassMethodArg // reuse ClassMethodArg for function args
 	uses_context bool
-	table        &ast.Table = unsafe { nil }
+	table        &ast.Table = unsafe { nil } // SAFETY: nil literal in unsafe context
 }
 
 pub fn new_func_builder(php_name string, c_func string) &FuncBuilder {

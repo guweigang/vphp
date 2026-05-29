@@ -388,8 +388,10 @@ pub fn (ret PhpReturn) v[T](val T) {
 							v_name = v_name.all_after_last('.')
 						}
 						ce := unsafe { vphp_get_class_entry_fn(v_name) }
-						if ce != unsafe { nil } {
+						if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
+						  {
 							mut layout := SumTypeLayout{}
+							// SAFETY: C interop block with valid pointer arguments
 							unsafe {
 								C.memcpy(&layout, &val, sizeof(SumTypeLayout))
 							}
@@ -410,10 +412,12 @@ pub fn (ret PhpReturn) v[T](val T) {
 									v_name = v_name.all_after_last('.')
 								}
 								ce := unsafe { vphp_get_class_entry_fn(v_name) }
-								if ce != unsafe { nil } {
+								if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
+								  {
 									case_zo := C.vphp_zend_enum_get_case(ce,
 										&char(enum_case.name.str), enum_case.name.len)
-									if case_zo != unsafe { nil } {
+									if case_zo != unsafe { nil } // SAFETY: nil literal in unsafe context
+									  {
 										mut out := ret.to_zval()
 										C.vphp_zval_set_object_copy(out.raw_ptr(), case_zo)
 										return

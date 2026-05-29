@@ -20,7 +20,8 @@ pub fn DynValue.from_zval(z ZVal) !DynValue {
 	if z.is_array() {
 		mut out := map[string]DynValue{}
 		mut err_msg := ''
-		z.foreach_with_ctx[voidptr](unsafe { &mut out }, fn [mut err_msg] (key ZVal, v ZVal, mut ctx voidptr) {
+		z.foreach_with_ctx[voidptr]( // SAFETY: mutable reference to local variable out
+		 unsafe { &mut out }, fn [mut err_msg] (key ZVal, v ZVal, mut ctx voidptr) {
 			if err_msg != '' {
 				return
 			}
@@ -81,16 +82,19 @@ pub fn (v DynValue) to_zval(mut out ZVal) ! {
 			out.set_null()
 		}
 		.bool_ {
+			// SAFETY: C interop block with valid pointer arguments
 			unsafe {
 				out.set_bool(v.data.b)
 			}
 		}
 		.int_ {
+			// SAFETY: C interop block with valid pointer arguments
 			unsafe {
 				out.set_int(v.data.i)
 			}
 		}
 		.float_ {
+			// SAFETY: C interop block with valid pointer arguments
 			unsafe {
 				out.set_double(v.data.f)
 			}

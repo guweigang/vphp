@@ -16,12 +16,14 @@ __global (
 )
 
 fn init() {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		vphp_get_class_entry_fn = nil
 	}
 }
 
 pub fn register_class_entry_lookup(f GetClassEntryFn) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		vphp_get_class_entry_fn = f
 	}
@@ -74,11 +76,13 @@ pub fn (v ZVal) to_v[T]() !T {
 				v_name = v_name.all_after_last('.')
 			}
 			ce := unsafe { vphp_get_class_entry_fn(v_name) }
-			if ce != unsafe { nil } {
+			if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
+			  {
 				zend_obj := ZendObject.from_zval(v)
 				if C.vphp_object_is_instance_of(zend_obj.raw_ptr(), ce) {
 					ptr := zend_obj.bound_v_ptr()
-					if ptr != unsafe { nil } {
+					if ptr != unsafe { nil } // SAFETY: nil literal in unsafe context
+					  {
 						return unsafe { *(&T(ptr)) }
 					}
 				}
@@ -310,17 +314,20 @@ pub fn (v ZVal) to_v[T]() !T {
 						v_name = v_name.all_after_last('.')
 					}
 					ce := unsafe { vphp_get_class_entry_fn(v_name) }
-					if ce != unsafe { nil } {
+					if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
+					  {
 						zend_obj := ZendObject.from_zval(v)
 						eq := C.vphp_object_is_instance_of(zend_obj.raw_ptr(), ce)
 						if eq {
 							ptr := zend_obj.bound_v_ptr()
-							if ptr != unsafe { nil } {
+							if ptr != unsafe { nil } // SAFETY: nil literal in unsafe context
+							  {
 								mut layout := SumTypeLayout{
 									typ: variant.typ
 									ptr: ptr
 								}
 								mut res := T{}
+								// SAFETY: C interop block with valid pointer arguments
 								unsafe {
 									C.memcpy(&res, &layout, sizeof(T))
 								}

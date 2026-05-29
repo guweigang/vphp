@@ -169,6 +169,7 @@ pub fn PersistentOwnedZBox.release_all(mut list []PersistentOwnedZBox) {
 	for i in 0 .. list.len {
 		list[i].release()
 	}
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		list.free()
 	}

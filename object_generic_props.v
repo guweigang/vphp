@@ -6,6 +6,7 @@ module vphp
 
 // Generic property reader used by generated PHP class handlers.
 pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		name := PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
 		ret := PhpObjectPropertyHandler.return_from_ptr(rv)
@@ -32,6 +33,7 @@ pub fn generic_get_prop[T](ptr voidptr, name_ptr &char, name_len int, rv &C.zval
 
 // Generic property writer used by generated PHP class handlers.
 pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.zval) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		name := PhpObjectPropertyHandler.name_from_ptr(name_ptr, name_len)
 		mut obj := &T(ptr)
@@ -57,6 +59,7 @@ pub fn generic_set_prop[T](ptr voidptr, name_ptr &char, name_len int, value &C.z
 
 // Generic property sync used before PHP-side object inspection such as var_dump().
 pub fn generic_sync_props[T](ptr voidptr, zv &C.zval) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		obj := &T(ptr)
 		out := PhpObjectPropertyHandler.value_from_ptr(zv)

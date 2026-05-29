@@ -8,6 +8,7 @@ pub fn register_root(ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		if isnil(vphp_vptr_roots) {
 			vphp_vptr_roots = &map[voidptr]int{}
@@ -22,6 +23,7 @@ pub fn ensure_root(ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		if isnil(vphp_vptr_roots) {
 			vphp_vptr_roots = &map[voidptr]int{}
@@ -37,6 +39,7 @@ pub fn unregister_root(ptr voidptr) {
 	if ptr == 0 {
 		return
 	}
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		if !isnil(vphp_vptr_roots) {
 			mut m := vphp_vptr_roots

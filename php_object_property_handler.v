@@ -5,6 +5,7 @@ import vphp.zval
 pub struct PhpObjectPropertyHandler {}
 
 pub fn PhpObjectPropertyHandler.name_from_ptr(name_ptr &char, name_len int) string {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		return name_ptr.vstring_with_len(name_len).clone()
 	}

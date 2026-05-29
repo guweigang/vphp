@@ -75,6 +75,7 @@ pub type ForeachCb = fn (key ZVal, val ZVal)
 // Zend invokes this trampoline with raw zval pointers; keep raw types here and
 // wrap them immediately into ZVal before invoking user callbacks.
 fn vphp_foreach_wrapper(ctx voidptr, key &C.zval, val &C.zval) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		cb := *(&ForeachCb(ctx))
 		cb(ZVal.from_handle(zval.Handle.from_ptr(key)), ZVal.from_handle(zval.Handle.from_ptr(val)))
@@ -98,6 +99,7 @@ pub type ForeachWithCtxCb[T] = fn (key ZVal, val ZVal, mut ctx T)
 
 // Generic version of the same Zend foreach callback boundary above.
 fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		mut pack := &ForeachPack[T](ctx)
 		cb := pack.cb
@@ -107,7 +109,7 @@ fn vphp_foreach_with_ctx_wrapper[T](ctx voidptr, key &C.zval, val &C.zval) {
 }
 
 struct ForeachPack[T] {
-	cb ForeachWithCtxCb[T] = unsafe { nil }
+	cb ForeachWithCtxCb[T] = unsafe { nil } // SAFETY: nil literal in unsafe context
 mut:
 	ctx T
 }

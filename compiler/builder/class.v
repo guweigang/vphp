@@ -72,7 +72,7 @@ pub mut:
 	constants             []ClassConstant
 	methods               []ClassMethod
 	attributes            []ClassAttribute
-	table                 &ast.Table = unsafe { nil }
+	table                 &ast.Table = unsafe { nil } // SAFETY: nil literal in unsafe context
 	v_name                string
 }
 
@@ -347,7 +347,8 @@ fn arg_type_info(v_type string, table &ast.Table) ArgTypeInfo {
 	decl := parse_php_type_decl(v_type)
 	clean := decl.clean
 	allow_null := decl.allow_null
-	if table != unsafe { nil } {
+	if table != unsafe { nil } // SAFETY: nil literal in unsafe context
+	  {
 		if sym := table.find_sym(clean) {
 			if sym.kind == .sum_type {
 				mut masks := []string{}

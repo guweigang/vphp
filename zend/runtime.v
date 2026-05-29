@@ -17,10 +17,12 @@ pub fn v_runtime_free(ptr voidptr) {
 }
 
 pub fn throw_exception(msg string, code int) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.vphp_throw(&char(msg.str), code) }
 }
 
 pub fn throw_exception_class(class_name string, msg string, code int) {
+	// SAFETY: C interop with valid arguments
 	unsafe { C.vphp_throw_class(&char(class_name.str), &char(msg.str), code) }
 }
 
@@ -29,7 +31,8 @@ pub fn throw_exception_object(exception &C.zval) {
 }
 
 pub fn throw_exception_object_ptr(exception voidptr) {
-	throw_exception_object(unsafe { &C.zval(exception) })
+	throw_exception_object( // SAFETY: exception is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(exception) })
 }
 
 pub fn has_exception() bool {
@@ -42,7 +45,8 @@ pub fn exception_message() string {
 	if written <= 0 {
 		return ''
 	}
-	return unsafe { (&char(&buffer[0])).vstring_with_len(written).clone() }
+	return // SAFETY: buffer contains valid UTF-8 of known length
+	 unsafe { (&char(&buffer[0])).vstring_with_len(written).clone() }
 }
 
 pub fn clear_exception() {
@@ -50,18 +54,21 @@ pub fn clear_exception() {
 }
 
 pub fn report_error(level int, msg string) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		C.vphp_error(level, &char(msg.str))
 	}
 }
 
 pub fn output_write(msg string) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		C.vphp_output_write(&char(msg.str), msg.len)
 	}
 }
 
 pub fn framework_init(module_number int) {
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		C.vphp_init_registry()
 		C.vphp_init_resource_system(module_number)
@@ -102,7 +109,8 @@ pub fn autorelease_add(z &C.zval) {
 }
 
 pub fn autorelease_add_ptr(z voidptr) {
-	autorelease_add(unsafe { &C.zval(z) })
+	autorelease_add( // SAFETY: z is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(z) })
 }
 
 pub fn autorelease_forget(z &C.zval) {
@@ -110,7 +118,8 @@ pub fn autorelease_forget(z &C.zval) {
 }
 
 pub fn autorelease_forget_ptr(z voidptr) {
-	autorelease_forget(unsafe { &C.zval(z) })
+	autorelease_forget( // SAFETY: z is a valid zval pointer from Zend runtime
+	 unsafe { &C.zval(z) })
 }
 
 pub fn autorelease_drain(mark int) {

@@ -11,7 +11,8 @@ pub fn (v ZVal) make_resource(ptr voidptr, label string) {
 
 pub fn (v ZVal) resource_ptr() voidptr {
 	if !v.is_valid() || !v.is_resource() {
-		return unsafe { nil }
+		return // SAFETY: nil literal in unsafe context
+		 unsafe { nil }
 	}
 	return zval.resource_ptr(v.handle())
 }

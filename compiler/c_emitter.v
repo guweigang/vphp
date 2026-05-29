@@ -9,7 +9,7 @@ pub:
 	ext_name          string
 	class_ce_by_type  map[string]string
 	class_php_by_type map[string]string
-	table             &ast.Table = unsafe { nil }
+	table             &ast.Table = unsafe { nil } // SAFETY: nil literal in unsafe context
 }
 
 fn (g CGenerator) build_func_export(f &repr.PhpFuncRepr) builder.ExportFragments {

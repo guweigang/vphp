@@ -7,6 +7,7 @@ import vphp.zend
 @[inline]
 fn save_closure_value[T](v_cb T) voidptr {
 	mut saved_cb := unsafe { &T(zend.emalloc(usize(sizeof(T)))) }
+	// SAFETY: C interop block with valid pointer arguments
 	unsafe {
 		*saved_cb = v_cb
 	}

@@ -5,7 +5,8 @@ pub fn execute_num_args(ex &C.zend_execute_data) int {
 }
 
 pub fn execute_num_args_ptr(ex voidptr) int {
-	return execute_num_args(unsafe { &C.zend_execute_data(ex) })
+	return execute_num_args( // SAFETY: ex is a valid zend_execute_data pointer
+	 unsafe { &C.zend_execute_data(ex) })
 }
 
 pub fn execute_arg(ex &C.zend_execute_data, index int) &C.zval {
@@ -13,7 +14,8 @@ pub fn execute_arg(ex &C.zend_execute_data, index int) &C.zval {
 }
 
 pub fn execute_arg_ptr(ex voidptr, index int) voidptr {
-	return execute_arg(unsafe { &C.zend_execute_data(ex) }, index)
+	return execute_arg( // SAFETY: ex is a valid zend_execute_data pointer
+	 unsafe { &C.zend_execute_data(ex) }, index)
 }
 
 pub fn execute_active_class(ex &C.zend_execute_data) voidptr {
@@ -21,7 +23,8 @@ pub fn execute_active_class(ex &C.zend_execute_data) voidptr {
 }
 
 pub fn execute_active_class_ptr(ex voidptr) voidptr {
-	return execute_active_class(unsafe { &C.zend_execute_data(ex) })
+	return execute_active_class( // SAFETY: ex is a valid zend_execute_data pointer
+	 unsafe { &C.zend_execute_data(ex) })
 }
 
 pub fn execute_this_object(ex &C.zend_execute_data) voidptr {
@@ -29,5 +32,6 @@ pub fn execute_this_object(ex &C.zend_execute_data) voidptr {
 }
 
 pub fn execute_this_object_ptr(ex voidptr) voidptr {
-	return execute_this_object(unsafe { &C.zend_execute_data(ex) })
+	return execute_this_object( // SAFETY: ex is a valid zend_execute_data pointer
+	 unsafe { &C.zend_execute_data(ex) })
 }
