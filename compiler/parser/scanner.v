@@ -4,11 +4,9 @@ import v.ast
 import compiler.repr
 
 // parse_structural_elements 扫描并提取所有结构要素（Interface, Enum, globals Struct, 普通 Struct）
-pub fn parse_structural_elements(
-	all_stmts []ast.Stmt,
+pub fn parse_structural_elements(all_stmts []ast.Stmt,
 	table &ast.Table,
-	decl_modules map[string]string
-) !( []repr.PhpRepr, repr.PhpGlobalsRepr ) {
+	decl_modules map[string]string) !([]repr.PhpRepr, repr.PhpGlobalsRepr) {
 	mut elements := []repr.PhpRepr{}
 	mut globals_repr := repr.PhpGlobalsRepr{}
 
@@ -49,16 +47,14 @@ pub fn parse_structural_elements(
 }
 
 // parse_behavioral_elements 扫描并挂载行为要素（普通函数, 类方法, 静态方法, 常量, 并发任务）
-pub fn parse_behavioral_elements(
-	all_stmts []ast.Stmt,
+pub fn parse_behavioral_elements(all_stmts []ast.Stmt,
 	table &ast.Table,
 	decl_modules map[string]string,
 	mut elements []repr.PhpRepr,
 	field_types map[string]string,
 	params_structs map[string]repr.PhpParamsStruct,
 	resolved_borrowed map[string]bool,
-	method_return_types map[string]string
-) ! {
+	method_return_types map[string]string) ! {
 	mut class_index := map[string]int{}
 	for idx, el in elements {
 		if el is repr.PhpClassRepr {
@@ -74,8 +70,8 @@ pub fn parse_behavioral_elements(
 					idx := class_index[receiver_type]
 					mut el := elements[idx]
 					if mut el is repr.PhpClassRepr {
-						add_class_method(mut el, stmt, table, field_types,
-							resolved_borrowed, method_return_types, params_structs)
+						add_class_method(mut el, stmt, table, field_types, resolved_borrowed,
+							method_return_types, params_structs)
 						elements[idx] = el
 					}
 					continue

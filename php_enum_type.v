@@ -180,4 +180,3 @@ pub fn (c PhpEnumCase) value() ?PhpValue {
 	}
 	return PhpValue.from_zval(raw)
 }
-

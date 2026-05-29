@@ -97,13 +97,20 @@ fn (field ClassPropertyFieldBinding) is_syncable() bool {
 		return true
 	}
 	return prop.v_type in [
-		'PhpValue', 'vphp.PhpValue',
-		'PhpObject', 'vphp.PhpObject',
-		'PhpString', 'vphp.PhpString',
-		'PhpInt', 'vphp.PhpInt',
-		'PhpBool', 'vphp.PhpBool',
-		'PhpDouble', 'vphp.PhpDouble',
-		'PhpArray', 'vphp.PhpArray'
+		'PhpValue',
+		'vphp.PhpValue',
+		'PhpObject',
+		'vphp.PhpObject',
+		'PhpString',
+		'vphp.PhpString',
+		'PhpInt',
+		'vphp.PhpInt',
+		'PhpBool',
+		'vphp.PhpBool',
+		'PhpDouble',
+		'vphp.PhpDouble',
+		'PhpArray',
+		'vphp.PhpArray',
 	]
 }
 
@@ -119,21 +126,29 @@ fn (field ClassPropertyFieldBinding) getter_lines() []string {
 fn (field ClassPropertyFieldBinding) getter_expr() ?string {
 	prop := field.prop
 	return match prop.v_type {
-		'string' { 'ret.v[string](obj.${prop.v_field_name})' }
-		'int' { 'ret.v[i64](i64(obj.${prop.v_field_name}))' }
-		'i64' { 'ret.v[i64](obj.${prop.v_field_name})' }
-		'bool' { 'ret.v[bool](obj.${prop.v_field_name})' }
-		'f64' { 'ret.v[f64](obj.${prop.v_field_name})' }
-		'PhpValue', 'vphp.PhpValue',
-		'PhpObject', 'vphp.PhpObject',
-		'PhpString', 'vphp.PhpString',
-		'PhpInt', 'vphp.PhpInt',
-		'PhpBool', 'vphp.PhpBool',
-		'PhpDouble', 'vphp.PhpDouble',
+		'string' {
+			'ret.v[string](obj.${prop.v_field_name})'
+		}
+		'int' {
+			'ret.v[i64](i64(obj.${prop.v_field_name}))'
+		}
+		'i64' {
+			'ret.v[i64](obj.${prop.v_field_name})'
+		}
+		'bool' {
+			'ret.v[bool](obj.${prop.v_field_name})'
+		}
+		'f64' {
+			'ret.v[f64](obj.${prop.v_field_name})'
+		}
+		'PhpValue', 'vphp.PhpValue', 'PhpObject', 'vphp.PhpObject', 'PhpString', 'vphp.PhpString',
+		'PhpInt', 'vphp.PhpInt', 'PhpBool', 'vphp.PhpBool', 'PhpDouble', 'vphp.PhpDouble',
 		'PhpArray', 'vphp.PhpArray' {
 			'ret.v[${prop.v_type}](obj.${prop.v_field_name})'
 		}
-		else { none }
+		else {
+			none
+		}
 	}
 }
 
@@ -171,11 +186,21 @@ fn (field ClassPropertyFieldBinding) setter_lines() []string {
 fn (field ClassPropertyFieldBinding) setter_expr() ?string {
 	prop := field.prop
 	return match prop.v_type {
-		'string' { 'obj.${prop.v_field_name} = arg.get_string()' }
-		'int' { 'obj.${prop.v_field_name} = int(arg.get_int())' }
-		'i64' { 'obj.${prop.v_field_name} = arg.get_int()' }
-		'bool' { 'obj.${prop.v_field_name} = arg.get_bool()' }
-		'f64' { 'obj.${prop.v_field_name} = arg.to_f64()' }
+		'string' {
+			'obj.${prop.v_field_name} = arg.get_string()'
+		}
+		'int' {
+			'obj.${prop.v_field_name} = int(arg.get_int())'
+		}
+		'i64' {
+			'obj.${prop.v_field_name} = arg.get_int()'
+		}
+		'bool' {
+			'obj.${prop.v_field_name} = arg.get_bool()'
+		}
+		'f64' {
+			'obj.${prop.v_field_name} = arg.to_f64()'
+		}
 		else {
 			match clean_type(prop.v_type) {
 				'PhpValue' { 'obj.${prop.v_field_name} = vphp.PhpValue.from_zval(arg).retain()' }
@@ -243,16 +268,26 @@ fn (field ClassPropertyFieldBinding) sync_lines() []string {
 fn (field ClassPropertyFieldBinding) sync_expr() ?string {
 	prop := field.prop
 	return match prop.v_type {
-		'string' { "out.add_property_string('${prop.name}', obj.${prop.v_field_name})" }
-		'int', 'i64' { "out.add_property_long('${prop.name}', i64(obj.${prop.v_field_name}))" }
-		'f64' { "out.add_property_double('${prop.name}', obj.${prop.v_field_name})" }
-		'bool' { "out.add_property_bool('${prop.name}', obj.${prop.v_field_name})" }
+		'string' {
+			"out.add_property_string('${prop.name}', obj.${prop.v_field_name})"
+		}
+		'int', 'i64' {
+			"out.add_property_long('${prop.name}', i64(obj.${prop.v_field_name}))"
+		}
+		'f64' {
+			"out.add_property_double('${prop.name}', obj.${prop.v_field_name})"
+		}
+		'bool' {
+			"out.add_property_bool('${prop.name}', obj.${prop.v_field_name})"
+		}
 		else {
 			match clean_type(prop.v_type) {
 				'PhpValue', 'PhpObject', 'PhpString', 'PhpInt', 'PhpBool', 'PhpDouble', 'PhpArray' {
 					"out.set_prop('${prop.name}', obj.${prop.v_field_name}.to_zval())"
 				}
-				else { none }
+				else {
+					none
+				}
 			}
 		}
 	}

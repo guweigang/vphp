@@ -26,8 +26,8 @@ pub mut:
 
 pub fn new_module_builder(ext_name string, version string, description string) &ModuleBuilder {
 	return &ModuleBuilder{
-		ext_name: ext_name
-		version: if version != '' { version } else { '1.0.0' }
+		ext_name:    ext_name
+		version:     if version != '' { version } else { '1.0.0' }
 		description: description
 	}
 }
@@ -86,10 +86,11 @@ pub fn (b &ModuleBuilder) render_globals_struct() string {
 			'bool' { 'zend_bool' }
 			else { 'void*' }
 		}
+
 		res.write_string('    ${c_type} ${field.name};\n')
 	}
 	res.write_string('ZEND_END_MODULE_GLOBALS(${b.ext_name})\n\n')
-	
+
 	res.write_string('ZEND_DECLARE_MODULE_GLOBALS(${b.ext_name})\n')
 	res.write_string('#define VPHP_G(v) ZEND_MODULE_GLOBALS_ACCESSOR(${b.ext_name}, v)\n')
 	return res.str()
@@ -121,7 +122,7 @@ pub fn (b &ModuleBuilder) render_minit() string {
 	res.write_string('    vphp_framework_init(module_number);\n')
 	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_auto_startup");\n')
 	res.write_string('    vphp_call_optional_void_symbol("vphp_ext_startup");\n')
-	
+
 	if b.ini_entries.len > 0 {
 		res.write_string('    REGISTER_INI_ENTRIES();\n')
 	}
@@ -195,7 +196,7 @@ pub fn (b &ModuleBuilder) render_module_entry() string {
 	mut res := strings.new_builder(512)
 	mshutdown := 'PHP_MSHUTDOWN(${b.ext_name})'
 	ginit := if b.globals.name != '' { 'php_${b.ext_name}_init_globals' } else { 'NULL' }
-	
+
 	res.write_string('zend_module_entry ${b.ext_name}_module_entry = {\n')
 	res.write_string('    STANDARD_MODULE_HEADER, "${b.ext_name}", ${b.ext_name}_functions,\n')
 	res.write_string('    PHP_MINIT(${b.ext_name}), ${mshutdown}, PHP_RINIT(${b.ext_name}), PHP_RSHUTDOWN(${b.ext_name}), PHP_MINFO(${b.ext_name}), "${b.version}",\n')
@@ -219,8 +220,8 @@ ZEND_GET_MODULE(${b.ext_name})
 
 // 渲染供 V 调用的全局变量获取器
 pub fn (b &ModuleBuilder) render_globals_getter() string {
-    if b.globals.name == '' { return '' }
-    return '
+	if b.globals.name == '' { return '' }
+	return '
 void* vphp_get_active_globals() {
 #ifdef ZTS
     return TSRMG(${b.ext_name}_globals_id, zend_${b.ext_name}_globals *, 0);

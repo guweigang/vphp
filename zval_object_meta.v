@@ -72,8 +72,8 @@ pub fn (v ZVal) is_subclass_of(name string) bool {
 	if !v.is_valid() {
 		return false
 	}
-	return PhpFunction.named('is_subclass_of').result_bool(PhpValue.from_zval(v), PhpString.of(name),
-		PhpBool.of(true))
+	return PhpFunction.named('is_subclass_of').result_bool(PhpValue.from_zval(v),
+		PhpString.of(name), PhpBool.of(true))
 }
 
 pub fn (v ZVal) implements_interface(name string) bool {
@@ -94,7 +94,8 @@ pub fn (v ZVal) property_exists(name string) bool {
 	if !v.is_valid() {
 		return false
 	}
-	return PhpFunction.named('property_exists').result_bool(PhpValue.from_zval(v), PhpString.of(name))
+	return PhpFunction.named('property_exists').result_bool(PhpValue.from_zval(v),
+		PhpString.of(name))
 }
 
 pub fn (v ZVal) method_names() []string {

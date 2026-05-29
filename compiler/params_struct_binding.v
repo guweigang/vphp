@@ -58,7 +58,9 @@ fn (binding ParamsStructFieldBinding) render_lines(returns_voidptr bool) []strin
 	read := binding.read()
 	value_expr := read.direct_expr() or { read.v_expr() }
 	default_expr := binding.arg.source.params_v_default
-	if semantic_lines := read.semantic_or_default_lines(binding.var_name, default_expr, returns_voidptr) {
+	if semantic_lines := read.semantic_or_default_lines(binding.var_name, default_expr,
+		returns_voidptr)
+	{
 		return semantic_lines
 	}
 	return [

@@ -105,7 +105,6 @@ pub fn (mut b ClassBuilder) set_v_name(v_name string) &ClassBuilder {
 	return b
 }
 
-
 pub fn (mut b ClassBuilder) set_parent(parent_name string) &ClassBuilder {
 	b.parent = parent_name
 	return b
@@ -524,7 +523,8 @@ pub fn (b &ClassBuilder) render_arginfo_defs() string {
 		for arg in m.args {
 			raw_type := if arg.php_type != '' { arg.php_type } else { arg.type_ }
 			validate_php_arg_type_or_panic(raw_type, arg.name, m.php_name)
-			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, arg.is_variadic, b.table)
+			res << render_arginfo_arg_line(arg.name, raw_type, arg.php_default, arg.is_variadic,
+				b.table)
 		}
 		res << 'ZEND_END_ARG_INFO()'
 	}
@@ -566,6 +566,7 @@ fn (b &ClassBuilder) render_typed_class_constant(ce_ptr string, con ClassConstan
 		'bool' { '_IS_BOOL' }
 		else { '' }
 	}
+
 	if c_type_code == '' {
 		return res
 	}
@@ -630,6 +631,7 @@ fn (b &ClassBuilder) render_typed_property(ce_ptr string, prop ClassProperty) []
 		'IS_TRUE' { 'ZVAL_TRUE(&default_val);' }
 		else { 'ZVAL_NULL(&default_val);' }
 	}
+
 	res << '        {'
 	res << '            zval default_val;'
 	res << '            ${default_init}'
@@ -637,4 +639,3 @@ fn (b &ClassBuilder) render_typed_property(ce_ptr string, prop ClassProperty) []
 	res << '        }'
 	return res
 }
-

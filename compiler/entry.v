@@ -43,7 +43,9 @@ pub fn (mut c Compiler) compile() !string {
 			return error('AST 解析失败: ${file_ast.errors[0].message} in ${file}')
 		}
 		if c.ext_name == '' {
-			if name, version, description, ini_entries := cparser.parse_extension_meta(file_ast, c.table) {
+			if name, version, description, ini_entries := cparser.parse_extension_meta(file_ast,
+				c.table)
+			{
 				c.ext_name = name
 				c.ext_version = version
 				c.ext_description = description
@@ -65,19 +67,12 @@ pub fn (mut c Compiler) compile() !string {
 	method_return_types := linker.collect_method_return_types(all_stmts, c.table, field_types)
 
 	// --- 第一阶段：扫描所有 Struct 定义 ---
-	c.elements, c.globals_repr = cparser.parse_structural_elements(all_stmts, c.table, c.decl_modules)!
+	c.elements, c.globals_repr = cparser.parse_structural_elements(all_stmts, c.table,
+		c.decl_modules)!
 
 	// --- 第二阶段：扫描所有 Fn 定义 ---
-	cparser.parse_behavioral_elements(
-		all_stmts,
-		c.table,
-		c.decl_modules,
-		mut c.elements,
-		field_types,
-		params_structs,
-		resolved_borrowed,
-		method_return_types
-	)!
+	cparser.parse_behavioral_elements(all_stmts, c.table, c.decl_modules, mut c.elements,
+		field_types, params_structs, resolved_borrowed, method_return_types)!
 
 	linker.link_class_shadows(mut c.elements, c.table)
 	linker.resolve_and_apply_borrow_returns(mut c.elements, all_stmts, c.table, field_types)

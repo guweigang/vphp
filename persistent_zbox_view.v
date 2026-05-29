@@ -15,6 +15,7 @@ pub fn (v PersistentOwnedZBox) to_string() string {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -29,6 +30,7 @@ pub fn (v PersistentOwnedZBox) to_string_list() []string {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -43,6 +45,7 @@ pub fn (v PersistentOwnedZBox) to_string_map() map[string]string {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -57,6 +60,7 @@ pub fn (v PersistentOwnedZBox) resource_type() ?string {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -71,6 +75,7 @@ pub fn (v PersistentOwnedZBox) stream_metadata() ?StreamMetadata {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -85,6 +90,7 @@ pub fn (v PersistentOwnedZBox) to_bool() bool {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -99,6 +105,7 @@ pub fn (v PersistentOwnedZBox) to_int() int {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -113,6 +120,7 @@ pub fn (v PersistentOwnedZBox) to_i64() i64 {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -127,6 +135,7 @@ pub fn (v PersistentOwnedZBox) to_f64() f64 {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()

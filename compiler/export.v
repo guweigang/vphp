@@ -53,8 +53,6 @@ fn (c Compiler) collect_type_fragments() builder.ExportFragments {
 	return fragments
 }
 
-
-
 // ==========================================
 // 1. 总入口：由外部 build.v 调用
 // ==========================================

@@ -144,7 +144,9 @@ fn (binding PhpArgBinding) call_name() string {
 				binding.var_name
 			}
 		}
-		.params_struct { binding.params_struct.call_name() }
+		.params_struct {
+			binding.params_struct.call_name()
+		}
 	}
 }
 
@@ -253,7 +255,7 @@ fn (binding PhpSingleArgBinding) render_ref_object_lines(returns_voidptr bool) ?
 		read := binding.read()
 		return [
 			'    ${binding.var_name}_ptr := ${read.arg_expr()}.to_v_ptr[${clean_type}]() or {',
-			"        vphp.throw_exception('argument ${binding.index} must be object bound to ${clean_type}, got \' + ${read.arg_expr()}.zval().type_name(), 0)",
+			'        vphp.throw_exception(\'argument ${binding.index} must be object bound to ${clean_type}, got \' + ${read.arg_expr()}.zval().type_name(), 0)',
 			'        ${arg_return_stmt(returns_voidptr)}',
 			'    }',
 			'    ${binding.var_name} := unsafe { &${clean_type}(${binding.var_name}_ptr) }',

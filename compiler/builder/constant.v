@@ -9,7 +9,7 @@ pub:
 
 pub fn new_constant_builder(name string, type_ string, value string) ConstantBuilder {
 	return ConstantBuilder{
-		name: name
+		name:  name
 		type_: type_
 		value: value
 	}

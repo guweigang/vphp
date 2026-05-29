@@ -266,4 +266,3 @@ fn parse_php_attr(raw string) ?repr.PhpAttributeRepr {
 		args: parse_attr_args(args_raw)
 	}
 }
-

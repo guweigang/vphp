@@ -65,6 +65,7 @@ pub fn (v PersistentOwnedZBox) is_callable() bool {
 		}
 		else {}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()
@@ -83,6 +84,7 @@ pub fn (v PersistentOwnedZBox) is_object() bool {
 			return v.z.is_object()
 		}
 	}
+
 	mut temp := v.clone_request_owned()
 	defer {
 		temp.release()

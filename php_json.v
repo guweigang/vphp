@@ -7,11 +7,13 @@ pub fn PhpJson.encode(value ZVal) string {
 }
 
 pub fn PhpJson.encode_with_flags(value ZVal, flags int) string {
-	return PhpFunction.named('json_encode').result_string(PhpValue.from_zval(value), PhpInt.of(flags))
+	return PhpFunction.named('json_encode').result_string(PhpValue.from_zval(value),
+		PhpInt.of(flags))
 }
 
 pub fn PhpJson.decode_assoc(raw string) ZVal {
-	mut result := PhpFunction.named('json_decode').request_owned(PhpString.of(raw), PhpBool.of(true))
+	mut result := PhpFunction.named('json_decode').request_owned(PhpString.of(raw),
+		PhpBool.of(true))
 	return result.take_zval()
 }
 

@@ -181,4 +181,3 @@ pub fn DynValue.resource_ref(res PhpResource) DynValue {
 		}
 	}
 }
-

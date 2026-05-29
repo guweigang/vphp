@@ -95,6 +95,7 @@ pub fn PhpDefaultSpec.from_v_type(v_type string) PhpDefaultSpec {
 		}
 		else {}
 	}
+
 	if clean.starts_with('[]') || clean.starts_with('map[') {
 		return PhpDefaultSpec{
 			v_key:    normalized

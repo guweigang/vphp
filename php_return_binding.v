@@ -383,7 +383,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 			$if variant.typ is $struct {
 				match val {
 					variant.typ {
-						mut v_name := $typeof(variant.typ).name
+						mut v_name := typeof(variant.typ).name
 						if v_name.contains('.') {
 							v_name = v_name.all_after_last('.')
 						}
@@ -405,13 +405,14 @@ pub fn (ret PhpReturn) v[T](val T) {
 					variant.typ {
 						$for enum_case in variant.typ.values {
 							if val == T(enum_case.value) {
-								mut v_name := $typeof(variant.typ).name
+								mut v_name := typeof(variant.typ).name
 								if v_name.contains('.') {
 									v_name = v_name.all_after_last('.')
 								}
 								ce := unsafe { vphp_get_class_entry_fn(v_name) }
 								if ce != unsafe { nil } {
-									case_zo := C.vphp_zend_enum_get_case(ce, &char(enum_case.name.str), enum_case.name.len)
+									case_zo := C.vphp_zend_enum_get_case(ce,
+										&char(enum_case.name.str), enum_case.name.len)
 									if case_zo != unsafe { nil } {
 										mut out := ret.to_zval()
 										C.vphp_zval_set_object_copy(out.raw_ptr(), case_zo)

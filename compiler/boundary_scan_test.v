@@ -185,7 +185,7 @@ fn test_semantic_php_wrappers_do_not_touch_c_boundary_directly() {
 		if !base.starts_with('php_') {
 			continue
 		}
-		if base in ['php_wrapper_interface.v'] {
+		if base == 'php_wrapper_interface.v' {
 			continue
 		}
 		source := read_repo_file(path)

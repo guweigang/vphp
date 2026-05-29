@@ -85,7 +85,7 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 				plan.glue_blocks << g.gen_class_glue(el).join('\n')
 				mut block := []string{}
 				block << 'pub fn (val ${el.name}) php_class_name() string {'
-				block << '    return \'${el.php_name.replace("\'", "\\\'")}\''
+				block << '    return \'${el.php_name.replace("'", "\\'")}\''
 				block << '}'
 				plan.glue_blocks << block.join('\n')
 			}
@@ -98,7 +98,7 @@ fn (g VGenerator) build_emission_plan(mut elements []repr.PhpRepr) VGlueEmission
 			}
 			mut block := []string{}
 			block << 'pub fn (val ${el.name}) php_class_name() string {'
-			block << '    return \'${el.php_name.replace("\'", "\\\'")}\''
+			block << '    return \'${el.php_name.replace("'", "\\'")}\''
 			block << '}'
 			plan.glue_blocks << block.join('\n')
 		} else if mut el is repr.PhpGlobalsRepr {

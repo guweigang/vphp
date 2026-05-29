@@ -48,7 +48,11 @@ fn (g CGenerator) gen_class_c(r &repr.PhpClassRepr) []string {
 fn (g CGenerator) build_class_method_c_glue_plan(r &repr.PhpClassRepr, m repr.PhpMethodRepr, c_class string, uses_inherited_receiver bool) ClassMethodCGluePlan {
 	php_name := php_method_name(m.name)
 	glue_name := if m.v_name != '' { m.v_name } else { m.name }
-	v_c_func := if m.has_export { m.v_c_func } else { 'vphp_wrap_${to_snake_case(r.name)}_${glue_name}' }
+	v_c_func := if m.has_export {
+		m.v_c_func
+	} else {
+		'vphp_wrap_${to_snake_case(r.name)}_${glue_name}'
+	}
 	method_return_type := m.return_spec.effective_v_type()
 	return_info := method_runtime_return_info(r.name, m.name, m.is_static, method_return_type,
 		m.borrowed_return)

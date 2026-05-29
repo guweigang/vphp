@@ -165,4 +165,3 @@ fn to_snake_case_impl(s string) string {
 	}
 	return res.string()
 }
-

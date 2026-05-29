@@ -33,7 +33,8 @@ fn (g CGenerator) build_func(f &repr.PhpFuncRepr) builder.FuncBuilder {
 		}
 	}
 	spec := g.build_func_return_spec(f)
-	mut func_builder := builder.new_func_builder_with_args(f.name, f.name, spec, args, f.uses_context)
+	mut func_builder := builder.new_func_builder_with_args(f.name, f.name, spec, args,
+		f.uses_context)
 	func_builder.table = g.table
 	return *func_builder
 }

@@ -32,7 +32,11 @@ pub fn (v ZVal) from_v[T](value T) ! {
 		}
 		if !has_meta {
 			full_name := typeof[T]().name
-			php_name = if full_name.contains('.') { full_name.all_after_last('.') } else { full_name }
+			php_name = if full_name.contains('.') {
+				full_name.all_after_last('.')
+			} else {
+				full_name
+			}
 		}
 		ce := C.vphp_find_loaded_class_entry(&char(php_name.str), php_name.len)
 		if ce == unsafe { nil } {

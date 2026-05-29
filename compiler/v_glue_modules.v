@@ -63,7 +63,7 @@ pub fn (v_glue VGenerator) generate_modules(elements []repr.PhpRepr, target_file
 			out.write_string(v_glue.gen_class_glue_for_module(class, module_name).join('\n'))
 			out.write_string('\n\n')
 			out.write_string('pub fn (val ${class.name}) php_class_name() string {\n')
-			out.write_string('    return \'${class.php_name.replace("\'", "\\\'")}\'\n')
+			out.write_string('    return \'${class.php_name.replace("'", "\\'")}\'\n')
 			out.write_string('}\n\n')
 		}
 		for func in funcs {
@@ -72,7 +72,7 @@ pub fn (v_glue VGenerator) generate_modules(elements []repr.PhpRepr, target_file
 		}
 		for enum_el in enums {
 			out.write_string('pub fn (val ${enum_el.name}) php_class_name() string {\n')
-			out.write_string('    return \'${enum_el.php_name.replace("\'", "\\\'")}\'\n')
+			out.write_string('    return \'${enum_el.php_name.replace("'", "\\'")}\'\n')
 			out.write_string('}\n\n')
 		}
 		os.write_file(os.join_path(module_dir, 'vphp_bridge.v'), out.str())!
@@ -107,8 +107,8 @@ fn (v_glue VGenerator) module_glue_imports(classes []repr.PhpClassRepr, funcs []
 			imports << v_glue.modules_in_type_ref(prop.v_type, current_module, module_dirs)
 		}
 		for method in class.methods {
-			imports << v_glue.modules_in_type_ref(method.return_spec.effective_v_type(), current_module,
-				module_dirs)
+			imports << v_glue.modules_in_type_ref(method.return_spec.effective_v_type(),
+				current_module, module_dirs)
 			for arg in method.args {
 				imports << v_glue.modules_in_type_ref(arg.v_type, current_module, module_dirs)
 				if arg.source.params_type != '' {

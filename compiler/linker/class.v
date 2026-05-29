@@ -33,10 +33,8 @@ fn php_class_internal_status(name string) int {
 	}
 	tmp_script := os.join_path(os.temp_dir(), 'vphp_internal_class_${rand.u64()}.php')
 	script := "<?php\n\$name = \$argv[1] ?? '';\nif (!class_exists(\$name, false)) { exit(1); }\n\$r = new ReflectionClass(\$name);\nexit(\$r->isInternal() ? 0 : 2);\n"
-	os.write_file(tmp_script, script) or {
-		return -1
-	}
-	cmd := "php ${shell_quote_arg(tmp_script)} ${shell_quote_arg(name)}"
+	os.write_file(tmp_script, script) or { return -1 }
+	cmd := 'php ${shell_quote_arg(tmp_script)} ${shell_quote_arg(name)}'
 	res := os.execute(cmd)
 	os.rm(tmp_script) or {}
 	return res.exit_code
@@ -188,7 +186,8 @@ pub fn validate_inherited_object_classes(elements []repr.PhpRepr) ! {
 			continue
 		}
 		for prop in cls.properties {
-			if prop.is_property_only || prop.is_static || is_inherited_object_safe_property_type(prop.v_type) {
+			if prop.is_property_only || prop.is_static
+				|| is_inherited_object_safe_property_type(prop.v_type) {
 				continue
 			}
 			return error('class `${cls.name}` extends a PHP internal object layout via `${cls.parent}` and cannot embed `${prop.v_type}` field `${prop.v_field_name}` in its V struct; keep complex state in PHP properties and access it through property helpers instead')
@@ -257,12 +256,12 @@ fn link_class_shadow_statics(mut cls repr.PhpClassRepr, elements []repr.PhpRepr,
 				if sym_info is ast.Struct {
 					for field in sym_info.fields {
 						cls.properties << repr.PhpClassPropRepr{
-							name: field.name
+							name:         field.name
 							v_field_name: field.name
-							v_type: table.get_type_name(field.typ)
-							visibility: 'public'
-							is_static: true
-							is_mut: true
+							v_type:       table.get_type_name(field.typ)
+							visibility:   'public'
+							is_static:    true
+							is_mut:       true
 						}
 					}
 				}
@@ -281,10 +280,10 @@ fn link_class_shadow_constants(mut cls repr.PhpClassRepr, elements []repr.PhpRep
 			cls.shadow_const_type = el.v_type
 			for f_name, sub_con in el.fields {
 				cls.constants << repr.PhpClassConstRepr{
-					name: sub_con.name
+					name:         sub_con.name
 					v_field_name: f_name
-					value: sub_con.value
-					const_type: sub_con.const_type
+					value:        sub_con.value
+					const_type:   sub_con.const_type
 				}
 			}
 			break

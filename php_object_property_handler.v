@@ -17,4 +17,3 @@ pub fn PhpObjectPropertyHandler.return_from_ptr(rv voidptr) PhpReturn {
 pub fn PhpObjectPropertyHandler.value_from_ptr(value voidptr) ZVal {
 	return ZVal.from_handle(zval.Handle.from_ptr(value))
 }
-

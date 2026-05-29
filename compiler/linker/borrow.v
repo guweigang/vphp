@@ -15,7 +15,6 @@ pub fn resolve_borrowed_methods(stmts []ast.Stmt, table &ast.Table, field_types 
 	return resolve_method_borrowed_returns(profiles)
 }
 
-
 fn collect_method_borrow_profiles(stmts []ast.Stmt, table &ast.Table, field_types map[string]string) []cparser.MethodBorrowProfile {
 	mut profiles := []cparser.MethodBorrowProfile{}
 	for stmt in stmts {
