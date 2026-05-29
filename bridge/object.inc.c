@@ -1,37 +1,3 @@
-static int vphp_bridge_object_debug_enabled(void) {
-  const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
-  if (path != NULL && path[0] != '\0') {
-    return 2;
-  }
-  const char *flag = getenv("VSLIM_CLI_DEBUG");
-  if (flag != NULL && flag[0] != '\0') {
-    return 1;
-  }
-  return 0;
-}
-
-static void vphp_bridge_object_debug_log(const char *message) {
-  int mode = vphp_bridge_object_debug_enabled();
-  FILE *fp = NULL;
-  if (mode == 0) {
-    return;
-  }
-  if (mode == 2) {
-    const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
-    fp = fopen(path, "ab");
-    if (fp == NULL) {
-      return;
-    }
-  } else {
-    fp = stderr;
-  }
-  fprintf(fp, "[vphp-bridge-debug] %s\n", message);
-  fflush(fp);
-  if (mode == 2 && fp != NULL) {
-    fclose(fp);
-  }
-}
-
 void vphp_init_registry() {
   if (!vphp_registry_initialized) {
     zend_hash_init(&vphp_object_registry, 16, NULL, NULL, 1);
@@ -92,25 +58,25 @@ static int vphp_binding_uses_registry(zend_object *obj) {
 }
 
 void vphp_shutdown_registry() {
-  vphp_bridge_object_debug_log("shutdown_registry enter");
+  vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry enter");
   if (vphp_registry_initialized) {
-    vphp_bridge_object_debug_log("shutdown_registry object_registry destroy begin");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry object_registry destroy begin");
     zend_hash_destroy(&vphp_object_registry);
-    vphp_bridge_object_debug_log("shutdown_registry object_registry destroy done");
-    vphp_bridge_object_debug_log("shutdown_registry reverse_registry destroy begin");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry object_registry destroy done");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry reverse_registry destroy begin");
     zend_hash_destroy(&vphp_reverse_registry);
-    vphp_bridge_object_debug_log("shutdown_registry reverse_registry destroy done");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry reverse_registry destroy done");
     vphp_registry_initialized = false;
   }
   if (vphp_sidecar_registry_initialized) {
-    vphp_bridge_object_debug_log("shutdown_registry sidecar_registry destroy begin");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry sidecar_registry destroy begin");
     zend_hash_destroy(&vphp_sidecar_registry);
-    vphp_bridge_object_debug_log("shutdown_registry sidecar_registry destroy done");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry sidecar_registry destroy done");
     vphp_sidecar_registry_initialized = false;
   }
   if (vphp_inherited_handler_registry_initialized) {
     zend_object_handlers *handlers = NULL;
-    vphp_bridge_object_debug_log("shutdown_registry inherited_handler_registry free begin");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry inherited_handler_registry free begin");
     ZEND_HASH_FOREACH_PTR(&vphp_inherited_handler_registry, handlers) {
       if (handlers != NULL) {
         pefree(handlers, 1);
@@ -118,22 +84,22 @@ void vphp_shutdown_registry() {
     }
     ZEND_HASH_FOREACH_END();
     zend_hash_destroy(&vphp_inherited_handler_registry);
-    vphp_bridge_object_debug_log("shutdown_registry inherited_handler_registry free done");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry inherited_handler_registry free done");
     vphp_inherited_handler_registry_initialized = false;
   }
   if (vphp_auto_iface_bindings != NULL) {
-    vphp_bridge_object_debug_log("shutdown_registry auto_iface_bindings free begin");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry auto_iface_bindings free begin");
     for (uint32_t i = 0; i < vphp_auto_iface_bindings_len; i++) {
       pefree(vphp_auto_iface_bindings[i].class_name, 1);
       pefree(vphp_auto_iface_bindings[i].iface_name, 1);
     }
     pefree(vphp_auto_iface_bindings, 1);
     vphp_auto_iface_bindings = NULL;
-    vphp_bridge_object_debug_log("shutdown_registry auto_iface_bindings free done");
+    vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry auto_iface_bindings free done");
   }
   vphp_auto_iface_bindings_len = 0;
   vphp_auto_iface_bindings_cap = 0;
-  vphp_bridge_object_debug_log("shutdown_registry exit");
+  vphp_bridge_debug_log("vphp-bridge-debug","shutdown_registry exit");
 }
 
 void vphp_register_object(void *v_ptr, zend_object *obj) {
@@ -147,7 +113,7 @@ void vphp_register_object(void *v_ptr, zend_object *obj) {
 
 void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
   char debug_buf[256];
-  int debug_on = vphp_bridge_object_debug_enabled();
+  int debug_on = vphp_bridge_debug_enabled();
   if (!v_ptr) {
     ZVAL_NULL(return_value);
     return;
@@ -165,7 +131,7 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
                      ? ZSTR_VAL(existing_obj->ce->name)
                      : "(null)",
                  (unsigned)GC_FLAGS(existing_obj));
-        vphp_bridge_object_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
       }
       zend_hash_index_del(&vphp_object_registry, (zend_ulong)v_ptr);
       existing_obj = NULL;
@@ -184,7 +150,7 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
                  ce && ce->name ? ZSTR_VAL(ce->name) : "(null)",
                  (unsigned)GC_FLAGS(existing_obj),
                  (unsigned)GC_REFCOUNT(existing_obj));
-        vphp_bridge_object_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
       }
       GC_ADDREF(existing_obj);
       ZVAL_OBJ(return_value, existing_obj);
@@ -198,7 +164,7 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
              (void *)return_value, v_ptr, (void *)ce,
              ce && ce->name ? ZSTR_VAL(ce->name) : "(null)",
              ce != NULL ? (void *)ce->create_object : NULL);
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   object_init_ex(return_value, ce);
   if (debug_on) {
@@ -209,7 +175,7 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
                  ? (void *)Z_OBJ_P(return_value)
                  : NULL,
              ce && ce->name ? ZSTR_VAL(ce->name) : "(null)");
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   zend_object *new_obj = Z_OBJ_P(return_value);
   vphp_object_wrapper *wrapper = vphp_binding_for_obj(new_obj, 1);
@@ -224,7 +190,7 @@ void vphp_return_obj(zval *return_value, void *v_ptr, zend_class_entry *ce) {
                  ? ZSTR_VAL(new_obj->ce->name)
                  : "(null)",
              ce && ce->name ? ZSTR_VAL(ce->name) : "(null)");
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   vphp_register_object(v_ptr, new_obj);
 }
@@ -234,14 +200,14 @@ void vphp_return_bound_object(zval *return_value, void *v_ptr,
                               int owns_v_ptr) {
   extern void vphp__ensure_vptr_root(void *ptr);
   char debug_buf[256];
-  int debug_on = vphp_bridge_object_debug_enabled();
+  int debug_on = vphp_bridge_debug_enabled();
   if (debug_on) {
     snprintf(debug_buf, sizeof(debug_buf),
              "vphp_return_bound_object enter return_value=%p v_ptr=%p ce=%p ce_name=%s handlers=%p owns=%d",
              (void *)return_value, v_ptr, (void *)ce,
              ce && ce->name ? ZSTR_VAL(ce->name) : "(null)", (void *)h,
              owns_v_ptr);
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   if (owns_v_ptr == VPHP_OWNS_VPTR && v_ptr != NULL) {
     vphp__ensure_vptr_root(v_ptr);
@@ -257,7 +223,7 @@ void vphp_return_bound_object(zval *return_value, void *v_ptr,
              return_value != NULL && Z_TYPE_P(return_value) == IS_OBJECT
                  ? (void *)Z_OBJ_P(return_value)
                  : NULL);
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
 }
 
@@ -440,7 +406,7 @@ void vphp_free_object_handler(zend_object *obj) {
   int has_sidecar_wrapper =
       !uses_inline_wrapper && wrapper != NULL && wrapper != &vphp_null_wrapper;
   char debug_buf[256];
-  int debug_on = vphp_bridge_object_debug_enabled();
+  int debug_on = vphp_bridge_debug_enabled();
   if (wrapper) {
     owned_v_ptr = wrapper->v_ptr;
     cleanup_raw = wrapper->cleanup_raw;
@@ -453,7 +419,7 @@ void vphp_free_object_handler(zend_object *obj) {
              (void *)obj, vphp_debug_object_class_name(obj), (void *)wrapper,
              owned_v_ptr, owns_v_ptr, uses_inline_wrapper, has_sidecar_wrapper,
              original_handlers != NULL ? (void *)original_handlers->free_obj : NULL);
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   if (vphp_registry_initialized && obj) {
     void *mapped_v_ptr =
@@ -462,7 +428,7 @@ void vphp_free_object_handler(zend_object *obj) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler reverse_registry obj=%p class=%s mapped_v_ptr=%p",
                (void *)obj, vphp_debug_object_class_name(obj), mapped_v_ptr);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     if (mapped_v_ptr) {
       zend_object *mapped = zend_hash_index_find_ptr(&vphp_object_registry,
@@ -472,7 +438,7 @@ void vphp_free_object_handler(zend_object *obj) {
                  "vphp_free_object_handler reverse_registry mapped obj=%p class=%s mapped_v_ptr=%p mapped_obj=%p",
                  (void *)obj, vphp_debug_object_class_name(obj), mapped_v_ptr,
                  (void *)mapped);
-        vphp_bridge_object_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
       }
       if (mapped == obj) {
         zend_hash_index_del(&vphp_object_registry, (zend_ulong)mapped_v_ptr);
@@ -480,7 +446,7 @@ void vphp_free_object_handler(zend_object *obj) {
           snprintf(debug_buf, sizeof(debug_buf),
                    "vphp_free_object_handler object_registry deleted by reverse obj=%p class=%s mapped_v_ptr=%p",
                    (void *)obj, vphp_debug_object_class_name(obj), mapped_v_ptr);
-          vphp_bridge_object_debug_log(debug_buf);
+          vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
         }
       }
       zend_hash_index_del(&vphp_reverse_registry, (zend_ulong)obj);
@@ -488,7 +454,7 @@ void vphp_free_object_handler(zend_object *obj) {
         snprintf(debug_buf, sizeof(debug_buf),
                  "vphp_free_object_handler reverse_registry deleted obj=%p class=%s",
                  (void *)obj, vphp_debug_object_class_name(obj));
-        vphp_bridge_object_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
       }
     }
   }
@@ -500,7 +466,7 @@ void vphp_free_object_handler(zend_object *obj) {
                "vphp_free_object_handler wrapper_registry obj=%p class=%s wrapper_v_ptr=%p mapped_obj=%p",
                (void *)obj, vphp_debug_object_class_name(obj), wrapper->v_ptr,
                (void *)mapped);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     if (mapped == obj) {
       zend_hash_index_del(&vphp_object_registry, (zend_ulong)wrapper->v_ptr);
@@ -508,7 +474,7 @@ void vphp_free_object_handler(zend_object *obj) {
         snprintf(debug_buf, sizeof(debug_buf),
                  "vphp_free_object_handler object_registry deleted by wrapper obj=%p class=%s wrapper_v_ptr=%p",
                  (void *)obj, vphp_debug_object_class_name(obj), wrapper->v_ptr);
-        vphp_bridge_object_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
       }
     }
   }
@@ -517,7 +483,7 @@ void vphp_free_object_handler(zend_object *obj) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler clear_inline_wrapper begin obj=%p class=%s wrapper=%p",
                (void *)obj, vphp_debug_object_class_name(obj), (void *)wrapper);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     wrapper->v_ptr = NULL;
     wrapper->owns_v_ptr = 0;
@@ -531,7 +497,7 @@ void vphp_free_object_handler(zend_object *obj) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler clear_inline_wrapper done obj=%p class=%s wrapper=%p",
                (void *)obj, vphp_debug_object_class_name(obj), (void *)wrapper);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
   }
   if (original_handlers != NULL && original_handlers->free_obj != NULL &&
@@ -541,7 +507,7 @@ void vphp_free_object_handler(zend_object *obj) {
                "vphp_free_object_handler original_free begin obj=%p class=%s free_obj=%p",
                (void *)obj, vphp_debug_object_class_name(obj),
                (void *)original_handlers->free_obj);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     original_handlers->free_obj(obj);
     if (debug_on) {
@@ -549,35 +515,35 @@ void vphp_free_object_handler(zend_object *obj) {
                "vphp_free_object_handler original_free done obj=%p class=%s free_obj=%p",
                (void *)obj, vphp_debug_object_class_name(obj),
                (void *)original_handlers->free_obj);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
   } else {
     if (debug_on) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler std_dtor begin obj=%p class=%s",
                (void *)obj, vphp_debug_object_class_name(obj));
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     zend_object_std_dtor(obj);
     if (debug_on) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler std_dtor done obj=%p class=%s",
                (void *)obj, vphp_debug_object_class_name(obj));
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
   }
   if (debug_on) {
     snprintf(debug_buf, sizeof(debug_buf),
              "vphp_free_object_handler post_std_dtor obj=%p class=%s sidecar=%d",
              (void *)obj, vphp_debug_object_class_name(obj), has_sidecar_wrapper);
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   if (owns_v_ptr && owned_v_ptr) {
     if (debug_on) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler owned cleanup obj=%p v_ptr=%p cleanup=%p free=%p",
                (void *)obj, owned_v_ptr, (void *)cleanup_raw, (void *)free_raw);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     if (cleanup_raw) {
       cleanup_raw(owned_v_ptr);
@@ -589,7 +555,7 @@ void vphp_free_object_handler(zend_object *obj) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler owned cleanup done obj=%p v_ptr=%p",
                (void *)obj, owned_v_ptr);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
   }
   if (has_sidecar_wrapper && vphp_sidecar_registry_initialized && obj != NULL) {
@@ -597,7 +563,7 @@ void vphp_free_object_handler(zend_object *obj) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler sidecar_cleanup begin obj=%p class=%s wrapper=%p",
                (void *)obj, vphp_debug_object_class_name(obj), (void *)wrapper);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
     zend_hash_index_del(&vphp_sidecar_registry, (zend_ulong)obj);
     wrapper->v_ptr = NULL;
@@ -613,14 +579,14 @@ void vphp_free_object_handler(zend_object *obj) {
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_free_object_handler sidecar_cleanup done obj=%p class=%s",
                (void *)obj, vphp_debug_object_class_name(obj));
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
   }
   if (debug_on) {
     snprintf(debug_buf, sizeof(debug_buf),
              "vphp_free_object_handler exit obj=%p class=%s", (void *)obj,
              vphp_debug_object_class_name(obj));
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
 }
 
@@ -806,7 +772,7 @@ void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
                                        int owns_v_ptr) {
   vphp_object_wrapper *wrapper = vphp_binding_for_obj(obj, 1);
   char debug_buf[256];
-  int debug_on = vphp_bridge_object_debug_enabled();
+  int debug_on = vphp_bridge_debug_enabled();
   if (wrapper == &vphp_null_wrapper) {
     return;
   }
@@ -827,7 +793,7 @@ void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
     snprintf(debug_buf, sizeof(debug_buf),
              "vphp_bind_handlers_with_ownership preserve_owned obj=%p wrapper=%p existing_v_ptr=%p incoming_v_ptr=%p",
              (void *)obj, (void *)wrapper, wrapper->v_ptr, h != NULL ? h->v_ptr : NULL);
-    vphp_bridge_object_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
   }
   if (h->v_ptr && !(wrapper->owns_v_ptr && !owns_v_ptr && wrapper->v_ptr != NULL &&
                     wrapper->v_ptr != h->v_ptr)) {
@@ -841,7 +807,7 @@ void vphp_bind_handlers_with_ownership(zend_object *obj, vphp_class_handlers *h,
       snprintf(debug_buf, sizeof(debug_buf),
                "vphp_bind_handlers_with_ownership skip_borrowed_rebind obj=%p wrapper=%p existing_v_ptr=%p incoming_v_ptr=%p",
                (void *)obj, (void *)wrapper, wrapper->v_ptr, h->v_ptr);
-      vphp_bridge_object_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-bridge-debug",debug_buf);
     }
   }
   wrapper->prop_handler = h->prop_handler;

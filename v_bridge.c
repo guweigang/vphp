@@ -146,6 +146,7 @@ ZEND_TLS uint32_t vphp_pending_auto_iface_bindings_len = 0;
 ZEND_TLS uint32_t vphp_pending_auto_iface_bindings_cap = 0;
 ZEND_TLS int vphp_runtime_autoloading = 0;
 
+#include "bridge/debug.inc.c"
 #include "bridge/runtime.inc.c"
 #include "bridge/call.inc.c"
 #include "bridge/values.inc.c"

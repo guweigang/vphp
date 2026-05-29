@@ -468,40 +468,6 @@ void vphp_clear_exception() {
   }
 }
 
-static int vphp_runtime_debug_enabled(void) {
-  const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
-  if (path != NULL && path[0] != '\0') {
-    return 2;
-  }
-  const char *flag = getenv("VSLIM_CLI_DEBUG");
-  if (flag != NULL && flag[0] != '\0') {
-    return 1;
-  }
-  return 0;
-}
-
-static void vphp_runtime_debug_log(const char *message) {
-  int mode = vphp_runtime_debug_enabled();
-  FILE *fp = NULL;
-  if (mode == 0) {
-    return;
-  }
-  if (mode == 2) {
-    const char *path = getenv("VSLIM_CLI_DEBUG_FILE");
-    fp = fopen(path, "ab");
-    if (fp == NULL) {
-      return;
-    }
-  } else {
-    fp = stderr;
-  }
-  fprintf(fp, "[vphp-runtime-debug] %s\n", message);
-  fflush(fp);
-  if (mode == 2 && fp != NULL) {
-    fclose(fp);
-  }
-}
-
 static void vphp_runtime_debug_log_pools(const char *phase) {
   char debug_buf[256];
   snprintf(debug_buf, sizeof(debug_buf),
@@ -516,19 +482,7 @@ static void vphp_runtime_debug_log_pools(const char *phase) {
            vphp_sidecar_registry_initialized
                ? zend_hash_num_elements(&vphp_sidecar_registry)
                : 0);
-  vphp_runtime_debug_log(debug_buf);
-}
-
-static const char *vphp_runtime_debug_zval_class_name(zval *z) {
-  zend_class_entry *ce = NULL;
-  if (z == NULL || Z_TYPE_P(z) != IS_OBJECT) {
-    return "(none)";
-  }
-  ce = Z_OBJCE_P(z);
-  if (ce == NULL || ce->name == NULL) {
-    return "(null)";
-  }
-  return ZSTR_VAL(ce->name);
+  vphp_bridge_debug_log("vphp-runtime-debug", debug_buf);
 }
 
 static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
@@ -558,7 +512,7 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
       snprintf(debug_buf, sizeof(debug_buf),
                "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s strlen=%zu str=\"%s%s\"",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount, origin, src_len,
+               vphp_debug_zval_class_name(z), refcount, origin, src_len,
                snippet, src_len > copy_len ? "..." : "");
     } else if (Z_TYPE_P(z) == IS_ARRAY) {
       zend_array *arr = Z_ARRVAL_P(z);
@@ -595,22 +549,22 @@ static void vphp_runtime_debug_dump_owned_pool(const char *phase, int limit) {
       snprintf(debug_buf, sizeof(debug_buf),
                "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s array_count=%u keys=%s",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount, origin,
+               vphp_debug_zval_class_name(z), refcount, origin,
                (unsigned)zend_hash_num_elements(arr),
                used > 0 ? keys : "(none)");
     } else if (Z_TYPE_P(z) == IS_LONG) {
       snprintf(debug_buf, sizeof(debug_buf),
                "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s long=%lld",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount, origin,
+               vphp_debug_zval_class_name(z), refcount, origin,
                (long long)Z_LVAL_P(z));
     } else {
       snprintf(debug_buf, sizeof(debug_buf),
                "owned_pool %s idx=%d z=%p type=%d class=%s refcount=%u origin=%s",
                phase, i, (void *)z, Z_TYPE_P(z),
-               vphp_runtime_debug_zval_class_name(z), refcount, origin);
+               vphp_debug_zval_class_name(z), refcount, origin);
     }
-    vphp_runtime_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
     emitted++;
     if (limit > 0 && emitted >= limit) {
       break;
@@ -637,8 +591,8 @@ static void vphp_runtime_debug_dump_autorelease_range(const char *phase, int mar
     snprintf(debug_buf, sizeof(debug_buf),
              "autorelease_pool %s idx=%d z=%p type=%d class=%s refcount=%u",
              phase, i, (void *)z, Z_TYPE_P(z),
-             vphp_runtime_debug_zval_class_name(z), refcount);
-    vphp_runtime_debug_log(debug_buf);
+             vphp_debug_zval_class_name(z), refcount);
+    vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
     emitted++;
     if (limit > 0 && emitted >= limit) {
       break;
@@ -795,7 +749,7 @@ void vphp_autorelease_drain(int mark) {
     snprintf(depth_msg, sizeof(depth_msg),
              "vphp_autorelease_drain recursive_depth=%d mark=%d len=%d",
              vphp_ar_drain_depth, mark, initial_len);
-    vphp_runtime_debug_log(depth_msg);
+    vphp_bridge_debug_log("vphp-runtime-debug",depth_msg);
   }
 
   if (mark < 0) {
@@ -804,11 +758,11 @@ void vphp_autorelease_drain(int mark) {
   if (mark > vphp_autorelease_pool.len) {
     return;
   }
-  if (vphp_runtime_debug_enabled() != 0 && vphp_autorelease_pool.len > mark) {
+  if (vphp_bridge_debug_enabled() != 0 && vphp_autorelease_pool.len > mark) {
     char debug_buf[128];
     snprintf(debug_buf, sizeof(debug_buf),
              "autorelease_drain mark=%d len=%d", mark, vphp_autorelease_pool.len);
-    vphp_runtime_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
     vphp_runtime_debug_dump_autorelease_range("before_drain", mark, 32);
   }
   if (EG(exception) != NULL) {
@@ -892,39 +846,39 @@ void vphp_request_shutdown(void) {
       if (binding == NULL) {
         snprintf(debug_buf, sizeof(debug_buf),
                  "request_shutdown sidecar skip_null obj=%p", (void *)obj_key);
-        vphp_runtime_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
         continue;
       }
       snprintf(debug_buf, sizeof(debug_buf),
                "request_shutdown sidecar binding obj=%p binding=%p v_ptr=%p owns=%d original_handlers=%p",
                (void *)obj_key, (void *)binding, binding->v_ptr,
                binding->owns_v_ptr, (void *)binding->original_handlers);
-      vphp_runtime_debug_log(debug_buf);
+      vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
       if (vphp_registry_initialized) {
         zend_hash_index_del(&vphp_reverse_registry, obj_key);
         snprintf(debug_buf, sizeof(debug_buf),
                  "request_shutdown sidecar reverse_del obj=%p", (void *)obj_key);
-        vphp_runtime_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
       }
       if (binding->v_ptr != NULL && vphp_registry_initialized) {
         zend_hash_index_del(&vphp_object_registry, (zend_ulong)binding->v_ptr);
         snprintf(debug_buf, sizeof(debug_buf),
                  "request_shutdown sidecar object_del v_ptr=%p", binding->v_ptr);
-        vphp_runtime_debug_log(debug_buf);
+        vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
       }
     }
     ZEND_HASH_FOREACH_END();
-    vphp_runtime_debug_log("request_shutdown sidecar clean begin");
+    vphp_bridge_debug_log("vphp-runtime-debug","request_shutdown sidecar clean begin");
     zend_hash_clean(&vphp_sidecar_registry);
-    vphp_runtime_debug_log("request_shutdown sidecar clean done");
+    vphp_bridge_debug_log("vphp-runtime-debug","request_shutdown sidecar clean done");
   }
   if (vphp_registry_initialized) {
-    vphp_runtime_debug_log("request_shutdown object_registry clean begin");
+    vphp_bridge_debug_log("vphp-runtime-debug","request_shutdown object_registry clean begin");
     zend_hash_clean(&vphp_object_registry);
-    vphp_runtime_debug_log("request_shutdown object_registry clean done");
-    vphp_runtime_debug_log("request_shutdown reverse_registry clean begin");
+    vphp_bridge_debug_log("vphp-runtime-debug","request_shutdown object_registry clean done");
+    vphp_bridge_debug_log("vphp-runtime-debug","request_shutdown reverse_registry clean begin");
     zend_hash_clean(&vphp_reverse_registry);
-    vphp_runtime_debug_log("request_shutdown reverse_registry clean done");
+    vphp_bridge_debug_log("vphp-runtime-debug","request_shutdown reverse_registry clean done");
   }
   vphp_runtime_debug_log_pools("exit");
   if (vphp_owned_pool.len > 0) {
@@ -955,13 +909,13 @@ void vphp_request_shutdown(void) {
 
 void vphp_autorelease_shutdown(void) {
   char debug_buf[256];
-  vphp_runtime_debug_log("autorelease_shutdown enter");
+  vphp_bridge_debug_log("vphp-runtime-debug","autorelease_shutdown enter");
   if (vphp_autorelease_pool.items != NULL) {
     snprintf(debug_buf, sizeof(debug_buf),
              "autorelease_shutdown free autorelease_pool.items=%p cap=%d len=%d",
              (void *)vphp_autorelease_pool.items, vphp_autorelease_pool.cap,
              vphp_autorelease_pool.len);
-    vphp_runtime_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
     pefree(vphp_autorelease_pool.items, 1);
     vphp_autorelease_pool.items = NULL;
   }
@@ -972,7 +926,7 @@ void vphp_autorelease_shutdown(void) {
              "autorelease_shutdown free owned_pool.items=%p cap=%d len=%d",
              (void *)vphp_owned_pool.items, vphp_owned_pool.cap,
              vphp_owned_pool.len);
-    vphp_runtime_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
     pefree(vphp_owned_pool.items, 1);
     vphp_owned_pool.items = NULL;
   }
@@ -981,7 +935,7 @@ void vphp_autorelease_shutdown(void) {
              "autorelease_shutdown free owned_pool.origins=%p cap=%d len=%d",
              (void *)vphp_owned_pool.origins, vphp_owned_pool.cap,
              vphp_owned_pool.len);
-    vphp_runtime_debug_log(debug_buf);
+    vphp_bridge_debug_log("vphp-runtime-debug",debug_buf);
     for (int i = 0; i < vphp_owned_pool.len; i++) {
       if (vphp_owned_pool.origins[i] != NULL) {
         efree(vphp_owned_pool.origins[i]);
@@ -992,7 +946,7 @@ void vphp_autorelease_shutdown(void) {
   }
   vphp_owned_pool.cap = 0;
   vphp_owned_pool.len = 0;
-  vphp_runtime_debug_log("autorelease_shutdown exit");
+  vphp_bridge_debug_log("vphp-runtime-debug","autorelease_shutdown exit");
 }
 
 static zend_class_entry *vphp_lookup_class_by_name(const char *class_name,
