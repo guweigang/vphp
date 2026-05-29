@@ -1,3 +1,14 @@
+// Module zend: Zend C API bridge layer.
+//
+// This module contains direct wrappers around Zend/PHP C functions implemented
+// in v_bridge.c. It operates exclusively on raw C types (&C.zval, voidptr,
+// &C.zend_execute_data) and never uses the Handle abstraction.
+//
+// Dependency rule: zend/ is an internal module. Higher layers (zval/, object/,
+// execute/, scope/) import zend/ to perform C operations, but zend/ never
+// imports those higher layers.
+//
+// See docs/zend_wrapper_layers.md for the full layering strategy.
 module zend
 
 // ============================================
