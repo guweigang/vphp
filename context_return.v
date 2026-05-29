@@ -1,6 +1,7 @@
 module vphp
 
 import vphp.zend as _
+import vphp.object
 
 // ======== 返回值写入 ========
 
@@ -32,15 +33,15 @@ pub fn (ctx Context) return_obj(v_ptr voidptr, ce ZendClassEntry) {
 	ctx.return().object(v_ptr, ce)
 }
 
-pub fn (ctx Context) return_bound_object(v_ptr voidptr, ce ZendClassEntry, handlers voidptr, ownership OwnershipKind) {
+pub fn (ctx Context) return_bound_object(v_ptr voidptr, ce ZendClassEntry, handlers object.ObjectHandlers, ownership OwnershipKind) {
 	ctx.return().bound_object(v_ptr, ce, handlers, ownership)
 }
 
-pub fn (ctx Context) return_owned_object(v_ptr voidptr, ce ZendClassEntry, handlers voidptr) {
+pub fn (ctx Context) return_owned_object(v_ptr voidptr, ce ZendClassEntry, handlers object.ObjectHandlers) {
 	ctx.return().owned_object(v_ptr, ce, handlers)
 }
 
-pub fn (ctx Context) return_borrowed_object(v_ptr voidptr, ce ZendClassEntry, handlers voidptr) {
+pub fn (ctx Context) return_borrowed_object(v_ptr voidptr, ce ZendClassEntry, handlers object.ObjectHandlers) {
 	ctx.return().borrowed_object(v_ptr, ce, handlers)
 }
 

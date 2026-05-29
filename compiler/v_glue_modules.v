@@ -45,7 +45,8 @@ pub fn (v_glue VGenerator) generate_modules(elements []repr.PhpRepr, target_file
 		module_dir := module_dirs[module_name] or { continue }
 		mut out := strings.new_builder(1024)
 		out.write_string('module ${module_name}\n\n')
-		out.write_string('import vphp\n\n')
+		out.write_string('import vphp\n')
+		out.write_string('import vphp.object\n\n')
 		for imported in v_glue.module_glue_imports(classes, funcs, module_name, module_dirs) {
 			out.write_string('import ${imported}\n')
 		}

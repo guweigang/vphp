@@ -22,7 +22,7 @@ mut:
 
 fn (g VGenerator) generate(mut elements []repr.PhpRepr) string {
 	mut out := strings.new_builder(2048)
-	out.write_string('module main\n\nimport vphp\n')
+	out.write_string('module main\n\nimport vphp\nimport vphp.object\n')
 	for module_name in g.import_modules(elements) {
 		out.write_string('import ${module_name}\n')
 	}

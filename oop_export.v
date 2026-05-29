@@ -147,7 +147,7 @@ pub fn (obj ZendObject) release() {
 	obj.handle.release()
 }
 
-pub fn (obj ZendObject) bind_handlers(handlers voidptr, ownership OwnershipKind) {
+pub fn (obj ZendObject) bind_handlers(handlers object.ObjectHandlers, ownership OwnershipKind) {
 	if !obj.is_valid() {
 		return
 	}
@@ -161,7 +161,7 @@ pub fn (obj ZendObject) bind_handlers(handlers voidptr, ownership OwnershipKind)
 	}
 }
 
-pub fn (obj ZendObject) ensure_binding_ptr(handlers voidptr, ownership OwnershipKind) voidptr {
+pub fn (obj ZendObject) ensure_binding_ptr(handlers object.ObjectHandlers, ownership OwnershipKind) voidptr {
 	if !obj.is_valid() {
 		return // SAFETY: nil literal in unsafe context
 		 unsafe { nil }
@@ -169,7 +169,7 @@ pub fn (obj ZendObject) ensure_binding_ptr(handlers voidptr, ownership Ownership
 	return obj.handle.ensure_binding_ptr(handlers, object_binding_ownership(ownership))
 }
 
-pub fn (obj ZendObject) init_owned_instance(handlers voidptr) {
+pub fn (obj ZendObject) init_owned_instance(handlers object.ObjectHandlers) {
 	if !obj.is_valid() {
 		return
 	}

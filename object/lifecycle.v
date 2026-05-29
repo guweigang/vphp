@@ -23,15 +23,15 @@ pub fn (handle Handle) release() {
 	zend.object_release_ptr(handle.raw_ptr())
 }
 
-pub fn (handle Handle) bind_borrowed_handlers(handlers voidptr) {
-	zend.bind_borrowed_handlers_ptr(handle.raw_ptr(), handlers)
+pub fn (handle Handle) bind_borrowed_handlers(handlers ObjectHandlers) {
+	zend.bind_borrowed_handlers_ptr(handle.raw_ptr(), handlers.raw_ptr())
 }
 
-pub fn (handle Handle) bind_owned_handlers(handlers voidptr) {
-	zend.bind_owned_handlers_ptr(handle.raw_ptr(), handlers)
+pub fn (handle Handle) bind_owned_handlers(handlers ObjectHandlers) {
+	zend.bind_owned_handlers_ptr(handle.raw_ptr(), handlers.raw_ptr())
 }
 
-pub fn (handle Handle) ensure_binding_ptr(handlers voidptr, ownership BindingOwnership) voidptr {
+pub fn (handle Handle) ensure_binding_ptr(handlers ObjectHandlers, ownership BindingOwnership) voidptr {
 	return match ownership {
 		.borrowed {
 			handle.ensure_borrowed_instance_binding_ptr(handlers)
@@ -42,16 +42,16 @@ pub fn (handle Handle) ensure_binding_ptr(handlers voidptr, ownership BindingOwn
 	}
 }
 
-pub fn (handle Handle) ensure_borrowed_instance_binding_ptr(handlers voidptr) voidptr {
-	return zend.ensure_borrowed_instance_binding_ptr(handle.raw_ptr(), handlers)
+pub fn (handle Handle) ensure_borrowed_instance_binding_ptr(handlers ObjectHandlers) voidptr {
+	return zend.ensure_borrowed_instance_binding_ptr(handle.raw_ptr(), handlers.raw_ptr())
 }
 
-pub fn (handle Handle) ensure_owned_instance_binding_ptr(handlers voidptr) voidptr {
-	return zend.ensure_owned_instance_binding_ptr(handle.raw_ptr(), handlers)
+pub fn (handle Handle) ensure_owned_instance_binding_ptr(handlers ObjectHandlers) voidptr {
+	return zend.ensure_owned_instance_binding_ptr(handle.raw_ptr(), handlers.raw_ptr())
 }
 
-pub fn (handle Handle) init_owned_instance(handlers voidptr) {
-	zend.init_owned_instance_ptr(handle.raw_ptr(), handlers)
+pub fn (handle Handle) init_owned_instance(handlers ObjectHandlers) {
+	zend.init_owned_instance_ptr(handle.raw_ptr(), handlers.raw_ptr())
 }
 
 pub fn (handle Handle) wrapper_ptr() voidptr {

@@ -1,19 +1,21 @@
 module vphp
 
+import vphp.object
+
 pub struct PhpObjectBinding {
 pub:
 	class_entry ZendClassEntry
-	handlers    voidptr
+	handlers    object.ObjectHandlers
 }
 
-pub fn PhpObjectBinding.from_entry(class_entry ZendClassEntry, handlers voidptr) PhpObjectBinding {
+pub fn PhpObjectBinding.from_entry(class_entry ZendClassEntry, handlers object.ObjectHandlers) PhpObjectBinding {
 	return PhpObjectBinding{
 		class_entry: class_entry
 		handlers:    handlers
 	}
 }
 
-pub fn PhpObjectBinding.from_ptr(class_entry voidptr, handlers voidptr) PhpObjectBinding {
+pub fn PhpObjectBinding.from_ptr(class_entry voidptr, handlers object.ObjectHandlers) PhpObjectBinding {
 	return PhpObjectBinding.from_entry(ZendClassEntry.from_ptr(class_entry), handlers)
 }
 
@@ -22,7 +24,7 @@ pub fn PhpObjectBinding.new[T]() PhpObjectBinding {
 }
 
 pub fn (binding PhpObjectBinding) is_valid() bool {
-	return binding.class_entry.is_valid() && binding.handlers != 0
+	return binding.class_entry.is_valid() && binding.handlers.is_valid()
 }
 
 pub fn bind_object_zval[T](v_ptr voidptr, ownership OwnershipKind) ZVal {
