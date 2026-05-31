@@ -29,6 +29,10 @@ pub fn register_class_entry_lookup(f GetClassEntryFn) {
 	}
 }
 
+fn cached_class_entry(name string) voidptr {
+	return unsafe { vphp_get_class_entry_fn(name) }
+}
+
 // ======== Zend Value -> V 转换 API ========
 
 // 便捷转换：array => map<string,string>（无效/null/undef 返回空 map）
@@ -75,7 +79,7 @@ pub fn (v ZVal) to_v[T]() !T {
 			if v_name.contains('.') {
 				v_name = v_name.all_after_last('.')
 			}
-			ce := unsafe { vphp_get_class_entry_fn(v_name) }
+			ce := cached_class_entry(v_name)
 			if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
 			  {
 				zend_obj := ZendObject.from_zval(v)
@@ -313,7 +317,7 @@ pub fn (v ZVal) to_v[T]() !T {
 					if v_name.contains('.') {
 						v_name = v_name.all_after_last('.')
 					}
-					ce := unsafe { vphp_get_class_entry_fn(v_name) }
+					ce := cached_class_entry(v_name)
 					if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
 					  {
 						zend_obj := ZendObject.from_zval(v)

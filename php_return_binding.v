@@ -392,7 +392,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 						if v_name.contains('.') {
 							v_name = v_name.all_after_last('.')
 						}
-						ce := unsafe { vphp_get_class_entry_fn(v_name) }
+						ce := cached_class_entry(v_name)
 						if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
 						  {
 							mut layout := SumTypeLayout{}
@@ -416,7 +416,7 @@ pub fn (ret PhpReturn) v[T](val T) {
 								if v_name.contains('.') {
 									v_name = v_name.all_after_last('.')
 								}
-								ce := unsafe { vphp_get_class_entry_fn(v_name) }
+								ce := cached_class_entry(v_name)
 								if ce != unsafe { nil } // SAFETY: nil literal in unsafe context
 								  {
 									case_zo := C.vphp_zend_enum_get_case(ce,

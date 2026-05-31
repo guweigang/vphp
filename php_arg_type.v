@@ -238,7 +238,7 @@ pub fn (arg PhpArg) to_v_ptr[T]() !voidptr {
 	if v_name.contains('.') {
 		v_name = v_name.all_after_last('.')
 	}
-	ce := unsafe { vphp_get_class_entry_fn(v_name) }
+	ce := cached_class_entry(v_name)
 	if ce == unsafe { nil } // SAFETY: nil literal in unsafe context
 	  {
 		return error('no class entry found for ${v_name}')
