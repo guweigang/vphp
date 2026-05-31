@@ -18,6 +18,10 @@ pub mut:
 	is_persistent bool
 }
 
+pub fn (v ZVal) to_zval() ZVal {
+	return v
+}
+
 pub fn ZVal.from_ptr(raw voidptr) ZVal {
 	return unsafe {
 		ZVal{
