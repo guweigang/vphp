@@ -61,6 +61,10 @@ pub fn PhpException.current_message() string {
 	return zend.exception_message()
 }
 
+pub fn PhpException.current_message_opt() ?string {
+	return zend.exception_message_opt()
+}
+
 pub fn PhpException.clear() {
 	zend.clear_exception()
 }

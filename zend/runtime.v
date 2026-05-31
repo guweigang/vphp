@@ -49,6 +49,17 @@ pub fn exception_message() string {
 	 unsafe { (&char(&buffer[0])).vstring_with_len(written).clone() }
 }
 
+pub fn exception_message_opt() ?string {
+	if !has_exception() {
+		return none
+	}
+	msg := exception_message()
+	if msg == '' {
+		return none
+	}
+	return msg
+}
+
 pub fn clear_exception() {
 	C.vphp_clear_exception()
 }

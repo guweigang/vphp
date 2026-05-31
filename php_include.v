@@ -17,10 +17,7 @@ pub fn (file PhpIncludeFile) path() string {
 }
 
 fn (file PhpIncludeFile) load_with_once_flag(once bool) ZVal {
-	retval := zval.include_file(file.path, once)
-	if !retval.is_valid() {
-		return invalid_zval()
-	}
+	retval := zval.include_file(file.path, once) or { return invalid_zval() }
 	return adopt_handle_with_ownership(retval, .owned_request)
 }
 
