@@ -50,43 +50,43 @@ fn test_is_php_builtin_type_nullable() {
 fn test_php_builtin_type_info_string() {
 	result := php_builtin_type_info('string')
 	assert result != none
-	assert (result or { panic('expected') }).code == 'IS_STRING'
+	assert result or { panic('expected') }.code == 'IS_STRING'
 }
 
 fn test_php_builtin_type_info_int() {
 	result := php_builtin_type_info('int')
 	assert result != none
-	assert (result or { panic('expected') }).code == 'IS_LONG'
+	assert result or { panic('expected') }.code == 'IS_LONG'
 }
 
 fn test_php_builtin_type_info_array() {
 	result := php_builtin_type_info('array')
 	assert result != none
-	assert (result or { panic('expected') }).code == 'IS_ARRAY'
+	assert result or { panic('expected') }.code == 'IS_ARRAY'
 }
 
 fn test_php_builtin_type_info_bool() {
 	result := php_builtin_type_info('bool')
 	assert result != none
-	assert (result or { panic('expected') }).code == '_IS_BOOL'
+	assert result or { panic('expected') }.code == '_IS_BOOL'
 }
 
 fn test_php_builtin_type_info_float() {
 	result := php_builtin_type_info('f64')
 	assert result != none
-	assert (result or { panic('expected') }).code == 'IS_DOUBLE'
+	assert result or { panic('expected') }.code == 'IS_DOUBLE'
 }
 
 fn test_php_builtin_type_info_object() {
 	result := php_builtin_type_info('object')
 	assert result != none
-	assert (result or { panic('expected') }).code == 'IS_OBJECT'
+	assert result or { panic('expected') }.code == 'IS_OBJECT'
 }
 
 fn test_php_builtin_type_info_null() {
 	result := php_builtin_type_info('null')
 	assert result != none
-	assert (result or { panic('expected') }).code == 'IS_NULL'
+	assert result or { panic('expected') }.code == 'IS_NULL'
 }
 
 fn test_php_builtin_type_info_iterable() {

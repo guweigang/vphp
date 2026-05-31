@@ -5,7 +5,7 @@ fn test_normalize_attr_value_trims_spaces() {
 }
 
 fn test_normalize_attr_value_trims_quotes() {
-	assert normalize_attr_value("\"quoted\"") == 'quoted'
+	assert normalize_attr_value('"quoted"') == 'quoted'
 	assert normalize_attr_value("'single'") == 'single'
 }
 
@@ -23,7 +23,7 @@ fn test_parse_attr_list_simple() {
 }
 
 fn test_parse_attr_list_with_spaces_and_quotes() {
-	result := parse_attr_list("'Foo', \"Bar\"")
+	result := parse_attr_list('\'Foo\', "Bar"')
 	assert result.len == 2
 	assert result[0] == 'Foo'
 	assert result[1] == 'Bar'
@@ -72,22 +72,22 @@ fn test_parse_php_prop_map_empty_input() {
 fn test_parse_php_prop_attr_basic() {
 	result := parse_php_prop_attr('property_name')
 	assert result != none
-	assert (result or { panic('expected result') }).name == 'property_name'
-	assert (result or { panic('expected result') }).v_type == 'mixed'
+	assert result or { panic('expected result') }.name == 'property_name'
+	assert result or { panic('expected result') }.v_type == 'mixed'
 }
 
 fn test_parse_php_prop_attr_with_type() {
 	result := parse_php_prop_attr('count: int')
 	assert result != none
-	assert (result or { panic('expected result') }).name == 'count'
-	assert (result or { panic('expected result') }).v_type == 'int'
+	assert result or { panic('expected result') }.name == 'count'
+	assert result or { panic('expected result') }.v_type == 'int'
 }
 
 fn test_parse_php_prop_attr_quoted() {
 	result := parse_php_prop_attr("'my_prop: string'")
 	assert result != none
-	assert (result or { panic('expected result') }).name == 'my_prop'
-	assert (result or { panic('expected result') }).v_type == 'string'
+	assert result or { panic('expected result') }.name == 'my_prop'
+	assert result or { panic('expected result') }.v_type == 'string'
 }
 
 fn test_parse_php_prop_attr_empty_input() {
@@ -98,15 +98,15 @@ fn test_parse_php_prop_attr_empty_input() {
 fn test_parse_php_attr_simple_name() {
 	result := parse_php_attr('MyAttribute')
 	assert result != none
-	assert (result or { panic('expected result') }).name == 'MyAttribute'
-	assert (result or { panic('expected result') }).args.len == 0
+	assert result or { panic('expected result') }.name == 'MyAttribute'
+	assert result or { panic('expected result') }.args.len == 0
 }
 
 fn test_parse_php_attr_with_args() {
 	result := parse_php_attr('MyAttribute(arg1, arg2=42)')
 	assert result != none
-	assert (result or { panic('expected result') }).name == 'MyAttribute'
-	assert (result or { panic('expected result') }).args.len == 2
+	assert result or { panic('expected result') }.name == 'MyAttribute'
+	assert result or { panic('expected result') }.args.len == 2
 }
 
 fn test_parse_php_attr_empty_input() {
