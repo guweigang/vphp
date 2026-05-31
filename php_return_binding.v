@@ -101,21 +101,21 @@ pub fn (ret PhpReturn) resource(ptr voidptr, label string) {
 }
 
 pub fn (ret PhpReturn) object(v_ptr voidptr, ce ZendClassEntry) {
-	object.return_unbound(ret.raw_ptr(), v_ptr, ce.raw_ptr())
+	object.return_unbound(ret.raw_ptr(), v_ptr, ce)
 }
 
 pub fn (ret PhpReturn) bound_object(v_ptr voidptr, ce ZendClassEntry, handlers object.ObjectHandlers, ownership OwnershipKind) {
 	match ownership {
 		.borrowed {
-			object.return_bound(ret.raw_ptr(), v_ptr, ce.raw_ptr(), handlers, .borrowed)
+			object.return_bound(ret.raw_ptr(), v_ptr, ce, handlers, .borrowed)
 		}
 		.owned_request {
 			object.register_root(v_ptr)
-			object.return_bound(ret.raw_ptr(), v_ptr, ce.raw_ptr(), handlers, .owned)
+			object.return_bound(ret.raw_ptr(), v_ptr, ce, handlers, .owned)
 		}
 		.owned_persistent {
 			object.register_root(v_ptr)
-			object.return_bound(ret.raw_ptr(), v_ptr, ce.raw_ptr(), handlers, .owned)
+			object.return_bound(ret.raw_ptr(), v_ptr, ce, handlers, .owned)
 		}
 	}
 }
@@ -125,7 +125,7 @@ pub fn (ret PhpReturn) owned_object(v_ptr voidptr, ce ZendClassEntry, handlers o
 }
 
 pub fn (ret PhpReturn) borrowed_object(v_ptr voidptr, ce ZendClassEntry, handlers object.ObjectHandlers) {
-	object.return_bound(ret.raw_ptr(), v_ptr, ce.raw_ptr(), handlers, .borrowed)
+	object.return_bound(ret.raw_ptr(), v_ptr, ce, handlers, .borrowed)
 }
 
 // --- From php_return_compound.v ---

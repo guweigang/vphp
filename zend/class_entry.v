@@ -1,5 +1,23 @@
 module zend
 
+pub struct ZendClassEntry {
+	raw voidptr
+}
+
+pub fn ZendClassEntry.from_ptr(raw voidptr) ZendClassEntry {
+	return ZendClassEntry{
+		raw: raw
+	}
+}
+
+pub fn (ce ZendClassEntry) is_valid() bool {
+	return ce.raw_ptr() != 0
+}
+
+pub fn (ce ZendClassEntry) raw_ptr() voidptr {
+	return ce.raw
+}
+
 pub fn set_static_long(ce voidptr, name string, val i64) {
 	C.vphp_update_static_property_long(ce, &char(name.str), int(name.len), val)
 }

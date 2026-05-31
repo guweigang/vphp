@@ -7,8 +7,8 @@ pub enum BindingOwnership {
 	owned
 }
 
-pub fn allocate_contiguous(ce voidptr, v_size usize) voidptr {
-	return zend.allocate_contiguous_object(ce, v_size)
+pub fn allocate_contiguous(ce zend.ZendClassEntry, v_size usize) voidptr {
+	return zend.allocate_contiguous_object(ce.raw_ptr(), v_size)
 }
 
 pub fn runtime_free(ptr voidptr) {

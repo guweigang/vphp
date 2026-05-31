@@ -5,23 +5,7 @@ import vphp.zend
 import vphp.zval
 
 // --- From zend_class_entry_type.v ---
-pub struct ZendClassEntry {
-	raw voidptr
-}
-
-pub fn ZendClassEntry.from_ptr(raw voidptr) ZendClassEntry {
-	return ZendClassEntry{
-		raw: raw
-	}
-}
-
-pub fn (ce ZendClassEntry) is_valid() bool {
-	return ce.raw_ptr() != 0
-}
-
-pub fn (ce ZendClassEntry) raw_ptr() voidptr {
-	return ce.raw
-}
+pub type ZendClassEntry = zend.ZendClassEntry
 
 pub fn (ce ZendClassEntry) set_static_prop[T](name string, val T) {
 	if !ce.is_valid() {
