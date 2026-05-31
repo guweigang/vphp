@@ -6,7 +6,7 @@
 //
 // Dependency rule: zval/ imports zend/ for low-level operations, but zend/
 // never imports zval/. Extension code should prefer zval.Handle over raw
-// voidptr/&C.zval when possible.
+// voidptr and C zval pointers when possible.
 //
 // See docs/zend_wrapper_layers.md for the full layering strategy.
 module zval
