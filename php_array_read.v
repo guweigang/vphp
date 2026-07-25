@@ -159,8 +159,8 @@ pub fn (a PhpArray) each_entry(cb PhpArrayEntryCb) {
 	}
 }
 
-pub fn (a PhpArray) items() []vphp.ZVal {
-	return a.fold[[]ZVal]([]ZVal{}, fn (_ ZVal, item ZVal, mut acc []vphp.ZVal) {
+pub fn (a PhpArray) items() []ZVal {
+	return a.fold[[]ZVal]([]ZVal{}, fn (_ ZVal, item ZVal, mut acc []ZVal) {
 		acc << item
 	})
 }

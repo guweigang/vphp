@@ -109,7 +109,7 @@ pub fn (ctx Context) invoke_variadic_closure_void[T](cb T) {
 	}
 }
 
-fn (ctx Context) variadic_zval_args() []vphp.ZVal {
+fn (ctx Context) variadic_zval_args() []ZVal {
 	mut args := []ZVal{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_val(i)
@@ -117,7 +117,7 @@ fn (ctx Context) variadic_zval_args() []vphp.ZVal {
 	return args
 }
 
-fn (ctx Context) variadic_php_value_args() []vphp.PhpValue {
+fn (ctx Context) variadic_php_value_args() []PhpValue {
 	mut args := []PhpValue{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_value(i)
@@ -125,7 +125,7 @@ fn (ctx Context) variadic_php_value_args() []vphp.PhpValue {
 	return args
 }
 
-fn (ctx Context) variadic_borrowed_zbox_args() []vphp.RequestBorrowedZBox {
+fn (ctx Context) variadic_borrowed_zbox_args() []RequestBorrowedZBox {
 	mut args := []RequestBorrowedZBox{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_borrowed_zbox(i)
@@ -133,7 +133,7 @@ fn (ctx Context) variadic_borrowed_zbox_args() []vphp.RequestBorrowedZBox {
 	return args
 }
 
-fn (ctx Context) variadic_v_scalar_args() ![]vphp.VScalarValue {
+fn (ctx Context) variadic_v_scalar_args() ![]VScalarValue {
 	mut args := []VScalarValue{cap: ctx.num_args()}
 	for i in 0 .. ctx.num_args() {
 		args << ctx.arg_v_scalar(i)!

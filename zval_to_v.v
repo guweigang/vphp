@@ -191,7 +191,7 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected array<ZVal>, got ${v.type_name()}')
 		}
 		mut out := []ZVal{}
-		out = v.foreach_with_ctx[[]ZVal](out, fn (_ ZVal, val ZVal, mut acc []vphp.ZVal) {
+		out = v.foreach_with_ctx[[]ZVal](out, fn (_ ZVal, val ZVal, mut acc []ZVal) {
 			acc << val
 		})
 		return out
@@ -231,7 +231,7 @@ pub fn (v ZVal) to_v[T]() !T {
 			return error('type mismatch: expected map<string,ZVal>, got ${v.type_name()}')
 		}
 		mut out := map[string]ZVal{}
-		out = v.foreach_with_ctx[map[string]ZVal](out, fn (key ZVal, val ZVal, mut m map[string]vphp.ZVal) {
+		out = v.foreach_with_ctx[map[string]ZVal](out, fn (key ZVal, val ZVal, mut m map[string]ZVal) {
 			m[key.to_string()] = val
 		})
 		return out

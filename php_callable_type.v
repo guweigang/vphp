@@ -187,19 +187,19 @@ pub fn (c PhpCallable) is_callable() bool {
 	return c.to_zval().is_callable()
 }
 
-pub fn (c PhpCallable) call_zval(args []vphp.ZVal) ZVal {
+pub fn (c PhpCallable) call_zval(args []ZVal) ZVal {
 	return c.to_zval().call(args)
 }
 
-pub fn (c PhpCallable) call_owned_request_zval(args []vphp.ZVal) ZVal {
+pub fn (c PhpCallable) call_owned_request_zval(args []ZVal) ZVal {
 	return c.to_zval().call_owned_request(args)
 }
 
-pub fn (c PhpCallable) call_owned_persistent_zval(args []vphp.ZVal) ZVal {
+pub fn (c PhpCallable) call_owned_persistent_zval(args []ZVal) ZVal {
 	return c.to_zval().call_owned_persistent(args)
 }
 
-fn (c PhpCallable) request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
+fn (c PhpCallable) request_owned_zval(args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.call_owned_request_zval(args))
 }
 

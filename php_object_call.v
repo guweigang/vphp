@@ -1,24 +1,24 @@
 module vphp
 
-pub fn (o PhpObject) method_zval(method string, args []vphp.ZVal) ZVal {
+pub fn (o PhpObject) method_zval(method string, args []ZVal) ZVal {
 	return o.value.with_request_object[ZVal](fn [method, args] (obj PhpObject) ZVal {
 		return obj.to_zval().method(method, args)
 	}) or { invalid_zval() }
 }
 
-pub fn (o PhpObject) method_owned_request(method string, args []vphp.ZVal) ZVal {
+pub fn (o PhpObject) method_owned_request(method string, args []ZVal) ZVal {
 	return o.value.with_request_object[ZVal](fn [method, args] (obj PhpObject) ZVal {
 		return obj.to_zval().method_owned_request(method, args)
 	}) or { invalid_zval() }
 }
 
-pub fn (o PhpObject) method_owned_persistent(method string, args []vphp.ZVal) ZVal {
+pub fn (o PhpObject) method_owned_persistent(method string, args []ZVal) ZVal {
 	return o.value.with_request_object[ZVal](fn [method, args] (obj PhpObject) ZVal {
 		return obj.to_zval().method_owned_persistent(method, args)
 	}) or { invalid_zval() }
 }
 
-fn (o PhpObject) method_request_owned_zval(method string, args []vphp.ZVal) RequestOwnedZBox {
+fn (o PhpObject) method_request_owned_zval(method string, args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(o.method_owned_request(method, args))
 }
 
@@ -71,6 +71,6 @@ pub fn (o PhpObject) with_method_result_zval[T](method string, run fn (ZVal) T, 
 	return run(result.to_zval())
 }
 
-pub fn (o PhpObject) method_v[T](method string, args []vphp.ZVal) !T {
+pub fn (o PhpObject) method_v[T](method string, args []ZVal) !T {
 	return o.method_zval(method, args).to_v[T]()
 }

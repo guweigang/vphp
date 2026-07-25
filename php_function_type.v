@@ -29,19 +29,19 @@ pub fn (f PhpFunction) exists() bool {
 	return PhpFunction.named('function_exists').result_bool(PhpString.of(f.fn_name))
 }
 
-pub fn (f PhpFunction) call_zval(args []vphp.ZVal) ZVal {
+pub fn (f PhpFunction) call_zval(args []ZVal) ZVal {
 	return f.to_zval().call(args)
 }
 
-pub fn (f PhpFunction) call_owned_request_zval(args []vphp.ZVal) ZVal {
+pub fn (f PhpFunction) call_owned_request_zval(args []ZVal) ZVal {
 	return f.to_zval().call_owned_request(args)
 }
 
-pub fn (f PhpFunction) call_owned_persistent_zval(args []vphp.ZVal) ZVal {
+pub fn (f PhpFunction) call_owned_persistent_zval(args []ZVal) ZVal {
 	return f.to_zval().call_owned_persistent(args)
 }
 
-fn (f PhpFunction) request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
+fn (f PhpFunction) request_owned_zval(args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(f.call_owned_request_zval(args))
 }
 

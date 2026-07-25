@@ -112,25 +112,25 @@ pub fn (c PhpClosure) is_callable() bool {
 	return c.to_zval().is_callable()
 }
 
-pub fn (c PhpClosure) call_zval(args []vphp.ZVal) ZVal {
+pub fn (c PhpClosure) call_zval(args []ZVal) ZVal {
 	return c.callable.with_request_callable[ZVal](fn [args] (callable PhpCallable) ZVal {
 		return callable.to_zval().call(args)
 	}) or { invalid_zval() }
 }
 
-pub fn (c PhpClosure) call_owned_request_zval(args []vphp.ZVal) ZVal {
+pub fn (c PhpClosure) call_owned_request_zval(args []ZVal) ZVal {
 	return c.callable.with_request_callable[ZVal](fn [args] (callable PhpCallable) ZVal {
 		return callable.to_zval().call_owned_request(args)
 	}) or { invalid_zval() }
 }
 
-pub fn (c PhpClosure) call_owned_persistent_zval(args []vphp.ZVal) ZVal {
+pub fn (c PhpClosure) call_owned_persistent_zval(args []ZVal) ZVal {
 	return c.callable.with_request_callable[ZVal](fn [args] (callable PhpCallable) ZVal {
 		return callable.to_zval().call_owned_persistent(args)
 	}) or { invalid_zval() }
 }
 
-fn (c PhpClosure) request_owned_zval(args []vphp.ZVal) RequestOwnedZBox {
+fn (c PhpClosure) request_owned_zval(args []ZVal) RequestOwnedZBox {
 	return RequestOwnedZBox.adopt_zval(c.call_owned_request_zval(args))
 }
 
